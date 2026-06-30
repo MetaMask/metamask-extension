@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 import AccountListPage from '../pages/account-list-page';
-import AssetListPage from '../pages/home/asset-list';
+import TokensTab from '../pages/home/tokens-tab';
 import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import PrivacySettings from '../pages/settings/privacy-settings';
@@ -35,11 +35,8 @@ export async function importAdditionalSecretRecoveryPhrase(
   await homePage.checkNewSrpAddedToastIsDisplayed();
   await homePage.dismissSrpAddedToast();
   await homePage.checkPageIsLoaded();
-  const assetListPage = new AssetListPage(driver);
-  await assetListPage.checkExpectedTokenBalanceIsDisplayed(
-    expectedBalance,
-    'ETH',
-  );
+  const tokensTab = new TokensTab(driver);
+  await tokensTab.checkExpectedTokenBalanceIsDisplayed(expectedBalance, 'ETH');
 }
 
 export async function verifySrp(

@@ -9,7 +9,7 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SendPage from '../../../page-objects/pages/send/send-page';
@@ -61,17 +61,17 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         // Login flow
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenListIsDisplayed();
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenListIsDisplayed();
         const accountListPage = new AccountListPage(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         await accountListPage.switchToAccount('Account 1');
         // Wait for Solana balance to load before starting the send flow
         if (shouldUseMockedRequests()) {
-          await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+          await tokensTab.checkTokenAmountIsDisplayed('50 SOL');
         } else {
-          await assetListPage.waitForTokenToBeDisplayed('SOL');
+          await tokensTab.waitForTokenToBeDisplayed('SOL');
         }
 
         // Measure: Open send page
@@ -104,7 +104,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         );
 
         // Measure: Review transaction
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount('0.00001');
         await sendPage.pressContinueButton();
         steps.push(

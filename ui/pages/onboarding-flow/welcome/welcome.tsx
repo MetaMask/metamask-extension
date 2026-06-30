@@ -30,7 +30,7 @@ import {
 import {
   getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
-  getIsParticipateInMetaMetricsSet,
+  getCompletedMetaMetricsOnboarding,
   getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
 } from '../../../selectors';
@@ -51,8 +51,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   isUserCancelledLoginError,
   OAuthErrorMessages,
@@ -108,8 +107,8 @@ export default function OnboardingWelcome() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isSocialLoginFLow = useSelector(getIsSocialLoginFlow);
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
@@ -129,7 +128,7 @@ export default function OnboardingWelcome() {
   const [isAnimationComplete, setIsAnimationComplete] =
     useState(shouldSkipAnimation);
 
-  const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
+  const isFireFox = useIsFirefox();
 
   const getIsUserAuthenticatedWithSocialLogin = useCallback(async () => {
     if (!isSocialLoginFLow) {
@@ -157,7 +156,7 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
         navigate(
-          isParticipateInMetaMetricsSet
+          completedMetaMetricsOnboarding
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS,
           { replace: true },
@@ -191,7 +190,7 @@ export default function OnboardingWelcome() {
     navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
-    isParticipateInMetaMetricsSet,
+    completedMetaMetricsOnboarding,
     getIsUserAuthenticatedWithSocialLogin,
     isFireFox,
     isWalletResetInProgress,

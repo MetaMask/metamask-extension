@@ -24,6 +24,10 @@ import {
   StorageServiceSetItemAction,
 } from '@metamask/storage-service';
 import { TransactionControllerAddTransactionAction } from '@metamask/transaction-controller';
+import type {
+  AuthenticatedUserStorageServiceGetNotificationPreferencesAction,
+  AuthenticatedUserStorageServicePutNotificationPreferencesAction,
+} from '@metamask/authenticated-user-storage';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RewardsControllerGetPerpsDiscountForAccountAction } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
@@ -43,7 +47,9 @@ type AllowedActions =
   | StorageServiceGetItemAction
   | StorageServiceSetItemAction
   | StorageServiceRemoveItemAction
-  | RewardsControllerGetPerpsDiscountForAccountAction;
+  | RewardsControllerGetPerpsDiscountForAccountAction
+  | AuthenticatedUserStorageServiceGetNotificationPreferencesAction
+  | AuthenticatedUserStorageServicePutNotificationPreferencesAction;
 
 type AllowedEvents =
   | RemoteFeatureFlagControllerStateChangeEvent
@@ -74,6 +80,8 @@ export function getPerpsControllerMessenger(
   messenger.delegate({
     messenger: perpsControllerMessenger,
     actions: [
+      'AuthenticatedUserStorageService:getNotificationPreferences',
+      'AuthenticatedUserStorageService:putNotificationPreferences',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',

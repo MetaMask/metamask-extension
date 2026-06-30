@@ -1,19 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
+  BoxAlignItems,
   Icon,
   IconName,
   IconSize,
   Text,
-} from '../../../../../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-} from '../../../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
@@ -84,21 +79,11 @@ export function SelectedGasFeeToken() {
       <Box
         data-testid="selected-gas-fee-token"
         onClick={handleClick}
-        backgroundColor={
-          hasMoreThanOneGasFeeTokenToChooseFrom
-            ? BackgroundColor.backgroundMuted
-            : BackgroundColor.transparent
-        }
-        borderRadius={BorderRadius.pill}
-        display={Display.InlineFlex}
-        alignItems={AlignItems.center}
-        paddingInlineStart={1}
-        marginLeft={1}
+        className="inline-flex"
+        alignItems={BoxAlignItems.Center}
         gap={1}
         style={{
           cursor: hasMoreThanOneGasFeeTokenToChooseFrom ? 'pointer' : 'default',
-          paddingInlineEnd: '6px',
-          padding: hasMoreThanOneGasFeeTokenToChooseFrom ? '4px 8px' : '0px',
         }}
       >
         <GasFeeTokenIcon
@@ -109,7 +94,7 @@ export function SelectedGasFeeToken() {
         {hasMoreThanOneGasFeeTokenToChooseFrom && (
           <Icon
             data-testid="selected-gas-fee-token-arrow"
-            name={IconName.ArrowDown}
+            name={IconName.ArrowRight}
             size={IconSize.Sm}
           />
         )}

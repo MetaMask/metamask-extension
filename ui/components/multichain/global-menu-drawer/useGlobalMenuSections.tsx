@@ -29,18 +29,13 @@ import {
 import {
   lockMetamask,
   setShowSupportDataConsentModal,
-  showConfirmTurnOnMetamaskNotifications,
   toggleDefaultView,
 } from '../../../store/actions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
-import {
-  selectIsMetamaskNotificationsEnabled,
-  selectIsMetamaskNotificationsFeatureSeen,
-} from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { selectIsMetamaskNotificationsFeatureSeen } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { Tag } from '../../component-library';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -61,10 +56,10 @@ import {
 import {
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
-  getThirdPartyNotifySnaps,
   getUseExternalServices,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getDataCollectionForMarketing,
 } from '../../../selectors';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
@@ -104,16 +99,10 @@ export function useGlobalMenuSections(
   const isMetamaskNotificationFeatureSeen = useSelector(
     selectIsMetamaskNotificationsFeatureSeen,
   );
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
-  let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
-  hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
   const isSidePanelEnabled = useSidePanelEnabled();
   const browserSupportsSidePanel = useBrowserSupportsSidePanel();
@@ -137,8 +126,12 @@ export function useGlobalMenuSections(
     ],
   );
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const supportText =
@@ -146,27 +139,6 @@ export function useGlobalMenuSections(
   const supportLink = SUPPORT_LINK || '';
 
   const handleNotificationsClick = useCallback(() => {
-    const shouldShowEnableModal =
-      !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
-
-    if (shouldShowEnableModal) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
-        event: MetaMetricsEventName.NotificationsActivated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          action_type: 'started',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_profile_syncing_enabled: isBackupAndSyncEnabled,
-        },
-      });
-      dispatch(showConfirmTurnOnMetamaskNotifications());
-      onClose();
-      return;
-    }
-
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationsMenuOpened,
@@ -181,13 +153,10 @@ export function useGlobalMenuSections(
     });
     navigate(
       `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+      { state: { globalMenuTransition: 'forward' } },
     );
   }, [
-    hasThirdPartyNotifySnaps,
-    isMetamaskNotificationsEnabled,
     trackEvent,
-    isBackupAndSyncEnabled,
-    dispatch,
     onClose,
     navigate,
     notificationsUnreadCount,
@@ -279,7 +248,7 @@ export function useGlobalMenuSections(
         const url = getPortfolioUrl(
           'explore/tokens',
           'ext_portfolio_button',
-          metaMetricsId,
+          analyticsId,
           isMetaMetricsEnabled === true,
           isMarketingEnabled === true,
         );
@@ -310,31 +279,43 @@ export function useGlobalMenuSections(
       });
     }
 
-    if (
+    const shouldRenderSidePanelToggle =
       getBrowserName() !== PLATFORM_FIREFOX &&
-      browserSupportsSidePanel === true &&
+      browserSupportsSidePanel !== false &&
       isSidePanelEnabled &&
-      (isPopup || isSidepanel)
-    ) {
-      section2.items.push({
-        id: 'global-menu-toggle-view',
-        iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
-        label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
-        onClick: async () => {
-          await dispatch(toggleDefaultView());
-          trackEvent({
-            event: MetaMetricsEventName.ViewportSwitched,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: METRICS_LOCATION,
-              to: isSidepanel
-                ? ENVIRONMENT_TYPE_POPUP
-                : ENVIRONMENT_TYPE_SIDEPANEL,
-            },
-          });
-          onClose();
-        },
-      });
+      (isPopup || isSidepanel);
+
+    if (shouldRenderSidePanelToggle) {
+      if (browserSupportsSidePanel === null) {
+        section2.items.push({
+          id: 'global-menu-toggle-view-placeholder',
+          iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
+          label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
+          onClick: () => undefined,
+          disabled: true,
+          className: 'invisible pointer-events-none',
+        });
+      } else {
+        section2.items.push({
+          id: 'global-menu-toggle-view',
+          iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
+          label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
+          onClick: async () => {
+            await dispatch(toggleDefaultView());
+            trackEvent({
+              event: MetaMetricsEventName.ViewportSwitched,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+                to: isSidepanel
+                  ? ENVIRONMENT_TYPE_POPUP
+                  : ENVIRONMENT_TYPE_SIDEPANEL,
+              },
+            });
+            onClose();
+          },
+        });
+      }
     }
 
     const section2Manage: GlobalMenuSection = {
@@ -477,7 +458,7 @@ export function useGlobalMenuSections(
     onClose,
     dispatch,
     trackEvent,
-    metaMetricsId,
+    analyticsId,
     isMetaMetricsEnabled,
     isMarketingEnabled,
     browserSupportsSidePanel,

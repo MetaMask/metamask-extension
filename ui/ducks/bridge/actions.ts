@@ -22,6 +22,7 @@ import {
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
+import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import {
   bridgeSlice,
   setSrcTokenExchangeRates,
@@ -93,6 +94,12 @@ export const resetBridgeController = () => {
     await clearAllBridgeCacheItems();
   };
 };
+
+export const setBridgeLocation = (location: MetaMetricsSwapsEventSource) =>
+  callBridgeControllerMethod('setLocation', location);
+
+export const getBridgeLocation = (): Promise<MetaMetricsSwapsEventSource> =>
+  submitRequestToBackground('getLocation');
 
 export const trackUnifiedSwapBridgeEvent = <
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -259,8 +266,12 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
-      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
-      dispatch(setFromToken(fromTokenToUse));
+
+      await dispatch(
+        setFromToken(fromTokenToUse) as unknown as Parameters<
+          typeof dispatch
+        >[0],
+      );
     }
 
     dispatch(setToTokenAction(newToToken));

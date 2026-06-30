@@ -53,7 +53,7 @@ exports[`<AdvancedDetails /> renders component when the prop override is passed 
           style="margin-right: -4px;"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -188,7 +188,7 @@ exports[`<AdvancedDetails /> renders component when the state property is true 1
           style="margin-right: -4px;"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>

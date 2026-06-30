@@ -66,7 +66,9 @@ export class OAuthService {
 
   #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
 
-  #getParticipateInMetaMetrics: OAuthServiceOptions['getParticipateInMetaMetrics'];
+  #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
+
+  #getOptedIn: OAuthServiceOptions['getOptedIn'];
 
   constructor({
     messenger,
@@ -76,7 +78,8 @@ export class OAuthService {
     bufferedEndTrace,
     trackEvent,
     addEventBeforeMetricsOptIn,
-    getParticipateInMetaMetrics,
+    getCompletedMetaMetricsOnboarding,
+    getOptedIn,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -87,7 +90,8 @@ export class OAuthService {
     this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
-    this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
+    this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
+    this.#getOptedIn = getOptedIn;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -105,7 +109,8 @@ export class OAuthService {
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): void {
-    const isMetricsEnabled = Boolean(this.#getParticipateInMetaMetrics());
+    const isMetricsEnabled =
+      this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
 
     if (isMetricsEnabled) {
       this.#trackEvent(payload, options);
@@ -152,6 +157,14 @@ export class OAuthService {
       this.#config,
       this.#webAuthenticator,
     );
+
+    // get the user location to determine if the user is in US region
+    // the location value will be used later to determine if Marketing Opt-in should be enabled by default
+    this.#messenger
+      .call('GeolocationController:getGeolocation')
+      .catch((error) => {
+        log.error('Error getting user location:', error);
+      });
 
     const oAuthLoginResult = await this.#handleOAuthLogin(
       loginHandler,

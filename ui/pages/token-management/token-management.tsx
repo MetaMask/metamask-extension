@@ -33,7 +33,6 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { ERC20 } from '@metamask/controller-utils';
 
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
@@ -48,10 +47,11 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,
-  getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
+import { useNetworkFilterButtonLabel } from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addCustomAsset,
@@ -85,6 +85,8 @@ import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAss
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
+import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
+import { getIsNetworkManagementEnabled } from '../../selectors/multichain/feature-flags';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
@@ -107,6 +109,10 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+} from '../../../shared/constants/network';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -180,6 +186,11 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   return assetReference || assetId;
 };
 
+const hasValidAssetId = (
+  result: TokenSearchResult,
+): result is TokenSearchResult & { assetId: CaipAssetType } =>
+  typeof result.assetId === 'string';
+
 const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
   const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
   const address =
@@ -215,11 +226,6 @@ const normalizeToHexChainId = (chainId: string): string => {
     ? `0x${decimalChainId.toString(16)}`.toLowerCase()
     : chainId.toLowerCase();
 };
-
-const normalizeToCaipChainId = (chainId: string): CaipChainId =>
-  chainId.startsWith('0x')
-    ? formatChainIdToCaip(chainId as Hex)
-    : (chainId as CaipChainId);
 
 const getTokenAddressKey = (chainId: string, address: string) =>
   `${normalizeToHexChainId(chainId)}:${address.toLowerCase()}`;
@@ -348,6 +354,8 @@ export const TokenManagementPage = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pageToast, setPageToast] = useState<{ symbol: string } | null>(null);
+  const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
+    useState(false);
   const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
     () => new Set<string>(),
   );
@@ -471,19 +479,12 @@ export const TokenManagementPage = () => {
   );
   const useExternalServices = useSelector(getUseExternalServices);
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
-  const enabledNetworksByNamespace = useSelector((state: unknown) => {
-    try {
-      return getEnabledNetworksByNamespace(
-        state as Parameters<typeof getEnabledNetworksByNamespace>[0],
-      );
-    } catch {
-      return {} as Record<string, boolean>;
-    }
-  });
+  const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allMultichainNetworkConfigurations = useSelector(
     getAllMultichainNetworkConfigurations,
@@ -510,14 +511,6 @@ export const TokenManagementPage = () => {
         caipChainId,
       ),
     [store],
-  );
-
-  const enabledChainIds = useMemo(
-    () =>
-      Object.entries(enabledNetworksByNamespace ?? {})
-        .filter(([, enabled]) => Boolean(enabled))
-        .map(([chainId]) => chainId as Hex),
-    [enabledNetworksByNamespace],
   );
 
   const getNetworkMeta = useCallback(
@@ -575,8 +568,24 @@ export const TokenManagementPage = () => {
       }),
     );
 
+    // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
+    // display duplicate. Hide it here too — it can re-enter via imported tokens
+    // even though the asset selector already filters it from balances. The
+    // chain id can be hex (0x13b2) or CAIP (eip155:5042) and the address may
+    // only live inside the assetId, so normalize both before comparing.
+    const visibleAssets = dedupedAssets.filter((asset) => {
+      if (normalizeToHexChainId(String(asset.chainId)) !== CHAIN_IDS.ARC) {
+        return true;
+      }
+      const assetAddress =
+        'address' in asset && asset.address
+          ? asset.address
+          : getAssetReferenceFromAssetId(asset.assetId);
+      return assetAddress?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
+    });
+
     const accountAssets = sortAssetsWithPriority(
-      dedupedAssets,
+      visibleAssets,
       tokenSortConfig,
     ) as ManagedAsset[];
 
@@ -611,11 +620,11 @@ export const TokenManagementPage = () => {
   const tokenSearchQuery = hasQuery ? debouncedSearchQuery : '';
 
   const searchNetworks = useMemo(() => {
-    if (allEnabledNetworksForAllNamespaces.length === 0) {
+    if (enabledCaipChainIds.length === 0) {
       return undefined;
     }
-    return allEnabledNetworksForAllNamespaces.map(normalizeToCaipChainId);
-  }, [allEnabledNetworksForAllNamespaces]);
+    return enabledCaipChainIds;
+  }, [enabledCaipChainIds]);
 
   const {
     data: searchResponse,
@@ -638,7 +647,20 @@ export const TokenManagementPage = () => {
       return EMPTY_TOKEN_SEARCH_RESULTS;
     }
 
-    return searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS;
+    const results = (searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS).filter(
+      hasValidAssetId,
+    );
+
+    // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
+    // display duplicate. Drop it from search/browse results too.
+    return results.filter((result) => {
+      const chainPart = String(result.assetId).split('/')[0];
+      if (normalizeToHexChainId(chainPart) !== CHAIN_IDS.ARC) {
+        return true;
+      }
+      const reference = getAssetReferenceFromAssetId(result.assetId);
+      return reference?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
+    });
   }, [debouncedSearchQuery.length, hasQuery, searchResponse?.data]);
   const searchResults = useMemo(
     () => (hasQuery ? apiTokenResults : EMPTY_TOKEN_SEARCH_RESULTS),
@@ -648,7 +670,7 @@ export const TokenManagementPage = () => {
   const isSearching =
     isWaitingForDebounce ||
     (hasQuery && debouncedSearchQuery.length > 0 && isSearchFetching);
-  const searchError = hasQuery ? searchQueryError : null;
+  const searchError = searchQueryError;
 
   const importedEvmTokensByChain = useMemo(() => {
     const map = new Map<string, Set<string>>();
@@ -736,8 +758,16 @@ export const TokenManagementPage = () => {
 
   const handleOpenNetworkFilter = useCallback(() => {
     commitStagedHides().catch(() => undefined);
-    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-  }, [commitStagedHides, dispatch]);
+    if (!isNetworkManagementEnabled) {
+      dispatch(showModal({ name: 'NETWORK_MANAGER' }));
+      return;
+    }
+    setIsNetworkFilterModalOpen(true);
+  }, [commitStagedHides, dispatch, isNetworkManagementEnabled]);
+
+  const handleCloseNetworkFilter = useCallback(() => {
+    setIsNetworkFilterModalOpen(false);
+  }, []);
 
   const handleAddCustomToken = useCallback(() => {
     commitStagedHides().catch(() => undefined);
@@ -764,28 +794,7 @@ export const TokenManagementPage = () => {
     setSearchQuery('');
   }, [commitStagedHides]);
 
-  const networkFilterLabel = useMemo(() => {
-    const enabledCount = enabledChainIds.length;
-    if (enabledCount === 0) {
-      return t('noNetworksSelected');
-    }
-    if (enabledCount === 1) {
-      const onlyChain = enabledChainIds[0];
-      const evmName = networkConfigurations?.[onlyChain]?.name;
-      const multichainName =
-        allMultichainNetworkConfigurations?.[onlyChain as CaipChainId]?.name;
-      return (
-        evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork')
-      );
-    }
-    return t('allDefaultNetworks');
-  }, [
-    allMultichainNetworkConfigurations,
-    currentNetwork?.name,
-    enabledChainIds,
-    networkConfigurations,
-    t,
-  ]);
+  const networkFilterLabel = useNetworkFilterButtonLabel();
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -1440,14 +1449,14 @@ export const TokenManagementPage = () => {
 
   const shouldShowTokenList = hasQuery
     ? hasResults || (!isSearching && !searchError)
-    : tokenListItems.length > 0 || !isSearchFetching;
+    : tokenListItems.length > 0 || (!isSearchFetching && !searchError);
 
   const startAccessory = (
     <Link to={DEFAULT_ROUTE} aria-label={t('back')} onClick={handleBack}>
       <ButtonIcon
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
         data-testid="token-management-header-back-button"
       />
     </Link>
@@ -1508,6 +1517,13 @@ export const TokenManagementPage = () => {
         </ButtonBase>
       </Box>
 
+      {isNetworkManagementEnabled ? (
+        <HomeNetworkFilterModal
+          isOpen={isNetworkFilterModalOpen}
+          onClose={handleCloseNetworkFilter}
+        />
+      ) : null}
+
       <ScrollContainer
         data-testid="token-management-page-list"
         onScroll={handleListScroll}
@@ -1519,6 +1535,12 @@ export const TokenManagementPage = () => {
         }}
       >
         {hasQuery && isSearching && !hasResults ? loadingState : null}
+        {!hasQuery &&
+        !isSearchFetching &&
+        searchError &&
+        tokenListItems.length === 0
+          ? searchErrorState
+          : null}
         {hasQuery && !isSearching && searchError && !hasResults
           ? searchErrorState
           : null}

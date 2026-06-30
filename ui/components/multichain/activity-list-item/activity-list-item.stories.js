@@ -87,7 +87,6 @@ DefaultStory.args = {
   children: (
     <Box paddingTop={4} className="transaction-list-item__pending-actions">
       <CancelButton
-        transaction={{}}
         cancelTransaction={() => {
           console.log('canceled');
         }}

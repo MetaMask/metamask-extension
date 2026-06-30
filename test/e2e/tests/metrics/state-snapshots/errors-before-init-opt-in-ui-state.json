@@ -56,6 +56,7 @@
       "outdatedBrowserWarningLastShown": "object",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -74,32 +75,24 @@
       "isSignedIn": "boolean",
       "needsProfilePairing": "boolean"
     },
+    "BridgeController": { "inputPrimaryDenomination": "string" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,
       "walletComplianceStatusMap": "object"
     },
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
+    },
     "CurrencyController": {
       "currencyRates": {
-        "BNB": {
-          "conversionDate": null,
-          "conversionRate": null,
-          "usdConversionRate": null
-        },
         "ETH": {
           "conversionDate": "object",
           "conversionRate": 1700,
-          "usdConversionRate": null
-        },
-        "MON": {
-          "conversionDate": "object",
-          "conversionRate": null,
-          "usdConversionRate": null
-        },
-        "POL": {
-          "conversionDate": null,
-          "conversionRate": null,
           "usdConversionRate": null
         }
       },
@@ -217,6 +210,7 @@
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
+        "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
@@ -314,5 +308,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 212 }
+  "meta": { "storageKind": "split", "version": 215 }
 }

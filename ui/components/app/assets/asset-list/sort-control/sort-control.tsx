@@ -30,6 +30,7 @@ type SelectableListItemProps = {
   isSelected?: boolean;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   testId?: string;
+  className?: string;
   children: ReactNode;
 };
 
@@ -37,15 +38,20 @@ export const SelectableListItem = ({
   isSelected,
   onClick,
   testId,
+  className,
   children,
 }: SelectableListItemProps) => {
   return (
     <Box className="selectable-list-item-wrapper" data-testid={testId}>
       <Text
         data-testid={`${testId}__button`}
-        className={classnames('selectable-list-item', {
-          'selectable-list-item--selected': Boolean(isSelected),
-        })}
+        className={classnames(
+          'selectable-list-item',
+          {
+            'selectable-list-item--selected': Boolean(isSelected),
+          },
+          className,
+        )}
         onClick={onClick}
         variant={TextVariant.bodySmMedium}
         as="button"

@@ -461,6 +461,16 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setPerpsTabBadgeSeen', () => {
+    it('updates whether the Perps tab New badge has been seen', async () => {
+      await withController(({ controller }) => {
+        controller.setPerpsTabBadgeSeen(true);
+
+        expect(controller.state.perpsTabBadgeSeen).toStrictEqual(true);
+      });
+    });
+  });
+
   describe('setOnboardingDate', () => {
     it('set the onboardingDate', async () => {
       await withController(({ controller }) => {
@@ -828,6 +838,7 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastQrScanCompletedSuccessfully": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -845,6 +856,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -932,6 +944,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -1009,6 +1022,7 @@ describe('AppStateController', () => {
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -1074,6 +1088,7 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastQrScanCompletedSuccessfully": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -1094,6 +1109,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -1151,6 +1167,100 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('QR code scan (lastQrScanCompletedSuccessfully)', () => {
+    const mockQrScanRequest = {
+      requestId: 'test-request-id',
+      type: 'sign' as const,
+      payload: { cbor: 'test-cbor', type: 'test-type' },
+    };
+    const mockScannedData = { type: 'test-type', cbor: 'scanned-cbor' };
+
+    it('sets lastQrScanCompletedSuccessfully to true when completeQrCodeScan is called', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
+          expect(controller.state.activeQrCodeScanRequest).toStrictEqual(
+            mockQrScanRequest,
+          );
+
+          controller.completeQrCodeScan(mockScannedData);
+
+          expect(controller.state.activeQrCodeScanRequest).toBeNull();
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBe(true);
+          await expect(scanPromise).resolves.toStrictEqual(mockScannedData);
+        },
+      );
+    });
+
+    it('sets lastQrScanCompletedSuccessfully to false when cancelQrCodeScan is called', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
+
+          controller.cancelQrCodeScan();
+
+          expect(controller.state.activeQrCodeScanRequest).toBeNull();
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBe(false);
+          await expect(scanPromise).rejects.toThrow('Scan cancelled');
+        },
+      );
+    });
+
+    it('sets lastQrScanCompletedSuccessfully to null when a new scan is requested', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const call = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call.bind(appStateMessenger);
+
+          const firstScanPromise = call(
+            'AppStateController:requestQrCodeScan',
+            mockQrScanRequest,
+          );
+          await new Promise((r) => setTimeout(r, 0));
+
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
+
+          controller.completeQrCodeScan(mockScannedData);
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBe(true);
+          await expect(firstScanPromise).resolves.toStrictEqual(
+            mockScannedData,
+          );
+
+          const secondScanPromise = call(
+            'AppStateController:requestQrCodeScan',
+            { ...mockQrScanRequest, requestId: 'second-request' },
+          );
+          await new Promise((r) => setTimeout(r, 0));
+
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
+          controller.completeQrCodeScan({
+            ...mockScannedData,
+            cbor: 'second-scanned',
+          });
+          await expect(secondScanPromise).resolves.toBeDefined();
+        },
+      );
+    });
+  });
 });
 
 type WithControllerOptions = {
@@ -1162,9 +1272,11 @@ type WithControllerOptions = {
 type WithControllerCallback<ReturnValue> = ({
   controller,
   messenger,
+  appStateMessenger,
 }: {
   controller: AppStateController;
   messenger: RootMessenger;
+  appStateMessenger: RootMessenger;
 }) => ReturnValue;
 
 type WithControllerArgs<ReturnValue> =
@@ -1196,6 +1308,7 @@ async function withController<ReturnValue>(
       'ApprovalController:acceptRequest',
       'KeyringController:getState',
       'PreferencesController:getState',
+      'LegacyBackgroundApiService:setLocked',
     ],
     events: ['PreferencesController:stateChange', 'KeyringController:unlock'],
   });
@@ -1216,14 +1329,19 @@ async function withController<ReturnValue>(
     addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 
+  rootMessenger.registerActionHandler(
+    'LegacyBackgroundApiService:setLocked',
+    jest.fn(),
+  );
+
   return fn({
     controller: new AppStateController({
-      onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
       state,
       ...options,
     }),
     messenger: rootMessenger,
+    appStateMessenger,
   });
 }

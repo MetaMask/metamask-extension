@@ -56,3 +56,14 @@ export type TokenPayload = MinimalAsset & // Require minimal asset fields
       Exclude<keyof BridgeToken, keyof MinimalAsset | 'chainId'>
     >
   >;
+
+export type QuoteValidationErrors = {
+  isInsufficientGasBalance: boolean;
+  isInsufficientNativeReserve: boolean;
+  isNetworkFeeUnavailable: boolean;
+  isInsufficientGasForQuote: boolean;
+  isInsufficientBalance: boolean;
+  isEstimatedReturnLow: boolean;
+  isPriceImpactWarning: boolean;
+  isPriceImpactError: boolean;
+};

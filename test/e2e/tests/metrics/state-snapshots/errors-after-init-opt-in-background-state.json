@@ -52,6 +52,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isWalletResetInProgress": "boolean",
+    "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
@@ -69,6 +70,7 @@
     "pendingRedirectRoute": null,
     "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
@@ -103,6 +105,7 @@
     "assetExchangeRates": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
+    "inputPrimaryDenomination": "string",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",
@@ -123,28 +126,19 @@
     "lastCheckedAt": null,
     "walletComplianceStatusMap": "object"
   },
+  "ConfigRegistryController": {
+    "configs": "object",
+    "etag": null,
+    "lastFetched": null,
+    "version": null
+  },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currencyRates": {
-      "BNB": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
-      },
       "ETH": {
         "conversionDate": "object",
         "conversionRate": 1700,
-        "usdConversionRate": null
-      },
-      "MON": {
-        "conversionDate": "object",
-        "conversionRate": null,
-        "usdConversionRate": null
-      },
-      "POL": {
-        "conversionDate": null,
-        "conversionRate": null,
         "usdConversionRate": null
       }
     },
@@ -293,6 +287,7 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,
@@ -391,7 +386,7 @@
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": { "tokensChainsCache": { "0x539": "object" } },
+  "TokenListController": { "tokensChainsCache": {} },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},

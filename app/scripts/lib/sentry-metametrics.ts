@@ -5,24 +5,24 @@ import {
   Integration,
 } from '@sentry/types';
 
-import type { MetaMetricsParticipation } from './sentry-get-state';
+import type { AnalyticsParticipation } from './sentry-get-state';
 
 const NAME = 'MetaMetrics';
 
 /**
- * Drops Sentry events when MetaMetrics is disabled, and attaches `user.id` from the same
- * async MetaMetrics resolution used for that check (persisted / backup when the in-memory
+ * Drops Sentry events when analytics is disabled, and attaches `user.id` from the same
+ * async analytics resolution used for that check (persisted / backup when the in-memory
  * snapshot is not ready yet).
  *
  * @param options - Options bag.
- * @param options.getMetaMetricsState - Resolves participation and id (e.g. `getMetaMetricsState`).
+ * @param options.getAnalyticsState - Resolves analytics state and id (e.g. `getAnalyticsState`).
  * @param options.log - Function to log messages.
  */
 export function metaMetricsIntegration({
-  getMetaMetricsState,
+  getAnalyticsState,
   log,
 }: {
-  getMetaMetricsState: () => Promise<MetaMetricsParticipation>;
+  getAnalyticsState: () => Promise<AnalyticsParticipation>;
   log: (message: string) => void;
 }): Integration {
   return {
@@ -37,15 +37,21 @@ export function metaMetricsIntegration({
       // store, so it can later be added to the event via the `beforeSend` overload.
       // It also provides a more native solution for discarding events, but any
       // session requests will always be handled by the custom transport.
-      const metaMetricsState = await getMetaMetricsState();
+      const analyticsState = await getAnalyticsState();
 
-      if (!metaMetricsState?.participateInMetaMetrics) {
+      if (
+        !analyticsState?.completedMetaMetricsOnboarding ||
+        !analyticsState.optedIn
+      ) {
         log('Event dropped as metrics disabled');
         return null;
       }
 
-      if (metaMetricsState.metaMetricsId) {
-        event.user = { ...event.user, id: metaMetricsState.metaMetricsId };
+      if (analyticsState.analyticsId) {
+        event.user = {
+          ...event.user,
+          id: analyticsState.analyticsId,
+        };
       }
 
       return event;

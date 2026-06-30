@@ -8,6 +8,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import ar from '../../../../app/_locales/ar/messages.json';
 import da from '../../../../app/_locales/da/messages.json';
 import de from '../../../../app/_locales/de/messages.json';
@@ -150,8 +151,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
@@ -160,7 +160,10 @@ describe('Settings - Preferences and display', function (this: Suite) {
 
         const sendPage = new SendPage(driver);
         await sendPage.selectToken('0x539', 'ETH');
-        await sendPage.fillRecipient('0xAAA');
+        await sendPage.fillRecipient({
+          recipientAddress: '0xAAA',
+          validAddress: false,
+        });
 
         // Recipient validation is debounced (~500ms); waitForSelector waits for the German error.
         await driver.waitForSelector(selectors.dialogTextDeutsch);
@@ -189,8 +192,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
         );
         assert.equal(isLabelTextChanged, true, 'Language did not change');
 
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
@@ -226,7 +228,7 @@ describe('Settings - Preferences and display', function (this: Suite) {
         await preferencesAndDisplaySettings.changeLanguage('العربية');
 
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         await settingsPage.checkPageIsLoaded();
 

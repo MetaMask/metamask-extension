@@ -3,7 +3,7 @@ import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import { formatAmount } from '../../../../shared/lib/format-amount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 
 export const formatTokenAmount = (
@@ -169,7 +169,7 @@ export const isQuoteExpiredOrInvalid = ({
  * @param bps - The value in basis points (e.g., "87.5" or 87.5)
  * @returns The percentage value as a string (e.g., "0.875")
  */
-const bpsToPercentage = (
+export const bpsToPercentage = (
   bps: string | number | undefined,
 ): string | undefined => {
   if (bps === undefined || bps === null) {
