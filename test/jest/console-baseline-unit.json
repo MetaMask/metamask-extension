@@ -942,6 +942,9 @@
     "ui/pages/home/home.container.test.tsx": {
       "Reselect: Input stability warnings": 1
     },
+    "ui/pages/keychains/restore-vault.test.tsx": {
+      "MetaMask: Background connection not initialized": 2
+    },
     "ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.test.tsx": {
       "React: Missing key props in lists": 1
     },
