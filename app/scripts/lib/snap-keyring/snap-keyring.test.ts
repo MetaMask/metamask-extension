@@ -299,9 +299,6 @@ describe('Snap Keyring Methods', () => {
           snap_name: mockSnapName,
         },
         sensitiveProperties: {},
-        options: expect.objectContaining({
-          environmentType: 'background',
-        }),
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
         name: MetaMetricsEventName.AddSnapAccountSuccessClicked,
@@ -318,9 +315,6 @@ describe('Snap Keyring Methods', () => {
           snap_name: mockSnapName,
         },
         sensitiveProperties: {},
-        options: expect.objectContaining({
-          environmentType: 'background',
-        }),
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
         name: MetaMetricsEventName.AccountAdded,
@@ -340,9 +334,6 @@ describe('Snap Keyring Methods', () => {
           is_suggested_name: false,
         },
         sensitiveProperties: {},
-        options: expect.objectContaining({
-          environmentType: 'background',
-        }),
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
       expect(mockSetAccountName).not.toHaveBeenCalled();
@@ -385,9 +376,6 @@ describe('Snap Keyring Methods', () => {
           is_suggested_name: false,
         },
         sensitiveProperties: {},
-        options: expect.objectContaining({
-          environmentType: 'background',
-        }),
       });
       expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(0);
