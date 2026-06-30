@@ -133,6 +133,42 @@ describe('NotificationSectionSubPage', () => {
     jest.clearAllMocks();
   });
 
+  it('renders a loading indicator while preferences are being fetched', () => {
+    jest.mocked(useNotificationPreferences).mockReturnValue({
+      preferences: undefined,
+      hasNotificationPreferences: false,
+      isLoading: true,
+      isUpdatingPreferences: false,
+      error: null,
+      refetchPreferences: jest.fn(),
+      updatePreference: jest.fn(),
+      updatePreferencesSection: jest.fn(),
+    });
+
+    const store = mockStore({
+      metamask: {
+        isNotificationServicesEnabled: true,
+        isUpdatingMetamaskNotifications: false,
+        isUpdatingMetamaskNotificationsAccount: [],
+        accountTree: { selectedAccountGroup: '', wallets: {} },
+        internalAccounts: { selectedAccount: '', accounts: {} },
+      },
+    });
+
+    renderWithProvider(
+      <NotificationSectionSubPage sectionType="walletActivity" />,
+      store,
+      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+    );
+
+    expect(
+      screen.getByTestId('notifications-section-loading'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('notifications-settings-per-account'),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders notification accounts grouped by wallet', () => {
     const account1 = createInternalAccount({
       id: 'account-1',

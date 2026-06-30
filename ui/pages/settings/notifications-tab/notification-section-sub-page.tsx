@@ -5,7 +5,9 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
+import Preloader from '../../../components/ui/icon/preloader/preloader-icon.component';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -73,6 +75,29 @@ export const NotificationSectionSubPage = ({
     navigate,
     section,
   ]);
+
+  // Valid section with notifications enabled, but preferences are still being
+  // fetched from authenticated user storage. Show a loading indicator rather
+  // than a blank page (the redirect effect above intentionally waits for the
+  // fetch to settle before deciding whether to redirect).
+  if (
+    section &&
+    isMetamaskNotificationsEnabled &&
+    isLoadingPreferences &&
+    !preferences
+  ) {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        className="h-full min-h-0"
+        data-testid="notifications-section-loading"
+      >
+        <Preloader size={36} />
+      </Box>
+    );
+  }
 
   if (
     !section ||
