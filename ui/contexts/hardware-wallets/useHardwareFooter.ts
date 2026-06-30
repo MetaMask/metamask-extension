@@ -94,8 +94,8 @@ export const useHardwareFooter = ({
     isSelectedHardwareWalletAccount &&
     Boolean(
       accountAddress &&
-        fromAddress &&
-        isEqualCaseInsensitive(accountAddress, fromAddress),
+      fromAddress &&
+      isEqualCaseInsensitive(accountAddress, fromAddress),
     );
   const walletType = isHardwareWalletAccount ? selectedWalletType : null;
 
