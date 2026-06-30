@@ -709,6 +709,11 @@
         "@metamask/assets-controllers>single-call-balance-checker-abi": true
       }
     },
+    "@metamask/authenticated-user-storage": {
+      "packages": {
+        "@metamask/superstruct": true
+      }
+    },
     "@metamask/base-controller": {
       "globals": {
         "console.error": true
