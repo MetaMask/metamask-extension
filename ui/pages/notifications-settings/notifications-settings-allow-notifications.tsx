@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  useContext,
-} from 'react';
+import React, { useEffect, useMemo, useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -26,6 +20,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   useEnableNotifications,
   useDisableNotifications,
+  useSafeState,
 } from '../../hooks/metamask-notifications/useNotifications';
 import {
   selectIsMetamaskNotificationsEnabled,
@@ -45,11 +40,13 @@ export function NotificationsSettingsAllowNotifications({
   setLoading,
   disabled,
   dataTestId,
+  refetchPreferences,
 }: {
   loading: boolean;
   setLoading: (loading: boolean) => void;
   disabled: boolean;
   dataTestId: string;
+  refetchPreferences?: () => Promise<unknown>;
 }) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -57,7 +54,7 @@ export function NotificationsSettingsAllowNotifications({
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const [toggleValue, setToggleValue] = useState(
+  const [toggleValue, setToggleValue] = useSafeState(
     isMetamaskNotificationsEnabled,
   );
   const isUpdatingMetamaskNotifications = useSelector(
@@ -129,6 +126,7 @@ export function NotificationsSettingsAllowNotifications({
         },
       });
       await enableNotifications();
+      await refetchPreferences?.();
     }
     setLoading(false);
     setToggleValue(!toggleValue);
@@ -137,6 +135,7 @@ export function NotificationsSettingsAllowNotifications({
     isMetamaskNotificationsEnabled,
     disableNotifications,
     enableNotifications,
+    refetchPreferences,
     toggleValue,
     isBackupAndSyncEnabled,
     trackEvent,

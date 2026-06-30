@@ -170,6 +170,10 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false
+    },
     "AnnouncementController": {
       "announcements": {}
     },
@@ -340,6 +344,9 @@
       "selectedCurrency": "usd"
     },
     "AuthenticationController": {},
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -350,6 +357,10 @@
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
     },
     "ConfigRegistryController": {
       "configs": {
@@ -433,16 +444,12 @@
     "LoggingController": {
       "logs": {}
     },
-    "AnalyticsController": {
-      "analyticsId": null,
-      "optedIn": false
-    },
     "MetaMetricsController": {
+      "completedMetaMetricsOnboarding": true,
       "dataCollectionForMarketing": false,
       "eventsBeforeMetricsOptIn": [],
       "fragments": {},
       "marketingCampaignCookieId": null,
-      "completedMetaMetricsOnboarding": true,
       "tracesBeforeMetricsOptIn": [],
       "traits": {}
     },
@@ -966,10 +973,6 @@
     "NotificationServicesPushController": {
       "fcmToken": "",
       "isPushEnabled": true
-    },
-    "ComplianceController": {
-      "lastCheckedAt": null,
-      "walletComplianceStatusMap": {}
     },
     "OnboardingController": {
       "completedOnboarding": true,

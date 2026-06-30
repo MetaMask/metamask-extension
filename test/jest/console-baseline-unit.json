@@ -683,7 +683,7 @@
     },
     "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
       "Deprecation warnings": 1,
-      "Reselect: Input stability warnings": 2,
+      "Reselect: Input stability warnings": 3,
       "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
@@ -6009,14 +6009,13 @@
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
-      "Deprecation warnings": 1,
       "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 2,
+      "Reselect: Input stability warnings": 3,
       "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/notifications-settings/notifications-settings.test.tsx": {
-      "Deprecation warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Warning: ReactDOM.render is no longer": 2,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
@@ -6039,12 +6038,6 @@
     "ui/pages/notifications/notifications-list-read-all-button.test.tsx": {
       "Deprecation warnings": 1,
       "error: Warning: ReactDOM.render is no longer": 2,
-      "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
-    },
-    "ui/pages/notifications/notifications-list-turn-on-notifications.test.tsx": {
-      "Deprecation warnings": 1,
-      "Reselect: Input stability warnings": 2,
-      "error: Warning: ReactDOM.render is no longer": 1,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
     "ui/pages/notifications/notifications-list.test.tsx": {

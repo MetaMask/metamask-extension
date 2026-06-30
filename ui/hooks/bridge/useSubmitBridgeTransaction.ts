@@ -13,7 +13,10 @@ import {
   submitBridgeIntent,
   submitBridgeTx,
 } from '../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../ducks/bridge/actions';
+import {
+  getBridgeLocation,
+  setWasTxDeclined,
+} from '../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
   getFromAccount,
@@ -111,11 +114,14 @@ export default function useSubmitBridgeTransaction() {
     }
 
     try {
+      const location = await getBridgeLocation();
+
       if (intentData) {
         await dispatch(
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
@@ -133,6 +139,7 @@ export default function useSubmitBridgeTransaction() {
               fromTokenBalanceInUsd,
               getHasSufficientGasForQuote(quoteResponse),
             ),
+            location,
             toToken?.securityData?.type ?? null,
           ),
         );

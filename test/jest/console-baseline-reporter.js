@@ -300,11 +300,7 @@ class ConsoleBaselineReporter {
 
     const category = categorizer(type, text);
 
-    // If category is null the rule set has explicitly suppressed this message
-    // (group: null).  Return null so the caller can skip baseline tracking
-    // entirely, which matches the intent of jest-clean-console-reporter's own
-    // suppress behaviour and avoids inflating the baseline with fallback-named
-    // entries for intentionally silenced warnings.
+    // group: null rules suppress this message — skip baseline tracking.
     return category;
   }
 
@@ -334,9 +330,7 @@ class ConsoleBaselineReporter {
         if (msg.type === 'warn' || msg.type === 'error') {
           const category = this.#categorizeMessage(msg.type, msg.message);
 
-          // null means the rule set has suppressed this message (group: null).
-          // Skip baseline tracking so intentionally silenced warnings do not
-          // inflate the baseline under a fallback-named category.
+          // Suppressed by a group: null rule — do not track in baseline.
           if (category === null) {
             continue;
           }

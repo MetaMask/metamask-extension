@@ -63,7 +63,6 @@ setBackgroundConnection({
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   isRelaySupported: jest.fn().mockResolvedValue(true),
   isSendBundleSupported: jest.fn().mockResolvedValue(true),
-  updateBridgeQuoteRequestParams: jest.fn(),
 } as never);
 
 const mockUseNavigate = jest.fn();

@@ -68,6 +68,7 @@
     },
     "AssetsController": "object",
     "AuthenticationController": {},
+    "BridgeController": { "inputPrimaryDenomination": "string" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "ComplianceController": {
