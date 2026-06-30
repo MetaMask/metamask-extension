@@ -4,6 +4,7 @@ import { APP_INIT_LIVENESS_METHOD } from '../../shared/constants/ui-initializati
 // We don't usually `import` files into `app-init.js` because we need to load
 // "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
 // small we won't ever have a problem with these two files being "split".
+import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { waitUntil } from './lib/service-worker-wait-until';
 
@@ -29,7 +30,7 @@ globalThis.stateHooks.lazyListener = lazyListener;
 let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
 
-const keepAliveEstablished = Promise.withResolvers();
+const keepAliveEstablished = withResolvers();
 
 globalThis.stateHooks.notifyServiceWorkerKeepAliveEstablished =
   keepAliveEstablished.resolve;

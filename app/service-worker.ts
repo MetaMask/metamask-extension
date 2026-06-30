@@ -2,6 +2,7 @@
 
 import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
+import { withResolvers } from '../shared/lib/promise-with-resolvers';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 import { waitUntil } from './scripts/lib/service-worker-wait-until';
 
@@ -19,7 +20,7 @@ globalThis.stateHooks.lazyListener = lazyListener;
 
 let runImportScriptsInitiated = false;
 
-const keepAliveEstablished = Promise.withResolvers<void>();
+const keepAliveEstablished = withResolvers<void>();
 globalThis.stateHooks.notifyServiceWorkerKeepAliveEstablished =
   keepAliveEstablished.resolve;
 
