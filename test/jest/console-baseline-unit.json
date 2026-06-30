@@ -865,6 +865,9 @@
       "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/confirmation/templates/snap-account-redirect.test.js": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/pages/confirmations/context/gas-fee-modal/index.test.tsx": {
       "Test errors: Uncaught Errors": 1
     },
