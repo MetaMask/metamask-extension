@@ -1006,6 +1006,9 @@
       "Reselect: Input stability warnings": 1,
       "error: Warning: Encountered two children with": 1
     },
+    "ui/pages/onboarding-flow/setup-passkey/setup-passkey.test.tsx": {
+      "MetaMask: Background connection not initialized": 36
+    },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5
     },
