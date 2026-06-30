@@ -27,6 +27,7 @@ describe('useHardwareWalletConnection', () => {
     connectRef: { current: (() => Promise<void>) | null };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
+    isSigningInProgressRef: { current: boolean };
   };
   let mockSetters: {
     setConnectionState: jest.Mock;
@@ -55,6 +56,7 @@ describe('useHardwareWalletConnection', () => {
       connectRef: { current: null },
       walletTypeRef: { current: HardwareWalletType.Ledger },
       previousWalletTypeRef: { current: null },
+      isSigningInProgressRef: { current: false },
     };
 
     mockSetters = {
@@ -347,6 +349,26 @@ describe('useHardwareWalletConnection', () => {
         ConnectionState.disconnected(),
       );
       expect(mockRefs.adapterRef.current).toBeNull();
+    });
+
+    it('clears signing progress when disconnecting', async () => {
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockRefs.adapterRef.current = mockAdapter;
+      mockRefs.isSigningInProgressRef.current = true;
+
+      const { result } = setupHook();
+
+      await act(async () => {
+        await result.current.disconnect();
+      });
+
+      expect(mockRefs.isSigningInProgressRef.current).toBe(false);
     });
 
     it('does not update state when new connection started during disconnect', async () => {

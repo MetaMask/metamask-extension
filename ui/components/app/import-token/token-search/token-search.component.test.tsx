@@ -3,6 +3,7 @@ import { screen, fireEvent, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import * as tokenSearchApi from '../../../../../shared/lib/token-search/token-search-api';
+import type { TokenSearchResult } from '../../../../../shared/lib/token-search/token-search-api';
 import TokenSearch from './token-search.component';
 
 jest.mock('../../../../../shared/lib/token-search/token-search-api');
@@ -16,7 +17,7 @@ const emptyResponse = {
   pageInfo: { hasNextPage: false, endCursor: '' },
 };
 
-const MOCK_AAA = {
+const MOCK_AAA: TokenSearchResult = {
   assetId: 'eip155:1/erc20:0xaaa',
   symbol: 'AAA',
   name: 'Token AAA',
@@ -24,7 +25,7 @@ const MOCK_AAA = {
   iconUrl: '',
 };
 
-const MOCK_CCC = {
+const MOCK_CCC: TokenSearchResult = {
   assetId: 'eip155:137/erc20:0xccc',
   symbol: 'CCC',
   name: 'Token CCC',

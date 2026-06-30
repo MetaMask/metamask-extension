@@ -1,129 +1,113 @@
 {
   "files": {
     "test/integration/confirmations/signatures/permit-batch.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-seaport.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-single.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/personalSign.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/alerts.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/contract-deployment.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/contract-interaction.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/dapp-swap-comparison-banner.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/erc721-approve.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/increase-approval.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/set-approval-for-all.test.tsx": {
-      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "error: Error: AggregateError": 1,
       "error: Error: Error: connect ECONNREFUSED 127.0.0.1:80": 1,
       "warn: ⚠️ React Router Future Flag": 1
@@ -153,7 +137,8 @@
     "test/integration/notifications&auth/notifications-activation.test.tsx": {
       "Deprecation warnings": 1,
       "React: State updates on unmounted components": 1,
-      "Reselect: Input stability warnings": 6,
+      "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Input stability warnings": 7,
       "warn: Selector unknown returned a different": 2,
       "warn: ⚠️ React Router Future Flag": 1
     },

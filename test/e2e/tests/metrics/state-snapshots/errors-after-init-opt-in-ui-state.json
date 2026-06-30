@@ -183,6 +183,7 @@
     "initializationAttempts": "number",
     "initializationError": null,
     "initializationState": "string",
+    "inputPrimaryDenomination": "string",
     "insights": "object",
     "interfaces": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
