@@ -21,6 +21,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNetworkFormState } from '../../components/multichain/networks-form/networks-form-state';
+import {
+  type SafeChain,
+  useSafeChains,
+} from '../../components/multichain/networks-form/use-safe-chains';
 import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
@@ -90,6 +94,120 @@ const NetworksPageFormBody = ({ children }: { children: React.ReactNode }) => (
   </Box>
 );
 
+type ChainlistNetwork = SafeChain & {
+  chain?: string;
+  chainId: string | number;
+  explorers?: { url?: string }[];
+};
+
+const getUsableUrls = (urls: string[] = []) =>
+  urls.filter((url) => {
+    if (!url || url.includes('${')) {
+      return false;
+    }
+
+    try {
+      const { protocol } = new URL(url);
+      return protocol === 'https:' || protocol === 'http:';
+    } catch {
+      return false;
+    }
+  });
+
+const CHAINLIST_ROW_COLORS = [
+  'bg-success-default',
+  'bg-warning-muted',
+  'bg-icon-default',
+  'bg-primary-default',
+  'bg-info-muted',
+  'bg-error-default',
+  'bg-success-muted',
+  'bg-primary-muted',
+];
+
+const ChainlistNetworkPicker = ({
+  onSelect,
+}: {
+  onSelect: (network: ChainlistNetwork) => void;
+}) => {
+  const t = useI18nContext();
+  const [searchValue, setSearchValue] = useState('');
+  const { safeChains } = useSafeChains();
+
+  const chainlistNetworks = useMemo(() => {
+    const normalizedSearchValue = searchValue.trim().toLowerCase();
+
+    return ((safeChains ?? []) as ChainlistNetwork[])
+      .filter((network) => {
+        if (getUsableUrls(network.rpc).length === 0) {
+          return false;
+        }
+
+        if (!normalizedSearchValue) {
+          return true;
+        }
+
+        return (
+          network.name.toLowerCase().includes(normalizedSearchValue) ||
+          String(network.chainId).includes(normalizedSearchValue)
+        );
+      })
+      .slice(0, 100);
+  }, [safeChains, searchValue]);
+
+  return (
+    <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
+      <Box className="px-4 pb-4">
+        <Box className="relative">
+          <Icon
+            name={IconName.Search}
+            size={IconSize.Sm}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-icon-muted"
+          />
+          <input
+            aria-label={t('searchNetworkNameOrChainId')}
+            className="h-14 w-full rounded-xl border border-border-muted bg-background-default pl-11 pr-4 text-base text-text-default outline-none focus:border-primary-default"
+            data-testid="networks-page-chainlist-search"
+            onChange={(event) => setSearchValue(event.target.value)}
+            placeholder={t('searchNetworkNameOrChainId')}
+            value={searchValue}
+          />
+        </Box>
+      </Box>
+      <Box className="min-h-0 flex-1 overflow-y-auto">
+        {chainlistNetworks.map((network, index) => (
+          <button
+            className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed"
+            data-testid="networks-page-chainlist-network"
+            key={`${network.chainId}-${network.name}`}
+            onClick={() => onSelect(network)}
+            type="button"
+          >
+            <Box
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-medium text-text-default ${
+                CHAINLIST_ROW_COLORS[index % CHAINLIST_ROW_COLORS.length]
+              }`}
+            >
+              {network.name.charAt(0).toUpperCase()}
+            </Box>
+            <Box className="min-w-0 flex-1">
+              <Text variant={TextVariant.BodyMdMedium} className="truncate">
+                {network.name}
+              </Text>
+              <Text variant={TextVariant.BodyMd} className="truncate text-text-alternative">
+                {t('chainlistNetworkDetails', [
+                  network.nativeCurrency.symbol,
+                  String(network.chainId),
+                ])}
+              </Text>
+            </Box>
+          </button>
+        ))}
+      </Box>
+    </Box>
+  );
+};
+
 export const NetworksPage = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -143,6 +261,36 @@ export const NetworksPage = () => {
   const handleNewNetwork = useCallback(() => {
     setView('add');
   }, [setView]);
+
+  const handleAddFromChainlist = useCallback(() => {
+    setView('add-from-chainlist');
+  }, [setView]);
+
+  const handleChainlistNetworkSelect = useCallback(
+    (network: ChainlistNetwork) => {
+      const rpcEndpoints = getUsableUrls(network.rpc).map((url) => ({
+        url,
+        type: RpcEndpointType.Custom,
+      }));
+      const blockExplorerUrls = getUsableUrls(
+        network.explorers?.map((explorer) => explorer.url ?? '') ?? [],
+      );
+
+      networkFormState.setName(network.name);
+      networkFormState.setChainId(String(network.chainId));
+      networkFormState.setTicker(network.nativeCurrency.symbol);
+      networkFormState.setRpcUrls({
+        rpcEndpoints,
+        defaultRpcEndpointIndex: rpcEndpoints.length ? 0 : undefined,
+      });
+      networkFormState.setBlockExplorers({
+        blockExplorerUrls,
+        defaultBlockExplorerUrlIndex: blockExplorerUrls.length ? 0 : undefined,
+      });
+      setView('add');
+    },
+    [networkFormState, setView],
+  );
 
   const handleAddRPC = useCallback(
     (url: string, name?: string) => {
@@ -319,7 +467,20 @@ export const NetworksPage = () => {
           <AddNetwork
             networkFormState={networkFormState}
             network={editedNetwork as UpdateNetworkFields}
+            onAddFromChainlist={handleAddFromChainlist}
           />
+        </>
+      ) : null}
+      {view === 'add-from-chainlist' ? (
+        <>
+          <NetworksPageFormHeader
+            title={t('addFromChainlist')}
+            onBack={handleNewNetwork}
+            onClose={handleClose}
+          />
+          <NetworksPageFormBody>
+            <ChainlistNetworkPicker onSelect={handleChainlistNetworkSelect} />
+          </NetworksPageFormBody>
         </>
       ) : null}
       {view === 'add-rpc' ? (

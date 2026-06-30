@@ -9,6 +9,23 @@ import mockState from '../../../test/data/mock-state.json';
 import { NETWORKS_ROUTE } from '../../helpers/constants/routes';
 import { NetworksPage } from './networks-page';
 
+const mockSafeChains = [
+  {
+    name: 'Gnosis',
+    chainId: 100,
+    nativeCurrency: { symbol: 'xDAI' },
+    rpc: ['https://rpc.gnosischain.com'],
+    explorers: [{ url: 'https://gnosisscan.io' }],
+  },
+];
+
+jest.mock('../../components/multichain/networks-form/use-safe-chains', () => ({
+  ...jest.requireActual(
+    '../../components/multichain/networks-form/use-safe-chains',
+  ),
+  useSafeChains: () => ({ safeChains: mockSafeChains }),
+}));
+
 jest.mock('../../components/ui/toggle-button', () => {
   const ReactActual = jest.requireActual('react');
 
@@ -190,6 +207,24 @@ describe('NetworksPage', () => {
     renderNetworksPage({ pathname: `${NETWORKS_ROUTE}?view=add` });
 
     expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+  });
+
+  it('renders the Chainlist picker from the query param', async () => {
+    renderNetworksPage({ pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist` });
+
+    expect(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Gnosis')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.chainlistNetworkDetails.message
+          .replace('$1', 'xDAI')
+          .replace('$2', '100'),
+      ),
+    ).toBeInTheDocument();
   });
 
   it('renders the custom rpc page with footer actions and adds the rpc', async () => {

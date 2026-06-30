@@ -1070,6 +1070,9 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
+  "addFromChainlist": {
+    "message": "Add from Chainlist"
+  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -2467,6 +2470,10 @@
   },
   "chainId": {
     "message": "Chain ID"
+  },
+  "chainlistNetworkDetails": {
+    "message": "Symbol: $1 · ID: $2",
+    "description": "$1 is the native currency symbol and $2 is the network chain ID."
   },
   "chainIdDefinition": {
     "message": "The chain ID used to sign transactions for this network."
@@ -8450,6 +8457,9 @@
   },
   "searchNetworks": {
     "message": "Search networks"
+  },
+  "searchNetworkNameOrChainId": {
+    "message": "Search network name or chain ID"
   },
   "searchNfts": {
     "message": "Search NFTs"
