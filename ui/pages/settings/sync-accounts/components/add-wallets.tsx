@@ -52,8 +52,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           const walletId = extractWalletIdFromGroupId(accountGroupId);
           const [, entropyId] = walletId.split(':');
           return entropyId;
-        },
-        ),
+        }),
       ),
     ];
 

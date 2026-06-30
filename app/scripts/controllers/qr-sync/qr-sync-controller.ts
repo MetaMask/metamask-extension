@@ -11,7 +11,7 @@ import {
   type OtpRequiredPayload,
 } from '@metamask/mobile-wallet-protocol-dapp-client';
 import { KeyringType } from '@metamask/keyring-api/v2';
-import { bytesToBase64, stringToBytes } from '@metamask/utils';
+import { bytesToBase64 } from '@metamask/utils';
 
 import log from 'loglevel';
 import {
@@ -20,7 +20,23 @@ import {
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
 import { convertEnglishWordlistIndicesToCodepoints } from '../../lib/util';
-import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes, QrSyncErrorMessages, QrSyncMessageVersion } from './constants';
+import {
+  QR_SYNC_CONTROLLER_NAME,
+  QrSyncActionTypes,
+  QrSyncErrorMessages,
+  QrSyncMessageVersion,
+} from './constants';
+import {
+  assertQrSyncPhase,
+  createInitSyncSessionMessage,
+  generateQrCode,
+  getSyncCompletionFailureError,
+  getSyncCompletionTimeoutMs,
+  getSyncOfferFailureError,
+  canAcceptSyncOffer,
+  isQrSyncOffer,
+  normalizeQrSyncMessage,
+} from './utils';
 import type { KeyManager } from './key-manager';
 import {
   QrSyncMessage,
@@ -31,7 +47,11 @@ import {
   type QrSyncError,
   type QrSyncOffer,
 } from './types';
-import { controllerMetadata, getDefaultQrSyncControllerState, MESSENGER_EXPOSED_METHODS } from './metadata';
+import {
+  controllerMetadata,
+  getDefaultQrSyncControllerState,
+  MESSENGER_EXPOSED_METHODS,
+} from './metadata';
 import { InMemoryKvStore } from './kv-store';
 
 export class QrSyncController extends BaseController<
@@ -109,7 +129,7 @@ export class QrSyncController extends BaseController<
 
     try {
       await this.#mwpDappClient.connect({
-        initialPayload: this.#generateInitialPayload(),
+        initialPayload: createInitSyncSessionMessage(),
         mode: 'untrusted',
       });
     } catch (error) {
@@ -127,7 +147,7 @@ export class QrSyncController extends BaseController<
   }
 
   async submitOtp(_otp: string): Promise<void> {
-    this.#assertPhase([QR_SYNC_PHASES.AWAITING_OTP_INPUT]);
+    assertQrSyncPhase(this.state.phase, [QR_SYNC_PHASES.AWAITING_OTP_INPUT]);
     const otp = _otp.trim();
 
     if (!this.#otpSubmitCallback) {
@@ -157,7 +177,9 @@ export class QrSyncController extends BaseController<
         state.error = {
           code: 'OTP_INVALID',
           message:
-            error instanceof Error ? error.message : QrSyncErrorMessages.OTP_VALIDATION_FAILED,
+            error instanceof Error
+              ? error.message
+              : QrSyncErrorMessages.OTP_VALIDATION_FAILED,
         };
         state.updatedAt = Date.now();
       });
@@ -171,7 +193,7 @@ export class QrSyncController extends BaseController<
     password: string,
     selectedEntropyIds: string[],
   ): Promise<void> {
-    this.#assertPhase([QR_SYNC_PHASES.REVIEWING_SYNC_OFFER]);
+    assertQrSyncPhase(this.state.phase, [QR_SYNC_PHASES.REVIEWING_SYNC_OFFER]);
 
     // TODO: The following logic should be replaced with `exportMetadata` from Accounts.
     const entropyIds = [...new Set(selectedEntropyIds)];
@@ -196,8 +218,8 @@ export class QrSyncController extends BaseController<
     );
 
     const availableEntropyIds = new Set(
-      validatedEntropyIds.filter(
-        (entropyId): entropyId is string => Boolean(entropyId),
+      validatedEntropyIds.filter((entropyId): entropyId is string =>
+        Boolean(entropyId),
       ),
     );
     // Across the app, the first HD keyring is treated as the primary SRP.
@@ -221,7 +243,8 @@ export class QrSyncController extends BaseController<
             { password },
             entropyId,
           );
-          const encodedMnemonic = convertEnglishWordlistIndicesToCodepoints(seedPhrase);
+          const encodedMnemonic =
+            convertEnglishWordlistIndicesToCodepoints(seedPhrase);
           const b64EncodedMnemonic = bytesToBase64(encodedMnemonic);
 
           return {
@@ -282,7 +305,9 @@ export class QrSyncController extends BaseController<
       this.#setError({
         code: 'CHANNEL_INIT_FAILED',
         message:
-          error instanceof Error ? error.message : QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
+          error instanceof Error
+            ? error.message
+            : QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
       });
       throw error;
     } finally {
@@ -291,7 +316,7 @@ export class QrSyncController extends BaseController<
   }
 
   async #sendSyncData(syncData: QrSyncData): Promise<void> {
-    this.#assertPhase([QR_SYNC_PHASES.REVIEWING_SYNC_OFFER]);
+    assertQrSyncPhase(this.state.phase, [QR_SYNC_PHASES.REVIEWING_SYNC_OFFER]);
 
     await this.#sendMessage({
       type: QrSyncActionTypes.SYNC_READY,
@@ -332,20 +357,14 @@ export class QrSyncController extends BaseController<
       return;
     }
 
-    const message =
-      error instanceof Error
-        ? error.message
-        : QrSyncErrorMessages.SYNC_OFFER_FAILED;
+    const { code, message } = getSyncOfferFailureError(error);
 
     if (message === QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT) {
       await this.#notifyPeerSyncOfferTimedOut(message);
     }
 
     this.#setError({
-      code:
-        message === QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT
-          ? 'SESSION_EXPIRED'
-          : 'SYNC_FAILED',
+      code,
       message,
     });
   }
@@ -372,9 +391,7 @@ export class QrSyncController extends BaseController<
   }
 
   async #waitForSyncCompletion(syncData: QrSyncData): Promise<void> {
-    const timeoutMs =
-      Math.max(syncData.deadline - Date.now(), 0) ||
-      MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000;
+    const timeoutMs = getSyncCompletionTimeoutMs(syncData.deadline);
 
     try {
       await new Promise<void>((resolve, reject) => {
@@ -395,22 +412,11 @@ export class QrSyncController extends BaseController<
       return;
     }
 
-    const message =
-      error instanceof Error
-        ? error.message
-        : QrSyncErrorMessages.SYNC_COMPLETION_FAILED;
-
-    this.#setError({
-      code:
-        message === QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT
-          ? 'SESSION_EXPIRED'
-          : 'SYNC_FAILED',
-      message,
-    });
+    this.#setError(getSyncCompletionFailureError(error));
   }
 
   async cancelOtp(reason?: string): Promise<void> {
-    this.#assertPhase([QR_SYNC_PHASES.AWAITING_OTP_INPUT]);
+    assertQrSyncPhase(this.state.phase, [QR_SYNC_PHASES.AWAITING_OTP_INPUT]);
     await this.#notifyPeerCancel();
     this.#cleanupSession({ cancelOtp: true });
 
@@ -475,13 +481,6 @@ export class QrSyncController extends BaseController<
     });
 
     this.#cleanupSession();
-  }
-
-  #generateInitialPayload(): QrSyncMessage {
-    return {
-      type: QrSyncActionTypes.INIT_SYNC_SESSION,
-      version: QrSyncMessageVersion.V1,
-    };
   }
 
   #registerClientEventHandlers(client: DappClient): void {
@@ -549,7 +548,7 @@ export class QrSyncController extends BaseController<
   #handleSessionRequest(request: SessionRequest): void {
     this.update((state) => {
       state.sessionId = request.id;
-      state.qrPayload = this.#generateQrCode(request);
+      state.qrPayload = generateQrCode(request);
       state.phase = QR_SYNC_PHASES.DISPLAYING_QR;
       state.connectionStatus = 'connecting';
       state.createdAt = state.createdAt ?? Date.now();
@@ -578,7 +577,7 @@ export class QrSyncController extends BaseController<
   }
 
   #handleMessage(message: unknown): void {
-    const parsedMessage = this.#normalizeMessage(message);
+    const parsedMessage = normalizeQrSyncMessage(message);
 
     if (!parsedMessage) {
       log.warn('QrSyncController: received invalid message payload', message);
@@ -587,7 +586,23 @@ export class QrSyncController extends BaseController<
 
     switch (parsedMessage.type) {
       case QrSyncActionTypes.SYNC_OFFER:
-        if (this.#isQrSyncOffer(parsedMessage.data)) {
+        if (
+          !canAcceptSyncOffer({
+            hasDappClient: Boolean(this.#mwpDappClient),
+            connectionStatus: this.state.connectionStatus,
+            phase: this.state.phase,
+          })
+        ) {
+          log.warn('QrSyncController: ignoring sync offer', {
+            connectionStatus: this.state.connectionStatus,
+            phase: this.state.phase,
+          });
+          throw new Error(
+            `QrSyncController: ${QrSyncErrorMessages.PREMATURE_SYNC_OFFER_RECEIVED}`,
+          );
+        }
+
+        if (isQrSyncOffer(parsedMessage.data)) {
           this.#setSyncOffer(parsedMessage.data);
           return;
         }
@@ -628,64 +643,10 @@ export class QrSyncController extends BaseController<
     }
   }
 
-  #generateQrCode(request: SessionRequest): string {
-    const base64QRpayload = bytesToBase64(
-      stringToBytes(JSON.stringify(request)),
-    );
-    const qrData = `metamask://connect/mwp?p=${base64QRpayload}`;
-    console.log('QrSyncController: qrData', qrData);
-    return qrData;
-  }
-
   #assertDappClientInitialized(value: unknown): asserts value is DappClient {
     if (!value || !(value instanceof DappClient)) {
       throw new Error('MWP Dapp Client not initialized');
     }
-  }
-
-  #assertPhase(expectedPhases: QrSyncPhase[]): void {
-    if (!expectedPhases.includes(this.state.phase)) {
-      throw new Error(
-        `QrSyncController action invalid in phase "${this.state.phase}". Expected one of: ${expectedPhases.join(
-          ', ',
-        )}`,
-      );
-    }
-  }
-
-  #normalizeMessage(message: unknown): QrSyncMessage<unknown> | null {
-    const normalizedMessage = this.#parseJsonMessage(message);
-
-    if (
-      !normalizedMessage ||
-      typeof normalizedMessage !== 'object' ||
-      !('type' in normalizedMessage) ||
-      typeof normalizedMessage.type !== 'string'
-    ) {
-      return null;
-    }
-
-    return normalizedMessage as QrSyncMessage<unknown>;
-  }
-
-  #parseJsonMessage(message: unknown): unknown {
-    if (typeof message !== 'string') {
-      return message;
-    }
-
-    try {
-      return JSON.parse(message);
-    } catch {
-      return null;
-    }
-  }
-
-  #isQrSyncOffer(value: unknown): value is QrSyncOffer {
-    if (!value || typeof value !== 'object') {
-      return false;
-    }
-
-    return true;
   }
 
   #handlePeerCancel(): void {
@@ -874,7 +835,10 @@ export class QrSyncController extends BaseController<
       removableClient.removeListener?.bind(removableClient);
 
     if (removeHandler) {
-      removeHandler('session_request', this.#clientEventHandlers.sessionRequest);
+      removeHandler(
+        'session_request',
+        this.#clientEventHandlers.sessionRequest,
+      );
       removeHandler('message', this.#clientEventHandlers.message);
       removeHandler('otp_required', this.#clientEventHandlers.otpRequired);
       removeHandler('connected', this.#clientEventHandlers.connected);

@@ -51,7 +51,10 @@ import {
   CHAIN_IDS,
   TEST_CHAINS,
 } from '../../shared/constants/network';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import {
+  createDeepEqualSelector,
+  createParameterizedSelector,
+} from '../../shared/lib/selectors/selector-creators';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
@@ -237,7 +240,7 @@ export function getDefiPositions(
 /**
  * @deprecated use selectBalanceByAccountGroup instead
  */
-export const getTokenBalancesEvm = createDeepEqualSelector(
+export const getTokenBalancesEvm = createSelector(
   getTokensAcrossChainsByAccountAddressSelector,
   getNativeTokenCachedBalanceByChainIdSelector,
   getTokenBalances,
@@ -345,7 +348,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
 /**
  * @deprecated use getAllAssets instead
  */
-export const getMultiChainAssets = createDeepEqualSelector(
+export const getMultiChainAssets = createSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultiChainAssetsControllerAccountsAssets,
@@ -416,66 +419,67 @@ export const getMultiChainAssets = createDeepEqualSelector(
  * @param internalAccount - The account holding the token to search for
  * @returns Token object
  */
-export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
-  (state) => state,
-  (_state, account: InternalAccount | undefined) => account,
-  (
-    _state,
-    _account: InternalAccount | undefined,
-    tokenAddress: Hex | CaipAssetType | string | undefined,
-  ) => tokenAddress,
-  (
-    _state,
-    _account: InternalAccount | undefined,
-    _tokenAddress: Hex | CaipAssetType | string | undefined,
-    _chainId: Hex | CaipChainId,
-  ) => _chainId,
-  (
-    state,
-    account: InternalAccount | undefined,
-    tokenAddress: Hex | CaipAssetType | string | undefined,
-    chainId: Hex | CaipChainId,
-  ) => {
-    const isEvm = isEvmChainId(chainId);
-    if (!tokenAddress && !isEvm) {
-      return null;
-    }
+export const getTokenByAccountAndAddressAndChainId =
+  createParameterizedSelector(100)(
+    (state) => state,
+    (_state, account: InternalAccount | undefined) => account,
+    (
+      _state,
+      _account: InternalAccount | undefined,
+      tokenAddress: Hex | CaipAssetType | string | undefined,
+    ) => tokenAddress,
+    (
+      _state,
+      _account: InternalAccount | undefined,
+      _tokenAddress: Hex | CaipAssetType | string | undefined,
+      _chainId: Hex | CaipChainId,
+    ) => _chainId,
+    (
+      state,
+      account: InternalAccount | undefined,
+      tokenAddress: Hex | CaipAssetType | string | undefined,
+      chainId: Hex | CaipChainId,
+    ) => {
+      const isEvm = isEvmChainId(chainId);
+      if (!tokenAddress && !isEvm) {
+        return null;
+      }
 
-    const accountToUse =
-      account ??
-      (isEvm
-        ? getSelectedInternalAccount(state)
-        : getInternalAccountBySelectedAccountGroupAndCaip(
-            state,
-            chainId as CaipChainId,
-          ));
+      const accountToUse =
+        account ??
+        (isEvm
+          ? getSelectedInternalAccount(state)
+          : getInternalAccountBySelectedAccountGroupAndCaip(
+              state,
+              chainId as CaipChainId,
+            ));
 
-    if (!accountToUse) {
-      return null;
-    }
+      if (!accountToUse) {
+        return null;
+      }
 
-    const assetsToSearch = isEvm
-      ? (getSelectedAccountTokensAcrossChains(state) as Record<
-          Hex,
-          TokenWithFiatAmount[]
-        >)
-      : (groupBy(getMultiChainAssets(state, accountToUse), 'chainId') as Record<
-          CaipChainId,
-          TokenWithFiatAmount[]
-        >);
+      const assetsToSearch = isEvm
+        ? (getSelectedAccountTokensAcrossChains(state) as Record<
+            Hex,
+            TokenWithFiatAmount[]
+          >)
+        : (groupBy(
+            getMultiChainAssets(state, accountToUse),
+            'chainId',
+          ) as Record<CaipChainId, TokenWithFiatAmount[]>);
 
-    const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
+      const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
 
-    return result;
-  },
-);
+      return result;
+    },
+  );
 
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 /**
  * @deprecated use selectBalanceByAccountGroup instead
  */
-export const getMultichainAggregatedBalance = createDeepEqualSelector(
+export const getMultichainAggregatedBalance = createSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultiChainAssetsControllerAccountsAssets,
@@ -597,7 +601,7 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
  * @param selectedAccount - Selected account
  * @returns CAIP asset type of the native token, or undefined if no native token is found
  */
-export const getMultichainNativeAssetType = createDeepEqualSelector(
+export const getMultichainNativeAssetType = createSelector(
   getSelectedInternalAccount,
   getMultiChainAssetsControllerAccountsAssets,
   getSelectedMultichainNetworkConfiguration,
@@ -620,7 +624,7 @@ export const getMultichainNativeAssetType = createDeepEqualSelector(
  * @param selectedAccount - Selected account
  * @returns Balance of the native token, or fallbacks to { amount: 0, unit: '' } if no native token is found
  */
-export const getMultichainNativeTokenBalance = createDeepEqualSelector(
+export const getMultichainNativeTokenBalance = createSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultichainNativeAssetType,
@@ -1286,41 +1290,45 @@ export const selectBalanceByWallet = (walletId: string) =>
     };
   });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
-const getStateForAssetSelector = ({ metamask }: any) => {
-  const initialState = {
-    selectedAccountGroup: metamask.selectedAccountGroup,
-    accountTree: metamask.accountTree,
-    internalAccounts: metamask.internalAccounts,
-    allTokens: getTokensControllerAllTokens({ metamask }),
-    allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
-    tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
-    marketData: getTokenRatesControllerMarketData({ metamask }),
-    currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
-    currentCurrency: getCurrencyRateControllerCurrentCurrency({ metamask }),
-    networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-    accountsByChainId: getAccountTrackerControllerAccountsByChainId({
-      metamask,
-    }),
-  };
+const getStateForAssetSelector = createSelector(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
+  (state: any) => state.metamask,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
+  (metamask: any) => {
+    const initialState = {
+      selectedAccountGroup: metamask.selectedAccountGroup,
+      accountTree: metamask.accountTree,
+      internalAccounts: metamask.internalAccounts,
+      allTokens: getTokensControllerAllTokens({ metamask }),
+      allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
+      tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
+      marketData: getTokenRatesControllerMarketData({ metamask }),
+      currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
+      currentCurrency: getCurrencyRateControllerCurrentCurrency({ metamask }),
+      networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
+      accountsByChainId: getAccountTrackerControllerAccountsByChainId({
+        metamask,
+      }),
+    };
 
-  const multichainState = {
-    accountsAssets: getMultiChainAssetsControllerAccountsAssets({ metamask }),
-    assetsMetadata: getMultiChainAssetsControllerAssetsMetadata({ metamask }),
-    allIgnoredAssets: getMultiChainAssetsControllerAllIgnoredAssets({
-      metamask,
-    }),
-    balances: getMultiChainBalancesControllerBalances({ metamask }),
-    conversionRates: getMultichainAssetsRatesControllerConversionRates({
-      metamask,
-    }),
-  };
+    const multichainState = {
+      accountsAssets: getMultiChainAssetsControllerAccountsAssets({ metamask }),
+      assetsMetadata: getMultiChainAssetsControllerAssetsMetadata({ metamask }),
+      allIgnoredAssets: getMultiChainAssetsControllerAllIgnoredAssets({
+        metamask,
+      }),
+      balances: getMultiChainBalancesControllerBalances({ metamask }),
+      conversionRates: getMultichainAssetsRatesControllerConversionRates({
+        metamask,
+      }),
+    };
 
-  return {
-    ...initialState,
-    ...multichainState,
-  } as AssetListState;
-};
+    return {
+      ...initialState,
+      ...multichainState,
+    } as AssetListState;
+  },
+);
 
 /**
  * Removes the Arc USDC ERC20 (0x3600…) from the per-chain asset map so it never
@@ -1347,7 +1355,7 @@ function filterArcUsdcErc20Token(
   };
 }
 
-export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
+export const getAssetsBySelectedAccountGroup = createSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
     filterArcUsdcErc20Token(selectAssetsBySelectedAccountGroup(assetListState)),
@@ -1387,12 +1395,10 @@ export const selectAccountSupportsEnabledNetworks = createSelector(
 );
 
 export const getAssetsBySelectedAccountGroupWithTronSpecialAssets =
-  createDeepEqualSelector(
-    getStateForAssetSelector,
-    (assetListState: AssetListState) =>
-      selectAssetsBySelectedAccountGroup(assetListState, {
-        filterTronStakedTokens: false,
-      }),
+  createSelector(getStateForAssetSelector, (assetListState: AssetListState) =>
+    selectAssetsBySelectedAccountGroup(assetListState, {
+      filterTronStakedTokens: false,
+    }),
   );
 
 export const getAsset = createSelector(

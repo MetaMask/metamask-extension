@@ -13,7 +13,11 @@ import type { Messenger } from '@metamask/messenger';
 import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
 import type { QrSyncController } from './qr-sync-controller';
 import type { KeyManager } from './key-manager';
-import { QR_SYNC_CONTROLLER_NAME, QrSyncActionTypes, QrSyncMessageVersion } from './constants';
+import {
+  QR_SYNC_CONTROLLER_NAME,
+  QrSyncActionTypes,
+  QrSyncMessageVersion,
+} from './constants';
 
 export type QrSyncConnectionStatus =
   | 'disconnected'
@@ -45,8 +49,8 @@ export type QrSyncMessage<DataType = undefined> = {
 export type SyncDataType = 'MNEMONIC' | 'PRIVATE_KEY';
 
 export type QrSyncOffer = {
-  sessionId?: string;
-  deadline: number;
+  sessionId: string;
+  isOnboardingCompleted: boolean;
 };
 
 export type QrSyncErrorCode =
@@ -127,7 +131,7 @@ export type QrSyncData = {
        * @type {boolean}
        */
       isPrimary?: boolean;
-    }
+    };
   }[];
 
   /**

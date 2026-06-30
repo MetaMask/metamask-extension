@@ -108,9 +108,9 @@ describe('QrCodeScan', () => {
 
     fireEvent.click(screen.getByText(messages.generateNewQrCode.message));
 
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]);
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'messengerCall',
+      ['QrSyncController:createSession', []],
+    );
   });
 });

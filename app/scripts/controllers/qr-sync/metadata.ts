@@ -1,4 +1,4 @@
-import type { StateMetadata } from "@metamask/base-controller";
+import type { StateMetadata } from '@metamask/base-controller';
 import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
 import type { QrSyncControllerState } from './types';
 

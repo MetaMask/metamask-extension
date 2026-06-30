@@ -18,16 +18,65 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type SuccessProps = {
   onDone: () => void;
-  syncedAccountCount: number;
-  syncedWalletCount: number;
+  walletCount?: number;
+  importedAccountCount?: number;
+};
+
+const getSuccessDescription = (
+  t: ReturnType<typeof useI18nContext>,
+  walletCount: number,
+  importedAccountCount: number,
+): string => {
+  const hasWallets = walletCount > 0;
+  const hasImported = importedAccountCount > 0;
+
+  if (hasWallets && hasImported) {
+    if (walletCount === 1 && importedAccountCount === 1) {
+      return t('add_device_success_desc_wallet_singular_imported_singular');
+    }
+    if (walletCount === 1) {
+      return t('add_device_success_desc_wallet_singular_imported_plural', [
+        importedAccountCount,
+      ]);
+    }
+    if (importedAccountCount === 1) {
+      return t('add_device_success_desc_wallet_plural_imported_singular', [
+        walletCount,
+      ]);
+    }
+    return t('add_device_success_desc_wallet_plural_imported_plural', [
+      walletCount,
+      importedAccountCount,
+    ]);
+  }
+
+  if (hasWallets) {
+    return walletCount === 1
+      ? t('add_device_success_desc_wallet_singular')
+      : t('add_device_success_desc_wallet_plural', [walletCount]);
+  }
+
+  if (hasImported) {
+    return importedAccountCount === 1
+      ? t('add_device_success_desc_imported_singular')
+      : t('add_device_success_desc_imported_plural', [importedAccountCount]);
+  }
+
+  return '';
 };
 
 const Success = ({
   onDone,
-  syncedAccountCount,
-  syncedWalletCount,
+  walletCount = 2,
+  importedAccountCount = 5,
 }: SuccessProps) => {
   const t = useI18nContext();
+
+  const description = getSuccessDescription(
+    t,
+    walletCount,
+    importedAccountCount,
+  );
 
   return (
     <Box
@@ -57,16 +106,15 @@ const Success = ({
         >
           {t('add_device_success_title')}
         </Text>
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          textAlign={TextAlign.Center}
-        >
-          {t('add_device_success_desc', [
-            syncedAccountCount,
-            syncedWalletCount,
-          ])}
-        </Text>
+        {description && (
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            textAlign={TextAlign.Center}
+          >
+            {description}
+          </Text>
+        )}
       </Box>
       <Button className="w-full mt-10" onClick={onDone}>
         {t('done')}
