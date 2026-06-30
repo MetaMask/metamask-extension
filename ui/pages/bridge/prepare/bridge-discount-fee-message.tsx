@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
+import { DiscountType } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
   BridgeAppState,
@@ -9,10 +10,13 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { JustifyContent } from '../../../helpers/constants/design-system';
 import { Row } from '../layout';
-import { RewardsVipBadge } from '../../../components/app/rewards/RewardsVipBadge';
+import {
+  RewardsDiscountBadge,
+  RewardsVipBadge,
+} from '../../../components/app/rewards/RewardsVipBadge';
 import { readMmFee } from '../utils/quote';
 
-export const BridgeVipFeeMessage = () => {
+export const BridgeDiscountFeeMessage = () => {
   const t = useI18nContext();
 
   const { activeQuote } = useSelector(getBridgeQuotes);
@@ -29,7 +33,7 @@ export const BridgeVipFeeMessage = () => {
     return null;
   }
 
-  const { isDiscounted, baseFeePercentage, quoteFeePercentage } =
+  const { isDiscounted, baseFeePercentage, quoteFeePercentage, discountType } =
     readMmFee(activeQuote);
 
   if (!isDiscounted) {
@@ -38,10 +42,16 @@ export const BridgeVipFeeMessage = () => {
 
   return (
     <Row gap={1} justifyContent={JustifyContent.center}>
-      <RewardsVipBadge />
-      <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-        {t('includes')}
-      </Text>
+      {discountType === DiscountType.VIP ? <RewardsVipBadge /> : null}
+      {discountType && discountType !== DiscountType.VIP ? (
+        <RewardsDiscountBadge
+          label={
+            discountType === DiscountType.DAO
+              ? t('bridgeDiscountBadgeDao')
+              : t('bridgeDiscountBadgePromo')
+          }
+        />
+      ) : null}
       <Text
         variant={TextVariant.BodyXs}
         color={TextColor.TextAlternative}

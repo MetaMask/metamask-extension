@@ -2066,6 +2066,12 @@
   "bridgeNoMMFee": {
     "message": "No MM fee"
   },
+  "bridgeDiscountBadgePromo": {
+    "message": "Promo"
+  },
+  "bridgeDiscountBadgeDao": {
+    "message": "DAO"
+  },
   "bridgeNoPriceInfoTitle": {
     "message": "No price information"
   },
