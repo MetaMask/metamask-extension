@@ -4,5 +4,3 @@ declare module 'webpack/hot/emitter' {
   const emitter: EventEmitter;
   export default emitter;
 }
-
-declare module 'webpack/hot/dev-server';
