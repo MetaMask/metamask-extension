@@ -24,11 +24,6 @@ import {
   QrSyncActionTypes,
   QrSyncMessageVersion,
 } from './constants';
-import {
-  QR_SYNC_CONTROLLER_NAME,
-  QrSyncActionTypes,
-  QrSyncMessageVersion,
-} from './constants';
 
 export type QrSyncConnectionStatus =
   | 'disconnected'
@@ -242,11 +237,7 @@ export type QrSyncControllerState = {
    *
    * @type {string | null}
    */
-  qrPayload: string | null;
-  /**
-   * The number of OTP attempts.
-   */
-  otpAttempts: number;
+  qrSyncQrPayload: string | null;
   /**
    * The sync offer received from mobile.
    *
@@ -258,37 +249,25 @@ export type QrSyncControllerState = {
    *
    * @type {AccountGroupId[]}
    */
-  selectedAccountGroupIds: AccountGroupId[];
-  /**
-   * The last action type sent or received during the sync session.
-   *
-   * @type {QrSyncActionType | null}
-   */
-  lastActionType: QrSyncActionType | null;
-  /**
-   * Account IDs imported on the receiving device after sync completes.
-   *
-   * @type {string[]}
-   */
-  importedAccountIds: string[];
+  qrSyncSelectedAccountGroupIds: AccountGroupId[];
   /**
    * The current sync error, if any.
    *
    * @type {QrSyncError | null}
    */
-  error: QrSyncError | null;
+  qrSyncError: QrSyncError | null;
   /**
    * Timestamp when the sync session was created.
    *
    * @type {number | null}
    */
-  createdAt: number | null;
+  qrSyncCreatedAt: number | null;
   /**
    * Timestamp when the sync session state was last updated.
    *
    * @type {number | null}
    */
-  updatedAt: number | null;
+  qrSyncUpdatedAt: number | null;
 };
 
 export type QrSyncControllerStateChangeEvent = ControllerStateChangedEvent<

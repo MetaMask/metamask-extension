@@ -12,12 +12,11 @@ import {
 } from '@metamask/mobile-wallet-protocol-dapp-client';
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { KeyringType } from '@metamask/keyring-api/v2';
-import { bytesToBase64 } from '@metamask/utils';
 
 import log from 'loglevel';
 import {
-  MWP_SESSION_REQUEST_EXPIRY_SECONDS,
   QR_SYNC_PHASES,
+  QR_SYNC_TIMEOUT_MS,
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
 import {
@@ -147,18 +146,17 @@ export class QrSyncController extends BaseController<
     }
   }
 
-  async submitOtp(_otp: string): Promise<void> {
+  async submitOtp(otp: string): Promise<void> {
     assertQrSyncPhase(this.state.qrSyncPhase, [
       QR_SYNC_PHASES.AWAITING_OTP_INPUT,
     ]);
-    const otp = _otp.trim();
 
     if (!this.#otpSubmitCallback) {
       throw new Error('OTP submit callback is not available.');
     }
 
     try {
-      await this.#otpSubmitCallback(otp);
+      await this.#otpSubmitCallback(otp.trim());
 
       this.update((state) => {
         state.qrSyncPhase = QR_SYNC_PHASES.AWAITING_SYNC_OFFER;
@@ -237,13 +235,12 @@ export class QrSyncController extends BaseController<
       },
     );
 
-    const deadline = Date.now() + MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000;
+    const deadline = Date.now() + QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT;
 
     this.update((state) => {
-      state.selectedAccountGroupIds = [...selectedAccountGroupIds];
-      state.lastActionType = QrSyncActionTypes.SYNC_READY;
-      state.error = null;
-      state.updatedAt = Date.now();
+      state.qrSyncSelectedAccountGroupIds = [...selectedAccountGroupIds];
+      state.qrSyncError = null;
+      state.qrSyncUpdatedAt = Date.now();
     });
     console.log('QR Sync: exportData', exportData);
     await this.#sendSyncData({ deadline, data: exportData });
@@ -319,8 +316,6 @@ export class QrSyncController extends BaseController<
   }
 
   async #waitForSyncOffer(): Promise<void> {
-    const timeoutMs = MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000;
-
     try {
       await new Promise<void>((resolve, reject) => {
         this.#syncOfferDeferred = { resolve, reject };
@@ -328,7 +323,7 @@ export class QrSyncController extends BaseController<
           this.#rejectSyncOffer(
             new Error(QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT),
           );
-        }, timeoutMs);
+        }, QR_SYNC_TIMEOUT_MS.SYNC_OFFER_TIMEOUT);
       });
     } finally {
       this.#clearSyncOfferWait();
@@ -454,10 +449,9 @@ export class QrSyncController extends BaseController<
     });
   }
 
-  #completeSync(importedAccountIds: string[]): void {
+  #completeSync(): void {
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.COMPLETED;
-      state.qrSyncImportedAccountIds = [...importedAccountIds];
       state.qrSyncUpdatedAt = Date.now();
     });
 
@@ -595,7 +589,7 @@ export class QrSyncController extends BaseController<
 
       case QrSyncActionTypes.SYNC_COMPLETED:
         this.#resolveSyncCompletion();
-        this.#completeSync(this.state.qrSyncImportedAccountIds);
+        this.#completeSync();
         return;
 
       case QrSyncActionTypes.SYNC_CANCEL:
@@ -640,9 +634,9 @@ export class QrSyncController extends BaseController<
         message: QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
       };
       state.syncOffer = null;
-      state.qrPayload = null;
-      state.selectedAccountGroupIds = [];
-      state.updatedAt = Date.now();
+      state.qrSyncQrPayload = null;
+      state.qrSyncSelectedAccountGroupIds = [];
+      state.qrSyncUpdatedAt = Date.now();
     });
   }
 
@@ -671,9 +665,9 @@ export class QrSyncController extends BaseController<
       state.qrSyncConnectionStatus = 'errored';
       state.qrSyncError = error;
       state.syncOffer = null;
-      state.qrPayload = null;
-      state.selectedAccountGroupIds = [];
-      state.updatedAt = Date.now();
+      state.qrSyncQrPayload = null;
+      state.qrSyncSelectedAccountGroupIds = [];
+      state.qrSyncUpdatedAt = Date.now();
     });
   }
 

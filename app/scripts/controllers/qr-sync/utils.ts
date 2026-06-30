@@ -2,8 +2,8 @@ import type { SessionRequest } from '@metamask/mobile-wallet-protocol-core';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 
 import {
-  MWP_SESSION_REQUEST_EXPIRY_SECONDS,
   QR_SYNC_PHASES,
+  QR_SYNC_TIMEOUT_MS,
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
 import {
@@ -103,7 +103,7 @@ export function assertQrSyncPhase(
 
 export function getSyncCompletionTimeoutMs(
   deadline: number,
-  fallbackTimeoutMs: number = MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000,
+  fallbackTimeoutMs: number = QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT,
 ): number {
   return Math.max(deadline - Date.now(), 0) || fallbackTimeoutMs;
 }

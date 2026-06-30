@@ -6,7 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
+import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import QrCodeScan from './qr-code-scan';
 
@@ -59,7 +59,7 @@ describe('QrCodeScan', () => {
     renderWithProvider(<QrCodeScan />, mockStore);
 
     expect(
-      screen.getByText(`Expires in ${MWP_SESSION_REQUEST_EXPIRY_SECONDS}s`),
+      screen.getByText(`Expires in ${QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000}s`),
     ).toBeInTheDocument();
   });
 
@@ -69,7 +69,7 @@ describe('QrCodeScan', () => {
     renderWithProvider(<QrCodeScan />, mockStore);
 
     act(() => {
-      jest.advanceTimersByTime(MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000);
+      jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
     });
 
     expect(
@@ -103,7 +103,7 @@ describe('QrCodeScan', () => {
     renderWithProvider(<QrCodeScan />, mockStore);
 
     act(() => {
-      jest.advanceTimersByTime(MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000);
+      jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
     });
 
     fireEvent.click(screen.getByText(messages.generateNewQrCode.message));
