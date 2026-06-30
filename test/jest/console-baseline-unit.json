@@ -263,7 +263,7 @@
       "error: Error: MetaMetrics context trackEvent was": 2
     },
     "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
-      "Reselect: Input stability warnings": 2
+      "Reselect: Input stability warnings": 3
     },
     "ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
@@ -968,13 +968,13 @@
     },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Input stability warnings": 3
+    },
+    "ui/pages/notifications-settings/notifications-settings.test.tsx": {
       "Reselect: Input stability warnings": 2
     },
     "ui/pages/notifications/notification-components/snap/snap-footer-button.test.tsx": {
       "error: Warning: React does not recognize": 1
-    },
-    "ui/pages/notifications/notifications-list-turn-on-notifications.test.tsx": {
-      "Reselect: Input stability warnings": 2
     },
     "ui/pages/notifications/notifications-list.test.tsx": {
       "Reselect: Input stability warnings": 1,
