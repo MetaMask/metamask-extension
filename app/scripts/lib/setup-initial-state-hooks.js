@@ -10,6 +10,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { captureException, captureMessage } from '../../../shared/lib/sentry';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
@@ -37,8 +38,27 @@ function createLocalStore() {
 
 const localStore = createLocalStore();
 
+function reportPersistenceError({ error, type }) {
+  // Custom fingerprint prevents Sentry's deduplication from dropping this event
+  // when other persistence errors share the same underlying error message.
+  captureException(error, {
+    tags: { 'persistence.error': type },
+    fingerprint: ['persistence-error', type],
+  });
+}
+
+function reportPersistenceRecovered({ type }) {
+  captureMessage('Data persistence recovered after temporary failure', {
+    level: 'info',
+    tags: { 'persistence.event': type },
+    fingerprint: ['persistence-event', type],
+  });
+}
+
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({ localStore })
+  .on('persistenceError', reportPersistenceError)
+  .on('persistenceRecovered', reportPersistenceRecovered)
   .on('vaultCorruptionDetected', (payload) => {
     trackVaultCorruptionEvent(
       payload.backup,
@@ -64,10 +84,13 @@ export const persistenceManager = new PersistenceManager({ localStore })
 /**
  * Get the persisted wallet state.
  *
+ * @param options - Options for retrieving persisted state.
+ * @param options.reportErrors - Whether read errors should be reported to Sentry.
  * @returns The persisted wallet state.
  */
-globalThis.stateHooks.getPersistedState = async function () {
-  return await persistenceManager.get({ validateVault: false });
+globalThis.stateHooks.getPersistedState = async function (options = {}) {
+  const { reportErrors = true } = options;
+  return await persistenceManager.get({ validateVault: false, reportErrors });
 };
 
 /**
