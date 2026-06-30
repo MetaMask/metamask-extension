@@ -1026,9 +1026,6 @@
   "addAccount": {
     "message": "Ajouter un compte"
   },
-  "addAcquiredTokens": {
-    "message": "Ajouter les jetons que vous avez acquis par l’intermédiaire de MetaMask"
-  },
   "addAlias": {
     "message": "Ajouter un alias"
   },
@@ -2976,9 +2973,6 @@
   "customSlippage": {
     "message": "Personnaliser"
   },
-  "customToken": {
-    "message": "Jeton personnalisé"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Tout un chacun peut créer un jeton, y compris créer de fausses copies de jetons existants. En savoir plus sur $1"
   },
@@ -3514,9 +3508,6 @@
   "enableAutoDetect": {
     "message": " Activer la détection automatique"
   },
-  "enableFromSettings": {
-    "message": " Activez-la depuis les paramètres."
-  },
   "enableSmartContractAccount": {
     "message": "Utilisez un compte intelligent"
   },
@@ -3543,9 +3534,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "L’URL de RPC que vous avez saisie a renvoyé un ID de chaîne différent ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "La détection améliorée des jetons est actuellement disponible sur $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask vous permet de voir les domaines ENS dans la barre d’adresse de votre navigateur. Voici comment cela fonctionne :"
@@ -4389,15 +4377,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Importer la phrase secrète de récupération"
   },
-  "importTokenQuestion": {
-    "message": "Importer un jeton ?"
-  },
-  "importTokenWarning": {
-    "message": "Tout un chacun peut créer un jeton avec n’importe quel nom, y compris de fausses versions de jetons existants. Ajoutez et échangez avec prudence !"
-  },
-  "importTokensCamelCase": {
-    "message": "Importer des jetons"
-  },
   "importTokensError": {
     "message": "Impossible d’importer les jetons. Veuillez ressayer plus tard."
   },
@@ -4698,9 +4677,6 @@
   },
   "lightTheme": {
     "message": "Clair"
-  },
-  "likeToImportToken": {
-    "message": "Voulez-vous importer ce jeton ?"
   },
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
@@ -5272,9 +5248,6 @@
   },
   "musdTermsApply": {
     "message": "Des conditions s’appliquent."
-  },
-  "mustSelectOne": {
-    "message": "Vous devez sélectionner au moins 1 jeton."
   },
   "name": {
     "message": "Nom"
@@ -10266,9 +10239,6 @@
   },
   "tokenDecimal": {
     "message": "Nombre de décimales du jeton"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "La décimale du jeton est requise. Trouvez-la sur : $1"
   },
   "tokenDetails": {
     "message": "Détails du jeton"

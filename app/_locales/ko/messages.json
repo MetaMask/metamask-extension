@@ -1026,9 +1026,6 @@
   "addAccount": {
     "message": "계정 추가"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask를 이용해 얻은 토큰 추가"
-  },
   "addAlias": {
     "message": "별칭 추가"
   },
@@ -2976,9 +2973,6 @@
   "customSlippage": {
     "message": "사용자 지정"
   },
-  "customToken": {
-    "message": "맞춤 토큰"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "토큰을 생성하기 전에 해당 토큰을 신뢰할 수 있는지 반드시 확인하세요. $1에 대해 알아보기."
   },
@@ -3514,9 +3508,6 @@
   "enableAutoDetect": {
     "message": " 자동 감지 활성화"
   },
-  "enableFromSettings": {
-    "message": " 설정에서 이를 활성화할 수 있습니다."
-  },
   "enableSmartContractAccount": {
     "message": "스마트 계정 사용"
   },
@@ -3543,9 +3534,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "입력한 RPC URL이 체인 ID($1)와 다릅니다.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "$1에서 향상된 토큰 감지 기능을 사용할 수 있습니다. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask를 사용하면 브라우저의 주소창에서 ENS 도메인을 바로 볼 수 있습니다. 방법은 다음과 같습니다."
@@ -4393,15 +4381,6 @@
   "importSecretRecoveryPhrase": {
     "message": "비밀복구구문 가져오기"
   },
-  "importTokenQuestion": {
-    "message": "토큰을 가져오시겠습니까?"
-  },
-  "importTokenWarning": {
-    "message": "기존 토큰의 가짜 버전을 포함하여 누구나 어떤 이름으로든 토큰을 만들 수 있습니다. 추가 및 트랜잭션은 사용자의 책임입니다."
-  },
-  "importTokensCamelCase": {
-    "message": "토큰 가져오기"
-  },
   "importTokensError": {
     "message": "토큰을 가져올 수 없습니다. 나중에 다시 시도하세요."
   },
@@ -4702,9 +4681,6 @@
   },
   "lightTheme": {
     "message": "밝게"
-  },
-  "likeToImportToken": {
-    "message": "이 토큰을 가져올까요?"
   },
   "likeToImportTokens": {
     "message": "이 토큰을 추가하시겠습니까?"
@@ -5276,9 +5252,6 @@
   },
   "musdTermsApply": {
     "message": "약관이 적용됩니다."
-  },
-  "mustSelectOne": {
-    "message": "토큰을 1개 이상 선택해야 합니다."
   },
   "name": {
     "message": "이름"
@@ -10274,9 +10247,6 @@
   },
   "tokenDecimal": {
     "message": "토큰 십진수"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "토큰 십진수가 필요합니다. $1에서 찾아보세요"
   },
   "tokenDetails": {
     "message": "토큰 상세 정보"

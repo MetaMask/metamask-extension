@@ -3796,18 +3796,6 @@ export function removeFromAddressBook(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-export function showImportTokensModal(): Action {
-  return {
-    type: actionConstants.IMPORT_TOKENS_POPOVER_OPEN,
-  };
-}
-
-export function hideImportTokensModal(): Action {
-  return {
-    type: actionConstants.IMPORT_TOKENS_POPOVER_CLOSE,
-  };
-}
-
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModalPayload = { name: string } & Record<string, any>;

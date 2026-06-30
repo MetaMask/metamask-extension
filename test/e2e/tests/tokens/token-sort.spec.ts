@@ -47,7 +47,7 @@ describe('Token List Sorting', function () {
         title: (this as Context).test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
         testSpecificMock: mockCustomTokenImport,

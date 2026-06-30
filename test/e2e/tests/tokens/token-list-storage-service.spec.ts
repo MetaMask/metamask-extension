@@ -52,7 +52,7 @@ describe('Token List via StorageService', function () {
         },
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
         title: (this as Context).test?.fullTitle(),

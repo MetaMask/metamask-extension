@@ -16,7 +16,6 @@
     "externalServicesOnboardingToggleState": "boolean",
     "gasLoadingAnimationIsShowing": "boolean",
     "importNftsModal": "object",
-    "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",

@@ -219,7 +219,7 @@ describe('Add existing token using search', function () {
         },
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
         title: this.test?.fullTitle(),

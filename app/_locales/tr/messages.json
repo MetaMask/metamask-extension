@@ -1026,9 +1026,6 @@
   "addAccount": {
     "message": "Hesap ekleyin"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask kullanarak elde ettiğiniz tokenları ekleyin"
-  },
   "addAlias": {
     "message": "Diğer adı ekle"
   },
@@ -2976,9 +2973,6 @@
   "customSlippage": {
     "message": "Özel"
   },
-  "customToken": {
-    "message": "Özel Token"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Mevcut tokenların sahteleri de dahil olmak üzere herkes bir token oluşturabilir. $1 hakkında bilgi edinin"
   },
@@ -3514,9 +3508,6 @@
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
-  "enableFromSettings": {
-    "message": " Ayarlardan etkinleştirin."
-  },
   "enableSmartContractAccount": {
     "message": "Akıllı hesap kullan"
   },
@@ -3543,9 +3534,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "Girdiğiniz RPC URL farklı bir zincir kimliğine döndü ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Gelişmiş token algılama şu anda $1 üzerinden kullanılabilir. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask, ENS alanlarını doğrudan tarayıcınızın adres çubuğunda görmenizi sağlar. Şöyle çalışır:"
@@ -4393,15 +4381,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini İçe Aktar"
   },
-  "importTokenQuestion": {
-    "message": "Tokeni içe aktar?"
-  },
-  "importTokenWarning": {
-    "message": "Herkes, mevcut tokenların sahte sürümleri de dahil olmak üzere herhangi bir ada sahip bir token oluşturabilir. Riski tamamen size ait olacak şekikde token ekleyin ve işlem yapın!"
-  },
-  "importTokensCamelCase": {
-    "message": "Tokenları içe aktar"
-  },
   "importTokensError": {
     "message": "Tokenları içe aktaramadık. Lütfen daha sonra tekrar deneyin."
   },
@@ -4702,9 +4681,6 @@
   },
   "lightTheme": {
     "message": "Açık"
-  },
-  "likeToImportToken": {
-    "message": "Bu tokeni içe aktarmak ister misiniz?"
   },
   "likeToImportTokens": {
     "message": "Bu tokenları içe aktarmak ister misiniz?"
@@ -5276,9 +5252,6 @@
   },
   "musdTermsApply": {
     "message": "Şartlar uygulanır."
-  },
-  "mustSelectOne": {
-    "message": "En az bir token seçilmeli."
   },
   "name": {
     "message": "Adı"
@@ -10274,9 +10247,6 @@
   },
   "tokenDecimal": {
     "message": "Token ondalığı"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "Token ondalığı gereklidir. Şurada bulabilirsiniz: $1"
   },
   "tokenDetails": {
     "message": "Token bilgileri"
