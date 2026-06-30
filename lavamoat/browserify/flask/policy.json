@@ -428,11 +428,11 @@
         "@hello-pangea/dnd>css-box-model": true,
         "@hello-pangea/dnd>memoize-one": true,
         "@hello-pangea/dnd>raf-schd": true,
+        "@hello-pangea/dnd>use-memo-one": true,
         "react": true,
         "react-dom": true,
-        "@hello-pangea/dnd>react-redux": true,
-        "redux": true,
-        "@hello-pangea/dnd>use-memo-one": true
+        "react-redux": true,
+        "redux": true
       }
     },
     "@hello-pangea/dnd>css-box-model": {
@@ -449,20 +449,6 @@
       "globals": {
         "cancelAnimationFrame": true,
         "requestAnimationFrame": true
-      }
-    },
-    "@hello-pangea/dnd>react-redux": {
-      "globals": {
-        "console": true,
-        "document": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-redux>hoist-non-react-statics": true,
-        "react": true,
-        "react-dom": true,
-        "@metamask/snap-simple-keyring-site>react-is": true,
-        "@tanstack/react-query>use-sync-external-store": true
       }
     },
     "@hello-pangea/dnd>use-memo-one": {
@@ -6084,56 +6070,6 @@
         "react>object-assign": true
       }
     },
-    "react-beautiful-dnd": {
-      "globals": {
-        "Element.prototype": true,
-        "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
-        "addEventListener": true,
-        "cancelAnimationFrame": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "getComputedStyle": true,
-        "pageXOffset": true,
-        "pageYOffset": true,
-        "removeEventListener": true,
-        "requestAnimationFrame": true,
-        "scrollBy": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-beautiful-dnd>css-box-model": true,
-        "react-beautiful-dnd>memoize-one": true,
-        "react-beautiful-dnd>raf-schd": true,
-        "react": true,
-        "react-dom": true,
-        "react-redux": true,
-        "redux": true,
-        "react-beautiful-dnd>use-memo-one": true
-      }
-    },
-    "react-beautiful-dnd>css-box-model": {
-      "globals": {
-        "getComputedStyle": true,
-        "pageXOffset": true,
-        "pageYOffset": true
-      },
-      "packages": {
-        "react-beautiful-dnd>css-box-model>tiny-invariant": true
-      }
-    },
-    "react-beautiful-dnd>raf-schd": {
-      "globals": {
-        "cancelAnimationFrame": true,
-        "requestAnimationFrame": true
-      }
-    },
-    "react-beautiful-dnd>use-memo-one": {
-      "packages": {
-        "react": true
-      }
-    },
     "react-chartjs-2": {
       "globals": {
         "setTimeout": true
@@ -6421,7 +6357,8 @@
     "react-redux": {
       "globals": {
         "console": true,
-        "document": true
+        "document": true,
+        "console.warn": true
       },
       "packages": {
         "@babel/runtime": true,
