@@ -2,21 +2,20 @@ name: Adjust CWS rollout percentage
 
 # INFRA-3651 — workflow_dispatch rollout adjustment via CWS API v2.
 #
+# Targets align with upload-extension-to-cws.yml (INFRA-3734): dev, production, flask.
+# dev: cws-dev + *_DEV (UAT smoke lane; manual RE dispatch). Not the legacy "beta" target.
+# production / flask: Runway sender + WIF CEL (shared prod WIF SA; flask uses EXTENSION_ID_FLASK).
+#
 # Read current state: GET .../items/{id}:fetchStatus (distributionChannels[].deployPercentage)
 # Update rollout:     POST .../items/{id}:setPublishedDeployPercentage { deployPercentage }
-# (v2 rollout API — does not submit for review; distinct from :publish for first publish.)
 #
-# Production gate: WIF CEL on cws-production (Runway actor + actor_id) — authoritative.
-# Defense-in-depth: Runway sender YAML check (prod), Release Engineer team membership (human dispatch).
-# Beta: manual RE dispatch allowed; Runway check skipped; beta WIF CEL (INFRA-3645).
-#
-# Compatible with docs/sensitive-release.md initial 1% rollout protocol.
+# Compatible with docs/sensitive-release.md initial 1% rollout protocol (production).
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Published Chrome manifest version (e.g. 12.9.1) — must match a live CWS crxVersion'
+        description: 'Published Chrome manifest version (e.g. 12.9.1) — must match live CWS crxVersion for the target listing'
         required: true
         type: string
       desired_percentage:
@@ -24,13 +23,14 @@ on:
         required: true
         type: number
       target:
-        description: 'CWS listing target'
+        description: 'CWS target — dev (UAT), production (PRD main), flask (PRD Flask build)'
         required: true
         type: choice
-        default: beta
+        default: production
         options:
-          - beta
+          - dev
           - production
+          - flask
       confirm_full_rollout:
         description: 'Required for desired_percentage=100 or single-step increase >50 points — enter "yes" to confirm'
         required: false
@@ -49,16 +49,16 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ inputs.target }}
       cancel-in-progress: false
-    environment: ${{ inputs.target == 'production' && 'cws-production' || inputs.target == 'beta' && 'cws-beta' || null }}
+    environment: ${{ inputs.target == 'production' && 'cws-production' || inputs.target == 'flask' && 'cws-flask' || inputs.target == 'dev' && 'cws-dev' || null }}
     env:
       VERSION: ${{ inputs.version }}
       DESIRED_PERCENTAGE: ${{ inputs.desired_percentage }}
       CONFIRM_FULL_ROLLOUT: ${{ inputs.confirm_full_rollout }}
       TARGET: ${{ inputs.target }}
     steps:
-      # Check 1 — Runway identity (production only; first step — no credentials before this).
-      - name: Verify Runway sender (production only)
-        if: inputs.target == 'production'
+      # Check 1 — Runway identity (production and flask; first step — no credentials before this).
+      - name: Verify Runway sender (production and flask)
+        if: inputs.target == 'production' || inputs.target == 'flask'
         env:
           SENDER_TYPE: ${{ github.event.sender.type }}
           SENDER_ID: ${{ github.event.sender.id }}
@@ -69,7 +69,7 @@ jobs:
           set -euo pipefail
           echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender.id=${SENDER_ID} (${SENDER_LOGIN})"
           if [[ "${SENDER_TYPE}" != "Bot" ]]; then
-            echo "::error::Production rollout dispatch must come from a GitHub App bot (got sender.type=${SENDER_TYPE}). WIF CEL would also reject this OIDC request."
+            echo "::error::Production and Flask rollout dispatch must come from a GitHub App bot (got sender.type=${SENDER_TYPE}). WIF CEL would also reject this OIDC request."
             exit 1
           fi
           if [[ "${{ github.actor }}" != "${RUNWAY_ACTOR_LOGIN}" ]]; then
@@ -119,18 +119,28 @@ jobs:
       - name: Resolve target configuration
         id: config
         env:
-          WIF_PROVIDER_BETA: ${{ vars.WIF_PROVIDER_BETA }}
-          WIF_SERVICE_ACCOUNT_BETA: ${{ vars.WIF_SERVICE_ACCOUNT_BETA }}
-          EXTENSION_ID_BETA: ${{ vars.EXTENSION_ID_BETA }}
-          PUBLISHER_ID_BETA: ${{ vars.PUBLISHER_ID_BETA }}
+          WIF_PROVIDER_DEV: ${{ vars.WIF_PROVIDER_DEV }}
+          WIF_SERVICE_ACCOUNT_DEV: ${{ vars.WIF_SERVICE_ACCOUNT_DEV }}
+          EXTENSION_ID_DEV: ${{ vars.EXTENSION_ID_DEV }}
+          PUBLISHER_ID_DEV: ${{ vars.PUBLISHER_ID_DEV }}
           WIF_PROVIDER_PROD: ${{ vars.WIF_PROVIDER }}
           WIF_SERVICE_ACCOUNT_PROD: ${{ vars.WIF_SERVICE_ACCOUNT }}
           EXTENSION_ID_PROD: ${{ vars.EXTENSION_ID }}
+          EXTENSION_ID_FLASK: ${{ vars.EXTENSION_ID_FLASK }}
           PUBLISHER_ID_PROD: ${{ vars.PUBLISHER_ID }}
         run: |
           set -euo pipefail
           GITHUB_REF="${{ github.ref }}"
-          if [[ "${TARGET}" == "production" ]]; then
+          if [[ "${TARGET}" == "dev" ]]; then
+            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+              echo "::error::Dev (cws-dev) rollout must run from refs/heads/main (current: ${GITHUB_REF})"
+              exit 1
+            fi
+            WIF_PROVIDER="${WIF_PROVIDER_DEV}"
+            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
+            EXTENSION_ID="${EXTENSION_ID_DEV}"
+            PUBLISHER_ID="${PUBLISHER_ID_DEV}"
+          elif [[ "${TARGET}" == "production" ]]; then
             if [[ "${GITHUB_REF}" != "refs/heads/main" && ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
               echo "::error::Production rollout must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
               exit 1
@@ -139,11 +149,15 @@ jobs:
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
             EXTENSION_ID="${EXTENSION_ID_PROD}"
             PUBLISHER_ID="${PUBLISHER_ID_PROD}"
-          elif [[ "${TARGET}" == "beta" ]]; then
-            WIF_PROVIDER="${WIF_PROVIDER_BETA}"
-            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_BETA}"
-            EXTENSION_ID="${EXTENSION_ID_BETA}"
-            PUBLISHER_ID="${PUBLISHER_ID_BETA}"
+          elif [[ "${TARGET}" == "flask" ]]; then
+            if [[ "${GITHUB_REF}" != "refs/heads/main" && ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
+              echo "::error::Flask rollout must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+              exit 1
+            fi
+            WIF_PROVIDER="${WIF_PROVIDER_PROD}"
+            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
+            EXTENSION_ID="${EXTENSION_ID_FLASK}"
+            PUBLISHER_ID="${PUBLISHER_ID_PROD}"
           else
             echo "::error::Invalid target: ${TARGET}"
             exit 1
@@ -158,9 +172,22 @@ jobs:
               echo "::error::Version segment must be a non-negative integer without leading zeros: ${part} in ${VERSION}"
               exit 1
             fi
+            if (( 10#${part} > 65535 )); then
+              echo "::error::Version segment out of range (0–65535): ${part} in ${VERSION}"
+              exit 1
+            fi
           done
+          if [[ -z "${EXTENSION_ID:-}" ]]; then
+            case "${TARGET}" in
+              dev) EXTENSION_ID_VAR="EXTENSION_ID_DEV" ;;
+              production) EXTENSION_ID_VAR="EXTENSION_ID" ;;
+              flask) EXTENSION_ID_VAR="EXTENSION_ID_FLASK" ;;
+            esac
+            echo "::error::Missing ${EXTENSION_ID_VAR} repository variable for target '${TARGET}'"
+            exit 1
+          fi
           missing=""
-          for name in WIF_PROVIDER WIF_SERVICE_ACCOUNT EXTENSION_ID PUBLISHER_ID; do
+          for name in WIF_PROVIDER WIF_SERVICE_ACCOUNT PUBLISHER_ID; do
             if [[ -z "${!name:-}" ]]; then
               missing="${missing} ${name}"
             fi
