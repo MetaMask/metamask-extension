@@ -72,7 +72,6 @@ const EnterVerificationCode = () => {
     }
 
     try {
-      log.debug('EnterVerificationCode: submitting OTP', joined);
       await submitRequestToBackground<void>('messengerCall', [
         'QrSyncController:submitOtp',
         [joined],

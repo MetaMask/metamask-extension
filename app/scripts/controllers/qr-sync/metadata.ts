@@ -1,6 +1,7 @@
 import type { StateMetadata } from '@metamask/base-controller';
 import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
 import type { QrSyncControllerState } from './types';
+import { QrSyncConnectionStatus } from './constants';
 
 export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
   qrSyncPhase: {
@@ -71,7 +72,7 @@ export const MESSENGER_EXPOSED_METHODS = [
 export function getDefaultQrSyncControllerState(): QrSyncControllerState {
   return {
     qrSyncPhase: QR_SYNC_PHASES.IDLE,
-    qrSyncConnectionStatus: 'disconnected',
+    qrSyncConnectionStatus: QrSyncConnectionStatus.DISCONNECTED,
     qrSyncSessionId: null,
     qrSyncCreatedAt: null,
     qrSyncUpdatedAt: null,

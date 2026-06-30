@@ -17,19 +17,18 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 
 import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
+import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
 import type { QrSyncController } from './qr-sync-controller';
 import type { KeyManager } from './key-manager';
 import {
   QR_SYNC_CONTROLLER_NAME,
   QrSyncActionTypes,
+  QrSyncConnectionStatus,
   QrSyncMessageVersion,
 } from './constants';
 
-export type QrSyncConnectionStatus =
-  | 'disconnected'
-  | 'connecting'
-  | 'connected'
-  | 'errored';
+export type QrSyncConnectionStatusType =
+  (typeof QrSyncConnectionStatus)[keyof typeof QrSyncConnectionStatus];
 
 export type QrSyncControllerInitOptions = {
   keyManager: KeyManager;
@@ -73,18 +72,11 @@ export type QrSyncOffer = {
   sessionId: string;
 };
 
-export type QrSyncErrorCode =
-  | 'CHANNEL_INIT_FAILED'
-  | 'CHANNEL_DISCONNECTED'
-  | 'SESSION_EXPIRED'
-  | 'OTP_INVALID'
-  | 'OTP_EXPIRED'
-  | 'SYNC_REJECTED'
-  | 'SYNC_FAILED'
-  | 'UNKNOWN';
+export type QrSyncErrorCodeType =
+  (typeof QrSyncErrorCodes)[keyof typeof QrSyncErrorCodes];
 
 export type QrSyncError = {
-  code: QrSyncErrorCode;
+  code: QrSyncErrorCodeType;
   message: string;
 };
 
@@ -225,9 +217,9 @@ export type QrSyncControllerState = {
   /**
    * The current connection status of the MWP protocol connection.
    *
-   * @type {QrSyncConnectionStatus}
+   * @type {QrSyncConnectionStatusType}
    */
-  qrSyncConnectionStatus: QrSyncConnectionStatus;
+  qrSyncConnectionStatus: QrSyncConnectionStatusType;
   /**
    * Current session ID.
    */
