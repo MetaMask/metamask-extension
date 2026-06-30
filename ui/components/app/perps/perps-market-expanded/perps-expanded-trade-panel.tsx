@@ -4,10 +4,12 @@ import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import {
   usePerpsLiveAccount,
+  usePerpsLivePositions,
   usePerpsLivePrices,
 } from '../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
-import { usePerpsEligibility } from '../../../../hooks/perps';
+import { usePerpsEligibility, usePerpsMaxSlippage } from '../../../../hooks/perps';
+import { getIsPerpsSlippageConfigEnabled } from '../../../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -16,6 +18,7 @@ import {
   type OrderFormState,
 } from '../order-entry';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import { normalizeTpslPrices, willFlipPosition } from '../utils';
 import { translatePerpsError } from '../utils/translate-perps-error';
 import type { PerpsBackgroundResult } from '../types';
 
@@ -53,8 +56,20 @@ export const PerpsExpandedTradePanel = React.memo(
     const selectedAddress = selectedAccount?.address;
     const { isEligible } = usePerpsEligibility();
     const { replacePerpsToastByKey } = usePerpsToast();
+    const isSlippageConfigEnabled = useSelector(
+      getIsPerpsSlippageConfigEnabled,
+    );
+    const { maxSlippageBps } = usePerpsMaxSlippage();
 
     const { account } = usePerpsLiveAccount();
+    const { positions } = usePerpsLivePositions();
+    const position = useMemo(
+      () =>
+        positions.find(
+          (pos) => pos.symbol.toLowerCase() === symbol.toLowerCase(),
+        ),
+      [positions, symbol],
+    );
     const symbols = useMemo(() => [symbol], [symbol]);
     const { prices } = usePerpsLivePrices({ symbols });
     const livePrice = Number.parseFloat(prices[symbol]?.price ?? '');
@@ -78,12 +93,68 @@ export const PerpsExpandedTradePanel = React.memo(
         replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS });
 
         try {
+          const orderParams = formStateToOrderParams(
+            formState,
+            currentPrice,
+            'new',
+            position?.size,
+            isSlippageConfigEnabled ? maxSlippageBps : undefined,
+          );
+
+          // Market orders with TP/SL on a new (or flipping) position route
+          // through the two-step flow used by the order entry page: place the
+          // market order without TP/SL, then call `perpsUpdatePositionTPSL` so
+          // the controller submits the trigger orders under
+          // `grouping: 'positionTpsl'`. Sending TP/SL in the same `placeOrder`
+          // call falls back to the controller's `normalTpsl` default, which
+          // tags the trigger orders `isPositionTpsl: false` and breaks the
+          // auto-close/orders partition on the market-detail page.
+          const shouldHandleTpslSeparately =
+            (orderParams.takeProfitPrice || orderParams.stopLossPrice) &&
+            formState.type === 'market' &&
+            (!position ||
+              parseFloat(position.size.replaceAll(',', '')) === 0 ||
+              willFlipPosition(position, orderParams));
+          const placeOrderParams = shouldHandleTpslSeparately
+            ? (() => {
+                const stripped = { ...orderParams };
+                delete stripped.takeProfitPrice;
+                delete stripped.stopLossPrice;
+                return stripped;
+              })()
+            : orderParams;
+
           const result = await submitRequestToBackground<PerpsBackgroundResult>(
             'perpsPlaceOrder',
-            [formStateToOrderParams(formState, currentPrice)],
+            [placeOrderParams],
           );
           if (!result.success) {
             throw new Error(result.error ?? 'Order failed');
+          }
+          if (shouldHandleTpslSeparately) {
+            const { takeProfitPrice, stopLossPrice } = normalizeTpslPrices({
+              takeProfitPrice: orderParams.takeProfitPrice,
+              stopLossPrice: orderParams.stopLossPrice,
+            });
+            const tpslResult =
+              await submitRequestToBackground<PerpsBackgroundResult>(
+                'perpsUpdatePositionTPSL',
+                [{ symbol: formState.asset, takeProfitPrice, stopLossPrice }],
+              );
+            if (!tpslResult.success) {
+              // The market order already filled — surface the TP/SL-specific
+              // failure so the user can attach TP/SL from the open position
+              // rather than re-submitting (which would open a duplicate).
+              replacePerpsToastByKey({
+                key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+                description:
+                  translatePerpsError(
+                    new Error(tpslResult.error ?? 'Failed to attach TP/SL'),
+                    t as (key: string) => string,
+                  ) ?? t('perpsToastOrderFailedDescriptionFallback'),
+              });
+              return;
+            }
           }
           submitRequestToBackground('perpsSaveTradeConfiguration', [
             formState.asset,
@@ -114,6 +185,9 @@ export const PerpsExpandedTradePanel = React.memo(
         onGeoBlocked,
         selectedAddress,
         currentPrice,
+        position,
+        isSlippageConfigEnabled,
+        maxSlippageBps,
         replacePerpsToastByKey,
         t,
       ],
