@@ -82,5 +82,20 @@ describe('perps-cache', () => {
       expect(second).toEqual(markets);
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
+
+    it('refetches when useTerminalApi flag changes', async () => {
+      const directMarkets = [{ symbol: 'BTC' }];
+      const terminalMarkets = [{ symbol: 'BTC' }, { symbol: 'ETH' }];
+
+      mockSubmitRequestToBackground.mockResolvedValue(directMarkets);
+      const first = await fetchMarketInfos('provider:mainnet:0xabc', false);
+      expect(first).toEqual(directMarkets);
+
+      mockSubmitRequestToBackground.mockResolvedValue(terminalMarkets);
+      const second = await fetchMarketInfos('provider:mainnet:0xabc', true);
+      expect(second).toEqual(terminalMarkets);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+    });
   });
 });

@@ -34,11 +34,11 @@ export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
 
   const [marketInfos, setMarketInfos] = useState<MarketInfo[]>(
-    () => peekCachedMarketInfos(marketInfoCacheKey) ?? [],
+    () => peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi) ?? [],
   );
 
   useEffect(() => {
-    const cached = peekCachedMarketInfos(marketInfoCacheKey);
+    const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
     if (cached) {
       setMarketInfos(cached);
       return undefined;

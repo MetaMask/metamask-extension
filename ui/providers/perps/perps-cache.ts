@@ -39,11 +39,22 @@ type MarketInfoCacheEntry = {
 
 const marketInfoCacheByKey = new Map<string, MarketInfoCacheEntry>();
 
-function getMarketInfoCacheEntry(cacheKey: string): MarketInfoCacheEntry {
-  let entry = marketInfoCacheByKey.get(cacheKey);
+function marketInfoInternalKey(
+  cacheKey: string,
+  useTerminalApi: boolean,
+): string {
+  return `${cacheKey}:${useTerminalApi ? 'terminal' : 'direct'}`;
+}
+
+function getMarketInfoCacheEntry(
+  cacheKey: string,
+  useTerminalApi: boolean,
+): MarketInfoCacheEntry {
+  const key = marketInfoInternalKey(cacheKey, useTerminalApi);
+  let entry = marketInfoCacheByKey.get(key);
   if (!entry) {
     entry = { cached: null, fetchedAt: 0, inflight: null };
-    marketInfoCacheByKey.set(cacheKey, entry);
+    marketInfoCacheByKey.set(key, entry);
   }
   return entry;
 }
@@ -57,8 +68,10 @@ function isMarketInfoCacheWarm(entry: MarketInfoCacheEntry): boolean {
 
 export function peekCachedMarketInfos(
   cacheKey: string,
+  useTerminalApi = false,
 ): MarketInfo[] | undefined {
-  const entry = marketInfoCacheByKey.get(cacheKey);
+  const key = marketInfoInternalKey(cacheKey, useTerminalApi);
+  const entry = marketInfoCacheByKey.get(key);
   if (entry && isMarketInfoCacheWarm(entry)) {
     return entry.cached ?? undefined;
   }
@@ -69,7 +82,7 @@ export function fetchMarketInfos(
   cacheKey: string,
   useTerminalApi = false,
 ): Promise<MarketInfo[]> {
-  const entry = getMarketInfoCacheEntry(cacheKey);
+  const entry = getMarketInfoCacheEntry(cacheKey, useTerminalApi);
   if (isMarketInfoCacheWarm(entry)) {
     return Promise.resolve(entry.cached as MarketInfo[]);
   }
