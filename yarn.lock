@@ -8567,20 +8567,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/wallet@npm:3.0.0"
+"@metamask/wallet@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/wallet@npm:4.0.0"
   dependencies:
+    "@metamask/accounts-controller": "npm:^39.0.2"
     "@metamask/approval-controller": "npm:^9.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^12.1.1"
-    "@metamask/keyring-controller": "npm:^27.0.0"
+    "@metamask/connectivity-controller": "npm:^0.2.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/storage-service": "npm:^1.0.2"
-    "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/a4f109d50228e4dd8452ec3449cf65cf435e9fdc0d23ad13c088cc492cca73d020f219badcf1971bf8b2ebd893fc3b0092b67d99905ec37f69eda25bbc35b0ac
+    "@metamask/utils": "npm:^11.11.0"
+  checksum: 10/8c060299c8fd642bbd22b2bfb8f77c3178b6ccbf2f3e317fe003ac1a94b3e9fdb89f9ecb1160d3cd73ea8030e316f9e8424a663eb768cd5cf1b791753fc7d33d
   languageName: node
   linkType: hard
 
@@ -33203,7 +33206,7 @@ __metadata:
     "@metamask/tron-wallet-snap": "npm:^1.27.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
-    "@metamask/wallet": "npm:^3.0.0"
+    "@metamask/wallet": "npm:^4.0.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"
