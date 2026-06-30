@@ -1006,6 +1006,18 @@
         "reselect": true
       }
     },
+    "@metamask/config-registry-controller": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/polling-controller": true,
+        "@metamask/profile-sync-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
@@ -2277,7 +2289,7 @@
         "@metamask/post-message-stream": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-registry": true,
-        "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": true,
+        "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -2324,19 +2336,6 @@
         "@metamask/utils": true,
         "@noble/hashes": true,
         "async-mutex": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": {
-      "packages": {
-        "@metamask/json-rpc-engine": true,
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/snaps-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@noble/hashes": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -2467,7 +2466,7 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
+        "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,

@@ -235,6 +235,7 @@ import {
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
 import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
+import { checkGmxHasReferralCode } from './lib/defi-referral-onchain-check';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -407,6 +408,7 @@ import {
   SubscriptionControllerInit,
   SubscriptionServiceInit,
 } from './messenger-client-init/subscription';
+import { ConfigRegistryControllerInit } from './messenger-client-init/config-registry-controller-init';
 import { ConnectivityControllerInit } from './messenger-client-init/connectivity';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
@@ -450,6 +452,7 @@ import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ow
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
+import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 
@@ -726,6 +729,8 @@ export default class MetamaskController extends EventEmitter {
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
+      ConfigRegistryController: ConfigRegistryControllerInit,
+      ConfigRegistryApiService: ConfigRegistryApiServiceInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -863,6 +868,8 @@ export default class MetamaskController extends EventEmitter {
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
     this.passkeyController = messengerClientsByName.PasskeyController;
+    this.configRegistryController =
+      messengerClientsByName.ConfigRegistryController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1429,6 +1436,7 @@ export default class MetamaskController extends EventEmitter {
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
       ProfileMetricsController: this.profileMetricsController,
+      ConfigRegistryController: this.configRegistryController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -1497,6 +1505,7 @@ export default class MetamaskController extends EventEmitter {
         ClaimsController: this.claimsController,
         ClaimsService: this.claimsService,
         ProfileMetricsController: this.profileMetricsController,
+        ConfigRegistryController: this.configRegistryController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -2218,93 +2227,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstallStarted`,
-      (snapId, origin, isUpdate) => {
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: isUpdate
-            ? MetaMetricsEventName.SnapUpdateStarted
-            : MetaMetricsEventName.SnapInstallStarted,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstallFailed`,
-      (snapId, origin, isUpdate, error) => {
-        const isRejected = error.includes('User rejected the request.');
-        const failedEvent = isUpdate
-          ? MetaMetricsEventName.SnapUpdateFailed
-          : MetaMetricsEventName.SnapInstallFailed;
-        const rejectedEvent = isUpdate
-          ? MetaMetricsEventName.SnapUpdateRejected
-          : MetaMetricsEventName.SnapInstallRejected;
-
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: isRejected ? rejectedEvent : failedEvent,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstalled`,
-      (truncatedSnap, origin, preinstalled) => {
-        if (preinstalled) {
-          return;
-        }
-
-        const snapId = truncatedSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapInstalled,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            version: truncatedSnap.version,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapUpdated`,
-      (newSnap, oldVersion, origin, preinstalled) => {
-        if (preinstalled) {
-          return;
-        }
-
-        const snapId = newSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapUpdated,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            old_version: oldVersion,
-            new_version: newSnap.version,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapTerminated`,
       (truncatedSnap) => {
         const approvals = Object.values(
@@ -2336,18 +2258,6 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesController.deleteNotificationsById(
           notificationIds,
         );
-
-        const snapId = truncatedSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapUninstalled,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            version: truncatedSnap.version,
-            snap_category: snapCategory,
-          },
-        });
       },
     );
   }
@@ -3605,6 +3515,14 @@ export default class MetamaskController extends EventEmitter {
       trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
+      ),
+      setLocation: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:setLocation`,
+      ),
+      getLocation: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:getLocation`,
       ),
       fetchQuotes: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -5856,6 +5774,23 @@ export default class MetamaskController extends EventEmitter {
 
     // We should redirect to the referral url if the account is approved
     const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
+
+    if (
+      partner.id === DefiReferralPartner.GMX &&
+      (shouldShowApproval || shouldRedirect)
+    ) {
+      const hasExistingCode = await checkGmxHasReferralCode(
+        this.networkController,
+        activePermittedAccount,
+      );
+      if (hasExistingCode) {
+        this.preferencesController.addReferralPassedAccount(
+          partner.id,
+          activePermittedAccount,
+        );
+        return;
+      }
+    }
 
     if (shouldShowApproval) {
       try {
@@ -8317,6 +8252,16 @@ export default class MetamaskController extends EventEmitter {
       // Notify Snaps that the client is open or closed when the client is
       // unlocked.
       this.controllerMessenger.call('SnapController:setClientActive', open);
+
+      if (open) {
+        // If the client is open and unlocked, request a periodic update of the
+        // Snaps registry.
+        this.controllerMessenger
+          .call('SnapRegistryController:requestPeriodicUpdate')
+          .catch((error) => {
+            captureException(error);
+          });
+      }
     }
 
     if (open) {

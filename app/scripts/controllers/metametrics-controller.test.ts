@@ -67,7 +67,11 @@ import {
 import type { Preferences } from '../../../shared/types/preferences';
 import * as sentry from '../../../shared/lib/sentry';
 import { ANONYMOUS_EVENT_PROPERTY } from './analytics/platform-adapter';
-import { configureAnalytics, getAnalyticsMessenger } from './analytics';
+import {
+  configureAnalytics,
+  getAnalyticsMessenger,
+  updateProfileSessionData,
+} from './analytics';
 import {
   MetaMetricsController,
   AllowedActions,
@@ -168,6 +172,31 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
+const SAMPLE_SRP_SESSION_DATA = {
+  entropySourceId1: {
+    token: {
+      accessToken: '',
+      expiresIn: 0,
+      obtainedAt: 0,
+    },
+    profile: {
+      identifierId: 'identifierId',
+      profileId: 'profileId',
+      canonicalProfileId: 'canonicalProfileId',
+      metaMetricsId: 'testid',
+    },
+  },
+};
+
+const PROFILE_IDENTITY_EVENT_PROPERTIES = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  profile_id: 'profileId',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  canonical_profile_id: 'canonicalProfileId',
+};
+
 const SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT = {
   id: 'transaction-submitted-0000',
   canDeleteIfAbandoned: true,
@@ -214,6 +243,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
 describe('MetaMetricsController', function () {
   beforeEach(() => {
     clearABTestAnalyticsMappings();
+    updateProfileSessionData(undefined);
   });
 
   describe('constructor', function () {
@@ -1451,6 +1481,112 @@ describe('MetaMetricsController', function () {
           );
         },
       );
+    });
+  });
+
+  describe('profile identity event properties', function () {
+    it('omits profile identity properties when srpSessionData is unavailable', async function () {
+      await withController(({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+        controller.trackEvent({
+          event: 'Fake Event',
+          category: 'Unit Test',
+        });
+
+        expect(spy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.not.objectContaining(
+              PROFILE_IDENTITY_EVENT_PROPERTIES,
+            ),
+          }),
+          undefined,
+        );
+      });
+    });
+
+    it('includes profile identity properties on track events when srpSessionData is available', async function () {
+      await withController(({ controller }) => {
+        jest.spyOn(controller, '_buildUserTraitsObject').mockReturnValue(null);
+        controller.handleMetaMaskStateUpdate({
+          srpSessionData: SAMPLE_SRP_SESSION_DATA,
+        } as unknown as MetaMaskState);
+
+        const spy = jest.spyOn(segmentMock, 'track');
+        controller.trackEvent({
+          event: 'Fake Event',
+          category: 'Unit Test',
+        });
+
+        expect(spy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              ...DEFAULT_EVENT_PROPERTIES,
+              ...PROFILE_IDENTITY_EVENT_PROPERTIES,
+            }),
+          }),
+          undefined,
+        );
+      });
+    });
+
+    it('includes profile identity properties on page events when srpSessionData is available', async function () {
+      await withController(({ controller }) => {
+        jest.spyOn(controller, '_buildUserTraitsObject').mockReturnValue(null);
+        controller.handleMetaMaskStateUpdate({
+          srpSessionData: SAMPLE_SRP_SESSION_DATA,
+        } as unknown as MetaMaskState);
+
+        const spy = jest.spyOn(segmentMock, 'page');
+        controller.trackPage({
+          name: 'home',
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+        });
+
+        expect(spy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              ...DEFAULT_PAGE_PROPERTIES,
+              ...PROFILE_IDENTITY_EVENT_PROPERTIES,
+            }),
+          }),
+          spy.mock.calls[0][1],
+        );
+      });
+    });
+
+    it('includes profile identity properties on the main event but not the anonymous duplicate', async function () {
+      await withController(({ controller }) => {
+        jest.spyOn(controller, '_buildUserTraitsObject').mockReturnValue(null);
+        controller.handleMetaMaskStateUpdate({
+          srpSessionData: SAMPLE_SRP_SESSION_DATA,
+        } as unknown as MetaMaskState);
+
+        const spy = jest.spyOn(segmentMock, 'track');
+        controller.trackEvent({
+          event: 'Signature Requested',
+          category: 'Unit Test',
+          properties: DEFAULT_EVENT_PROPERTIES,
+          sensitiveProperties: { foo: 'bar' },
+        });
+
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy.mock.calls[0][0].properties).toMatchObject({
+          ...DEFAULT_EVENT_PROPERTIES,
+          ...PROFILE_IDENTITY_EVENT_PROPERTIES,
+        });
+        expect(spy.mock.calls[1][0].properties).toMatchObject({
+          foo: 'bar',
+          ...DEFAULT_EVENT_PROPERTIES,
+          [ANONYMOUS_EVENT_PROPERTY]: true,
+        });
+        expect(spy.mock.calls[1][0].properties).not.toHaveProperty(
+          'profile_id',
+        );
+        expect(spy.mock.calls[1][0].properties).not.toHaveProperty(
+          'canonical_profile_id',
+        );
+      });
     });
   });
 
@@ -3174,14 +3310,14 @@ async function withController<ReturnValue>(
       }
 
       segmentMock.track(buildPayload(event.properties) as never, undefined);
-      segmentMock.track(
-        buildPayload({
-          ...event.properties,
-          ...event.sensitiveProperties,
-          anonymous: true,
-        }) as never,
-        undefined,
-      );
+      const sanitizedProperties: Record<string, unknown> = {
+        ...event.properties,
+        ...event.sensitiveProperties,
+        anonymous: true,
+      };
+      delete sanitizedProperties.profile_id;
+      delete sanitizedProperties.canonical_profile_id;
+      segmentMock.track(buildPayload(sanitizedProperties) as never, undefined);
     }) as never);
 
     messenger.registerActionHandler('AnalyticsController:trackView', ((

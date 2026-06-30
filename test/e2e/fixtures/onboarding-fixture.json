@@ -31,6 +31,10 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false
+    },
     "AnnouncementController": {
       "announcements": {}
     },
@@ -90,6 +94,9 @@
     "AuthenticationController": {
       "isSignedIn": false
     },
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -100,6 +107,18 @@
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -173,11 +192,8 @@
     "LoggingController": {
       "logs": {}
     },
-    "AnalyticsController": {
-      "analyticsId": null,
-      "optedIn": false
-    },
     "MetaMetricsController": {
+      "completedMetaMetricsOnboarding": false,
       "dataCollectionForMarketing": null,
       "eventsBeforeMetricsOptIn": [
         {
@@ -188,7 +204,6 @@
       ],
       "fragments": {},
       "marketingCampaignCookieId": null,
-      "completedMetaMetricsOnboarding": false,
       "tracesBeforeMetricsOptIn": [
         {
           "request": {
@@ -598,10 +613,6 @@
     "NotificationServicesPushController": {
       "fcmToken": "",
       "isPushEnabled": true
-    },
-    "ComplianceController": {
-      "lastCheckedAt": null,
-      "walletComplianceStatusMap": {}
     },
     "OnboardingController": {
       "completedOnboarding": false,

@@ -85,3 +85,11 @@ export function getPartnerByOrigin(
     (partner) => origin === partner.origin,
   );
 }
+
+/**
+ * GMX ReferralStorage contract address on Arbitrum
+ * Used to check whether a wallet address already has a referral code set on-chain.
+ * See https://arbiscan.io/address/0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d
+ */
+export const GMX_REFERRAL_STORAGE_ADDRESS =
+  '0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d';
