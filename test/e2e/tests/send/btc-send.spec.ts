@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -21,6 +20,7 @@ import {
   mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
+import { buildBtcUnifiedAssetsFixtures } from '../btc/btc-assets-fixture';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
@@ -44,7 +44,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('fields validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcUnifiedAssetsFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -77,7 +77,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcUnifiedAssetsFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -113,7 +113,7 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcUnifiedAssetsFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
