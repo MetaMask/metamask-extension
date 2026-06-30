@@ -94,6 +94,26 @@ export class IndexedDBStore {
     return keys.map((key) => resultMap.get(key));
   }
 
+  async getKeys(prefix?: string): Promise<string[]> {
+    if (!this.#db) {
+      throw new Error('Database is not open');
+    }
+    const tx = this.#db.transaction('store', 'readonly');
+    const store = tx.objectStore('store');
+    const request = store.getAllKeys();
+    const keys = await new Promise<IDBValidKey[]>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    await transactionPromise(tx);
+    const stringKeys = keys.filter((key): key is string => {
+      return typeof key === 'string';
+    });
+    return prefix
+      ? stringKeys.filter((key) => key.startsWith(prefix))
+      : stringKeys;
+  }
+
   async remove(keys: string[]): Promise<void> {
     if (!this.#db) {
       throw new Error('Database is not open');
