@@ -148,35 +148,29 @@ export type QrSyncControllerState = {
    *
    * @type {QrSyncPhase}
    */
-  phase: QrSyncPhase;
+  qrSyncPhase: QrSyncPhase;
   /**
    * The current connection status of the MWP protocol connection.
    *
    * @type {QrSyncConnectionStatus}
    */
-  connectionStatus: QrSyncConnectionStatus;
+  qrSyncConnectionStatus: QrSyncConnectionStatus;
   /**
    * Current session ID.
    */
-  sessionId: string | null;
+  qrSyncSessionId: string | null;
   /**
    * The QR payload to be displayed to the user.
    *
    * @type {string | null}
    */
-  qrPayload: string | null;
-  /**
-   * The number of OTP attempts.
-   */
-  otpAttempts: number;
+  qrSyncQrPayload: string | null;
   syncOffer: QrSyncOffer | null;
-  selectedAccountIds: string[];
-  selectedSyncDataType: SyncDataType | null;
-  lastActionType: QrSyncActionType | null;
-  importedAccountIds: string[];
-  error: QrSyncError | null;
-  createdAt: number | null;
-  updatedAt: number | null;
+  qrSyncSelectedAccountIds: string[];
+  qrSyncImportedAccountIds: string[];
+  qrSyncError: QrSyncError | null;
+  qrSyncCreatedAt: number | null;
+  qrSyncUpdatedAt: number | null;
 };
 
 export type QrSyncControllerStateChangeEvent = ControllerStateChangedEvent<

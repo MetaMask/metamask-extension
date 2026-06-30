@@ -28,8 +28,8 @@ const createMockStore = (metamaskOverrides = {}) =>
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      qrPayload: 'metamask://connect/mwp?p=test',
-      error: null,
+      qrSyncQrPayload: 'metamask://connect/mwp?p=test',
+      qrSyncError: null,
       ...metamaskOverrides,
     },
   });
@@ -82,7 +82,7 @@ describe('QrCodeScan', () => {
 
   it('shows the scan error message when the controller reports an error', () => {
     const mockStore = createMockStore({
-      error: {
+      qrSyncError: {
         code: 'CHANNEL_DISCONNECTED',
         message: 'The sync channel disconnected.',
       },

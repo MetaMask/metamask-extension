@@ -20,17 +20,17 @@ export const selectQrSyncState = createSelector(
 
 export const selectQrSyncPhase = createSelector(
   [selectQrSyncState],
-  (qrSyncState) => qrSyncState.phase,
+  (qrSyncState) => qrSyncState.qrSyncPhase,
 );
 
 export const selectQrSyncQrPayload = createSelector(
   [selectQrSyncState],
-  (qrSyncState) => qrSyncState.qrPayload,
+  (qrSyncState) => qrSyncState.qrSyncQrPayload,
 );
 
 export const selectQrSyncError = createSelector(
   [selectQrSyncState],
-  (qrSyncState) => qrSyncState.error,
+  (qrSyncState) => qrSyncState.qrSyncError,
 );
 
 export const selectIsQrSyncTerminal = createSelector(

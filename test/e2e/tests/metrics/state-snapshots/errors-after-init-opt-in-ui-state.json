@@ -322,6 +322,15 @@
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quotesRefreshCount": 0,
+    "qrSyncConnectionStatus": "disconnected",
+    "qrSyncCreatedAt": null,
+    "qrSyncError": null,
+    "qrSyncImportedAccountIds": "object",
+    "qrSyncPhase": "idle",
+    "qrSyncQrPayload": null,
+    "qrSyncSelectedAccountIds": "object",
+    "qrSyncSessionId": null,
+    "qrSyncUpdatedAt": null,
     "rates": {
       "btc": { "conversionDate": 0, "conversionRate": 0 },
       "sol": { "conversionDate": 0, "conversionRate": 0 }
@@ -382,6 +391,7 @@
     "submitHistory": "object",
     "subscriptionAccountsSeen": "object",
     "subscriptions": "object",
+    "syncOffer": null,
     "syncQueue": "object",
     "termsOfUseLastAgreed": "number",
     "theme": "os",
