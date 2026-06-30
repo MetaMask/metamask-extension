@@ -79,6 +79,13 @@ export const QrSyncActionTypes = {
   SYNC_ERROR: 'sync-error',
 };
 
+export const QrSyncConnectionStatus = {
+  DISCONNECTED: 'disconnected',
+  CONNECTING: 'connecting',
+  CONNECTED: 'connected',
+  ERRORED: 'errored',
+} as const;
+
 export const QrSyncErrorMessages = {
   SYNC_FAILED_TO_INITIALIZE: 'Failed to initialize the sync session',
   SYNC_FAILED_TO_CREATE_SESSION: 'Failed to create the sync session',

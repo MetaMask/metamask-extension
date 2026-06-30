@@ -20,9 +20,11 @@ import {
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
 import { convertEnglishWordlistIndicesToCodepoints } from '../../lib/util';
+import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
 import {
   QR_SYNC_CONTROLLER_NAME,
   QrSyncActionTypes,
+  QrSyncConnectionStatus,
   QrSyncErrorMessages,
   QrSyncMessageVersion,
 } from './constants';
@@ -39,6 +41,7 @@ import {
 } from './utils';
 import type { KeyManager } from './key-manager';
 import {
+  QrSyncConnectionStatusType,
   QrSyncMessage,
   type QrSyncControllerInitOptions,
   type QrSyncControllerMessenger,
@@ -134,7 +137,7 @@ export class QrSyncController extends BaseController<
       });
     } catch (error) {
       this.#setError({
-        code: 'CHANNEL_INIT_FAILED',
+        code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
         message:
           error instanceof Error
             ? error.message
@@ -175,7 +178,7 @@ export class QrSyncController extends BaseController<
     } catch (error) {
       this.update((state) => {
         state.qrSyncError = {
-          code: 'OTP_INVALID',
+          code: QrSyncErrorCodes.OTP_INVALID,
           message:
             error instanceof Error
               ? error.message
@@ -302,7 +305,7 @@ export class QrSyncController extends BaseController<
       this.#transitionPhase(this.state.qrSyncPhase, 'connected');
     } catch (error) {
       this.#setError({
-        code: 'CHANNEL_INIT_FAILED',
+        code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
         message:
           error instanceof Error
             ? error.message
@@ -428,7 +431,7 @@ export class QrSyncController extends BaseController<
       state.qrSyncUpdatedAt = Date.now();
       if (reason) {
         state.qrSyncError = {
-          code: 'SYNC_FAILED',
+          code: QrSyncErrorCodes.SYNC_FAILED,
           message: reason,
         };
       }
@@ -444,7 +447,7 @@ export class QrSyncController extends BaseController<
       state.qrSyncUpdatedAt = Date.now();
       if (reason) {
         state.qrSyncError = {
-          code: 'SYNC_REJECTED',
+          code: QrSyncErrorCodes.SYNC_REJECTED,
           message: reason,
         };
       }
@@ -495,7 +498,7 @@ export class QrSyncController extends BaseController<
       log.debug('QrSyncController: OTP required');
       this.#handleOtpRequired(payload).catch((error) => {
         this.#setError({
-          code: 'OTP_INVALID',
+          code: QrSyncErrorCodes.OTP_INVALID,
           message:
             error instanceof Error
               ? error.message
@@ -507,14 +510,14 @@ export class QrSyncController extends BaseController<
     const connected = () => {
       log.debug('QrSyncController: connected to the sync channel');
       this.update((state) => {
-        state.qrSyncConnectionStatus = 'connected';
+        state.qrSyncConnectionStatus = QrSyncConnectionStatus.CONNECTED;
         state.qrSyncUpdatedAt = Date.now();
       });
     };
 
     const disconnected = () => {
       this.#setError({
-        code: 'CHANNEL_DISCONNECTED',
+        code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
         message: 'The sync channel disconnected.',
       });
     };
@@ -522,7 +525,7 @@ export class QrSyncController extends BaseController<
     const clientError = (error: Error) => {
       log.error('QrSyncController: error', error);
       this.#setError({
-        code: 'UNKNOWN',
+        code: QrSyncErrorCodes.UNKNOWN,
         message: error.message,
       });
     };
@@ -549,7 +552,7 @@ export class QrSyncController extends BaseController<
       state.qrSyncSessionId = request.id;
       state.qrSyncQrPayload = generateQrCode(request);
       state.qrSyncPhase = QR_SYNC_PHASES.DISPLAYING_QR;
-      state.qrSyncConnectionStatus = 'connecting';
+      state.qrSyncConnectionStatus = QrSyncConnectionStatus.CONNECTING;
       state.qrSyncCreatedAt = state.qrSyncCreatedAt ?? Date.now();
       state.qrSyncUpdatedAt = Date.now();
       state.qrSyncError = null;
@@ -627,7 +630,7 @@ export class QrSyncController extends BaseController<
           QrSyncErrorMessages.SYNC_SESSION_ENCOUNTERED_ERROR;
         this.#rejectSyncCompletion(new Error(syncErrorMessage));
         this.#setError({
-          code: 'SYNC_FAILED',
+          code: QrSyncErrorCodes.SYNC_FAILED,
           message: syncErrorMessage,
         });
         return;
@@ -652,9 +655,9 @@ export class QrSyncController extends BaseController<
 
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.CANCELLED;
-      state.qrSyncConnectionStatus = 'disconnected';
+      state.qrSyncConnectionStatus = QrSyncConnectionStatus.DISCONNECTED;
       state.qrSyncError = {
-        code: 'SYNC_REJECTED',
+        code: QrSyncErrorCodes.SYNC_REJECTED,
         message: QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
       };
       state.syncOffer = null;
@@ -672,7 +675,7 @@ export class QrSyncController extends BaseController<
 
   #transitionPhase(
     qrSyncPhase: QrSyncPhase,
-    qrSyncConnectionStatus: QrSyncControllerState['qrSyncConnectionStatus'],
+    qrSyncConnectionStatus: QrSyncConnectionStatusType,
   ): void {
     this.update((state) => {
       state.qrSyncPhase = qrSyncPhase;
@@ -686,7 +689,7 @@ export class QrSyncController extends BaseController<
 
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.FAILED;
-      state.qrSyncConnectionStatus = 'errored';
+      state.qrSyncConnectionStatus = QrSyncConnectionStatus.ERRORED;
       state.qrSyncError = error;
       state.syncOffer = null;
       state.qrSyncQrPayload = null;
@@ -817,17 +820,8 @@ export class QrSyncController extends BaseController<
       return;
     }
 
-    const removableClient = client as DappClient & {
-      off?: (event: string, handler: (...args: unknown[]) => void) => void;
-      removeListener?: (
-        event: string,
-        handler: (...args: unknown[]) => void,
-      ) => void;
-    };
-
     const removeHandler =
-      removableClient.off?.bind(removableClient) ??
-      removableClient.removeListener?.bind(removableClient);
+      client.off?.bind(client) ?? client.removeListener?.bind(client);
 
     if (removeHandler) {
       removeHandler(

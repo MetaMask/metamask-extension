@@ -2,7 +2,12 @@ import type {
   IKeyManager,
   KeyPair,
 } from '@metamask/mobile-wallet-protocol-core';
-import { bytesToBase64 } from '@metamask/utils';
+import {
+  base64ToBytes,
+  bytesToBase64,
+  bytesToString,
+  stringToBytes,
+} from '@metamask/utils';
 import { decrypt, encrypt, PrivateKey, PublicKey } from 'eciesjs';
 
 export class KeyManager implements IKeyManager {
@@ -22,7 +27,7 @@ export class KeyManager implements IKeyManager {
     plaintext: string,
     theirPublicKey: Uint8Array,
   ): Promise<string> {
-    const plaintextBuffer = Buffer.from(plaintext, 'utf8');
+    const plaintextBuffer = stringToBytes(plaintext);
     const encryptedBuffer = encrypt(theirPublicKey, plaintextBuffer);
     return bytesToBase64(encryptedBuffer);
   }
@@ -31,8 +36,8 @@ export class KeyManager implements IKeyManager {
     encryptedB64: string,
     myPrivateKey: Uint8Array,
   ): Promise<string> {
-    const encryptedBuffer = Buffer.from(encryptedB64, 'base64');
+    const encryptedBuffer = base64ToBytes(encryptedB64);
     const decryptedBuffer = await decrypt(myPrivateKey, encryptedBuffer);
-    return Buffer.from(decryptedBuffer).toString('utf8');
+    return bytesToString(decryptedBuffer);
   }
 }
