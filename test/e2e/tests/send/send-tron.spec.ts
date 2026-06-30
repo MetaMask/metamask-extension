@@ -34,8 +34,14 @@ describe('Send Tron', function () {
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched balance is shown reliably.
+        // Tron account is created by a snap at runtime so the balance cannot
+        // be pre-seeded — allow extra time for the v5 API fetch on slow CI.
         await driver.refresh();
-        await tokensTab.checkExpectedTokenBalanceIsDisplayed('6.072', 'TRX');
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed(
+          '6.072',
+          'TRX',
+          45000,
+        );
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );
