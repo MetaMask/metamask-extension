@@ -896,6 +896,7 @@ export class MetaMetricsController extends BaseController<
   }
 
   handleMetaMaskStateUpdate(newState: MetaMaskState): void {
+    analytics.updateProfileSessionData(newState.srpSessionData);
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
       this.identify(userTraits);
