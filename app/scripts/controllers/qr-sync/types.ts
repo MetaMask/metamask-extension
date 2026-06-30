@@ -49,8 +49,8 @@ export type QrSyncMessage<DataType = undefined> = {
 export type SyncDataType = 'MNEMONIC' | 'PRIVATE_KEY';
 
 export type QrSyncOffer = {
-  sessionId?: string;
-  deadline: number;
+  sessionId: string;
+  isOnboardingCompleted: boolean;
 };
 
 export type QrSyncErrorCode =
