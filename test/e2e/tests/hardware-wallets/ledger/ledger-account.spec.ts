@@ -12,17 +12,10 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../../page-objects/flows/account-list.flow';
 
 describe('Ledger Hardware', function () {
-  const ledgerAccountFixtureOptions = {
-    fixtures: new FixtureBuilderV2().build(),
-    unifiedEvmAccountsApiBalances: {
-      hardwareWalletNativeEthHuman: '0',
-    },
-  };
-
   it('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
-        ...ledgerAccountFixtureOptions,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -85,7 +78,7 @@ describe('Ledger Hardware', function () {
   it('unlocks multiple accounts at once and removes one', async function () {
     await withFixtures(
       {
-        ...ledgerAccountFixtureOptions,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

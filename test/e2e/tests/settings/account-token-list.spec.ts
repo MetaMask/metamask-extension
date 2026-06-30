@@ -109,19 +109,6 @@ describe('Settings', function () {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withAssetsController({
             assetsPrice: getMockAssetsPrice(1700),
-            assetsBalance: {
-              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-                'eip155:11155111/slip44:60': { amount: '25' },
-              },
-            },
-            assetsInfo: {
-              'eip155:11155111/slip44:60': {
-                type: 'native',
-                symbol: 'SepoliaETH',
-                name: 'SepoliaETH',
-                decimals: 18,
-              },
-            },
           })
           .build(),
         title: this.test?.fullTitle(),

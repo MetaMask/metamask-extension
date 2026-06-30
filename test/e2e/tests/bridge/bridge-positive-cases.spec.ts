@@ -4,14 +4,14 @@ import {
   bridgeTransaction,
   goToAssetPage,
 } from '../../page-objects/flows/bridge.flow';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
+import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
   checkQuoteRequestsAreNotMadeAfterTimestamp,
-  bridgeLogin,
   getBridgeFixtures,
 } from './bridge-test-utils';
 
@@ -25,7 +25,7 @@ describe('Bridge tests', function (this: Suite) {
       }),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
-        await bridgeLogin(driver);
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
         await bridgeTransaction({
@@ -98,7 +98,7 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver, mockedEndpoint }) => {
-        await bridgeLogin(driver);
+        await login(driver, { expectedBalance: '$225,730.11' });
         const networkManager = new NetworkManager(driver);
 
         // Navigate to Bridge page
@@ -139,7 +139,7 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver, mockedEndpoint }) => {
-        await bridgeLogin(driver);
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
@@ -182,7 +182,7 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver }) => {
-        await bridgeLogin(driver);
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -213,7 +213,7 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver }) => {
-        await bridgeLogin(driver);
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -247,7 +247,7 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver }) => {
-        await bridgeLogin(driver);
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -284,7 +284,7 @@ describe('Bridge tests', function (this: Suite) {
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       }),
       async ({ driver }) => {
-        await bridgeLogin(driver);
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);

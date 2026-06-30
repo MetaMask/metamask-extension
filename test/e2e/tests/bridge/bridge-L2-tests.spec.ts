@@ -2,10 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-  BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
-} from './constants';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import { getBridgeL2Fixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
@@ -17,9 +14,7 @@ describe('Bridge tests', function (this: Suite) {
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       ),
       async ({ driver }) => {
-        await login(driver, {
-          expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
-        });
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         await bridgeTransaction({
           driver,

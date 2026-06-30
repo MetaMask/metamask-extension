@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import {
-  HARDWARE_WALLET_SET_BALANCE_HEX,
-  NETWORK_CLIENT_ID,
-  WINDOW_TITLES,
-} from '../../../constants';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
@@ -126,7 +122,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           // Seed the Trezor account with balance
           (await localNodes?.[0]?.setAccountBalance(
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-            HARDWARE_WALLET_SET_BALANCE_HEX,
+            '0x100000000000000000000',
           )) ?? console.error('localNodes is undefined or empty');
 
           const contractAddress =

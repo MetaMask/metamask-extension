@@ -228,109 +228,6 @@ class SnapSimpleKeyringPage {
   }
 
   /**
-   * Snap Simple Keyring accounts persisted in AccountsController.
-   *
-   * @param state - Extension UI state from `getCleanAppState`.
-   * @returns Matching internal accounts for the Simple Keyring snap.
-   */
-  private getSnapSimpleKeyringAccountsFromState(
-    state: Awaited<ReturnType<typeof getCleanAppState>>,
-  ): { address: string }[] {
-    const accounts = Object.values(
-      (
-        state?.metamask as {
-          // eslint-disable-next-line @typescript-eslint/naming-convention -- controller state key
-          AccountsController?: {
-            internalAccounts?: {
-              accounts?: Record<
-                string,
-                {
-                  address?: string;
-                  metadata?: {
-                    keyring?: { type?: string };
-                    snap?: { id?: string };
-                  };
-                }
-              >;
-            };
-          };
-        }
-      )?.AccountsController?.internalAccounts?.accounts ?? {},
-    );
-    return accounts.filter(
-      (account): account is { address: string } =>
-        account?.metadata?.keyring?.type === 'Snap Keyring' &&
-        account?.metadata?.snap?.id === SIMPLE_KEYRING_SNAP_ID &&
-        typeof account.address === 'string',
-    );
-  }
-
-  /**
-   * Returns how many Simple Keyring snap accounts exist in extension state.
-   */
-  private async getSnapSimpleKeyringAccountCount(): Promise<number> {
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.ExtensionInFullScreenView,
-    );
-    const state = await getCleanAppState(this.driver);
-    return this.getSnapSimpleKeyringAccountsFromState(state).length;
-  }
-
-  /**
-   * Waits for account creation to complete. Prefer extension state; fall back to
-   * the companion dapp JSON response when it appears first.
-   *
-   * @param previousAccountCount - Snap account count before create/import.
-   * @returns Address of the newly created snap account, when applicable.
-   */
-  private async waitForSnapAccountCreationComplete(
-    previousAccountCount: number,
-  ): Promise<string> {
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.ExtensionInFullScreenView,
-    );
-
-    let newAddress = '';
-    await this.driver.waitUntil(
-      async () => {
-        const state = await getCleanAppState(this.driver);
-        const extensionAccounts =
-          this.getSnapSimpleKeyringAccountsFromState(state);
-        if (extensionAccounts.length > previousAccountCount) {
-          newAddress = extensionAccounts[extensionAccounts.length - 1].address;
-          return true;
-        }
-
-        await this.driver.switchToWindowWithTitle(
-          WINDOW_TITLES.SnapSimpleKeyringDapp,
-        );
-        try {
-          const jsonMessage = await this.driver.findElement(
-            this.newAccountMessage,
-          );
-          const parsed = JSON.parse(await jsonMessage.getText()) as {
-            address?: string;
-          };
-          if (typeof parsed.address === 'string') {
-            newAddress = parsed.address;
-            return true;
-          }
-        } catch {
-          // Dapp RPC response not rendered yet; keep polling extension state.
-        }
-
-        await this.driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        return false;
-      },
-      { interval: regularDelayMs, timeout: 45000 },
-    );
-
-    return newAddress;
-  }
-
-  /**
    * Creates a new account on the Snap Simple Keyring page and checks the account is created.
    *
    * @param isFirstAccount - Indicates if this is the first snap account being created. Defaults to true.
@@ -338,10 +235,6 @@ class SnapSimpleKeyringPage {
    */
   async createNewAccount(isFirstAccount: boolean = true): Promise<string> {
     console.log('Create new account on Snap Simple Keyring page');
-    const previousAccountCount = await this.getSnapSimpleKeyringAccountCount();
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.SnapSimpleKeyringDapp,
-    );
     await this.openCreateSnapAccountConfirmationScreen(isFirstAccount);
     await this.confirmCreateSnapOnConfirmationScreen();
 
@@ -351,7 +244,16 @@ class SnapSimpleKeyringPage {
       this.confirmationSubmitButton,
     );
 
-    return this.waitForSnapAccountCreationComplete(previousAccountCount);
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.SnapSimpleKeyringDapp,
+    );
+    await this.driver.waitForSelector(this.newAccountMessage);
+
+    const newAccountJSONMessage = await (
+      await this.driver.waitForSelector(this.newAccountMessage)
+    ).getText();
+    const newPublicKey = JSON.parse(newAccountJSONMessage).address;
+    return newPublicKey;
   }
 
   /**
@@ -361,10 +263,6 @@ class SnapSimpleKeyringPage {
    */
   async importAccountWithPrivateKey(privateKey: string): Promise<void> {
     console.log('Import account with private key on Snap Simple Keyring page');
-    const previousAccountCount = await this.getSnapSimpleKeyringAccountCount();
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.SnapSimpleKeyringDapp,
-    );
     await this.driver.clickElement(this.importAccountSection);
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
     await this.driver.clickElement(this.importAccountButton);
@@ -377,7 +275,10 @@ class SnapSimpleKeyringPage {
       this.confirmationSubmitButton,
     );
 
-    await this.waitForSnapAccountCreationComplete(previousAccountCount);
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.SnapSimpleKeyringDapp,
+    );
+    await this.driver.waitForSelector(this.newAccountMessage);
   }
 
   /**
