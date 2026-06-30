@@ -1,10 +1,12 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
+import { act, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
 import mockState from '../../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-helpers';
+import * as actions from '../../../../../../../../store/actions';
+import { memoizedGetTokenStandardAndDetailsByChain } from '../../../../../../utils/token';
 import PermitSimulationValueDisplay from './value-display';
 
 const mockTrackEvent = jest.fn();
@@ -38,6 +40,7 @@ const UNLIMITED_THRESHOLD = '1'.padEnd(15 + 4 + 1, '0');
 describe('PermitSimulationValueDisplay', () => {
   beforeEach(() => {
     mockTrackEvent.mockClear();
+    memoizedGetTokenStandardAndDetailsByChain.cache.clear?.();
   });
 
   it('renders component correctly', async () => {
@@ -60,6 +63,13 @@ describe('PermitSimulationValueDisplay', () => {
 
   it('should invoke method to track missing decimal information for ERC20 tokens', async () => {
     const mockStore = configureMockStore([])(mockState);
+    const tokenDetailsWithoutDecimals = { standard: 'ERC20' };
+    jest
+      .mocked(actions.getTokenStandardAndDetailsByChain)
+      .mockResolvedValueOnce(tokenDetailsWithoutDecimals);
+    jest
+      .mocked(actions.getTokenStandardAndDetails)
+      .mockResolvedValueOnce(tokenDetailsWithoutDecimals);
 
     await act(async () => {
       renderWithProvider(
@@ -72,7 +82,9 @@ describe('PermitSimulationValueDisplay', () => {
       );
     });
 
-    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('renders unlimited if value at threshold', async () => {

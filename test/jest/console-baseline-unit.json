@@ -807,6 +807,9 @@
       "MetaMask: Background connection not initialized": 4,
       "React: Act warnings (component updates not wrapped)": 4
     },
+    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/value-display/value-display.test.tsx": {
+      "React: State updates on unmounted components": 1
+    },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 49
     },
