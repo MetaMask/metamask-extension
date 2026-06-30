@@ -3,7 +3,11 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 import { AddressQRCodeModal } from './address-qr-code-modal';
 
@@ -22,19 +26,9 @@ jest.mock('../../../hooks/useAnalytics', () => {
   };
 });
 
-// Import the mocked function
-
-// Mock only the essential dependencies that the component actually uses
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
-
-jest.mock(
-  '../../../components/multichain/menu-items/view-explorer-menu-item',
-  () => ({
-    openBlockExplorer: jest.fn(),
-  }),
-);
 
 jest.mock('../../../helpers/utils/multichain/getBlockExplorerInfo', () => ({
   getBlockExplorerInfo: jest.fn(),
@@ -43,16 +37,17 @@ jest.mock('../../../helpers/utils/multichain/getBlockExplorerInfo', () => ({
 const mockUseCopyToClipboard = useCopyToClipboard as jest.MockedFunction<
   typeof useCopyToClipboard
 >;
-const mockOpenBlockExplorer = openBlockExplorer as jest.Mock;
 
 const mockGetBlockExplorerInfo = getBlockExplorerInfo as jest.Mock;
+
+const mockOpenTab = jest.fn();
 
 describe('AddressQRCodeModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseCopyToClipboard.mockReturnValue([false, jest.fn(), jest.fn()]);
+    global.platform.openTab = mockOpenTab;
 
-    // Set up default mock return values
     mockGetBlockExplorerInfo.mockReturnValue(null);
   });
 
@@ -213,10 +208,21 @@ describe('AddressQRCodeModal', () => {
 
     fireEvent.click(explorerButton);
 
-    expect(mockOpenBlockExplorer).toHaveBeenCalledTimes(1);
-    expect(mockOpenBlockExplorer.mock.calls[0][0]).toBe(
-      `https://etherscan.io/address/${address}`,
-    );
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        category: MetaMetricsEventCategory.Navigation,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        link_type: MetaMetricsEventLinkType.AccountTracker,
+        location: 'Address QR Code Modal',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        url_domain: 'etherscan.io',
+      },
+      sensitiveProperties: {},
+    });
+    expect(mockOpenTab).toHaveBeenCalledWith({
+      url: `https://etherscan.io/address/${address}`,
+    });
   });
 
   it('should call onClose when close button is clicked', () => {
@@ -267,10 +273,14 @@ describe('AddressQRCodeModal', () => {
 
     fireEvent.click(explorerButton);
 
-    expect(mockOpenBlockExplorer).toHaveBeenCalledTimes(1);
-    expect(mockOpenBlockExplorer.mock.calls[0][0]).toBe(
-      `https://solscan.io/account/${address}`,
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ExternalLinkClicked,
+      }),
     );
+    expect(mockOpenTab).toHaveBeenCalledWith({
+      url: `https://solscan.io/account/${address}`,
+    });
   });
 
   it('should handle Bitcoin network and navigate to Bitcoin explorer correctly', () => {
@@ -301,10 +311,14 @@ describe('AddressQRCodeModal', () => {
 
     fireEvent.click(explorerButton);
 
-    expect(mockOpenBlockExplorer).toHaveBeenCalledTimes(1);
-    expect(mockOpenBlockExplorer.mock.calls[0][0]).toBe(
-      `https://mempool.space/address/${address}`,
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ExternalLinkClicked,
+      }),
     );
+    expect(mockOpenTab).toHaveBeenCalledWith({
+      url: `https://mempool.space/address/${address}`,
+    });
   });
 
   it('should handle unknown network gracefully', () => {
