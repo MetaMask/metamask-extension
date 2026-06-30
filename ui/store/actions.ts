@@ -4919,6 +4919,27 @@ export function toggleExternalServices(
   };
 }
 
+export function toggleBasicFunctionality(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.toggleBasicFunctionality`);
+    try {
+      await submitRequestToBackground('toggleExternalServices', [val]);
+      await Promise.all([
+        submitRequestToBackground('setUseMultiAccountBalanceChecker', [val]),
+        submitRequestToBackground('setUseTransactionSimulations', [val]),
+        submitRequestToBackground('setSecurityAlertsEnabled', [val]),
+        submitRequestToBackground('setUse4ByteResolution', [val]),
+        submitRequestToBackground('setUseExternalNameSources', [val]),
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (err) {
+      // TODO: Stop suppressing this error (either log or re-throw)
+    }
+  };
+}
+
 export function setIsIpfsGatewayEnabled(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

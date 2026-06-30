@@ -53,6 +53,12 @@ jest.mock('webextension-polyfill', () => ({
 
 jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
+const mockGetIsBasicFunctionalityToggleEnabled = jest.fn(() => false);
+jest.mock('../../../selectors/multichain/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/multichain/feature-flags'),
+  getIsBasicFunctionalityToggleEnabled: () =>
+    mockGetIsBasicFunctionalityToggleEnabled(),
+}));
 
 // Mock background connection to prevent "Background connection not initialized" warnings
 const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
@@ -60,11 +66,13 @@ const mockSetIsBackupAndSyncFeatureEnabled = jest
   .fn()
   .mockResolvedValue(undefined);
 const mockToggleExternalServices = jest.fn().mockResolvedValue(undefined);
+const mockSetPreference = jest.fn().mockResolvedValue(undefined);
 const backgroundConnectionMock = new Proxy(
   {
     removeDeferredDeepLink: mockRemoveDeferredDeepLink,
     setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
     toggleExternalServices: mockToggleExternalServices,
+    setPreference: mockSetPreference,
   },
   {
     get: (target, prop) => {
@@ -113,6 +121,7 @@ describe('Wallet Ready Page', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetIsBasicFunctionalityToggleEnabled.mockReturnValue(false);
     mockUseNavigate.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
   });
@@ -185,6 +194,24 @@ describe('Wallet Ready Page', () => {
     fireEvent.click(doneButton);
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
+  it('sets the consolidated Basic Functionality cohort marker when the remote flag is enabled', async () => {
+    mockGetIsBasicFunctionalityToggleEnabled.mockReturnValue(true);
+    const mockStore = configureMockStore([thunk])(mockState);
+    const { getByTestId } = renderWithProvider(
+      <CreationSuccessful />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('onboarding-complete-done'));
+
+    await waitFor(() => {
+      expect(mockSetPreference).toHaveBeenCalledWith(
+        'isBasicFunctionalityConsolidatedEnabled',
+        true,
+      );
     });
   });
 

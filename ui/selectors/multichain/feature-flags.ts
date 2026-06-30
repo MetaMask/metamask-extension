@@ -101,15 +101,32 @@ export const getIsTokenManagementFilterEnabled = createSelector(
 );
 
 /**
- * Get the state of the `extensionBasicFunctionalityToggle` remote feature flag.
+ * Get the state of the `basicFunctionality` remote feature flag.
  *
  * @param _state - The MetaMask state object
  * @returns boolean - True if the feature is enabled, false otherwise.
  */
 export const getIsBasicFunctionalityToggleEnabled = createSelector(
   getRemoteFeatureFlags,
-  ({ extensionBasicFunctionalityToggle }) =>
-    getBooleanFeatureFlag(extensionBasicFunctionalityToggle, false),
+  ({ basicFunctionality }) => true,
+);
+
+/**
+ * Get whether the consolidated Basic Functionality experience should be shown.
+ * The remote flag controls rollout eligibility; the persisted marker ensures
+ * the experience only applies to users who onboarded into the cohort.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the user is in the consolidated Basic Functionality cohort.
+ */
+export const getIsBasicFunctionalityConsolidationEnabled = createSelector(
+  getIsBasicFunctionalityToggleEnabled,
+  (state) =>
+    Boolean(
+      state.metamask.preferences?.isBasicFunctionalityConsolidatedEnabled,
+    ),
+  (isBasicFunctionalityToggleEnabled, isConsolidatedUser) =>
+    isBasicFunctionalityToggleEnabled && isConsolidatedUser,
 );
 
 /**

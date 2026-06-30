@@ -2197,8 +2197,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  extensionBasicFunctionalityToggle: {
-    name: 'extensionBasicFunctionalityToggle',
+  basicFunctionality: {
+    name: 'basicFunctionality',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
