@@ -142,9 +142,7 @@ describe('PersistenceManager', () => {
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
-      mockStoreSet
-        .mockRejectedValueOnce(error)
-        .mockRejectedValueOnce(error);
+      mockStoreSet.mockRejectedValueOnce(error).mockRejectedValueOnce(error);
 
       const setPromise = manager.set({
         appState: { broken: true },
@@ -190,9 +188,7 @@ describe('PersistenceManager', () => {
       manager.setMetadata({ version: 17 });
 
       const error = new Error('store.set error');
-      mockStoreSet
-        .mockRejectedValueOnce(error)
-        .mockRejectedValueOnce(error);
+      mockStoreSet.mockRejectedValueOnce(error).mockRejectedValueOnce(error);
 
       const firstSetPromise = manager.set({ appState: { broken: true } });
       await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
@@ -201,9 +197,7 @@ describe('PersistenceManager', () => {
       mockStoreSet.mockResolvedValueOnce(undefined);
       await manager.set({ appState: { broken: true } });
 
-      mockStoreSet
-        .mockRejectedValueOnce(error)
-        .mockRejectedValueOnce(error);
+      mockStoreSet.mockRejectedValueOnce(error).mockRejectedValueOnce(error);
 
       const thirdSetPromise = manager.set({ appState: { broken: true } });
       await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
@@ -218,9 +212,7 @@ describe('PersistenceManager', () => {
       manager.setMetadata({ version: 17 });
 
       const error = new Error('store.set error');
-      mockStoreSet
-        .mockRejectedValueOnce(error)
-        .mockRejectedValueOnce(error);
+      mockStoreSet.mockRejectedValueOnce(error).mockRejectedValueOnce(error);
 
       // First set fails
       const firstSetPromise = manager.set({ appState: { broken: true } });
