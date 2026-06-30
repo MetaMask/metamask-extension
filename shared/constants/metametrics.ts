@@ -857,6 +857,7 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BannerDisplay = 'Banner Display',
+  BannerDismissed = 'Banner Dismissed',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
   BridgeLinkClicked = 'Bridge Link Clicked',
