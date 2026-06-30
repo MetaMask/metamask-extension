@@ -336,6 +336,9 @@ env:
   - PORTFOLIO_VIEW: 'true'
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
+  # Pure-black design-tokens preview. Set to 'true' in .metamaskrc to render dark
+  # mode against the DS pure-black preview tokens (audit tool for pure-black migration).
+  - MM_PURE_BLACK_PREVIEW: false
   # Temporary mechanism to enable security alerts API prior to release
   - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests

@@ -12,20 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { isPureBlackPreviewAvailable } from '../../../contexts/preview-pure-black/preview-pure-black-provider';
 import ThemeSubPage from './theme-sub-page';
-
-jest.mock('../../../contexts/preview-pure-black/preview-pure-black-provider', () => ({
-  ...jest.requireActual(
-    '../../../contexts/preview-pure-black/preview-pure-black-provider',
-  ),
-  isPureBlackPreviewAvailable: jest.fn(),
-}));
-
-const mockIsPureBlackPreviewAvailable =
-  isPureBlackPreviewAvailable as jest.MockedFunction<
-    typeof isPureBlackPreviewAvailable
-  >;
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -60,7 +47,6 @@ describe('ThemeSubPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsPureBlackPreviewAvailable.mockReturnValue(false);
     setBackgroundConnection(backgroundConnectionMock as never);
   });
 
@@ -103,38 +89,5 @@ describe('ThemeSubPage', () => {
       }),
     );
     expect(mockNavigate).toHaveBeenCalledWith(PREFERENCES_AND_DISPLAY_ROUTE);
-  });
-
-  it('does not render pure black preview toggle when preview is unavailable', () => {
-    const storeWithDarkTheme = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        theme: ThemeType.dark,
-      },
-    });
-
-    renderWithProvider(<ThemeSubPage />, storeWithDarkTheme);
-
-    expect(
-      screen.queryByText(messages.pureBlackThemePreview.message),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders pure black preview toggle in dev when dark theme is active', () => {
-    mockIsPureBlackPreviewAvailable.mockReturnValue(true);
-    const storeWithDarkTheme = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        theme: ThemeType.dark,
-      },
-    });
-
-    renderWithProvider(<ThemeSubPage />, storeWithDarkTheme);
-
-    expect(
-      screen.getByText(messages.pureBlackThemePreview.message),
-    ).toBeInTheDocument();
   });
 });

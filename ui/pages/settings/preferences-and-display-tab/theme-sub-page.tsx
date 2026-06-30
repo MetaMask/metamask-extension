@@ -24,8 +24,6 @@ import {
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useTheme } from '../../../hooks/useTheme';
-import { usePreviewPureBlack, isPureBlackPreviewAvailable } from '../../../contexts/preview-pure-black/preview-pure-black-provider';
 import { THEME_OPTIONS } from './theme-utils';
 
 const ThemeSubPage = () => {
@@ -34,8 +32,6 @@ const ThemeSubPage = () => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const currentTheme = useSelector(getTheme) as ThemeType;
-  const resolvedTheme = useTheme();
-  const { isPureBlackEnabled, setIsPureBlackEnabled } = usePreviewPureBlack();
 
   const handleSelect = (value: ThemeType) => {
     trackEvent(
@@ -81,30 +77,6 @@ const ThemeSubPage = () => {
           </Box>
         );
       })}
-      {isPureBlackPreviewAvailable() && resolvedTheme === ThemeType.dark ? (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          alignItems={BoxAlignItems.Center}
-          className={`w-full cursor-pointer border-0 p-4 ${
-            isPureBlackEnabled
-              ? 'bg-muted hover:bg-muted-hover'
-              : 'bg-background-default hover:bg-background-default-hover'
-          }`}
-          onClick={() => setIsPureBlackEnabled(!isPureBlackEnabled)}
-        >
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {t('pureBlackThemePreview')}
-          </Text>
-          {isPureBlackEnabled ? (
-            <Icon
-              name={IconName.Check}
-              size={IconSize.Md}
-              color={IconColor.IconDefault}
-            />
-          ) : null}
-        </Box>
-      ) : null}
     </Box>
   );
 };

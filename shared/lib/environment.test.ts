@@ -2,6 +2,7 @@ import { ENVIRONMENT } from '../constants/build';
 import {
   getIsPerpsIncludedInBuild,
   getIsPasskeyFeatureEnabled,
+  getIsPureBlackPreviewEnabled,
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
@@ -185,5 +186,32 @@ describe('getIsPasskeyFeatureEnabled', () => {
   it('returns false when PASSKEY_ENABLED is undefined', () => {
     delete process.env.PASSKEY_ENABLED;
     expect(getIsPasskeyFeatureEnabled()).toBe(false);
+  });
+});
+
+describe('getIsPureBlackPreviewEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.MM_PURE_BLACK_PREVIEW;
+  });
+
+  afterAll(() => {
+    process.env.MM_PURE_BLACK_PREVIEW = originalValue;
+  });
+
+  it('returns true when MM_PURE_BLACK_PREVIEW is "true"', () => {
+    process.env.MM_PURE_BLACK_PREVIEW = 'true';
+    expect(getIsPureBlackPreviewEnabled()).toBe(true);
+  });
+
+  it('returns false when MM_PURE_BLACK_PREVIEW is "false"', () => {
+    process.env.MM_PURE_BLACK_PREVIEW = 'false';
+    expect(getIsPureBlackPreviewEnabled()).toBe(false);
+  });
+
+  it('returns false when MM_PURE_BLACK_PREVIEW is undefined', () => {
+    delete process.env.MM_PURE_BLACK_PREVIEW;
+    expect(getIsPureBlackPreviewEnabled()).toBe(false);
   });
 });

@@ -93,3 +93,11 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
 export const getIsPasskeyFeatureEnabled = (): boolean => {
   return process.env.PASSKEY_ENABLED?.toString() === 'true';
 };
+
+/**
+ * Compile-time gate (`MM_PURE_BLACK_PREVIEW`): when true, dark mode uses the
+ * design-system pure-black preview tokens via `PureBlackProvider`.
+ */
+export const getIsPureBlackPreviewEnabled = (): boolean => {
+  return process.env.MM_PURE_BLACK_PREVIEW?.toString() === 'true';
+};

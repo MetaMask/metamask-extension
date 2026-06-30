@@ -1,88 +1,31 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import React from 'react';
 import { PureBlackProvider } from '@metamask/design-system-react';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { getIsPureBlackPreviewEnabled } from '../../../shared/lib/environment';
 import { useTheme } from '../../hooks/useTheme';
 
-const PREVIEW_PURE_BLACK_STORAGE_KEY = 'metamask-preview-pure-black';
-
 /**
- * Pure black preview is only available in local development builds (`yarn start`).
+ * Preview-only root wrapper for the design-system pure-black token experiment.
+ *
+ * App-owned source of truth: compile-time `MM_PURE_BLACK_PREVIEW` (see `.metamaskrc`).
+ * MMDS-owned read surface: import `usePureBlack()` from `@metamask/design-system-react`
+ * anywhere you need to branch on whether pure black is actively rendering (e.g. custom
+ * classNames on legacy screens). Do not add extension-specific read hooks for this.
+ * @param options0
+ * @param options0.children
  */
-export const isPureBlackPreviewAvailable = (): boolean =>
-  Boolean(process.env.METAMASK_DEBUG);
-
-type PreviewPureBlackContextValue = {
-  isPureBlackEnabled: boolean;
-  setIsPureBlackEnabled: (enabled: boolean) => void;
-};
-
-const PreviewPureBlackContext =
-  createContext<PreviewPureBlackContextValue | null>(null);
-
-const readStoredPureBlackPreference = (): boolean => {
-  try {
-    return localStorage.getItem(PREVIEW_PURE_BLACK_STORAGE_KEY) === 'true';
-  } catch {
-    return false;
-  }
-};
-
 export const PreviewPureBlackProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
   const theme = useTheme();
-  const [isPureBlackEnabled, setIsPureBlackEnabledState] = useState(
-    readStoredPureBlackPreference,
-  );
-
-  const setIsPureBlackEnabled = useCallback((enabled: boolean) => {
-    setIsPureBlackEnabledState(enabled);
-    try {
-      localStorage.setItem(
-        PREVIEW_PURE_BLACK_STORAGE_KEY,
-        enabled ? 'true' : 'false',
-      );
-    } catch {
-      // Ignore storage failures during preview testing.
-    }
-  }, []);
-
   const isPureBlackActive =
-    isPureBlackPreviewAvailable() &&
-    theme === ThemeType.dark &&
-    isPureBlackEnabled;
-
-  const contextValue = useMemo(
-    () => ({
-      isPureBlackEnabled,
-      setIsPureBlackEnabled,
-    }),
-    [isPureBlackEnabled, setIsPureBlackEnabled],
-  );
+    getIsPureBlackPreviewEnabled() && theme === ThemeType.dark;
 
   return (
-    <PreviewPureBlackContext.Provider value={contextValue}>
-      <PureBlackProvider isPureBlack={isPureBlackActive}>
-        {children}
-      </PureBlackProvider>
-    </PreviewPureBlackContext.Provider>
+    <PureBlackProvider isPureBlack={isPureBlackActive}>
+      {children}
+    </PureBlackProvider>
   );
-};
-
-export const usePreviewPureBlack = (): PreviewPureBlackContextValue => {
-  const context = useContext(PreviewPureBlackContext);
-  if (!context) {
-    throw new Error(
-      'usePreviewPureBlack must be used within PreviewPureBlackProvider',
-    );
-  }
-  return context;
 };
