@@ -10,8 +10,6 @@ export default function reactRefreshLoader(
   this: LoaderContext<Record<string, never>>,
   source: string,
 ): string {
-  this.cacheable();
-
   const resourceDirectory = dirname(this.resourcePath);
   const imports = [
     REACT_REFRESH_ENTRY_PATH,
