@@ -1,94 +1,54 @@
-import { parseCaipAssetType } from '@metamask/utils';
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { CLASSIC_TRUSTLINE_CHAIN_IDS } from '../constants';
+import { CaipAssetTypeStruct, parseCaipAssetType } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
+import { XlmScope } from '@metamask/keyring-api';
 
 type TrustlineAccountAssetInfo = {
   limit?: string;
 };
 
-function isTrustlineInactiveFromAccountAssetInfo(
-  accountAssetInfo: TrustlineAccountAssetInfo | undefined,
-): boolean {
-  if (accountAssetInfo?.limit === undefined) {
-    return true;
-  }
 
-  const { limit } = accountAssetInfo;
-  if (typeof limit !== 'string') {
-    return true;
-  }
-
-  const parsed = Number.parseFloat(limit);
-  if (Number.isNaN(parsed)) {
-    return true;
-  }
-
-  return parsed <= 0;
+export const TRUSTLINE_ASSET_NAMESPACE: Record<CaipChainId, string> = {
+  [XlmScope.Pubnet]: 'asset',
 }
 
-function isClassicTrustlineChainId(chainId: CaipChainId | string): boolean {
-  return CLASSIC_TRUSTLINE_CHAIN_IDS.includes(chainId as CaipChainId);
-}
-
-function isClassicTrustlineAssetCaip19(assetId: CaipAssetType): boolean {
-  try {
-    const parsed = parseCaipAssetType(assetId);
-    return (
-      isClassicTrustlineChainId(parsed.chainId) &&
-      parsed.assetNamespace === 'asset'
-    );
-  } catch {
+export function isTrustlineAsset(assetId: string): boolean {
+   if (!assetId || !CaipAssetTypeStruct.is(assetId)) {
     return false;
   }
-}
 
-export function isClassicTrustlineAsset(options: {
-  chainId: CaipChainId | string;
-  assetId?: CaipAssetType | string;
-}): boolean {
-  const { chainId, assetId } = options;
-  if (!assetId) {
-    return false;
-  }
-  return (
-    isClassicTrustlineChainId(chainId) &&
-    isClassicTrustlineAssetCaip19(assetId as CaipAssetType)
-  );
+  const { assetNamespace, chainId } = parseCaipAssetType(assetId);
+
+  return assetNamespace === TRUSTLINE_ASSET_NAMESPACE[chainId];
 }
 
 /**
  * Generic helper that determines whether a classic `asset:` trustline
  * should be considered inactive for display purposes.
  * This logic was previously colocated in the Stellar-specific helper. It is
- * kept generic here and exported as `isClassicTrustlineInactiveForDisplay`.
+ * kept generic here and exported as `isAssetRequireActivate`.
  * @param options
  * @param options.chainId
  * @param options.assetId
  * @param options.accountAssetInfo
  * @param options.balance
  */
-export function isClassicTrustlineInactiveForDisplay(options: {
-  chainId: CaipChainId | string;
-  assetId?: CaipAssetType | string;
+export function isAssetRequireActivate(options: {
+  assetId?: string;
   accountAssetInfo?: TrustlineAccountAssetInfo;
-  balance?: string;
 }): boolean {
-  const { chainId, assetId, accountAssetInfo, balance } = options;
+  const { assetId, accountAssetInfo = { limit: '1' } } = options;
 
-  if (!isClassicTrustlineAsset({ chainId, assetId })) {
+  if (!isTrustlineAsset(assetId ?? '')) {
     return false;
   }
 
+  // TODO: different network can apply different logic here,
+  // Today we only support Stellar, so we only check the limit.
   if (accountAssetInfo !== undefined) {
-    return isTrustlineInactiveFromAccountAssetInfo(accountAssetInfo);
+    return accountAssetInfo.limit === undefined || accountAssetInfo.limit === '0';
   }
 
-  if (balance !== undefined) {
-    const parsedBalance = Number.parseFloat(balance);
-    if (!Number.isNaN(parsedBalance) && parsedBalance > 0) {
-      return false;
-    }
-  }
-
+  // default to true because of the import token doesnt have accountAssetInfo at beginning,
+  // we assume it is inactive
   return true;
 }

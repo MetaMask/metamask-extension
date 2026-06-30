@@ -2,30 +2,12 @@ import { type CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { XlmScope } from '@metamask/keyring-api';
 import { AssetType } from '../../../constants/transaction';
 import {
-  isClassicTrustlineAsset,
-  isClassicTrustlineInactiveForDisplay,
+  isTrustlineAsset,
+  isAssetRequireActivate,
 } from './trustline-from-account-asset-info';
 
 export type AccountAssetInfo = { limit?: string } | undefined;
 
-function isSep41Asset(chainId: string, assetId?: string): boolean {
-  if (!assetId) {
-    return false;
-  }
-
-  // Only Stellar SEP-41 uses the "sep41" namespace in CAIP-19
-  if (chainId !== XlmScope.Pubnet) {
-    return false;
-  }
-
-  try {
-    return (
-      parseCaipAssetType(assetId as CaipAssetType).assetNamespace === 'sep41'
-    );
-  } catch {
-    return false;
-  }
-}
 
 export function getTrustlineAssetPageState({
   chainId,
@@ -38,28 +20,11 @@ export function getTrustlineAssetPageState({
   type: AssetType;
   accountAssetInfo?: AccountAssetInfo;
 }) {
-  const isClassicTrustlineTrackedToken =
-    type === AssetType.token &&
-    Boolean(assetId) &&
-    isClassicTrustlineAsset({ chainId, assetId }) &&
-    !isSep41Asset(chainId, assetId);
+  //const isClassicTrustlineTrackedToken2 = isTrustlineAsset(assetId ?? '');
+  const isClassicTrustlineTrackedToken = isTrustlineAsset(assetId ?? '');
 
   const isTrustlineInactive =
-    isClassicTrustlineTrackedToken &&
-    isClassicTrustlineInactiveForDisplay({
-      chainId,
-      assetId: assetId ?? '',
-      accountAssetInfo,
-    });
-
-  const showClassicTrustlineActivate =
-    isClassicTrustlineTrackedToken && isTrustlineInactive;
-
-  const hasClassicTrustlineToRemove =
-    isClassicTrustlineTrackedToken &&
-    accountAssetInfo !== undefined &&
-    !isClassicTrustlineInactiveForDisplay({
-      chainId,
+    isAssetRequireActivate({
       assetId: assetId ?? '',
       accountAssetInfo,
     });
@@ -67,7 +32,5 @@ export function getTrustlineAssetPageState({
   return {
     isClassicTrustlineTrackedToken,
     isTrustlineInactive,
-    showClassicTrustlineActivate,
-    hasClassicTrustlineToRemove,
   };
 }

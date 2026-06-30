@@ -32,29 +32,18 @@ import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { requestStellarChangeTrustOptDelete } from '../utils/stellar-snap-client-requests';
 import { StellarClassicTrustlineErrorToast } from './stellar-classic-trustline-error-toast';
-
-export type StellarClassicTrustlineRemoveConfig = {
-  hasTrustline: boolean;
-  accountId: string;
-  assetId: CaipAssetType;
-  scope: CaipChainId;
-};
 
 const TokenButtons = ({
   token,
   disableSendForNonEvm = false,
   isMarketClosed = false,
-  stellarClassicTrustlineRemove,
 }: {
   token: Asset & { type: AssetType.token };
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
   /** When true, disables the swap button because the stock market is closed */
   isMarketClosed?: boolean;
-  /** When set, shows a fourth action to remove the Stellar classic trustline (asset page). */
-  stellarClassicTrustlineRemove?: StellarClassicTrustlineRemoveConfig;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -140,56 +129,56 @@ const TokenButtons = ({
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 
-  const [isRemovingStellarTrustline, setIsRemovingStellarTrustline] =
-    useState(false);
-  const [trustlineRemoveErrorMessage, setTrustlineRemoveErrorMessage] =
-    useState<string | null>(null);
+  // const [isDeactivating, setIsDeactivating] =
+  //   useState(false);
+  // const [trustlineRemoveErrorMessage, setTrustlineRemoveErrorMessage] =
+  //   useState<string | null>(null);
 
-  const dismissTrustlineRemoveErrorToast = useCallback(() => {
-    setTrustlineRemoveErrorMessage(null);
-  }, []);
+  // const dismissTrustlineRemoveErrorToast = useCallback(() => {
+  //   setTrustlineRemoveErrorMessage(null);
+  // }, []);
 
-  const handleRemoveStellarTrustline = useCallback(async () => {
-    if (!stellarClassicTrustlineRemove?.hasTrustline) {
-      return;
-    }
-    const { accountId, assetId, scope } = stellarClassicTrustlineRemove;
-    setTrustlineRemoveErrorMessage(null);
-    setIsRemovingStellarTrustline(true);
-    try {
-      await requestStellarChangeTrustOptDelete({
-        accountId,
-        assetId,
-        scope,
-      });
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error: unknown) {
-      const errorCode = (error as { code?: number })?.code;
-      const isUserRejection =
-        errorCode === errorCodes.provider.userRejectedRequest;
-      if (!isUserRejection) {
-        setTrustlineRemoveErrorMessage(
-          hasNonZeroTokenBalance
-            ? (t('stellarClassicTrustlineRemoveNonZeroBalanceError', [
-                token.balance?.display ?? token.balance?.value ?? '0',
-                token.symbol,
-              ]) as string)
-            : (t('stellarClassicTrustlineRemoveError') as string),
-        );
-      }
-    } finally {
-      setIsRemovingStellarTrustline(false);
-    }
-  }, [
-    dispatch,
-    hasNonZeroTokenBalance,
-    stellarClassicTrustlineRemove,
-    t,
-    token.balance?.display,
-    token.balance?.value,
-    token.symbol,
-  ]);
+  // const handleRemoveStellarTrustline = useCallback(async () => {
+  //   if (!canDeactivate) {
+  //     return;
+  //   }
+  //   setTrustlineRemoveErrorMessage(null);
+  //   setIsDeactivating(true);
+  //   try {
+  //     await requestStellarChangeTrustOptDelete({
+  //       accountId,
+  //       assetId,
+  //       scope,
+  //     });
+  //     await forceUpdateMetamaskState(dispatch);
+  //   } catch (error: unknown) {
+  //     const errorCode = (error as { code?: number })?.code;
+  //     const isUserRejection =
+  //       errorCode === errorCodes.provider.userRejectedRequest;
+  //     if (!isUserRejection) {
+  //       setTrustlineRemoveErrorMessage(
+  //         hasNonZeroTokenBalance
+  //           ? (t('stellarClassicTrustlineRemoveNonZeroBalanceError', [
+  //               token.balance?.display ?? token.balance?.value ?? '0',
+  //               token.symbol,
+  //             ]) as string)
+  //           : (t('stellarClassicTrustlineRemoveError') as string),
+  //       );
+  //     }
+  //   } finally {
+  //     setIsDeactivating(false);
+  //   }
+  // }, [
+  //   dispatch,
+  //   hasNonZeroTokenBalance,
+  //   canDeactivate,
+  //   t,
+  //   token.balance?.display,
+  //   token.balance?.value,
+  //   token.symbol,
+  // ]);
 
+  const { deactivateAsset, canDeactivate, dismissTrustlineRemoveErrorToast, isDeactivating, trustlineRemoveErrorMessage } = useAssetActivation({ asset: token });
   return (
     <>
       <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
@@ -245,7 +234,7 @@ const TokenButtons = ({
           disabled={!isExternalServicesEnabled || isMarketClosed}
         />
 
-        {stellarClassicTrustlineRemove?.hasTrustline ? (
+        {canDeactivate ? (
           <IconButton
             className="token-overview__button"
             Icon={
@@ -255,10 +244,10 @@ const TokenButtons = ({
                 size={IconSize.Md}
               />
             }
-            onClick={handleRemoveStellarTrustline}
+            onClick={deactivateAsset}
             data-testid="token-overview-stellar-remove-trustline"
             label={t('stellarClassicDeactivateOnStellar') as string}
-            disabled={isRemovingStellarTrustline}
+            disabled={isDeactivating}
           />
         ) : null}
       </Box>

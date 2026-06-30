@@ -111,6 +111,7 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
+import { isTrustlineAsset } from '../../../../shared/lib/multichain/trustline/trustline-from-account-asset-info';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -278,25 +279,15 @@ const AssetPage = ({
   };
 
   // Derive trustline and native reserve page state via focused helpers.
-  const trustlinePageState = getTrustlineAssetPageState({
-    chainId,
+  const isTrustlineInactive = isAssetRequireActivate({
     assetId: bip44Asset?.assetId ?? assetId,
-    type,
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   });
 
   const nativeReservePageState = getNativeReserveAssetPageState({
-    chainId,
-    type,
+    assetId: bip44Asset?.assetId ?? assetId,
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   });
-
-  const {
-    isClassicTrustlineTrackedToken,
-    isTrustlineInactive,
-    showClassicTrustlineActivate,
-    hasClassicTrustlineToRemove,
-  } = trustlinePageState;
 
   const { nativeReserveBaseReserve, showNativeReserveBalanceSection } =
     nativeReservePageState;
@@ -465,11 +456,7 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       <StellarClassicTrustlineActivateCard
-        visible={showClassicTrustlineActivate}
-        account={selectedAccount}
-        chainId={chainId as CaipChainId}
         assetId={assetId as CaipAssetType}
-        symbol={symbol}
       />
       <Box paddingLeft={4}>{renderAssetTitleSection()}</Box>
       <AssetChart
@@ -499,16 +486,6 @@ const AssetPage = ({
             token={tokenAsset}
             disableSendForNonEvm
             isMarketClosed={isMarketClosed}
-            stellarClassicTrustlineRemove={
-              isClassicTrustlineTrackedToken
-                ? {
-                    hasTrustline: hasClassicTrustlineToRemove,
-                    accountId: selectedAccount.id,
-                    assetId: assetId as CaipAssetType,
-                    scope: chainId as CaipChainId,
-                  }
-                : undefined
-            }
           />
         ) : null}
         {isMarketClosed && tokenAsset ? (
