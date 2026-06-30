@@ -5,7 +5,6 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
@@ -89,7 +88,7 @@ const getSkipSmartTransactionStatusPage = createSelector(
  * Returns pending approvals sorted by time for use in confirmation navigation.
  * Excludes duplicate watch asset approvals as they are combined into a single confirmation.
  */
-export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
+export const selectPendingApprovalsForNavigation = createSelector(
   pendingApprovalsSortedSelector,
   getSkipSmartTransactionStatusPage,
   (sortedPendingApprovals, skipSmartTransactionStatusPage) =>

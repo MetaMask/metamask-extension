@@ -26,8 +26,9 @@ const QrCodeScan = () => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
   const qrSyncError = useSelector(selectQrSyncError);
-  console.log('qrSyncError', qrSyncError);
-  const [secondsLeft, setSecondsLeft] = useState(MWP_SESSION_REQUEST_EXPIRY_SECONDS);
+  const [secondsLeft, setSecondsLeft] = useState(
+    MWP_SESSION_REQUEST_EXPIRY_SECONDS,
+  );
   const hasError = Boolean(qrSyncError);
   const isExpired = secondsLeft <= 0;
   const shouldDimQr = isExpired || Boolean(qrSyncError);
@@ -99,10 +100,10 @@ const QrCodeScan = () => {
       >
         <Box style={{ opacity: shouldDimQr ? 0.3 : 1 }}>
           {qrPayload ? (
-          <QRCodeImage data={qrPayload} />
-        ) : (
-          <Skeleton width={240} height={240} />
-        )}
+            <QRCodeImage data={qrPayload} />
+          ) : (
+            <Skeleton width={240} height={240} />
+          )}
         </Box>
         {statusContent}
       </Box>

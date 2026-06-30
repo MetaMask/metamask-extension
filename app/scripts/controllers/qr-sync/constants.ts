@@ -1,6 +1,7 @@
 export const QR_SYNC_CONTROLLER_NAME = 'QrSyncController' as const;
 
-export const RELAY_URL = 'wss://mm-sdk-relay.api.cx.metamask.io/connection/websocket';
+export const RELAY_URL =
+  'wss://mm-sdk-relay.api.cx.metamask.io/connection/websocket';
 
 export enum QrSyncMessageVersion {
   V1 = '1.0.0',
@@ -91,4 +92,5 @@ export const QrSyncErrorMessages = {
   OTP_VALIDATION_FAILED: 'Failed to validate OTP',
   SYNC_SESSION_CANCELLED_BY_PEER: 'Sync session cancelled by peer',
   SYNC_FAILED_TO_SEND_MESSAGE: 'Failed to send message to mobile wallet client',
+  PREMATURE_SYNC_OFFER_RECEIVED: 'Premature sync offer received',
 } as const;

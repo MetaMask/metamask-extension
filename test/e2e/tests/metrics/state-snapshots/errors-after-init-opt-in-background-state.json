@@ -70,6 +70,7 @@
     "pendingRedirectRoute": null,
     "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
@@ -316,6 +317,18 @@
     "watchEthereumAccountEnabled": "boolean"
   },
   "ProfileMetricsController": "object",
+  "QrSyncController": {
+    "qrSyncConnectionStatus": "disconnected",
+    "qrSyncCreatedAt": null,
+    "qrSyncError": null,
+    "qrSyncImportedAccountIds": "object",
+    "qrSyncPhase": "idle",
+    "qrSyncQrPayload": null,
+    "qrSyncSelectedAccountIds": "object",
+    "qrSyncSessionId": null,
+    "qrSyncUpdatedAt": null,
+    "syncOffer": null
+  },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
     "localOverrides": "object",

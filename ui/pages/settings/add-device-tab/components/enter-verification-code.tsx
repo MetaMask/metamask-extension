@@ -49,7 +49,7 @@ const EnterVerificationCode = () => {
     await submitRequestToBackground<void>('messengerCall', [
       'QrSyncController:createSession',
       [],
-    ])
+    ]);
   }, []);
 
   const focusInput = useCallback((index: number) => {
@@ -61,28 +61,25 @@ const EnterVerificationCode = () => {
 
   // Single place that persists a new code and reacts to completion, so the
   // change/paste/keydown handlers never duplicate validation or error resets.
-  const commitCode = useCallback(
-    async (nextCode: string[]) => {
-      setCode(nextCode);
-      setIsError(false);
+  const commitCode = useCallback(async (nextCode: string[]) => {
+    setCode(nextCode);
+    setIsError(false);
 
-      const joined = nextCode.join('');
-      if (joined.length < CODE_LENGTH) {
-        return;
-      }
+    const joined = nextCode.join('');
+    if (joined.length < CODE_LENGTH) {
+      return;
+    }
 
-      try {
-        log.debug('EnterVerificationCode: submitting OTP', joined);
-        await submitRequestToBackground<void>('messengerCall', [
-          'QrSyncController:submitOtp',
-          [joined],
-        ]);
-      } catch {
-        setIsError(true);
-      }
-    },
-    [],
-  );
+    try {
+      log.debug('EnterVerificationCode: submitting OTP', joined);
+      await submitRequestToBackground<void>('messengerCall', [
+        'QrSyncController:submitOtp',
+        [joined],
+      ]);
+    } catch {
+      setIsError(true);
+    }
+  }, []);
 
   // Writes one or more digits starting at `startIndex` (typing or pasting),
   // then moves focus to the box following the last digit written.

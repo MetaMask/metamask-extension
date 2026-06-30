@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { QrSyncControllerState } from '../../../app/scripts/controllers/qr-sync/types';
 import {
   QR_SYNC_PHASES,
@@ -20,17 +20,17 @@ export const selectQrSyncState = createSelector(
 
 export const selectQrSyncPhase = createSelector(
   [selectQrSyncState],
-  (qrSyncState) => qrSyncState.phase,
+  (qrSyncState) => qrSyncState.qrSyncPhase,
 );
 
 export const selectQrSyncQrPayload = createSelector(
   [selectQrSyncState],
-  (qrSyncState) => qrSyncState.qrPayload,
+  (qrSyncState) => qrSyncState.qrSyncQrPayload,
 );
 
 export const selectQrSyncError = createSelector(
   [selectQrSyncState],
-  (qrSyncState) => qrSyncState.error,
+  (qrSyncState) => qrSyncState.qrSyncError,
 );
 
 export const selectIsQrSyncTerminal = createSelector(

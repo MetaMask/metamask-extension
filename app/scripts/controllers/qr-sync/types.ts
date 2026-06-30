@@ -24,6 +24,11 @@ import {
   QrSyncActionTypes,
   QrSyncMessageVersion,
 } from './constants';
+import {
+  QR_SYNC_CONTROLLER_NAME,
+  QrSyncActionTypes,
+  QrSyncMessageVersion,
+} from './constants';
 
 export type QrSyncConnectionStatus =
   | 'disconnected'
@@ -70,7 +75,7 @@ export type QrSyncOffer = {
    *
    * @type {string}
    */
-  sessionId?: string;
+  sessionId: string;
 };
 
 export type QrSyncErrorCode =
@@ -221,17 +226,17 @@ export type QrSyncControllerState = {
    *
    * @type {QrSyncPhase}
    */
-  phase: QrSyncPhase;
+  qrSyncPhase: QrSyncPhase;
   /**
    * The current connection status of the MWP protocol connection.
    *
    * @type {QrSyncConnectionStatus}
    */
-  connectionStatus: QrSyncConnectionStatus;
+  qrSyncConnectionStatus: QrSyncConnectionStatus;
   /**
    * Current session ID.
    */
-  sessionId: string | null;
+  qrSyncSessionId: string | null;
   /**
    * The QR payload to be displayed to the user.
    *

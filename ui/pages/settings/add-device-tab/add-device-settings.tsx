@@ -28,9 +28,10 @@ const AddDeviceSettings = () => {
   const isQrSyncTerminal = useSelector(selectIsQrSyncTerminal);
   const [isExiting, setIsExiting] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
-  const [syncSummary, setSyncSummary] = useState<
-    Pick<AddDeviceSyncRequest, 'syncedAccountCount' | 'syncedWalletCount'> | null
-  >(null);
+  const [syncSummary, setSyncSummary] = useState<Pick<
+    AddDeviceSyncRequest,
+    'syncedAccountCount' | 'syncedWalletCount'
+  > | null>(null);
 
   useEffect(() => {
     if (!shouldCreateSession || isExiting) {
@@ -126,8 +127,8 @@ const AddDeviceSettings = () => {
       case QR_SYNC_PHASES.COMPLETED:
         return syncSummary ? (
           <Success
-            syncedAccountCount={syncSummary.syncedAccountCount}
-            syncedWalletCount={syncSummary.syncedWalletCount}
+            importedAccountCount={syncSummary.syncedAccountCount}
+            walletCount={syncSummary.syncedWalletCount}
             onDone={() => handleExit().catch(() => undefined)}
           />
         ) : null;

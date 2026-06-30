@@ -1,75 +1,57 @@
-import type { StateMetadata } from "@metamask/base-controller";
+import type { StateMetadata } from '@metamask/base-controller';
 import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
 import type { QrSyncControllerState } from './types';
 
 export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
-  phase: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  connectionStatus: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  sessionId: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
-    includeInStateLogs: false,
-  },
-  createdAt: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
-    includeInStateLogs: true,
-  },
-  updatedAt: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
-    includeInStateLogs: true,
-  },
-  qrPayload: {
+  qrSyncPhase: {
     persist: false,
     includeInDebugSnapshot: false,
     usedInUi: true,
     includeInStateLogs: false,
   },
-  otpAttempts: {
+  qrSyncConnectionStatus: {
     persist: false,
-    includeInDebugSnapshot: true,
+    includeInDebugSnapshot: false,
     usedInUi: true,
-    includeInStateLogs: true,
+    includeInStateLogs: false,
+  },
+  qrSyncSessionId: {
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+    includeInStateLogs: false,
+  },
+  qrSyncCreatedAt: {
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+    includeInStateLogs: false,
+  },
+  qrSyncUpdatedAt: {
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+    includeInStateLogs: false,
+  },
+  qrSyncQrPayload: {
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+    includeInStateLogs: false,
   },
   syncOffer: {
     persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+    includeInStateLogs: false,
   },
   selectedAccountGroupIds: {
     persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  lastActionType: {
-    persist: false,
-    includeInDebugSnapshot: true,
+    includeInDebugSnapshot: false,
     usedInUi: false,
-    includeInStateLogs: true,
+    includeInStateLogs: false,
   },
-  importedAccountIds: {
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
-  error: {
+  qrSyncError: {
     persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
@@ -88,13 +70,12 @@ export const MESSENGER_EXPOSED_METHODS = [
 
 export function getDefaultQrSyncControllerState(): QrSyncControllerState {
   return {
-    phase: QR_SYNC_PHASES.IDLE,
-    connectionStatus: 'disconnected',
-    sessionId: null,
-    createdAt: null,
-    updatedAt: null,
-    qrPayload: null,
-    otpAttempts: 0,
+    qrSyncPhase: QR_SYNC_PHASES.IDLE,
+    qrSyncConnectionStatus: 'disconnected',
+    qrSyncSessionId: null,
+    qrSyncCreatedAt: null,
+    qrSyncUpdatedAt: null,
+    qrSyncQrPayload: null,
     syncOffer: null,
     selectedAccountGroupIds: [],
     lastActionType: null,
