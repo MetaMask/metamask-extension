@@ -297,7 +297,7 @@ describe('./utils/dev-server', () => {
 
       assert.strictEqual(result, middlewares);
       assert.strictEqual(entryPluginCalls.length, 3);
-      assert.match(entryPluginCalls[0].entry, /react-refresh-runtime-client/u);
+      assert.match(entryPluginCalls[0].entry, /react-refresh-client/u);
       assert.deepStrictEqual(entryPluginCalls[0].options, {});
       assert.match(
         entryPluginCalls[1].entry,
@@ -392,7 +392,7 @@ describe('./utils/dev-server', () => {
       setupUiReload(devServer as never, [compiler]);
 
       assert.strictEqual(entryPluginCalls.length, 2);
-      assert.match(entryPluginCalls[0].entry, /react-refresh-runtime-client/u);
+      assert.match(entryPluginCalls[0].entry, /react-refresh-client/u);
       assert.deepStrictEqual(entryPluginCalls[0].options, {});
       assert.match(
         entryPluginCalls[1].entry,

@@ -463,7 +463,7 @@ const config = {
         test: /\.ts$/u,
         include: uiEntryPath,
         enforce: 'pre' as const,
-        use: require.resolve('./utils/loaders/reactRefreshRuntimeLoader'),
+        use: require.resolve('./utils/loaders/reactRefreshLoader'),
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {

@@ -8,7 +8,7 @@ import { getClientEntry } from './websocket';
  * `HtmlBundlerPlugin.beforeEmit` injects the reload client into every UI page,
  * where it asks the UI runtime to check for hot updates. The stock React
  * Refresh entry and runtime bridge are prepended to the actual UI entry by
- * `reactRefreshRuntimeLoader`.
+ * `reactRefreshLoader`.
  *
  * Whether a build only reloads the UI pages or the whole extension is decided
  * per build in `setupBackgroundReload`; deciding in one place is what keeps a
