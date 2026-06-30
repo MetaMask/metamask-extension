@@ -46,6 +46,7 @@ export type WalletInitMessenger = RootMessenger<
  * approval request to the user.
  * @param options.connectivityAdapter - Adapter that observes the device's
  * network connectivity.
+ * @param options.infuraProjectId - The Infura project ID.
  * @returns The constructed `Wallet`.
  */
 export function initializeWallet({
