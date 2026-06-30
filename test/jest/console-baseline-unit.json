@@ -243,6 +243,9 @@
       "React: Act warnings (component updates not wrapped)": 10,
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/components/app/clear-metametrics-data/clear-metametrics-data.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 4
