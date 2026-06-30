@@ -5957,7 +5957,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.3.3, @metamask/core-backend@npm:^6.4.0":
+"@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.3.3":
+  version: 6.3.3
+  resolution: "@metamask/core-backend@npm:6.3.3"
+  dependencies:
+    "@metamask/accounts-controller": "npm:^39.0.1"
+    "@metamask/controller-utils": "npm:^12.1.1"
+    "@metamask/keyring-controller": "npm:^27.0.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/profile-sync-controller": "npm:^28.1.1"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    async-mutex: "npm:^0.5.0"
+    uuid: "npm:^8.3.2"
+  checksum: 10/be94b9131e1babea048a60f058c345d42ea8423fc3a7121013be4713f7d6298a2b9e3d2c454d0a8ddfd21216f3520bf517556b9d7b5b16600f700bf7cb5d98b6
+  languageName: node
+  linkType: hard
+
+"@metamask/core-backend@npm:^6.4.0":
   version: 6.4.0
   resolution: "@metamask/core-backend@npm:6.4.0"
   dependencies:
@@ -7393,10 +7410,10 @@ __metadata:
   linkType: hard
 
 "@metamask/profile-metrics-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/profile-metrics-controller@npm:4.0.0"
+  version: 4.0.1
+  resolution: "@metamask/profile-metrics-controller@npm:4.0.1"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.2"
+    "@metamask/accounts-controller": "npm:^39.0.3"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-controller": "npm:^27.1.0"
@@ -7407,11 +7424,11 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^68.1.1"
+    "@metamask/transaction-controller": "npm:^68.2.0"
     "@metamask/utils": "npm:^11.11.0"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/88461f5a81a5ce32d546157398e3aae1d1983722f5cefc6d6a35b91974499f695d96df7cd7ac0c76d65c575713ca838088570fa41afb462a76aa3d6bcbc7f241
+  checksum: 10/0fbc167e619e07af7df36f213e8f6fc9678dbf6ff57b41daf00a8a7b95ceb712a273496732a66d17f516856d7aeff7730b552c3819f60059ab6492e5d812699d
   languageName: node
   linkType: hard
 
@@ -8258,8 +8275,8 @@ __metadata:
   linkType: hard
 
 "@metamask/transaction-pay-controller@npm:^23.16.1":
-  version: 23.17.1
-  resolution: "@metamask/transaction-pay-controller@npm:23.17.1"
+  version: 23.16.1
+  resolution: "@metamask/transaction-pay-controller@npm:23.16.1"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -8283,7 +8300,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-  checksum: 10/636fe1ff705294be71afd2913449943defac71027b5a42f4c3190d4c78eed7116e1a8466114a6973bb247873de407ab25a28629867654abdfa1ba0c970f14205
+  checksum: 10/708ede9b28b037dae9895f05abfadabc2ce315b751836fa4a2ea6b1803223c6e039e0d794aa9406cc4b25ff9680f561b5643ae43a69bc359791502a6d602a1fa
   languageName: node
   linkType: hard
 
