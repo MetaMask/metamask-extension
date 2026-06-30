@@ -3,12 +3,13 @@ name: Runway extension release and store submit
 # INFRA-3735 — Runway single entrypoint for release cut + CWS + AMO store uploads.
 #
 # Phase 0: validate branch, version, optional release_sha, CI, Runway sender (release/*).
-# Phase 1: workflow_call → publish-release-from-release-head.yml
-# Phase 2: workflow_call → upload-extension-to-cws.yml (production + flask, parallel)
+# Phase 1: workflow_call → publish-release-from-release-head.yml (auto-skipped if release exists at SHA)
+# Phase 2: workflow_call → upload-extension-to-cws.yml (production + flask; CWS pre-flight idempotency)
 # Phase 3: workflow_call → upload-extension-to-amo.yml — blocked until #43144 merges
 #
-# Idempotent / partial re-run: set skip_* flags to bypass phases that already succeeded.
-# Re-dispatch the orchestrator from the same release/* ref with the same version.
+# Runway contract: version, release_sha, execute_store_phases only.
+# Recovery: re-run failed jobs on the same run, or re-dispatch (auto-skip handles completed phases).
+# skip_* inputs are manual break-glass overrides only.
 #
 # workflow_call (not gh workflow run) preserves Runway github.actor for WIF CEL on CWS/AMO.
 
@@ -29,17 +30,17 @@ on:
         type: boolean
         default: false
       skip_publish:
-        description: 'Skip Phase 1 (re-run when GitHub Release already exists from a prior attempt)'
+        description: 'Manual break-glass — skip Phase 1 (auto-skip also applies when GitHub Release exists at release_sha)'
         required: false
         type: boolean
         default: false
       skip_cws_production:
-        description: 'Skip Phase 2a CWS production upload'
+        description: 'Manual break-glass — skip Phase 2a (CWS workflow auto-skips when draft exists)'
         required: false
         type: boolean
         default: false
       skip_cws_flask:
-        description: 'Skip Phase 2b CWS flask upload'
+        description: 'Manual break-glass — skip Phase 2b (CWS workflow auto-skips when draft exists)'
         required: false
         type: boolean
         default: false
@@ -64,6 +65,7 @@ jobs:
       version: ${{ steps.validate-version.outputs.version }}
       release_sha: ${{ steps.resolve-sha.outputs.release_sha }}
       release_tag: ${{ steps.validate-version.outputs.release_tag }}
+      release_exists: ${{ steps.detect-release.outputs.release_exists }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -123,6 +125,25 @@ jobs:
           fi
           echo "release_sha=${RELEASE_SHA}" >> "${GITHUB_OUTPUT}"
 
+      - name: Detect existing GitHub Release
+        id: detect-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.validate-version.outputs.release_tag }}
+          RELEASE_SHA: ${{ steps.resolve-sha.outputs.release_sha }}
+        run: |
+          set -euo pipefail
+          existing_target=$(gh release view "${RELEASE_TAG}" --json targetCommitish --jq .targetCommitish 2>/dev/null || true)
+          if [[ -n "${existing_target}" && "${existing_target}" == "${RELEASE_SHA}" ]]; then
+            echo "GitHub Release ${RELEASE_TAG} already exists at ${RELEASE_SHA:0:7} — Phase 1 will auto-skip."
+            echo "release_exists=true" >> "${GITHUB_OUTPUT}"
+          else
+            if [[ -n "${existing_target}" ]]; then
+              echo "::warning::Release ${RELEASE_TAG} exists at ${existing_target:0:7} but workflow SHA is ${RELEASE_SHA:0:7}; Phase 1 will run."
+            fi
+            echo "release_exists=false" >> "${GITHUB_OUTPUT}"
+          fi
+
       - name: Verify Runway sender (UX quick-fail)
         if: startsWith(github.ref, 'refs/heads/release/')
         env:
@@ -155,6 +176,7 @@ jobs:
           VERSION: ${{ steps.validate-version.outputs.version }}
           RELEASE_SHA: ${{ steps.resolve-sha.outputs.release_sha }}
           EXECUTE_STORE: ${{ inputs.execute_store_phases }}
+          RELEASE_EXISTS: ${{ steps.detect-release.outputs.release_exists }}
         run: |
           {
             echo "### Phase 0 — validation passed"
@@ -165,13 +187,19 @@ jobs:
             echo "| Release SHA | \`${RELEASE_SHA}\` |"
             echo "| Ref | \`${{ github.ref }}\` |"
             echo "| execute_store_phases | \`${EXECUTE_STORE}\` |"
+            echo "| release_exists (auto-skip Phase 1) | \`${RELEASE_EXISTS}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
   publish-release:
     name: Phase 1 — publish release
     needs:
       - validate
-    if: ${{ inputs.execute_store_phases && !inputs.skip_publish }}
+    if: >-
+      ${{
+        inputs.execute_store_phases &&
+        !inputs.skip_publish &&
+        needs.validate.outputs.release_exists != 'true'
+      }}
     uses: ./.github/workflows/publish-release-from-release-head.yml
     secrets: inherit
 
@@ -245,8 +273,7 @@ jobs:
           echo "Merge metamask-extension#43144 (upload-extension-to-amo.yml), then add workflow_call"
           echo "to that workflow and wire production + flask jobs here (same pattern as CWS)."
           echo ""
-          echo "Version ${VERSION} — Phases 0–2 may have completed; re-run with skip_publish and"
-          echo "skip_cws_* as needed after #43144 lands to finish AMO only."
+          echo "Version ${VERSION} — Phases 0–2 may have completed; re-dispatch or re-run failed jobs after #43144 lands."
           exit 1
 
   orchestrator-summary:
@@ -269,6 +296,7 @@ jobs:
           AMO: ${{ needs.amo-pending.result }}
           EXECUTE_STORE: ${{ inputs.execute_store_phases }}
           SKIP_PUBLISH: ${{ inputs.skip_publish }}
+          RELEASE_EXISTS: ${{ needs.validate.outputs.release_exists }}
           SKIP_CWS_PROD: ${{ inputs.skip_cws_production }}
           SKIP_CWS_FLASK: ${{ inputs.skip_cws_flask }}
           SKIP_AMO: ${{ inputs.skip_amo }}
@@ -279,7 +307,11 @@ jobs:
             echo "| Phase | Result |"
             echo "| --- | --- |"
             echo "| 0 validate | ${VALIDATE} |"
-            echo "| 1 publish | ${PUBLISH} (skip_publish=${SKIP_PUBLISH}) |"
+            if [[ "${RELEASE_EXISTS}" == "true" && "${SKIP_PUBLISH}" != "true" ]]; then
+              echo "| 1 publish | ${PUBLISH} (auto-skipped: release exists) |"
+            else
+              echo "| 1 publish | ${PUBLISH} (skip_publish=${SKIP_PUBLISH}) |"
+            fi
             echo "| 2a CWS production | ${CWS_PROD} (skip=${SKIP_CWS_PROD}) |"
             echo "| 2b CWS flask | ${CWS_FLASK} (skip=${SKIP_CWS_FLASK}) |"
             echo "| 3 AMO | ${AMO} (skip_amo=${SKIP_AMO}) |"
@@ -287,7 +319,6 @@ jobs:
             if [[ "${EXECUTE_STORE}" != "true" ]]; then
               echo "Store phases were **not requested** (\`execute_store_phases=false\`)."
               echo ""
-              echo "**Partial re-run:** dispatch again with \`execute_store_phases=true\` and set"
-              echo "\`skip_publish\` / \`skip_cws_production\` / \`skip_cws_flask\` for phases that already succeeded."
+              echo "**Recovery:** use **Re-run failed jobs** on the same run, or re-dispatch with the same \`version\` / \`release_sha\` (completed phases auto-skip)."
             fi
           } >> "${GITHUB_STEP_SUMMARY}"
