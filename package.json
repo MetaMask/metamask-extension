@@ -656,6 +656,7 @@
     "@types/react-beautiful-dnd": "^13",
     "@types/react-dom": "18.2.0",
     "@types/react-redux": "^7.1.25",
+    "@types/react-refresh": "^0.14.7",
     "@types/react-router-dom": "^5.3.3",
     "@types/readable-stream": "4.0.4",
     "@types/readable-stream-2": "^2.3.15",

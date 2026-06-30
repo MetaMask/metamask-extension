@@ -1,13 +1,19 @@
 /* eslint-disable camelcase */
 
-declare const require: (moduleName: string) => unknown;
+// This replaces `@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry.js`.
+// The plugin injects its entry into every Webpack runtime, but MetaMask has
+// non-React extension runtimes such as background, bootstrap, and ui-reload-client
+// scripts. Guard injection so React Refresh only installs on UI pages.
+
+import { injectIntoGlobalHook } from 'react-refresh/runtime';
+
+// Defined by `@pmmmwh/react-refresh-webpack-plugin` to namespace the injected
+// runtime marker when multiple builds share the same page.
 declare const __react_refresh_library__: string | undefined;
 
-type ReactRefreshRuntime = {
-  injectIntoGlobalHook(globalObject: typeof globalThis): void;
-};
-
-const RefreshRuntime = require('react-refresh/runtime') as ReactRefreshRuntime;
+// UI pages also load these non-React runtimes, so skip React Refresh when this
+// entry is evaluating inside one of those scripts.
+const NON_REACT_RUNTIME_SCRIPT_FILES = ['bootstrap.js', 'ui-reload-client.js'];
 
 /**
  * @returns Whether this entry is running in a React UI page script.
@@ -20,31 +26,37 @@ function shouldInjectReactRefreshRuntime(): boolean {
     return false;
   }
 
-  const { currentScript } = document;
-  const currentScriptSource =
-    currentScript && 'src' in currentScript ? currentScript.src : '';
+  const currentScriptSource = document.currentScript?.getAttribute('src');
+  if (!currentScriptSource) {
+    return true;
+  }
 
-  return !/(?:^|\/)(?:bootstrap|ui-reload-client)(?:\.[^/]*)?\.js(?:$|[?#])/u.test(
-    currentScriptSource,
-  );
+  const currentScriptFileName =
+    new URL(currentScriptSource, window.location.href).pathname
+      .split('/')
+      .pop();
+  if (!currentScriptFileName) {
+    return true;
+  }
+
+  return !NON_REACT_RUNTIME_SCRIPT_FILES.includes(currentScriptFileName);
 }
 
 if (
   process.env.NODE_ENV !== 'production' &&
   shouldInjectReactRefreshRuntime()
 ) {
-  let refreshInjectedKey = '__reactRefreshInjected';
+  // Namespace the injected flag (if necessary) for monorepo compatibility
+  const refreshInjectedKey = __react_refresh_library__
+    ? `__reactRefreshInjected_${__react_refresh_library__}`
+    : '__reactRefreshInjected';
 
-  if (__react_refresh_library__ !== undefined && __react_refresh_library__) {
-    refreshInjectedKey += `_${__react_refresh_library__}`;
-  }
+  // Only inject the runtime if it hasn't been injected
+  if (!Reflect.get(window, refreshInjectedKey)) {
+    // Inject refresh runtime into global scope
+    injectIntoGlobalHook(window);
 
-  const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
-
-  if (!globalScope[refreshInjectedKey]) {
-    RefreshRuntime.injectIntoGlobalHook(globalThis);
-    globalScope[refreshInjectedKey] = true;
+    // Mark the runtime as injected to prevent double-injection
+    Reflect.set(window, refreshInjectedKey, true);
   }
 }
-
-export {};
