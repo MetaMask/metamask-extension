@@ -105,6 +105,7 @@
     "assetExchangeRates": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
+    "inputPrimaryDenomination": "string",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",
@@ -124,6 +125,12 @@
   "ComplianceController": {
     "lastCheckedAt": null,
     "walletComplianceStatusMap": "object"
+  },
+  "ConfigRegistryController": {
+    "configs": "object",
+    "etag": null,
+    "lastFetched": null,
+    "version": null
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },

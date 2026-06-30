@@ -1699,9 +1699,6 @@
   "back": {
     "message": "Back"
   },
-  "backToHome": {
-    "message": "Back to home"
-  },
   "backUpIncomplete": {
     "message": "Back up incomplete"
   },
@@ -2536,9 +2533,6 @@
   "closeSlide": {
     "message": "Close $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "You may close this window anytime."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -8614,6 +8608,13 @@
   "send": {
     "message": "Send"
   },
+  "sendAlertNewAddressMessage": {
+    "message": "You're sending to this address for the first time. Make sure that it's correct before you continue: $1",
+    "description": "$1 is the recipient address"
+  },
+  "sendAlertNewAddressTitle": {
+    "message": "New address"
+  },
   "sendBugReport": {
     "message": "Send us a bug report."
   },
@@ -9527,24 +9528,6 @@
   },
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
-  },
-  "smartTransactionCancelled": {
-    "message": "Your transaction was canceled"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Your transaction couldn't be completed, so it was canceled to save you from paying unnecessary gas fees."
-  },
-  "smartTransactionError": {
-    "message": "Your transaction failed"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
-  },
-  "smartTransactionPending": {
-    "message": "Your transaction was submitted"
-  },
-  "smartTransactionSuccess": {
-    "message": "Your transaction is complete"
   },
   "smartTransactions": {
     "message": "Smart Transactions"
@@ -10515,9 +10498,6 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
-  "tokenContractError": {
-    "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
-  },
   "tokenContractWarning": {
     "message": "Token contract warning"
   },
@@ -11011,9 +10991,6 @@
   "view": {
     "message": "View"
   },
-  "viewActivity": {
-    "message": "View activity"
-  },
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
@@ -11040,9 +11017,6 @@
   },
   "viewTokenDetails": {
     "message": "View token details"
-  },
-  "viewTransaction": {
-    "message": "View transaction"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",
