@@ -80,7 +80,7 @@ class SendPage {
 
   async checkInsufficientFundsError(): Promise<void> {
     console.log('Checking for insufficient funds error');
-    await this.driver.findElement(this.insufficientFundsError);
+    await this.driver.waitForSelector(this.insufficientFundsError);
   }
 
   async checkAmountRequiredError(): Promise<void> {

@@ -25,6 +25,9 @@ export const useAmountValidation = () => {
   const { validateAmountWithSnap } = useSnapAmountOnInput();
   const { rawBalanceNumeric } = useBalance();
   const [amountError, setAmountError] = useState<string | undefined>(undefined);
+  // Snap onAmountInput is async; a slow response for an earlier amount can
+  // resolve after the user has typed a newer value. Each validation pass gets
+  // a monotonic run id so only the latest pass may update amountError.
   const validationRunIdRef = useRef(0);
 
   const setAndReturnError = useCallback(
@@ -72,6 +75,8 @@ export const useAmountValidation = () => {
     validationRunIdRef.current = runId;
 
     if (!value) {
+      // Non-EVM send must block Continue with "Required" when amount is empty;
+      // EVM keeps the prior behaviour (no error until the user enters a value).
       if (isNonEvmSendType) {
         return setAndReturnError(t('required'), runId);
       }

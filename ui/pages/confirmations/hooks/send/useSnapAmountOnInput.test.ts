@@ -30,6 +30,8 @@ const MOCK_ASSET = {
   isNative: true,
 };
 
+// Present in send context but not passed to onAmountInput — fee/balance
+// validation is amount-driven, not recipient-driven.
 const MOCK_RECIPIENT = 'TQCLD52qQXMmQGmS6U2YC5rBS6B9d3oZAw';
 
 describe('useSnapAmountOnInput', () => {

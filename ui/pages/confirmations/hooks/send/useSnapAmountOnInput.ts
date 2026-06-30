@@ -20,6 +20,10 @@ export const useSnapAmountOnInput = () => {
       );
       return result;
     },
+    // Intentionally omit send-context `value`: validation uses the `amount`
+    // argument only. Including `value` would recreate this callback on every
+    // keystroke and retrigger async snap validation, letting stale responses
+    // overwrite newer error state.
     [fromAccount, asset],
   );
 
