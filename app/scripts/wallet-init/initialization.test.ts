@@ -10,7 +10,7 @@ import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-option
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
 import { createMockMessenger } from './test-utils';
 
-jest.mock('@metamask/wallet', () => ({ Wallet: jest.fn() }));
+jest.mock('@metamask/wallet');
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
 }));
@@ -59,6 +59,22 @@ describe('initializeWallet', () => {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
         keyringController: 'keyring-options',
+        networkController: {
+          infuraProjectId: 'fake-infura-project-id',
+          failoverUrls: {
+            '0x1': [],
+            '0x13b2': [],
+            '0x2105': [],
+            '0x3e7': [],
+            '0x531': [],
+            '0x89': [],
+            '0x8f': [],
+            '0xa': [],
+            '0xa4b1': [],
+            '0xa86a': [],
+            '0xe708': [],
+          },
+        },
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
       },
@@ -103,6 +119,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    MockWallet.prototype.init.mockResolvedValue([]);
   });
 
   it('wires the enable/disable toggle over the messenger with a default-preserving baseline', () => {
