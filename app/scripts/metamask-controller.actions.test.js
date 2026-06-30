@@ -59,6 +59,21 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         // past `ensureReady`, so no Snap accounts get created during init.
         () => new Promise(() => undefined),
       );
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:getLegacySnapKeyring',
+        async () => {
+          const result = await controllerMessenger.call(
+            'KeyringController:withController',
+            async (controller) => {
+              const found = controller.keyrings.find(
+                ({ keyring }) => keyring.type === 'Snap Keyring',
+              );
+              return { snapKeyring: found?.keyring };
+            },
+          );
+          return result.snapKeyring;
+        },
+      );
       return {
         memStateKey: null,
         persistedStateKey: null,
