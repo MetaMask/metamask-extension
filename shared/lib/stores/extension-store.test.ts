@@ -155,9 +155,7 @@ describe('ExtensionStore', () => {
 
       expect(getMock).toHaveBeenNthCalledWith(1, ['manifest']);
       expect(getMock).toHaveBeenNthCalledWith(2, ['KeyringController']);
-      expect(getMock).toHaveBeenNthCalledWith(3, [
-        'PreferencesController',
-      ]);
+      expect(getMock).toHaveBeenNthCalledWith(3, ['PreferencesController']);
       expect(getMock).toHaveBeenNthCalledWith(4, ['MissingController']);
     });
 

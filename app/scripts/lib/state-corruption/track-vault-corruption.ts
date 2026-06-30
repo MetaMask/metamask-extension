@@ -37,8 +37,7 @@ export function trackVaultCorruptionEvent(
       ...(diagnostics
         ? {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            split_state_persistence_diagnostics:
-              diagnostics as unknown as Json,
+            split_state_persistence_diagnostics: diagnostics as unknown as Json,
           }
         : {}),
     },

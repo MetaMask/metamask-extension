@@ -9,8 +9,7 @@ export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_KEY =
   'split-state-persistence-diagnostics';
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_KEY =
   'split-state-persistence-diagnostics-baseline';
-export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS =
-  5 * 60 * 1000;
+export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS = 5 * 60 * 1000;
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_INTERVAL_MS =
   7 * 24 * 60 * 60 * 1000;
 export const SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE = 20;
@@ -44,8 +43,7 @@ const DEFAULT_SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_CONFIG: SplitStatePersistenceD
     sizeSampleRate: SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE,
     baselineIntervalMs:
       SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_BASELINE_INTERVAL_MS,
-    snapshotPersistIntervalMs:
-      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS,
+    snapshotPersistIntervalMs: SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_INTERVAL_MS,
     wideBatchKeyThreshold:
       SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_WIDE_BATCH_KEY_THRESHOLD,
     topWrittenKeysLimit:
@@ -185,9 +183,8 @@ function getNumericConfigValue(
 export function getSplitStatePersistenceDiagnosticsConfig(
   remoteFeatureFlags: Record<string, unknown> | null | undefined,
 ): SplitStatePersistenceDiagnosticsConfig | undefined {
-  const featureFlag = remoteFeatureFlags?.[
-    SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG
-  ];
+  const featureFlag =
+    remoteFeatureFlags?.[SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG];
 
   if (!isObject(featureFlag) || featureFlag.enabled !== true) {
     return undefined;
@@ -268,9 +265,7 @@ export function getSplitStateDiagnosticError(
  * @param value - The value to size.
  * @returns The value's size bucket.
  */
-export function getSplitStateSizeBucket(
-  value: unknown,
-): SplitStateSizeBucket {
+export function getSplitStateSizeBucket(value: unknown): SplitStateSizeBucket {
   return measureValue(value).sizeBucket;
 }
 
@@ -393,9 +388,7 @@ export class SplitStatePersistenceDiagnostics {
 
   #config: SplitStatePersistenceDiagnosticsConfig | undefined;
 
-  setConfig(
-    config: SplitStatePersistenceDiagnosticsConfig | undefined,
-  ): void {
+  setConfig(config: SplitStatePersistenceDiagnosticsConfig | undefined): void {
     this.#config = config;
 
     if (!config) {
@@ -631,9 +624,7 @@ export class SplitStatePersistenceDiagnostics {
     ]);
 
     if (
-      isSplitStatePersistenceDiagnosticsBaselineMetadata(
-        baselineMetadata,
-      ) &&
+      isSplitStatePersistenceDiagnosticsBaselineMetadata(baselineMetadata) &&
       now - baselineMetadata.lastSentAt < config.baselineIntervalMs
     ) {
       return undefined;
@@ -735,9 +726,7 @@ export class SplitStatePersistenceDiagnostics {
       SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_KEY,
     ]);
 
-    if (
-      !isSplitStatePersistenceDiagnosticsSnapshot(persistedSnapshot)
-    ) {
+    if (!isSplitStatePersistenceDiagnosticsSnapshot(persistedSnapshot)) {
       return;
     }
 
@@ -769,8 +758,10 @@ export class SplitStatePersistenceDiagnostics {
 
     this.#recentWideBatches = [
       ...snapshot.recentWideBatches.slice(
-        -(this.#config?.recentWideBatchesLimit ??
-          snapshot.config.recentWideBatchesLimit),
+        -(
+          this.#config?.recentWideBatchesLimit ??
+          snapshot.config.recentWideBatchesLimit
+        ),
       ),
       ...this.#recentWideBatches,
     ].slice(

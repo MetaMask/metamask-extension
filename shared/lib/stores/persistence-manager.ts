@@ -512,8 +512,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     let readDiagnostics: SplitStateReadDiagnostics | undefined;
 
     try {
-      readDiagnostics =
-        await this.#localStore.getSplitStateReadDiagnostics?.();
+      readDiagnostics = await this.#localStore.getSplitStateReadDiagnostics?.();
     } catch (error) {
       readDiagnostics = {
         manifestStatus: 'failed',

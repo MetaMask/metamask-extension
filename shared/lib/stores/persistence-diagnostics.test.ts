@@ -48,9 +48,7 @@ describe('SplitStatePersistenceDiagnostics', () => {
   function recordUnsampledPersistedBatches(count: number) {
     for (let index = 0; index < count; index++) {
       diagnostics.recordPersistedBatch(
-        new Map<string, unknown>([
-          ['UnsampledController', { value: index }],
-        ]),
+        new Map<string, unknown>([['UnsampledController', { value: index }]]),
       );
     }
   }
@@ -326,8 +324,7 @@ describe('SplitStatePersistenceDiagnostics', () => {
       ],
     };
 
-    const snapshot =
-      await diagnostics.getSnapshotForReport(readDiagnostics);
+    const snapshot = await diagnostics.getSnapshotForReport(readDiagnostics);
 
     expect(snapshot).toMatchObject({
       totalQueuedUpdates: 0,
@@ -343,9 +340,7 @@ describe('SplitStatePersistenceDiagnostics', () => {
       '4kb_16kb',
     );
 
-    const error = getSplitStateDiagnosticError(
-      new Error('a'.repeat(300)),
-    );
+    const error = getSplitStateDiagnosticError(new Error('a'.repeat(300)));
 
     expect(error.errorName).toBe('Error');
     expect(error.errorMessage).toHaveLength(200);

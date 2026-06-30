@@ -416,9 +416,7 @@ describe('PersistenceManager', () => {
         MISSING_VAULT_ERROR,
       );
 
-      expect(
-        mockStoreGetSplitStateReadDiagnostics,
-      ).not.toHaveBeenCalled();
+      expect(mockStoreGetSplitStateReadDiagnostics).not.toHaveBeenCalled();
       expect(listener).toHaveBeenCalledWith({
         backup: {
           KeyringController: {
