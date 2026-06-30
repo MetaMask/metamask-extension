@@ -293,7 +293,6 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     ? {
         [SYNC_ACCOUNTS_ROUTE]: {
           labelKey: 'syncAccounts',
-          parentPath: SETTINGS_ROUTE,
           component: mmLazy(() => import('./sync-accounts/index.ts')),
           isTab: true,
           iconName: IconName.Mobile,
