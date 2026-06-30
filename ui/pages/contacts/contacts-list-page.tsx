@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
@@ -16,7 +16,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
 } from '@metamask/design-system-react';
-import { useAnalytics } from '../../hooks/useAnalytics';
 import { Header, Page } from '../../components/multichain/pages/page';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
 import { BorderRadius } from '../../helpers/constants/design-system';
@@ -34,6 +33,7 @@ import {
   BannerAlert,
   BannerAlertSeverity,
 } from '../../components/component-library';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -52,7 +52,7 @@ export function ContactsListPage() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const fromPath = searchParams.get('from') ?? undefined;
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const completeAddressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const [showDeletedToast, setShowDeletedToast] = useState(false);
@@ -88,15 +88,14 @@ export function ContactsListPage() {
   );
 
   useEffect(() => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.ContactsPageViewed)
-        .addCategory(MetaMetricsEventCategory.Contacts)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_contacts: contacts.length,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Contacts,
+      event: MetaMetricsEventName.ContactsPageViewed,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        number_of_contacts: contacts.length,
+      },
+    });
   }, [trackEvent, contacts.length]);
 
   useEffect(() => {
@@ -259,12 +258,11 @@ export function ContactsListPage() {
             >
               <ContactsEmptyState
                 onAddContact={() => {
-                  trackEvent(
-                    createEventBuilder(MetaMetricsEventName.AddContactClicked)
-                      .addCategory(MetaMetricsEventCategory.Contacts)
-                      .addProperties({ location: 'contacts_list' })
-                      .build(),
-                  );
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Contacts,
+                    event: MetaMetricsEventName.AddContactClicked,
+                    properties: { location: 'contacts_list' },
+                  });
                   navigate(CONTACTS_ADD_ROUTE);
                 }}
               />
@@ -287,12 +285,11 @@ export function ContactsListPage() {
               size={ButtonSize.Lg}
               isFullWidth
               onClick={() => {
-                trackEvent(
-                  createEventBuilder(MetaMetricsEventName.AddContactClicked)
-                    .addCategory(MetaMetricsEventCategory.Contacts)
-                    .addProperties({ location: 'contacts_list' })
-                    .build(),
-                );
+                trackEvent({
+                  category: MetaMetricsEventCategory.Contacts,
+                  event: MetaMetricsEventName.AddContactClicked,
+                  properties: { location: 'contacts_list' },
+                });
                 navigate(CONTACTS_ADD_ROUTE);
               }}
               data-testid="contacts-add-contact-button"
