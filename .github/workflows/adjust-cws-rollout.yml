@@ -2,14 +2,21 @@ name: Adjust CWS rollout percentage
 
 # INFRA-3651 — workflow_dispatch rollout adjustment via CWS API v2.
 #
+# Publish-to-users is intentionally separate from upload-extension-to-cws.yml
+# (RAPID + threat model § Upload scope): upload = Runway + WIF, draft only;
+# rollout = human judgment after monitoring (docs/sensitive-release.md 1% protocol).
+#
+# Authorization (NOT Runway):
+#   Primary human gate — dedicated GitHub Environments with required reviewers
+#   (same class as break-glass build via release-branch; see INFRA-3676 / RAPID § Security ops).
+#   Platform configures approvers on cws-rollout-{dev,production,flask} in repo Settings.
+#   Technical gate — WIF CEL on cws-rollout-* environments + adjust-cws-rollout.yml
+#   workflow_ref; must NOT pin Runway actor (human OIDC only).
+#
 # Targets align with upload-extension-to-cws.yml (INFRA-3734): dev, production, flask.
-# dev: cws-dev + *_DEV (UAT smoke lane; manual RE dispatch). Not the legacy "beta" target.
-# production / flask: Runway sender + WIF CEL (shared prod WIF SA; flask uses EXTENSION_ID_FLASK).
+# Listing vars (*_DEV, prod, EXTENSION_ID_FLASK) match upload; OIDC environment differs.
 #
-# Read current state: GET .../items/{id}:fetchStatus (distributionChannels[].deployPercentage)
-# Update rollout:     POST .../items/{id}:setPublishedDeployPercentage { deployPercentage }
-#
-# Compatible with docs/sensitive-release.md initial 1% rollout protocol (production).
+# CWS v2: :fetchStatus (current deployPercentage) → :setPublishedDeployPercentage
 
 on:
   workflow_dispatch:
@@ -49,72 +56,33 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ inputs.target }}
       cancel-in-progress: false
-    environment: ${{ inputs.target == 'production' && 'cws-production' || inputs.target == 'flask' && 'cws-flask' || inputs.target == 'dev' && 'cws-dev' || null }}
+    environment: ${{ inputs.target == 'production' && 'cws-rollout-production' || inputs.target == 'flask' && 'cws-rollout-flask' || inputs.target == 'dev' && 'cws-rollout-dev' || null }}
     env:
       VERSION: ${{ inputs.version }}
       DESIRED_PERCENTAGE: ${{ inputs.desired_percentage }}
       CONFIRM_FULL_ROLLOUT: ${{ inputs.confirm_full_rollout }}
       TARGET: ${{ inputs.target }}
+      ROLLOUT_ENV: ${{ inputs.target == 'production' && 'cws-rollout-production' || inputs.target == 'flask' && 'cws-rollout-flask' || inputs.target == 'dev' && 'cws-rollout-dev' || '' }}
     steps:
-      # Check 1 — Runway identity (production and flask; first step — no credentials before this).
-      - name: Verify Runway sender (production and flask)
-        if: inputs.target == 'production' || inputs.target == 'flask'
+      # Defense-in-depth: rollout is human-initiated. Runway/bot dispatch belongs on upload, not here.
+      - name: Reject non-human dispatch
         env:
           SENDER_TYPE: ${{ github.event.sender.type }}
-          SENDER_ID: ${{ github.event.sender.id }}
           SENDER_LOGIN: ${{ github.event.sender.login }}
-          RUNWAY_ACTOR_ID: '73448015'
-          RUNWAY_ACTOR_LOGIN: 'runway-github[bot]'
         run: |
           set -euo pipefail
-          echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender.id=${SENDER_ID} (${SENDER_LOGIN})"
-          if [[ "${SENDER_TYPE}" != "Bot" ]]; then
-            echo "::error::Production and Flask rollout dispatch must come from a GitHub App bot (got sender.type=${SENDER_TYPE}). WIF CEL would also reject this OIDC request."
+          echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender=${SENDER_LOGIN}"
+          if [[ "${SENDER_TYPE}" == "Bot" ]]; then
+            echo "::error::CWS rollout is human-initiated with GitHub Environment reviewer approval (cws-rollout-*). Bot dispatch is not permitted — use upload-extension-to-cws.yml for automated store upload."
             exit 1
           fi
-          if [[ "${{ github.actor }}" != "${RUNWAY_ACTOR_LOGIN}" ]]; then
-            echo "::error::Expected actor ${RUNWAY_ACTOR_LOGIN}, got ${{ github.actor }}"
-            exit 1
-          fi
-          if [[ "${SENDER_ID}" != "${RUNWAY_ACTOR_ID}" ]]; then
-            echo "::error::Expected sender id ${RUNWAY_ACTOR_ID}, got ${SENDER_ID}"
-            exit 1
-          fi
-          echo "Runway sender verified (defense-in-depth; WIF CEL remains authoritative)."
+          echo "Human dispatch confirmed. Environment reviewer approval is recorded by GitHub before this job runs."
 
       - name: Checkout scripts
         uses: actions/checkout@v6
         with:
           sparse-checkout: .github/scripts/adjust-cws-rollout-guardrails.sh
           sparse-checkout-cone-mode: false
-
-      # Check 2 — Release Engineer membership (human dispatch only; skipped for Runway bot).
-      - name: Get org token for team membership check
-        if: github.event.sender.type == 'User'
-        id: org-token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
-        with:
-          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
-          permissions: |
-            read:org
-
-      - name: Verify Release Engineer membership
-        if: github.event.sender.type == 'User'
-        env:
-          GH_TOKEN: ${{ steps.org-token.outputs.token }}
-          ACTOR: ${{ github.actor }}
-        run: |
-          set -euo pipefail
-          membership_state=""
-          if ! membership_state="$(gh api "/orgs/MetaMask/teams/release-engineers/memberships/${ACTOR}" --jq .state 2>/dev/null)"; then
-            echo "::error::Actor ${ACTOR} is not a member of MetaMask/release-engineers. Rollout adjustment requires Release Engineer group membership."
-            exit 1
-          fi
-          if [[ "${membership_state}" != "active" ]]; then
-            echo "::error::Actor ${ACTOR} is not an active member of MetaMask/release-engineers (state=${membership_state})."
-            exit 1
-          fi
-          echo "Release Engineer membership verified for ${ACTOR}."
 
       - name: Resolve target configuration
         id: config
@@ -133,7 +101,7 @@ jobs:
           GITHUB_REF="${{ github.ref }}"
           if [[ "${TARGET}" == "dev" ]]; then
             if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
-              echo "::error::Dev (cws-dev) rollout must run from refs/heads/main (current: ${GITHUB_REF})"
+              echo "::error::Dev (cws-rollout-dev) rollout must run from refs/heads/main (current: ${GITHUB_REF})"
               exit 1
             fi
             WIF_PROVIDER="${WIF_PROVIDER_DEV}"
@@ -303,7 +271,8 @@ jobs:
             echo ""
             echo "| Field | Value |"
             echo "| --- | --- |"
-            echo "| Triggered by | \`${{ github.actor }}\` (sender: \`${{ github.event.sender.login }}\`, id=\`${{ github.event.sender.id }}\`, type=\`${{ github.event.sender.type }}\`) |"
+            echo "| GitHub Environment | \`${{ env.ROLLOUT_ENV }}\` (required reviewers — configure in repo Settings) |"
+            echo "| Triggered by | \`${{ github.actor }}\` (sender: \`${{ github.event.sender.login }}\`, type=\`${{ github.event.sender.type }}\`) |"
             echo "| Target | \`${{ inputs.target }}\` |"
             echo "| Version | \`${{ inputs.version }}\` |"
             echo "| Branch | \`${{ github.ref }}\` |"
