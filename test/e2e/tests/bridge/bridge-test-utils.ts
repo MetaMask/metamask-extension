@@ -16,7 +16,6 @@ import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
   MOCK_ANALYTICS_ID,
 } from '../../constants';
 import { getEventPayloads } from '../../helpers';
@@ -1496,7 +1495,6 @@ async function mockSmartTransactionsForBridge(
 export async function bridgeLogin(driver: Driver) {
   await login(driver, {
     expectedBalance: BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED,
-    balanceAssertionTimeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
   });
 }
 

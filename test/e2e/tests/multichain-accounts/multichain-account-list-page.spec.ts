@@ -13,7 +13,7 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
-  HARDWARE_WALLET_ADDRESS,
+  TREZOR_ADDRESS,
   WINDOW_TITLES,
 } from '../../constants';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
@@ -111,7 +111,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
                   balance: '0x0',
                   stakedBalance: '0x0',
                 },
-                [HARDWARE_WALLET_ADDRESS]: {
+                [TREZOR_ADDRESS]: {
                   balance: '0x0',
                   stakedBalance: '0x0',
                 },
