@@ -2,8 +2,8 @@ import webpackHotEmitter from 'webpack/hot/emitter';
 import 'webpack/hot/dev-server';
 import { UI_HOT_UPDATE_MESSAGE_TYPE } from './reload-protocol';
 
-self.addEventListener('message', (event) => {
-  if (event.source !== self) {
+globalThis.addEventListener('message', (event) => {
+  if (event.source !== globalThis.window) {
     return;
   }
   if (
