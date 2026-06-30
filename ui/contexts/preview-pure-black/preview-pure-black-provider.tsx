@@ -15,7 +15,7 @@ const PREVIEW_PURE_BLACK_STORAGE_KEY = 'metamask-preview-pure-black';
  * Pure black preview is only available in local development builds (`yarn start`).
  */
 export const isPureBlackPreviewAvailable = (): boolean =>
-  process.env.METAMASK_DEBUG === 'true';
+  String(process.env.METAMASK_DEBUG) === 'true';
 
 type PreviewPureBlackContextValue = {
   isPureBlackEnabled: boolean;
