@@ -33,6 +33,12 @@ export type DefiReferralPartnerConfig = {
   approvalType: string;
   /** Connection flow prior to showing the referral screen */
   connectionFlow: ConnectionFlow;
+  /**
+   * When set, the referral prompt is suppressed if the user's active chain
+   * doesn't match this hex chain ID. This is used in cases where the partner's
+   * code application logic only works when on the required chain (e.g. Variational)
+   */
+  requiredChainId?: string;
 };
 
 /**
@@ -79,6 +85,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     learnMoreUrl: 'https://docs.variational.io/omni/rewards/referrals',
     approvalType: 'variational_referral_consent',
     connectionFlow: 'permissions',
+    requiredChainId: '0xa4b1', // Arbitrum
   },
 };
 
