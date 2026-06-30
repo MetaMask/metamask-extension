@@ -2072,6 +2072,9 @@
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
+  "bridgeFeeDisclaimer": {
+    "message": "Includes $1% MetaMask fee"
+  },
   "bridgeNoPriceInfoTitle": {
     "message": "No price information"
   },
@@ -5171,7 +5174,7 @@
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
   },
   "mmFee": {
-    "message": "$1% MM fee."
+    "message": "$1% MetaMask fee"
   },
   "month": {
     "message": "month"
