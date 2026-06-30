@@ -219,21 +219,20 @@ describe('Contract Interaction Confirmation', () => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackAnalyticsEvent' &&
-            call[1]?.[0]?.properties?.category ===
-              MetaMetricsEventCategory.Confirmations,
+            call[0] === 'trackMetaMetricsEvent' &&
+            call[1]?.[0].category === MetaMetricsEventCategory.Confirmations,
         );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackAnalyticsEvent',
+        'trackMetaMetricsEvent',
       );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            name: MetaMetricsEventName.AccountDetailsOpened,
-            properties: expect.objectContaining({
-              category: MetaMetricsEventCategory.Confirmations,
+            category: MetaMetricsEventCategory.Confirmations,
+            event: MetaMetricsEventName.AccountDetailsOpened,
+            properties: {
               action: 'Confirm Screen',
               location: MetaMetricsEventLocation.Transaction,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -242,9 +241,8 @@ describe('Contract Interaction Confirmation', () => {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: 0,
-            }),
+            },
           }),
-          expect.anything(),
         ]),
       );
     });
