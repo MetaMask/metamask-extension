@@ -367,6 +367,7 @@ import {
 } from './messenger-client-init/core-backend';
 import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
+import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
@@ -700,6 +701,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
+      AuthenticatedUserStorageService: AuthenticatedUserStorageServiceInit,
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
@@ -837,6 +839,8 @@ export default class MetamaskController extends EventEmitter {
     this.authenticationController =
       messengerClientsByName.AuthenticationController;
     this.userStorageController = messengerClientsByName.UserStorageController;
+    this.authenticatedUserStorageService =
+      messengerClientsByName.AuthenticatedUserStorageService;
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
@@ -2611,6 +2615,7 @@ export default class MetamaskController extends EventEmitter {
       // Notification Controllers
       authenticationController,
       userStorageController,
+      authenticatedUserStorageService,
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
@@ -3785,6 +3790,14 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
+      getNotificationPreferences:
+        authenticatedUserStorageService.getNotificationPreferences.bind(
+          authenticatedUserStorageService,
+        ),
+      putNotificationPreferences:
+        authenticatedUserStorageService.putNotificationPreferences.bind(
+          authenticatedUserStorageService,
+        ),
       // NotificationServicesController
       checkAccountsPresence:
         notificationServicesController.checkAccountsPresence.bind(
@@ -3828,10 +3841,8 @@ export default class MetamaskController extends EventEmitter {
         notificationServicesPushController.disablePushNotifications.bind(
           notificationServicesPushController,
         ),
-      enableMetamaskNotifications:
-        notificationServicesController.enableMetamaskNotifications.bind(
-          notificationServicesController,
-        ),
+      enableMetamaskNotifications: (options) =>
+        notificationServicesController.enableMetamaskNotifications(options),
       disableMetamaskNotifications:
         notificationServicesController.disableNotificationServices.bind(
           notificationServicesController,
