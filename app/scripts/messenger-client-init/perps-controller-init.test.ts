@@ -4,10 +4,6 @@ import {
   type PerpsPlatformDependencies,
 } from '@metamask/perps-controller';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import {
   createPerpsInfrastructure,
   type InfrastructureDeps,
 } from '../controllers/perps/infrastructure';
@@ -290,10 +286,9 @@ describe('PerpsControllerInit', () => {
       expect(constructorCall.state).toBe(persistedState);
     });
 
-    it('calls createPerpsInfrastructure with trackEvent', () => {
+    it('calls createPerpsInfrastructure without messenger trackEvent delegation', () => {
       PerpsControllerInit(getInitRequestMock());
       expect(createPerpsInfrastructure).toHaveBeenCalledWith({
-        trackEvent: expect.any(Function),
         getStorageItem: expect.any(Function),
         setStorageItem: expect.any(Function),
         removeStorageItem: expect.any(Function),
@@ -331,35 +326,6 @@ describe('PerpsControllerInit', () => {
         'RewardsController:getPerpsDiscountForAccount',
         'eip155:42161:0xabc',
         10,
-      );
-    });
-
-    it('trackEvent from createPerpsInfrastructure delegates to MetaMetricsController:trackEvent', () => {
-      const call = jest.fn();
-      const request = getInitRequestMock();
-      request.controllerMessenger = {
-        call,
-      } as unknown as PerpsControllerMessenger;
-
-      jest
-        .mocked(createPerpsInfrastructure)
-        .mockImplementationOnce((deps: InfrastructureDeps) => {
-          deps.trackEvent({
-            event: MetaMetricsEventName.PerpsScreenViewed,
-            category: MetaMetricsEventCategory.Perps,
-            properties: {},
-          });
-          return {} as PerpsPlatformDependencies;
-        });
-
-      PerpsControllerInit(request);
-
-      expect(call).toHaveBeenCalledWith(
-        'MetaMetricsController:trackEvent',
-        expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
-          category: MetaMetricsEventCategory.Perps,
-        }),
       );
     });
 
