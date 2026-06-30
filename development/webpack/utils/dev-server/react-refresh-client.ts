@@ -8,7 +8,7 @@ self.addEventListener('message', (event) => {
   }
   if (
     event.data?.type === UI_HOT_UPDATE_MESSAGE_TYPE &&
-    typeof event.data?.hash === 'string'
+    typeof event.data.hash === 'string'
   ) {
     webpackHotEmitter.emit('webpackHotUpdate', event.data.hash);
   }
