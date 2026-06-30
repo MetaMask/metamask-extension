@@ -1,0 +1,363 @@
+name: Upload extension to Firefox AMO
+
+# Uploads a Firefox release asset to Mozilla AMO via amo-submission Lambda (us-east-2).
+#
+# Targets: dev (UAT / amo-dev), production (PRD / amo-production), flask (PRD / amo-flask).
+# Extension build-type beta is not supported here.
+#
+# dev: UAT pipeline test against AMO staging credentials (/metamask/amo/dev/, amo-dev env).
+# Not equivalent to CWS "beta" (different build type and store model). CWS target alignment:
+# https://consensyssoftware.atlassian.net/browse/INFRA-3734
+#
+# Lambda status=submitted: returned after XPI upload is AMO-valid and an AMO version is created.
+# flask/production: Lambda requires reviewer source + approval notes + release notes before upload;
+# this workflow fails if any attachment flag is false on first submit (idempotent=false). dev:
+# metadata is optional (smoke lane); source/notes are still attached when present. Re-runs are
+# idempotent (same version returns status=submitted with idempotent=true); attachment guard is
+# skipped when idempotent=true. Concurrent runs serialized via job concurrency.
+#
+# OIDC invoke roles (va-mmc-extension-submission-infra / extension_amo_invoke_iam.tf):
+#   dev:        arn:aws:iam::722264665990:role/amo-submission-dev
+#   production: arn:aws:iam::363762752069:role/amo-submission-production
+#   flask:      arn:aws:iam::363762752069:role/amo-submission-flask
+#
+# Trust policy conditions on token.actions.githubusercontent.com (all targets):
+#   aud = sts.amazonaws.com
+#   sub = repo:MetaMask/metamask-extension:environment:{amo-dev|amo-flask|amo-production}
+# dev (amo-dev): ref + job_workflow_ref pinned to main (human E2E).
+# PRD flask + production (amo-flask / amo-production):
+#   ref              = refs/heads/main | refs/heads/release/*
+#   job_workflow_ref = .../upload-extension-to-amo.yml@refs/heads/*
+#   actor            = runway-github[bot]
+#   actor_id         = 73448015
+#
+# GitHub Environment deployment branches on amo-production and amo-flask must allow main + release/*.
+#
+# INFRA-3649 — Runway sender verification (defense-in-depth; primary gate is IAM trust actor_id).
+#
+# Lambda invoke must use alias qualifier (dev | flask | production); unqualified invoke is denied.
+# AMO JWT secrets are read inside Lambda (assumes amo-submission-secrets-{env}), not by the runner.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. 13.12.0) — must match GitHub Release tag v{version}"
+        required: true
+        type: string
+      target:
+        description: "AMO target — dev (UAT staging), production (PRD main), flask (PRD Flask build)"
+        required: true
+        type: choice
+        default: dev
+        options:
+          - dev
+          - production
+          - flask
+      expected_sha256:
+        description: "Optional SHA-256 of the release asset (64 lowercase hex). Default asset depends on target."
+        required: false
+        type: string
+      asset_name:
+        description: "Optional release asset override (default: main zip for dev/production, *-flask.0.zip for flask)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  upload:
+    name: Upload to AMO (${{ inputs.target }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.target }}
+      cancel-in-progress: false
+    environment: ${{ inputs.target == 'production' && 'amo-production' || inputs.target == 'flask' && 'amo-flask' || inputs.target == 'dev' && 'amo-dev' || null }}
+    env:
+      VERSION: ${{ inputs.version }}
+      RELEASE_TAG: v${{ inputs.version }}
+      AWS_REGION: us-east-2
+    steps:
+      - name: Validate inputs and configuration
+        env:
+          TARGET: ${{ inputs.target }}
+          EXPECTED_SHA256: ${{ inputs.expected_sha256 }}
+          ASSET_NAME: ${{ inputs.asset_name }}
+          ADDON_GUID_DEV: ${{ vars.AMO_ADDON_GUID_DEV }}
+          ADDON_GUID_FLASK: ${{ vars.AMO_ADDON_GUID_FLASK }}
+          ADDON_GUID_PROD: ${{ vars.AMO_ADDON_GUID }}
+        run: |
+          set -euo pipefail
+          GITHUB_REF="${{ github.ref }}"
+          if [[ "${TARGET}" == "dev" ]]; then
+            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+              echo "::error::Dev (amo-dev) uploads must run from refs/heads/main (current: ${GITHUB_REF})"
+              exit 1
+            fi
+          elif [[ "${TARGET}" == "production" || "${TARGET}" == "flask" ]]; then
+            if [[ "${GITHUB_REF}" != "refs/heads/main" && ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
+              echo "::error::Production and Flask uploads must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+              exit 1
+            fi
+          fi
+          if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+){0,3}$ ]]; then
+            echo "::error::Invalid version format: ${VERSION} — use 1–4 dot-separated integers (e.g. 13.12.0)"
+            exit 1
+          fi
+          IFS='.' read -r -a version_parts <<< "${VERSION}"
+          for part in "${version_parts[@]}"; do
+            if [[ ! "${part}" =~ ^(0|[1-9][0-9]*)$ ]]; then
+              echo "::error::Version segment must be a non-negative integer without leading zeros: ${part} in ${VERSION}"
+              exit 1
+            fi
+          done
+          if [[ -n "${EXPECTED_SHA256}" && ! "${EXPECTED_SHA256}" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "::error::expected_sha256 must be 64 lowercase hex characters"
+            exit 1
+          fi
+          if [[ "${TARGET}" == "dev" ]]; then
+            ROLE_ARN="arn:aws:iam::722264665990:role/amo-submission-dev"
+            ADDON_GUID="${ADDON_GUID_DEV}"
+            DEPLOYMENT_ENV="dev"
+            DEFAULT_ASSET="metamask-firefox-${VERSION}.zip"
+          elif [[ "${TARGET}" == "production" ]]; then
+            ROLE_ARN="arn:aws:iam::363762752069:role/amo-submission-production"
+            ADDON_GUID="${ADDON_GUID_PROD}"
+            DEPLOYMENT_ENV="production"
+            DEFAULT_ASSET="metamask-firefox-${VERSION}.zip"
+          elif [[ "${TARGET}" == "flask" ]]; then
+            ROLE_ARN="arn:aws:iam::363762752069:role/amo-submission-flask"
+            ADDON_GUID="${ADDON_GUID_FLASK}"
+            DEPLOYMENT_ENV="flask"
+            DEFAULT_ASSET="metamask-firefox-${VERSION}-flask.0.zip"
+          else
+            echo "::error::Invalid target: ${TARGET}"
+            exit 1
+          fi
+          if [[ -z "${ADDON_GUID:-}" ]]; then
+            case "${TARGET}" in
+              dev) ADDON_GUID_VAR="AMO_ADDON_GUID_DEV" ;;
+              production) ADDON_GUID_VAR="AMO_ADDON_GUID" ;;
+              flask) ADDON_GUID_VAR="AMO_ADDON_GUID_FLASK" ;;
+            esac
+            echo "::error::Missing ${ADDON_GUID_VAR} repository variable for target '${TARGET}'"
+            exit 1
+          fi
+          RESOLVED_ASSET="${ASSET_NAME:-${DEFAULT_ASSET}}"
+          if [[ "${TARGET}" == "flask" ]]; then
+            if [[ ! "${RESOLVED_ASSET}" =~ ^metamask-firefox-([0-9]+(\.[0-9]+){0,3})-flask\.0\.zip$ ]]; then
+              echo "::error::Flask target requires asset metamask-firefox-{version}-flask.0.zip (got: ${RESOLVED_ASSET})"
+              exit 1
+            fi
+            ASSET_VERSION="${BASH_REMATCH[1]}"
+          elif [[ "${TARGET}" == "production" || "${TARGET}" == "dev" ]]; then
+            if [[ ! "${RESOLVED_ASSET}" =~ ^metamask-firefox-([0-9]+(\.[0-9]+){0,3})\.zip$ ]]; then
+              echo "::error::Main target requires asset metamask-firefox-{version}.zip (got: ${RESOLVED_ASSET})"
+              exit 1
+            fi
+            ASSET_VERSION="${BASH_REMATCH[1]}"
+            if [[ "${RESOLVED_ASSET}" == *"-flask"* || "${RESOLVED_ASSET}" == *"-beta"* ]]; then
+              echo "::error::Non-main artifact not allowed for target '${TARGET}'"
+              exit 1
+            fi
+          fi
+          if [[ "${ASSET_VERSION}" != "${VERSION}" ]]; then
+            echo "::error::Asset version '${ASSET_VERSION}' does not match input version '${VERSION}' (asset: ${RESOLVED_ASSET})"
+            exit 1
+          fi
+          LAMBDA_NAME="amo-submission"
+          LAMBDA_QUALIFIER="${DEPLOYMENT_ENV}"
+          {
+            echo "ROLE_ARN=${ROLE_ARN}"
+            echo "ADDON_GUID=${ADDON_GUID}"
+            echo "DEPLOYMENT_ENV=${DEPLOYMENT_ENV}"
+            echo "LAMBDA_NAME=${LAMBDA_NAME}"
+            echo "LAMBDA_QUALIFIER=${LAMBDA_QUALIFIER}"
+          } >> "${GITHUB_ENV}"
+          if [[ -n "${EXPECTED_SHA256}" ]]; then
+            echo "EXPECTED_SHA256=${EXPECTED_SHA256}" >> "${GITHUB_ENV}"
+          fi
+          if [[ -n "${ASSET_NAME}" ]]; then
+            echo "ASSET_NAME=${ASSET_NAME}" >> "${GITHUB_ENV}"
+          else
+            echo "ASSET_NAME=${DEFAULT_ASSET}" >> "${GITHUB_ENV}"
+          fi
+          {
+            echo "## AMO upload"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Target | \`${TARGET}\` |"
+            echo "| Version | \`${VERSION}\` |"
+            echo "| Release tag | \`${RELEASE_TAG}\` |"
+            echo "| Asset | \`${ASSET_NAME:-${DEFAULT_ASSET}}\` |"
+            echo "| Lambda | \`${LAMBDA_NAME}:${LAMBDA_QUALIFIER}\` |"
+            echo "| AWS region | \`${AWS_REGION}\` |"
+            echo "| Deployment env | \`${DEPLOYMENT_ENV}\` |"
+            echo "| Branch | \`${{ github.ref }}\` |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      # Defense-in-depth: fail fast if a non-Runway actor dispatches a production or flask run.
+      # The authoritative gate is IAM trust (actor_id=73448015) on amo-submission-production/flask.
+      - name: Verify Runway sender (production and flask)
+        if: inputs.target == 'production' || inputs.target == 'flask'
+        env:
+          SENDER_ID: ${{ github.event.sender.id }}
+          SENDER_LOGIN: ${{ github.event.sender.login }}
+          RUNWAY_ACTOR_ID: '73448015'
+          RUNWAY_ACTOR_LOGIN: 'runway-github[bot]'
+        run: |
+          set -euo pipefail
+          echo "Sender: ${SENDER_LOGIN} (id=${SENDER_ID})"
+          echo "Expected: ${RUNWAY_ACTOR_LOGIN} (id=${RUNWAY_ACTOR_ID})"
+          if [[ "${SENDER_ID}" != "${RUNWAY_ACTOR_ID}" ]]; then
+            echo "::error::Production and Flask uploads must be dispatched by Runway (expected sender_id=${RUNWAY_ACTOR_ID} / ${RUNWAY_ACTOR_LOGIN}, got ${SENDER_ID} / ${SENDER_LOGIN}). IAM trust would also reject this OIDC request."
+            exit 1
+          fi
+          echo "Sender verified: ${SENDER_LOGIN} (id=${SENDER_ID})"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
+        with:
+          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: amo-${{ inputs.target }}-${{ github.run_id }}
+
+      - name: Submit AMO upload via Lambda invoke (B1)
+        id: amo-upload
+        run: |
+          set -euo pipefail
+
+          sanitize_github_env_value() {
+            printf '%s' "$1" | tr '\n\r' ' ' | head -c 500
+          }
+
+          PAYLOAD="$(jq -n \
+            --arg environment "${DEPLOYMENT_ENV}" \
+            --arg run_id "${{ github.run_id }}" \
+            --arg version "${VERSION}" \
+            --arg amo_addon_guid "${ADDON_GUID}" \
+            --arg expected_sha256 "${EXPECTED_SHA256:-}" \
+            --arg asset_name "${ASSET_NAME}" \
+            '{
+              environment: $environment,
+              run_id: $run_id,
+              version: $version,
+              amo_addon_guid: $amo_addon_guid,
+              asset_name: $asset_name
+            }
+            + (if $expected_sha256 != "" then {expected_sha256: $expected_sha256} else {} end)')"
+
+          INVOKE_RESULT=0
+          aws lambda invoke \
+            --function-name "${LAMBDA_NAME}" \
+            --qualifier "${LAMBDA_QUALIFIER}" \
+            --invocation-type RequestResponse \
+            --cli-binary-format raw-in-base64-out \
+            --payload "${PAYLOAD}" \
+            /tmp/amo-response.json || INVOKE_RESULT=$?
+
+          if [[ "${INVOKE_RESULT}" -ne 0 ]]; then
+            echo "::error::aws lambda invoke failed (exit ${INVOKE_RESULT})"
+            exit "${INVOKE_RESULT}"
+          fi
+
+          if jq -e '.errorMessage // empty' /tmp/amo-response.json >/dev/null; then
+            ERR_TYPE="$(jq -r '.errorType // "LambdaError"' /tmp/amo-response.json)"
+            ERR_MSG="$(sanitize_github_env_value "$(jq -r '.errorMessage // "unknown"' /tmp/amo-response.json)")"
+            echo "::error::Lambda runtime error (${ERR_TYPE}): ${ERR_MSG}"
+            echo "AMO_UPLOAD_FAILED=true" >> "${GITHUB_ENV}"
+            printf 'AMO_UPLOAD_ERROR=%s\n' "$(sanitize_github_env_value "${ERR_TYPE}: ${ERR_MSG}")" >> "${GITHUB_ENV}"
+            exit 1
+          fi
+
+          if jq -e '.error // empty' /tmp/amo-response.json >/dev/null; then
+            ERR_CODE="$(jq -r '.error // "unknown"' /tmp/amo-response.json)"
+            ERR_MSG="$(sanitize_github_env_value "$(jq -r '.message // "no message"' /tmp/amo-response.json)")"
+            echo "::error::Lambda returned error (${ERR_CODE}): ${ERR_MSG}"
+            echo "AMO_UPLOAD_FAILED=true" >> "${GITHUB_ENV}"
+            printf 'AMO_UPLOAD_ERROR=%s\n' "$(sanitize_github_env_value "${ERR_CODE}: ${ERR_MSG}")" >> "${GITHUB_ENV}"
+            exit 1
+          fi
+
+          STATUS="$(jq -r '.status // empty' /tmp/amo-response.json)"
+          if [[ "${STATUS}" != "submitted" ]]; then
+            echo "::error::Unexpected Lambda response (status=${STATUS:-<empty>})"
+            echo "AMO_UPLOAD_FAILED=true" >> "${GITHUB_ENV}"
+            printf 'AMO_UPLOAD_ERROR=%s\n' "$(sanitize_github_env_value "unexpected status: ${STATUS:-<empty>}")" >> "${GITHUB_ENV}"
+            exit 1
+          fi
+
+          IDEMPOTENT="$(jq -r '.idempotent // false' /tmp/amo-response.json)"
+          SOURCE_ATTACHED="$(jq -r '.source_attached // false' /tmp/amo-response.json)"
+          RELEASE_NOTES_ATTACHED="$(jq -r '.release_notes_attached // false' /tmp/amo-response.json)"
+          APPROVAL_NOTES_ATTACHED="$(jq -r '.approval_notes_attached // false' /tmp/amo-response.json)"
+          if [[ "${DEPLOYMENT_ENV}" != "dev" && "${IDEMPOTENT}" != "true" ]]; then
+            if [[ "${SOURCE_ATTACHED}" != "true" || "${RELEASE_NOTES_ATTACHED}" != "true" || "${APPROVAL_NOTES_ATTACHED}" != "true" ]]; then
+              echo "::error::AMO submission missing required attachments (source=${SOURCE_ATTACHED}, release_notes=${RELEASE_NOTES_ATTACHED}, approval_notes=${APPROVAL_NOTES_ATTACHED})"
+              echo "AMO_UPLOAD_FAILED=true" >> "${GITHUB_ENV}"
+              printf 'AMO_UPLOAD_ERROR=%s\n' "$(sanitize_github_env_value "missing attachments: source=${SOURCE_ATTACHED} release_notes=${RELEASE_NOTES_ATTACHED} approval_notes=${APPROVAL_NOTES_ATTACHED}")" >> "${GITHUB_ENV}"
+              exit 1
+            fi
+          fi
+
+          {
+            echo "upload_uuid=$(jq -r '.upload_uuid // ""' /tmp/amo-response.json)"
+            echo "amo_version_id=$(jq -r '.amo_version_id // ""' /tmp/amo-response.json)"
+            echo "amo_version_url=$(jq -r '.amo_version_url // ""' /tmp/amo-response.json)"
+            echo "attestation_verified=$(jq -r '.attestation_verified // false' /tmp/amo-response.json)"
+            echo "idempotent=$(jq -r '.idempotent // false' /tmp/amo-response.json)"
+            echo "source_attached=$(jq -r '.source_attached // false' /tmp/amo-response.json)"
+            echo "release_notes_attached=$(jq -r '.release_notes_attached // false' /tmp/amo-response.json)"
+            echo "approval_notes_attached=$(jq -r '.approval_notes_attached // false' /tmp/amo-response.json)"
+          } >> "${GITHUB_OUTPUT}"
+
+          echo "AMO_UPLOAD_FAILED=false" >> "${GITHUB_ENV}"
+
+          {
+            echo "### AMO submission accepted"
+            echo ""
+            echo "- Version: \`${VERSION}\`"
+            echo "- Target: \`${{ inputs.target }}\`"
+            echo "- Upload UUID: \`$(jq -r '.upload_uuid // "n/a"' /tmp/amo-response.json)\`"
+            echo "- AMO Version ID: \`$(jq -r '.amo_version_id // "n/a"' /tmp/amo-response.json)\`"
+            echo "- AMO Version URL: $(jq -r '.amo_version_url // "n/a"' /tmp/amo-response.json)"
+            echo "- Attestation verified: \`$(jq -r '.attestation_verified // false' /tmp/amo-response.json)\`"
+            echo "- Idempotent re-run: \`$(jq -r '.idempotent // false' /tmp/amo-response.json)\`"
+            echo "- Source attached: \`$(jq -r '.source_attached // false' /tmp/amo-response.json)\`"
+            echo "- Release notes attached: \`$(jq -r '.release_notes_attached // false' /tmp/amo-response.json)\`"
+            echo "- Approval notes attached: \`$(jq -r '.approval_notes_attached // false' /tmp/amo-response.json)\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+          rm -f /tmp/amo-response.json
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo ""
+            echo "### Result"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Target | \`${{ inputs.target }}\` |"
+            echo "| Version | \`${{ inputs.version }}\` |"
+            echo "| Branch | \`${{ github.ref }}\` |"
+            echo "| Upload step | \`${{ steps.amo-upload.outcome }}\` |"
+            echo "| Upload UUID | \`${{ steps.amo-upload.outputs.upload_uuid || 'n/a' }}\` |"
+            echo "| AMO version ID | \`${{ steps.amo-upload.outputs.amo_version_id || 'n/a' }}\` |"
+            echo "| Attestation verified | \`${{ steps.amo-upload.outputs.attestation_verified || 'n/a' }}\` |"
+            echo "| Idempotent re-run | \`${{ steps.amo-upload.outputs.idempotent || 'n/a' }}\` |"
+            echo "| Source attached | \`${{ steps.amo-upload.outputs.source_attached || 'n/a' }}\` |"
+            echo "| Release notes | \`${{ steps.amo-upload.outputs.release_notes_attached || 'n/a' }}\` |"
+            echo "| Approval notes | \`${{ steps.amo-upload.outputs.approval_notes_attached || 'n/a' }}\` |"
+            echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+          if [[ "${{ steps.amo-upload.outcome }}" == "failure" ]]; then
+            echo ""
+            echo "**Failure:** ${AMO_UPLOAD_ERROR:-see Submit AMO upload step logs (Lambda payload not printed)}"
+            exit 1
+          fi
