@@ -1,5 +1,15 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { getIsPasskeyFeatureAvailable } from '../../selectors';
 import { useSettingsSearch } from './useSettingsSearch';
+
+jest.mock('react-redux', () => ({
+  useSelector: (selector: unknown) =>
+    typeof selector === 'function' ? selector() : selector,
+}));
+
+jest.mock('../../selectors', () => ({
+  getIsPasskeyFeatureAvailable: jest.fn(),
+}));
 
 jest.mock('../../../shared/lib/passkey', () => ({
   getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
@@ -30,6 +40,13 @@ jest.mock('./settings-registry', () => ({
       iconName: 'Customize',
       component: () => null,
     },
+    {
+      id: 'security-and-password',
+      path: '/settings/security-and-password',
+      labelKey: 'securityAndPrivacy',
+      iconName: 'Lock',
+      component: () => null,
+    },
   ],
 }));
 
@@ -47,10 +64,18 @@ jest.mock('./search-config', () => ({
         { id: 'local-currency', titleKey: 'localCurrency' },
       ],
     },
+    {
+      tabId: 'security-and-password',
+      items: [{ id: 'passkey', titleKey: 'unlockWithPasskey' }],
+    },
   ],
 }));
 
 describe('useSettingsSearch', () => {
+  beforeEach(() => {
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(true);
+  });
+
   it('returns empty results for queries shorter than 3 characters', () => {
     const { result } = renderHook(() => useSettingsSearch('th'));
     expect(result.current).toEqual([]);
@@ -78,5 +103,27 @@ describe('useSettingsSearch', () => {
   it('returns empty array for non-matching queries', () => {
     const { result } = renderHook(() => useSettingsSearch('xyznonexistent'));
     expect(result.current).toEqual([]);
+  });
+
+  it('includes the passkey/biometric option when the feature is available', () => {
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(true);
+
+    const { result } = renderHook(() =>
+      useSettingsSearch('passkeyAuthMethodBiometrics'),
+    );
+
+    const titleKeys = result.current.map((item) => item.titleKey);
+    expect(titleKeys).toContain('unlockWithPasskey');
+  });
+
+  it('hides the passkey/biometric option when the passkey feature is unavailable', () => {
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(false);
+
+    const { result } = renderHook(() =>
+      useSettingsSearch('passkeyAuthMethodBiometrics'),
+    );
+
+    const titleKeys = result.current.map((item) => item.titleKey);
+    expect(titleKeys).not.toContain('unlockWithPasskey');
   });
 });

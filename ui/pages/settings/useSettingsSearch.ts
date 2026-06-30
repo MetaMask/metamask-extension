@@ -1,10 +1,15 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
+import { getIsPasskeyFeatureAvailable } from '../../selectors';
 import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
 import { SETTINGS_SEARCH_CONFIG } from './search-config';
 import { useSettingsI18n } from './useSettingsI18n';
 
 export const MIN_SEARCH_LENGTH = 3;
+
+/** Setting id of the passkey entry, gated behind the passkey feature flag. */
+const PASSKEY_SETTING_ID = 'passkey';
 
 export type SettingsSearchResult = {
   /** Setting item id — used as hash fragment for scroll-to-setting */
@@ -20,8 +25,13 @@ export type SettingsSearchResult = {
 /**
  * Builds a flat list of searchable items by joining the lightweight
  * search config (id + titleKey pairs) with the registry (labelKey, path, iconName).
+ *
+ * @param excludedSettingIds - Setting ids to omit (e.g. feature-flagged items
+ * that are not rendered, so they must not appear in search results).
  */
-function buildSearchableItems(): SettingsSearchResult[] {
+function buildSearchableItems(
+  excludedSettingIds: ReadonlySet<string>,
+): SettingsSearchResult[] {
   const tabById = new Map(SETTINGS_TABS.map((t) => [t.id, t]));
 
   return SETTINGS_SEARCH_CONFIG.flatMap((cfg) => {
@@ -30,25 +40,29 @@ function buildSearchableItems(): SettingsSearchResult[] {
       return [];
     }
 
-    const tabItems: SettingsSearchResult[] = cfg.items.map((item) => ({
-      settingId: item.id,
-      tabLabelKey: tab.labelKey,
-      titleKey: item.titleKey,
-      tabRoute: tab.path,
-      iconName: tab.iconName,
-    }));
+    const tabItems: SettingsSearchResult[] = cfg.items
+      .filter((item) => !excludedSettingIds.has(item.id))
+      .map((item) => ({
+        settingId: item.id,
+        tabLabelKey: tab.labelKey,
+        titleKey: item.titleKey,
+        tabRoute: tab.path,
+        iconName: tab.iconName,
+      }));
 
     const subPageItems: SettingsSearchResult[] = (cfg.subPages ?? []).flatMap(
       (subPage) => {
         const meta = SETTINGS_ROUTES[subPage.path];
-        return subPage.items.map((item) => ({
-          settingId: item.id,
-          parentTabLabelKey: tab.labelKey,
-          tabLabelKey: meta?.labelKey ?? tab.labelKey,
-          titleKey: item.titleKey,
-          tabRoute: subPage.path,
-          iconName: tab.iconName,
-        }));
+        return subPage.items
+          .filter((item) => !excludedSettingIds.has(item.id))
+          .map((item) => ({
+            settingId: item.id,
+            parentTabLabelKey: tab.labelKey,
+            tabLabelKey: meta?.labelKey ?? tab.labelKey,
+            titleKey: item.titleKey,
+            tabRoute: subPage.path,
+            iconName: tab.iconName,
+          }));
       },
     );
 
@@ -66,9 +80,14 @@ function buildSearchableItems(): SettingsSearchResult[] {
  */
 export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   const t = useSettingsI18n();
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
 
   const fuse = useMemo(() => {
-    const items = buildSearchableItems();
+    const excludedSettingIds = new Set<string>();
+    if (!isPasskeyFeatureAvailable) {
+      excludedSettingIds.add(PASSKEY_SETTING_ID);
+    }
+    const items = buildSearchableItems(excludedSettingIds);
     return new Fuse(items, {
       shouldSort: true,
       threshold: 0.3,
@@ -81,7 +100,7 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
         return t(item[key as 'tabLabelKey' | 'titleKey']);
       },
     });
-  }, [t]);
+  }, [t, isPasskeyFeatureAvailable]);
 
   return useMemo(() => {
     const query = searchValue.trim();
