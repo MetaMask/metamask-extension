@@ -14,6 +14,7 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
+import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import type {
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerState,
@@ -119,7 +120,6 @@ export type MetaMaskState = Pick<
   | 'names'
   | 'addressBook'
   | 'currentCurrency'
-  | 'srpSessionData'
   | 'keyrings'
   | 'multichainNetworkConfigurationsByChainId'
   | 'firstTimeFlowType'
@@ -129,6 +129,7 @@ export type MetaMaskState = Pick<
   // TODO: Remove as this is no longer a top-level property of the flattened background state object.
   // | 'security_providers'
 > & {
+  srpSessionData?: AuthenticationController.AuthenticationControllerState['srpSessionData'];
   preferences: Pick<
     FlattenedBackgroundStateProxy['preferences'],
     | 'privacyMode'
