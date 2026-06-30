@@ -1,6 +1,6 @@
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { GMX_REFERRAL_STORAGE_ADDRESS } from '../../../shared/constants/defi-referrals';
-import { toFunctionSelector } from '../../../shared/lib/delegation/utils';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { GMX_REFERRAL_STORAGE_ADDRESS } from '../../../../shared/constants/defi-referrals';
+import { toFunctionSelector } from '../../../../shared/lib/delegation/utils';
 
 /** Minimal shape of NetworkController required for the on-chain referral check. */
 type NetworkControllerLike = {
