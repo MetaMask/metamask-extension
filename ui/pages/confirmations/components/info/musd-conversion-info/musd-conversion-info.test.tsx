@@ -117,7 +117,9 @@ function setupDefaultMocks({
   isPaidByMetaMask = false,
   prefillMax = false,
   hasInput = false,
-  payToken = undefined as { address: string; chainId: `0x${string}` } | undefined,
+  payToken = undefined as
+    | { address: string; chainId: `0x${string}` }
+    | undefined,
   defaultPaymentToken = null as {
     address: string;
     chainId: `0x${string}`;

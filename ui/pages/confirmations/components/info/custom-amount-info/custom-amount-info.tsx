@@ -200,7 +200,8 @@ function CenterContainer({
   onAmountChange,
   overrideCenterContent,
 }: CenterContainerProps) {
-  const showCenteredPayWith = !overrideCenterContent && disablePay !== true && hasTokens && !hasInput;
+  const showCenteredPayWith =
+    !overrideCenterContent && disablePay !== true && hasTokens && !hasInput;
 
   return (
     <Box

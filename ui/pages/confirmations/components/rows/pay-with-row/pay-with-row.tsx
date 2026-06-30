@@ -67,7 +67,11 @@ function PaySelectorContent({
 }: PaySelectorContentProps) {
   return (
     <>
-      <Box display={Display.Flex} alignItems={AlignItems.center} marginRight={1}>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        marginRight={1}
+      >
         <TokenIcon
           chainId={displayToken.chainId as `0x${string}`}
           tokenAddress={displayToken.address as `0x${string}`}
