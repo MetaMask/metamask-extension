@@ -235,6 +235,7 @@ import {
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
 import { checkGmxHasReferralCode } from './lib/defi-referral-onchain-check';
+import { checkHyperliquidHasReferralCode } from './lib/defi-referral-api-check';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -5780,6 +5781,22 @@ export default class MetamaskController extends EventEmitter {
     ) {
       const hasExistingCode = await checkGmxHasReferralCode(
         this.networkController,
+        activePermittedAccount,
+      );
+      if (hasExistingCode) {
+        this.preferencesController.addReferralPassedAccount(
+          partner.id,
+          activePermittedAccount,
+        );
+        return;
+      }
+    }
+
+    if (
+      partner.id === DefiReferralPartner.Hyperliquid &&
+      (shouldShowApproval || shouldRedirect)
+    ) {
+      const hasExistingCode = await checkHyperliquidHasReferralCode(
         activePermittedAccount,
       );
       if (hasExistingCode) {
