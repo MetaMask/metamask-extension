@@ -1,5 +1,5 @@
 import { AssetType } from '../../constants/transaction';
-import { getBaseReserveFromAccountAssetInfo } from './stellar/base-reserve-from-account-asset-info';
+import { getBaseReserveFromAccountAssetInfo } from './base-reserve-from-account-asset-info';
 import { NATIVE_RESERVE_CHAIN_IDS } from './constants';
 
 export type AccountAssetInfo = { baseReserve?: string } | undefined;

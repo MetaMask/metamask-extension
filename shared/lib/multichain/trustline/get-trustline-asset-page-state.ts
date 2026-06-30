@@ -1,10 +1,10 @@
 import { type CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { XlmScope } from '@metamask/keyring-api';
+import { AssetType } from '../../../constants/transaction';
 import {
   isClassicTrustlineAsset,
   isClassicTrustlineInactiveForDisplay,
 } from './trustline-from-account-asset-info';
-import { AssetType } from '../../../constants/transaction';
 
 export type AccountAssetInfo = { limit?: string } | undefined;
 

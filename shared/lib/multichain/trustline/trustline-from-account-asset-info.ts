@@ -1,6 +1,6 @@
 import { parseCaipAssetType } from '@metamask/utils';
-import { CLASSIC_TRUSTLINE_CHAIN_IDS } from '../constants';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import { CLASSIC_TRUSTLINE_CHAIN_IDS } from '../constants';
 
 type TrustlineAccountAssetInfo = {
   limit?: string;
