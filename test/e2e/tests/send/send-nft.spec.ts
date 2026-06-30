@@ -154,7 +154,9 @@ describe('Send NFT', function () {
             await nftDetailsPage.clickNFTSendButton();
 
             const sendPage = new SendPage(driver);
-            await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+            await sendPage.fillRecipient({
+              recipientAddress: DEFAULT_RECIPIENT,
+            });
             await sendPage.pressContinueButton();
 
             const tokenTransferConfirmation =
@@ -231,7 +233,7 @@ describe('Send NFT', function () {
     });
   });
 
-  describe('ERC1155 TEST', function () {
+  describe('ERC1155', function () {
     const smartContract = SMART_CONTRACTS.ERC1155;
 
     describe('Wallet initiated', function () {
@@ -289,7 +291,9 @@ describe('Send NFT', function () {
             await nftDetailsPage.clickNFTSendButton();
 
             const sendPage = new SendPage(driver);
-            await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+            await sendPage.fillRecipient({
+              recipientAddress: DEFAULT_RECIPIENT,
+            });
             await sendPage.fillAmount('1');
             await sendPage.pressContinueButton();
 
