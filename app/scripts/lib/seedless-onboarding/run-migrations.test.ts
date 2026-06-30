@@ -103,9 +103,6 @@ describe('runSeedlessOnboardingMigrations', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           migration_version: 1,
         },
-        options: {
-          environmentType: 'background',
-        },
       }),
     );
   });

@@ -82,9 +82,6 @@ describe('onRpcEndpointUnavailable', () => {
             rpc_endpoint_url: 'example.com',
           },
           sensitiveProperties: {},
-          options: {
-            environmentType: 'background',
-          },
         }),
       );
       /* eslint-enable @typescript-eslint/naming-convention */
