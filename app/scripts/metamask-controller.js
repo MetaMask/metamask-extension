@@ -5821,9 +5821,13 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    // Only continue if there is no pending approval
+    // Only continue if there is no pending approval.
+    // Note: we register referral approvals under ORIGIN_METAMASK (not the
+    // partner's origin) so that the ApprovalController origin-check used by
+    // wallet_switchEthereumChain does not mistake a pending referral for a
+    // dapp-initiated request and incorrectly require a switch confirmation.
     const hasPendingApproval = this.approvalController.hasRequest({
-      origin: partner.origin,
+      origin: ORIGIN_METAMASK,
       type: partner.approvalType,
     });
 
@@ -5866,7 +5870,7 @@ export default class MetamaskController extends EventEmitter {
         });
 
         const approvalResponse = await this.approvalController.add({
-          origin: partner.origin,
+          origin: ORIGIN_METAMASK,
           type: partner.approvalType,
           requestData: {
             selectedAddress: activePermittedAccount,
