@@ -67,21 +67,16 @@ const renderSwapAgainButton = (
   );
 
 describe('SwapAgainButton', () => {
-  let setBridgeLocationSpy: jest.SpyInstance;
   let trackUnifiedSwapBridgeEventSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    setBridgeLocationSpy = jest
-      .spyOn(bridgeActions, 'setBridgeLocation')
-      .mockImplementation((...args: unknown[]) => jest.fn()(...args));
     trackUnifiedSwapBridgeEventSpy = jest
       .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
       .mockImplementation((...args: unknown[]) => jest.fn()(...args));
   });
 
   afterEach(() => {
-    setBridgeLocationSpy.mockRestore();
     trackUnifiedSwapBridgeEventSpy.mockRestore();
   });
 
@@ -115,7 +110,7 @@ describe('SwapAgainButton', () => {
     expect(getByRole('button')).toHaveTextContent(messages.bridgeAgain.message);
   });
 
-  it('tracks button click, sets bridge location, and navigates to swap flow', async () => {
+  it('tracks button click and navigates to swap flow', async () => {
     const { getByRole } = renderSwapAgainButton(ethMainnetNative, usdcMainnet);
 
     await act(async () => {
@@ -133,10 +128,6 @@ describe('SwapAgainButton', () => {
         /* eslint-enable @typescript-eslint/naming-convention */
       },
     );
-    expect(setBridgeLocationSpy).toHaveBeenCalledWith(
-      MetaMetricsSwapsEventSource.TransactionDetails,
-    );
-
     const expectedSearchParams = new URLSearchParams();
     expectedSearchParams.set(
       BridgeQueryParams.From,
@@ -152,6 +143,6 @@ describe('SwapAgainButton', () => {
       search: expectedSearchParams,
       isEntrypoint: true,
     });
-    expect(mockDispatch).toHaveBeenCalledTimes(2);
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
   });
 });
