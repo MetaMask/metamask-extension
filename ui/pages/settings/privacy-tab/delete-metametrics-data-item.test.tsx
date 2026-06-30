@@ -17,7 +17,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
   );
-
   return {
     useAnalytics: () => ({
       trackEvent: jest.fn(),
