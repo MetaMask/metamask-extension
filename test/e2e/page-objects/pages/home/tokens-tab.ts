@@ -268,6 +268,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.sortByPopoverToggle);
     if (sortBy === 'alphabetically') {
       await this.driver.clickElement(this.sortByAlphabetically);
+      await this.driver.assertElementNotPresent(this.lowValueAssetsToggle);
     } else if (sortBy === 'decliningBalance') {
       await this.driver.clickElement(this.sortByDecliningBalance);
     }
