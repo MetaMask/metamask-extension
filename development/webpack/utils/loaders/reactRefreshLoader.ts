@@ -11,13 +11,12 @@ export default function reactRefreshLoader(
   source: string,
 ): string {
   const resourceDirectory = dirname(this.resourcePath);
-  const imports = [
-    REACT_REFRESH_ENTRY_PATH,
-    REACT_REFRESH_CLIENT_PATH,
-  ].map((entryPath) => {
-    const request = this.utils.contextify(resourceDirectory, entryPath);
-    return `import ${JSON.stringify(request)};`;
-  });
+  const imports = [REACT_REFRESH_ENTRY_PATH, REACT_REFRESH_CLIENT_PATH].map(
+    (entryPath) => {
+      const request = this.utils.contextify(resourceDirectory, entryPath);
+      return `import ${JSON.stringify(request)};`;
+    },
+  );
 
   return `${imports.join('\n')}\n${source}`;
 }
