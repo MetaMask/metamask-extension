@@ -6,6 +6,12 @@ name: Publish Release from Release HEAD
 
 on:
   workflow_dispatch:
+  workflow_call:
+
+# Serialize publish runs per release branch (direct dispatch or orchestrator workflow_call).
+concurrency:
+  group: publish-release-from-release-head-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
