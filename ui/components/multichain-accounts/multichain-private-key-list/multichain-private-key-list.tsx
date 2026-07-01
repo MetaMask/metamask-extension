@@ -348,7 +348,14 @@ const MultichainPrivateKeyList = ({
     }
     cleanStateVariables();
     goBack();
-  }, [cleanStateVariables, createEventBuilder, goBack, hdEntropyIndex, reveal, trackEvent]);
+  }, [
+    cleanStateVariables,
+    createEventBuilder,
+    goBack,
+    hdEntropyIndex,
+    reveal,
+    trackEvent,
+  ]);
 
   const renderedPasswordInput = useMemo(
     () => (
@@ -452,7 +459,14 @@ const MultichainPrivateKeyList = ({
         />
       );
     },
-    [createEventBuilder, handleCopy, hdEntropyIndex, privateKeys, t, trackEvent],
+    [
+      createEventBuilder,
+      handleCopy,
+      hdEntropyIndex,
+      privateKeys,
+      t,
+      trackEvent,
+    ],
   );
 
   const renderedRows = useMemo(() => {

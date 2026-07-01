@@ -156,7 +156,14 @@ export const MultichainAccountDetailsPage = () => {
 
       navigate(DEFAULT_ROUTE);
     }
-  }, [dispatch, trackEvent, createEventBuilder, navigate, wallet?.type, accountsWithAddresses]);
+  }, [
+    dispatch,
+    trackEvent,
+    createEventBuilder,
+    navigate,
+    wallet?.type,
+    accountsWithAddresses,
+  ]);
 
   const handleWalletAction = () => {
     navigate({
