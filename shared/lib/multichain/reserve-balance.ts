@@ -3,9 +3,7 @@ import { NATIVE_RESERVE_CHAIN_IDS } from './constants';
 
 export type AccountAssetInfo = { baseReserve?: string } | undefined;
 
-function parseFloatSafe(
-  value ?: string,
-): string | undefined {
+function parseFloatSafe(value?: string): string | undefined {
   if (value === undefined) {
     return undefined;
   }

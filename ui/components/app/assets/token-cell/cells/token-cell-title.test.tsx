@@ -420,31 +420,11 @@ describe('TokenCellTitle', () => {
       ).toBeInTheDocument();
     });
 
-    it('re-renders when balance changes for trustline display', () => {
+    it('treats a missing accountAssetInfo as inactive regardless of balance', () => {
       const assetId =
         'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 
-      // accountAssetInfo undefined; trustline inactive if balance is 0
       const token = createMockToken({
-        accountType: undefined,
-        chainId: 'stellar:pubnet',
-        assetId,
-        isNative: false,
-        accountAssetInfo: undefined,
-        balance: '0',
-      } as unknown as TokenFiatDisplayInfo);
-
-      const { rerender, queryByTestId } = render(
-        <TokenCellTitle token={token} />,
-      );
-
-      // Initially balance 0 -> inactive badge present
-      expect(
-        queryByTestId('stellar-trustline-inactive-badge'),
-      ).toBeInTheDocument();
-
-      // Change balance to a positive value -> badge should disappear
-      const updatedToken = createMockToken({
         accountType: undefined,
         chainId: 'stellar:pubnet',
         assetId,
@@ -453,11 +433,11 @@ describe('TokenCellTitle', () => {
         balance: '1',
       } as unknown as TokenFiatDisplayInfo);
 
-      rerender(<TokenCellTitle token={updatedToken} />);
+      const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
       expect(
         queryByTestId('stellar-trustline-inactive-badge'),
-      ).not.toBeInTheDocument();
+      ).toBeInTheDocument();
     });
 
     it('skips re-render when all compared props are the same', () => {

@@ -6,13 +6,12 @@ type TrustlineAccountAssetInfo = {
   limit?: string;
 };
 
-
 export const TRUSTLINE_ASSET_NAMESPACE: Record<CaipChainId, string> = {
   [XlmScope.Pubnet]: 'asset',
-}
+};
 
 export function isTrustlineAsset(assetId: string): boolean {
-   if (!assetId || !CaipAssetTypeStruct.is(assetId)) {
+  if (!assetId || !CaipAssetTypeStruct.is(assetId)) {
     return false;
   }
 
@@ -27,16 +26,14 @@ export function isTrustlineAsset(assetId: string): boolean {
  * This logic was previously colocated in the Stellar-specific helper. It is
  * kept generic here and exported as `isAssetRequireActivate`.
  * @param options
- * @param options.chainId
  * @param options.assetId
  * @param options.accountAssetInfo
- * @param options.balance
  */
 export function isAssetRequireActivate(options: {
   assetId?: string;
   accountAssetInfo?: TrustlineAccountAssetInfo;
 }): boolean {
-  const { assetId, accountAssetInfo = { limit: '1' } } = options;
+  const { assetId, accountAssetInfo } = options;
 
   if (!isTrustlineAsset(assetId ?? '')) {
     return false;
@@ -45,10 +42,12 @@ export function isAssetRequireActivate(options: {
   // TODO: different network can apply different logic here,
   // Today we only support Stellar, so we only check the limit.
   if (accountAssetInfo !== undefined) {
-    return accountAssetInfo.limit === undefined || accountAssetInfo.limit === '0';
+    return (
+      accountAssetInfo.limit === undefined || accountAssetInfo.limit === '0'
+    );
   }
 
-  // default to true because of the import token doesnt have accountAssetInfo at beginning,
+  // default to true because the imported token doesn't have accountAssetInfo at first,
   // we assume it is inactive
   return true;
 }

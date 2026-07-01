@@ -1,66 +1,86 @@
 import { XlmScope } from '@metamask/keyring-api';
-import { isClassicTrustlineInactiveForDisplay } from './trustline-from-account-asset-info';
+import { isAssetRequireActivate, isTrustlineAsset } from './trustline';
 
-describe('isClassicTrustlineInactiveForDisplay', () => {
-  it('returns true for classic asset with accountAssetInfo.limit === "0"', () => {
+const CLASSIC_ASSET_ID =
+  'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+const SEP41_ASSET_ID =
+  'stellar:pubnet/sep41:CBIJBDNZNF4X35BJ4FFZWCDBSCKOP5NB4PLG4SNENRMLAPYG4P5FM6VN';
+
+describe('isTrustlineAsset', () => {
+  it('returns true for a Stellar classic asset', () => {
+    expect(isTrustlineAsset(CLASSIC_ASSET_ID)).toBe(true);
+  });
+
+  it('returns false for a Stellar SEP-41 asset', () => {
+    expect(isTrustlineAsset(SEP41_ASSET_ID)).toBe(false);
+  });
+
+  it('returns false for a non-Stellar asset', () => {
     expect(
-      isClassicTrustlineInactiveForDisplay({
-        chainId: XlmScope.Pubnet,
-        assetId:
-          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+      isTrustlineAsset(
+        'eip155:1/erc20:0x0000000000000000000000000000000000000000',
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false for an empty or invalid assetId', () => {
+    expect(isTrustlineAsset('')).toBe(false);
+    expect(isTrustlineAsset('not-a-caip-asset-id')).toBe(false);
+  });
+});
+
+describe('isAssetRequireActivate', () => {
+  it('returns true for a classic asset with accountAssetInfo.limit === "0"', () => {
+    expect(
+      isAssetRequireActivate({
+        assetId: CLASSIC_ASSET_ID,
         accountAssetInfo: { limit: '0' },
-        balance: '0',
       }),
     ).toBe(true);
   });
 
-  it('returns false for classic asset with limit > 0', () => {
+  it('returns false for a classic asset with limit > 0', () => {
     expect(
-      isClassicTrustlineInactiveForDisplay({
-        chainId: XlmScope.Pubnet,
-        assetId:
-          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+      isAssetRequireActivate({
+        assetId: CLASSIC_ASSET_ID,
         accountAssetInfo: { limit: '10' },
-        balance: '10',
       }),
     ).toBe(false);
   });
 
-  it('returns false for SEP-41 asset regardless of limit', () => {
+  it('returns false for a SEP-41 asset regardless of limit', () => {
     expect(
-      isClassicTrustlineInactiveForDisplay({
-        chainId: XlmScope.Pubnet,
-        assetId:
-          'stellar:pubnet/sep41:CBIJBDNZNF4X35BJ4FFZWCDBSCKOP5NB4PLG4SNENRMLAPYG4P5FM6VN',
+      isAssetRequireActivate({
+        assetId: SEP41_ASSET_ID,
         accountAssetInfo: { limit: '0' },
-        balance: '0',
       }),
     ).toBe(false);
   });
 
-  it('treats missing accountAssetInfo as inactive when balance missing or zero', () => {
+  it('treats missing accountAssetInfo as inactive', () => {
     expect(
-      isClassicTrustlineInactiveForDisplay({
-        chainId: XlmScope.Pubnet,
-        assetId:
-          'stellar:pubnet/asset:FOO-GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      isAssetRequireActivate({
+        assetId: CLASSIC_ASSET_ID,
         accountAssetInfo: undefined,
-        balance: undefined,
       }),
     ).toBe(true);
   });
 
-  it('treats invalid limit as inactive', () => {
+  it('treats a missing limit as inactive', () => {
     expect(
-      isClassicTrustlineInactiveForDisplay({
-        chainId: XlmScope.Pubnet,
-        assetId:
-          'stellar:pubnet/asset:FOO-GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-        accountAssetInfo: { limit: 'not-a-number' } as unknown as {
-          limit?: string;
-        },
-        balance: '0',
+      isAssetRequireActivate({
+        assetId: CLASSIC_ASSET_ID,
+        accountAssetInfo: {},
       }),
     ).toBe(true);
+  });
+
+  it('returns false for a non-trustline asset regardless of accountAssetInfo', () => {
+    expect(
+      isAssetRequireActivate({
+        assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000000',
+        accountAssetInfo: { limit: '0' },
+      }),
+    ).toBe(false);
   });
 });

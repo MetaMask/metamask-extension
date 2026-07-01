@@ -16,20 +16,20 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import type { CaipAssetType } from '@metamask/utils';
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { requestStellarChangeTrustOptAdd } from '../utils/stellar-snap-client-requests';
 import { StellarClassicTrustlineErrorToast } from './stellar-classic-trustline-error-toast';
+import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 
 export type StellarClassicTrustlineActivateCardProps = {
   visible: boolean;
-  account: InternalAccount;
-  chainId: CaipChainId;
   assetId: CaipAssetType;
   symbol: string;
 };
@@ -40,20 +40,22 @@ export type StellarClassicTrustlineActivateCardProps = {
  *
  * @param options0
  * @param options0.visible
- * @param options0.account
- * @param options0.chainId
  * @param options0.assetId
  * @param options0.symbol
  */
 export const StellarClassicTrustlineActivateCard = ({
   visible,
-  account,
-  chainId,
   assetId,
   symbol,
 }: StellarClassicTrustlineActivateCardProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const chainId = getChainIdFromAssetId(assetId);
+  const account = useSelector((state) =>
+    chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)
+      : undefined,
+  ) as InternalAccount | undefined;
   const [isAddingTrustline, setIsAddingTrustline] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -62,6 +64,9 @@ export const StellarClassicTrustlineActivateCard = ({
   }, []);
 
   const handleActivateTrustline = useCallback(async () => {
+    if (!account || !chainId) {
+      return;
+    }
     setErrorMessage(null);
     setIsAddingTrustline(true);
     try {
@@ -85,7 +90,7 @@ export const StellarClassicTrustlineActivateCard = ({
     } finally {
       setIsAddingTrustline(false);
     }
-  }, [account.id, assetId, chainId, dispatch, t]);
+  }, [account, assetId, chainId, dispatch, t]);
 
   if (!visible) {
     return null;

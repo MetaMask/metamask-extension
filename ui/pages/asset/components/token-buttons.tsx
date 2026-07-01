@@ -1,6 +1,5 @@
-import { errorCodes } from '@metamask/rpc-errors';
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import type { CaipAssetType } from '@metamask/utils';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
@@ -32,6 +31,7 @@ import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { useAssetActivation } from '../hooks/useAssetActivation';
 import { StellarClassicTrustlineErrorToast } from './stellar-classic-trustline-error-toast';
 
 const TokenButtons = ({
@@ -129,56 +129,18 @@ const TokenButtons = ({
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 
-  // const [isDeactivating, setIsDeactivating] =
-  //   useState(false);
-  // const [trustlineRemoveErrorMessage, setTrustlineRemoveErrorMessage] =
-  //   useState<string | null>(null);
-
-  // const dismissTrustlineRemoveErrorToast = useCallback(() => {
-  //   setTrustlineRemoveErrorMessage(null);
-  // }, []);
-
-  // const handleRemoveStellarTrustline = useCallback(async () => {
-  //   if (!canDeactivate) {
-  //     return;
-  //   }
-  //   setTrustlineRemoveErrorMessage(null);
-  //   setIsDeactivating(true);
-  //   try {
-  //     await requestStellarChangeTrustOptDelete({
-  //       accountId,
-  //       assetId,
-  //       scope,
-  //     });
-  //     await forceUpdateMetamaskState(dispatch);
-  //   } catch (error: unknown) {
-  //     const errorCode = (error as { code?: number })?.code;
-  //     const isUserRejection =
-  //       errorCode === errorCodes.provider.userRejectedRequest;
-  //     if (!isUserRejection) {
-  //       setTrustlineRemoveErrorMessage(
-  //         hasNonZeroTokenBalance
-  //           ? (t('stellarClassicTrustlineRemoveNonZeroBalanceError', [
-  //               token.balance?.display ?? token.balance?.value ?? '0',
-  //               token.symbol,
-  //             ]) as string)
-  //           : (t('stellarClassicTrustlineRemoveError') as string),
-  //       );
-  //     }
-  //   } finally {
-  //     setIsDeactivating(false);
-  //   }
-  // }, [
-  //   dispatch,
-  //   hasNonZeroTokenBalance,
-  //   canDeactivate,
-  //   t,
-  //   token.balance?.display,
-  //   token.balance?.value,
-  //   token.symbol,
-  // ]);
-
-  const { deactivateAsset, canDeactivate, dismissTrustlineRemoveErrorToast, isDeactivating, trustlineRemoveErrorMessage } = useAssetActivation({ asset: token });
+  const {
+    deactivateAsset,
+    canDeactivate,
+    dismissTrustlineRemoveErrorToast,
+    isDeactivating,
+    trustlineRemoveErrorMessage,
+  } = useAssetActivation({
+    assetId: token.address as CaipAssetType,
+    hasNonZeroBalance: hasNonZeroTokenBalance,
+    balanceDisplay: token.balance?.display ?? token.balance?.value,
+    symbol: token.symbol,
+  });
   return (
     <>
       <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>

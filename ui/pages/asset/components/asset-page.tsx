@@ -35,8 +35,8 @@ import {
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getTrustlineAssetPageState } from '../../../../shared/lib/multichain/trustline';
-import { getNativeReserveAssetPageState } from '../../../../shared/lib/multichain/get-native-reserve-asset-page-state';
+import { isAssetRequireActivate } from '../../../../shared/lib/multichain/trustline';
+import { getNativeReserveAssetPageState } from '../../../../shared/lib/multichain/reserve-balance';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -111,7 +111,6 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
-import { isTrustlineAsset } from '../../../../shared/lib/multichain/trustline/trustline-from-account-asset-info';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -285,7 +284,8 @@ const AssetPage = ({
   });
 
   const nativeReservePageState = getNativeReserveAssetPageState({
-    assetId: bip44Asset?.assetId ?? assetId,
+    chainId,
+    type,
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   });
 
@@ -456,7 +456,9 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       <StellarClassicTrustlineActivateCard
+        visible={isTrustlineInactive}
         assetId={assetId as CaipAssetType}
+        symbol={symbol}
       />
       <Box paddingLeft={4}>{renderAssetTitleSection()}</Box>
       <AssetChart

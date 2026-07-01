@@ -1,6 +1,6 @@
 import { XlmScope } from '@metamask/keyring-api';
 import { AssetType } from '../../constants/transaction';
-import { getNativeReserveAssetPageState } from './get-native-reserve-asset-page-state';
+import { getNativeReserveAssetPageState } from './reserve-balance';
 
 describe('getNativeReserveAssetPageState', () => {
   it('returns non-stellar state for non-stellar chain', () => {

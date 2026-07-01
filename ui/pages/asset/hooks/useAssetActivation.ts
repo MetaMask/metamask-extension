@@ -1,50 +1,111 @@
-import { useCallback } from "react";
-import { requestStellarChangeTrustOptDelete } from "../utils/stellar-snap-client-requests";
-import { CaipAssetType, CaipChainId, isCaipChainId, parseCaipAssetId } from "@metamask/utils";
-import { Asset } from "../types/asset";
-import { getInternalAccountBySelectedAccountGroupAndCaip } from "ui/selectors/multichain-accounts/account-tree";
-import { useSelector } from "react-redux";
-import { InternalAccount } from "@metamask/keyring-internal-api";
+import { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { errorCodes } from '@metamask/rpc-errors';
+import { getAsset } from '../../../selectors/assets';
+import type { CaipAssetType } from '@metamask/utils';
+import { isAssetRequireActivate, isTrustlineAsset } from '../../../../shared/lib/multichain/trustline';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { forceUpdateMetamaskState } from '../../../store/actions';
+import { requestStellarChangeTrustOptDelete } from '../utils/stellar-snap-client-requests';
+import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 
+/**
+ * Keeps the activate / deactivate logic for a trustline-backed asset (e.g. a Stellar
+ * classic asset) in one place, alongside the loading and error state for the operation.
+ * @param options0
+ * @param options0.assetId
+ * @param options0.hasNonZeroBalance
+ * @param options0.balanceDisplay
+ * @param options0.symbol
+ */
 export const useAssetActivation = ({
-  asset,
+  assetId,
+  hasNonZeroBalance,
+  balanceDisplay,
+  symbol,
 }: {
-  asset:  {
-    assetId: string;
-  };
+  assetId: CaipAssetType;
+  hasNonZeroBalance: boolean;
+  balanceDisplay?: string;
+  symbol?: string;
 }) => {
-  // TODO: keep all activate / inactive asset logic here
-  // And keep the state to control the loading status and error message for each operation
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const chainId = getChainIdFromAssetId(assetId);
 
+  const account = useSelector((state) =>
+    chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)
+      : undefined,
+  ) as InternalAccount | undefined;
 
-  const [isDeactivating, setIsDeactivating] =
-    useState(false);
+  const [isDeactivating, setIsDeactivating] = useState(false);
   const [trustlineRemoveErrorMessage, setTrustlineRemoveErrorMessage] =
     useState<string | null>(null);
+
   const dismissTrustlineRemoveErrorToast = useCallback(() => {
     setTrustlineRemoveErrorMessage(null);
   }, []);
-  const caipChainId = parseCaipAssetId(asset.assetId);
 
-  const selectedAccount = useSelector((state) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId as CaipChainId),
-  ) as InternalAccount;
+  const assetFromState = useSelector((state) =>
+    chainId ? getAsset(state, assetId, chainId) : undefined,
+  );
 
-  const deactivateAsset = useCallback(async (assetId: string) => {
+  const canDeactivate =
+    isTrustlineAsset(assetId) &&
+    !isAssetRequireActivate({
+      assetId,
+      accountAssetInfo: assetFromState?.accountAssetInfo,
+    });
+  const deactivateAsset = useCallback(async () => {
+    if (!canDeactivate || !account || !chainId) {
+      return;
+    }
+    setTrustlineRemoveErrorMessage(null);
+    setIsDeactivating(true);
     try {
       await requestStellarChangeTrustOptDelete({
-        accountId: selectedAccount.id,
-        assetId: assetId as CaipAssetType,
-        scope: caipChainId as CaipChainId,
+        accountId: account.id,
+        assetId,
+        scope: chainId,
       });
-    } catch (error) {
-      console.error(error);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error: unknown) {
+      const errorCode = (error as { code?: number })?.code;
+      const isUserRejection =
+        errorCode === errorCodes.provider.userRejectedRequest;
+      if (!isUserRejection) {
+        setTrustlineRemoveErrorMessage(
+          hasNonZeroBalance
+            ? (t('stellarClassicTrustlineRemoveNonZeroBalanceError', [
+                balanceDisplay ?? '0',
+                symbol,
+              ]) as string)
+            : (t('stellarClassicTrustlineRemoveError') as string),
+        );
+      }
+    } finally {
+      setIsDeactivating(false);
     }
-  }, [selectedAccount, asset]);
+  }, [
+    account,
+    assetId,
+    balanceDisplay,
+    canDeactivate,
+    chainId,
+    dispatch,
+    hasNonZeroBalance,
+    symbol,
+    t,
+  ]);
 
-
-  const canDeactivate = isTrustlineAsset(asset.assetId);
-
-
-  return { deactivateAsset, canDeactivate, isDeactivating, trustlineRemoveErrorMessage, dismissTrustlineRemoveErrorToast };
-}
+  return {
+    deactivateAsset,
+    canDeactivate,
+    isDeactivating,
+    trustlineRemoveErrorMessage,
+    dismissTrustlineRemoveErrorToast,
+  };
+};
