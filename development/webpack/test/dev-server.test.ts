@@ -7,17 +7,17 @@ import {
   logWatchBuildStats,
   suppressDevServerInfoLogs,
 } from '../utils/dev-server';
-import { setupUiReload } from '../utils/dev-server/ui-reload';
-import { setupBackgroundReload } from '../utils/dev-server/background-reload';
+import { setupUiClient } from '../utils/dev-server/setup-ui-client';
+import { setupBackgroundClient } from '../utils/dev-server/setup-background-client';
 import {
   closeSocket,
   connectToDevServer,
 } from '../utils/dev-server/connect-to-dev-server';
 import {
-  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
-  BACKGROUND_RELOAD_MESSAGE_TYPE,
-  UI_RELOAD_MESSAGE_TYPE,
-} from '../utils/dev-server/reload-protocol';
+  BACKGROUND_CLIENT_ENTRY_NAME,
+  BACKGROUND_UPDATE_MESSAGE_TYPE,
+  UI_UPDATE_MESSAGE_TYPE,
+} from '../utils/dev-server/protocol';
 import {
   createAnnouncer,
   getClientRequest,
@@ -297,7 +297,7 @@ describe('./utils/dev-server', () => {
       assert.strictEqual(DEV_SERVER_OPTIONS.client, false);
     });
 
-    it('registers reload clients from the static middleware config', () => {
+    it('registers dev-server clients from the static middleware config', () => {
       const manifestPlugin = createManifestPlugin({
         serviceWorkerEntryName: 'service-worker',
       });
@@ -317,19 +317,19 @@ describe('./utils/dev-server', () => {
       } as never);
 
       assert.strictEqual(result, middlewares);
-      const uiReloadRule = getOnlyModuleRule(compiler);
+      const uiClientRule = getOnlyModuleRule(compiler);
       assert.strictEqual(
-        uiReloadRule.include,
+        uiClientRule.include,
         '/test/context/scripts/load/ui.ts',
       );
       assert.match(
-        uiReloadRule.use.options.clientRequest,
-        /ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
+        uiClientRule.use.options.clientRequest,
+        /ui-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
       );
       assert.strictEqual(entryPluginCalls.length, 1);
       assert.match(
         entryPluginCalls[0].entry,
-        /background-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
+        /background-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
       );
       assert.deepStrictEqual(entryPluginCalls[0].options, {
         name: 'service-worker',
@@ -411,12 +411,12 @@ describe('./utils/dev-server', () => {
     });
   });
 
-  describe('setupUiReload', () => {
-    it('prepends the UI reload client to the UI entry', () => {
+  describe('setupUiClient', () => {
+    it('prepends the UI client to the UI entry', () => {
       const { compiler, entryPluginCalls } = createCompiler();
       const { devServer } = createDevServer({ host: 'localhost', port: 24680 });
 
-      setupUiReload(devServer as never, [compiler]);
+      setupUiClient(devServer as never, [compiler]);
 
       assert.strictEqual(entryPluginCalls.length, 0);
       const rule = getOnlyModuleRule(compiler);
@@ -429,13 +429,13 @@ describe('./utils/dev-server', () => {
       );
       assert.match(
         rule.use.options.clientRequest,
-        /development[\\/]webpack[\\/]utils[\\/]dev-server[\\/]ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
+        /development[\\/]webpack[\\/]utils[\\/]dev-server[\\/]ui-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
       );
     });
   });
 
-  describe('setupBackgroundReload', () => {
-    it('merges the background reload client into the MV3 service worker entry', () => {
+  describe('setupBackgroundClient', () => {
+    it('merges the background client into the MV3 service worker entry', () => {
       const manifestPlugin = createManifestPlugin({
         serviceWorkerEntryName: 'service-worker',
       });
@@ -444,7 +444,7 @@ describe('./utils/dev-server', () => {
       });
       const { devServer } = createDevServer();
 
-      setupBackgroundReload(devServer as never, [compiler]);
+      setupBackgroundClient(devServer as never, [compiler]);
 
       assert.strictEqual(entryPluginCalls.length, 1);
       assert.deepStrictEqual(entryPluginCalls[0].options, {
@@ -452,22 +452,22 @@ describe('./utils/dev-server', () => {
       });
       assert.match(
         entryPluginCalls[0].entry,
-        /background-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
+        /background-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
       );
     });
 
-    it('registers a standalone background reload client entry for MV2', () => {
+    it('registers a standalone background client entry for MV2', () => {
       const manifestPlugin = createManifestPlugin();
       const { compiler, entryPluginCalls } = createCompiler({
         plugins: [manifestPlugin],
       });
       const { devServer } = createDevServer();
 
-      setupBackgroundReload(devServer as never, [compiler]);
+      setupBackgroundClient(devServer as never, [compiler]);
 
       assert.strictEqual(entryPluginCalls.length, 1);
       assert.deepStrictEqual(entryPluginCalls[0].options, {
-        name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+        name: BACKGROUND_CLIENT_ENTRY_NAME,
         chunkLoading: false,
       });
     });
@@ -482,7 +482,7 @@ describe('./utils/dev-server', () => {
       });
       const { devServer, sentMessages } = createDevServer();
 
-      setupBackgroundReload(devServer as never, [compiler]);
+      setupBackgroundClient(devServer as never, [compiler]);
       const done = getDoneCallback();
 
       done(
@@ -507,11 +507,11 @@ describe('./utils/dev-server', () => {
       assert.deepStrictEqual(
         sentMessages.map(({ type }) => type),
         [
-          BACKGROUND_RELOAD_MESSAGE_TYPE,
-          UI_RELOAD_MESSAGE_TYPE,
-          BACKGROUND_RELOAD_MESSAGE_TYPE,
-          UI_RELOAD_MESSAGE_TYPE,
-          BACKGROUND_RELOAD_MESSAGE_TYPE,
+          BACKGROUND_UPDATE_MESSAGE_TYPE,
+          UI_UPDATE_MESSAGE_TYPE,
+          BACKGROUND_UPDATE_MESSAGE_TYPE,
+          UI_UPDATE_MESSAGE_TYPE,
+          BACKGROUND_UPDATE_MESSAGE_TYPE,
         ],
       );
       assert.strictEqual(sentMessages[1].data, 'ui-a');
@@ -519,7 +519,7 @@ describe('./utils/dev-server', () => {
       assert.notStrictEqual(sentMessages[0].data, sentMessages[4].data);
     });
 
-    it('does not announce reload messages for failed builds', () => {
+    it('does not announce update messages for failed builds', () => {
       const manifestPlugin = createManifestPlugin({
         serviceWorkerEntryName: 'service-worker',
       });
@@ -528,7 +528,7 @@ describe('./utils/dev-server', () => {
       });
       const { devServer, sentMessages } = createDevServer();
 
-      setupBackgroundReload(devServer as never, [compiler]);
+      setupBackgroundClient(devServer as never, [compiler]);
       getDoneCallback()(createStats({ hasErrors: true }));
 
       assert.deepStrictEqual(sentMessages, []);
@@ -544,12 +544,12 @@ describe('./utils/dev-server', () => {
 
       const request = getClientRequest(
         devServer as never,
-        'background-reload-client.ts',
+        'background-client.ts',
       );
 
       assert.match(
         request,
-        /background-reload-client\.ts\?url=ws%3A%2F%2F127\.0\.0\.1%3A35729%2Fws$/u,
+        /background-client\.ts\?url=ws%3A%2F%2F127\.0\.0\.1%3A35729%2Fws$/u,
       );
     });
   });

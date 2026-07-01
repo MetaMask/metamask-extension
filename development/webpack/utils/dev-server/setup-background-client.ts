@@ -3,10 +3,10 @@ import type { Compilation, Compiler, Entrypoint, Module } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
 import { ManifestPlugin } from '../plugins/ManifestPlugin';
 import {
-  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
-  BACKGROUND_RELOAD_MESSAGE_TYPE,
-  UI_RELOAD_MESSAGE_TYPE,
-} from './reload-protocol';
+  BACKGROUND_CLIENT_ENTRY_NAME,
+  BACKGROUND_UPDATE_MESSAGE_TYPE,
+  UI_UPDATE_MESSAGE_TYPE,
+} from './protocol';
 import { createAnnouncer, getClientRequest } from './websocket';
 
 /**
@@ -140,38 +140,38 @@ const fingerprintCompilation = (
 
 /**
  * Wires up automatic extension reloading on the running dev server. For each
- * compiler it injects the background reload client into the background context
+ * compiler it injects the background client into the background context
  * (bundled into the MV3 service worker, or registered as a standalone entry
  * that `HtmlBundlerPlugin` injects into the MV2 background page). After every
  * successful rebuild it fingerprints the privileged code and announces the
- * fingerprint via {@link BACKGROUND_RELOAD_MESSAGE_TYPE} — to all connected
+ * fingerprint via {@link BACKGROUND_UPDATE_MESSAGE_TYPE} — to all connected
  * clients and to every client that connects later. The client decides whether
  * to reload by comparing against the fingerprint of its own running code, so
  * there are no reload loops on startup and no missed reloads after a
  * disconnect. Builds that leave the fingerprint unchanged didn't touch
  * privileged code, so the UI build hash is announced instead (via
- * {@link UI_RELOAD_MESSAGE_TYPE}) so that UI pages can reload themselves.
+ * {@link UI_UPDATE_MESSAGE_TYPE}) so that UI pages can hot-update themselves.
  *
  * @param devServer - The running webpack dev server.
  * @param compilers - The compilers attached to the dev server.
  */
-export function setupBackgroundReload(
+export function setupBackgroundClient(
   devServer: WebpackDevServer,
   compilers: Compiler[],
 ): void {
   const backgroundClientRequest = getClientRequest(
     devServer,
-    'background-reload-client.ts',
+    'background-client.ts',
   );
 
   const announceFingerprint = createAnnouncer(
     devServer,
-    BACKGROUND_RELOAD_MESSAGE_TYPE,
+    BACKGROUND_UPDATE_MESSAGE_TYPE,
   );
-  const announceHash = createAnnouncer(devServer, UI_RELOAD_MESSAGE_TYPE);
+  const announceHash = createAnnouncer(devServer, UI_UPDATE_MESSAGE_TYPE);
 
   // The fingerprint of each compiler's last good build, for deciding whether
-  // a build needs an extension reload or a UI page reload.
+  // a build needs an extension reload or a UI hot update.
   const fingerprints = new Map<Compiler, string>();
 
   for (const compiler of compilers) {
@@ -197,13 +197,13 @@ export function setupBackgroundReload(
         compiler.context,
         backgroundClientRequest,
         {
-          name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+          name: BACKGROUND_CLIENT_ENTRY_NAME,
           chunkLoading: false,
         },
       ).apply(compiler);
     }
 
-    compiler.hooks.done.tap('MetaMaskBackgroundReload', (stats) => {
+    compiler.hooks.done.tap('MetaMaskBackgroundClient', (stats) => {
       // Don't announce a broken build; keep the last good fingerprint so the
       // next successful build is compared against it.
       if (stats.hasErrors()) {
@@ -218,7 +218,7 @@ export function setupBackgroundReload(
       announceFingerprint(compiler, next);
       // An unchanged fingerprint means no extension reload is coming to tear
       // the UI pages down, so the UI build hash is announced so that the pages
-      // can reload themselves. The first build of a server session announces too:
+      // can hot-update themselves. The first build of a server session announces too:
       // a page kept open across a dev-server restart would otherwise never
       // learn that its code changed.
       if (previous === undefined || previous === next) {

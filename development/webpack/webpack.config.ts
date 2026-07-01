@@ -39,7 +39,7 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 import { DEV_SERVER_OPTIONS, injectEntryScripts } from './utils/dev-server';
-import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from './utils/dev-server/reload-protocol';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
 
@@ -152,12 +152,12 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
-    // In watch mode, inject the dev-only background reload client into the relevant HTML page.
+    // In watch mode, inject the dev-only background client into the relevant HTML page.
     beforeEmit: (content, entry, compilation) => {
       if (!args.watch) {
         return content;
       }
-      // The MV2 (Firefox) background page gets the background reload client,
+      // The MV2 (Firefox) background page gets the background client,
       // which triggers `chrome.runtime.reload()` only when a background or
       // content-script bundle changes. (On MV3 the client is bundled into the
       // service worker instead, since it loads a single JS file.)
@@ -165,7 +165,7 @@ const plugins: WebpackPluginInstance[] = [
         return injectEntryScripts(
           content,
           compilation,
-          BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+          BACKGROUND_CLIENT_ENTRY_NAME,
         );
       }
       return content;

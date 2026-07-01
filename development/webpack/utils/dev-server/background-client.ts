@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import { closeSocket, connectToDevServer } from './connect-to-dev-server';
-import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './reload-protocol';
+import { BACKGROUND_UPDATE_MESSAGE_TYPE } from './protocol';
 
 // `__resourceQuery` is the query string of the request that pulled this module
 // in as an entry (e.g. `?url=ws%3A%2F%2Flocalhost%3A8080%2Fws`). webpack
@@ -13,7 +13,7 @@ const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 // Storage key holding the last background fingerprint seen during this session.
 // The fingerprint is stored in the session storage instead of a module-level variable so
 // that the value survives service worker restarts during the same session.
-const FINGERPRINT_KEY = 'MM_BACKGROUND_RELOAD_FINGERPRINT';
+const FINGERPRINT_KEY = 'MM_BACKGROUND_CLIENT_FINGERPRINT';
 
 /**
  * @returns The fingerprint of the code this extension instance is running, or
@@ -89,7 +89,7 @@ if (socketUrl) {
     url: socketUrl,
     isDone: () => reloading,
     onMessage: (type, data, socket) => {
-      if (type === BACKGROUND_RELOAD_MESSAGE_TYPE && typeof data === 'string') {
+      if (type === BACKGROUND_UPDATE_MESSAGE_TYPE && typeof data === 'string') {
         void onFingerprint(data, socket);
       }
     },

@@ -4,7 +4,7 @@ import type WebpackDevServer from 'webpack-dev-server';
 
 /**
  * @param devServer - The running webpack dev server.
- * @returns The WebSocket URL the dev server's reload clients connect to. Must
+ * @returns The WebSocket URL the dev server clients connect to. Must
  * be read after the server has started: `port: 'auto'` is only resolved to
  * the actual port then.
  */
@@ -14,7 +14,7 @@ function getWebSocketUrl(devServer: WebpackDevServer): string {
 }
 
 /**
- * Builds the webpack request for a reload client: the client module's
+ * Builds the webpack request for a dev-server client: the client module's
  * absolute path with the dev server's WebSocket URL in its query. webpack
  * preserves the query as `__resourceQuery`, which the client reads at runtime
  * to know where to connect.

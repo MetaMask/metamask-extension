@@ -17,7 +17,7 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
-import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from '../../dev-server/reload-protocol';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from '../../dev-server/protocol';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -109,7 +109,7 @@ export class ManifestPlugin<Z extends boolean> {
     'snow.prod',
     'use-snow',
     'bootstrap',
-    BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+    BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 
   private bundleSizeCategoriesByEntrypoint: Map<

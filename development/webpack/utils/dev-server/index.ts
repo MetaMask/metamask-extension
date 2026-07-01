@@ -1,14 +1,14 @@
 import type { Compilation, Compiler, Stats } from 'webpack';
 import type { Configuration } from 'webpack-dev-server';
 import { logStats } from '../helpers';
-import { setupUiReload } from './ui-reload';
-import { setupBackgroundReload } from './background-reload';
+import { setupUiClient } from './setup-ui-client';
+import { setupBackgroundClient } from './setup-background-client';
 
 export const DEV_SERVER_OPTIONS: Configuration = {
   // Keep WDS from injecting its HMR runtime into every extension entry.
   // We manually wire React Refresh mode into the UI entrypoints.
   hot: false,
-  // We use our own logic to decide when to reload.
+  // We use our own logic to decide when to hot-update UI pages or reload the extension.
   liveReload: false,
   // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
   host: 'localhost',
@@ -24,7 +24,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   // we don't need/have a "static" directory, so disable it
   static: false,
   allowedHosts: 'all',
-  // Wire up the ui and background reload clients here so that we can read the resolved port from
+  // Wire up the UI and background clients here so that we can read the resolved port from
   // `devServer.options` — by this point `port: 'auto'` has been replaced with
   // the actual numeric port the server is listening on.
   setupMiddlewares: (middlewares, devServer) => {
@@ -32,10 +32,10 @@ export const DEV_SERVER_OPTIONS: Configuration = {
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
-    // Registers the ui reload client into ui pages.
-    setupUiReload(devServer, compilers);
-    // Registers the background reload client into the background/service worker context.
-    setupBackgroundReload(devServer, compilers);
+    // Registers the UI client into UI pages.
+    setupUiClient(devServer, compilers);
+    // Registers the background client into the background/service worker context.
+    setupBackgroundClient(devServer, compilers);
     return middlewares;
   },
 };

@@ -4,18 +4,18 @@ import type WebpackDevServer from 'webpack-dev-server';
 import { getClientRequest } from './websocket';
 
 /**
- * Prepends the React Refresh runtime and UI reload client to the UI entry on
+ * Prepends the React Refresh runtime and UI client to the UI entry on
  * each compiler. The client has to run inside the UI webpack runtime so that it
  * can ask that runtime to check for hot updates.
  *
- * Whether a build only reloads the UI pages or the whole extension is decided
- * per build in `setupBackgroundReload`; deciding in one place is what keeps a
- * page reload from racing a background reload.
+ * Whether a build only updates the UI pages or reloads the whole extension is
+ * decided per build in `setupBackgroundClient`; deciding in one place keeps a
+ * UI update from racing an extension reload.
  *
  * @param devServer - The running webpack dev server.
  * @param compilers - The compilers attached to the dev server.
  */
-export function setupUiReload(
+export function setupUiClient(
   devServer: WebpackDevServer,
   compilers: Compiler[],
 ): void {
@@ -27,7 +27,7 @@ export function setupUiReload(
       use: {
         loader: require.resolve('../loaders/reactRefreshLoader'),
         options: {
-          clientRequest: getClientRequest(devServer, 'ui-reload-client.ts'),
+          clientRequest: getClientRequest(devServer, 'ui-client.ts'),
         },
       },
     });

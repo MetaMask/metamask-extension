@@ -1,7 +1,7 @@
 import webpackHotEmitter from 'webpack/hot/emitter';
 import 'webpack/hot/dev-server';
 import { connectToDevServer } from './connect-to-dev-server';
-import { UI_RELOAD_MESSAGE_TYPE } from './reload-protocol';
+import { UI_UPDATE_MESSAGE_TYPE } from './protocol';
 
 // `__resourceQuery` is the query string of the request that imported this
 // module (e.g. `?url=ws%3A%2F%2Flocalhost%3A8080%2Fws`). webpack injects it
@@ -14,7 +14,7 @@ const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 // Storage key holding the UI build hash this page's code was loaded under.
 // `globalThis.sessionStorage` (not `browser.storage.session`) on purpose: it is
 // scoped to the tab, so concurrently open pages each keep their own record.
-const HASH_KEY = 'MM_UI_RELOAD_HASH';
+const HASH_KEY = 'MM_UI_CLIENT_HASH';
 
 /**
  * @returns The UI build hash this page's code was loaded under, or `null` if
@@ -73,7 +73,7 @@ if (socketUrl) {
   connectToDevServer({
     url: socketUrl,
     onMessage: (type, data) => {
-      if (type === UI_RELOAD_MESSAGE_TYPE && typeof data === 'string') {
+      if (type === UI_UPDATE_MESSAGE_TYPE && typeof data === 'string') {
         onHash(data);
       }
     },
