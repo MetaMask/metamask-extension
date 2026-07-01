@@ -42,6 +42,10 @@ const initialStore = () => ({
 });
 
 describe('BackupAndSyncFeaturesToggles', () => {
+  beforeEach(() => {
+    mockTrackEvent.mockClear();
+  });
+
   it('renders correctly', () => {
     const { getByTestId } = render(
       <Redux.Provider store={mockStore(initialStore())}>

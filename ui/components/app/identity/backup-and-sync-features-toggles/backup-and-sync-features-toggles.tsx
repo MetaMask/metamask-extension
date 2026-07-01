@@ -99,7 +99,7 @@ const FeatureToggle = ({
           .build(),
       );
     },
-    [trackEvent, isFeatureEnabled, section.id],
+    [trackEvent, createEventBuilder, isFeatureEnabled, section.id],
   );
 
   const handleToggleFeature = async () => {

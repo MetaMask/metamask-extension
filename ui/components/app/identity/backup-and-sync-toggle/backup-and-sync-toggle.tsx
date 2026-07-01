@@ -118,7 +118,7 @@ export const BackupAndSyncToggle = ({
           .build(),
       );
     },
-    [trackEvent, displayedBackupAndSyncEnabled, isMetamaskNotificationsEnabled],
+    [trackEvent, createEventBuilder, displayedBackupAndSyncEnabled, isMetamaskNotificationsEnabled],
   );
 
   // Cascading side effects: keep backup & sync in sync with basic functionality.
