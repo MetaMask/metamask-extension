@@ -4,6 +4,7 @@ import * as NotificationsSelectors from '../../selectors/metamask-notifications/
 import * as Selectors from '../../selectors/selectors';
 import * as MetamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as AuthenticationSelectors from '../../selectors/identity/authentication';
+import * as Actions from '../../store/actions';
 import * as StorageHelpers from '../../../shared/lib/storage-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -219,6 +220,11 @@ describe('useFetchInitialNotificationsEffect', () => {
       .spyOn(StorageHelpers, 'getStorageItem')
       .mockResolvedValue(undefined);
     const mockSetStorageItem = jest.spyOn(StorageHelpers, 'setStorageItem');
+    const mockGetNotificationPreferences = jest
+      .spyOn(Actions, 'getNotificationPreferences')
+      .mockImplementation(() => async () => ({
+        marketing: { inAppNotificationsEnabled: true },
+      }));
 
     return {
       hooks: arrangeHooks(),
@@ -226,6 +232,7 @@ describe('useFetchInitialNotificationsEffect', () => {
       helpers: {
         mockGetStorageItem,
         mockSetStorageItem,
+        mockGetNotificationPreferences,
       },
     };
   };
@@ -268,6 +275,27 @@ describe('useFetchInitialNotificationsEffect', () => {
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
+    });
+  });
+
+  it('should enable notifications if AUS preferences are missing even when resubscription has not expired', async () => {
+    const mocks = arrange();
+    mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
+    mocks.selectors.mockGetUseExternalServices.mockReturnValue(true);
+    mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
+    mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
+
+    // Has not expired
+    mocks.helpers.mockGetStorageItem.mockResolvedValue(Date.now() + 1000);
+    mocks.helpers.mockGetNotificationPreferences.mockImplementation(
+      () => async () => null,
+    );
+
+    renderHookWithProvider(() => useFetchInitialNotificationsEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
       expect(mocks.hooks.listNotifications).toHaveBeenCalled();
     });
   });

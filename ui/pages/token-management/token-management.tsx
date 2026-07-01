@@ -186,6 +186,11 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   return assetReference || assetId;
 };
 
+const hasValidAssetId = (
+  result: TokenSearchResult,
+): result is TokenSearchResult & { assetId: CaipAssetType } =>
+  typeof result.assetId === 'string';
+
 const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
   const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
   const address =
@@ -642,7 +647,9 @@ export const TokenManagementPage = () => {
       return EMPTY_TOKEN_SEARCH_RESULTS;
     }
 
-    const results = searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS;
+    const results = (searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS).filter(
+      hasValidAssetId,
+    );
 
     // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
     // display duplicate. Drop it from search/browse results too.
@@ -788,6 +795,8 @@ export const TokenManagementPage = () => {
   }, [commitStagedHides]);
 
   const networkFilterLabel = useNetworkFilterButtonLabel();
+  const isSingleNetworkFilterSelected =
+    allEnabledNetworksForAllNamespaces.length === 1;
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -1496,13 +1505,22 @@ export const TokenManagementPage = () => {
           data-testid="token-management-network-filter"
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          className="bg-default text-default border border-muted"
+          startIconProps={{ size: IconSize.Md }}
+          className={`rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed ${
+            isSingleNetworkFilterSelected
+              ? 'text-primary-default'
+              : 'text-default'
+          }`}
           onClick={handleOpenNetworkFilter}
         >
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
+            color={
+              isSingleNetworkFilterSelected
+                ? TextColor.PrimaryDefault
+                : TextColor.TextDefault
+            }
             ellipsis
           >
             {networkFilterLabel}
