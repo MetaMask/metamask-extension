@@ -3,7 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
+import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
@@ -59,7 +59,7 @@ const mockHandleClose = jest.fn();
 describe('SortControl', () => {
   const renderComponent = () => {
     (useSelector as jest.Mock).mockImplementation((selector) => {
-      if (selector === getPreferences) {
+      if (selector === getTokenSortConfig) {
         return {
           key: 'tokenFiatAmount',
           sortCallback: 'stringNumeric',
@@ -100,6 +100,9 @@ describe('SortControl', () => {
 
     expect(screen.getByTestId('sortByAlphabetically')).toBeInTheDocument();
     expect(screen.getByTestId('sortByDecliningBalance')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('sortByDecliningBalance__button'),
+    ).toHaveClass('selectable-list-item--selected');
   });
 
   it('dispatches setTokenSortConfig with expected config, and tracks event when Alphabetically is clicked', () => {
