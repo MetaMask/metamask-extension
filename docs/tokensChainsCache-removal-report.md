@@ -2,7 +2,6 @@
 
 > **Date:** June 30, 2026 (audited against current `main`)
 > **Related ticket:** [ASSETS-3281](https://consensyssoftware.atlassian.net/browse/ASSETS-3281)
-> **Reference PR:** [#42545 — remove tokensChainsCache usage from useTokenDisplayInfo][pr-42545]
 
 ---
 
@@ -19,7 +18,7 @@
 
 Remaining work is **removing or replacing runtime selector reads** before the controller and selectors can be deleted entirely.
 
-The Assets team has begun this cleanup iteratively. [PR #42545][pr-42545] demonstrates the pattern: replace `tokensChainsCache` selector reads with either direct prop access or dynamic fetches via the `useTokensData` hook.
+The Assets team has begun this cleanup iteratively. The pattern is: replace `tokensChainsCache` selector reads with either direct prop access or dynamic fetches via the `useTokensData` hook.
 
 ---
 
@@ -215,14 +214,38 @@ In many cases the component doesn't actually need data from `tokensChainsCache` 
 
 **When to use:** The token object you're working with already has `.name`, `.symbol`, and `.image` populated (e.g. from `TokensController` / `AssetsController` state, from the import flow, or from a parent component).
 
-**Example:** [PR #42545][pr-42545] — `useTokenDisplayInfo` was doing:
-```typescript
-// BEFORE: scanning tokensChainsCache for a name/image match
-const tokenList = useSelector(getTokenList);
-const erc20TokensByChain = useSelector(selectERC20TokensByChain);
-// ...linear scan by symbol+address to find name/image
+**Example:** `useTokenDisplayInfo` — current code still has fallback branches that are no-ops (cache is empty):
 
-// AFTER: just use what's already on the token prop
+```typescript
+// CURRENT: primary path uses getAllTokens; erc20TokensByChain fallback is a no-op
+const allTokens = useSelector(getAllTokens);
+const erc20TokensByChain = useSelector(selectERC20TokensByChain); // returns {}
+
+const tokenData = Object.values(allTokens[token.chainId] ?? {})
+  .flat()
+  .find((t) => isEqualCaseInsensitive(t.address, token.address));
+
+const title =
+  tokenData?.name ||
+  erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]?.name || // dead branch
+  token.symbol;
+
+const tokenImage =
+  tokenData?.image ||
+  erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]?.iconUrl || // dead branch
+  token.image;
+```
+
+**Cleanup:** Remove the `selectERC20TokensByChain` import, selector call, and fallback branches:
+
+```typescript
+// AFTER CLEANUP: just use getAllTokens + token prop fallback
+const allTokens = useSelector(getAllTokens);
+
+const tokenData = Object.values(allTokens[token.chainId] ?? {})
+  .flat()
+  .find((t) => isEqualCaseInsensitive(t.address, token.address));
+
 const title = tokenData?.name || token.symbol;
 const tokenImage = tokenData?.image || token.image;
 ```
@@ -290,5 +313,3 @@ Bridge/batch-sell files **must not be deleted** — only remove `tokensChainsCac
 | Done in usage tables (cleanup only, no migration) | 9 files |
 
 **Next steps:** use the [Team action summary](#team-action-summary) for ownership. Complete **Migration (Phase 1)** first, then **Cleanup (Phase 2)** per-file items, then **Global cleanup** when grep shows zero consumers.
-
-[pr-42545]: https://github.com/MetaMask/metamask-extension/pull/42545
