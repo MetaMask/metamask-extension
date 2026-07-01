@@ -24,6 +24,7 @@ import { PermissionsRequestNotFoundError } from '@metamask/permission-controller
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
@@ -1292,6 +1293,163 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('upsertTransactionUIMetricsFragment', () => {
+    it('does nothing if the transaction id is missing', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          '',
+          { properties: { foo: 'bar' } },
+        );
+
+        expect(callSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    it('does nothing if the payload is missing', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          'transaction-id',
+          undefined as never,
+        );
+
+        expect(callSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    it('updates the fragment if it already exists', async () => {
+      const transactionId = 'transaction-id';
+      const fragmentId = `transaction-ui-${transactionId}`;
+      const payload = { properties: { foo: 'bar' } };
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const getEventFragmentByIdHandler = jest
+          .fn()
+          .mockReturnValue({ id: fragmentId });
+        const updateEventFragmentHandler = jest.fn();
+        const createEventFragmentHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          getEventFragmentByIdHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:updateEventFragment',
+          updateEventFragmentHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:createEventFragment',
+          createEventFragmentHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          transactionId,
+          payload,
+        );
+
+        expect(getEventFragmentByIdHandler).toHaveBeenCalledWith(fragmentId);
+        expect(callSpy).toHaveBeenCalledWith(
+          'MetaMetricsController:updateEventFragment',
+          fragmentId,
+          payload,
+        );
+        expect(createEventFragmentHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('creates the fragment if it does not exist', async () => {
+      const transactionId = 'transaction-id';
+      const fragmentId = `transaction-ui-${transactionId}`;
+      const payload = {
+        properties: { foo: 'bar' },
+        sensitiveProperties: { secret: 'baz' },
+      };
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const getEventFragmentByIdHandler = jest
+          .fn()
+          .mockReturnValue(undefined);
+        const updateEventFragmentHandler = jest.fn();
+        const createEventFragmentHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          getEventFragmentByIdHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:updateEventFragment',
+          updateEventFragmentHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:createEventFragment',
+          createEventFragmentHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          transactionId,
+          payload,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'MetaMetricsController:createEventFragment',
+          {
+            uniqueIdentifier: fragmentId,
+            successEvent: 'Transaction Fragment Created',
+            category: MetaMetricsEventCategory.Transactions,
+            canDeleteIfAbandoned: true,
+            properties: payload.properties,
+            sensitiveProperties: payload.sensitiveProperties,
+          },
+        );
+        expect(updateEventFragmentHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('defaults properties and sensitiveProperties to empty objects when creating', async () => {
+      const transactionId = 'transaction-id';
+      const fragmentId = `transaction-ui-${transactionId}`;
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          jest.fn().mockReturnValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:createEventFragment',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          transactionId,
+          { category: MetaMetricsEventCategory.Transactions },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'MetaMetricsController:createEventFragment',
+          expect.objectContaining({
+            uniqueIdentifier: fragmentId,
+            properties: {},
+            sensitiveProperties: {},
+          }),
+        );
+      });
+    });
+  });
+
   describe('checkIsSeedlessPasswordOutdated', () => {
     it("returns false if it's a social login flow", async () => {
       await withService(async ({ rootMessenger }) => {
@@ -2517,6 +2675,9 @@ function getMessenger(
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
       'MetaMetricsController:trackEvent',
+      'MetaMetricsController:createEventFragment',
+      'MetaMetricsController:getEventFragmentById',
+      'MetaMetricsController:updateEventFragment',
       'KeyringController:verifyPassword',
       'KeyringController:exportAccount',
       'KeyringController:changePassword',

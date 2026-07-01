@@ -306,6 +306,18 @@ export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
   };
 
 /**
+ * Creates or updates the UI metrics fragment for a given transaction.
+ *
+ * @param transactionId - The id of the transaction.
+ * @param payload - The fragment settings and properties to store.
+ */
+export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
+  {
+    type: `LegacyBackgroundApiService:upsertTransactionUIMetricsFragment`;
+    handler: LegacyBackgroundApiService['upsertTransactionUIMetricsFragment'];
+  };
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -335,4 +347,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
   | LegacyBackgroundApiServiceExportAccountAction
-  | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction;
+  | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
+  | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction;
