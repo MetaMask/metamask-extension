@@ -42,7 +42,10 @@ import {
   TextFieldType,
 } from '../../../components/component-library';
 import { FontWeight as DesignSystemFontWeight } from '../../../helpers/constants/design-system';
-import { getSeedPhrase, getSeedPhraseWithPasskey } from '../../../store/actions';
+import {
+  getSeedPhrase,
+  getSeedPhraseWithPasskey,
+} from '../../../store/actions';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -70,6 +73,22 @@ const VERIFY_PASSKEY_SCREEN: RevealRecoveryPhraseScreen =
   'VERIFY_PASSKEY_SCREEN';
 const PASSWORD_PROMPT_SCREEN: RevealRecoveryPhraseScreen =
   'PASSWORD_PROMPT_SCREEN';
+
+function getSrpExportEventProperties(
+  hdEntropyIndex: number,
+  verificationMethod: MetaMetricsEventVerificationMethod,
+  extraProperties: { reason?: string } = {},
+) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    key_type: MetaMetricsEventKeyType.Srp,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    verification_method: verificationMethod,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    hd_entropy_index: hdEntropyIndex,
+    ...extraProperties,
+  };
+}
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -127,79 +146,71 @@ export default function RevealRecoveryPhrase({
     navigate(reviewSrpRoute, { replace: true });
   }, [navigate, reviewSrpRoute]);
 
-  const handleRevealWithPasskey = useCallback(
-    async (authenticationResponse: PasskeyAuthenticationResponse) => {
+  const revealSeedPhrase = useCallback(
+    async (
+      verificationMethod: MetaMetricsEventVerificationMethod,
+      fetchSeedPhrase: () => Promise<string>,
+      onFailure: (error: Error) => void,
+    ) => {
       trackEvent({
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRequested,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Passkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        },
+        properties: getSrpExportEventProperties(
+          hdEntropyIndex,
+          verificationMethod,
+        ),
       });
 
       try {
-        const seedPhrase = await dispatch(
-          getSeedPhraseWithPasskey(authenticationResponse),
-        );
+        const seedPhrase = await fetchSeedPhrase();
 
         trackEvent({
           category: MetaMetricsEventCategory.Keys,
           event: MetaMetricsEventName.KeyExportRevealed,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          },
+          properties: getSrpExportEventProperties(
+            hdEntropyIndex,
+            verificationMethod,
+          ),
         });
 
         setSecretRecoveryPhrase(seedPhrase);
         navigateToReviewSrp();
-        return true;
       } catch (error) {
         const revealError = error as Error;
-        const errorCode = getPasskeyErrorCode(revealError);
+        const reason =
+          verificationMethod === MetaMetricsEventVerificationMethod.Passkey
+            ? getPasskeyErrorCode(revealError)
+            : revealError.message;
+
         trackEvent({
           category: MetaMetricsEventCategory.Keys,
           event: MetaMetricsEventName.KeyExportFailed,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            reason: errorCode,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          },
+          properties: getSrpExportEventProperties(
+            hdEntropyIndex,
+            verificationMethod,
+            { reason },
+          ),
         });
-        captureException(
-          createSentryError('Reveal SRP backup with passkey failed', revealError),
-        );
-        setScreen(PASSWORD_PROMPT_SCREEN);
-        return false;
+        onFailure(revealError);
       }
     },
-    [
-      dispatch,
-      trackEvent,
-      hdEntropyIndex,
-      setSecretRecoveryPhrase,
-      navigateToReviewSrp,
-    ],
+    [trackEvent, hdEntropyIndex, setSecretRecoveryPhrase, navigateToReviewSrp],
   );
 
-  const handlePasskeyVerified = useCallback(
+  const handleRevealWithPasskey = useCallback(
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
-      await handleRevealWithPasskey(authenticationResponse);
+      await revealSeedPhrase(
+        MetaMetricsEventVerificationMethod.Passkey,
+        () => dispatch(getSeedPhraseWithPasskey(authenticationResponse)),
+        (error) => {
+          captureException(
+            createSentryError('Reveal SRP backup with passkey failed', error),
+          );
+          setScreen(PASSWORD_PROMPT_SCREEN);
+        },
+      );
     },
-    [handleRevealWithPasskey],
+    [dispatch, revealSeedPhrase],
   );
 
   const handleUsePassword = useCallback(() => {
@@ -220,59 +231,13 @@ export default function RevealRecoveryPhrase({
 
   const onSubmit = useCallback(
     async (_password: string) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportRequested,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        },
-      });
-
-      try {
-        const seedPhrase = await getSeedPhrase(_password);
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.KeyExportRevealed,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Password,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          },
-        });
-        setSecretRecoveryPhrase(seedPhrase);
-        navigateToReviewSrp();
-      } catch (error) {
-        const submitError = error as Error;
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.KeyExportFailed,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Password,
-            reason: submitError.message,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          },
-        });
-        setIsIncorrectPasswordError(true);
-      }
+      await revealSeedPhrase(
+        MetaMetricsEventVerificationMethod.Password,
+        () => getSeedPhrase(_password),
+        () => setIsIncorrectPasswordError(true),
+      );
     },
-    [
-      setSecretRecoveryPhrase,
-      navigateToReviewSrp,
-      trackEvent,
-      hdEntropyIndex,
-    ],
+    [revealSeedPhrase],
   );
 
   const returnToPreviousPage = useCallback(() => {
@@ -325,7 +290,7 @@ export default function RevealRecoveryPhrase({
             flow="reveal-recovery-phrase"
             troubleshootLocation="reveal-srp-backup"
             onOpenFullScreen={openRevealRecoveryPhraseInFullScreen}
-            onVerified={handlePasskeyVerified}
+            onVerified={handleRevealWithPasskey}
             onCeremonyFailed={handlePasskeyCeremonyFailed}
             onUsePassword={handleUsePassword}
           />
