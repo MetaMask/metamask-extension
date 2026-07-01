@@ -72,7 +72,7 @@ type RevealRecoveryPhraseScreen =
 const VERIFY_PASSKEY_SCREEN: RevealRecoveryPhraseScreen =
   'VERIFY_PASSKEY_SCREEN';
 const PASSWORD_PROMPT_SCREEN: RevealRecoveryPhraseScreen =
-  'PASSWORD_PROMPT_SCREEN';
+  'PASSWORD_PROMPT_SCREEN'; // NOSONAR
 
 function getSrpExportEventProperties(
   hdEntropyIndex: number,
