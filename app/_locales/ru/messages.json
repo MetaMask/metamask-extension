@@ -82,12 +82,6 @@
   "account": {
     "message": "Счет"
   },
-  "accountActivity": {
-    "message": "Активность счета"
-  },
-  "accountActivityText": {
-    "message": "Выберите счета, о которых хотите получать уведомления:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Войти"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "поддержка пользователя"
   },
-  "customizeYourNotifications": {
-    "message": "Настройте свои уведомления"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Включите типы уведомлений, которые хотите получать:"
-  },
   "dappConnections": {
     "message": "Соединения dapp"
   },
@@ -5870,9 +5858,6 @@
   "notificationsSettingsBoxError": {
     "message": "Возникла какая-то проблема. Повторите попытку позже."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Будьте в курсе того, что происходит в вашем кошельке, с помощью уведомлений. Для использования уведомлений мы используем профиль для синхронизации некоторых настроек на ваших устройствах. $1 мы защищаем вашу конфиденциальность при использовании этой функции."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Узнайте как"
   },
@@ -7534,9 +7519,6 @@
   },
   "proceedWithTransaction": {
     "message": "Я все равно хочу продолжить"
-  },
-  "productAnnouncements": {
-    "message": "Объявления о продуктах"
   },
   "provide": {
     "message": "Предоставить"
