@@ -5738,6 +5738,9 @@ describe('MetaMaskController', () => {
     describe('_handleDefiReferralOnPermittedAccountsAdded', () => {
       const HL_ORIGIN =
         DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
+      const GMX_ORIGIN = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin;
+      const ASTER_ORIGIN =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX].origin;
 
       let mockEvmAccount;
       let mockCaipAccountId;
@@ -5770,7 +5773,14 @@ describe('MetaMaskController', () => {
           state.internalAccounts.accounts[mockEvmAccount.id] = mockEvmAccount;
           state.internalAccounts.selectedAccount = mockEvmAccount.id;
         });
+      });
 
+      afterEach(() => {
+        handleDefiReferralSpy.mockRestore();
+        jest.mocked(parseCaipAccountId).mockReset();
+      });
+
+      it('calls handleDefiReferral for Hyperliquid when selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
         metamaskController.appStateController.update((state) => {
           state.appActiveTab = {
             id: 914,
@@ -5782,14 +5792,7 @@ describe('MetaMaskController', () => {
             href: `${HL_ORIGIN}/trade`,
           };
         });
-      });
 
-      afterEach(() => {
-        handleDefiReferralSpy.mockRestore();
-        jest.mocked(parseCaipAccountId).mockReset();
-      });
-
-      it('calls handleDefiReferral when the selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: HL_ORIGIN,
           newCaipAccountIds: [mockCaipAccountId],
@@ -5806,9 +5809,67 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('does nothing when origin is not Hyperliquid', () => {
+      it('calls handleDefiReferral for GMX when selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 915,
+            title: 'GMX',
+            origin: GMX_ORIGIN,
+            protocol: 'https:',
+            url: `${GMX_ORIGIN}/trade`,
+            host: 'app.gmx.io',
+            href: `${GMX_ORIGIN}/trade`,
+          };
+        });
+
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
-          origin: DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin,
+          origin: GMX_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).toHaveBeenCalledTimes(1);
+        expect(handleDefiReferralSpy).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+          915,
+          ReferralTriggerType.PermittedAccountAdded,
+          {
+            activePermittedAddressOverride: mockEvmAccount.address,
+          },
+        );
+      });
+
+      it('calls handleDefiReferral for AsterDEX when selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 916,
+            title: 'AsterDEX',
+            origin: ASTER_ORIGIN,
+            protocol: 'https:',
+            url: `${ASTER_ORIGIN}/trade`,
+            host: 'www.asterdex.com',
+            href: `${ASTER_ORIGIN}/trade`,
+          };
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: ASTER_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).toHaveBeenCalledTimes(1);
+        expect(handleDefiReferralSpy).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX],
+          916,
+          ReferralTriggerType.PermittedAccountAdded,
+          {
+            activePermittedAddressOverride: mockEvmAccount.address,
+          },
+        );
+      });
+
+      it('does nothing when origin does not match any referral partner', () => {
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: 'https://example.com',
           newCaipAccountIds: [mockCaipAccountId],
         });
 
