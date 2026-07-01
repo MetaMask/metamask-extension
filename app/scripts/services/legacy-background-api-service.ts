@@ -71,7 +71,11 @@ import {
   SeedlessOnboardingControllerSyncLatestGlobalPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
 } from '@metamask/seedless-onboarding-controller';
-import { PermissionControllerUpdatePermissionsByCaveatAction } from '@metamask/permission-controller';
+import {
+  PermissionControllerRejectPermissionsRequestAction,
+  PermissionControllerUpdatePermissionsByCaveatAction,
+  PermissionsRequestNotFoundError,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -149,6 +153,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'rejectPermissionsRequest',
   'removeAccount',
   'resetAccount',
   'setCurrentCurrency',
@@ -208,6 +213,7 @@ type AllowedActions =
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PermissionControllerRejectPermissionsRequestAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PreferencesControllerSetPasswordForgottenAction
   | RemoteFeatureFlagControllerGetStateAction
@@ -600,6 +606,27 @@ export class LegacyBackgroundApiService {
           address as Hex,
         ),
     );
+  }
+
+  /**
+   * Rejects a pending permissions request.
+   *
+   * Swallows `PermissionsRequestNotFoundError` so that rejecting an already
+   * resolved request does not throw.
+   *
+   * @param requestId - The ID of the permissions request to reject.
+   */
+  rejectPermissionsRequest(requestId: string): void {
+    try {
+      this.#messenger.call(
+        'PermissionController:rejectPermissionsRequest',
+        requestId,
+      );
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
   }
 
   async importAccountWithStrategy(
