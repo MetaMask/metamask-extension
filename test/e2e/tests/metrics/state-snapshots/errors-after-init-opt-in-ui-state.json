@@ -402,6 +402,7 @@
     "traits": "object",
     "transactionBatches": "object",
     "transactionData": "object",
+    "transactionFrameContexts": "object",
     "transactions": "object",
     "trezorModel": null,
     "trialedProducts": "object",

@@ -42,6 +42,7 @@ import {
 } from '../../../../shared/lib/trust-signals';
 import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
 import { accountSupports7702 } from '../account-supports-7702';
+import type { AppStateController } from '../../controllers/app-state-controller';
 import {
   getTempoEvmTransactionArgs,
   getTempoTransactionBatchArgs,
@@ -81,6 +82,7 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
   dappRequest: JsonRpcRequest;
   requestContext: MiddlewareContext;
+  appStateController: AppStateController;
 };
 
 const TRANSFER_TYPES = [
@@ -97,12 +99,20 @@ type AddTransactionResult = Promise<{
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  const { dappRequest, requestContext } = request;
+  const { appStateController, dappRequest, requestContext } = request;
   const { id, method } = dappRequest;
   const actionId = String(id);
+  const { frameId: requestFrameId, mainFrameOrigin: requestMainFrameOrigin } =
+    dappRequest as JsonRpcRequest & {
+      frameId?: number;
+      mainFrameOrigin?: string;
+    };
 
   // TODO: Find a home for and define the appropriate MiddlewareContext type
   const origin = requestContext.assertGet('origin') as string;
+  const frameId = requestContext.get('frameId') ?? requestFrameId;
+  const mainFrameOrigin =
+    requestContext.get('mainFrameOrigin') ?? requestMainFrameOrigin;
   const securityAlertResponse = requestContext.get('securityAlertResponse') as
     | SecurityAlertResponse
     | undefined;
@@ -128,9 +138,30 @@ export async function addDappTransaction(
     },
   };
 
-  const { waitForHash } = await addTransactionOrUserOperation(
-    addTransactionRequest,
-  );
+  // Record iframe context *before* adding the transaction so it is already
+  // available when the synchronous "Transaction Added" metrics event fires
+  // from within `transactionController.addTransaction`. Keyed by the dapp
+  // request id (`actionId`), which is present on the `TransactionMeta` for
+  // every lifecycle event, giving the metrics builder a single uniform read
+  // path. No-op (no state allocated) for non-iframe requests.
+  appStateController.setTransactionFrameContext(actionId, {
+    frameId: typeof frameId === 'number' ? frameId : undefined,
+    mainFrameOrigin:
+      typeof mainFrameOrigin === 'string' ? mainFrameOrigin : undefined,
+  });
+
+  let waitForHash: () => Promise<string | undefined>;
+  try {
+    ({ waitForHash } = await addTransactionOrUserOperation(
+      addTransactionRequest,
+    ));
+  } catch (error) {
+    // The transaction was never added (e.g. validation failure), so no
+    // terminal lifecycle event will fire to release the recorded context.
+    // Release it here to avoid leaking the entry.
+    appStateController.removeTransactionFrameContext(actionId);
+    throw error;
+  }
 
   const hash = (await waitForHash()) as string;
 

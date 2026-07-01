@@ -50,6 +50,75 @@ const extensionMock = {
 } as unknown as jest.Mocked<Browser>;
 
 describe('AppStateController', () => {
+  describe('transaction frame context', () => {
+    it('records frame context keyed by the request id', async () => {
+      await withController(({ controller }) => {
+        controller.setTransactionFrameContext('request-1', {
+          frameId: 1,
+          mainFrameOrigin: 'https://top-level.example',
+        });
+
+        expect(controller.state.transactionFrameContexts).toStrictEqual({
+          'request-1': {
+            frameId: 1,
+            mainFrameOrigin: 'https://top-level.example',
+          },
+        });
+        expect(
+          controller.getTransactionFrameContext('request-1'),
+        ).toStrictEqual({
+          frameId: 1,
+          mainFrameOrigin: 'https://top-level.example',
+        });
+      });
+    });
+
+    it('records only the fields that are present', async () => {
+      await withController(({ controller }) => {
+        controller.setTransactionFrameContext('top-level', { frameId: 0 });
+        controller.setTransactionFrameContext('origin-only', {
+          mainFrameOrigin: 'https://dapp.example',
+        });
+
+        expect(
+          controller.getTransactionFrameContext('top-level'),
+        ).toStrictEqual({ frameId: 0 });
+        expect(
+          controller.getTransactionFrameContext('origin-only'),
+        ).toStrictEqual({ mainFrameOrigin: 'https://dapp.example' });
+      });
+    });
+
+    it('does not allocate state when neither frameId nor mainFrameOrigin is present', async () => {
+      await withController(({ controller }) => {
+        controller.setTransactionFrameContext('non-iframe', {});
+
+        expect(controller.state.transactionFrameContexts).toStrictEqual({});
+        expect(
+          controller.getTransactionFrameContext('non-iframe'),
+        ).toBeUndefined();
+      });
+    });
+
+    it('removes recorded frame context', async () => {
+      await withController(({ controller }) => {
+        controller.setTransactionFrameContext('request-1', { frameId: 2 });
+        controller.removeTransactionFrameContext('request-1');
+
+        expect(controller.state.transactionFrameContexts).toStrictEqual({});
+      });
+    });
+
+    it('is a no-op when removing an unknown request id', async () => {
+      await withController(({ controller }) => {
+        expect(() =>
+          controller.removeTransactionFrameContext('does-not-exist'),
+        ).not.toThrow();
+        expect(controller.state.transactionFrameContexts).toStrictEqual({});
+      });
+    });
+  });
+
   describe('updateNftDropDownState', () => {
     it('updates the NFT dropdown state', async () => {
       await withController(({ controller }) => {

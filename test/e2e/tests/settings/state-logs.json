@@ -1492,6 +1492,7 @@
     },
     "transactionBatches": [],
     "transactionData": {},
+    "transactionFrameContexts": {},
     "transactions": [],
     "trezorModel": "null",
     "trialedProducts": [],

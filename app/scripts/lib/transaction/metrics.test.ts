@@ -66,6 +66,8 @@ const createRequest = () => {
     getPna25Acknowledged: jest.fn().mockReturnValue(true),
     getAddressSecurityAlertResponse: jest.fn(),
     getSecurityAlertsEnabled: jest.fn().mockReturnValue(true),
+    getTransactionFrameContext: jest.fn(),
+    removeTransactionFrameContext: jest.fn(),
   } as unknown as TransactionMetricsRequest;
 };
 
@@ -103,12 +105,29 @@ describe('transaction metrics handlers', () => {
 
   it('tracks approved event', async () => {
     const request = createRequest();
+    (request.getTransactionFrameContext as jest.Mock).mockReturnValue({
+      frameId: 1,
+      mainFrameOrigin: 'https://top-level.example',
+    });
+
     await handleTransactionApproved(request, {
-      transactionMeta: createTxMeta({ status: TransactionStatus.approved }),
+      transactionMeta: createTxMeta({
+        actionId: 'request-approved',
+        status: TransactionStatus.approved,
+        origin: 'https://iframe.example',
+      }),
     });
 
     expect(request.trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ event: TransactionMetaMetricsEvent.approved }),
+      expect.objectContaining({
+        event: TransactionMetaMetricsEvent.approved,
+        properties: expect.objectContaining({
+          is_iframe: true,
+          is_cross_origin_iframe: true,
+          iframe_origin: 'https://iframe.example',
+          top_level_origin: 'https://top-level.example',
+        }),
+      }),
     );
   });
 
@@ -125,14 +144,31 @@ describe('transaction metrics handlers', () => {
 
   it('tracks rejected event', async () => {
     const request = createRequest();
+    (request.getTransactionFrameContext as jest.Mock).mockReturnValue({
+      frameId: 1,
+      mainFrameOrigin: 'https://top-level.example',
+    });
     const transactionMeta = createTxMeta({
+      actionId: 'request-rejected',
       status: TransactionStatus.rejected,
+      origin: 'https://iframe.example',
     });
 
     await handleTransactionRejected(request, { transactionMeta });
 
     expect(request.trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ event: TransactionMetaMetricsEvent.rejected }),
+      expect.objectContaining({
+        event: TransactionMetaMetricsEvent.rejected,
+        properties: expect.objectContaining({
+          is_iframe: true,
+          is_cross_origin_iframe: true,
+          iframe_origin: 'https://iframe.example',
+          top_level_origin: 'https://top-level.example',
+        }),
+      }),
+    );
+    expect(request.removeTransactionFrameContext).toHaveBeenCalledWith(
+      transactionMeta.actionId,
     );
   });
 
