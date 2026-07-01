@@ -5,8 +5,7 @@ import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/
 import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap, DEFAULT_MESSAGE_SIGNATURE } from './common-tron';
 
-// TODO: Re-enable after unified-assets Tron balance fixtures are fixed.
-describe.skip('Tron Connect - Sign Message - e2e tests', function () {
+describe('Tron Connect - Sign Message - e2e tests', function () {
   it('Signs a message', async function () {
     await withTronAccountSnap(
       {

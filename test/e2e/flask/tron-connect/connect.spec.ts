@@ -4,8 +4,7 @@ import { DEFAULT_TRON_ADDRESS_SHORT } from '../../constants';
 import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap } from './common-tron';
 
-// TODO: Re-enable after unified-assets Tron balance fixtures are fixed.
-describe.skip('Tron Connect - Connect & disconnect - e2e tests', function () {
+describe('Tron Connect - Connect & disconnect - e2e tests', function () {
   it('Connects', async function () {
     await withTronAccountSnap(
       {

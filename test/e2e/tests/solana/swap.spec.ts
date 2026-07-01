@@ -7,11 +7,14 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../btc/mocks/tokens-api';
+import {
+  mockAccountsApiV2SupportedNetworks,
+  mockAccountsApiV5MultiaccountBalances,
+} from './mocks/accounts-api';
 import {
   mockSolanaBalanceQuote,
   mockGetMinimumBalanceForRentExemption,
@@ -49,72 +52,6 @@ const isUnifiedAssetsEnabled = true;
 
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
-
-/**
- * Mock V2 supportedNetworks to include Solana so the AccountsApiDataSource
- * handles Solana balances via the V5 API instead of the Snap polling path.
- * @param mockServer
- */
-async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
-        SOLANA_CHAIN_ID,
-      ],
-      partialSupport: { balances: [42220, 43114] },
-    });
-}
-
-/**
- * Mock V5 multiaccount balances with SOL + USDC for the Solana wallet address
- * plus localhost ETH. The AccountsApiDataSource maps by address (not account
- * UUID), so this works regardless of which runtime account ID the Snap creates.
- * @param mockServer
- */
-async function mockAccountsApiV5WithSolana(mockServer: Mockttp) {
-  const balances = [
-    {
-      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-      assetId: 'eip155:1337/slip44:1',
-      balance: '25',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: `${SOLANA_CHAIN_ID}/slip44:501`,
-      balance: '50',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: `${SOLANA_CHAIN_ID}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
-      balance: '8.908267',
-    },
-  ];
-
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: balances.length,
-        unprocessedNetworks: [],
-        balances,
-      },
-    }));
-}
 
 /**
  * Same HTTP mocks as `main` when unified assets state is off (no accounts v2/v5,
@@ -157,8 +94,8 @@ async function mockSwapUSDCtoSOLUnified(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),
@@ -218,8 +155,8 @@ async function mockSwapNoQuotesUnified(
 ): Promise<MockedEndpoint[]> {
   const signatureHolder: SignatureHolder = { value: '' };
   return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
@@ -280,8 +217,8 @@ async function mockSwapSOLtoUSDCFailedUnified(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockClientSideDetectionApi(mockServer),
     await mockPhishingDetectionApi(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
@@ -355,8 +292,8 @@ async function mockSwapSOLtoUSDCUnified(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockClientSideDetectionApi(mockServer),
     await mockPhishingDetectionApi(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),

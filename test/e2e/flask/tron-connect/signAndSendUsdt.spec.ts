@@ -5,8 +5,7 @@ import SnapSignTransactionConfirmation from '../../page-objects/pages/confirmati
 import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap, TRANSACTION_HASH_MOCK } from './common-tron';
 
-// TODO: Re-enable after unified-assets Tron balance fixtures are fixed.
-describe.skip('Tron Connect - Sign/Send USDT - e2e tests', function () {
+describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
   it('Signs a USDT transaction', async function () {
     await withTronAccountSnap(
       {

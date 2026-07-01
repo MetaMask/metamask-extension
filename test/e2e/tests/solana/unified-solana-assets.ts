@@ -1,7 +1,10 @@
 import { merge } from 'lodash';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
+import {
+  mockAccountsApiV2EvmOnlySupportedNetworks,
+  mockAccountsApiV5EvmOnlyBalances,
+} from '../../helpers/mocks/accounts-api-evm-only';
 
 /** Solana account id used in default multichain fixtures. */
 export const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
@@ -70,6 +73,7 @@ type BuildSolanaFixtureOptions = {
 
 /**
  * Fixture with 50 SOL seeded in AssetsController for unified-assets builds.
+ * @param options
  */
 export function buildSolanaPositiveBalanceFixture(
   options: BuildSolanaFixtureOptions = {},
@@ -86,62 +90,28 @@ export function buildSolanaPositiveBalanceFixture(
 }
 
 /**
- * Mock V2 supportedNetworks with Solana so Accounts API v5 serves SOL balances.
+ * EVM-only Accounts API mocks. Solana balances use SnapDataSource + RPC mocks.
+ *
+ * @param mockServer
  */
 export async function mockAccountsApiV2WithSolana(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
-        SOLANA_CHAIN_ID,
-      ],
-      partialSupport: { balances: [42220, 43114] },
-    });
+  return mockAccountsApiV2EvmOnlySupportedNetworks(mockServer);
 }
 
 /**
- * Mock V5 multiaccount balances with 50 SOL for the default Solana wallet.
+ * @param mockServer
  */
 export async function mockAccountsApiV5WithSolanaNativeBalance(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  const balances = [
-    {
-      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-      assetId: 'eip155:1337/slip44:1',
-      balance: '25',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: SOL_CAIP_ASSET,
-      balance: SOL_BALANCE_HUMAN,
-    },
-  ];
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: { count: balances.length, unprocessedNetworks: [], balances },
-    }));
+  return mockAccountsApiV5EvmOnlyBalances(mockServer);
 }
 
 /**
  * Token API v3 assets mock for native SOL metadata (unified assets path).
+ * @param mockServer
  */
 export async function mockSolanaNativeTokenApiAssets(
   mockServer: Mockttp,
@@ -172,6 +142,7 @@ export async function mockSolanaNativeTokenApiAssets(
 
 /**
  * Accounts API + token metadata mocks for non-zero Solana balance scenarios.
+ * @param mockServer
  */
 export async function mockUnifiedSolanaBalanceEndpoints(
   mockServer: Mockttp,
@@ -183,7 +154,10 @@ export async function mockUnifiedSolanaBalanceEndpoints(
   ];
 }
 
-/** Whether unified Solana balance mocks should be registered (non-zero balance). */
+/**
+ * Whether unified Solana balance mocks should be registered (non-zero balance).
+ * @param balanceLamports
+ */
 export function shouldUseUnifiedSolanaBalanceMocks(
   balanceLamports: number | undefined,
 ): boolean {

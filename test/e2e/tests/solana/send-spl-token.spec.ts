@@ -12,6 +12,10 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import {
+  mockAccountsApiV2SupportedNetworks,
+  mockAccountsApiV5MultiaccountBalances,
+} from './mocks/accounts-api';
+import {
   commonSolanaAddress,
   mockGetFeeForMessage,
   mockGetLatestBlockhash,
@@ -46,60 +50,6 @@ const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 const USDC_BALANCE_HUMAN = '8.908267';
 
 // --- Unified-assets-only helpers ---
-
-async function mockAccountsApiV2WithSolana(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
-        SOLANA_CHAIN_ID,
-      ],
-      partialSupport: { balances: [42220, 43114] },
-    });
-}
-
-async function mockAccountsApiV5WithSolana(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  const balances = [
-    {
-      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-      assetId: 'eip155:1337/slip44:1',
-      balance: '25',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: SOL_CAIP_ASSET,
-      balance: '50',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: USDC_CAIP_ASSET,
-      balance: USDC_BALANCE_HUMAN,
-    },
-  ];
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: { count: balances.length, unprocessedNetworks: [], balances },
-    }));
-}
 
 const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
   assetsBalance: {
@@ -223,8 +173,8 @@ const mockSendWithUSDCVisible = async (
 ): Promise<MockedEndpoint[]> => [
   ...(isUnifiedAssetsEnabled
     ? [
-        await mockAccountsApiV2WithSolana(mockServer),
-        await mockAccountsApiV5WithSolana(mockServer),
+        await mockAccountsApiV2SupportedNetworks(mockServer),
+        await mockAccountsApiV5MultiaccountBalances(mockServer),
       ]
     : []),
   await mockGetTokenAccountsUSDCOnly(mockServer),
@@ -254,8 +204,8 @@ async function mockSendSPLTokenFailed(
   return [
     ...(isUnifiedAssetsEnabled
       ? [
-          await mockAccountsApiV2WithSolana(mockServer),
-          await mockAccountsApiV5WithSolana(mockServer),
+          await mockAccountsApiV2SupportedNetworks(mockServer),
+          await mockAccountsApiV5MultiaccountBalances(mockServer),
         ]
       : []),
     await mockGetTokenAccountsUSDCOnly(mockServer),

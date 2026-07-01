@@ -13,12 +13,12 @@ import {
   TRON_RECIPIENT_ADDRESS,
 } from '../tron/mocks/common-tron';
 
-// TODO: Re-enable after unified-assets Tron balance fixtures are fixed.
-describe.skip('Send Tron', function () {
+describe('Send Tron', function () {
   it('it should be possible to send TRX', async function () {
     await withFixtures(
       {
         fixtures: buildTronFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
       },

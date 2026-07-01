@@ -8,12 +8,12 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import HomePage from '../../page-objects/pages/home/homepage';
 import { buildTronFixtures, mockTronApis } from './mocks/common-tron';
 
-// TODO: Re-enable after unified-assets Tron balance fixtures are fixed (assetsBalance + account pre-seed).
-describe.skip('Check balance', function (this: Suite) {
+describe('Check balance', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
+        fixtures: buildTronFixtures(undefined, { zeroBalance: true }),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) =>
           mockTronApis(mockServer, true),
@@ -39,6 +39,7 @@ describe.skip('Check balance', function (this: Suite) {
         fixtures: buildTronFixtures(undefined, {
           showNativeTokenAsMainBalanceDisabled: true,
         }),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
       },
@@ -66,6 +67,7 @@ describe.skip('Check balance', function (this: Suite) {
     await withFixtures(
       {
         fixtures: buildTronFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
       },
