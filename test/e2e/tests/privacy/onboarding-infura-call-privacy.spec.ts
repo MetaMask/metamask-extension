@@ -90,7 +90,9 @@ async function mockOnboardingPrivacyEndpoints(
   ];
 
   const accountsApiBalancesMock = await mockServer
-    .forGet(/^https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u)
+    .forGet(
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -139,8 +141,7 @@ async function waitForPostOnboardingNetworkActivity(
   timeoutMs: number,
 ): Promise<void> {
   await driver.wait(async () => {
-    const accountsApiRequests =
-      await accountsApiBalancesMock.getSeenRequests();
+    const accountsApiRequests = await accountsApiBalancesMock.getSeenRequests();
     if (accountsApiRequests.length > 0) {
       return true;
     }

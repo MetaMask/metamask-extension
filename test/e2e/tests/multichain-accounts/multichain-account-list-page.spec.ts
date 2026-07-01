@@ -17,7 +17,11 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 
@@ -172,6 +176,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
               },
             },
           })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: {

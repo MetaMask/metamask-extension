@@ -5,7 +5,11 @@ import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transact
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { DEFAULT_FIXTURE_ACCOUNT, DEFAULT_FIXTURE_ACCOUNT_ID, WINDOW_TITLES } from '../../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  WINDOW_TITLES,
+} from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';

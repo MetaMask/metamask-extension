@@ -335,8 +335,7 @@ async function withFixtures(options, testSuite) {
     // matches post-deploy gas usage (e.g. HST deploy on mainnet).
     let effectiveUnifiedEvmAccountsApiBalances =
       unifiedEvmAccountsApiBalances ?? {};
-    const localChainId =
-      localNodeOptsNormalized[0]?.options.chainId ?? 1337;
+    const localChainId = localNodeOptsNormalized[0]?.options.chainId ?? 1337;
     if (localNodes[0]) {
       const nodeBalance = Number(
         (await localNodes[0].getBalance()).toFixed(3),

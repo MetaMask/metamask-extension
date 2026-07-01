@@ -60,17 +60,30 @@ const getBridgeFixtureAssetsBalance = () => ({
     'eip155:1/slip44:60': {
       amount: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
     },
-    'eip155:59144/slip44:60': { amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN) },
-    'eip155:42161/slip44:60': { amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN) },
+    'eip155:59144/slip44:60': {
+      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+    },
+    'eip155:42161/slip44:60': {
+      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+    },
   },
 });
+
+const BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES = {
+  mainnetNativeEthHuman: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
+  nativeBalance: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+};
 
 /** Native ETH balances seeded for L2 bridge fixtures (25 ETH on each enabled chain). */
 const getBridgeL2FixtureAssetsBalance = () => ({
   [DEFAULT_FIXTURE_ACCOUNT_ID]: {
     'eip155:1/slip44:60': { amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN) },
-    'eip155:59144/slip44:60': { amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN) },
-    'eip155:42161/slip44:60': { amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN) },
+    'eip155:59144/slip44:60': {
+      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+    },
+    'eip155:42161/slip44:60': {
+      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
+    },
   },
 });
 
@@ -1463,6 +1476,7 @@ export const getBridgeFixtures = ({
         },
       },
     ],
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };
@@ -1535,6 +1549,7 @@ export const getQuoteNegativeCasesFixtures = (
         },
       },
     ],
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };
@@ -1599,6 +1614,7 @@ export const getBridgeNegativeCasesFixtures = (
         },
       },
     ],
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };
@@ -1655,6 +1671,7 @@ export const getInsufficientFundsFixtures = (
         },
       },
     ],
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };
@@ -1936,7 +1953,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
-        type: 'anvil' as const,
+        type: 'anvil',
         options: {
           chainId: 1,
           hardfork: 'london',
@@ -1945,6 +1962,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         },
       },
     ],
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };
@@ -2097,6 +2115,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         },
       },
     ],
+    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };

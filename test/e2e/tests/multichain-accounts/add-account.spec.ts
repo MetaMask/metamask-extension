@@ -16,7 +16,11 @@ import LoginPage from '../../page-objects/pages/login-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { Driver } from '../../webdriver/driver';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const SECOND_ACCOUNT_NAME = 'Account 2';
@@ -49,6 +53,7 @@ describe('Add account', function () {
               },
             },
           })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -139,6 +144,7 @@ describe('Add account', function () {
               },
             },
           })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -192,6 +198,7 @@ describe('Add account', function () {
               },
             },
           })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -273,6 +280,7 @@ describe('Add account', function () {
               },
             },
           })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {

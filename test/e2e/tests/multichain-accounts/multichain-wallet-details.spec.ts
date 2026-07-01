@@ -6,7 +6,10 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import { mockPriceApi } from '../tokens/utils/mocks';
+import {
+  mockPriceApi,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 
 describe('Multichain Accounts - Wallet Details', function (this: Suite) {
   it('should view wallet details with one Ethereum', async function () {
@@ -16,6 +19,7 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
