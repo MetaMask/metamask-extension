@@ -78,8 +78,10 @@ import {
 import { toBridgeToken } from './utils';
 
 describe('Bridge selectors', () => {
+  const OPTIMISM_USDC_ASSET_ID = mockErc20Erc20Quotes[0]!.quote.srcAsset.assetId.toLowerCase();
+
   const getOptimismUsdcAssetExchangeRates = (usdExchangeRate: string) => ({
-    [mockErc20Erc20Quotes[0].quote.srcAsset.assetId.toLowerCase()]: {
+    [OPTIMISM_USDC_ASSET_ID]: {
       exchangeRate: '1',
       usdExchangeRate,
     },
