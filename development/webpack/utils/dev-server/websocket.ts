@@ -14,16 +14,16 @@ function getWebSocketUrl(devServer: WebpackDevServer): string {
 }
 
 /**
- * Builds the webpack entry for a reload client: the client module's
+ * Builds the webpack request for a reload client: the client module's
  * absolute path with the dev server's WebSocket URL in its query. webpack
  * preserves the query as `__resourceQuery`, which the client reads at runtime
  * to know where to connect.
  *
  * @param devServer - The running webpack dev server.
  * @param filename - The client module's filename, relative to this directory.
- * @returns The entry for the client module.
+ * @returns The request for the client module.
  */
-export function getClientEntry(
+export function getClientRequest(
   devServer: WebpackDevServer,
   filename: string,
 ): string {

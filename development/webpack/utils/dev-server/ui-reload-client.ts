@@ -1,13 +1,12 @@
+import webpackHotEmitter from 'webpack/hot/emitter';
+import 'webpack/hot/dev-server';
 import { connectToDevServer } from './connect-to-dev-server';
-import {
-  UI_HOT_UPDATE_MESSAGE_TYPE,
-  UI_RELOAD_MESSAGE_TYPE,
-} from './reload-protocol';
+import { UI_RELOAD_MESSAGE_TYPE } from './reload-protocol';
 
-// `__resourceQuery` is the query string of the request that pulled this module
-// in as an entry (e.g. `?url=ws%3A%2F%2Flocalhost%3A8080%2Fws`). webpack
-// injects it per-module; the dev server fills it with its resolved WebSocket
-// URL at server start (the port is only known then).
+// `__resourceQuery` is the query string of the request that imported this
+// module (e.g. `?url=ws%3A%2F%2Flocalhost%3A8080%2Fws`). webpack injects it
+// per-module; the dev server fills it with its resolved WebSocket URL at server
+// start (the port is only known then).
 declare const __resourceQuery: string;
 
 const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
@@ -46,12 +45,12 @@ function setStoredHash(hash: string): void {
 }
 
 /**
- * Handles a UI build-hash announcement from the dev server: posts a hot-update
- * message when the announced hash differs from the one this page's code was
- * loaded under. Announcements are state, not events — the server re-sends the
- * current hash to every (re)connecting client — so a build that completes
- * while this page is disconnected still takes effect once the page reconnects,
- * instead of being missed.
+ * Handles a UI build-hash announcement from the dev server: asks the UI webpack
+ * runtime to check for hot updates when the announced hash differs from the one
+ * this page's code was loaded under. Announcements are state, not events — the
+ * server re-sends the current hash to every (re)connecting client — so a build
+ * that completes while this page is disconnected still takes effect once the
+ * page reconnects, instead of being missed.
  *
  * @param hash - The announced hash of the server's latest UI build.
  */
@@ -67,10 +66,7 @@ function onHash(hash: string): void {
     return;
   }
   console.info('[webpack-dev-server] UI hot update...');
-  globalThis.postMessage(
-    { type: UI_HOT_UPDATE_MESSAGE_TYPE, hash },
-    globalThis.location.origin,
-  );
+  webpackHotEmitter.emit('webpackHotUpdate', hash);
 }
 
 if (socketUrl) {

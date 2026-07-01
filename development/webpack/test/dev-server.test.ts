@@ -16,10 +16,12 @@ import {
 import {
   BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
   BACKGROUND_RELOAD_MESSAGE_TYPE,
-  UI_RELOAD_CLIENT_ENTRY_NAME,
   UI_RELOAD_MESSAGE_TYPE,
 } from '../utils/dev-server/reload-protocol';
-import { createAnnouncer, getClientEntry } from '../utils/dev-server/websocket';
+import {
+  createAnnouncer,
+  getClientRequest,
+} from '../utils/dev-server/websocket';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 
 type EntryPluginCall = {
@@ -30,6 +32,17 @@ type EntryPluginCall = {
 };
 
 type DoneCallback = Parameters<Compiler['hooks']['done']['tap']>[1];
+type ReactRefreshRule = {
+  test?: RegExp;
+  include: string;
+  enforce: string;
+  use: {
+    loader: string;
+    options: {
+      clientRequest: string;
+    };
+  };
+};
 
 function createCompiler({
   plugins = [],
@@ -72,7 +85,7 @@ function createCompiler({
 
   const compiler = {
     context: '/test/context',
-    options: { plugins },
+    options: { plugins, module: { rules: [] } },
     hooks: {
       done: {
         tap: mock.fn((_name, callback) => {
@@ -93,6 +106,14 @@ function createCompiler({
       return doneCallback;
     },
   };
+}
+
+function getOnlyModuleRule(compiler: Compiler): ReactRefreshRule {
+  const { rules } = compiler.options.module;
+  assert.strictEqual(rules.length, 1);
+  const [rule] = rules;
+  assert(rule && typeof rule === 'object' && !Array.isArray(rule));
+  return rule as ReactRefreshRule;
 }
 
 function createManifestPlugin({
@@ -296,20 +317,21 @@ describe('./utils/dev-server', () => {
       } as never);
 
       assert.strictEqual(result, middlewares);
-      assert.strictEqual(entryPluginCalls.length, 2);
+      const uiReloadRule = getOnlyModuleRule(compiler);
+      assert.strictEqual(
+        uiReloadRule.include,
+        '/test/context/scripts/load/ui.ts',
+      );
       assert.match(
-        entryPluginCalls[0].entry,
+        uiReloadRule.use.options.clientRequest,
         /ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
       );
-      assert.deepStrictEqual(entryPluginCalls[0].options, {
-        name: UI_RELOAD_CLIENT_ENTRY_NAME,
-        chunkLoading: false,
-      });
+      assert.strictEqual(entryPluginCalls.length, 1);
       assert.match(
-        entryPluginCalls[1].entry,
+        entryPluginCalls[0].entry,
         /background-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
       );
-      assert.deepStrictEqual(entryPluginCalls[1].options, {
+      assert.deepStrictEqual(entryPluginCalls[0].options, {
         name: 'service-worker',
       });
     });
@@ -390,21 +412,25 @@ describe('./utils/dev-server', () => {
   });
 
   describe('setupUiReload', () => {
-    it('registers the UI reload client', () => {
+    it('prepends the UI reload client to the UI entry', () => {
       const { compiler, entryPluginCalls } = createCompiler();
       const { devServer } = createDevServer({ host: 'localhost', port: 24680 });
 
       setupUiReload(devServer as never, [compiler]);
 
-      assert.strictEqual(entryPluginCalls.length, 1);
+      assert.strictEqual(entryPluginCalls.length, 0);
+      const rule = getOnlyModuleRule(compiler);
+      assert.strictEqual(rule.test?.toString(), /\.ts$/u.toString());
+      assert.strictEqual(rule.include, '/test/context/scripts/load/ui.ts');
+      assert.strictEqual(rule.enforce, 'pre');
       assert.match(
-        entryPluginCalls[0].entry,
+        rule.use.loader,
+        /development[\\/]webpack[\\/]utils[\\/]loaders[\\/]reactRefreshLoader/u,
+      );
+      assert.match(
+        rule.use.options.clientRequest,
         /development[\\/]webpack[\\/]utils[\\/]dev-server[\\/]ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
       );
-      assert.deepStrictEqual(entryPluginCalls[0].options, {
-        name: UI_RELOAD_CLIENT_ENTRY_NAME,
-        chunkLoading: false,
-      });
     });
   });
 
@@ -509,20 +535,20 @@ describe('./utils/dev-server', () => {
     });
   });
 
-  describe('getClientEntry', () => {
-    it('embeds the resolved dev-server WebSocket URL into the client entry query', () => {
+  describe('getClientRequest', () => {
+    it('embeds the resolved dev-server WebSocket URL into the client request query', () => {
       const { devServer } = createDevServer({
         host: '127.0.0.1',
         port: 35729,
       });
 
-      const entry = getClientEntry(
+      const request = getClientRequest(
         devServer as never,
         'background-reload-client.ts',
       );
 
       assert.match(
-        entry,
+        request,
         /background-reload-client\.ts\?url=ws%3A%2F%2F127\.0\.0\.1%3A35729%2Fws$/u,
       );
     });

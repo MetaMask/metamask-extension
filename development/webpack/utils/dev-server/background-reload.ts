@@ -7,7 +7,7 @@ import {
   BACKGROUND_RELOAD_MESSAGE_TYPE,
   UI_RELOAD_MESSAGE_TYPE,
 } from './reload-protocol';
-import { createAnnouncer, getClientEntry } from './websocket';
+import { createAnnouncer, getClientRequest } from './websocket';
 
 /**
  * Matches the entries of privileged HTML pages that cannot self-reload: the
@@ -159,7 +159,7 @@ export function setupBackgroundReload(
   devServer: WebpackDevServer,
   compilers: Compiler[],
 ): void {
-  const backgroundClientEntry = getClientEntry(
+  const backgroundClientRequest = getClientRequest(
     devServer,
     'background-reload-client.ts',
   );
@@ -187,7 +187,7 @@ export function setupBackgroundReload(
       // into the existing entry without a conflicting-entry-option error.
       new compiler.webpack.EntryPlugin(
         compiler.context,
-        backgroundClientEntry,
+        backgroundClientRequest,
         { name: serviceWorkerEntryName },
       ).apply(compiler);
     } else {
@@ -195,7 +195,7 @@ export function setupBackgroundReload(
       // it as a `<script>` into the background page.
       new compiler.webpack.EntryPlugin(
         compiler.context,
-        backgroundClientEntry,
+        backgroundClientRequest,
         {
           name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
           chunkLoading: false,

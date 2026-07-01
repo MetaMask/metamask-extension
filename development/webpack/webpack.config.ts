@@ -39,10 +39,7 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 import { DEV_SERVER_OPTIONS, injectEntryScripts } from './utils/dev-server';
-import {
-  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
-  UI_RELOAD_CLIENT_ENTRY_NAME,
-} from './utils/dev-server/reload-protocol';
+import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from './utils/dev-server/reload-protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
 
@@ -56,7 +53,6 @@ if (args.dryRun) {
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
-const uiEntryPath = join(context, 'scripts/load/ui.ts');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const isDevelopmentWatchMode = isDevelopment && args.watch;
 const MANIFEST_VERSION = args.manifestVersion;
@@ -156,20 +152,10 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
-    // In watch mode, inject dev-only ui and background reload clients into the relevant HTML pages.
+    // In watch mode, inject the dev-only background reload client into the relevant HTML page.
     beforeEmit: (content, entry, compilation) => {
       if (!args.watch) {
         return content;
-      }
-      // UI pages (identified by the `#app-content` React mount point, present
-      // via `partial-body.html` on every page that renders the React UI and no
-      // other extension page) get the UI reload client
-      if (content.includes('id="app-content"')) {
-        return injectEntryScripts(
-          content,
-          compilation,
-          UI_RELOAD_CLIENT_ENTRY_NAME,
-        );
       }
       // The MV2 (Firefox) background page gets the background reload client,
       // which triggers `chrome.runtime.reload()` only when a background or
@@ -458,15 +444,6 @@ const config = {
           loader: require.resolve('./utils/loaders/envValidationLoader'),
           options: { declarations: [...buildEnvVarDeclarations] },
         },
-      },
-      // React Refresh must run inside the UI entry's webpack runtime.
-      // This loader prepends the React Refresh entry and client
-      // to `scripts/load/ui.ts` in development watch mode only.
-      isDevelopmentWatchMode && {
-        test: /\.ts$/u,
-        include: uiEntryPath,
-        enforce: 'pre' as const,
-        use: require.resolve('./utils/loaders/reactRefreshLoader'),
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
