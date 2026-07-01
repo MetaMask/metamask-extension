@@ -1,5 +1,5 @@
-import { HYPERLIQUID_INFO_API_URL } from '../../../shared/constants/defi-referrals';
-import { checkHyperliquidHasReferralCode } from './defi-referral-api-check';
+import { HYPERLIQUID_INFO_API_URL } from '../../../../shared/constants/defi-referrals';
+import { checkHyperliquidHasReferralCode } from './referral-api-check';
 
 const WALLET_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 

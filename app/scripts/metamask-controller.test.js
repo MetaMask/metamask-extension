@@ -353,7 +353,7 @@ jest.mock('./lib/defi-referrals/referral-onchain-check', () => ({
   checkGmxHasReferralCode: jest.fn().mockResolvedValue(false),
 }));
 
-jest.mock('./lib/defi-referral-api-check', () => ({
+jest.mock('./lib/defi-referrals/referral-api-check', () => ({
   checkHyperliquidHasReferralCode: jest.fn().mockResolvedValue(false),
 }));
 

@@ -1,4 +1,4 @@
-import { HYPERLIQUID_INFO_API_URL } from '../../../shared/constants/defi-referrals';
+import { HYPERLIQUID_INFO_API_URL } from '../../../../shared/constants/defi-referrals';
 
 /**
  * Checks if an address already has a referral code set on Hyperliquid.
