@@ -22,6 +22,8 @@ type SettingsSelectItemProps = {
   to: string;
   /** Optional test id for the clickable navigation control */
   dataTestId?: string;
+  /** Optional leading content (e.g., an icon) rendered before the label */
+  startAccessory?: ReactNode;
 };
 
 export const SettingsSelectItem = ({
@@ -29,6 +31,7 @@ export const SettingsSelectItem = ({
   value,
   to,
   dataTestId,
+  startAccessory,
 }: SettingsSelectItemProps) => {
   return (
     <Link
@@ -43,9 +46,23 @@ export const SettingsSelectItem = ({
         paddingVertical={3}
         paddingHorizontal={4}
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {label}
-        </Text>
+        {startAccessory ? (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={4}
+            className="min-w-0"
+          >
+            {startAccessory}
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              {label}
+            </Text>
+          </Box>
+        ) : (
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {label}
+          </Text>
+        )}
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}

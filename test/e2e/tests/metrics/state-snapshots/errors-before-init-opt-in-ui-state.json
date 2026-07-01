@@ -75,6 +75,7 @@
       "isSignedIn": "boolean",
       "needsProfilePairing": "boolean"
     },
+    "BridgeController": { "inputPrimaryDenomination": "string" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "ComplianceController": {

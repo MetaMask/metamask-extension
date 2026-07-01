@@ -19,11 +19,10 @@ jest.mock('../../../hooks/pay/useTransactionPayToken', () => ({
   useTransactionPayToken: jest.fn(),
 }));
 
-jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
-  ConfirmInfoRowSize: { Small: 'small', Default: 'default' },
-  PayWithRow: () => <div data-testid="pay-with-row">PayWithRow</div>,
-  PayWithRowSkeleton: () => (
-    <div data-testid="pay-with-row-skeleton">PayWithRowSkeleton</div>
+jest.mock('../../pay-with-pill', () => ({
+  PayWithPill: () => <div data-testid="pay-with-pill">PayWithPill</div>,
+  PayWithPillSkeleton: () => (
+    <div data-testid="pay-with-pill-skeleton">PayWithPillSkeleton</div>
   ),
 }));
 
@@ -59,7 +58,7 @@ describe('MusdOverrideContent', () => {
   });
 
   describe('when tokens are available but no pay token is pre-selected', () => {
-    it('renders PayWithRowSkeleton until controller pay token is set', () => {
+    it('renders PayWithPillSkeleton until controller pay token is set', () => {
       mockUseCustomAmount.mockReturnValue({
         shouldShowOutputAmountTag: false,
         outputAmount: null,
@@ -74,10 +73,10 @@ describe('MusdOverrideContent', () => {
         isNative: false,
       });
 
-      render(<MusdOverrideContent amountHuman="0" />);
+      render(<MusdOverrideContent amountHuman="0" hasInput={false} />);
 
-      expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
-      expect(screen.queryByTestId('pay-with-row')).not.toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-pill-skeleton')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
     });
   });
 
@@ -94,15 +93,21 @@ describe('MusdOverrideContent', () => {
     });
 
     it('should render OutputAmountTag', () => {
-      render(<MusdOverrideContent amountHuman="100.50" />);
+      render(<MusdOverrideContent amountHuman="100.50" hasInput={false} />);
 
       expect(screen.getByText('100.50 mUSD')).toBeInTheDocument();
     });
 
-    it('should render PayWithRow', () => {
-      render(<MusdOverrideContent amountHuman="100.50" />);
+    it('should render PayWithPill in the empty state', () => {
+      render(<MusdOverrideContent amountHuman="100.50" hasInput={false} />);
 
-      expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-pill')).toBeInTheDocument();
+    });
+
+    it('should not render PayWithPill once an amount is entered', () => {
+      render(<MusdOverrideContent amountHuman="100.50" hasInput={true} />);
+
+      expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
     });
   });
 
@@ -117,16 +122,16 @@ describe('MusdOverrideContent', () => {
     });
 
     it('should render OutputAmountTag', () => {
-      render(<MusdOverrideContent amountHuman="100.50" />);
+      render(<MusdOverrideContent amountHuman="100.50" hasInput={false} />);
 
       expect(screen.getByText('100.50 mUSD')).toBeInTheDocument();
     });
 
-    it('should render PayWithRowSkeleton instead of PayWithRow', () => {
-      render(<MusdOverrideContent amountHuman="100.50" />);
+    it('should render PayWithPillSkeleton instead of PayWithPill', () => {
+      render(<MusdOverrideContent amountHuman="100.50" hasInput={false} />);
 
-      expect(screen.queryByTestId('pay-with-row')).not.toBeInTheDocument();
-      expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-pill-skeleton')).toBeInTheDocument();
     });
   });
 
@@ -143,16 +148,16 @@ describe('MusdOverrideContent', () => {
     });
 
     it('should not render OutputAmountTag', () => {
-      render(<MusdOverrideContent amountHuman="100.50" />);
+      render(<MusdOverrideContent amountHuman="100.50" hasInput={false} />);
 
       expect(screen.queryByText('100.50 mUSD')).not.toBeInTheDocument();
       expect(screen.queryByTestId('output-amount-tag')).not.toBeInTheDocument();
     });
 
-    it('should still render PayWithRow when tokens available', () => {
-      render(<MusdOverrideContent amountHuman="100.50" />);
+    it('should still render PayWithPill when tokens available', () => {
+      render(<MusdOverrideContent amountHuman="100.50" hasInput={false} />);
 
-      expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-pill')).toBeInTheDocument();
     });
   });
 
@@ -169,7 +174,7 @@ describe('MusdOverrideContent', () => {
     });
 
     it('should not render OutputAmountTag', () => {
-      render(<MusdOverrideContent amountHuman="" />);
+      render(<MusdOverrideContent amountHuman="" hasInput={false} />);
 
       expect(screen.queryByTestId('output-amount-tag')).not.toBeInTheDocument();
     });
