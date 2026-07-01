@@ -2111,6 +2111,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  coreExtensionUxCeux1141AbtestBottomNav: {
+    name: 'coreExtensionUxCeux1141AbtestBottomNav',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
+
   extensionUpdatePromptMinimumVersion: {
     name: 'extensionUpdatePromptMinimumVersion',
     type: FeatureFlagType.Remote,
