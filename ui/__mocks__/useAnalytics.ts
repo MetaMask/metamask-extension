@@ -1,8 +1,11 @@
-import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
+import {
+  createEventBuilder,
+  type AnalyticsEvent,
+} from '../../shared/lib/analytics/create-event-builder';
 
 export function useAnalytics() {
   return {
-    trackEvent: () => undefined,
+    trackEvent: (_built: AnalyticsEvent) => undefined,
     createEventBuilder,
   };
 }
