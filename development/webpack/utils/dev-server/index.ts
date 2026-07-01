@@ -5,8 +5,8 @@ import { setupUiReload } from './ui-reload';
 import { setupBackgroundReload } from './background-reload';
 
 export const DEV_SERVER_OPTIONS: Configuration = {
-  // Keep WDS from injecting its HMR runtime into every extension entry. React
-  // Refresh mode wires HMR manually into the UI entrypoints.
+  // Keep WDS from injecting its HMR runtime into every extension entry.
+  // We manually wire React Refresh mode into the UI entrypoints.
   hot: false,
   // We use our own logic to decide when to reload.
   liveReload: false,
@@ -26,7 +26,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   // we don't need/have a "static" directory, so disable it
   static: false,
   allowedHosts: 'all',
-  // Wire up the ui and background clients here so that we can read the resolved port from
+  // Wire up the ui and background reload clients here so that we can read the resolved port from
   // `devServer.options` — by this point `port: 'auto'` has been replaced with
   // the actual numeric port the server is listening on.
   setupMiddlewares: (middlewares, devServer) => {
@@ -34,9 +34,9 @@ export const DEV_SERVER_OPTIONS: Configuration = {
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
-    // Registers the UI reload client.
+    // Registers the ui reload client into ui pages.
     setupUiReload(devServer, compilers);
-    // Registers the background client into the background/service worker context.
+    // Registers the background reload client into the background/service worker context.
     setupBackgroundReload(devServer, compilers);
     return middlewares;
   },
