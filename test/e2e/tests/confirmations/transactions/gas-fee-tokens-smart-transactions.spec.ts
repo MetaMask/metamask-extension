@@ -32,6 +32,13 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
+        localNodeOptions: {
+          hardfork: 'london',
+          chainId: '1',
+        },
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockMultiNetworkBalancePolling(mockServer);
           mockSimulationResponse(mockServer);
@@ -54,7 +61,10 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         ],
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await login(driver, { expectedBalance: '20 ETH' });
+        await login(driver, {
+          expectedBalance: '20 ETH',
+          waitForNonEvmAccounts: false,
+        });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -100,6 +110,13 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
+        localNodeOptions: {
+          hardfork: 'london',
+          chainId: '1',
+        },
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockSimulationResponse(mockServer);
           await mockSmartTransactionBatchRequests(mockServer, {
@@ -111,7 +128,10 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await login(driver, { expectedBalance: '20 ETH' });
+        await login(driver, {
+          expectedBalance: '20 ETH',
+          waitForNonEvmAccounts: false,
+        });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

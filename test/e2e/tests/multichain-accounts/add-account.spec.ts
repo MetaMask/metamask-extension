@@ -130,11 +130,23 @@ describe('Add account', function () {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer)];
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { expectedBalance: '$75,250.00' });
+        await login(driver, { expectedBalance: '$85,025.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -252,11 +264,23 @@ describe('Add account', function () {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer)];
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { expectedBalance: '$75,250.00' });
+        await login(driver, { expectedBalance: '$85,025.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 

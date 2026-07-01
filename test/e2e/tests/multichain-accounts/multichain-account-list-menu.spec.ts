@@ -12,6 +12,7 @@ import { Driver } from '../../webdriver/driver';
 import {
   DAPP_PATH,
   DEFAULT_FIXTURE_ACCOUNT_ID,
+  HARDWARE_WALLET_ACCOUNT_ID,
   WINDOW_TITLES,
 } from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
@@ -83,7 +84,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPreferencesController({
-            preferences: { showFiatInTestnets: true },
+            preferences: {
+              showFiatInTestnets: true,
+              showNativeTokenAsMainBalance: true,
+            },
             useCurrencyRateCheck: true,
           })
           .withCurrencyController({
@@ -102,6 +106,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
               [DEFAULT_FIXTURE_ACCOUNT_ID]: {
                 'eip155:1/slip44:60': { amount: '0' },
               },
+              [HARDWARE_WALLET_ACCOUNT_ID]: {
+                'eip155:1/slip44:60': { amount: '25' },
+              },
             },
           })
           .build(),
@@ -116,7 +123,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x15af1d78b58c40000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver, {
+          expectedBalance: '$85,025.00',
+          waitForNonEvmAccounts: false,
+        });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const headerNavbar = new HeaderNavbar(driver);

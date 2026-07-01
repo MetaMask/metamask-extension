@@ -17,13 +17,19 @@ export const SECOND_TEST_E2E_SRP =
  * @param options - Optional overrides.
  * @param options.srpWords - Space-separated recovery phrase words. Defaults to {@link SECOND_TEST_E2E_SRP}.
  * @param options.expectedBalance - Expected balance for Account 1 to verify after import. Defaults to '0'.
+ * @param options.validateBalance - Whether to verify balance after import. Defaults to true; set false when unified assets does not surface a zero-balance row on the active network.
  */
 export async function importAdditionalSecretRecoveryPhrase(
   driver: Driver,
   {
     srpWords = SECOND_TEST_E2E_SRP,
     expectedBalance = '0',
-  }: { srpWords?: string; expectedBalance?: string } = {},
+    validateBalance = true,
+  }: {
+    srpWords?: string;
+    expectedBalance?: string;
+    validateBalance?: boolean;
+  } = {},
 ): Promise<void> {
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
@@ -35,6 +41,9 @@ export async function importAdditionalSecretRecoveryPhrase(
   await homePage.checkNewSrpAddedToastIsDisplayed();
   await homePage.dismissSrpAddedToast();
   await homePage.checkPageIsLoaded();
+  if (!validateBalance) {
+    return;
+  }
   const tokensTab = new TokensTab(driver);
   await tokensTab.checkExpectedTokenBalanceIsDisplayed(expectedBalance, 'ETH');
 }
