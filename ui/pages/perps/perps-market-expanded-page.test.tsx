@@ -66,9 +66,7 @@ jest.mock('../../components/app/perps/perps-market-expanded', () => ({
   PerpsExpandedPositionsPanel: () => (
     <div data-testid="perps-expanded-positions" />
   ),
-  PerpsExpandedSkeleton: () => (
-    <div data-testid="perps-expanded-skeleton" />
-  ),
+  PerpsExpandedSkeleton: () => <div data-testid="perps-expanded-skeleton" />,
   PerpsExpandedTradePanel: () => <div data-testid="perps-expanded-trade" />,
 }));
 
@@ -207,9 +205,7 @@ describe('PerpsMarketExpandedPage', () => {
     it('does not show skeleton when market is found', () => {
       const { queryByTestId } = render(<PerpsMarketExpandedPage />);
 
-      expect(
-        queryByTestId('perps-expanded-skeleton'),
-      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-expanded-skeleton')).not.toBeInTheDocument();
     });
 
     it('does not show not-found when market is found', () => {

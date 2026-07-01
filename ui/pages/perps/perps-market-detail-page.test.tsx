@@ -372,6 +372,12 @@ jest.mock('react-router-dom', () => ({
   },
 }));
 
+const mockIsPopupOrSidePanelEnvironment = jest.fn().mockReturnValue(false);
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
+  isPopupOrSidePanelEnvironment: () => mockIsPopupOrSidePanelEnvironment(),
+}));
+
 // eslint-disable-next-line import-x/first
 import PerpsMarketDetailPage from './perps-market-detail-page';
 
@@ -686,6 +692,40 @@ describe('PerpsMarketDetailPage', () => {
         value: originalLength,
         configurable: true,
       });
+    });
+
+    it('navigates in place to the expanded view when already fullscreen', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(false);
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      getByTestId('perps-market-detail-expand-button').click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        '/perps/market-expanded/ETH',
+      );
+    });
+
+    it('opens the expanded view in a browser tab from popup / side panel', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+      const openExtensionInBrowser = jest.fn();
+      // @ts-expect-error mocking platform
+      global.platform = { openExtensionInBrowser };
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      getByTestId('perps-market-detail-expand-button').click();
+
+      expect(openExtensionInBrowser).toHaveBeenCalledWith(
+        '/perps/market-expanded/ETH',
+      );
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        '/perps/market-expanded/ETH',
+      );
+
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(false);
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {

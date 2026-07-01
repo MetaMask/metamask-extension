@@ -230,7 +230,10 @@ export const OrderEntry = ({
       return false;
     }
     // Modify with an empty amount is the TP/SL-only path — exempt.
-    if (mode === 'modify' && formState.amount.replace(/,/gu, '').trim() === '') {
+    if (
+      mode === 'modify' &&
+      formState.amount.replace(/,/gu, '').trim() === ''
+    ) {
       return false;
     }
     return orderUsdAmount < PERPS_MIN_MARKET_ORDER_USD;

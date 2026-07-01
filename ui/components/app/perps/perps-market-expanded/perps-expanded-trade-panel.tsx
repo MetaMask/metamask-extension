@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
@@ -8,7 +8,12 @@ import {
   usePerpsLivePrices,
 } from '../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
-import { usePerpsEligibility, usePerpsMaxSlippage } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEstimatedSlippage,
+  usePerpsMaxSlippage,
+} from '../../../../hooks/perps';
+import { bpsToPercent } from '../constants/slippageConfig';
 import { getIsPerpsSlippageConfigEnabled } from '../../../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -59,7 +64,36 @@ export const PerpsExpandedTradePanel = React.memo(
     const isSlippageConfigEnabled = useSelector(
       getIsPerpsSlippageConfigEnabled,
     );
-    const { maxSlippageBps } = usePerpsMaxSlippage();
+    const { maxSlippageBps, isLoading: isMaxSlippageLoading } =
+      usePerpsMaxSlippage();
+
+    // Mirror the order entry page's estimated-slippage pre-submit guard. The
+    // form owns its own state, so we snapshot the latest values here purely to
+    // feed the slippage estimate — kept local to this leaf panel so it does not
+    // lift live form state into the page tree.
+    const [formSnapshot, setFormSnapshot] = useState<OrderFormState | null>(
+      null,
+    );
+    const orderUsdAmount = formSnapshot
+      ? Number.parseFloat(formSnapshot.amount.replace(/,/gu, '')) || 0
+      : 0;
+    const isMarketOrderWithAmount =
+      (formSnapshot?.type ?? 'market') === 'market' &&
+      orderUsdAmount > 0 &&
+      isSlippageConfigEnabled;
+    const { estimatedSlippageBps, isReady: isEstimatedSlippageReady } =
+      usePerpsEstimatedSlippage({
+        symbol,
+        sizeUsd: isMarketOrderWithAmount ? orderUsdAmount : undefined,
+        isBuy: (formSnapshot?.direction ?? 'long') === 'long',
+        enabled: isMarketOrderWithAmount,
+      });
+    const exceedsMaxSlippage =
+      !isMaxSlippageLoading &&
+      isMarketOrderWithAmount &&
+      isEstimatedSlippageReady &&
+      typeof estimatedSlippageBps === 'number' &&
+      estimatedSlippageBps > maxSlippageBps;
 
     const { account } = usePerpsLiveAccount();
     const { positions } = usePerpsLivePositions();
@@ -87,6 +121,26 @@ export const PerpsExpandedTradePanel = React.memo(
           return;
         }
         if (!selectedAddress || currentPrice <= 0) {
+          return;
+        }
+
+        // Block market orders whose estimated slippage exceeds the user's cap,
+        // matching the order entry page — otherwise a trade rejected there can
+        // still be placed from the expanded ticket.
+        if (
+          isMarketOrderWithAmount &&
+          (isMaxSlippageLoading || !isEstimatedSlippageReady)
+        ) {
+          return;
+        }
+        if (exceedsMaxSlippage && typeof estimatedSlippageBps === 'number') {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.ORDER_FAILED,
+            description: t('perpsSlippageExceedsMax', [
+              bpsToPercent(estimatedSlippageBps).toFixed(2),
+              bpsToPercent(maxSlippageBps).toFixed(2),
+            ]),
+          });
           return;
         }
 
@@ -188,6 +242,11 @@ export const PerpsExpandedTradePanel = React.memo(
         position,
         isSlippageConfigEnabled,
         maxSlippageBps,
+        isMarketOrderWithAmount,
+        isMaxSlippageLoading,
+        isEstimatedSlippageReady,
+        exceedsMaxSlippage,
+        estimatedSlippageBps,
         replacePerpsToastByKey,
         t,
       ],
@@ -206,6 +265,7 @@ export const PerpsExpandedTradePanel = React.memo(
           availableBalance={availableBalance}
           initialLeverage={initialLeverage}
           sizeDecimals={sizeDecimals}
+          onFormStateChange={setFormSnapshot}
           onSubmit={handleSubmit}
         />
       </Box>

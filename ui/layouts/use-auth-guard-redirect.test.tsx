@@ -35,16 +35,23 @@ describe('useAuthGuardRedirect', () => {
   });
 
   it('redirects to onboarding when onboarding is not completed', () => {
-    const state = { metamask: { completedOnboarding: false, isUnlocked: false } };
+    const state = {
+      metamask: { completedOnboarding: false, isUnlocked: false },
+    };
     mockUseSelector.mockImplementation((selector) => selector(state as never));
 
     const { getByTestId } = render(<TestComponent />);
 
-    expect(getByTestId('navigate')).toHaveAttribute('data-to', ONBOARDING_ROUTE);
+    expect(getByTestId('navigate')).toHaveAttribute(
+      'data-to',
+      ONBOARDING_ROUTE,
+    );
   });
 
   it('redirects to unlock when onboarding is complete but wallet is locked', () => {
-    const state = { metamask: { completedOnboarding: true, isUnlocked: false } };
+    const state = {
+      metamask: { completedOnboarding: true, isUnlocked: false },
+    };
     mockUseLocation.mockReturnValue({
       pathname: '/settings',
       search: '',
@@ -75,7 +82,9 @@ describe('useAuthGuardRedirect', () => {
   });
 
   it('passes the current location as state when redirecting to unlock', () => {
-    const state = { metamask: { completedOnboarding: true, isUnlocked: false } };
+    const state = {
+      metamask: { completedOnboarding: true, isUnlocked: false },
+    };
     mockUseLocation.mockReturnValue({
       pathname: '/bridge/prepare',
       search: '?foo=bar',
@@ -101,7 +110,9 @@ describe('useAuthGuardRedirect', () => {
   });
 
   it('uses replace navigation for all redirects', () => {
-    const state = { metamask: { completedOnboarding: true, isUnlocked: false } };
+    const state = {
+      metamask: { completedOnboarding: true, isUnlocked: false },
+    };
     mockUseSelector.mockImplementation((selector) => selector(state as never));
 
     render(<TestComponent />);
@@ -113,11 +124,16 @@ describe('useAuthGuardRedirect', () => {
   });
 
   it('prioritises onboarding redirect over unlock redirect when both conditions apply', () => {
-    const state = { metamask: { completedOnboarding: false, isUnlocked: false } };
+    const state = {
+      metamask: { completedOnboarding: false, isUnlocked: false },
+    };
     mockUseSelector.mockImplementation((selector) => selector(state as never));
 
     const { getByTestId } = render(<TestComponent />);
 
-    expect(getByTestId('navigate')).toHaveAttribute('data-to', ONBOARDING_ROUTE);
+    expect(getByTestId('navigate')).toHaveAttribute(
+      'data-to',
+      ONBOARDING_ROUTE,
+    );
   });
 });

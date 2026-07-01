@@ -37,9 +37,7 @@ describe('PerpsExpandedHeader', () => {
   });
 
   it('renders the header container', () => {
-    const { getByTestId } = render(
-      <PerpsExpandedHeader symbol="ETH" />,
-    );
+    const { getByTestId } = render(<PerpsExpandedHeader symbol="ETH" />);
     expect(getByTestId('perps-expanded-header')).toBeInTheDocument();
   });
 
@@ -86,7 +84,9 @@ describe('PerpsExpandedHeader', () => {
 
   it('renders the back button', () => {
     render(<PerpsExpandedHeader symbol="ETH" />);
-    expect(screen.getByTestId('perps-expanded-back-button')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-expanded-back-button'),
+    ).toBeInTheDocument();
   });
 
   it('navigates to the perps tab when back button is clicked', () => {

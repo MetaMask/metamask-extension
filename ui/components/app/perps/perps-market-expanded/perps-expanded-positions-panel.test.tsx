@@ -47,7 +47,11 @@ const mockEthPosition = {
   liquidationPrice: '2400.00',
   maxLeverage: 20,
   returnOnEquity: '0.1579',
-  cumulativeFunding: { allTime: '12.50', sinceOpen: '8.30', sinceChange: '0.00' },
+  cumulativeFunding: {
+    allTime: '12.50',
+    sinceOpen: '8.30',
+    sinceChange: '0.00',
+  },
 };
 
 const mockBtcPosition = {
@@ -61,7 +65,11 @@ const mockBtcPosition = {
   liquidationPrice: '48000.00',
   maxLeverage: 20,
   returnOnEquity: '-0.1667',
-  cumulativeFunding: { allTime: '-5.20', sinceOpen: '-3.10', sinceChange: '0.00' },
+  cumulativeFunding: {
+    allTime: '-5.20',
+    sinceOpen: '-3.10',
+    sinceChange: '0.00',
+  },
 };
 
 const mockEthOrder = {
