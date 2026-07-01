@@ -19,9 +19,7 @@ import {
   selectMusdCtaTokens,
   selectMusdConversionDismissedCtaKeys,
 } from '../../selectors/musd';
-import {
-  isMusdSupportedChain,
-} from '../../components/app/musd/constants';
+import { isMusdSupportedChain } from '../../components/app/musd/constants';
 import { isTokenInWildcardList } from '../../components/app/musd/utils/token-allowlist';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 import { useMusdConversionTokens } from './useMusdConversionTokens';

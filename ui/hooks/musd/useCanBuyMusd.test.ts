@@ -45,11 +45,12 @@ describe('useCanBuyMusd', () => {
     expect(result.current.canBuyMusdInRegion).toBe(false);
   });
 
-  it('reports isLoading true while geo check is in progress', () => {
+  it('returns canBuyMusdInRegion false while geo check is in progress', () => {
     mockGeoResult({ isLoading: true });
 
     const { result } = renderHook(() => useCanBuyMusd());
 
+    expect(result.current.canBuyMusdInRegion).toBe(false);
     expect(result.current.isLoading).toBe(true);
   });
 });

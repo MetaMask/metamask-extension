@@ -20,7 +20,7 @@ export function useCanBuyMusd(): UseCanBuyMusdResult {
   const { isBlocked, isLoading } = useMusdGeoBlocking();
 
   return {
-    canBuyMusdInRegion: !isBlocked,
+    canBuyMusdInRegion: !isLoading && !isBlocked,
     isLoading,
   };
 }
