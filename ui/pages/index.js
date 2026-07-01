@@ -19,6 +19,7 @@ import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import { UIMessengerProvider } from '../contexts/ui-messenger';
+import { PreviewPureBlackProvider } from '../contexts/preview-pure-black/preview-pure-black-provider';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
@@ -34,7 +35,9 @@ function AppProviders() {
                 <HardwareWalletErrorProvider>
                   <ShieldSubscriptionProvider>
                     <RiveWasmProvider>
-                      <Routes />
+                      <PreviewPureBlackProvider>
+                        <Routes />
+                      </PreviewPureBlackProvider>
                     </RiveWasmProvider>
                   </ShieldSubscriptionProvider>
                 </HardwareWalletErrorProvider>

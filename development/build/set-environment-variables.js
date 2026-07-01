@@ -61,6 +61,7 @@ function setEnvironmentVariables({
     }),
     TEST_GAS_FEE_FLOWS:
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
+    MM_PURE_BLACK_PREVIEW: variables.getMaybe('MM_PURE_BLACK_PREVIEW'),
     DEEP_LINK_HOST: variables.getMaybe('DEEP_LINK_HOST'),
     DEEP_LINK_PUBLIC_KEY: variables.getMaybe('DEEP_LINK_PUBLIC_KEY'),
     SEEDLESS_ONBOARDING_ENABLED: isTestBuild
