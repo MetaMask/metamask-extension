@@ -88,13 +88,6 @@ export const PerpsExpandedTradePanel = React.memo(
         isBuy: (formSnapshot?.direction ?? 'long') === 'long',
         enabled: isMarketOrderWithAmount,
       });
-    const exceedsMaxSlippage =
-      !isMaxSlippageLoading &&
-      isMarketOrderWithAmount &&
-      isEstimatedSlippageReady &&
-      typeof estimatedSlippageBps === 'number' &&
-      estimatedSlippageBps > maxSlippageBps;
-
     const { account } = usePerpsLiveAccount();
     const { positions } = usePerpsLivePositions();
     const position = useMemo(
@@ -126,22 +119,43 @@ export const PerpsExpandedTradePanel = React.memo(
 
         // Block market orders whose estimated slippage exceeds the user's cap,
         // matching the order entry page — otherwise a trade rejected there can
-        // still be placed from the expanded ticket.
-        if (
-          isMarketOrderWithAmount &&
-          (isMaxSlippageLoading || !isEstimatedSlippageReady)
-        ) {
-          return;
-        }
-        if (exceedsMaxSlippage && typeof estimatedSlippageBps === 'number') {
-          replacePerpsToastByKey({
-            key: PERPS_TOAST_KEYS.ORDER_FAILED,
-            description: t('perpsSlippageExceedsMax', [
-              bpsToPercent(estimatedSlippageBps).toFixed(2),
-              bpsToPercent(maxSlippageBps).toFixed(2),
-            ]),
-          });
-          return;
+        // still be placed from the expanded ticket. Evaluate the guard against
+        // the authoritative `formState` passed to submit, not the `formSnapshot`
+        // that only drives the estimate subscription (it can lag a render), and
+        // only trust the estimate when it was computed for the exact order being
+        // submitted.
+        const submitUsdAmount =
+          Number.parseFloat(formState.amount.replace(/,/gu, '')) || 0;
+        const submitIsMarketOrderWithAmount =
+          formState.type === 'market' &&
+          submitUsdAmount > 0 &&
+          isSlippageConfigEnabled;
+        if (submitIsMarketOrderWithAmount) {
+          const estimateMatchesOrder =
+            formSnapshot !== null &&
+            formSnapshot.type === formState.type &&
+            formSnapshot.amount === formState.amount &&
+            formSnapshot.direction === formState.direction;
+          if (
+            !estimateMatchesOrder ||
+            isMaxSlippageLoading ||
+            !isEstimatedSlippageReady
+          ) {
+            return;
+          }
+          if (
+            typeof estimatedSlippageBps === 'number' &&
+            estimatedSlippageBps > maxSlippageBps
+          ) {
+            replacePerpsToastByKey({
+              key: PERPS_TOAST_KEYS.ORDER_FAILED,
+              description: t('perpsSlippageExceedsMax', [
+                bpsToPercent(estimatedSlippageBps).toFixed(2),
+                bpsToPercent(maxSlippageBps).toFixed(2),
+              ]),
+            });
+            return;
+          }
         }
 
         replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS });
@@ -242,10 +256,9 @@ export const PerpsExpandedTradePanel = React.memo(
         position,
         isSlippageConfigEnabled,
         maxSlippageBps,
-        isMarketOrderWithAmount,
+        formSnapshot,
         isMaxSlippageLoading,
         isEstimatedSlippageReady,
-        exceedsMaxSlippage,
         estimatedSlippageBps,
         replacePerpsToastByKey,
         t,

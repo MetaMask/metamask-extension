@@ -4,15 +4,27 @@ import { render } from '@testing-library/react';
 // ─── Mock variables (must be prefixed "mock" for babel-jest hoisting) ────────
 const mockNavigate = jest.fn();
 const mockNavigateComponent = jest.fn();
-const mockUseParams = jest.fn(() => ({ symbol: 'ETH' }));
-const mockUsePerpsLiveMarketData = jest.fn(() => ({
-  markets: [],
-  isInitialLoading: false,
-  error: null,
+const mockUseParams = jest.fn((): { symbol: string | undefined } => ({
+  symbol: 'ETH',
 }));
-const mockGetIsPerpsExperienceAvailable = jest.fn(() => true);
-const mockSelectPerpsIsTestnet = jest.fn(() => false);
-const mockSelectPerpsTradeConfigurations = jest.fn(() => ({}));
+const mockUsePerpsLiveMarketData = jest.fn(
+  (): {
+    markets: Record<string, unknown>[];
+    isInitialLoading: boolean;
+    error: Error | null;
+  } => ({
+    markets: [],
+    isInitialLoading: false,
+    error: null,
+  }),
+);
+const mockGetIsPerpsExperienceAvailable = jest.fn(
+  (..._args: unknown[]) => true,
+);
+const mockSelectPerpsIsTestnet = jest.fn((..._args: unknown[]) => false);
+const mockSelectPerpsTradeConfigurations = jest.fn(
+  (..._args: unknown[]): Record<string, unknown> => ({}),
+);
 
 // ─── Module mocks ──────────────────────────────────────────────────────────────
 jest.mock('react-router-dom', () => ({
@@ -150,16 +162,21 @@ describe('PerpsMarketExpandedPage', () => {
       expect(getByTestId('perps-expanded-skeleton')).toBeInTheDocument();
     });
 
-    it('shows skeleton when markets list is empty and not loading', () => {
+    it('shows not-found (not an endless skeleton) when loading completes with an empty markets list', () => {
       mockUsePerpsLiveMarketData.mockReturnValue({
         markets: [],
         isInitialLoading: false,
         error: null,
       });
 
-      const { getByTestId } = render(<PerpsMarketExpandedPage />);
+      const { getByTestId, queryByTestId } = render(
+        <PerpsMarketExpandedPage />,
+      );
 
-      expect(getByTestId('perps-expanded-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('perps-expanded-skeleton')).not.toBeInTheDocument();
+      expect(
+        getByTestId('perps-market-expanded-not-found'),
+      ).toBeInTheDocument();
     });
   });
 

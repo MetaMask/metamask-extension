@@ -118,11 +118,14 @@ const PerpsMarketExpandedPage = () => {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
-  // Wait for markets to hydrate before deciding the symbol is missing. A fresh
-  // (cold) tab opened from the Expand button hydrates the markets stream
-  // asynchronously; redirecting on a transient empty list would bounce the user
-  // away before the data arrives.
-  if (marketsLoading || markets.length === 0) {
+  // Wait for the markets stream to hydrate before deciding the symbol is
+  // missing. A fresh (cold) tab opened from the Expand button hydrates
+  // asynchronously; `isInitialLoading` stays true until the first emission, so
+  // redirecting during that window would bounce the user before data arrives.
+  // Once loading completes we intentionally fall through even on an empty list
+  // so a failed/empty fetch lands on the not-found terminal instead of an
+  // endless skeleton (mirrors the popup market-detail page).
+  if (marketsLoading) {
     return <PerpsExpandedSkeleton />;
   }
 

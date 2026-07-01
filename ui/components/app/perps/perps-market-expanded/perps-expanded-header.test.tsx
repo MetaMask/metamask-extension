@@ -12,10 +12,14 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const mockUsePerpsLivePrices = jest.fn(() => ({
-  prices: {},
-  isInitialLoading: false,
-}));
+const mockUsePerpsLivePrices = jest.fn(
+  (
+    ..._args: unknown[]
+  ): { prices: Record<string, unknown>; isInitialLoading: boolean } => ({
+    prices: {},
+    isInitialLoading: false,
+  }),
+);
 
 jest.mock('../../../../hooks/perps/stream', () => ({
   usePerpsLivePrices: (...args: unknown[]) => mockUsePerpsLivePrices(...args),

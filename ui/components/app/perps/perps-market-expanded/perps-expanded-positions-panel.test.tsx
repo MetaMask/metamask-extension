@@ -6,14 +6,18 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-const mockUsePerpsLivePositions = jest.fn(() => ({
-  positions: [],
-  isInitialLoading: false,
-}));
-const mockUsePerpsLiveOrders = jest.fn(() => ({
-  orders: [],
-  isInitialLoading: false,
-}));
+const mockUsePerpsLivePositions = jest.fn(
+  (): { positions: Record<string, unknown>[]; isInitialLoading: boolean } => ({
+    positions: [],
+    isInitialLoading: false,
+  }),
+);
+const mockUsePerpsLiveOrders = jest.fn(
+  (): { orders: Record<string, unknown>[]; isInitialLoading: boolean } => ({
+    orders: [],
+    isInitialLoading: false,
+  }),
+);
 
 jest.mock('../../../../hooks/perps/stream', () => ({
   usePerpsLivePositions: () => mockUsePerpsLivePositions(),
