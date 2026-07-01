@@ -1,5 +1,4 @@
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_ID, HARDWARE_WALLET_ACCOUNT_ID } from '../../constants';
 import {
   LOCALHOST_NATIVE_ASSET_ID,
   MAINNET_NATIVE_ASSET_ID,
@@ -16,6 +15,18 @@ export const HARDWARE_WALLET_ZERO_BALANCE_API_OVERRIDES = {
   nativeBalance: '0',
 } as const;
 
+/** Zero native balances for HD + hardware wallet accounts (unified assets). */
+export const HARDWARE_WALLET_ZERO_ASSETS_BALANCE = {
+  [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+    [MAINNET_NATIVE_ASSET_ID]: { amount: '0' },
+    [LOCALHOST_NATIVE_ASSET_ID]: { amount: '0' },
+  },
+  [HARDWARE_WALLET_ACCOUNT_ID]: {
+    [MAINNET_NATIVE_ASSET_ID]: { amount: '0' },
+    [LOCALHOST_NATIVE_ASSET_ID]: { amount: '0' },
+  },
+};
+
 /**
  * Default E2E fixture with zero native balances for the HD account.
  *
@@ -27,12 +38,7 @@ export function buildHardwareWalletConnectFixture() {
   return new FixtureBuilderV2()
     .withAssetsController(
       {
-        assetsBalance: {
-          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            [MAINNET_NATIVE_ASSET_ID]: { amount: '0' },
-            [LOCALHOST_NATIVE_ASSET_ID]: { amount: '0' },
-          },
-        },
+        assetsBalance: HARDWARE_WALLET_ZERO_ASSETS_BALANCE,
       },
       { overwrite: true },
     )
