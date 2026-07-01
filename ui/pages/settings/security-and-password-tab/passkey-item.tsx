@@ -28,6 +28,10 @@ import {
 import { captureException } from '../../../../shared/lib/sentry';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import {
+  transitionBack,
+  transitionForward,
+} from '../../../components/ui/transition';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   SECURITY_AND_PASSWORD_ROUTE,
@@ -95,7 +99,9 @@ const PasskeyItem = () => {
       return;
     }
 
-    navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true });
+    transitionForward(() =>
+      navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true }),
+    );
   }, [environmentType, navigate]);
 
   const removePasskey = useCallback(async () => {
@@ -174,7 +180,9 @@ const PasskeyItem = () => {
         },
       });
 
-      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+      transitionBack(() =>
+        navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+      );
     } catch (error: unknown) {
       let errorStatus = 'failed';
       const durationMs = Date.now() - startedAt;
@@ -213,7 +221,9 @@ const PasskeyItem = () => {
           reason: errorCode,
         },
       });
-      navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });
+      transitionForward(() =>
+        navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true }),
+      );
     } finally {
       setIsPasskeyOperationPending(false);
     }
