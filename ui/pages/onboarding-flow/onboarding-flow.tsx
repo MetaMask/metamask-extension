@@ -9,6 +9,7 @@ import React, {
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'clsx';
+import log from 'loglevel';
 import {
   Box,
   BoxBackgroundColor,
@@ -73,6 +74,7 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
+import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -265,6 +267,9 @@ export default function OnboardingFlow() {
       if (newSecretRecoveryPhrase) {
         setSecretRecoveryPhrase(newSecretRecoveryPhrase);
       }
+    } catch (error) {
+      log.error('OnboardingFlow: failed to create new account', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -294,6 +299,9 @@ export default function OnboardingFlow() {
       if (retrievedSecretRecoveryPhrase) {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
+    } catch (error) {
+      log.error('OnboardingFlow: failed to unlock wallet', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -305,24 +313,32 @@ export default function OnboardingFlow() {
    * This functions is explicitly provided to `Unlock` component to allow for custom logics (e.g. metrics) before the navigation.
    */
   const handleNavigationAfterUnlock = async () => {
-    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-      if (isSidePanelEnabled) {
-        await dispatch(setUseSidePanelAsDefault(true));
-        await dispatch(setCompletedOnboardingWithSidepanel());
+    try {
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        if (isSidePanelEnabled) {
+          await dispatch(setUseSidePanelAsDefault(true));
+          await dispatch(setCompletedOnboardingWithSidepanel());
 
-        // for sidepanel, we need to navigate to the next route (i.e. Home)
-        navigate(DEFAULT_ROUTE, { replace: true });
-      } else {
-        await dispatch(setCompletedOnboarding());
-        let redirectTo = DEFAULT_ROUTE;
-        const fromLocation = location.state?.from;
-        if (fromLocation?.pathname) {
-          redirectTo = fromLocation.pathname + (fromLocation.search || '');
+          // for sidepanel, we need to navigate to the next route (i.e. Home)
+          navigate(DEFAULT_ROUTE, { replace: true });
+        } else {
+          await dispatch(setCompletedOnboarding());
+          let redirectTo = DEFAULT_ROUTE;
+          const fromLocation = location.state?.from;
+          if (fromLocation?.pathname) {
+            redirectTo = fromLocation.pathname + (fromLocation.search || '');
+          }
+          navigate(redirectTo, { replace: true });
         }
-        navigate(redirectTo, { replace: true });
+      } else {
+        navigate(nextRoute, { replace: true });
       }
-    } else {
-      navigate(nextRoute, { replace: true });
+    } catch (error) {
+      log.error(
+        'OnboardingFlow: failed to complete navigation after unlock',
+        error,
+      );
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
   };
 
@@ -392,8 +408,9 @@ export default function OnboardingFlow() {
               : 'var(--color-background-muted)',
         }}
       >
-        <Suspense fallback={null}>
-          <Routes>
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <Routes>
             <Route
               path={toRelativePath(ONBOARDING_ACCOUNT_EXIST)}
               element={<AccountExist />}
@@ -488,6 +505,7 @@ export default function OnboardingFlow() {
             <Route path="*" element={<OnboardingFlowSwitch />} />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
       </Box>
       {isLoading && <LoadingScreen />}
     </Box>
