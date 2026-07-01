@@ -491,7 +491,10 @@ function buildRegistryEntryBlockFromEntry(
  */
 export function applySyncResultToRegistry(
   result: SyncResult,
-  baseRegistry: Record<string, FeatureFlagRegistryEntry> = FEATURE_FLAG_REGISTRY,
+  baseRegistry: Record<
+    string,
+    FeatureFlagRegistryEntry
+  > = FEATURE_FLAG_REGISTRY,
 ): Record<string, FeatureFlagRegistryEntry> {
   const merged: Record<string, FeatureFlagRegistryEntry> = {};
 
