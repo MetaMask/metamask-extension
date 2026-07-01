@@ -6,11 +6,11 @@ import { I18nContext } from '../../../contexts/i18n';
 import { setSwapsErrorKey } from '../../../store/actions';
 import Box from '../../../components/ui/box';
 import {
-  DISPLAY,
+  Display,
   AlignItems,
   TextVariant,
-  FLEX_DIRECTION,
-  TEXT_ALIGN,
+  FlexDirection,
+  TextAlign,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { Icon, IconName, Text } from '../../../components/component-library';
@@ -38,12 +38,12 @@ export default function NotificationPage({ notificationKey }) {
     <div className="notification-page">
       <Box
         alignItems={AlignItems.center}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         marginTop={10}
         marginLeft={4}
         marginRight={4}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         className="notification-page__content"
       >
         <Box marginTop={8} marginBottom={4}>
