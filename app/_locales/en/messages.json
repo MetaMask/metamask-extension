@@ -2618,9 +2618,6 @@
   "confirmFieldNeverExpires": {
     "message": "Never expires"
   },
-  "confirmFieldPaymaster": {
-    "message": "Fee paid by"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Bi-Weekly"
   },
@@ -2645,9 +2642,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification for the request provided by the website"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
   "confirmFieldTotalExposure": {
     "message": "Total exposure"
