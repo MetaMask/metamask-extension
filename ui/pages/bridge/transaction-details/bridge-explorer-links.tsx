@@ -58,12 +58,11 @@ export default function BridgeExplorerLinks({
 
   const trackExplorerLink = useCallback(
     (payload: MetaMetricsEventPayload) => {
-      trackEvent(
-        createEventBuilder(payload.event)
-          .addCategory(payload.category)
-          .addProperties(payload.properties ?? {})
-          .build(),
-      );
+      let builder = createEventBuilder(payload.event);
+      if (payload.category) {
+        builder = builder.addCategory(payload.category);
+      }
+      trackEvent(builder.addProperties(payload.properties ?? {}).build());
       return Promise.resolve();
     },
     [createEventBuilder, trackEvent],

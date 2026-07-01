@@ -72,28 +72,17 @@ const baseHardwareWalletConfig = {
   isWebUsbAvailable: false,
 };
 
-const backgroundConnectionMock = new Proxy(
-  {
-    trackAnalyticsEvent: mockTrackAnalyticsEvent,
-    submitTx: jest.fn(),
-    setEnabledAllPopularNetworks: jest.fn(),
-    getStatePatches: jest.fn(),
-    resetState: () => mockResetState(),
-  },
-  {
-    get: (target, prop) =>
-      prop in target
-        ? target[prop as keyof typeof target]
-        : jest.fn().mockResolvedValue(undefined),
-  },
-);
-
-setBackgroundConnection(backgroundConnectionMock as never);
+setBackgroundConnection({
+  submitTx: jest.fn(),
+  setEnabledAllPopularNetworks: jest.fn(),
+  getStatePatches: jest.fn(),
+  getLocation: jest.fn().mockResolvedValue('Main View'),
+  resetState: () => mockResetState(),
+} as never);
 
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    setBackgroundConnection(backgroundConnectionMock as never);
     mockTrackAnalyticsEvent.mockClear();
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
