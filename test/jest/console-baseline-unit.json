@@ -2751,6 +2751,9 @@
       "error: Warning: ReactDOM.render is no longer": 5,
       "error: Warning: `ReactDOMTestUtils.act` is deprecated in": 1
     },
+    "ui/hooks/bridge/useSubmitBridgeTransaction.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/hooks/bridge/useTokenSearchResults.test.ts": {
       "Deprecation warnings": 1,
       "React: Act warnings (component updates not wrapped)": 2,

@@ -14,12 +14,12 @@ import classnames from 'clsx';
  */
 
 const Menu = ({
-  anchorElement = undefined,
+  anchorElement,
   children,
-  className = undefined,
+  className,
   'data-testid': dataTestId,
   onHide,
-  popperOptions = undefined,
+  popperOptions,
 }) => {
   const [popperElement, setPopperElement] = useState(null);
   const popoverContainerElement = useRef(

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 
-const Preloader = ({ className = undefined, size }) => (
+const Preloader = ({ className, size }) => (
   <svg
     className={classnames('preloader__icon', className)}
     width={size}
