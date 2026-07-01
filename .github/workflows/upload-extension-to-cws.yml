@@ -6,8 +6,9 @@ name: Upload extension to Chrome Web Store
 # flask: cws-flask environment + prod WIF vars + EXTENSION_ID_FLASK (INFRA-3734).
 # CWS API v2 upload (v1.1 sunsets 2026-10-15): chromewebstore.googleapis.com/upload/v2/...
 # INFRA-3649 — Runway sender verification (defense-in-depth; primary gate is WIF CEL on actor_id).
-# Idempotent re-run: after WIF auth, :fetchStatus skips upload when a draft for VERSION
-# already exists or a prior async upload is still IN_PROGRESS (poll to terminal first).
+# Idempotent re-run: after WIF auth, :fetchStatus skips upload when a draft for
+# CWS_EXPECTED_VERSION already exists (VERSION for production/dev; VERSION-flask.0 for flask)
+# or a prior async upload is still IN_PROGRESS (poll to terminal first).
 
 on:
   workflow_dispatch:
@@ -106,6 +107,7 @@ jobs:
               exit 1
             fi
           done
+          CWS_EXPECTED_VERSION="${VERSION}"
           if [[ "${TARGET}" == "dev" ]]; then
             WIF_PROVIDER="${WIF_PROVIDER_DEV}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
@@ -127,6 +129,7 @@ jobs:
             PUBLISHER_ID="${PUBLISHER_ID_PROD}"
             PUBLISHER_EMAIL="${PUBLISHER_EMAIL_PROD}"
             ZIP_NAME="metamask-chrome-${VERSION}-flask.0.zip"
+            CWS_EXPECTED_VERSION="${VERSION}-flask.0"
           else
             echo "::error::Invalid target: ${TARGET}"
             exit 1
@@ -182,6 +185,7 @@ jobs:
             echo "PUBLISHER_ID=${PUBLISHER_ID}"
             echo "PUBLISHER_EMAIL=${PUBLISHER_EMAIL}"
             echo "ZIP_NAME=${ZIP_NAME}"
+            echo "CWS_EXPECTED_VERSION=${CWS_EXPECTED_VERSION}"
           } >> "${GITHUB_ENV}"
           {
             echo "## CWS upload"
@@ -281,7 +285,7 @@ jobs:
             local upload_state
             upload_state=$(jq -r '.lastAsyncUploadState // empty' /tmp/fetch-status.json)
             local poll=0
-            while [[ "${upload_state}" == "IN_PROGRESS" && poll -lt ${max_polls} ]]; do
+            while [[ "${upload_state}" == "IN_PROGRESS" && $poll -lt ${max_polls} ]]; do
               poll=$((poll + 1))
               echo "Prior upload IN_PROGRESS; polling :fetchStatus (${poll}/${max_polls})..."
               sleep "${poll_interval_seconds}"
@@ -303,8 +307,8 @@ jobs:
           async_state=$(poll_async_upload)
           draft_version=$(draft_crx_version)
 
-          if [[ -n "${draft_version}" && "${draft_version}" == "${VERSION}" ]]; then
-            echo "Draft for version ${VERSION} already exists in CWS (crxVersion=${draft_version}). Skipping download and upload."
+          if [[ -n "${draft_version}" && "${draft_version}" == "${CWS_EXPECTED_VERSION}" ]]; then
+            echo "Draft for version ${CWS_EXPECTED_VERSION} already exists in CWS (crxVersion=${draft_version}). Skipping download and upload."
             {
               echo "skip_upload=true"
               echo "upload_state=SKIPPED_ALREADY_EXISTS"
@@ -313,7 +317,7 @@ jobs:
             exit 0
           fi
 
-          echo "No matching draft for version ${VERSION} (draft=${draft_version:-<none>}, lastAsyncUploadState=${async_state:-<none>}). Proceeding with upload."
+          echo "No matching draft for version ${CWS_EXPECTED_VERSION} (draft=${draft_version:-<none>}, lastAsyncUploadState=${async_state:-<none>}). Proceeding with upload."
           {
             echo "skip_upload=false"
             echo "upload_state="
@@ -388,7 +392,7 @@ jobs:
             poll_interval_seconds=10
             echo "Upload in progress; polling :fetchStatus (up to ${max_polls}×${poll_interval_seconds}s)..."
             poll=0
-            while [[ "${UPLOAD_STATE}" == "IN_PROGRESS" && poll -lt ${max_polls} ]]; do
+            while [[ "${UPLOAD_STATE}" == "IN_PROGRESS" && $poll -lt ${max_polls} ]]; do
               poll=$((poll + 1))
               sleep "${poll_interval_seconds}"
               FETCH_HTTP_CODE=$(curl -sS \
