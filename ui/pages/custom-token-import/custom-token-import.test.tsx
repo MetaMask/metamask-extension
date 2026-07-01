@@ -175,6 +175,7 @@ describe('mergeCustomTokenMetadataForImport', () => {
 
 describe('CustomTokenImportPage', () => {
   beforeEach(() => {
+    trackAnalyticsEventMock.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
     mockNavigate.mockClear();
     const actions = getMockedActions();

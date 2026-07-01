@@ -270,6 +270,7 @@ describe('TokenManagementPage', () => {
   beforeEach(() => {
     mockTokenManagementLocationState.current = null;
     mockUseNavigate.mockClear();
+    trackAnalyticsEventMock.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
     resetTokenSearchState();
     const actions = getMockedActions();
