@@ -121,16 +121,7 @@ const ignoredConsoleErrors = [
   "Cannot read properties of undefined (reading 'version')",
 ];
 
-const legacyAnalyticsShimUiFields = [
-  // Projected by metamask-controller.getState() until Part 14 cleanup
-  'metamask.participateInMetaMetrics',
-  'metamask.metaMetricsId',
-];
-
-const removedUiFields = [
-  ...removedBackgroundFields.map(backgroundToUiField),
-  ...legacyAnalyticsShimUiFields,
-];
+const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
 
 const WAIT_FOR_SENTRY_MS = 10000;
 

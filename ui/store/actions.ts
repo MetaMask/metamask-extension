@@ -161,6 +161,10 @@ import {
   MetaMetricsUserTraits,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
+import type {
+  AnalyticsEvent,
+  AnalyticsEventBuildOptions,
+} from '../../shared/lib/analytics/create-event-builder';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors';
@@ -1153,7 +1157,9 @@ export function unlockAndGetSeedPhrase(
 }
 
 export function submitPassword(password: string): Promise<void> {
-  return submitRequestToBackground('submitPassword', [password]);
+  return submitRequestToBackground('submitPasswordOrEncryptionKey', [
+    { password },
+  ]);
 }
 
 /**
@@ -1316,6 +1322,32 @@ export function requestRevealSeedWords(
       await verifyPassword(password);
       const seedPhrase = await getSeedPhrase(password, keyringId);
       return seedPhrase;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Returns the Secret Recovery Phrase using a verified passkey assertion instead
+ * of the wallet password.
+ *
+ * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+ * @param keyringId - The id of the HD keyring to export. Defaults to the primary keyring.
+ * @returns The decoded seed phrase.
+ */
+export function getSeedPhraseWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+  keyringId?: string,
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      const encodedSeedPhrase = await submitRequestToBackground(
+        'exportSeedPhraseWithPasskey',
+        [authenticationResponse, keyringId],
+      );
+      return Buffer.from(encodedSeedPhrase).toString('utf8');
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -4050,6 +4082,31 @@ export function exportAccounts(
   };
 }
 
+/**
+ * Reveals the private keys of multiple accounts using a single verified passkey
+ * assertion instead of the wallet password.
+ *
+ * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+ * @param addresses - The addresses whose private keys should be revealed.
+ * @returns The private keys as hex strings, in the same order as `addresses`.
+ */
+export function exportAccountsWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+  addresses: string[],
+): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      return await submitRequestToBackground<string[]>(
+        'exportAccountsWithPasskey',
+        [authenticationResponse, addresses],
+      );
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function showPrivateKey(key: string): PayloadAction<string> {
   return {
     type: actionConstants.SHOW_PRIVATE_KEY,
@@ -6311,6 +6368,17 @@ export function trackMetaMetricsEvent(
   options?: MetaMetricsEventOptions,
 ) {
   return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
+}
+
+export function trackAnalyticsEvent(
+  payload: AnalyticsEvent,
+  options: AnalyticsEventBuildOptions & {
+    environmentType: string;
+    page?: MetaMetricsPageObject;
+    referrer?: MetaMetricsReferrerObject;
+  },
+) {
+  return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
 export function createEventFragment(
