@@ -1589,7 +1589,12 @@ async function setupMocking(
           continue;
         }
         const chainRef = parts[1];
-        let nativeBalance = '25';
+        const accountAddress = parts.slice(2).join(':').toLowerCase();
+        const isDefaultFixtureAccount =
+          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+        // Only seed the default fixture account with 25 ETH; newly added accounts
+        // (e.g. hardware wallets) should start at zero unless overridden.
+        let nativeBalance = isDefaultFixtureAccount ? '25' : '0';
         if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
         } else if (chainRef === '1337' && localhostNativeOverride !== null) {
@@ -2044,7 +2049,10 @@ async function setupMocking(
    */
   function getPrivacyReport() {
     return [...privacyReport]
-      .filter((host) => typeof host === 'string' && host.length > 0 && host !== 'null')
+      .filter(
+        (host) =>
+          typeof host === 'string' && host.length > 0 && host !== 'null',
+      )
       .sort();
   }
 
