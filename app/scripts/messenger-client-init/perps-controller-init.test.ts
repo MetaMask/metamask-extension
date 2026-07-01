@@ -313,6 +313,38 @@ describe('PerpsControllerInit', () => {
       });
     });
 
+    it('getPerpsDiscountForAccount from createPerpsInfrastructure delegates to RewardsController:getPerpsDiscountForAccount', async () => {
+      const call = jest.fn().mockResolvedValue(5000);
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+      let capturedDeps: InfrastructureDeps | undefined;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+      expect(capturedDeps).toBeDefined();
+      const deps = capturedDeps as InfrastructureDeps;
+
+      const result = await deps.getPerpsDiscountForAccount(
+        'eip155:42161:0xabc',
+        10,
+      );
+
+      expect(result).toBe(5000);
+      expect(call).toHaveBeenCalledWith(
+        'RewardsController:getPerpsDiscountForAccount',
+        'eip155:42161:0xabc',
+        10,
+      );
+    });
+
     it('trackPerpsEvent from createPerpsInfrastructure delegates to AnalyticsController trackEvent', () => {
       const request = getInitRequestMock();
 
@@ -344,38 +376,6 @@ describe('PerpsControllerInit', () => {
               PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
           }),
         }),
-      );
-    });
-
-    it('getPerpsDiscountForAccount from createPerpsInfrastructure delegates to RewardsController:getPerpsDiscountForAccount', async () => {
-      const call = jest.fn().mockResolvedValue(5000);
-      const request = getInitRequestMock();
-      request.controllerMessenger = {
-        call,
-      } as unknown as PerpsControllerMessenger;
-      let capturedDeps: InfrastructureDeps | undefined;
-
-      jest
-        .mocked(createPerpsInfrastructure)
-        .mockImplementationOnce((deps: InfrastructureDeps) => {
-          capturedDeps = deps;
-          return {} as PerpsPlatformDependencies;
-        });
-
-      PerpsControllerInit(request);
-      expect(capturedDeps).toBeDefined();
-      const deps = capturedDeps as InfrastructureDeps;
-
-      const result = await deps.getPerpsDiscountForAccount(
-        'eip155:42161:0xabc',
-        10,
-      );
-
-      expect(result).toBe(5000);
-      expect(call).toHaveBeenCalledWith(
-        'RewardsController:getPerpsDiscountForAccount',
-        'eip155:42161:0xabc',
-        10,
       );
     });
 
