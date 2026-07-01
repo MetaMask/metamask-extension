@@ -19,6 +19,7 @@ import {
   createEventBuilder,
   trackEvent as trackAnalyticsEvent,
 } from '../../controllers/analytics';
+import { getClientConfig } from './utils';
 
 // Copied from `@metamask/snaps-controllers`, since it is not exported.
 type TrackingEventPayload = {
@@ -123,6 +124,8 @@ export const SnapControllerInit: MessengerClientInitFunction<
       autoUpdatePreinstalledSnaps,
       forcePreinstalledSnaps,
     },
+
+    clientConfig: getClientConfig(),
 
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected
     // type.
