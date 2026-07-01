@@ -267,13 +267,16 @@ class FakeWebSocket {
   }
 }
 
-function withFakeWebSocket(callback: () => void) {
+function withFakeWebSocket(
+  callback: () => void,
+  webSocketImplementation: unknown = FakeWebSocket,
+) {
   const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'WebSocket');
   FakeWebSocket.sockets = [];
   Object.defineProperty(globalThis, 'WebSocket', {
     configurable: true,
     writable: true,
-    value: FakeWebSocket,
+    value: webSocketImplementation,
   });
   try {
     callback();
@@ -435,6 +438,19 @@ describe('./utils/dev-server', () => {
   });
 
   describe('setupBackgroundClient', () => {
+    it('skips compilers without the manifest plugin', () => {
+      const { compiler, entryPluginCalls, getDoneCallback } = createCompiler();
+      const { devServer } = createDevServer();
+
+      setupBackgroundClient(devServer as never, [compiler]);
+
+      assert.strictEqual(entryPluginCalls.length, 0);
+      assert.throws(
+        () => getDoneCallback(),
+        /done callback should be registered/u,
+      );
+    });
+
     it('merges the background client into the MV3 service worker entry', () => {
       const manifestPlugin = createManifestPlugin({
         serviceWorkerEntryName: 'service-worker',
@@ -606,6 +622,36 @@ describe('./utils/dev-server', () => {
   });
 
   describe('connectToDevServer', () => {
+    it('reconnects with backoff when WebSocket construction throws', () => {
+      class ThrowingWebSocket {
+        constructor() {
+          throw new Error('connection failed');
+        }
+      }
+
+      withFakeWebSocket(() => {
+        const reconnects: (() => void)[] = [];
+        const { mock: setTimeoutMock } = mock.method(
+          globalThis,
+          'setTimeout',
+          (callback: () => void, delay?: number) => {
+            reconnects.push(callback);
+            return undefined as unknown as ReturnType<typeof setTimeout>;
+          },
+        );
+
+        connectToDevServer({
+          url: 'ws://localhost:12345/ws',
+          onMessage: () => undefined,
+        });
+        reconnects[0]();
+
+        assert.strictEqual(setTimeoutMock.callCount(), 2);
+        assert.strictEqual(setTimeoutMock.calls[0].arguments[1], 200);
+        assert.strictEqual(setTimeoutMock.calls[1].arguments[1], 400);
+      }, ThrowingWebSocket);
+    });
+
     it('dispatches parsed dev-server messages and ignores invalid messages', () => {
       withFakeWebSocket(() => {
         const { mock: consoleWarnMock } = mock.method(
@@ -658,6 +704,37 @@ describe('./utils/dev-server', () => {
       });
     });
 
+    it('ignores messages after the client is done', () => {
+      withFakeWebSocket(() => {
+        const { mock: consoleWarnMock } = mock.method(
+          console,
+          'warn',
+          () => undefined,
+        );
+        const onMessage = mock.fn();
+        let done = true;
+
+        connectToDevServer({
+          url: 'ws://localhost:12345/ws',
+          isDone: () => done,
+          onMessage,
+        });
+
+        const socket = FakeWebSocket.sockets[0];
+        socket.dispatch('message', {
+          data: JSON.stringify({ type: 'ignored' }),
+        });
+        done = false;
+        socket.dispatch('message', {
+          data: JSON.stringify({ type: 'accepted' }),
+        });
+
+        assert.strictEqual(onMessage.mock.callCount(), 1);
+        assert.strictEqual(onMessage.mock.calls[0].arguments[0], 'accepted');
+        assert.strictEqual(consoleWarnMock.callCount(), 0);
+      });
+    });
+
     it('reconnects with backoff until the client is done', () => {
       withFakeWebSocket(() => {
         const reconnects: (() => void)[] = [];
@@ -687,6 +764,34 @@ describe('./utils/dev-server', () => {
         done = true;
         FakeWebSocket.sockets[1].dispatch('close');
         assert.strictEqual(setTimeoutMock.callCount(), 1);
+      });
+    });
+
+    it('resets reconnect backoff after a socket opens', () => {
+      withFakeWebSocket(() => {
+        const reconnects: (() => void)[] = [];
+        const { mock: setTimeoutMock } = mock.method(
+          globalThis,
+          'setTimeout',
+          (callback: () => void, delay?: number) => {
+            reconnects.push(callback);
+            return undefined as unknown as ReturnType<typeof setTimeout>;
+          },
+        );
+
+        connectToDevServer({
+          url: 'ws://localhost:12345/ws',
+          onMessage: () => undefined,
+        });
+
+        FakeWebSocket.sockets[0].dispatch('close');
+        reconnects[0]();
+        FakeWebSocket.sockets[1].dispatch('open');
+        FakeWebSocket.sockets[1].dispatch('close');
+
+        assert.strictEqual(setTimeoutMock.callCount(), 2);
+        assert.strictEqual(setTimeoutMock.calls[0].arguments[1], 200);
+        assert.strictEqual(setTimeoutMock.calls[1].arguments[1], 200);
       });
     });
 
@@ -813,6 +918,42 @@ describe('./utils/dev-server', () => {
       assert(fallback, 'fallback callback should be registered');
       fallback();
       await closePromise;
+    });
+
+    it('resolves when closing the socket throws', async () => {
+      let closeListener: (() => void) | undefined;
+      const socket = {
+        addEventListener: mock.fn(
+          (
+            type: string,
+            listener: () => void,
+            options?: AddEventListenerOptions,
+          ) => {
+            assert.strictEqual(type, 'close');
+            assert.deepStrictEqual(options, { once: true });
+            closeListener = listener;
+          },
+        ),
+        close: mock.fn(() => {
+          throw new Error('close failed');
+        }),
+      };
+      const { mock: clearTimeoutMock } = mock.method(
+        globalThis,
+        'clearTimeout',
+        () => undefined,
+      );
+      mock.method(
+        globalThis,
+        'setTimeout',
+        () => 1 as unknown as ReturnType<typeof setTimeout>,
+      );
+
+      await closeSocket(socket as unknown as WebSocket);
+
+      assert(closeListener, 'close listener should be registered before close');
+      assert.strictEqual(socket.close.mock.callCount(), 1);
+      assert.strictEqual(clearTimeoutMock.callCount(), 1);
     });
   });
 
