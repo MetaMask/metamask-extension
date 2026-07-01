@@ -173,6 +173,7 @@ export const HardwareWalletProvider = ({
   const {
     setHardwareConnectionPermissionState,
     setConnectionState,
+    resetConnectionRefs,
     resetAutoConnectState,
     setAutoConnected,
   } = setters;
@@ -211,12 +212,9 @@ export const HardwareWalletProvider = ({
     updateConnectionState(ConnectionState.ready());
   }, [updateConnectionState]);
 
-  const setSigningInProgress = useCallback(
-    (value: boolean) => {
-      refs.isSigningInProgressRef.current = value;
-    },
-    [refs],
-  );
+  const setSigningInProgress = useCallback((value: boolean) => {
+    refs.isSigningInProgressRef.current = value;
+  }, []);
 
   const stableActionsRef = useRef({
     connect,
@@ -273,17 +271,18 @@ export const HardwareWalletProvider = ({
       refs.adapterRef.current = null;
     }
     updateConnectionState(ConnectionState.disconnected());
-    refs.isConnectingRef.current = false;
-    refs.currentConnectionIdRef.current = null;
-    refs.hasAutoConnectedRef.current = false;
-    refs.lastConnectedAccountRef.current = null;
+    resetConnectionRefs();
+    resetAutoConnectState();
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateConnectionState]);
+  }, [resetAutoConnectState, resetConnectionRefs, updateConnectionState]);
 
   // Reset when leaving hardware wallet account
   useEffect(() => {
-    if (!isHardwareWalletAccount && refs.adapterRef.current) {
+    if (
+      !isHardwareWalletAccount &&
+      (refs.adapterRef.current || refs.isSigningInProgressRef.current)
+    ) {
       resetHardwareWalletConnection();
     }
     // eslint-disable-next-line react-compiler/react-compiler

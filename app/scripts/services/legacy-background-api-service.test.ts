@@ -8,6 +8,10 @@ import {
 } from '@metamask/messenger';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { AccountImportStrategy } from '@metamask/keyring-controller';
+import {
+  TransactionContainerType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { add0x, hexToBytes } from '@metamask/utils';
 import {
   EncAccountDataType,
@@ -22,12 +26,15 @@ import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/
 import { createSentryError } from '../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
+import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
 
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
+
+jest.mock('../lib/transaction/containers/enforced-simulations');
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -406,6 +413,50 @@ describe('LegacyBackgroundApiService', () => {
 
         expect(result).toStrictEqual(5);
         expect(releaseLock).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('estimateGas', () => {
+    it('estimates the gas for a transaction using the selected network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const request = jest.fn().mockResolvedValue(21000);
+        rootMessenger.registerActionHandler(
+          'NetworkController:getSelectedNetworkClient',
+          jest.fn().mockReturnValue({
+            provider: {
+              request,
+            },
+          }),
+        );
+
+        const estimateGasParams = { to: '0x123', value: '0x0' };
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:estimateGas',
+          estimateGasParams,
+        );
+
+        expect(request).toHaveBeenCalledWith({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        });
+        expect(result).toStrictEqual((21000).toString(16));
+      });
+    });
+
+    it('throws if there is no selected network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getSelectedNetworkClient',
+          jest.fn().mockReturnValue(undefined),
+        );
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:estimateGas', {
+            to: '0x123',
+          }),
+        ).rejects.toThrow('No network client available for gas estimation');
       });
     });
   });
@@ -2179,6 +2230,76 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('applyTransactionContainersExisting', () => {
+    const TRANSACTION_ID_MOCK = '123-456';
+    const ESTIMATE_GAS_MOCK = '0x456';
+    const NEW_DATA_MOCK = '0x789';
+    const TRANSACTION_META_MOCK = {
+      id: TRANSACTION_ID_MOCK,
+      txParams: {},
+    } as TransactionMeta;
+
+    it('throws if the transaction is not found', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [] }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow(
+          `Transaction with ID ${TRANSACTION_ID_MOCK} not found.`,
+        );
+      });
+    });
+
+    it('calls TransactionController:updateEditableParams with the new parameters', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [TRANSACTION_META_MOCK] }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({ gas: ESTIMATE_GAS_MOCK }),
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:applyTransactionContainersExisting',
+          TRANSACTION_ID_MOCK,
+          [TransactionContainerType.EnforcedSimulations],
+        );
+
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          TRANSACTION_ID_MOCK,
+          expect.objectContaining({
+            containerTypes: [TransactionContainerType.EnforcedSimulations],
+            data: NEW_DATA_MOCK,
+            gas: ESTIMATE_GAS_MOCK,
+          }),
+        );
+      });
+    });
+  });
 });
 
 /**
@@ -2240,6 +2361,7 @@ function getMessenger(
     actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:setSelectedCurrency',
@@ -2295,6 +2417,11 @@ function getMessenger(
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
+      'TransactionController:updateEditableParams',
+      'TransactionController:estimateGas',
+      'TransactionController:isAtomicBatchSupported',
+      'DelegationController:signDelegation',
+      'KeyringController:signEip7702Authorization',
     ],
   });
 

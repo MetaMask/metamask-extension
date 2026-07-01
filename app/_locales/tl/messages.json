@@ -82,12 +82,6 @@
   "account": {
     "message": "Account"
   },
-  "accountActivity": {
-    "message": "Aktibidad ng account"
-  },
-  "accountActivityText": {
-    "message": "Piliin ang mga account na nais mong makakuha ng abiso:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Mag-log in"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "Bumalik"
   },
-  "backToHome": {
-    "message": "Bumalik sa home"
-  },
   "backUpIncomplete": {
     "message": "Hindi nakumpleto ang pag-back up"
   },
@@ -2422,9 +2413,6 @@
     "message": "Isara ang $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Maaari mong isara ang window na ito anumang oras."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
-  },
-  "customizeYourNotifications": {
-    "message": "I-customize ang mga notipikasyon mo"
-  },
-  "customizeYourNotificationsText": {
-    "message": "I-on ang mga uri ng notipikasyon na nais mong matanggap:"
   },
   "dappConnections": {
     "message": "Mga koneksyon ng Dapp"
@@ -5876,9 +5858,6 @@
   "notificationsSettingsBoxError": {
     "message": "Nagkaproblema. Subukang muli."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet sa pamamagitan ng mga notipikasyon. Para gamitin ang mga notipikasyon, gumagamit kami ng profile para i-sync ang ilang setting sa lahat ng iyong device. $1 namin pinoprotektahan ang iyong pagkapribado habang ginagamit ang feature na ito."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Alamin kung paano"
   },
@@ -7540,9 +7519,6 @@
   },
   "proceedWithTransaction": {
     "message": "Gusto ko pa ring magpatuloy"
-  },
-  "productAnnouncements": {
-    "message": "Mga anunsiyo ng produkto"
   },
   "provide": {
     "message": "Ibigay"
@@ -9297,24 +9273,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Pansamantalang hindi available ang mga Smart Swap."
   },
-  "smartTransactionCancelled": {
-    "message": "Nakansela ang transaksyon mo"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Hindi nakumpleto ang transaksyon mo, kaya kinansela ito para maiwasan mo ang pagbabayad ng mga hindi kinakailangang gas fee."
-  },
-  "smartTransactionError": {
-    "message": "Nabigo ang transaksyon mo"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Maaaring magdulot ng pagkabigo ang biglaang pagbabago sa merkado. Kung magpatuloy ang problema, makipag-ugnayan sa customer support ng MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Isinumite ang iyong transaksyon"
-  },
-  "smartTransactionSuccess": {
-    "message": "Nakumpleto ang transaksyon mo"
-  },
   "smartTransactions": {
     "message": "Mga Smart Transaction"
   },
@@ -10281,9 +10239,6 @@
   "tokenContractAddress": {
     "message": "Address ng kontrata ng token"
   },
-  "tokenContractError": {
-    "message": "Ang address na ito ay isang address ng kontrata ng token. Kung magpapadala ka ng mga token sa address na ito, mawawala ang mga ito sa iyo."
-  },
   "tokenContractWarning": {
     "message": "Babala sa kontrata ng token"
   },
@@ -10773,9 +10728,6 @@
   "view": {
     "message": "Tingnan"
   },
-  "viewActivity": {
-    "message": "Tingnan ang aktibidad"
-  },
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
@@ -10802,9 +10754,6 @@
   },
   "viewTokenDetails": {
     "message": "Tingnan ang mga detalye ng token"
-  },
-  "viewTransaction": {
-    "message": "Tingnan ang transaksyon"
   },
   "viewinExplorer": {
     "message": "Tingnan ang $1 sa Explorer",
