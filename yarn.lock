@@ -5817,10 +5817,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.14.0":
-  version: 1.14.1
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.14.1"
-  checksum: 10/011a36d1ea1de224c5e5df19a34dce9ed072a6b34a29b87a5adef0c7e4d8d39f7695ffc6640ed147e5e0761a1d9c814f9bcf01d566c6d19ede7bc136f425d0e5
+"@metamask/bitcoin-wallet-snap@npm:@metamask-previews/bitcoin-wallet-snap@1.14.1-preview-e4b3956":
+  version: 1.14.1-preview-e4b3956
+  resolution: "@metamask-previews/bitcoin-wallet-snap@npm:1.14.1-preview-e4b3956"
+  checksum: 10/f0c9caa185414e703481d57acd5f5b628d43cb87242cbfa75041efea0b021de1b8def682f4192f0534890de5c2b4e822b5ed90b692d256a739e075ee4fdec590
   languageName: node
   linkType: hard
 
@@ -33088,7 +33088,7 @@ __metadata:
     "@metamask/authenticated-user-storage": "npm:^2.1.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.14.0"
+    "@metamask/bitcoin-wallet-snap": "npm:@metamask-previews/bitcoin-wallet-snap@1.14.1-preview-e4b3956"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^77.0.0"
     "@metamask/bridge-status-controller": "npm:^73.0.0"
