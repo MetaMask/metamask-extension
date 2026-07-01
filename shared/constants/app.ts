@@ -223,6 +223,7 @@ export const FIREFOX_BUILD_IDS = [
   METAMASK_FLASK_FIREFOX_ID,
 ] as const;
 
+/** Placeholder ticker symbol used when a token's symbol cannot be determined. */
 export const UNKNOWN_TICKER_SYMBOL = 'UNKNOWN';
 
 export const TRACE_ENABLED_SIGN_METHODS = [
