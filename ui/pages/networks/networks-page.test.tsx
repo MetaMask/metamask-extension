@@ -143,6 +143,7 @@ describe('NetworksPage', () => {
         '0x1': true,
       },
     },
+    remoteFeatureFlags = {},
     showTestNetworks = false,
   }: {
     pathname?: string;
@@ -150,6 +151,7 @@ describe('NetworksPage', () => {
     selectedNetworkClientId?: string;
     selectedProviderChainId?: string;
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
+    remoteFeatureFlags?: Record<string, unknown>;
     showTestNetworks?: boolean;
   } = {}) => {
     const store = configureStore({
@@ -158,6 +160,10 @@ describe('NetworksPage', () => {
         ...mockState.metamask,
         networkConfigurationsByChainId,
         selectedNetworkClientId,
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          ...remoteFeatureFlags,
+        },
         providerConfig: {
           chainId: selectedProviderChainId,
           rpcUrl: 'https://mainnet.infura.io/v3/123',
@@ -248,11 +254,41 @@ describe('NetworksPage', () => {
     renderNetworksPage({ pathname: `${NETWORKS_ROUTE}?view=add` });
 
     expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('network-form-add-from-chainlist'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the Chainlist entry point when the remote feature flag is enabled', () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    expect(
+      screen.getByTestId('network-form-add-from-chainlist'),
+    ).toBeInTheDocument();
+  });
+
+  it('redirects away from the Chainlist picker when the remote feature flag is disabled', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+    });
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it('renders the Chainlist picker from the query param', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
     expect(
@@ -273,6 +309,7 @@ describe('NetworksPage', () => {
   it('renders an empty state when the Chainlist search has no results', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
     await userEvent.type(
@@ -297,6 +334,7 @@ describe('NetworksPage', () => {
   it('loads more Chainlist networks as the user scrolls', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
     expect(await screen.findByText('Chainlist Network 99')).toBeInTheDocument();
@@ -328,6 +366,7 @@ describe('NetworksPage', () => {
   it('shows an Added pill for already configured Chainlist networks', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
       networkConfigurationsByChainId: {
         ...mockNetworkConfigurations,
         ...gnosisNetworkConfiguration,

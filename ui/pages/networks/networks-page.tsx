@@ -31,6 +31,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
 } from '../../selectors/multichain/networks';
+import { getIsChainlistEnabled } from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsHeader } from '../settings/shared/settings-header';
@@ -112,6 +113,7 @@ export const NetworksPage = () => {
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
+  const isChainlistEnabled = useSelector(getIsChainlistEnabled);
   const rawEditedNetwork = useSelector(getEditedNetwork);
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
 
@@ -160,8 +162,12 @@ export const NetworksPage = () => {
   }, [setView]);
 
   const handleAddFromChainlist = useCallback(() => {
+    if (!isChainlistEnabled) {
+      return;
+    }
+
     setView('add-from-chainlist');
-  }, [setView]);
+  }, [isChainlistEnabled, setView]);
 
   const handleChainlistNetworkSelect = useCallback(
     (network: ChainlistNetwork) => {
@@ -285,6 +291,12 @@ export const NetworksPage = () => {
     dispatch(setEditedNetwork());
   }, [dispatch, rawEditedNetwork, view]);
 
+  useEffect(() => {
+    if (view === 'add-from-chainlist' && !isChainlistEnabled) {
+      setView('add');
+    }
+  }, [isChainlistEnabled, setView, view]);
+
   const handleSelectRpc = useCallback(
     (caipChainId: string, networkClientId: string) => {
       if (caipChainId === currentMultichainChainId) {
@@ -379,11 +391,13 @@ export const NetworksPage = () => {
           <AddNetwork
             networkFormState={networkFormState}
             network={editedNetwork as UpdateNetworkFields}
-            onAddFromChainlist={handleAddFromChainlist}
+            onAddFromChainlist={
+              isChainlistEnabled ? handleAddFromChainlist : undefined
+            }
           />
         </>
       ) : null}
-      {view === 'add-from-chainlist' ? (
+      {view === 'add-from-chainlist' && isChainlistEnabled ? (
         <>
           <NetworksPageFormHeader
             title={t('addFromChainlist')}
