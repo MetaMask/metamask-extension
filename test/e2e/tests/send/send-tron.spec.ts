@@ -42,7 +42,9 @@ describe('Send Tron', function () {
         await sendPage.selectToken('tron:728126428', 'TRX');
 
         // Wait for the send page to load
-        await sendPage.fillRecipient(TRON_RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({
+          recipientAddress: TRON_RECIPIENT_ADDRESS,
+        });
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
         await snapTransactionConfirmation.checkPageIsLoaded();
