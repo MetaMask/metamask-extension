@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -10,6 +9,8 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
+import { Driver } from '../../webdriver/driver';
+import { buildBtcUnifiedAssetsFixtures } from '../btc/btc-unified-assets-fixture';
 import {
   mockExchangeRates,
   mockCurrencyExchangeRates,
@@ -23,27 +24,6 @@ import {
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 
-const BTC_CAIP_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
-
-const BTC_SEND_ASSETS_CONTROLLER_FIXTURE = {
-  assetsInfo: {
-    [BTC_CAIP_ASSET_ID]: {
-      decimals: 8,
-      image:
-        'https://static.cx.metamask.io/api/v1/tokenIcons/bip122/000000000019d6689c085ae165831e93/slip44/0.png',
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      type: 'native',
-    },
-  },
-};
-
-function buildBtcSendFixtures() {
-  return new FixtureBuilderV2()
-    .withAssetsController(BTC_SEND_ASSETS_CONTROLLER_FIXTURE)
-    .build();
-}
-
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
     await mockInitialFullScan(mockServer),
@@ -54,10 +34,22 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
-    await mockBtcSpotPrices(mockServer),
+    mockBtcSpotPrices(mockServer),
     await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
+    mockTokensV3Assets(mockServer),
   ];
+}
+
+async function switchToBitcoinAndAssertBalance(driver: Driver) {
+  const homePage = new HomePage(driver);
+  const tokensTab = new TokensTab(driver);
+  await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+  await homePage.checkPageIsLoaded();
+  await tokensTab.checkNetworkFilterText('Bitcoin');
+  await tokensTab.checkExpectedTokenBalanceIsDisplayed(
+    `${DEFAULT_BTC_BALANCE}`,
+    'BTC',
+  );
 }
 
 describe('BTC Account - Send', function (this: Suite) {
@@ -67,7 +59,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('fields validation', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcSendFixtures(),
+        fixtures: buildBtcUnifiedAssetsFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -76,13 +68,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        await driver.refresh();
-        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
-          `${DEFAULT_BTC_BALANCE}`,
-          'BTC',
-        );
+        await switchToBitcoinAndAssertBalance(driver);
 
         const sendPage = new SendPage(driver);
         await homePage.startSendFlow();
@@ -100,7 +86,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcSendFixtures(),
+        fixtures: buildBtcUnifiedAssetsFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -109,19 +95,16 @@ describe('BTC Account - Send', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        await driver.refresh();
-        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
-          `${DEFAULT_BTC_BALANCE}`,
-          'BTC',
-        );
+        await switchToBitcoinAndAssertBalance(driver);
 
         const sendPage = new SendPage(driver);
         await homePage.startSendFlow();
         await sendPage.selectToken(bitcoinChainId, 'BTC');
 
-        await sendPage.fillRecipient({ recipientAddress });
+        await sendPage.fillRecipient({
+          recipientAddress,
+          validAddress: true,
+        });
 
         await sendPage.fillAmount('5');
         await sendPage.checkInsufficientFundsError();
@@ -136,7 +119,7 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: buildBtcSendFixtures(),
+        fixtures: buildBtcUnifiedAssetsFixtures(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -145,13 +128,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        await driver.refresh();
-        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
-          `${DEFAULT_BTC_BALANCE}`,
-          'BTC',
-        );
+        await switchToBitcoinAndAssertBalance(driver);
 
         const sendPage = new SendPage(driver);
         const activityTab = new ActivityTab(driver);
@@ -159,23 +136,21 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
 
         await sendPage.selectToken(bitcoinChainId, 'BTC');
-        await sendPage.fillRecipient({ recipientAddress });
+        await sendPage.fillRecipient({
+          recipientAddress,
+          validAddress: true,
+        });
         await sendPage.fillAmount(sendAmount);
         await sendPage.isContinueButtonEnabled();
         await sendPage.pressContinueButton();
 
-        // From here, we have moved to the confirmation screen
         const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
         await bitcoinReviewTxPage.checkPageIsLoaded();
         await bitcoinReviewTxPage.checkNetworkFeeIsDisplayed(expectedFee);
         await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(expectedTotal);
         await bitcoinReviewTxPage.clickConfirmButton();
 
-        // Wait for the transaction to appear in the activity list
         await activityTab.checkTransactionActivityByText('Sending');
-
-        // Note: Transaction shows as "Pending" immediately after broadcast.
-        // The BTC snap stores it with "Unconfirmed" status when broadcast.
         await activityTab.checkWaitForTransactionStatus('pending');
       },
     );

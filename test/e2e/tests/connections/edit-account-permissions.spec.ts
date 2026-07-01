@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT,
@@ -14,10 +15,16 @@ import SitePermissionPage from '../../page-objects/pages/permission/site-permiss
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import { mockAccountsApiV5ForE2eSrpAccounts } from './e2e-srp-accounts-api';
 
 const accountLabel1 = 'Account 1';
 const accountLabel2 = 'Account 2';
 const accountLabel3 = 'Account 3';
+
+async function mockEditAccountPermissionsEndpoints(mockServer: Mockttp) {
+  return [mockAccountsApiV5ForE2eSrpAccounts(mockServer)];
+}
+
 describe('Edit Accounts Permissions', function () {
   it('should be able to edit accounts', async function () {
     await withFixtures(
@@ -25,6 +32,10 @@ describe('Edit Accounts Permissions', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEditAccountPermissionsEndpoints,
+        unifiedEvmAccountsApiBalances: {
+          localhostNativeEthHuman: '25',
+        },
       },
       async ({ driver }) => {
         await login(driver);

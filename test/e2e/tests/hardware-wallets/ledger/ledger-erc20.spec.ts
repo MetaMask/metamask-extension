@@ -1,9 +1,7 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { login } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
@@ -13,30 +11,28 @@ import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import { mockEmptyPrices } from '../../tokens/utils/mocks';
+import {
+  buildLedgerDappFixtures,
+  LEDGER_ADDRESS,
+  LEDGER_LOGIN_EXPECTED_BALANCE,
+  mockLedgerHardwareEndpoints,
+  seedLedgerAccountBalance,
+} from './ledger-test-helpers';
 
 describe('Ledger Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
-          .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          })
-          .build(),
+        fixtures: buildLedgerDappFixtures(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockEmptyPrices,
+        testSpecificMock: mockLedgerHardwareEndpoints,
       },
       async ({ driver, localNodes }) => {
         const symbol = 'TST';
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
+        await seedLedgerAccountBalance(localNodes);
         await login(driver, {
-          expectedBalance: '1.21M',
+          expectedBalance: LEDGER_LOGIN_EXPECTED_BALANCE,
           waitForNonEvmAccounts: false,
         });
         const testDappPage = new TestDappPage(driver);
@@ -72,31 +68,23 @@ describe('Ledger Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
-          .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          })
-          .build(),
+        fixtures: buildLedgerDappFixtures(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockEmptyPrices,
+        testSpecificMock: mockLedgerHardwareEndpoints,
         smartContract: [
           {
             name: erc20,
             deployerOptions: {
-              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+              fromAddress: LEDGER_ADDRESS,
             },
           },
         ],
       },
       async ({ driver, localNodes, contractRegistry }) => {
         const symbol = 'TST';
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
+        await seedLedgerAccountBalance(localNodes);
         await login(driver, {
-          expectedBalance: '1.21M',
+          expectedBalance: LEDGER_LOGIN_EXPECTED_BALANCE,
           waitForNonEvmAccounts: false,
         });
         const contractAddress = contractRegistry.getContractAddress(erc20);
@@ -136,30 +124,22 @@ describe('Ledger Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
-          .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          })
-          .build(),
+        fixtures: buildLedgerDappFixtures(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockEmptyPrices,
+        testSpecificMock: mockLedgerHardwareEndpoints,
         smartContract: [
           {
             name: erc20,
             deployerOptions: {
-              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+              fromAddress: LEDGER_ADDRESS,
             },
           },
         ],
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
+        await seedLedgerAccountBalance(localNodes);
         await login(driver, {
-          expectedBalance: '1.21M',
+          expectedBalance: LEDGER_LOGIN_EXPECTED_BALANCE,
           waitForNonEvmAccounts: false,
         });
         const contractAddress = contractRegistry.getContractAddress(erc20);
@@ -193,30 +173,22 @@ describe('Ledger Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
-          .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          })
-          .build(),
+        fixtures: buildLedgerDappFixtures(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockEmptyPrices,
+        testSpecificMock: mockLedgerHardwareEndpoints,
         smartContract: [
           {
             name: erc20,
             deployerOptions: {
-              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+              fromAddress: LEDGER_ADDRESS,
             },
           },
         ],
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
+        await seedLedgerAccountBalance(localNodes);
         await login(driver, {
-          expectedBalance: '1.21M',
+          expectedBalance: LEDGER_LOGIN_EXPECTED_BALANCE,
           waitForNonEvmAccounts: false,
         });
         const contractAddress = contractRegistry.getContractAddress(erc20);
