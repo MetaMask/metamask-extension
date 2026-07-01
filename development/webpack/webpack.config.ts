@@ -459,6 +459,9 @@ const config = {
           options: { declarations: [...buildEnvVarDeclarations] },
         },
       },
+      // React Refresh must run inside the UI entry's webpack runtime.
+      // This loader prepends the React Refresh entry and client
+      // to `scripts/load/ui.ts` in development watch mode only.
       isDevelopmentWatchMode && {
         test: /\.ts$/u,
         include: uiEntryPath,
