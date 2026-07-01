@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -107,7 +107,7 @@ export default function LoginErrorModal({
               .addCategory(MetaMetricsEventCategory.Onboarding)
               .addProperties({
                 url: SUPPORT_LINK,
-                location: segmentContext.page?.title,
+                location: segmentContext.page?.title ?? 'Welcome page',
               })
               .build(),
           );
