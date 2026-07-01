@@ -107,9 +107,9 @@ export default function LoginErrorModal({
               .addCategory(MetaMetricsEventCategory.Onboarding)
               .addProperties({
                 url: SUPPORT_LINK,
-                location: 'Welcome page',
+                location: segmentContext.page?.title,
               })
-              .build({ page: segmentContext.page }),
+              .build(),
           );
         }}
         asChild

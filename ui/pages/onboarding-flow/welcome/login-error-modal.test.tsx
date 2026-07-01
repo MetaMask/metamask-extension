@@ -193,10 +193,7 @@ describe('LoginErrorModal', () => {
           properties: expect.objectContaining({
             category: MetaMetricsEventCategory.Onboarding,
             url: SUPPORT_LINK,
-            location: 'Welcome page',
-          }),
-          options: expect.objectContaining({
-            page: { title: 'Welcome' },
+            location: 'Welcome',
           }),
         }),
       );
