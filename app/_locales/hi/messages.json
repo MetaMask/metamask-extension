@@ -82,12 +82,6 @@
   "account": {
     "message": "अकाउंट"
   },
-  "accountActivity": {
-    "message": "अकाउंट एक्टिविटी"
-  },
-  "accountActivityText": {
-    "message": "वे अकाउंट चुनें जिनके बारे में आप सूचित होना चाहते हैं:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "लॉग इन करें"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "वापस जाएं"
   },
-  "backToHome": {
-    "message": "होम स्क्रीन पर वापस लौटें"
-  },
   "backUpIncomplete": {
     "message": "बैकअप अधूरा है"
   },
@@ -2422,9 +2413,6 @@
     "message": "$1 बंद करें",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "आप इस विंडो को कभी भी बंद कर सकते हैं।"
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "ग्राहक सहायता"
-  },
-  "customizeYourNotifications": {
-    "message": "अपने नोटिफिकेशंस कस्टमाइज़ करें"
-  },
-  "customizeYourNotificationsText": {
-    "message": "आप जिस प्रकार के नोटिफिकेशंस प्राप्त करना चाहते हैं, उन्हें चालू करें:"
   },
   "dappConnections": {
     "message": "Dapp कनेक्शन्स"
@@ -5876,9 +5858,6 @@
   "notificationsSettingsBoxError": {
     "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "नोटिफिकेशंस के साथ आपके वॉलेट में क्या हो रहा है, इसकी जानकारी रखें। नोटिफिकेशंस का उपयोग करने के लिए, हम आपके डिवाइस में कुछ सेटिंग्स को सिंक करने के लिए एक प्रोफ़ाइल का उपयोग करते हैं। $1 जानें कि इस सुविधा का उपयोग करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "जानें कैसे"
   },
@@ -7540,9 +7519,6 @@
   },
   "proceedWithTransaction": {
     "message": "मैं फिर भी आगे बढ़ना चाहता हूं"
-  },
-  "productAnnouncements": {
-    "message": "प्रॉडक्ट घोषणाएं"
   },
   "provide": {
     "message": "प्रदान करें"
@@ -9297,24 +9273,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "स्मार्ट स्वैप अस्थायी रूप से अनुपलब्ध हैं।"
   },
-  "smartTransactionCancelled": {
-    "message": "आपका ट्रांसेक्शन कैंसिल कर दिया गया था"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "आपका ट्रांसेक्शन पूरा नहीं हो सका, इसलिए आपको अनावश्यक गैस फीस भरने से बचाने के लिए इसे कैंसिल कर दिया गया।"
-  },
-  "smartTransactionError": {
-    "message": "आपका ट्रांसेक्शन नहीं हो पाया"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "बाज़ार में अचानक हुए परिवर्तन विफलताओं का कारण बन सकते हैं। यदि समस्या बनी रहती है, तो MetaMask कस्टमर सपोर्ट से संपर्क करें।"
-  },
-  "smartTransactionPending": {
-    "message": "आपका ट्रांसेक्शन सबमिट किया गया"
-  },
-  "smartTransactionSuccess": {
-    "message": "आपका ट्रांसेक्शन पूरा हो गया है"
-  },
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
   },
@@ -10770,9 +10728,6 @@
   "view": {
     "message": "देखें"
   },
-  "viewActivity": {
-    "message": "एक्टिविटी देखें"
-  },
   "viewAddressOnExplorer": {
     "message": "$1 पर देखें",
     "description": "$1 is the block explorer name"
@@ -10799,9 +10754,6 @@
   },
   "viewTokenDetails": {
     "message": "टोकन का विवरण देखें"
-  },
-  "viewTransaction": {
-    "message": "ट्रांसेक्शन देखें"
   },
   "viewinExplorer": {
     "message": "एक्सप्लोरर में $1 देखें",
