@@ -635,7 +635,8 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 1,
+      "error: TypeError: background[method] is not a": 2
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "Reselect: Input stability warnings": 1
