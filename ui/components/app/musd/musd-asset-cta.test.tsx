@@ -43,8 +43,6 @@ jest.mock('../../../contexts/metametrics', () => {
     )) as unknown as typeof MetaMetricsContext.Provider;
   return {
     MetaMetricsContext,
-    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
-      ReactActual.createElement(ReactActual.Fragment, null, children),
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __mockTrackEvent: _trackEvent,
   };

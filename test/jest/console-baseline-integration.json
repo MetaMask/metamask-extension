@@ -113,6 +113,7 @@
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/defi/defi-positions.test.tsx": {
+      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 6,
       "error: Error: AggregateError": 4,
@@ -125,6 +126,7 @@
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/nfts/nfts.test.tsx": {
+      "Deprecation warnings": 1,
       "React: DOM nesting violations": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 3,
@@ -133,16 +135,21 @@
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/notifications&auth/notifications-activation.test.tsx": {
+      "Deprecation warnings": 1,
+      "React: State updates on unmounted components": 1,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 7,
+      "warn: Selector unknown returned a different": 2,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/notifications&auth/notifications-list.test.tsx": {
+      "Deprecation warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: Selector unknown returned a different": 4,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/notifications&auth/notifications-toggle.test.tsx": {
+      "Deprecation warnings": 1,
       "React: Missing key props in lists": 1,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 8,
@@ -150,12 +157,14 @@
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/onboarding/import-wallet.test.tsx": {
+      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 6,
       "warn: Selector unknown returned a different": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/onboarding/wallet-created.test.tsx": {
+      "Deprecation warnings": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 6,
       "warn: Selector unknown returned a different": 1,
