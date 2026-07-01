@@ -316,8 +316,7 @@
     },
     "ui/components/app/snaps/snap-ui-renderer/components/account-selector.test.ts": {
       "MetaMask: Background connection not initialized": 4,
-      "React: DOM nesting violations": 1,
-      "Reselect: Identity function warnings": 2
+      "React: DOM nesting violations": 1
     },
     "ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts": {
       "MetaMask: Background connection not initialized": 8,
@@ -567,9 +566,6 @@
     "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/hooks/rewards/useLinkAccountGroup.test.tsx": {
-      "warn: Selector unknown returned a different": 1
-    },
     "ui/hooks/rewards/useValidateReferralCode.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
@@ -639,9 +635,6 @@
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {
       "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/bridge/prepare/bridge-cta-info-text.test.tsx": {
-      "warn: Selector _temp returned a different": 1
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "Reselect: Input stability warnings": 1
@@ -723,8 +716,7 @@
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 23,
-      "React: Act warnings (component updates not wrapped)": 2,
-      "warn: Selector getCrossChainMetaMaskCachedBalances returned a diff...": 1
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/confirm/info/nft-token-transfer/nft-token-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 40,
@@ -871,9 +863,6 @@
       "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/confirmation/alerts/useAlertActions.test.ts": {
-      "warn: Selector unknown returned a different": 2
-    },
     "ui/pages/confirmations/context/gas-fee-modal/index.test.tsx": {
       "Test errors: Uncaught Errors": 1
     },
@@ -955,7 +944,7 @@
       "React: Missing key props in lists": 1
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 4,
+      "MetaMask: Background connection not initialized": 3,
       "React: DOM nesting violations": 3
     },
     "ui/pages/multichain-accounts/smart-account-page/smart-account-page.test.tsx": {
