@@ -6,7 +6,7 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
-import { add0x, Hex, hexToBytes, Json } from '@metamask/utils';
+import { add0x, Hex, hexToBytes, Json, NonEmptyArray } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import {
   AccountImportStrategy,
@@ -72,8 +72,13 @@ import {
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
 } from '@metamask/seedless-onboarding-controller';
 import {
+  CaveatSpecificationConstraint,
+  ExtractPermission,
+  OriginString,
   PermissionControllerRejectPermissionsRequestAction,
+  PermissionControllerRevokePermissionsAction,
   PermissionControllerUpdatePermissionsByCaveatAction,
+  PermissionSpecificationConstraint,
   PermissionsRequestNotFoundError,
 } from '@metamask/permission-controller';
 import {
@@ -155,6 +160,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'onAccountRemoved',
   'rejectPermissionsRequest',
   'removeAccount',
+  'removePermissionsFor',
   'resetAccount',
   'setCurrentCurrency',
   'setLocked',
@@ -214,6 +220,7 @@ type AllowedActions =
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | PermissionControllerRejectPermissionsRequestAction
+  | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PreferencesControllerSetPasswordForgottenAction
   | RemoteFeatureFlagControllerGetStateAction
@@ -622,6 +629,31 @@ export class LegacyBackgroundApiService {
         'PermissionController:rejectPermissionsRequest',
         requestId,
       );
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Removes the given permissions for the given subjects.
+   *
+   * @param subjects - The subjects and their permissions to remove.
+   */
+  removePermissionsFor(
+    subjects: Record<
+      OriginString,
+      NonEmptyArray<
+        ExtractPermission<
+          PermissionSpecificationConstraint,
+          CaveatSpecificationConstraint
+        >['parentCapability']
+      >
+    >,
+  ): void {
+    try {
+      this.#messenger.call('PermissionController:revokePermissions', subjects);
     } catch (error) {
       if (!(error instanceof PermissionsRequestNotFoundError)) {
         throw error;

@@ -170,6 +170,16 @@ export type LegacyBackgroundApiServiceRejectPermissionsRequestAction = {
   handler: LegacyBackgroundApiService['rejectPermissionsRequest'];
 };
 
+/**
+ * Removes the given permissions for the given subjects.
+ *
+ * @param subjects - The subjects and their permissions to remove.
+ */
+export type LegacyBackgroundApiServiceRemovePermissionsForAction = {
+  type: `LegacyBackgroundApiService:removePermissionsFor`;
+  handler: LegacyBackgroundApiService['removePermissionsFor'];
+};
+
 export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
   type: `LegacyBackgroundApiService:importAccountWithStrategy`;
   handler: LegacyBackgroundApiService['importAccountWithStrategy'];
@@ -314,6 +324,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
   | LegacyBackgroundApiServiceRejectPermissionsRequestAction
+  | LegacyBackgroundApiServiceRemovePermissionsForAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
   | LegacyBackgroundApiServiceGetNextNonceAction

@@ -757,6 +757,70 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('removePermissionsFor', () => {
+    const subjects = { 'test.com': ['eth_accounts'] as [string] };
+
+    it('revokes the given permissions for the given subjects', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const revokePermissions = jest.fn();
+        rootMessenger.registerActionHandler(
+          'PermissionController:revokePermissions',
+          revokePermissions,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:removePermissionsFor',
+          subjects,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PermissionController:revokePermissions',
+          subjects,
+        );
+        expect(revokePermissions).toHaveBeenCalledWith(subjects);
+      });
+    });
+
+    it('does not propagate a PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PermissionController:revokePermissions',
+          jest.fn(() => {
+            throw new PermissionsRequestNotFoundError('123');
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermissionsFor',
+            subjects,
+          ),
+        ).not.toThrow();
+      });
+    });
+
+    it('propagates an error other than PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('some other error');
+        rootMessenger.registerActionHandler(
+          'PermissionController:revokePermissions',
+          jest.fn(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermissionsFor',
+            subjects,
+          ),
+        ).toThrow(error);
+      });
+    });
+  });
+
   describe('importAccountWithStrategy', () => {
     it('imports an account without social login', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -2445,6 +2509,7 @@ function getMessenger(
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:rejectPermissionsRequest',
+      'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',

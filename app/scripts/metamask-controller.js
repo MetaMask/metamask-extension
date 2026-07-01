@@ -3448,7 +3448,10 @@ export default class MetamaskController extends EventEmitter {
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
 
       // permissions
-      removePermissionsFor: this.removePermissionsFor,
+      removePermissionsFor: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermissionsFor',
+      ),
       approvePermissionsRequest: this.acceptPermissionsRequest,
       rejectPermissionsRequest: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -8382,16 +8385,6 @@ export default class MetamaskController extends EventEmitter {
 
     await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
-
-  removePermissionsFor = (subjects) => {
-    try {
-      this.permissionController.revokePermissions(subjects);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
 
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
