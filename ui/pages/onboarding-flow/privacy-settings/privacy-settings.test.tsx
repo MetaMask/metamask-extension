@@ -25,6 +25,21 @@ jest.mock('../../../ducks/app/app.ts', () => {
   };
 });
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
