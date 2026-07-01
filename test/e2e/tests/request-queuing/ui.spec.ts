@@ -1,9 +1,5 @@
 import { Browser } from 'selenium-webdriver';
 import {
-  CaveatConstraint,
-  PermissionConstraint,
-} from '@metamask/permission-controller';
-import {
   DAPP_ONE_URL,
   DAPP_TWO_URL,
   DAPP_URL,
@@ -12,26 +8,30 @@ import {
   NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import NetworkManager, {
+import {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import { login } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
-import { Driver, PAGES } from '../../webdriver/driver';
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
+import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
-import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import {
+  confirmTransaction,
+  openDappAndSwitchChain,
+  openNetworkAndDeleteNetwork,
+  openNetworkAndSelectNetwork,
+  openPopupWithActiveTabOrigin,
+  selectDappClickPersonalSign,
+  selectDappClickSend,
+  switchToDialogPopoverValidateDetailsRedesign,
+  validateBalanceAndActivity,
+} from '../../page-objects/flows/test-dapp.flow';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -66,154 +66,6 @@ const REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER = {
     'eip155:1000/slip44:60': REQUEST_QUEUE_EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
   },
 };
-
-type ExpectedDetails = {
-  chainId: string;
-  networkText: string;
-  originText: string;
-};
-
-async function openDappAndSwitchChain(
-  driver: Driver,
-  dappUrl: string,
-  chainId?: string,
-): Promise<void> {
-  // Open the dapp
-  const testDapp = new TestDapp(driver);
-  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
-    driver,
-  );
-
-  // Open the dapp
-  await driver.openNewPage(dappUrl);
-
-  // Connect to the dapp
-  await testDapp.clickConnectAccountButton();
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await connectAccountConfirmation.confirmConnect();
-
-  // Switch back to the dapp
-  await driver.switchToWindowWithUrl(dappUrl);
-
-  // Switch chains if necessary
-  if (chainId) {
-    await driver.delay(veryLargeDelayMs);
-    const getPermissionsRequest = JSON.stringify({
-      method: 'wallet_getPermissions',
-    });
-    const getPermissionsResult = await driver.executeScript(
-      `return window.ethereum.request(${getPermissionsRequest})`,
-    );
-
-    const permittedChains =
-      getPermissionsResult
-        ?.find(
-          (permission: PermissionConstraint) =>
-            permission.parentCapability === PermissionNames.permittedChains,
-        )
-        ?.caveats.find(
-          (caveat: CaveatConstraint) =>
-            caveat.type === CaveatTypes.restrictNetworkSwitching,
-        )?.value || [];
-
-    const isAlreadyPermitted = permittedChains.includes(chainId);
-
-    const switchChainRequest = JSON.stringify({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId }],
-    });
-
-    await driver.executeScript(
-      `window.ethereum.request(${switchChainRequest})`,
-    );
-
-    if (!isAlreadyPermitted) {
-      await driver.delay(veryLargeDelayMs);
-      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-      await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButtonWithWaitForWindowToClose();
-
-      // Switch back to the dapp
-      await driver.switchToWindowWithUrl(dappUrl);
-    }
-  }
-}
-
-async function selectDappClickSend(
-  driver: Driver,
-  dappUrl: string,
-): Promise<void> {
-  const testDapp = new TestDapp(driver);
-  const transactionConfirmation = new TransactionConfirmation(driver);
-
-  await driver.switchToWindowWithUrl(dappUrl);
-  await testDapp.clickSimpleSendButton();
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await transactionConfirmation.checkDappInitiatedHeadingTitle();
-}
-
-async function selectDappClickPersonalSign(
-  driver: Driver,
-  dappUrl: string,
-): Promise<void> {
-  await driver.switchToWindowWithUrl(dappUrl);
-
-  const testDapp = new TestDapp(driver);
-  await testDapp.clickPersonalSign();
-  await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-}
-
-async function switchToDialogPopoverValidateDetailsRedesign(
-  driver: Driver,
-  expectedDetails: ExpectedDetails,
-): Promise<void> {
-  // Switches to the MetaMask Dialog window for confirmation
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  const tokenTransferTransactionConfirmation =
-    new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.checkNetwork(
-    expectedDetails.networkText,
-  );
-}
-
-async function confirmTransaction(driver: Driver): Promise<void> {
-  const confirmation = new Confirmation(driver);
-  await confirmation.clickFooterConfirmButton();
-}
-
-async function openPopupWithActiveTabOrigin(
-  driver: Driver,
-  origin: string,
-): Promise<void> {
-  await driver.openNewPage(
-    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
-  );
-}
-
-async function validateBalanceAndActivity(
-  driver: Driver,
-  expectedBalance: string,
-  expectedActivityEntries: number = 1,
-): Promise<void> {
-  // Ensure the balance changed if the the transaction was confirmed
-  const homePage = new HomePage(driver);
-  await homePage.checkExpectedBalanceIsDisplayed(expectedBalance);
-
-  // Ensure there's an activity entry of "Sent" and "Confirmed"
-  if (expectedActivityEntries) {
-    const activityTab = new ActivityTab(driver);
-    await activityTab.goToActivityList();
-    await activityTab.checkTxAction({ action: 'Sent ETH' });
-    await activityTab.checkConfirmedTxNumberDisplayedInActivity(
-      expectedActivityEntries,
-    );
-  }
-}
 
 describe('Request-queue UI changes', function () {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
@@ -255,10 +107,8 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Custom');
-        await networkManager.selectNetworkByNameWithWait('Localhost 8546');
+        // Open network manager and select custom network
+        await openNetworkAndSelectNetwork(driver, 'Custom', 'Localhost 8546');
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -392,29 +242,18 @@ describe('Request-queue UI changes', function () {
         // Wait for transaction to be completed on final confirmation
         await driver.delay(veryLargeDelayMs);
 
-        const networkManager = new NetworkManager(driver);
-
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
-          await networkManager.openNetworkManager();
-          await networkManager.selectTab('Custom');
-
-          await networkManager.selectNetworkByNameWithWait('Localhost 7777');
+          await openNetworkAndSelectNetwork(driver, 'Custom', 'Localhost 7777');
           await validateBalanceAndActivity(driver, '25');
         }
 
         // Validate second network, where transaction was rejected
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Custom');
-        await networkManager.selectNetworkByNameWithWait('Localhost 8546');
-
+        await openNetworkAndSelectNetwork(driver, 'Custom', 'Localhost 8546');
         await validateBalanceAndActivity(driver, '25', 0);
 
         // Validate first network, where transaction was confirmed
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Custom');
-        await networkManager.selectNetworkByNameWithWait('Localhost 8545');
-
+        await openNetworkAndSelectNetwork(driver, 'Custom', 'Localhost 8545');
         await validateBalanceAndActivity(driver, '25');
       },
     );
@@ -462,21 +301,19 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
-
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await openNetworkAndSelectNetwork(driver, 'Popular', NetworkId.LINEA);
+        await openNetworkAndSelectNetwork(
+          driver,
+          'Popular',
+          NetworkId.ETHEREUM,
+        );
 
         // Open Network Manager and delete custom network
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Custom');
-
-        // Delete network
-        await networkManager.deleteNetworkByChainId(CHAIN_IDS.LOCALHOST);
+        await openNetworkAndDeleteNetwork(
+          driver,
+          'Custom',
+          CHAIN_IDS.LOCALHOST,
+        );
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum, should be used
@@ -580,10 +417,11 @@ describe('Request-queue UI changes', function () {
         );
 
         // Check if Ethereum is selected
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.closeNetworkManager();
+        await openNetworkAndSelectNetwork(
+          driver,
+          'Popular',
+          NetworkId.ETHEREUM,
+        );
 
         // Kill local node servers
         await localNodes[0].quit();
@@ -657,10 +495,11 @@ describe('Request-queue UI changes', function () {
         );
 
         // Check if Ethereum is selected
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await openNetworkAndSelectNetwork(
+          driver,
+          'Popular',
+          NetworkId.ETHEREUM,
+        );
 
         // Kill local node servers
         await localNodes[0].quit();
