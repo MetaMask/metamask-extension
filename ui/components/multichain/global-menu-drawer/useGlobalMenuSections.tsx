@@ -212,9 +212,9 @@ export function useGlobalMenuSections(
         .addCategory(MetaMetricsEventCategory.Home)
         .addProperties({
           url: supportLink,
-          location: METRICS_LOCATION,
+          location: segmentContext.page?.title,
         })
-        .build({ page: segmentContext.page }),
+        .build(),
     );
     if (showPriorityTag) {
       const shieldSubscription = getShieldSubscription(subscriptions);
@@ -238,7 +238,7 @@ export function useGlobalMenuSections(
     dispatch,
     trackEvent,
     createEventBuilder,
-    segmentContext.page,
+    segmentContext.page?.title,
     supportLink,
     showPriorityTag,
     subscriptions,
