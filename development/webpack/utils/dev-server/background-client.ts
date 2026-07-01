@@ -90,7 +90,7 @@ if (socketUrl) {
     isDone: () => reloading,
     onMessage: (type, data, socket) => {
       if (type === BACKGROUND_UPDATE_MESSAGE_TYPE && typeof data === 'string') {
-        onFingerprint(data, socket);
+        void onFingerprint(data, socket);
       }
     },
   });
