@@ -988,8 +988,7 @@
     },
     "ui/pages/onboarding-flow/privacy-settings/privacy-settings.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 1,
-      "error: Warning: Encountered two children with": 1
+      "Reselect: Input stability warnings": 1
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5
