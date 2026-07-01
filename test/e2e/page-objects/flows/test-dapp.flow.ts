@@ -13,9 +13,9 @@ import HomePage from '../pages/home/homepage';
 import ActivityTab from '../pages/home/activity-tab';
 import TokenTransferTransactionConfirmation from '../pages/confirmations/token-transfer-confirmation';
 import NetworkManager from '../pages/network-manager';
-import { CaveatTypes } from 'shared/constants/permissions';
-import { PermissionNames } from 'app/scripts/controllers/permissions';
-import { veryLargeDelayMs } from 'test/e2e/helpers';
+import { CaveatTypes } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import { veryLargeDelayMs } from '../../helpers';
 
 type ExpectedDetails = {
   chainId: string;
