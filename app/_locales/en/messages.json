@@ -2005,6 +2005,12 @@
     "message": "Bridge details",
     "description": "Title for the modal showing details about a bridge transaction."
   },
+  "bridgeDiscountBadgeDao": {
+    "message": "DAO"
+  },
+  "bridgeDiscountBadgePromo": {
+    "message": "Promo"
+  },
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
@@ -2016,6 +2022,9 @@
   },
   "bridgeFee": {
     "message": "Bridge fee"
+  },
+  "bridgeFeeDisclaimer": {
+    "message": "Includes $1% MetaMask fee"
   },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 to $3",
@@ -2056,15 +2065,6 @@
   },
   "bridgeNoMMFee": {
     "message": "No MM fee"
-  },
-  "bridgeDiscountBadgePromo": {
-    "message": "Promo"
-  },
-  "bridgeDiscountBadgeDao": {
-    "message": "DAO"
-  },
-  "bridgeFeeDisclaimer": {
-    "message": "Includes $1% MetaMask fee"
   },
   "bridgeNoPriceInfoTitle": {
     "message": "No price information"

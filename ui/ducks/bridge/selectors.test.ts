@@ -78,6 +78,13 @@ import {
 import { toBridgeToken } from './utils';
 
 describe('Bridge selectors', () => {
+  const getOptimismUsdcAssetExchangeRates = (usdExchangeRate: string) => ({
+    [mockErc20Erc20Quotes[0].quote.srcAsset.assetId.toLowerCase()]: {
+      exchangeRate: '1',
+      usdExchangeRate,
+    },
+  });
+
   beforeAll(() => {
     setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
   });
@@ -899,6 +906,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getOptimismUsdcAssetExchangeRates('1'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
@@ -978,6 +986,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getOptimismUsdcAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
@@ -1073,6 +1082,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getOptimismUsdcAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
@@ -1270,6 +1280,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getOptimismUsdcAssetExchangeRates('1'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
@@ -1359,6 +1370,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getOptimismUsdcAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
@@ -1462,6 +1474,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getOptimismUsdcAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
@@ -1598,6 +1611,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getOptimismUsdcAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
