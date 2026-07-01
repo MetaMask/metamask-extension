@@ -111,7 +111,9 @@ export class OperationSafener<O extends Op = Op> {
 
     // execute the final operation in the queue, if any
     const finalInvocation = this.#bouncer.flush();
-    if (finalInvocation) {
+    if (finalInvocation === undefined) {
+      this.#evacuating = Promise.resolve();
+    } else {
       // ensure that `evacuate` always resolves successfully, AND that a
       // rejection from running `this.#bouncer.flush()` *is* an unhandled
       // rejection; we want it to bubble up to the process/window's
@@ -119,11 +121,27 @@ export class OperationSafener<O extends Op = Op> {
       const { promise, resolve } = withResolvers<void>();
       finalInvocation.finally(resolve);
       this.#evacuating = promise;
-    } else {
-      this.#evacuating = Promise.resolve();
     }
 
     return this.#evacuating;
+  };
+
+  /**
+   * Executes the latest pending operation immediately without preventing future
+   * operations from being queued.
+   *
+   * @returns A boolean indicating whether future operations are still allowed.
+   */
+  flush = async () => {
+    if (this.#evacuating) {
+      log.warn('evacuating, ignoring call to `flush`');
+      return false;
+    }
+
+    const finalInvocation = this.#bouncer.flush();
+    await finalInvocation;
+
+    return true;
   };
 
   /**

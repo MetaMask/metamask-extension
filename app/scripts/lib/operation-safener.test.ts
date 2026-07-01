@@ -149,6 +149,33 @@ describe('OperationSafener', () => {
     expect(mockOp).toHaveBeenCalledWith('param1');
   });
 
+  it('should flush pending work without preventing future executions', async () => {
+    jest.useFakeTimers();
+    try {
+      const mockOp = jest.fn().mockResolvedValue('success');
+      const safener = new OperationSafener({
+        op: mockOp,
+        wait: 100,
+      });
+
+      safener.execute('param1');
+
+      await expect(safener.flush()).resolves.toBe(true);
+
+      expect(mockOp).toHaveBeenCalledTimes(1);
+      expect(mockOp).toHaveBeenCalledWith('param1');
+
+      expect(safener.execute('param2')).toBe(true);
+      jest.advanceTimersByTime(100);
+      await Promise.resolve();
+
+      expect(mockOp).toHaveBeenCalledTimes(2);
+      expect(mockOp).toHaveBeenLastCalledWith('param2');
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   describe('Errors', () => {
     beforeEach(() => {
       process.setIgnoreUnhandled(true);

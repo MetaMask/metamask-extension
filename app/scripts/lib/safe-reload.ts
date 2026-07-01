@@ -1,22 +1,77 @@
 import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
-import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
-import { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
+import {
+  PERSISTENCE_OPERATION_DEBOUNCE_MS,
+  PERSISTENCE_OPERATION_MAX_WAIT_MS,
+  type PersistenceManager,
+} from '../../../shared/lib/stores/persistence-manager';
+import type { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
 import { OperationSafener } from './operation-safener';
 
 /** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
 const RELOAD_AFTER_EVACUATE_MS = 150;
+
+type ImmediatePersistenceKeys = string | readonly string[];
+
+type PersistenceOperationParams = [state?: MetaMaskStateType];
+
+type SafePersistArgs =
+  | PersistenceOperationParams
+  | [
+      changedControllerKeys: ImmediatePersistenceKeys,
+      ...params: PersistenceOperationParams,
+    ];
+
+function isImmediatePersistenceKeysArgument(
+  value: unknown,
+): value is ImmediatePersistenceKeys {
+  return (
+    typeof value === 'string' ||
+    (Array.isArray(value) &&
+      value.every((key): key is string => typeof key === 'string'))
+  );
+}
+
+function normalizeKeys(keys: ImmediatePersistenceKeys): readonly string[] {
+  return typeof keys === 'string' ? [keys] : keys;
+}
+
+function normalizeSafePersistArgs(args: SafePersistArgs) {
+  const [maybeChangedControllerKeys, ...params] = args;
+
+  if (isImmediatePersistenceKeysArgument(maybeChangedControllerKeys)) {
+    return {
+      changedControllerKeys: normalizeKeys(maybeChangedControllerKeys),
+      params: params as PersistenceOperationParams,
+    };
+  }
+
+  return {
+    changedControllerKeys: [],
+    params: args as PersistenceOperationParams,
+  };
+}
 
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
  *
  * @param persistenceManager - The PersistenceManager instance to be used for
  * updates.
+ * @param immediatePersistenceKeys - Controller keys that require the latest
+ * queued persistence operation to flush immediately.
  */
 export function getRequestSafeReload<Type extends PersistenceManager>(
   persistenceManager: Type,
+  immediatePersistenceKeys: readonly string[] = [],
 ) {
+  const immediatePersistenceKeySet = new Set(immediatePersistenceKeys);
+
+  const shouldFlushPersistImmediately = (
+    changedControllerKeys: readonly string[],
+  ) =>
+    changedControllerKeys.some((key) => immediatePersistenceKeySet.has(key));
+
   const operationSafener = new OperationSafener({
     op: async (state?: MetaMaskStateType) => {
       try {
@@ -36,23 +91,31 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
         );
       }
     },
-    wait: 1000,
+    wait: PERSISTENCE_OPERATION_DEBOUNCE_MS,
+    options: { maxWait: PERSISTENCE_OPERATION_MAX_WAIT_MS },
   });
 
   return {
     /**
      * Safely updates the persistence manager
      *
-     * @param params - Arguments to pass to the persistence operation. For
-     * 'data' storage, pass the state; for 'split' storage, no arguments needed.
+     * @param args - Optional changed controller keys followed by arguments to
+     * pass to the persistence operation. For 'data' storage, pass the state;
+     * for 'split' storage, no persistence arguments are needed.
      * @returns true if the update was queued, false if writes are not allowed.
      */
-    safePersist: async (
-      ...params: Parameters<
-        PersistenceManager['set'] | PersistenceManager['persist']
-      >
-    ) => {
-      return operationSafener.execute(...params);
+    safePersist: async (...args: SafePersistArgs) => {
+      const { changedControllerKeys, params } = normalizeSafePersistArgs(args);
+      const didQueuePersist = operationSafener.execute(...params);
+
+      if (
+        didQueuePersist &&
+        shouldFlushPersistImmediately(changedControllerKeys)
+      ) {
+        await operationSafener.flush();
+      }
+
+      return didQueuePersist;
     },
     /**
      * Requests a safe reload of the browser. It prevents any new updates from
