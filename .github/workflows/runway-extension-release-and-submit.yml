@@ -5,7 +5,7 @@ name: Runway extension release and store submit
 # Phase 0: validate branch, version, optional release_sha, CI, Runway sender (release/*).
 # Phase 1: workflow_call → publish-release-from-release-head.yml (auto-skipped if release exists at SHA)
 # Phase 2: workflow_call → upload-extension-to-cws.yml (production + flask; CWS pre-flight idempotency)
-# Phase 3: workflow_call → upload-extension-to-amo.yml — blocked until #43144 merges
+# Phase 3: workflow_call → upload-extension-to-amo.yml (production + flask; Lambda idempotent re-run)
 #
 # Runway contract: version, release_sha, execute_store_phases only.
 # Recovery: re-run failed jobs on the same run, or re-dispatch (auto-skip handles completed phases).
@@ -44,11 +44,16 @@ on:
         required: false
         type: boolean
         default: false
-      skip_amo:
-        description: 'Skip Phase 3 AMO uploads (default true until upload-extension-to-amo.yml merges in #43144)'
+      skip_amo_production:
+        description: 'Manual break-glass — skip Phase 3a (Lambda auto-skips when version already submitted)'
         required: false
         type: boolean
-        default: true
+        default: false
+      skip_amo_flask:
+        description: 'Manual break-glass — skip Phase 3b (Lambda auto-skips when version already submitted)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -243,38 +248,43 @@ jobs:
       dry-run: false
     secrets: inherit
 
-  amo-pending:
-    name: Phase 3 — AMO uploads (blocked)
+  amo-production:
+    name: Phase 3a — AMO production upload
     needs:
       - validate
       - publish-release
-      - cws-production
-      - cws-flask
     if: >-
       ${{
         always() &&
         inputs.execute_store_phases &&
-        !inputs.skip_amo &&
+        !inputs.skip_amo_production &&
         needs.validate.result == 'success' &&
-        (needs.publish-release.result == 'success' || needs.publish-release.result == 'skipped') &&
-        (needs.cws-production.result == 'success' || needs.cws-production.result == 'skipped') &&
-        (needs.cws-flask.result == 'success' || needs.cws-flask.result == 'skipped')
+        (needs.publish-release.result == 'success' || needs.publish-release.result == 'skipped')
       }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Block until upload-extension-to-amo.yml merges
-        env:
-          VERSION: ${{ needs.validate.outputs.version }}
-        run: |
-          set -euo pipefail
-          echo "::error::Phase 3 AMO uploads are not available on main yet."
-          echo ""
-          echo "Merge metamask-extension#43144 (upload-extension-to-amo.yml), then add workflow_call"
-          echo "to that workflow and wire production + flask jobs here (same pattern as CWS)."
-          echo ""
-          echo "Version ${VERSION} — Phases 0–2 may have completed; re-dispatch or re-run failed jobs after #43144 lands."
-          exit 1
+    uses: ./.github/workflows/upload-extension-to-amo.yml
+    with:
+      version: ${{ needs.validate.outputs.version }}
+      target: production
+    secrets: inherit
+
+  amo-flask:
+    name: Phase 3b — AMO flask upload
+    needs:
+      - validate
+      - publish-release
+    if: >-
+      ${{
+        always() &&
+        inputs.execute_store_phases &&
+        !inputs.skip_amo_flask &&
+        needs.validate.result == 'success' &&
+        (needs.publish-release.result == 'success' || needs.publish-release.result == 'skipped')
+      }}
+    uses: ./.github/workflows/upload-extension-to-amo.yml
+    with:
+      version: ${{ needs.validate.outputs.version }}
+      target: flask
+    secrets: inherit
 
   orchestrator-summary:
     name: Orchestrator summary
@@ -283,7 +293,8 @@ jobs:
       - publish-release
       - cws-production
       - cws-flask
-      - amo-pending
+      - amo-production
+      - amo-flask
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -293,13 +304,15 @@ jobs:
           PUBLISH: ${{ needs.publish-release.result }}
           CWS_PROD: ${{ needs.cws-production.result }}
           CWS_FLASK: ${{ needs.cws-flask.result }}
-          AMO: ${{ needs.amo-pending.result }}
+          AMO_PROD: ${{ needs.amo-production.result }}
+          AMO_FLASK: ${{ needs.amo-flask.result }}
           EXECUTE_STORE: ${{ inputs.execute_store_phases }}
           SKIP_PUBLISH: ${{ inputs.skip_publish }}
           RELEASE_EXISTS: ${{ needs.validate.outputs.release_exists }}
           SKIP_CWS_PROD: ${{ inputs.skip_cws_production }}
           SKIP_CWS_FLASK: ${{ inputs.skip_cws_flask }}
-          SKIP_AMO: ${{ inputs.skip_amo }}
+          SKIP_AMO_PROD: ${{ inputs.skip_amo_production }}
+          SKIP_AMO_FLASK: ${{ inputs.skip_amo_flask }}
         run: |
           {
             echo "### Runway orchestrator (INFRA-3735)"
@@ -314,7 +327,10 @@ jobs:
             fi
             echo "| 2a CWS production | ${CWS_PROD} (skip=${SKIP_CWS_PROD}) |"
             echo "| 2b CWS flask | ${CWS_FLASK} (skip=${SKIP_CWS_FLASK}) |"
-            echo "| 3 AMO | ${AMO} (skip_amo=${SKIP_AMO}) |"
+            echo "| 3a AMO production | ${AMO_PROD} (skip=${SKIP_AMO_PROD}) |"
+            echo "| 3b AMO flask | ${AMO_FLASK} (skip=${SKIP_AMO_FLASK}) |"
+            echo ""
+            echo "Phases 2 and 3 run in parallel after Phase 1 (or auto-skip)."
             echo ""
             if [[ "${EXECUTE_STORE}" != "true" ]]; then
               echo "Store phases were **not requested** (\`execute_store_phases=false\`)."
