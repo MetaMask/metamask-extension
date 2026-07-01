@@ -61,6 +61,15 @@ export type PersistenceManagerOptions = {
   localStore: BaseStore;
 };
 
+export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
+
+const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
+  PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => globalThis.setTimeout(resolve, ms));
+}
+
 /**
  * This Error represents an error that occurs during persistence operations.
  * It includes a backup of the state at the time of the error and optionally
@@ -296,6 +305,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return error instanceof Error ? error : new Error(String(error));
   }
 
+  async #retryWrite<Result>(write: () => Promise<Result>): Promise<Result> {
+    try {
+      return await write();
+    } catch {
+      await delay(PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS);
+      return await write();
+    }
+  }
+
   async open(): Promise<void> {
     if (this.#open) {
       return;
@@ -489,10 +507,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         let backupFailed = false;
         try {
           // atomically set all the keys (includes test simulation check)
-          await this.#setInLocalStore({
-            data: state,
-            meta,
-          });
+          await this.#retryWrite(() =>
+            this.#setInLocalStore({
+              data: state,
+              meta,
+            }),
+          );
 
           const backup = makeBackup(state, meta);
           // if we have a vault we can back it up
@@ -503,7 +523,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               // save it to the backup DB - wrapped in try-catch to differentiate
               // backup failures from storage.local failures in Sentry
               try {
-                await this.#backupDb?.set(backup);
+                const backupDb = this.#backupDb;
+                if (backupDb) {
+                  await this.#retryWrite(() => backupDb.set(backup));
+                }
                 this.#backup = stringifiedBackup;
               } catch (backupErr) {
                 backupFailed = true;
@@ -611,7 +634,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           this.#pendingPairs.clear();
           try {
             // save the pairs (includes test simulation check)
-            await this.#setKeyValuesInLocalStore(clone);
+            await this.#retryWrite(() => this.#setKeyValuesInLocalStore(clone));
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -636,7 +659,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             // save it to the backup DB - wrapped in try-catch to differentiate
             // backup failures from storage.local failures in Sentry
             try {
-              await this.#backupDb?.set(backup);
+              const backupDb = this.#backupDb;
+              if (backupDb) {
+                await this.#retryWrite(() => backupDb.set(backup));
+              }
             } catch (backupErr) {
               backupFailed = true;
               throw backupErr;
