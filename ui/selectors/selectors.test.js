@@ -7,6 +7,7 @@ import {
   SolAccountType,
 } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -1064,6 +1065,168 @@ describe('Selectors', () => {
     expect(totalUnapprovedCount).toStrictEqual(1);
   });
 
+  describe('transaction lookup selector memoization', () => {
+    const state = {
+      confirmTransaction: {
+        txData: {
+          txParams: {
+            data: '0x',
+            value: '0x0',
+          },
+        },
+      },
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        pendingApprovals: {},
+        transactions: [
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-1',
+            status: TransactionStatus.submitted,
+            txParams: { to: '0x1' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-2',
+            status: TransactionStatus.submitted,
+            txParams: { to: '0x2' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-3',
+            status: TransactionStatus.unapproved,
+            txParams: { to: '0x3' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-4',
+            status: TransactionStatus.unapproved,
+            txParams: { to: '0x4' },
+          },
+        ],
+      },
+    };
+
+    beforeEach(() => {
+      selectors.getUnapprovedTransaction.clearCache();
+      selectors.getUnapprovedTransaction.resetRecomputations();
+      selectors.getTransaction.clearCache();
+      selectors.getTransaction.resetRecomputations();
+      selectors.getFullTxData.clearCache();
+      selectors.getFullTxData.resetRecomputations();
+    });
+
+    it('caches unapproved transaction lookups per transaction ID', () => {
+      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+      expect(selectors.getUnapprovedTransaction(state, 'tx-4').id).toBe('tx-4');
+      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+
+      expect(selectors.getUnapprovedTransaction.recomputations()).toBe(2);
+    });
+
+    it('caches current-network transaction lookups per transaction ID', () => {
+      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+      expect(selectors.getTransaction(state, 'tx-2').id).toBe('tx-2');
+      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+
+      expect(selectors.getTransaction.recomputations()).toBe(2);
+    });
+
+    it('caches full transaction data per transaction ID', () => {
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x1',
+        value: '0x10',
+      });
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-2',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x2',
+        value: '0x10',
+      });
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x1',
+        value: '0x10',
+      });
+
+      expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
+
+    it('recomputes full transaction data when nested transaction fields mutate in place', () => {
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-1',
+              status: TransactionStatus.submitted,
+              txParams: { to: '0x1' },
+              simulationFails: { reason: 'initial' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getFullTxData(
+          mutableState,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          null,
+        ).simulationFails,
+      ).toStrictEqual({ reason: 'initial' });
+
+      mutableState.metamask.transactions[0].simulationFails.reason = 'updated';
+
+      expect(
+        selectors.getFullTxData(
+          mutableState,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          null,
+        ).simulationFails,
+      ).toStrictEqual({ reason: 'updated' });
+
+      expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
+  });
+
   it('#getUseTokenDetection', () => {
     const useTokenDetection = selectors.getUseTokenDetection(mockState);
     expect(useTokenDetection).toStrictEqual(true);
@@ -1969,10 +2132,6 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
       const expectedToken = {
         symbol: 'POL',
         name: 'Polygon',
@@ -1990,7 +2149,50 @@ describe('#getConnectedSitesList', () => {
       );
 
       expect(result).toStrictEqual(expectedToken);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+
+    it('returns a stable reference for identical inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const equivalentState = {
+        ...mockState,
+      };
+      const secondResult = selectors.getSwapsDefaultToken(equivalentState);
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a stable reference for identical overrideChainId inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+      const equivalentState = {
+        ...mockState,
+      };
+      const secondResult = selectors.getSwapsDefaultToken(
+        equivalentState,
+        CHAIN_IDS.POLYGON,
+      );
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a new reference when current chainId changes', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const stateWithDifferentChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+        },
+      };
+
+      const secondResult = selectors.getSwapsDefaultToken(
+        stateWithDifferentChainId,
+      );
+
+      expect(secondResult).not.toBe(firstResult);
+      expect(secondResult.chainId).not.toBe(firstResult.chainId);
     });
   });
 
@@ -4502,6 +4704,40 @@ describe('getDeferredDeepLinkParameters', () => {
   });
 });
 
+describe('getLastQrScanCompletedSuccessfully', () => {
+  it('returns true when last QR scan completed successfully', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: true,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(true);
+  });
+
+  it('returns false when last QR scan was cancelled', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: false,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(false);
+  });
+
+  it('returns null when no recent QR scan completion', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: null,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeNull();
+  });
+
+  it('returns undefined when lastQrScanCompletedSuccessfully is not in state', () => {
+    const state = { metamask: {} };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeUndefined();
+  });
+});
+
 describe('getLastVisitedPerpsRoute', () => {
   it('returns the perps lastVisitedRoute value when set', () => {
     const entry = { path: '/perps/market/BTC', timestamp: 1700000000000 };
@@ -4530,5 +4766,98 @@ describe('getLastVisitedPerpsRoute', () => {
     const state = { metamask: {} };
 
     expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+  });
+});
+
+describe('snap selectors', () => {
+  const snapState = {
+    metamask: {
+      currentLocale: 'en',
+      snaps: {
+        'npm:foo': {
+          id: 'npm:foo',
+          enabled: true,
+          preinstalled: true,
+          hideSnapBranding: true,
+          hidden: false,
+          manifest: {
+            proposedName: 'Foo',
+            description: 'Foo snap',
+          },
+        },
+        'npm:bar': {
+          id: 'npm:bar',
+          enabled: true,
+          preinstalled: false,
+          hidden: false,
+          manifest: {
+            proposedName: 'Bar',
+            description: 'Bar snap',
+          },
+        },
+        'npm:baz': {
+          id: 'npm:baz',
+          enabled: false,
+          preinstalled: true,
+          hidden: false,
+          manifest: {
+            proposedName: 'Baz',
+            description: 'Baz snap',
+          },
+        },
+      },
+      subjects: {
+        'npm:foo': {
+          permissions: {
+            [SnapEndowments.SettingsPage]: {},
+            snap_notify: {},
+            'endowment:name-lookup': { caveat: true },
+          },
+        },
+        'npm:bar': {
+          permissions: {
+            snap_notify: {},
+            'endowment:name-lookup': { caveat: true },
+          },
+        },
+      },
+      insights: {
+        one: { value: 1 },
+      },
+    },
+  };
+
+  it('selects parameterized snap values', () => {
+    expect(selectors.getHideSnapBranding(snapState, 'npm:foo')).toBe(true);
+    expect(selectors.getSnap(snapState, 'npm:foo')).toStrictEqual(
+      snapState.metamask.snaps['npm:foo'],
+    );
+    expect(selectors.getSnapMetadata(snapState, 'npm:foo')).toStrictEqual({
+      name: 'Foo',
+      description: 'Foo snap',
+      hidden: false,
+    });
+    expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
+      value: 1,
+    });
+  });
+
+  it('filters snap collections for snap permissions and enabled state', () => {
+    expect(
+      Object.keys(selectors.getPreinstalledSnaps(snapState)),
+    ).toStrictEqual(['npm:foo', 'npm:baz']);
+    expect(selectors.getNameLookupSnapsIds(snapState)).toStrictEqual([
+      'npm:foo',
+      'npm:bar',
+    ]);
+    expect(selectors.getSettingsPageSnapsIds(snapState)).toStrictEqual([
+      'npm:foo',
+    ]);
+    expect(
+      selectors.getNotifySnaps(snapState).map(({ id }) => id),
+    ).toStrictEqual(['npm:foo', 'npm:bar']);
+    expect(
+      selectors.getThirdPartyNotifySnaps(snapState).map(({ id }) => id),
+    ).toStrictEqual(['npm:bar']);
   });
 });

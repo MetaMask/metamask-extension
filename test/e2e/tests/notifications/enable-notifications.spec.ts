@@ -9,7 +9,7 @@ import {
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { completeOnboardFlowIdentity } from '../identity/flows';
+import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
@@ -36,7 +36,10 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
 }
 
 describe('Enable Notifications - Without Accounts Syncing', function () {
-  this.timeout(120000); // Notifications tests can take longer due to identity/sync operations
+  // This test runs two full identity onboarding flows back-to-back (initial
+  // setup + persistence re-check), each incurring SRP import, sign-in and the
+  // account-sync settling delay, so it needs more than the default budget.
+  this.timeout(180000);
 
   describe('from inside MetaMask', function () {
     /**
@@ -46,7 +49,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * Part 1: Initial Configuration
      * - Complete onboarding
      * - Adds some accounts
-     * - Enable notifications and verify default state (all enabled)
+     * - Enable notifications and verify initial default state
      * - Modify settings:
      * → Disable second account notifications
      * → Disable product notifications
@@ -57,9 +60,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * - Add accounts again
      * - Verify settings:
      * → General notifications: requires manual re-enable
-     * → Product notifications: enabled (resets on new session)
+     * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted from Part 1)
+     * → Second account: disabled (persisted in AUS from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
       // server that persists trigger settings.
@@ -79,11 +82,13 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
           );
-          await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
+          await notificationsSettingsPage.assertMainNotificationSettingsTogglesState(
             driver,
+            { marketingInAppExpectedState: 'disabled' },
           );
 
-          // Switch off address 2 and product notifications toggle
+          // Update preferences for persistence check:
+          // disable account 2 and toggle marketing in-app notifications.
           await notificationsSettingsPage.clickNotificationToggle({
             address: notificationsMockAccounts[1].a,
             toggleType: 'address',
@@ -110,7 +115,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
           );
-          await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
+          await notificationsSettingsPage.assertMainNotificationSettingsTogglesState(
             driver,
           );
 

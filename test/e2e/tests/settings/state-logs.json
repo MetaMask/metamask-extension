@@ -263,6 +263,7 @@
     "accountWalletsMetadata": {},
     "activeProvider": "string",
     "activeQrCodeScanRequest": "null",
+    "lastQrScanCompletedSuccessfully": "null",
     "addressBook": {},
     "addressScanCache": {},
     "addressSecurityAlertResponses": {},
@@ -283,6 +284,7 @@
     "allNftContracts": {},
     "allNfts": {},
     "allTokens": {},
+    "analyticsId": "string",
     "announcements": {},
     "appActiveTab": {
       "favIconUrl": "null",
@@ -638,6 +640,9 @@
     },
     "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
+    "configs": {
+      "networks": "object"
+    },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
     "conversionRates": {
@@ -793,6 +798,7 @@
     "ensResolutionsByAddress": {},
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
+    "etag": "null",
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -875,6 +881,7 @@
     "initializationState": "string",
     "initialEnqueueCompleted": "boolean",
     "initialDelayEndTimestamp": "number",
+    "inputPrimaryDenomination": "string",
     "insights": {},
     "interfaces": {},
     "internalAccounts": {
@@ -969,11 +976,6 @@
           "address": "string",
           "options": {
             "exportable": "boolean",
-            "addressType": "string",
-            "scope": "string",
-            "index": "number",
-            "groupIndex": "number",
-            "entropySource": "string",
             "entropy": {
               "type": "string",
               "id": "string",
@@ -1048,6 +1050,7 @@
     "lastDepositResult": "null",
     "lastDepositTransactionId": "null",
     "lastError": "null",
+    "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
     "lastUpdateTimestamp": "number",
@@ -1056,7 +1059,6 @@
     "lastUpdatedFromVersion": "null",
     "lastVisitedRoute": "null",
     "lastViewedUserSurvey": "null",
-    "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
     "logs": {},
     "lastWithdrawResult": "null",
@@ -1073,9 +1075,6 @@
     "metamaskNotificationsReadList": [],
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
-    "metaMetricsId": "string",
-    "analyticsId": "string",
-    "optedIn": "boolean",
     "methodData": {},
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
@@ -1148,6 +1147,7 @@
       }
     },
     "musdConversionEducationSeen": "boolean",
+    "perpsTabBadgeSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -1181,6 +1181,7 @@
     "onboardingDate": "null",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
+    "optedIn": "boolean",
     "orderedNetworkList": [
       {
         "networkId": "string"
@@ -1189,7 +1190,6 @@
     "orderedTransactionHistory": [],
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
-    "participateInMetaMetrics": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
@@ -1233,6 +1233,7 @@
       "tokenNetworkFilter": {
         "0x539": "boolean"
       },
+      "gasSponsorshipOptOutByChainId": "object",
       "tokenSortConfig": {
         "key": "string",
         "order": "string",
@@ -1244,6 +1245,7 @@
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
+    "proofBackfillEnqueued": "boolean",
     "quoteFetchError": "null",
     "quoteRequest": [
       {
@@ -1518,6 +1520,7 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
+    "version": "null",
     "versionInfo": [],
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {

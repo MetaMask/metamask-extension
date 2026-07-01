@@ -8,25 +8,30 @@ import { clearHomeDeepLinkQrCode } from '../../ducks/app/app';
 import { DeeplinkQrCodeModalContainer } from './deeplink-qrcode-modal-container';
 import type { HomeDeepLinkQrCode } from './HomeDeepLinkActions';
 
-jest.mock('../../components/app/deeplink-qr-code', () => ({
-  DeeplinkQRCode: ({
-    title,
-    description,
-    onDone,
-    testId,
-  }: {
-    title: string;
-    description: string;
-    onDone: () => void;
-    testId: string;
-  }) => (
-    <div data-testid={testId}>
-      <span>{title}</span>
-      <span>{description}</span>
-      <button onClick={onDone}>Done</button>
-    </div>
-  ),
-}));
+jest.mock('../../components/app/deeplink-qr-code', () => {
+  const { enLocale: mockMessages } = jest.requireActual(
+    '../../../test/lib/i18n-helpers',
+  );
+  return {
+    DeeplinkQRCode: ({
+      title,
+      description,
+      onDone,
+      testId,
+    }: {
+      title: string;
+      description: string;
+      onDone: () => void;
+      testId: string;
+    }) => (
+      <div data-testid={testId}>
+        <span>{title}</span>
+        <span>{description}</span>
+        <button onClick={onDone}>{mockMessages.done.message}</button>
+      </div>
+    ),
+  };
+});
 
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),

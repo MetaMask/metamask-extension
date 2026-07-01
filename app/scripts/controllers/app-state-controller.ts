@@ -63,6 +63,7 @@ import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type { Preferences } from '../../../shared/types/preferences';
+import { LegacyBackgroundApiServiceSetLockedAction } from '../services/legacy-background-api-service-method-action-types';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -84,6 +85,8 @@ export type DappSwapComparisonData = {
 
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
+  /** True when QR scan completed successfully, false when cancelled/rejected, null when no recent completion. Used to avoid navigating to activity on rejection. */
+  lastQrScanCompletedSuccessfully: boolean | null;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   appActiveTab?: {
     id: number;
@@ -140,6 +143,7 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  perpsTabBadgeSeen: boolean;
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
@@ -211,6 +215,7 @@ export type AllowedActions =
   | ApprovalControllerAddRequestAction
   | ApprovalControllerAcceptRequestAction
   | KeyringControllerGetStateAction
+  | LegacyBackgroundApiServiceSetLockedAction
   | PreferencesControllerGetStateAction
   | ProfileMetricsControllerSkipInitialDelayAction;
 
@@ -266,13 +271,13 @@ type AppStateControllerInitState = Partial<
 
 export type AppStateControllerOptions = {
   state?: AppStateControllerInitState;
-  onInactiveTimeout?: () => void;
   messenger: AppStateControllerMessenger;
   extension: Browser;
 };
 
 const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   activeQrCodeScanRequest: null,
+  lastQrScanCompletedSuccessfully: null,
   appActiveTab: undefined,
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
@@ -307,6 +312,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
+  perpsTabBadgeSeen: false,
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
@@ -342,6 +348,12 @@ function getInitialStateOverrides() {
 
 const controllerMetadata: StateMetadata<AppStateControllerState> = {
   activeQrCodeScanRequest: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  lastQrScanCompletedSuccessfully: {
     includeInStateLogs: false,
     persist: false,
     includeInDebugSnapshot: true,
@@ -595,6 +607,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
+  perpsTabBadgeSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
   musdConversionEducationSeen: {
     persist: true,
     includeInDebugSnapshot: true,
@@ -732,9 +750,11 @@ const MESSENGER_EXPOSED_METHODS = [
   'setNewPrivacyPolicyToastShownDate',
   'setOnboardingDate',
   'setOutdatedBrowserWarningLastShown',
+  'setPasskeyAutoUnlockSuppressed',
   'setPendingExtensionVersion',
   'setPendingRedirectRoute',
   'setPendingShieldCohort',
+  'setPerpsTabBadgeSeen',
   'setPna25Acknowledged',
   'setProductTour',
   'setRecoveryPhraseReminderHasBeenShown',
@@ -762,8 +782,6 @@ export class AppStateController extends BaseController<
 > {
   readonly #extension: AppStateControllerOptions['extension'];
 
-  readonly #onInactiveTimeout: () => void;
-
   #timer: NodeJS.Timeout | null;
 
   readonly waitingForUnlock: { resolve: () => void }[];
@@ -772,12 +790,7 @@ export class AppStateController extends BaseController<
 
   #qrCodeScanPromise: DeferredPromise<SerializedUR> | null = null;
 
-  constructor({
-    state = {},
-    messenger,
-    onInactiveTimeout,
-    extension,
-  }: AppStateControllerOptions) {
+  constructor({ state = {}, messenger, extension }: AppStateControllerOptions) {
     super({
       name: controllerName,
       metadata: controllerMetadata,
@@ -790,9 +803,6 @@ export class AppStateController extends BaseController<
     });
 
     this.#extension = extension;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
     // Clearing an alarm does not remove the listeners, so we only need to register the listener once.
@@ -800,7 +810,7 @@ export class AppStateController extends BaseController<
       this.#extension.alarms.onAlarm.addListener(
         (alarmInfo: { name: string }) => {
           if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
-            this.#onInactiveTimeout();
+            this.messenger.call('LegacyBackgroundApiService:setLocked');
             this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
           }
         },
@@ -1196,7 +1206,10 @@ export class AppStateController extends BaseController<
       });
     } else {
       this.#timer = setTimeout(
-        () => this.#onInactiveTimeout(),
+        this.messenger.call.bind(
+          this.messenger,
+          'LegacyBackgroundApiService:setLocked',
+        ),
         timeoutToSet * MINUTE,
       );
     }
@@ -1310,6 +1323,18 @@ export class AppStateController extends BaseController<
   setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
     this.update((state) => {
       state.hasShownMultichainAccountsIntroModal = hasShown;
+    });
+  }
+
+  /**
+   * Sets whether the user has seen (and therefore dismissed) the Perps tab
+   * "New" badge.
+   *
+   * @param value - Whether the Perps tab badge has been seen
+   */
+  setPerpsTabBadgeSeen(value: boolean): void {
+    this.update((state) => {
+      state.perpsTabBadgeSeen = value;
     });
   }
 
@@ -1556,6 +1581,7 @@ export class AppStateController extends BaseController<
 
     this.update((state) => {
       state.activeQrCodeScanRequest = null;
+      state.lastQrScanCompletedSuccessfully = true;
     });
 
     this.#qrCodeScanPromise.resolve(scannedData);
@@ -1576,6 +1602,7 @@ export class AppStateController extends BaseController<
 
     this.update((state) => {
       state.activeQrCodeScanRequest = null;
+      state.lastQrScanCompletedSuccessfully = false;
     });
 
     this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
@@ -1599,6 +1626,7 @@ export class AppStateController extends BaseController<
 
     this.update((state) => {
       state.activeQrCodeScanRequest = request;
+      state.lastQrScanCompletedSuccessfully = null;
     });
 
     return deferredPromise.promise;

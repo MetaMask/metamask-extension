@@ -58,6 +58,7 @@ export const useHardwareWalletAutoConnect = ({
     connectRef,
     hasAutoConnectedRef,
     lastConnectedAccountRef,
+    isSigningInProgressRef,
   } = refs;
 
   useEffect(
@@ -146,6 +147,19 @@ export const useHardwareWalletAutoConnect = ({
         }
 
         if (!adapterRef.current?.isConnected()) {
+          return;
+        }
+
+        // WORKAROUND: The Trezor Connect SDK (offscreen document) closes its
+        // WebUSB transport after signing, which fires a native disconnect event
+        // indistinguishable from a physical unplug — even
+        // navigator.usb.getDevices() returns empty. Suppress teardown while
+        // signing is in flight. Real physical disconnects during signing will
+        // cause the signing operation to fail, which the tracker
+        // (useHwSignTracker in batch mode) handles via TransactionFailed.
+        //
+        // See isSigningInProgressRef in HardwareWalletStateManager for details.
+        if (isSigningInProgressRef.current) {
           return;
         }
 

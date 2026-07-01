@@ -62,12 +62,6 @@
     "^ background; v popup": {},
     "wait-on>axios": {
       "globals": {
-        "Buffer": false,
-        "Buffer.alloc": true,
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true,
         "postMessage": true,
         "fetch": true,
         "Request": true,
@@ -243,6 +237,13 @@
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
         "document": false,
         "document.visibilityState": true,

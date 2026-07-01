@@ -63,10 +63,7 @@ describe('Send - Hex Address Normalization', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
-            .withTokensControllerERC20()
-            .withEnabledNetworks({ eip155: { '0x539': true } })
-            .build(),
+          fixtures: new FixtureBuilderV2().withTokensControllerERC20().build(),
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -77,11 +74,14 @@ describe('Send - Hex Address Normalization', function () {
           const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
           const tokensTab = new TokensTab(driver);
+          await tokensTab.clickOnAsset('TST');
           await tokensTab.clickMultichainTokenListButton();
           await homePage.clickOnSendButton();
           // Paste address without hex prefix
           const sendPage = new SendPage(driver);
-          await sendPage.fillRecipient(nonHexPrefixedAddress);
+          await sendPage.fillRecipient({
+            recipientAddress: nonHexPrefixedAddress,
+          });
           await sendPage.pressContinueButton();
 
           // Verify address on confirmation screen
@@ -95,10 +95,7 @@ describe('Send - Hex Address Normalization', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
-            .withEnabledNetworks({ eip155: { '0x539': true } })
-            .withTokensControllerERC20()
-            .build(),
+          fixtures: new FixtureBuilderV2().withTokensControllerERC20().build(),
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -109,18 +106,21 @@ describe('Send - Hex Address Normalization', function () {
           const homePage = new HomePage(driver);
           await homePage.goToTokensTab();
           const tokensTab = new TokensTab(driver);
+          await tokensTab.clickOnAsset('TST');
           await tokensTab.clickMultichainTokenListButton();
           await homePage.clickOnSendButton();
 
           // Type address without hex prefix
           const sendPage = new SendPage(driver);
-          await sendPage.fillRecipient(nonHexPrefixedAddress);
+          await sendPage.fillRecipient({
+            recipientAddress: nonHexPrefixedAddress,
+          });
           await sendPage.fillAmount('0');
           await sendPage.pressContinueButton();
 
           // Confirm transaction
           const transactionConfirmation = new TransactionConfirmation(driver);
-          await transactionConfirmation.checkSendAmount('0 ETH');
+          await transactionConfirmation.checkSendAmount('0 TST');
           const confirmation = new Confirmation(driver);
           await confirmation.clickFooterConfirmButton();
           await homePage.goToActivityList();
@@ -131,7 +131,7 @@ describe('Send - Hex Address Normalization', function () {
 
           // Verify address in activity log
           await transactionDetailsPage.checkAddressInActivityLog(
-            hexPrefixedAddress.toLowerCase(),
+            hexPrefixedAddress,
           );
         },
       );

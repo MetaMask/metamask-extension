@@ -416,14 +416,13 @@ const PerpsMarketDetailPage = () => {
     const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
       const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
       if (update) {
-        const ts = (update as { timestamp?: number }).timestamp;
-        const mark = (update as { markPrice?: string }).markPrice;
         setLivePrice({
           symbol: update.symbol,
           price: update.price,
-          timestamp: ts ?? Date.now(),
+          timestamp: update.timestamp,
           percentChange24h: update.percentChange24h,
-          markPrice: mark,
+          markPrice: update.markPrice,
+          isTradable: update.isTradable,
         });
       }
     });
@@ -746,7 +745,11 @@ const PerpsMarketDetailPage = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    navigate({ pathname: '/', search: 'tab=perps' });
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
@@ -1606,6 +1609,7 @@ const PerpsMarketDetailPage = () => {
                   order={order}
                   variant="muted"
                   onClick={handleOrderClick}
+                  assetName={market.name}
                 />
               ))}
             </Box>

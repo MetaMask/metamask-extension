@@ -4,9 +4,13 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Pna25ModalContainer } from './pna25-modal-container';
 
-jest.mock('./pna25-modal', () => ({
-  Pna25Modal: () => <div data-testid="pna25-modal" />,
-}));
+jest.mock('./pna25-modal', () => {
+  const moduleExports = {
+    default: () => <div data-testid="pna25-modal" />,
+  };
+  Object.defineProperty(moduleExports, '__esModule', { value: true });
+  return moduleExports;
+});
 
 const mockStore = configureMockStore([thunk]);
 

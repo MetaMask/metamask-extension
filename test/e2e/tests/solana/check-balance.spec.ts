@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
@@ -22,7 +23,10 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('0 SOL');
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '0 SOL',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
@@ -42,7 +46,10 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('$0');
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '$0',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
@@ -64,7 +71,10 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('$5,643.50');
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '$5,643.50',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
@@ -82,7 +92,10 @@ describe('Check balance', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('50 SOL');
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '50 SOL',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });

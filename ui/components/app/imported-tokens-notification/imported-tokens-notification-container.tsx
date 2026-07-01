@@ -13,8 +13,6 @@ import {
 import {
   BannerAlert,
   BannerAlertSeverity,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconName,
 } from '../../component-library';
@@ -59,15 +57,7 @@ export function ImportedTokensNotificationContainer() {
         <BannerAlert
           severity={BannerAlertSeverity.Success}
           className="home__new-tokens-imported-notification"
-          actionButtonLabel={
-            <ButtonIcon
-              iconName={IconName.Close}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('close')}
-              onClick={onDismissImport}
-              className="home__new-tokens-imported-notification-close"
-            />
-          }
+          onClose={onDismissImport}
         >
           <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
           <Text
@@ -88,16 +78,9 @@ export function ImportedTokensNotificationContainer() {
       ) : null}
       {newTokensImportedError ? (
         <BannerAlert
-          severity={BannerAlertSeverity.Error}
+          severity={BannerAlertSeverity.Danger}
           className="home__new-tokens-imported-notification"
-          actionButtonLabel={
-            <ButtonIcon
-              iconName={IconName.Close}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('close')}
-              onClick={onDismissError}
-            />
-          }
+          onClose={onDismissError}
         >
           <Icon name={IconName.Danger} marginRight={1} />
           <Text variant={TextVariant.BodySm} asChild>

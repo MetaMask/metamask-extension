@@ -22,7 +22,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
     >
       <section
         aria-modal="true"
-        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm overflow-hidden mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm flex h-full flex-col overflow-hidden mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
         role="dialog"
       >
         <header
@@ -53,7 +53,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
           </div>
         </header>
         <div
-          class="flex flex-col max-h-[calc(100vh-168px)] overflow-y-auto"
+          class="flex flex-col min-h-0 flex-1 overflow-y-auto"
         >
           <button
             class="flex min-h-16 w-full cursor-pointer items-center justify-between border-0 p-4 text-left hover:bg-hover bg-muted"
@@ -63,10 +63,20 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
             <div
               class="flex min-w-0 items-center gap-3"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/global.svg');"
-              />
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-muted"
+              >
+                <svg
+                  class="inline-block w-5 h-5 text-icon-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 22q-2.05 0-3.875-.787c-1.825-.788-2.28-1.242-3.187-2.15s-1.625-1.971-2.15-3.188S2 13.367 2 12q0-2.075.788-3.887c.788-1.812 1.241-2.267 2.15-3.175s1.97-1.625 3.187-2.15S10.633 2 12 2q2.075 0 3.888.788c1.812.788 2.266 1.241 3.174 2.15s1.625 1.966 2.15 3.175S22 10.617 22 12q0 2.05-.787 3.875c-.788 1.825-1.242 2.28-2.15 3.188s-1.967 1.625-3.175 2.15S13.383 22 12 22m0-2.05q.65-.9 1.125-1.875c.475-.975.575-1.342.775-2.075h-3.8q.3 1.1.775 2.075c.475.975.692 1.275 1.125 1.875m-2.6-.4q-.45-.825-.787-1.712A11.6 11.6 0 0 1 8.05 16H5.1q.725 1.25 1.813 2.175C8 19.1 8.467 19.25 9.4 19.55m5.2 0q1.4-.45 2.488-1.375c1.088-.925 1.329-1.342 1.812-2.175h-2.95q-.225.95-.562 1.838c-.337.887-.488 1.162-.788 1.712M4.25 14h3.4q-.075-.5-.112-.987C7.5 12.525 7.5 12.35 7.5 12a13 13 0 0 1 .15-2h-3.4q-.125.5-.187.988C4 11.476 4 11.65 4 12a8 8 0 0 0 .25 2m5.4 0h4.7q.075-.5.113-.987c.038-.488.037-.663.037-1.013a13 13 0 0 0-.15-2h-4.7q-.075.5-.112.988C9.5 11.476 9.5 11.65 9.5 12a13 13 0 0 0 .15 2m6.7 0h3.4q.125-.5.188-.987C20 12.525 20 12.35 20 12a8 8 0 0 0-.25-2h-3.4q.075.5.113.988c.038.488.037.662.037 1.012a13 13 0 0 1-.15 2m-.4-6h2.95q-.725-1.25-1.812-2.175C16 4.9 15.533 4.75 14.6 4.45q.45.824.788 1.713c.338.888.412 1.204.562 1.837M10.1 8h3.8q-.3-1.1-.775-2.075C12.65 4.95 12.433 4.65 12 4.05q-.65.9-1.125 1.875C10.4 6.9 10.3 7.267 10.1 8m-5 0h2.95q.225-.95.563-1.837C8.95 5.275 9.1 5 9.4 4.45Q8 4.9 6.913 5.825C5.826 6.75 5.583 7.167 5.1 8"
+                  />
+                </svg>
+              </div>
               <p
                 class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate"
               >
@@ -74,18 +84,15 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
               </p>
             </div>
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/check.svg');"
             />
           </button>
-          <hr
-            class="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted"
-          />
           <div
             class="flex flex-col"
           >
             <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default px-4 py-2"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default px-4 pb-2 pt-4"
             >
               Default networks
             </p>
@@ -499,7 +506,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
     >
       <section
         aria-modal="true"
-        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm overflow-hidden mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm flex h-full flex-col overflow-hidden mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
         role="dialog"
       >
         <header
@@ -530,7 +537,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
           </div>
         </header>
         <div
-          class="flex flex-col max-h-[calc(100vh-168px)] overflow-y-auto"
+          class="flex flex-col min-h-0 flex-1 overflow-y-auto"
         >
           <button
             class="flex min-h-16 w-full cursor-pointer items-center justify-between border-0 p-4 text-left hover:bg-hover bg-muted"
@@ -540,10 +547,20 @@ exports[`BridgeInputGroup should render source networks 1`] = `
             <div
               class="flex min-w-0 items-center gap-3"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/global.svg');"
-              />
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-muted"
+              >
+                <svg
+                  class="inline-block w-5 h-5 text-icon-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 22q-2.05 0-3.875-.787c-1.825-.788-2.28-1.242-3.187-2.15s-1.625-1.971-2.15-3.188S2 13.367 2 12q0-2.075.788-3.887c.788-1.812 1.241-2.267 2.15-3.175s1.97-1.625 3.187-2.15S10.633 2 12 2q2.075 0 3.888.788c1.812.788 2.266 1.241 3.174 2.15s1.625 1.966 2.15 3.175S22 10.617 22 12q0 2.05-.787 3.875c-.788 1.825-1.242 2.28-2.15 3.188s-1.967 1.625-3.175 2.15S13.383 22 12 22m0-2.05q.65-.9 1.125-1.875c.475-.975.575-1.342.775-2.075h-3.8q.3 1.1.775 2.075c.475.975.692 1.275 1.125 1.875m-2.6-.4q-.45-.825-.787-1.712A11.6 11.6 0 0 1 8.05 16H5.1q.725 1.25 1.813 2.175C8 19.1 8.467 19.25 9.4 19.55m5.2 0q1.4-.45 2.488-1.375c1.088-.925 1.329-1.342 1.812-2.175h-2.95q-.225.95-.562 1.838c-.337.887-.488 1.162-.788 1.712M4.25 14h3.4q-.075-.5-.112-.987C7.5 12.525 7.5 12.35 7.5 12a13 13 0 0 1 .15-2h-3.4q-.125.5-.187.988C4 11.476 4 11.65 4 12a8 8 0 0 0 .25 2m5.4 0h4.7q.075-.5.113-.987c.038-.488.037-.663.037-1.013a13 13 0 0 0-.15-2h-4.7q-.075.5-.112.988C9.5 11.476 9.5 11.65 9.5 12a13 13 0 0 0 .15 2m6.7 0h3.4q.125-.5.188-.987C20 12.525 20 12.35 20 12a8 8 0 0 0-.25-2h-3.4q.075.5.113.988c.038.488.037.662.037 1.012a13 13 0 0 1-.15 2m-.4-6h2.95q-.725-1.25-1.812-2.175C16 4.9 15.533 4.75 14.6 4.45q.45.824.788 1.713c.338.888.412 1.204.562 1.837M10.1 8h3.8q-.3-1.1-.775-2.075C12.65 4.95 12.433 4.65 12 4.05q-.65.9-1.125 1.875C10.4 6.9 10.3 7.267 10.1 8m-5 0h2.95q.225-.95.563-1.837C8.95 5.275 9.1 5 9.4 4.45Q8 4.9 6.913 5.825C5.826 6.75 5.583 7.167 5.1 8"
+                  />
+                </svg>
+              </div>
               <p
                 class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate"
               >
@@ -551,18 +568,15 @@ exports[`BridgeInputGroup should render source networks 1`] = `
               </p>
             </div>
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/check.svg');"
             />
           </button>
-          <hr
-            class="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted"
-          />
           <div
             class="flex flex-col"
           >
             <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default px-4 py-2"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default px-4 pb-2 pt-4"
             >
               Default networks
             </p>
@@ -911,50 +925,55 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
           class="mm-box mm-modal-body mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--height-full"
           data-testid="bridge-asset-picker-modal__body"
         >
-          <button
-            class="mm-box mm-picker-network mm-box--margin-inline-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--width-max mm-box--background-color-background-muted mm-box--rounded-xl"
-            data-testid="multichain-asset-picker__network"
-            style="min-height: 32px;"
-          >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-sm mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-              style="display: none; width: 16px; height: 16px; border-width: 0px;"
-            >
-              A
-            </div>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
-            >
-              All networks
-            </p>
-            <span
-              class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-down.svg');"
-            />
-          </button>
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-            style="min-height: 48px; padding-right: 8px; outline: none;"
+            class="flex flex-col gap-4"
           >
-            <svg
-              class="inline-block w-5 h-5 text-icon-alternative"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+            <button
+              class="inline-flex items-center justify-center gap-x-1 font-medium overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed text-default"
+              data-testid="multichain-asset-picker__network"
+              role="button"
             >
-              <path
-                d="m19.6 21-6.3-6.3q-.75.6-1.725.95C10.6 16 10.233 16 9.5 16q-2.725 0-4.612-1.888C3 12.224 3 11.317 3 9.5q0-2.725 1.888-4.612C6.776 3 7.683 3 9.5 3q2.725 0 4.613 1.888C16 6.776 16 7.683 16 9.5a6.1 6.1 0 0 1-1.3 3.8l6.3 6.3zM9.5 14q1.875 0 3.188-1.312C14 11.375 14 10.75 14 9.5s-.437-2.312-1.312-3.187S10.75 5 9.5 5s-2.312.438-3.187 1.313S5 8.25 5 9.5s.438 2.313 1.313 3.188S8.25 14 9.5 14"
+              <svg
+                aria-hidden="true"
+                class="inline-block w-5 h-5 shrink-0 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 18v-2h4v2zm-4-5v-2h12v2zM3 8V6h18v2z"
+                />
+              </svg>
+              <p
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate"
+              >
+                All networks
+              </p>
+            </button>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              style="min-height: 48px; padding-right: 8px; outline: none;"
+            >
+              <svg
+                class="inline-block w-5 h-5 text-icon-alternative"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m19.6 21-6.3-6.3q-.75.6-1.725.95C10.6 16 10.233 16 9.5 16q-2.725 0-4.612-1.888C3 12.224 3 11.317 3 9.5q0-2.725 1.888-4.612C6.776 3 7.683 3 9.5 3q2.725 0 4.613 1.888C16 6.776 16 7.683 16 9.5a6.1 6.1 0 0 1-1.3 3.8l6.3 6.3zM9.5 14q1.875 0 3.188-1.312C14 11.375 14 10.75 14 9.5s-.437-2.312-1.312-3.187S10.75 5 9.5 5s-2.312.438-3.187 1.313S5 8.25 5 9.5s.438 2.313 1.313 3.188S8.25 14 9.5 14"
+                />
+              </svg>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none mm-box--border-color-border-muted box--border-width-1"
+                data-testid="bridge-asset-picker-search-input"
+                focused="true"
+                placeholder="Enter token name or paste address"
+                type="text"
+                value=""
               />
-            </svg>
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none mm-box--border-color-border-muted box--border-width-1"
-              data-testid="bridge-asset-picker-search-input"
-              focused="true"
-              placeholder="Enter token name or paste address"
-              type="text"
-              value=""
-            />
+            </div>
           </div>
           <div
             class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -1296,50 +1315,55 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
           class="mm-box mm-modal-body mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--height-full"
           data-testid="bridge-asset-picker-modal__body"
         >
-          <button
-            class="mm-box mm-picker-network mm-box--margin-inline-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--width-max mm-box--background-color-background-muted mm-box--rounded-xl"
-            data-testid="multichain-asset-picker__network"
-            style="min-height: 32px;"
-          >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-sm mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-              style="display: none; width: 16px; height: 16px; border-width: 0px;"
-            >
-              A
-            </div>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
-            >
-              All networks
-            </p>
-            <span
-              class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-down.svg');"
-            />
-          </button>
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-            style="min-height: 48px; padding-right: 8px; outline: none;"
+            class="flex flex-col gap-4"
           >
-            <svg
-              class="inline-block w-5 h-5 text-icon-alternative"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+            <button
+              class="inline-flex items-center justify-center gap-x-1 font-medium overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed text-default"
+              data-testid="multichain-asset-picker__network"
+              role="button"
             >
-              <path
-                d="m19.6 21-6.3-6.3q-.75.6-1.725.95C10.6 16 10.233 16 9.5 16q-2.725 0-4.612-1.888C3 12.224 3 11.317 3 9.5q0-2.725 1.888-4.612C6.776 3 7.683 3 9.5 3q2.725 0 4.613 1.888C16 6.776 16 7.683 16 9.5a6.1 6.1 0 0 1-1.3 3.8l6.3 6.3zM9.5 14q1.875 0 3.188-1.312C14 11.375 14 10.75 14 9.5s-.437-2.312-1.312-3.187S10.75 5 9.5 5s-2.312.438-3.187 1.313S5 8.25 5 9.5s.438 2.313 1.313 3.188S8.25 14 9.5 14"
+              <svg
+                aria-hidden="true"
+                class="inline-block w-5 h-5 shrink-0 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 18v-2h4v2zm-4-5v-2h12v2zM3 8V6h18v2z"
+                />
+              </svg>
+              <p
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate"
+              >
+                All networks
+              </p>
+            </button>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              style="min-height: 48px; padding-right: 8px; outline: none;"
+            >
+              <svg
+                class="inline-block w-5 h-5 text-icon-alternative"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m19.6 21-6.3-6.3q-.75.6-1.725.95C10.6 16 10.233 16 9.5 16q-2.725 0-4.612-1.888C3 12.224 3 11.317 3 9.5q0-2.725 1.888-4.612C6.776 3 7.683 3 9.5 3q2.725 0 4.613 1.888C16 6.776 16 7.683 16 9.5a6.1 6.1 0 0 1-1.3 3.8l6.3 6.3zM9.5 14q1.875 0 3.188-1.312C14 11.375 14 10.75 14 9.5s-.437-2.312-1.312-3.187S10.75 5 9.5 5s-2.312.438-3.187 1.313S5 8.25 5 9.5s.438 2.313 1.313 3.188S8.25 14 9.5 14"
+                />
+              </svg>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none mm-box--border-color-border-muted box--border-width-1"
+                data-testid="bridge-asset-picker-search-input"
+                focused="true"
+                placeholder="Enter token name or paste address"
+                type="text"
+                value="USD"
               />
-            </svg>
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none mm-box--border-color-border-muted box--border-width-1"
-              data-testid="bridge-asset-picker-search-input"
-              focused="true"
-              placeholder="Enter token name or paste address"
-              type="text"
-              value="USD"
-            />
+            </div>
           </div>
           <div
             class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"

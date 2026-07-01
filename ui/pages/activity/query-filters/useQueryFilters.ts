@@ -56,7 +56,7 @@ export function useQueryFilters(queryFilters: Props) {
               mapApiEvmTransactions({ subjectAddress, transaction }),
             )
             .map((activity) => {
-              const hash = activity.data.hash?.toLowerCase();
+              const hash = activity.hash?.toLowerCase();
 
               return activity.status === 'failed' &&
                 hash &&

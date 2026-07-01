@@ -83,6 +83,9 @@ export function useMultichainTransactionDisplay(transaction: Transaction) {
     ).toLowerCase()} ${to?.unit}`,
     [TransactionType.StakeDeposit]: t('stakingDeposit'),
     [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
+    [TransactionType.TokenApprove]: from?.unit
+      ? t('approveSpendingCap', [from.unit])
+      : t('approve'),
     [TransactionType.Unknown]: t('interaction'),
   };
 
