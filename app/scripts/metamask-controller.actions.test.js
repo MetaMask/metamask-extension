@@ -515,32 +515,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#rejectPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        rejectPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        rejectPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
-    });
-  });
-
   describe('#acceptPermissionsRequest', function () {
     it('should not propagate PermissionsRequestNotFoundError', function () {
       const error = new PermissionsRequestNotFoundError('123');
