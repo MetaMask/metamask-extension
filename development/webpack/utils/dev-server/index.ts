@@ -14,8 +14,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   host: 'localhost',
   // pick a free port at startup.
   port: 'auto',
-  // client injection is disabled because clients are registered by
-  // `setupMiddlewares` below.
+  // client injection is disabled because clients are registered by `setupMiddlewares` below.
   client: false,
   devMiddleware: {
     // browsers need actual files on disk; extension pages are loaded via
