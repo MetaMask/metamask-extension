@@ -157,6 +157,19 @@ export type LegacyBackgroundApiServiceOnAccountRemovedAction = {
   handler: LegacyBackgroundApiService['onAccountRemoved'];
 };
 
+/**
+ * Rejects a pending permissions request.
+ *
+ * Swallows `PermissionsRequestNotFoundError` so that rejecting an already
+ * resolved request does not throw.
+ *
+ * @param requestId - The ID of the permissions request to reject.
+ */
+export type LegacyBackgroundApiServiceRejectPermissionsRequestAction = {
+  type: `LegacyBackgroundApiService:rejectPermissionsRequest`;
+  handler: LegacyBackgroundApiService['rejectPermissionsRequest'];
+};
+
 export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
   type: `LegacyBackgroundApiService:importAccountWithStrategy`;
   handler: LegacyBackgroundApiService['importAccountWithStrategy'];
@@ -271,6 +284,18 @@ export type LegacyBackgroundApiServiceExportAccountAction = {
 };
 
 /**
+ * Applies the given transaction container types to an existing transaction.
+ *
+ * @param transactionId - The ID of the transaction to update.
+ * @param containerTypes - The container types to apply to the transaction.
+ */
+export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
+  {
+    type: `LegacyBackgroundApiService:applyTransactionContainersExisting`;
+    handler: LegacyBackgroundApiService['applyTransactionContainersExisting'];
+  };
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -288,6 +313,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
+  | LegacyBackgroundApiServiceRejectPermissionsRequestAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
   | LegacyBackgroundApiServiceGetNextNonceAction
@@ -297,4 +323,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
-  | LegacyBackgroundApiServiceExportAccountAction;
+  | LegacyBackgroundApiServiceExportAccountAction
+  | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction;
