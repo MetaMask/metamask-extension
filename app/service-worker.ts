@@ -59,7 +59,7 @@ function waitUntilRunImportScripts() {
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
 self.addEventListener('install', (event) => {
-  event.waitUntil(waitUntilRunImportScripts());
+  (event as ExtendableEvent).waitUntil(waitUntilRunImportScripts());
 });
 
 // listen for connection events from other contexts, and respond to liveness
