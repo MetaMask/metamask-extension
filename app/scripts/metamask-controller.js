@@ -201,6 +201,7 @@ import {
   endTrace,
   TraceName,
   TraceOperation,
+  getPerformanceTimestamp,
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
@@ -4790,10 +4791,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
    */
   async discoverAndCreateAccounts(id) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
+    // Hold the start time so the span can be backdated if discovery does real
+    // work. The common no-op discovery (every login, per keyring) is not traced.
+    const startTime = getPerformanceTimestamp();
     try {
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
@@ -4811,6 +4811,18 @@ export default class MetamaskController extends EventEmitter {
 
       const counts = this.getDiscoveryCountByProvider(result);
 
+      // Only emit a span when discovery actually created accounts.
+      if (result.length > 0) {
+        trace({
+          name: TraceName.DiscoverAccounts,
+          op: TraceOperation.AccountDiscover,
+          startTime,
+        });
+        endTrace({
+          name: TraceName.DiscoverAccounts,
+        });
+      }
+
       return counts;
     } catch (error) {
       log.warn(`Failed to add accounts with balance. ${error}`);
@@ -4819,10 +4831,6 @@ export default class MetamaskController extends EventEmitter {
         Solana: 0,
         Tron: 0,
       };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-      });
     }
   }
 
