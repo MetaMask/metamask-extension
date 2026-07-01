@@ -8,6 +8,11 @@ on:
   workflow_dispatch:
   workflow_call:
 
+# Serialize publish runs per release branch (direct dispatch or orchestrator workflow_call).
+concurrency:
+  group: publish-release-from-release-head-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
   statuses: read # Required by verify-ci-checks.sh to read commit statuses

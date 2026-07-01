@@ -55,6 +55,11 @@ on:
         type: boolean
         default: false
 
+# One in-flight run per version (Runway must not double-dispatch). Queue, do not cancel.
+concurrency:
+  group: runway-extension-release-and-submit-${{ inputs.version }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
   statuses: read
