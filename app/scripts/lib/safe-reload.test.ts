@@ -1,6 +1,9 @@
 import 'navigator.locks';
 import browser from 'webextension-polyfill';
-import type { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
+import type {
+  PersistenceManager,
+  StorageKind,
+} from '../../../shared/lib/stores/persistence-manager';
 import {
   PERSISTENCE_OPERATION_DEBOUNCE_MS,
   PERSISTENCE_OPERATION_MAX_WAIT_MS,
@@ -25,11 +28,11 @@ async function flushPromises() {
   await Promise.resolve();
 }
 
-function createPersistenceManager() {
+function createPersistenceManager(storageKind: StorageKind = 'split') {
   return {
     persist: jest.fn().mockResolvedValue([true, undefined]),
     set: jest.fn().mockResolvedValue([true, undefined]),
-    storageKind: 'split',
+    storageKind,
   } as unknown as PersistenceManager;
 }
 
@@ -62,13 +65,13 @@ describe('getRequestSafeReload', () => {
     expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
   });
 
-  it('flushes queued persistence without evacuating future writes', async () => {
+  it('flushes queued split persistence for an immediate key without evacuating future writes', async () => {
     const persistenceManager = createPersistenceManager();
-    const { safePersist, flushPersist } =
-      getRequestSafeReload(persistenceManager);
+    const { safePersist } = getRequestSafeReload(persistenceManager, [
+      'KeyringController',
+    ]);
 
-    await safePersist();
-    await flushPersist();
+    await safePersist('KeyringController');
 
     expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
 
@@ -77,6 +80,47 @@ describe('getRequestSafeReload', () => {
     await flushPromises();
 
     expect(persistenceManager.persist).toHaveBeenCalledTimes(2);
+  });
+
+  it('flushes queued split persistence when any changed key is immediate', async () => {
+    const persistenceManager = createPersistenceManager();
+    const { safePersist } = getRequestSafeReload(persistenceManager, [
+      'KeyringController',
+    ]);
+
+    await safePersist(['AppMetadataController', 'KeyringController']);
+
+    expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
+  });
+
+  it('flushes queued data persistence for an immediate key', async () => {
+    const persistenceManager = createPersistenceManager('data');
+    const { safePersist } = getRequestSafeReload(persistenceManager, [
+      'KeyringController',
+    ]);
+    const state = { KeyringController: { vault: 'vault' } };
+
+    await safePersist(['KeyringController'], state);
+
+    expect(persistenceManager.set).toHaveBeenCalledTimes(1);
+    expect(persistenceManager.set).toHaveBeenCalledWith(state);
+  });
+
+  it('does not flush queued persistence for non-immediate keys', async () => {
+    const persistenceManager = createPersistenceManager();
+    const { safePersist } = getRequestSafeReload(persistenceManager, [
+      'KeyringController',
+    ]);
+
+    await safePersist('SubjectMetadataController');
+    await flushPromises();
+
+    expect(persistenceManager.persist).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(PERSISTENCE_OPERATION_DEBOUNCE_MS);
+    await flushPromises();
+
+    expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
   });
 
   it('persists at maxWait when updates keep arriving before the debounce expires', async () => {

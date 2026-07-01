@@ -154,12 +154,6 @@ export const IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS = [
   'KeyringController',
 ] as const;
 
-export function shouldFlushPersistenceImmediately(key: string): boolean {
-  return (IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS as readonly string[]).includes(
-    key,
-  );
-}
-
 /**
  * The PersistenceManager class serves as a high-level manager for handling
  * storage-related operations using a local storage system. It provides methods to read

@@ -6,10 +6,10 @@ import log from 'loglevel';
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import {
+  IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS,
   PERSISTENCE_OPERATION_DEBOUNCE_MS,
   PERSISTENCE_OPERATION_MAX_WAIT_MS,
   PersistenceManager,
-  shouldFlushPersistenceImmediately,
 } from './persistence-manager';
 import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
@@ -62,11 +62,10 @@ describe('PersistenceManager', () => {
       expect(PERSISTENCE_OPERATION_MAX_WAIT_MS).toBe(30 * 60 * 1000);
     });
 
-    it('flushes immediately for KeyringController only', () => {
-      expect(shouldFlushPersistenceImmediately('KeyringController')).toBe(true);
-      expect(shouldFlushPersistenceImmediately('AppMetadataController')).toBe(
-        false,
-      );
+    it('defines immediate persistence keys', () => {
+      expect(IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS).toStrictEqual([
+        'KeyringController',
+      ]);
     });
   });
 
