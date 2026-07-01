@@ -269,7 +269,7 @@ export const NetworksPage = () => {
       {view === '' ? (
         <>
           <SettingsHeader
-            title={t('networks')}
+            title={t('manageNetworksMenuHeading')}
             onClose={handleRootBack}
             isSearchOpen={isSearchOpen}
             onOpenSearch={() => setIsSearchOpen(true)}

@@ -82,12 +82,6 @@
   "account": {
     "message": "계정"
   },
-  "accountActivity": {
-    "message": "계정 활동"
-  },
-  "accountActivityText": {
-    "message": "알림을 수신할 계정을 선택하세요:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "로그인"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "고객 지원"
   },
-  "customizeYourNotifications": {
-    "message": "알림 맞춤 설정"
-  },
-  "customizeYourNotificationsText": {
-    "message": "수신하려는 알림의 유형을 켜세요."
-  },
   "dappConnections": {
     "message": "디앱 연결"
   },
@@ -5874,9 +5862,6 @@
   "notificationsSettingsBoxError": {
     "message": "오류가 발생했습니다. 다시 시도해 주세요."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "알림을 통해 지갑에서 일어나는 활동을 계속 확인할 수 있습니다. 알림 이용 시 당사는 일부 설정을 기기 간에 동기화하기 위해 프로필을 사용합니다. $1 이 기능을 사용하는 동안에도 사용자 개인정보는 보호됩니다."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "방법 확인하기"
   },
@@ -7542,9 +7527,6 @@
   },
   "proceedWithTransaction": {
     "message": "계속 진행"
-  },
-  "productAnnouncements": {
-    "message": "제품 공지"
   },
   "provide": {
     "message": "제공"
