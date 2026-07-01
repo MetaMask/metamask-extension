@@ -63,4 +63,10 @@ export default class PersonalSignConfirmation extends Confirmation {
     console.log('Verify origin on personal sign confirmation screen');
     await this.driver.waitForSelector(this.originSelector);
   }
+
+  async verifyPersonalSignInfo(): Promise<void> {
+    console.log('Verify personal sign info on confirmation screen');
+    await this.verifyOrigin();
+    await this.verifyMessage();
+  }
 }

@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../../helpers';
-import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
@@ -57,12 +56,12 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await assertInfoValues(confirmation);
+        await confirmation.verifyPersonalSignInfo();
 
         await confirmation.clickScrollToBottomButton();
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
-        await assertVerifiedPersonalMessage(driver, publicAddress);
+        await testDapp.verifyPersonalSignSuccess(publicAddress);
 
         await assertAccountDetailsMetrics(
           driver,
@@ -157,28 +156,8 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         // Verify the signature
-        await testDapp.checkSuccessPersonalSign(publicAddress);
-        await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
+        await testDapp.verifyPersonalSignSuccess(publicAddress);
       },
     );
   });
 });
-
-async function assertInfoValues(
-  confirmation: PersonalSignConfirmation,
-): Promise<void> {
-  await confirmation.verifyOrigin();
-  await confirmation.verifyMessage();
-}
-
-async function assertVerifiedPersonalMessage(
-  driver: Driver,
-  publicAddress: string,
-): Promise<void> {
-  const testDapp = new TestDapp(driver);
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-  await testDapp.checkSuccessPersonalSign(publicAddress);
-  await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
-}
