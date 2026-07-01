@@ -20,6 +20,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import {
+  transitionBack,
+  transitionForward,
+} from '../../components/ui/transition';
 import { useNetworkFormState } from '../../components/multichain/networks-form/networks-form-state';
 import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
@@ -52,6 +56,18 @@ const getViewAfterExplorerAdd = (view: string) =>
   view === 'edit-explorer-url' ? 'edit' : 'add';
 
 const NETWORKS_PAGE_TOAST_DURATION_MS = 5000;
+
+const NETWORKS_PAGE_VIEW_DEPTH: Record<string, number> = {
+  '': 0,
+  add: 1,
+  edit: 1,
+  'add-from-chainlist': 2,
+  'add-rpc': 2,
+  'edit-rpc': 2,
+  'add-explorer-url': 2,
+  'edit-explorer-url': 2,
+  'select-rpc': 2,
+};
 
 const NetworksPageFormHeader = ({
   title,
@@ -148,13 +164,24 @@ export const NetworksPage = () => {
 
   const setView = useCallback(
     (nextView?: string) => {
-      if (nextView) {
-        setSearchParams({ view: nextView });
-      } else {
-        setSearchParams({});
+      const updateView = () => {
+        if (nextView) {
+          setSearchParams({ view: nextView });
+        } else {
+          setSearchParams({});
+        }
+      };
+      const currentDepth = NETWORKS_PAGE_VIEW_DEPTH[view] ?? 0;
+      const nextDepth = NETWORKS_PAGE_VIEW_DEPTH[nextView ?? ''] ?? 0;
+
+      if (nextDepth > currentDepth) {
+        transitionForward(updateView);
+        return;
       }
+
+      transitionBack(updateView);
     },
-    [setSearchParams],
+    [setSearchParams, view],
   );
 
   const handleNewNetwork = useCallback(() => {
