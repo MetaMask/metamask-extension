@@ -1584,9 +1584,6 @@ async function setupMocking(
 
       const balances = [];
       for (const id of accountIds) {
-        if (!id.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) {
-          continue;
-        }
         const parts = id.split(':');
         if (parts[0] !== 'eip155' || parts.length < 3) {
           continue;

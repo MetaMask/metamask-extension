@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -8,16 +9,127 @@ import {
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
 export const TRON_CHAIN_ID = 'tron:728126428';
-export const TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE =
-  '5472616e73616374696f6e2065787069726564';
-const MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR = new Date(
-  new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
-).getTime();
 
 // TRX balance in SUN (1 TRX = 1,000,000 SUN)
 export const TRX_BALANCE = 6072392; // ~6.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
+
+const TRON_NATIVE_CAIP_ASSET_ID = `${TRON_CHAIN_ID}/slip44:195`;
+const TRON_HTX_CAIP_ASSET_ID =
+  'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6';
+const TRON_USDT_CAIP_ASSET_ID =
+  'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+const TRON_USDD_CAIP_ASSET_ID =
+  'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz';
+
+/** Deterministic Tron snap account id for the default E2E SRP (BIP44 /195). */
+export const TRON_ACCOUNT_ID = 'c8f3a2e1-4d5b-6c7a-8e9f-0a1b2c3d4e5f';
+
+const TRON_ENTROPY_SOURCE = '01KGPGYE2JJGMXDJPEVXKPJ1JG';
+const TRON_DERIVATION_PATH = "m/44'/195'/0'/0/0";
+const TRON_WALLET_SNAP_ID = 'npm:@metamask/tron-wallet-snap';
+
+const TRON_ACCOUNT_METHODS = [
+  'signTransaction',
+  'signMessage',
+  'getAccount',
+  'getBalance',
+] as const;
+
+const TRON_ASSETS_INFO = {
+  [TRON_NATIVE_CAIP_ASSET_ID]: {
+    decimals: 6,
+    image:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+    name: 'Tron',
+    symbol: 'TRX',
+    type: 'native',
+  },
+  [TRON_HTX_CAIP_ASSET_ID]: {
+    decimals: 18,
+    name: 'HTX',
+    symbol: 'HTX',
+    type: 'erc20',
+  },
+  [TRON_USDT_CAIP_ASSET_ID]: {
+    decimals: 6,
+    name: 'Tether USD',
+    symbol: 'USDT',
+    type: 'erc20',
+  },
+  [TRON_USDD_CAIP_ASSET_ID]: {
+    decimals: 18,
+    name: 'Decentralized USD',
+    symbol: 'USDD',
+    type: 'erc20',
+  },
+};
+
+/** Pre-seed native/TRC20 metadata so unified-assets selectors render Tron balances. */
+export const TRON_ASSETS_CONTROLLER_FIXTURE = {
+  assetsInfo: TRON_ASSETS_INFO,
+  assetsPrice: {
+    [TRON_NATIVE_CAIP_ASSET_ID]: {
+      assetPriceType: 'fungible' as const,
+      id: 'tron',
+      lastUpdated: 0,
+      price: TRX_TO_USD_RATE,
+      usdPrice: TRX_TO_USD_RATE,
+    },
+    [TRON_HTX_CAIP_ASSET_ID]: {
+      assetPriceType: 'fungible' as const,
+      id: 'htx-dao',
+      lastUpdated: 0,
+      price: 0.00000168,
+      usdPrice: 0.00000168,
+    },
+    [TRON_USDT_CAIP_ASSET_ID]: {
+      assetPriceType: 'fungible' as const,
+      id: 'tether',
+      lastUpdated: 0,
+      price: 0.999176,
+      usdPrice: 0.999176,
+    },
+    [TRON_USDD_CAIP_ASSET_ID]: {
+      assetPriceType: 'fungible' as const,
+      id: 'usdd',
+      lastUpdated: 0,
+      price: 0.999959,
+      usdPrice: 0.999959,
+    },
+  },
+};
+
+type BuildTronFixturesOptions = {
+  showNativeTokenAsMainBalanceDisabled?: boolean;
+};
+
+export function buildTronFixtures(
+  configure?: (builder: FixtureBuilderV2) => FixtureBuilderV2,
+  {
+    showNativeTokenAsMainBalanceDisabled = false,
+  }: BuildTronFixturesOptions = {},
+) {
+  let builder = new FixtureBuilderV2().withAssetsController(
+    TRON_ASSETS_CONTROLLER_FIXTURE,
+  );
+
+  if (showNativeTokenAsMainBalanceDisabled) {
+    builder = builder.withShowNativeTokenAsMainBalanceDisabled();
+  }
+
+  if (configure) {
+    builder = configure(builder);
+  }
+  return builder.build();
+}
+
+export const TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE =
+  '5472616e73616374696f6e2065787069726564';
+const MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR = new Date(
+  new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
+).getTime();
 
 const TRON_BLOCK_RESPONSE = {
   blockID: '0000000004b6f733ff89d72ddc1ce1eabd6045d84cbc4eb0a7e88d9223c12c5e',
@@ -1219,6 +1331,7 @@ export async function mockAccountsApiV2WithTron(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .asPriority(99)
     .always()
     .thenJson(200, {
       fullSupport: [
@@ -1250,50 +1363,72 @@ export async function mockAccountsApiV5WithTron(
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint> {
   const trxAmount = mockZeroBalance ? '0' : String(TRX_BALANCE / SUN_PER_TRX);
-  const balances = mockZeroBalance
-    ? [
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/slip44:195`,
-          balance: '0',
-        },
-      ]
-    : [
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/slip44:195`,
-          balance: trxAmount,
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6`,
-          balance: '3156454.956836360132407885', // HTX decimals=18
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
-          balance: '2.804595', // USDT decimals=6
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz`,
-          balance: '0.289757448699320931', // USDD decimals=18
-        },
-      ];
 
   return mockServer
     .forGet(
       /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
     )
+    .asPriority(99)
     .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: balances.length,
-        unprocessedNetworks: [],
-        balances,
-      },
-    }));
+    .thenCallback((req) => {
+      const accountIds =
+        new URL(req.url).searchParams
+          .get('accountIds')
+          ?.split(',')
+          .filter(Boolean) ?? [];
+
+      const balances = [];
+
+      for (const accountId of accountIds) {
+        if (
+          !accountId.startsWith('tron:') ||
+          !accountId.includes(TRON_ACCOUNT_ADDRESS)
+        ) {
+          continue;
+        }
+
+        if (mockZeroBalance) {
+          balances.push({
+            accountId,
+            assetId: `${TRON_CHAIN_ID}/slip44:195`,
+            balance: '0',
+          });
+          continue;
+        }
+
+        balances.push(
+          {
+            accountId,
+            assetId: `${TRON_CHAIN_ID}/slip44:195`,
+            balance: trxAmount,
+          },
+          {
+            accountId,
+            assetId: `${TRON_CHAIN_ID}/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6`,
+            balance: '3156454.956836360132407885', // HTX decimals=18
+          },
+          {
+            accountId,
+            assetId: `${TRON_CHAIN_ID}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
+            balance: '2.804595', // USDT decimals=6
+          },
+          {
+            accountId,
+            assetId: `${TRON_CHAIN_ID}/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz`,
+            balance: '0.289757448699320931', // USDD decimals=18
+          },
+        );
+      }
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          unprocessedNetworks: [],
+          balances,
+        },
+      };
+    });
 }
 
 export async function mockTronApis(

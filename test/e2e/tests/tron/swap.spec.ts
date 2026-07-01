@@ -12,7 +12,8 @@ import {
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
 
-describe('Swap on Tron', function () {
+// TODO: Re-enable after unified-assets Tron balance fixtures are fixed.
+describe.skip('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
       {

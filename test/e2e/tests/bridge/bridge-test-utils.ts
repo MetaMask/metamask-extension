@@ -1490,6 +1490,9 @@ export const getQuoteNegativeCasesFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: getBridgeFixtureAssetsBalance(),
     });
 
   return {
@@ -1549,6 +1552,9 @@ export const getBridgeNegativeCasesFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: getBridgeFixtureAssetsBalance(),
     });
 
   return {
@@ -1608,6 +1614,9 @@ export const getInsufficientFundsFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: getBridgeFixtureAssetsBalance(),
     });
 
   return {

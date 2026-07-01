@@ -812,7 +812,19 @@ class FixtureBuilderV2 {
         },
         selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
       },
-    });
+    })
+      .withAssetsController({
+        assetsBalance: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            'eip155:1337/slip44:1': { amount: '25' },
+          },
+          [HARDWARE_WALLET_ACCOUNT_ID]: {
+            'eip155:1337/slip44:1': {
+              amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+            },
+          },
+        },
+      });
     return this;
   }
 
