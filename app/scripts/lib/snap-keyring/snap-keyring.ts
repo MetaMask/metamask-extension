@@ -12,10 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ENVIRONMENT_TYPE_BACKGROUND,
-} from '../../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -35,9 +32,6 @@ import { showError, showSuccess } from './utils/showResult';
  * Builder type for the Snap keyring.
  */
 export type SnapKeyringBuilder = {
-  name: 'SnapKeyringBuilder';
-  state: null;
-
   (): SnapKeyring;
   type: typeof SnapKeyring.type;
 };
@@ -493,6 +487,8 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
   }
 }
 
+export { getSnapKeyringBuilderMessenger } from '../../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
+
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing Snap accounts.
  *
@@ -510,7 +506,6 @@ export function snapKeyringBuilder(messenger: SnapKeyringBuilderMessenger) {
     });
   }) as SnapKeyringBuilder;
 
-  SnapKeyringBuilder.state = null;
   SnapKeyringBuilder.type = SnapKeyring.type;
 
   return SnapKeyringBuilder;

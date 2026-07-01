@@ -373,9 +373,6 @@
     "ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.test.tsx": {
       "React: Missing key props in lists": 1
     },
-    "ui/components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 3
-    },
     "ui/components/multichain-accounts/smart-contract-account-toggle-section/smart-contract-account-toggle-section.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
       "React: componentWill* lifecycle deprecations": 1
@@ -641,8 +638,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "error: TypeError: background[method] is not a": 2
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "Reselect: Input stability warnings": 1

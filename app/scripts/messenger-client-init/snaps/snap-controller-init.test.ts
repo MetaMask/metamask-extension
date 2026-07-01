@@ -76,7 +76,6 @@ describe('SnapControllerInit', () => {
       getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
       ensureOnboardingComplete: expect.any(Function),
-      trackEvent: expect.any(Function),
     });
   });
 
