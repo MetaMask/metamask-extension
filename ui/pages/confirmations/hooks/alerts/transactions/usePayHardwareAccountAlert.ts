@@ -13,20 +13,25 @@ import { AlertsName } from '../constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { selectIsPayHardwareEnabled } from '../../../selectors/feature-flags';
 
 const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
-  TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
   TransactionType.predictDeposit,
   TransactionType.predictWithdraw,
 ];
 
+const PAY_HARDWARE_FLAG_GATED_TYPES: TransactionType[] = [
+  TransactionType.musdConversion,
+];
+
 export function usePayHardwareAccountAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const transactionType = currentConfirmation?.type;
+  const isPayHardwareEnabled = useSelector(selectIsPayHardwareEnabled);
   const fromAddress = currentConfirmation?.txParams?.from as Hex | undefined;
 
   const account = useSelector((state) =>
@@ -35,12 +40,25 @@ export function usePayHardwareAccountAlert(): Alert[] {
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
 
-  const isApplicableType =
-    transactionType !== undefined &&
-    PAY_HARDWARE_ALERT_TRANSACTION_TYPES.includes(transactionType);
+  const isAlwaysBlockedType = hasTransactionType(
+    currentConfirmation,
+    PAY_HARDWARE_ALERT_TRANSACTION_TYPES,
+  );
+
+  const isFlagGatedType = hasTransactionType(
+    currentConfirmation,
+    PAY_HARDWARE_FLAG_GATED_TYPES,
+  );
 
   return useMemo(() => {
-    if (!isApplicableType || !isHardwareWallet) {
+    if (!isHardwareWallet) {
+      return [];
+    }
+
+    const shouldAlert =
+      isAlwaysBlockedType || (isFlagGatedType && !isPayHardwareEnabled);
+
+    if (!shouldAlert) {
       return [];
     }
 
@@ -54,5 +72,11 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [isApplicableType, isHardwareWallet, t]);
+  }, [
+    isHardwareWallet,
+    isAlwaysBlockedType,
+    isFlagGatedType,
+    isPayHardwareEnabled,
+    t,
+  ]);
 }

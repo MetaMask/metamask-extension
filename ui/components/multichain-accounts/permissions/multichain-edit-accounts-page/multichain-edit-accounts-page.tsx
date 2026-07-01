@@ -2,14 +2,15 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   IconName,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSecondary,
-  ButtonSecondarySize,
-} from '../../../component-library';
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
   BackgroundColor,
@@ -170,20 +171,21 @@ export const MultichainEditAccountsPage = ({
         />
       </ScrollContainer>
       <Footer className="multichain-edit-accounts-page__footer">
-        <ButtonSecondary
+        <Button
           data-testid="connect-more-accounts-button"
           onClick={handleConnect}
-          size={ButtonSecondarySize.Lg}
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
           // Allow 0 accounts selected for existing Snaps and non-Snaps revoke flows,
           // but require at least 1 account for initial Snaps permission requests
-          disabled={
+          isDisabled={
             selectedAccountGroups.length === 0 &&
             snapsPermissionsRequestType === SnapsPermissionsRequestType.Initial
           }
-          block
+          isFullWidth
         >
           {confirmButtonText ?? t('connect')}
-        </ButtonSecondary>
+        </Button>
       </Footer>
     </Page>
   );

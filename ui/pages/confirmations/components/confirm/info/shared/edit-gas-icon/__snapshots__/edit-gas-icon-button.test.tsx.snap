@@ -3,17 +3,20 @@
 exports[`<EditGasIconButton /> renders component 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+    aria-label="Edit"
+    class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
     data-testid="edit-gas-fee-icon"
-    style="text-decoration: none;"
   >
-    <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-      style="mask-image: url('./images/icons/edit.svg');"
-    />
-    <span
-      class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-    />
+    <svg
+      class="inline-block w-5 h-5 text-inherit"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5 19h1.425L16.2 9.225 14.775 7.8 5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425c.363-.15.495-.15.762-.15s.525.05.775.15.467.25.65.45L20.425 5q.3.275.437.65c.137.375.138.5.138.75q0 .4-.138.763c-.138.363-.237.462-.437.662L7.25 21zM15.475 8.525l-.7-.725L16.2 9.225z"
+      />
+    </svg>
   </button>
 </div>
 `;

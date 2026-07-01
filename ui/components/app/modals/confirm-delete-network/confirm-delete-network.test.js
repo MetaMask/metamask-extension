@@ -11,7 +11,8 @@ describe('Confirm Delete Network', () => {
     hideModal: jest.fn(),
     onConfirm: jest.fn(),
     removeNetwork: jest.fn().mockResolvedValue(),
-    switchEvmNetwork: jest.fn(),
+    switchToEthereumNetwork: jest.fn(),
+    networkNickname: 'Goerli',
     target: '0x5',
     chainId: '0xe708',
     ethereumMainnetClientId: '0x1',
@@ -19,12 +20,12 @@ describe('Confirm Delete Network', () => {
 
   it('should match snapshot', () => {
     const mockStore = configureMockStore()(mockState);
-    const { container } = renderWithProvider(
+    const { baseElement } = renderWithProvider(
       <ConfirmDeleteNetwork {...props} />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('should mention network name in modal', () => {

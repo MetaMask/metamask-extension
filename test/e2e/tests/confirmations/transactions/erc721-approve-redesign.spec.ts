@@ -10,7 +10,7 @@ import SetApprovalForAllTransactionConfirmation from '../../../page-objects/page
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import { mocked4BytesApprove, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC721 Approve Component', function () {
@@ -48,7 +48,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           const setApprovalForAllConfirmation =
             new SetApprovalForAllTransactionConfirmation(driver);
           const homePage = new HomePage(driver);
-          const activityList = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.clickERC721MintButton();
@@ -60,12 +60,12 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await homePage.goToActivityList();
-          await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           await testDapp.clickERC721ApproveButton();
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await permitConfirmation.verifyNftTitle();
+          await permitConfirmation.checkTitle('Withdrawal request');
           await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
           await erc20ApproveConfirmation.checkEstimatedChangesSection();
           await erc20ApproveConfirmation.checkWithdrawSection();
@@ -79,7 +79,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await homePage.goToActivityList();
-          await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity(2);
         },
       );
     });

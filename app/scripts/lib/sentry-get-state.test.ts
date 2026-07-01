@@ -310,7 +310,7 @@ describe('sentry-get-state', () => {
       });
     });
 
-    it('returns participateInMetaMetrics false and no metaMetricsId when not opted in', () => {
+    it('returns optedIn false with analyticsId when not opted in', () => {
       expect(
         getAnalyticsStateFromAppState({
           state: {

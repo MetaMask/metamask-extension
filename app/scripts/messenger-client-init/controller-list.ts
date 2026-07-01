@@ -86,10 +86,15 @@ import {
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
+import {
+  ConfigRegistryApiService,
+  ConfigRegistryController,
+} from '@metamask/config-registry-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
+  ProofOfOwnershipService,
 } from '@metamask/profile-metrics-controller';
 import {
   GeolocationApiService,
@@ -110,7 +115,6 @@ import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
-import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import { SubscriptionService } from '../services/subscription/subscription-service';
 import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
@@ -200,7 +204,6 @@ export type MessengerClient =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
-  | SnapKeyringBuilder
   | SnapRegistryController
   | SubscriptionController
   | SnapsNameProvider
@@ -230,9 +233,12 @@ export type MessengerClient =
   | ClientController
   | ComplianceController
   | ComplianceService
+  | ConfigRegistryController
+  | ConfigRegistryApiService
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
+  | ProofOfOwnershipService
   | ConnectivityController;
 
 /**
@@ -256,6 +262,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   ClaimsController['state'] &
   ClientController['state'] &
   ComplianceController['state'] &
+  ConfigRegistryController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &

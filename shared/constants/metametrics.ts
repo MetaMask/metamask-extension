@@ -136,15 +136,6 @@ export type MetaMetricsEventPayload = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * Whether the event is a duplicate of an anonymized event.
-   */
-  isDuplicateAnonymizedEvent?: boolean;
-  /**
-   * The timestamp of the event. If provided, this timestamp will be used
-   * instead of the current time when sending to Segment.
-   */
-  timestamp?: string;
 };
 
 export type UnsanitizedMetaMetricsEventPayload = Omit<
@@ -302,6 +293,18 @@ export type SegmentEventPayload = {
     value?: number;
     currency?: string;
     category?: string;
+    /**
+     * The profile ID of the user if they have been signed in.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    profile_id?: string;
+    /**
+     * The canonical profile ID grouping profile IDs for the same person.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    canonical_profile_id?: string;
   };
   /**
    * The context the event occurred in.
@@ -1335,6 +1338,11 @@ export enum MetaMetricsEventKeyType {
   Srp = 'srp',
 }
 
+export enum MetaMetricsEventVerificationMethod {
+  Password = 'password',
+  Passkey = 'passkey',
+}
+
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
   GasTimeout = 'gas_timeout',
@@ -1353,7 +1361,9 @@ export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
   ActivityTabEmptyState = 'Activity Tab Empty State',
+  ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
+  TransactionDetails = 'Transaction Details',
 }
 
 export enum MetaMetricsTokenEventSource {

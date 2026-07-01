@@ -18,4 +18,15 @@ export type UseHwSwapSubmissionOptions = {
     quote: QuoteResponse & QuoteMetadata,
     options?: { rpcTimeoutMs?: number },
   ) => Promise<void>;
+  /**
+   * Whether the first of two hardware-wallet confirmations has already
+   * completed. When `true` and `lockedQuote` has an approval step, retry
+   * skips re-submitting the approval.
+   */
+  firstSignatureDone?: boolean;
+  /**
+   * Called when the locked quote's `requestId` changes, so the caller can
+   * reset its own "first signature done" tracking.
+   */
+  onResetFirstSignature?: () => void;
 };
