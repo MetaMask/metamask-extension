@@ -143,6 +143,7 @@ describe('NetworksPage', () => {
         '0x1': true,
       },
     },
+    editedNetwork,
     remoteFeatureFlags = {},
     showTestNetworks = false,
   }: {
@@ -151,11 +152,16 @@ describe('NetworksPage', () => {
     selectedNetworkClientId?: string;
     selectedProviderChainId?: string;
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
+    editedNetwork?: { chainId: string; nickname?: string };
     remoteFeatureFlags?: Record<string, unknown>;
     showTestNetworks?: boolean;
   } = {}) => {
     const store = configureStore({
       ...mockState,
+      appState: {
+        ...mockState.appState,
+        editedNetwork,
+      },
       metamask: {
         ...mockState.metamask,
         networkConfigurationsByChainId,
@@ -259,6 +265,16 @@ describe('NetworksPage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('opens the add network flow from the add custom network button', async () => {
+    renderNetworksPage();
+
+    await userEvent.click(
+      screen.getByTestId('networks-page-add-custom-network-button'),
+    );
+
+    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+  });
+
   it('renders the Chainlist entry point when the remote feature flag is enabled', () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
@@ -304,6 +320,28 @@ describe('NetworksPage', () => {
           .replace('$2', '100'),
       ),
     ).toBeInTheDocument();
+  });
+
+  it('keeps Chainlist network details populated when a stale edited network exists', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      editedNetwork: { chainId: '0x1', nickname: 'Ethereum' },
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    const gnosisButton = (await screen.findByText('Gnosis')).closest('button');
+    expect(gnosisButton).toBeInTheDocument();
+
+    fireEvent.click(gnosisButton as HTMLButtonElement);
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Gnosis',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('100');
+    expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
   });
 
   it('renders an empty state when the Chainlist search has no results', async () => {

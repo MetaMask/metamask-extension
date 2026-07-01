@@ -134,7 +134,7 @@ export const NetworksPage = () => {
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
 
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
-    if (view === 'add') {
+    if (view === 'add' || view === 'add-from-chainlist') {
       return undefined;
     }
 
@@ -380,6 +380,7 @@ export const NetworksPage = () => {
           />
           <NetworksPageList
             searchQuery={searchValue}
+            onAddCustomNetwork={handleNewNetwork}
             footerContent={
               pageToast ? (
                 <Box
