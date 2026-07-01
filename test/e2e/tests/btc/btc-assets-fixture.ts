@@ -94,6 +94,11 @@ export const BTC_ASSETS_CONTROLLER_FIXTURE = {
   },
 };
 
+const DEFAULT_ACCOUNT_GROUP_ID = 'entropy:01KMMTZZ3ZEF3008S2RXXR2CXS/0';
+const DEFAULT_ENTROPY_WALLET_ID = 'entropy:01KMMTZZ3ZEF3008S2RXXR2CXS';
+const DEFAULT_EVM_ACCOUNT_ID = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
+const DEFAULT_SOLANA_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
+
 export function buildBtcUnifiedAssetsFixtures() {
   return new FixtureBuilderV2()
     .withEnabledNetworks({
@@ -102,6 +107,40 @@ export function buildBtcUnifiedAssetsFixtures() {
       },
       bip122: {
         [MultichainNetworks.BITCOIN]: true,
+      },
+    })
+    .withAccountTreeController({
+      selectedAccountGroup: DEFAULT_ACCOUNT_GROUP_ID,
+      accountTree: {
+        wallets: {
+          [DEFAULT_ENTROPY_WALLET_ID]: {
+            id: DEFAULT_ENTROPY_WALLET_ID,
+            type: 'entropy',
+            status: 'ready',
+            groups: {
+              [DEFAULT_ACCOUNT_GROUP_ID]: {
+                id: DEFAULT_ACCOUNT_GROUP_ID,
+                type: 'multichain-account',
+                accounts: [
+                  DEFAULT_EVM_ACCOUNT_ID,
+                  DEFAULT_SOLANA_ACCOUNT_ID,
+                  BTC_ACCOUNT_ID,
+                ],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: { groupIndex: 0 },
+                  hidden: false,
+                  pinned: false,
+                  lastSelected: 1665507600000,
+                },
+              },
+            },
+            metadata: {
+              name: 'SRP 1',
+              entropy: { id: BTC_ENTROPY_SOURCE },
+            },
+          },
+        },
       },
     })
     .withAccountsController({

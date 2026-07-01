@@ -3,6 +3,7 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
+import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
@@ -11,12 +12,22 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 
-// Mock function implementation for Infura requests
-async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+const POST_ONBOARDING_NETWORK_ACTIVITY_TIMEOUT_MS = 20_000;
+
+type OnboardingPrivacyMocks = {
+  infuraMocks: MockedEndpoint[];
+  accountsApiBalancesMock: MockedEndpoint;
+};
+
+// Mock Infura RPC and Accounts API v5 balances. With assetsUnifyState enabled,
+// post-onboarding balance polling uses Accounts API v5 instead of Infura RPC.
+async function mockOnboardingPrivacyEndpoints(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
   const infuraUrl =
     'https://mainnet.infura.io/v3/00000000000000000000000000000000';
   const sampleAddress = '1111111111111111111111111111111111111111';
-  return [
+  const infuraMocks = [
     await mockServer
       .forPost(infuraUrl)
       .withJsonBodyIncluding({ method: 'eth_blockNumber' })
@@ -79,6 +90,81 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
         };
       }),
   ];
+
+  const accountsApiBalancesMock = await mockServer
+    .forGet(/^https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 0,
+        balances: [],
+        unprocessedNetworks: [],
+      },
+    }));
+
+  return [...infuraMocks, accountsApiBalancesMock];
+}
+
+function splitOnboardingPrivacyMocks(
+  mockedEndpoints: MockedEndpoint[],
+): OnboardingPrivacyMocks {
+  return {
+    infuraMocks: mockedEndpoints.slice(0, -1),
+    accountsApiBalancesMock: mockedEndpoints[mockedEndpoints.length - 1],
+  };
+}
+
+async function assertNoInfuraRequestsBeforeOnboarding(
+  infuraMocks: MockedEndpoint[],
+): Promise<void> {
+  for (const [index, mockedEndpoint] of infuraMocks.entries()) {
+    const isPending = await mockedEndpoint.isPending();
+    assert.equal(
+      isPending,
+      true,
+      `Infura mock ${index} should still be pending before onboarding`,
+    );
+    const requests = await mockedEndpoint.getSeenRequests();
+    assert.equal(
+      requests.length,
+      0,
+      `Infura mock ${index} should make no requests before onboarding`,
+    );
+  }
+}
+
+async function waitForPostOnboardingNetworkActivity(
+  driver: Driver,
+  infuraMocks: MockedEndpoint[],
+  accountsApiBalancesMock: MockedEndpoint,
+): Promise<void> {
+  await driver.wait(async () => {
+    const accountsApiRequests =
+      await accountsApiBalancesMock.getSeenRequests();
+    if (accountsApiRequests.length > 0) {
+      return true;
+    }
+
+    for (const mockedEndpoint of infuraMocks) {
+      if (!(await mockedEndpoint.isPending())) {
+        return true;
+      }
+    }
+
+    return false;
+  }, POST_ONBOARDING_NETWORK_ACTIVITY_TIMEOUT_MS);
+
+  const accountsApiRequests = await accountsApiBalancesMock.getSeenRequests();
+  const infuraRequests = (
+    await Promise.all(infuraMocks.map((mock) => mock.getSeenRequests()))
+  ).flat();
+
+  assert.equal(
+    accountsApiRequests.length > 0 || infuraRequests.length > 0,
+    true,
+    'Expected Accounts API v5 or Infura requests after onboarding',
+  );
 }
 
 describe('MetaMask onboarding', function () {
@@ -89,28 +175,18 @@ describe('MetaMask onboarding', function () {
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockInfura,
+        testSpecificMock: mockOnboardingPrivacyEndpoints,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        const { infuraMocks, accountsApiBalancesMock } =
+          splitOnboardingPrivacyMocks(mockedEndpoints);
+
         await createNewWalletOnboardingFlow({ driver });
 
         // Check no requests are made before completing creat new wallet onboarding
         // Intended delay to ensure we cover at least 1 polling loop of time for the network request
         await driver.delay(regularDelayMs);
-        for (const mockedEndpoint of mockedEndpoints) {
-          const isPending = await mockedEndpoint.isPending();
-          assert.equal(
-            isPending,
-            true,
-            `${mockedEndpoint} mock should still be pending before onboarding`,
-          );
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length,
-            0,
-            `${mockedEndpoint} should make no requests before onboarding`,
-          );
-        }
+        await assertNoInfuraRequestsBeforeOnboarding(infuraMocks);
 
         // complete create new wallet onboarding
         const onboardingCompletePage = new OnboardingCompletePage(driver);
@@ -123,20 +199,11 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // network requests happen here
-        for (const mockedEndpoint of mockedEndpoints) {
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, driver.timeout);
-
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length > 0,
-            true,
-            `${mockedEndpoint} should make requests after onboarding`,
-          );
-        }
+        await waitForPostOnboardingNetworkActivity(
+          driver,
+          infuraMocks,
+          accountsApiBalancesMock,
+        );
       },
     );
   });
@@ -148,22 +215,18 @@ describe('MetaMask onboarding', function () {
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockInfura,
+        testSpecificMock: mockOnboardingPrivacyEndpoints,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        const { infuraMocks, accountsApiBalancesMock } =
+          splitOnboardingPrivacyMocks(mockedEndpoints);
+
         await importSRPOnboardingFlow({ driver });
 
         // Check no requests before completing onboarding
         // Intended delay to ensure we cover at least 1 polling loop of time for the network request
         await driver.delay(regularDelayMs);
-        for (const mockedEndpoint of mockedEndpoints) {
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length,
-            0,
-            `${mockedEndpoint} should make no requests before import wallet onboarding complete`,
-          );
-        }
+        await assertNoInfuraRequestsBeforeOnboarding(infuraMocks);
 
         // complete import wallet onboarding
         const onboardingCompletePage = new OnboardingCompletePage(driver);
@@ -176,20 +239,11 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // requests happen here
-        for (const mockedEndpoint of mockedEndpoints) {
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, 20000);
-
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length > 0,
-            true,
-            `${mockedEndpoint} should make requests after onboarding`,
-          );
-        }
+        await waitForPostOnboardingNetworkActivity(
+          driver,
+          infuraMocks,
+          accountsApiBalancesMock,
+        );
       },
     );
   });

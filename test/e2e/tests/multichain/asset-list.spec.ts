@@ -17,10 +17,18 @@ import {
 } from '../../constants';
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
+const HST_TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
+/** Mainnet native ETH after HST deploy gas on the local Anvil node (chainId 1). */
+const MAINNET_ETH_BALANCE_AFTER_HST = '24.998';
 
 async function mockSetup(mockServer: Mockttp) {
   return [
     await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
+        price: 1,
+        marketCap: 0,
+        pricePercentChange1d: 0,
+      },
       'eip155:137/slip44:60': {
         price: 1,
         marketCap: 0,
@@ -49,7 +57,61 @@ async function mockSetup(mockServer: Mockttp) {
       })),
   ];
 }
-function buildFixtures(title: string) {
+function buildFixturesForAssetDetails(title: string) {
+  return {
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.POLYGON_MAINNET)
+      .withEnabledNetworks({
+        eip155: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.POLYGON]: true,
+        },
+      })
+      .withAssetsController({
+        assetsBalance: {
+          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+            'eip155:137/slip44:60': { amount: '25' },
+            'eip155:1/slip44:60': { amount: MAINNET_ETH_BALANCE_AFTER_HST },
+          },
+        },
+      })
+      .withTokenBalancesController({
+        tokenBalances: {
+          [DEFAULT_FIXTURE_ACCOUNT]: {
+            [CHAIN_IDS.MAINNET]: {
+              [HST_TOKEN_ADDRESS]: '0x3e8',
+            },
+          },
+        },
+      })
+      .build(),
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+        },
+      },
+      {
+        type: 'anvil',
+        options: {
+          port: 8546,
+          chainId: 137,
+        },
+      },
+    ],
+    smartContract: SMART_CONTRACTS.HST,
+    title,
+    testSpecificMock: mockSetup,
+    manifestFlags: {
+      remoteFeatureFlags: {
+        extensionUxTokenManagementFilter: false,
+      },
+    },
+  };
+}
+
+function buildFixturesForSend(title: string) {
   return {
     fixtures: new FixtureBuilderV2()
       .withSelectedNetwork(NETWORK_CLIENT_ID.POLYGON_MAINNET)
@@ -71,7 +133,7 @@ function buildFixtures(title: string) {
           [DEFAULT_FIXTURE_ACCOUNT]: {
             [CHAIN_IDS.POLYGON]: {
               // HST (TST) contract pre-seeded so it shows after import in test 2
-              '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947': '0x3e8',
+              [HST_TOKEN_ADDRESS]: '0x3e8',
             },
           },
         },
@@ -106,9 +168,9 @@ function buildFixtures(title: string) {
 describe('Multichain Asset List', function (this: Suite) {
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver, localNodes }) => {
-        await login(driver, { localNode: localNodes[0] });
+      buildFixturesForAssetDetails(this.test?.fullTitle() as string),
+      async ({ driver }) => {
+        await login(driver, { validateBalance: false });
         const tokensTab = new TokensTab(driver);
         await switchToNetworkFromNetworkSelect(
           driver,
@@ -125,9 +187,9 @@ describe('Multichain Asset List', function (this: Suite) {
   });
   it('validate the tokens appear on send given network', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string),
-      async ({ driver, localNodes }) => {
-        await login(driver, { localNode: localNodes[0] });
+      buildFixturesForSend(this.test?.fullTitle() as string),
+      async ({ driver }) => {
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         const sendPage = new SendPage(driver);

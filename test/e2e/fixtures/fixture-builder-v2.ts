@@ -69,6 +69,7 @@ import {
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
   TREZOR_ADDRESS,
+  HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
@@ -1355,7 +1356,9 @@ class FixtureBuilderV2 {
           'eip155:1337/slip44:1': { amount: '25' },
         },
         [HARDWARE_WALLET_ACCOUNT_ID]: {
-          'eip155:1337/slip44:1': { amount: '100' },
+          'eip155:1337/slip44:1': {
+            amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+          },
         },
       },
     })

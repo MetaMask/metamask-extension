@@ -10,6 +10,8 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import {
+  mockAccountsApiV2WithBtc,
+  mockAccountsApiV5WithBtc,
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,
@@ -24,6 +26,8 @@ import { buildBtcUnifiedAssetsFixtures } from '../btc/btc-assets-fixture';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
+    await mockAccountsApiV2WithBtc(mockServer),
+    await mockAccountsApiV5WithBtc(mockServer),
     await mockInitialFullScan(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),
@@ -40,11 +44,15 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
 describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
+  const fixtureOptions = {
+    fixtures: buildBtcUnifiedAssetsFixtures(),
+    localNodeOptions: [{ type: 'none' as const }],
+  };
 
   it('fields validation', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcUnifiedAssetsFixtures(),
+        ...fixtureOptions,
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -77,7 +85,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcUnifiedAssetsFixtures(),
+        ...fixtureOptions,
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -113,7 +121,7 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: buildBtcUnifiedAssetsFixtures(),
+        ...fixtureOptions,
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,

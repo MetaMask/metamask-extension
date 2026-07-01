@@ -54,16 +54,31 @@ async function withFixturesForSmartTransactions(
         hardfork: 'london',
         chainId: '1',
       },
+      unifiedEvmAccountsApiBalances: {
+        mainnetNativeEthHuman: '20',
+      },
       manifestFlags: {
         remoteFeatureFlags: {
           bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         },
       },
-      testSpecificMock,
+      testSpecificMock: async (mockServer: MockttpServer) => {
+        await mockSpotPrices(mockServer, {
+          'eip155:1/slip44:60': {
+            price: 1700,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        });
+        await testSpecificMock(mockServer);
+      },
       ignoredConsoleErrors,
     },
     async ({ driver }) => {
-      await login(driver, { expectedBalance });
+      await login(driver, {
+        expectedBalance,
+        waitForNonEvmAccounts: false,
+      });
       await runTestWithFixtures({ driver });
     },
   );
@@ -75,13 +90,6 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
           await mockChooseGasFeeTokenRequests(mockServer);
           await mockSentinelNetworks(mockServer);
         },
@@ -120,13 +128,6 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
           await mockSmartTransactionRequests(mockServer);
           await mockSwapTokensMockApis(mockServer);
           await mockGetTxStatus(mockServer);

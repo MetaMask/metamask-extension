@@ -35,6 +35,7 @@ import {
 
 const isUnifiedAssetsEnabled = true;
 
+const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 const USDC_CAIP_ASSET =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
@@ -42,6 +43,7 @@ const SOL_PRICE = 168.88;
 const USDC_PRICE = 0.999761;
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+const USDC_BALANCE_HUMAN = '8.908267';
 
 // --- Unified-assets-only helpers ---
 
@@ -82,6 +84,11 @@ async function mockAccountsApiV5WithSolana(
       assetId: SOL_CAIP_ASSET,
       balance: '50',
     },
+    {
+      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
+      assetId: USDC_CAIP_ASSET,
+      balance: USDC_BALANCE_HUMAN,
+    },
   ];
   return mockServer
     .forGet(
@@ -95,6 +102,16 @@ async function mockAccountsApiV5WithSolana(
 }
 
 const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
+  assetsBalance: {
+    [SOL_ACCOUNT_ID]: {
+      [SOL_CAIP_ASSET]: {
+        amount: '50',
+      },
+      [USDC_CAIP_ASSET]: {
+        amount: USDC_BALANCE_HUMAN,
+      },
+    },
+  },
   assetsInfo: {
     [SOL_CAIP_ASSET]: {
       decimals: 9,
@@ -133,6 +150,9 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
 
 const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
   MultichainAssetsController: {
+    accountsAssets: {
+      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
+    },
     assetsMetadata: {
       [USDC_CAIP_ASSET]: {
         fungible: true,
@@ -277,6 +297,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
                   conversionTime: 1770832998.066,
                   rate: String(SOL_PRICE),
                 },
+                [USDC_CAIP_ASSET]: {
+                  conversionTime: 1770832998.066,
+                  rate: String(USDC_PRICE),
+                },
               },
             },
             ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
@@ -289,6 +313,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
+        if (isUnifiedAssetsEnabled) {
+          await homePage.waitForNonEvmAccountsLoaded();
+        }
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -360,6 +387,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
                   conversionTime: 1770832998.066,
                   rate: String(SOL_PRICE),
                 },
+                [USDC_CAIP_ASSET]: {
+                  conversionTime: 1770832998.066,
+                  rate: String(USDC_PRICE),
+                },
               },
             },
             ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
@@ -373,6 +404,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await login(driver);
 
         const homePage = new HomePage(driver);
+        if (isUnifiedAssetsEnabled) {
+          await homePage.waitForNonEvmAccountsLoaded();
+        }
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();

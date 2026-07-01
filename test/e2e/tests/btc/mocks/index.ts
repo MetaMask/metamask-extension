@@ -1,5 +1,9 @@
 export { mockInitialFullScan } from './esplora';
 export {
+  mockAccountsApiV2WithBtc,
+  mockAccountsApiV5WithBtc,
+} from './accounts-api';
+export {
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,

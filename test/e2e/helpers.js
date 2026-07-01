@@ -15,7 +15,12 @@ const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
+const {
+  DAPP_PATHS,
+  ERC_4337_ACCOUNT,
+  HARDWARE_WALLET_ACCOUNT_ID,
+  HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+} = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
@@ -330,7 +335,8 @@ async function withFixtures(options, testSuite) {
     // matches post-deploy gas usage (e.g. HST deploy on mainnet).
     let effectiveUnifiedEvmAccountsApiBalances =
       unifiedEvmAccountsApiBalances ?? {};
-    const localChainId = localNodeOptsNormalized[0]?.options.chainId;
+    const localChainId =
+      localNodeOptsNormalized[0]?.options.chainId ?? 1337;
     if (localNodes[0]) {
       const nodeBalance = Number(
         (await localNodes[0].getBalance()).toFixed(3),
@@ -353,6 +359,19 @@ async function withFixtures(options, testSuite) {
           localhostNativeEthHuman: nodeBalance,
         };
       }
+    }
+
+    const selectedAccountId =
+      fixtures?.data?.AccountsController?.internalAccounts?.selectedAccount;
+    if (
+      selectedAccountId === HARDWARE_WALLET_ACCOUNT_ID &&
+      localChainId === 1337 &&
+      !unifiedEvmAccountsApiBalances?.localhostNativeEthHuman
+    ) {
+      effectiveUnifiedEvmAccountsApiBalances = {
+        ...effectiveUnifiedEvmAccountsApiBalances,
+        localhostNativeEthHuman: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+      };
     }
 
     // Decide between the regular setupMocking and the passThrough version

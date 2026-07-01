@@ -9,6 +9,8 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
+  mockAccountsApiV2WithBtc,
+  mockAccountsApiV5WithBtc,
   mockAllBridgeEndpoints,
   mockBtcSpotPrices,
   mockExchangeRates,
@@ -25,6 +27,8 @@ import { buildBtcUnifiedAssetsFixtures } from './btc-assets-fixture';
 
 async function buildBtcSwapBaseMocks(mockServer: Mockttp) {
   return [
+    await mockAccountsApiV2WithBtc(mockServer),
+    await mockAccountsApiV5WithBtc(mockServer),
     await mockInitialFullScan(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),
@@ -57,10 +61,15 @@ async function mockBtcSwapMocksNoQuotes(mockServer: Mockttp) {
 }
 
 describe('BTC Account - Swap (Bridge)', function (this: Suite) {
+  const fixtureOptions = {
+    fixtures: buildBtcUnifiedAssetsFixtures(),
+    localNodeOptions: [{ type: 'none' as const }],
+  };
+
   it('can open the swap/bridge page from Bitcoin account', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcUnifiedAssetsFixtures(),
+        ...fixtureOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocks,
       },
@@ -88,7 +97,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can select destination token and see quote', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcUnifiedAssetsFixtures(),
+        ...fixtureOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocks,
       },
@@ -130,7 +139,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('shows insufficient funds error when amount exceeds balance', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcUnifiedAssetsFixtures(),
+        ...fixtureOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocks,
       },
@@ -168,7 +177,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('shows no trade route available when no quotes are returned', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcUnifiedAssetsFixtures(),
+        ...fixtureOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocksNoQuotes,
       },
@@ -207,7 +216,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can complete a swap from BTC to ETH', async function () {
     await withFixtures(
       {
-        fixtures: buildBtcUnifiedAssetsFixtures(),
+        ...fixtureOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocks,
       },
