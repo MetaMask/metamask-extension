@@ -672,9 +672,6 @@
     "ui/pages/bridge/quotes/multichain-bridge-quote-card.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.test.js": {
-      "MetaMask: Background connection not initialized": 2
-    },
     "ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 16
     },
@@ -870,9 +867,6 @@
       "MetaMask: Background connection not initialized": 235,
       "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/confirmation/templates/snap-account-redirect.test.js": {
-      "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/confirmations/context/gas-fee-modal/index.test.tsx": {
       "Test errors: Uncaught Errors": 1
