@@ -14,6 +14,7 @@ const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
+  LOCAL_NODE_ACCOUNT,
 } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
@@ -1590,11 +1591,12 @@ async function setupMocking(
         }
         const chainRef = parts[1];
         const accountAddress = parts.slice(2).join(':').toLowerCase();
-        const isDefaultFixtureAccount =
-          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-        // Only seed the default fixture account with 25 ETH; newly added accounts
-        // (e.g. hardware wallets) should start at zero unless overridden.
-        let nativeBalance = isDefaultFixtureAccount ? '25' : '0';
+        const isKnownFundedTestAccount =
+          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
+          accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
+        // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
+        // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
+        let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
         if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
         } else if (chainRef === '1337' && localhostNativeOverride !== null) {
