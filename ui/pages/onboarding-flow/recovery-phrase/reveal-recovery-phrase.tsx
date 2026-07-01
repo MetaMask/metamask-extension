@@ -285,7 +285,7 @@ export default function RevealRecoveryPhrase({
             ariaLabel={t('close')}
           />
         </Box>
-        {screen === VERIFY_PASSKEY_SCREEN ? (
+        {screen === VERIFY_PASSKEY_SCREEN && !hasSeedPhraseBackedUp ? (
           <PasskeyVerification
             flow="reveal-recovery-phrase"
             troubleshootLocation="reveal-srp-backup"

@@ -423,6 +423,36 @@ describe('RevealRecoveryPhrase', () => {
       expect(mockGetSeedPhrase).not.toHaveBeenCalled();
     });
 
+    it('should not mount passkey verification while the backed-up redirect is pending', async () => {
+      const store = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: true,
+        },
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <RevealRecoveryPhrase
+          setSecretRecoveryPhrase={mockSetSecretRecoveryPhrase}
+        />,
+        store,
+      );
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+          replace: true,
+        });
+      });
+
+      expect(
+        queryByTestId('reveal-recovery-phrase-passkey-verifying'),
+      ).not.toBeInTheDocument();
+      expect(mockGeneratePasskeyAuthenticationOptions).not.toHaveBeenCalled();
+      expect(mockStartPasskeyAuthentication).not.toHaveBeenCalled();
+      expect(mockGetSeedPhraseWithPasskey).not.toHaveBeenCalled();
+    });
+
     it('falls back to the password prompt when the passkey ceremony is cancelled', async () => {
       mockStartPasskeyAuthentication.mockRejectedValue(new Error('cancelled'));
       mockIsPasskeyCeremonySilentError.mockReturnValue(true);
