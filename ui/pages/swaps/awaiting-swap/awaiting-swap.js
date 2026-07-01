@@ -7,6 +7,7 @@ import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -78,6 +79,7 @@ export default function AwaitingSwap({
 }) {
   const t = useContext(I18nContext);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -176,6 +178,7 @@ export default function AwaitingSwap({
               .addCategory(MetaMetricsEventCategory.Swaps)
               .addProperties({
                 url: SUPPORT_LINK,
+                location: segmentContext.page?.title,
               })
               .build(),
           );

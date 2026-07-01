@@ -66,6 +66,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { type TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -92,6 +93,7 @@ const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const rootState = useSelector((state) => state);
   const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
@@ -286,7 +288,7 @@ const CrossChainSwapTxDetails = () => {
                         .addCategory(MetaMetricsEventCategory.Home)
                         .addProperties({
                           url: SUPPORT_LINK,
-                          location: 'Bridge Tx Details',
+                          location: segmentContext.page?.title,
                         })
                         .build(),
                     );
