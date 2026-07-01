@@ -159,7 +159,6 @@ export type ControllerStatePropertiesEnumerated = {
   quoteFetchError: BridgeControllerState['quoteFetchError'];
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
   quoteStreamComplete: BridgeControllerState['quoteStreamComplete'];
-  inputPrimaryDenomination: BridgeControllerState['inputPrimaryDenomination'];
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   tokenSecurityTypeDestination: BridgeControllerState['tokenSecurityTypeDestination'];
