@@ -220,6 +220,7 @@ jobs:
             test/e2e/benchmarks/utils/gated-metrics.ts
             test/e2e/benchmarks/utils/thresholds.ts
             test/e2e/benchmarks/utils/statistics.ts
+            test/e2e/benchmarks/utils/mann-whitney.ts
           sparse-checkout-cone-mode: false
 
       - name: Setup Node.js

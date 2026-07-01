@@ -29,6 +29,7 @@ import type {
 } from '../../shared/constants/benchmarks';
 import { GATED_METRICS } from '../../test/e2e/benchmarks/utils/gated-metrics';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
+import type { StatisticalTestResult } from '../../test/e2e/benchmarks/utils/mann-whitney';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import {
@@ -277,6 +278,23 @@ export function buildMetricLines(
   });
 }
 
+function printStatisticalTests(comparison: BenchmarkEntryComparison): void {
+  const sigTests = (comparison.statisticalTests ?? []).filter(
+    (t: StatisticalTestResult) => t.verdict !== 'pass',
+  );
+  if (sigTests.length === 0) {
+    return;
+  }
+  console.log('  Statistical significance (Mann-Whitney U):');
+  for (const t of sigTests) {
+    const icon = t.verdict === 'fail' ? '🔺' : '🔼';
+    const delta = formatDeltaPercent(t.deltaPercent);
+    console.log(
+      `    ${icon} ${t.metric}: p=${t.pValue.toFixed(4)}, r=${t.effectSize.toFixed(2)}, ${delta}`,
+    );
+  }
+}
+
 function formatName(comparison: BenchmarkEntryComparison): string {
   const source = comparison.source ? ` [${comparison.source}]` : '';
   return `${comparison.benchmarkName}${source}`;
@@ -331,6 +349,8 @@ export function printReport(result: {
       const details = line.details ? ` | ${line.details}` : '';
       console.log(`      ${line.icon} ${line.metric}${details}`);
     }
+
+    printStatisticalTests(comparison);
   }
 
   // Show warned entries with details
@@ -339,6 +359,20 @@ export function printReport(result: {
     for (const line of lines.filter((l) => l.hasIssue)) {
       const details = line.details ? ` | ${line.details}` : '';
       console.log(`      ${line.icon} ${line.metric}${details}`);
+    }
+
+    printStatisticalTests(comparison);
+  }
+
+  // Layer 3 early warnings: passed entries with statistically significant regressions
+  const earlyWarnings = passed.filter(({ comparison }) =>
+    (comparison.statisticalTests ?? []).some((t) => t.verdict !== 'pass'),
+  );
+  if (earlyWarnings.length > 0) {
+    console.log('\n  Statistical early warnings (passed absolute gate):');
+    for (const { comparison } of earlyWarnings) {
+      console.log(`  ${formatName(comparison)}`);
+      printStatisticalTests(comparison);
     }
   }
 
