@@ -165,6 +165,24 @@ describe('Bridge selectors', () => {
   const createBtcZeroNetworkFeeQuoteState = () =>
     createBtcBridgeState({ nonEvmFeesInNative: '0' });
 
+  // The bumped @metamask/bridge-controller derives the src token exchange rate
+  // from the quote's srcAsset (assetExchangeRates/marketData/currencyRates)
+  // instead of the client-provided fromTokenExchangeRate. Seed the bridge
+  // controller's assetExchangeRates so the ERC20 srcAsset in
+  // mockErc20Erc20Quotes resolves to the same rates the old tests assumed.
+  const mockErc20SrcAssetRates = (usdExchangeRate: string) =>
+    ({
+      [(
+        toAssetId(
+          mockErc20Erc20Quotes[0].quote.srcAsset.address,
+          formatChainIdToCaip(mockErc20Erc20Quotes[0].quote.srcChainId),
+        ) as string
+      ).toLowerCase()]: {
+        exchangeRate: '1',
+        usdExchangeRate,
+      },
+    }) as never;
+
   describe('getFromChain', () => {
     it('returns the fromChain from the multichain network controller', () => {
       const state = createBridgeMockStore({
@@ -900,6 +918,7 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('1'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -979,6 +998,7 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1074,6 +1094,7 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1271,6 +1292,7 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('1'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1360,6 +1382,7 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1463,6 +1486,7 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1599,6 +1623,7 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
