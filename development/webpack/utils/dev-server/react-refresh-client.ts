@@ -3,10 +3,9 @@ import 'webpack/hot/dev-server';
 import { UI_HOT_UPDATE_MESSAGE_TYPE } from './reload-protocol';
 
 globalThis.addEventListener('message', (event) => {
-  if (event.source !== globalThis.window) {
-    return;
-  }
   if (
+    event.origin === globalThis.location.origin &&
+    event.source === globalThis.window &&
     event.data?.type === UI_HOT_UPDATE_MESSAGE_TYPE &&
     typeof event.data.hash === 'string'
   ) {
