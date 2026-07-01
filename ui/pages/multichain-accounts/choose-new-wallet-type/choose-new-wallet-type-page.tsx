@@ -102,7 +102,7 @@ export const ChooseNewWalletTypePage = () => {
         .build(),
     );
     navigate(IMPORT_SRP_ROUTE);
-  }, [trackEvent, navigate]);
+  }, [trackEvent, createEventBuilder, navigate]);
 
   const handleImportAccount = useCallback(() => {
     navigate(ADD_WALLET_PAGE_ROUTE);
@@ -129,7 +129,7 @@ export const ChooseNewWalletTypePage = () => {
     } else {
       navigate(CONNECT_HARDWARE_ROUTE);
     }
-  }, [trackEvent, navigate]);
+  }, [trackEvent, createEventBuilder, navigate]);
 
   const handleManageInstitutionalWallets = useCallback(() => {
     navigate(getSnapRoute(INSTITUTIONAL_WALLET_SNAP_ID));
@@ -153,7 +153,7 @@ export const ChooseNewWalletTypePage = () => {
     globalThis.platform.openTab({
       url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
     });
-  }, [trackEvent]);
+  }, [trackEvent, createEventBuilder]);
 
   const handleAddWatchAccount = useCallback(() => {
     trackEvent(
@@ -177,7 +177,7 @@ export const ChooseNewWalletTypePage = () => {
         .build(),
     );
     navigate(getSnapRoute(ACCOUNT_WATCHER_SNAP_ID));
-  }, [trackEvent, navigate]);
+  }, [trackEvent, createEventBuilder, navigate]);
 
   const walletOptions: WalletTypeOption[] = useMemo(
     () => [

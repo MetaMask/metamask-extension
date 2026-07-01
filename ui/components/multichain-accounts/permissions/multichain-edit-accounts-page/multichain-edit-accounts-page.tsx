@@ -133,6 +133,7 @@ export const MultichainEditAccountsPage = ({
     defaultSelectedAccountGroups,
     onSubmit,
     trackEvent,
+    createEventBuilder,
   ]);
 
   return (

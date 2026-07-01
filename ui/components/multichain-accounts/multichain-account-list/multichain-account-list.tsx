@@ -259,7 +259,7 @@ export const MultichainAccountList = ({
       dispatch(setSelectedMultichainAccount(accountGroupId));
       navigate(DEFAULT_ROUTE);
     },
-    [trackEvent, hdEntropyIndex, defaultHomeActiveTabName, dispatch, navigate],
+    [trackEvent, createEventBuilder, hdEntropyIndex, defaultHomeActiveTabName, dispatch, navigate],
   );
 
   const handleAccountClickToUse = useCallback(

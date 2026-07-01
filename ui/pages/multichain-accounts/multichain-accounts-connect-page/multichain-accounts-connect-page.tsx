@@ -489,7 +489,7 @@ export const MultichainAccountsConnectPage = ({
         .build(),
     );
     setPageMode(MultichainAccountsConnectPageMode.EditAccounts);
-  }, [trackEvent]);
+  }, [trackEvent, createEventBuilder]);
 
   const handleCancelConnection = useCallback(() => {
     rejectPermissionsRequest(permissionsRequestId);
