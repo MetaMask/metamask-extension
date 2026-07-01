@@ -135,17 +135,21 @@ describe('<SnapAccountTransactionLoadingScreen />', () => {
       buildStore(),
     );
 
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: MetaMetricsEventName.SnapAccountTransactionLoadingViewed,
-        properties: expect.objectContaining({
-          category: MetaMetricsEventCategory.Transactions,
-          // The metrics schema uses snake_case keys, mirrored from the source.
-          /* eslint-disable @typescript-eslint/naming-convention */
-          account_type: MetaMetricsEventAccountType.Snap,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        }),
-      }),
-    );
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.SnapAccountTransactionLoadingViewed,
+      properties: {
+        category: MetaMetricsEventCategory.Transactions,
+        // The metrics schema uses snake_case keys, mirrored from the source.
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: MetaMetricsEventAccountType.Snap,
+      },
+      sensitiveProperties: {},
+    });
+
+    const built = mockTrackEvent.mock.calls[0]?.[0] as {
+      properties: Record<string, unknown>;
+    };
+    expect(built.properties).not.toHaveProperty('snap_id');
+    expect(built.properties).not.toHaveProperty('snap_name');
   });
 });
