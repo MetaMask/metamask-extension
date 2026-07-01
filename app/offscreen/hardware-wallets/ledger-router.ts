@@ -1,15 +1,15 @@
 import {
   LedgerHandlerMode,
   LedgerAction,
-  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
-import { LedgerDMKBridgeHandler, serializeLedgerError } from './ledger-dmk';
+import { LedgerDmkBridgeHandler } from './ledger-dmk';
+import { serializeLedgerError } from './ledger-utils';
 import initLegacy from './ledger';
 
 /** Interface that both DMK and Legacy handlers share for action dispatch. */
 type LedgerHandler = {
-  init(skipMessageListener?: boolean): Promise<void>;
+  init(): Promise<void>;
   destroy(): Promise<void>;
   handleAction(
     action: LedgerAction,
@@ -23,14 +23,12 @@ let activeHandler: LedgerHandler | null = null;
 /** The active mode, used to avoid unnecessary re-initialisation on switch. */
 let currentMode: LedgerHandlerMode | null = null;
 
+type ChromeMessageListener = Parameters<
+  typeof chrome.runtime.onMessage.addListener
+>[0];
+
 /** Reference to the router's own chrome.runtime.onMessage listener. */
-let messageListener:
-  | ((
-      msg: Record<string, unknown>,
-      sender: unknown,
-      sendResponse: (response: unknown) => void,
-    ) => boolean)
-  | null = null;
+let messageListener: ChromeMessageListener | null = null;
 
 /**
  * Tracks the in-flight `initLedger` call.  When `switchLedgerHandler` is
@@ -41,24 +39,30 @@ let messageListener:
 let initInProgress: Promise<void> | null = null;
 
 /**
- * Register (or re-register) the central message listener that dispatches
- * every `ledger-offscreen` action to the current active handler.
+ * Idempotently registers the central message listener that dispatches every
+ * `ledger-offscreen` action to `activeHandler`.
+ *
+ * The listener closes over the module-level `activeHandler` binding rather
+ * than a specific handler instance, so it does NOT need to be re-registered
+ * when the handler is swapped — `switchLedgerHandler` simply reassigns
+ * `activeHandler` and the next incoming message is routed to the new handler.
+ * This keeps the swap atomic and avoids any window in which no listener is
+ * attached.
  */
-function registerMessageListener(): void {
+function ensureMessageListener(): void {
   if (messageListener) {
-    chrome.runtime.onMessage.removeListener(messageListener);
+    return;
   }
 
   messageListener = (
-    msg: {
-      target: string;
-      action: LedgerAction;
-      params?: Record<string, unknown>;
-    },
+    message: Record<string, unknown>,
     _sender: unknown,
-    sendResponse: (response: unknown) => void,
+    sendResponse: (response?: unknown) => void,
   ): boolean => {
-    if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
+    if (
+      message.target !== OffscreenCommunicationTarget.ledgerOffscreen ||
+      typeof message.action !== 'string'
+    ) {
       return false;
     }
 
@@ -70,8 +74,14 @@ function registerMessageListener(): void {
       return true;
     }
 
+    const action = message.action as LedgerAction;
+    const params =
+      message.params && typeof message.params === 'object'
+        ? (message.params as Record<string, unknown>)
+        : undefined;
+
     activeHandler
-      .handleAction(msg.action, msg.params)
+      .handleAction(action, params)
       .then((result) => {
         sendResponse({
           success: true,
@@ -87,7 +97,7 @@ function registerMessageListener(): void {
         });
       });
 
-    return true; // async response
+    return true;
   };
 
   chrome.runtime.onMessage.addListener(messageListener);
@@ -96,45 +106,44 @@ function registerMessageListener(): void {
 /**
  * Create a new handler for the given mode and initialise it.
  *
- * Passes `skipMessageListener = true` so the handler does **not** register
- * its own chrome.runtime.onMessage listener — the central router manages
- * a single listener that dispatches to `handleAction()`.
- * @param mode
+ * The central router owns the single `chrome.runtime.onMessage` listener
+ * that dispatches to `handleAction()`, so the handler does not register its
+ * own.
+ *
+ * @param mode - The handler implementation to construct. `DMK` instantiates
+ * `LedgerDmkBridgeHandler`, any other value instantiates the legacy
+ * `LedgerLegacyHandler`.
+ * @returns Initialised handler ready to receive actions.
  */
 async function createHandler(mode: LedgerHandlerMode): Promise<LedgerHandler> {
   if (mode === LedgerHandlerMode.DMK) {
-    const handler = new LedgerDMKBridgeHandler();
-    await handler.init(true);
+    const handler = new LedgerDmkBridgeHandler();
+    await handler.init();
     return handler;
   }
 
-  const handler = await initLegacy();
-  await handler.init(true);
+  const handler = initLegacy();
+  await handler.init();
   return handler;
 }
 
 /**
  * Initialises the Ledger offscreen handler for the first time.
  *
- * Registers a central `chrome.runtime.onMessage` listener and creates
- * the appropriate handler (DMK bridge or legacy).
- * @param mode
+ * Registers a central `chrome.runtime.onMessage` listener (idempotently) and
+ * creates the appropriate handler (DMK bridge or legacy).
+ *
+ * @param mode - The handler implementation to bootstrap. See `createHandler`.
  */
 export default async function initLedger(
   mode: LedgerHandlerMode,
 ): Promise<void> {
-  // Signal that an init is in-flight so that switchLedgerHandler can
-  // await it instead of creating a duplicate Legacy handler.
   const promise = (async () => {
-    // Create the new handler first, atomically swap it into activeHandler,
-    // then lazily destroy the old handler. This mirrors switchLedgerHandler's
-    // pattern and prevents handler leaks when initLedger is called with an
-    // existing handler active (Bug 1 guard path, Bug 4 timeout fallback).
     const newHandler = await createHandler(mode);
     const previous = activeHandler;
     activeHandler = newHandler;
     currentMode = mode;
-    registerMessageListener();
+    ensureMessageListener();
 
     if (previous) {
       await previous.destroy();
@@ -155,8 +164,9 @@ export default async function initLedger(
  * Dynamically switch the active Ledger handler at runtime.
  *
  * Creates the new handler first, atomically swaps it into `activeHandler`
- * (zero gap — no message loss window), then lazily destroys the old
- * handler.  If creation throws, the old handler stays intact.
+ * (zero gap — no message loss window, the listener is not touched), then
+ * lazily destroys the old handler.  If creation throws, the old handler
+ * stays intact.
  *
  * If called before any handler has been initialised (e.g., a
  * `switchLedgerMode` event arrives during bootstrap before `initLedger`
@@ -164,22 +174,16 @@ export default async function initLedger(
  * switch proceeds normally.
  *
  * Switching to the same mode is a safe no-op.
- * @param mode
+ *
+ * @param mode - The handler implementation to switch to. See `createHandler`.
  */
 export async function switchLedgerHandler(
   mode: LedgerHandlerMode,
 ): Promise<void> {
-  // If an initLedger call is in-flight, wait for it to complete so we
-  // see the correct activeHandler and currentMode. Without this guard,
-  // a racing switchLedgerMode event during bootstrap would see
-  // activeHandler === null and create a duplicate Legacy handler.
-  if (initInProgress) {
+  if (initInProgress !== null) {
     await initInProgress;
   }
 
-  // Bug 1 fix: If no handler has been initialised yet, start with Legacy
-  // as the default before switching. This handles the race where
-  // switchLedgerMode arrives during bootstrap before initLedger runs.
   if (!activeHandler) {
     await initLedger(LedgerHandlerMode.Legacy);
   }
@@ -192,7 +196,7 @@ export async function switchLedgerHandler(
   const previous = activeHandler;
   activeHandler = newHandler;
   currentMode = mode;
-  registerMessageListener();
+  ensureMessageListener();
 
   if (previous) {
     await previous.destroy();
@@ -200,40 +204,18 @@ export async function switchLedgerHandler(
 }
 
 /**
- * Listen for runtime mode switches driven by the remote feature flag.
- *
- * When the background's subscription detects a change in the `ledgerDmk`
- * remote flag it sends a `switchLedgerMode` event. This listener picks
- * it up and hot-swaps the active handler without reloading the offscreen.
- */
-function listenForModeSwitches(): void {
-  chrome.runtime.onMessage.addListener((msg: Record<string, unknown>) => {
-    if (
-      msg?.target === OffscreenCommunicationTarget.extension &&
-      msg?.event === OffscreenCommunicationEvents.switchLedgerMode
-    ) {
-      switchLedgerHandler(msg.mode as LedgerHandlerMode).catch(() => {
-        // Switch failed silently — mode will be retried on next event
-      });
-    }
-  });
-}
-
-/**
  * Bootstrap the Ledger handler in the offscreen document.
  *
- * Registers the mode-switch listener first so we do not miss a
- * `switchLedgerMode` event. Then initialises the Legacy handler
- * immediately as the default. The background will later push the
- * correct mode (DMK or Legacy) once the controller is ready —
- * the mode-switch listener handles that hot-swap.
+ * Initialises the Legacy handler immediately as the default. Remote
+ * feature-flag driven mode switching is wired in a follow-up PR.
  */
 export async function bootstrapLedger(): Promise<void> {
-  listenForModeSwitches();
-
   try {
     await initLedger(LedgerHandlerMode.Legacy);
-  } catch {
-    // Initialization failed — Ledger will not be available
+  } catch (error) {
+    // Initialisation failed — Ledger will not be available for this session.
+    // Logged so a real device failure is observable from the offscreen
+    // DevTools console instead of failing silently.
+    console.error('[ledger-router] bootstrapLedger failed:', error);
   }
 }

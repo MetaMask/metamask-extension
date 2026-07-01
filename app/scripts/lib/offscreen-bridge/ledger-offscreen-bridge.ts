@@ -35,10 +35,22 @@ type IFrameMessage<TAction extends LedgerAction> = {
  * the keyring. In this case, the bridge is used to communicate with the
  * Offscreen Document. Inside the Offscreen document the ledger script
  * communicates directly with the Ledger device via WebHID.
+ *
+ * `isDeviceConnected` is intentionally omitted from the implemented shape: the
+ * offscreen bridge does not own HID state (the offscreen document does, and it
+ * already signals connect/disconnect via `OffscreenCommunicationEvents`).
+ * Forcing the bridge to declare a stale `boolean` here would mislead callers
+ * into reading it. If you need device-connection state, listen for
+ * `ledgerDeviceConnect` events on the background side.
+ *
+ * TODO(upstream): make `isDeviceConnected` optional on `LedgerBridge<T>` in
+ * `@metamask/eth-ledger-bridge-keyring` so this `Omit` can go away.
+ * Tracked separately.
  */
-export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridgeOptions> {
-  isDeviceConnected = false;
-
+export class LedgerOffscreenBridge
+  implements
+    Omit<LedgerBridge<LedgerOffscreenBridgeOptions>, 'isDeviceConnected'>
+{
   init() {
     return Promise.resolve();
   }
@@ -138,15 +150,6 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
-    return this.#attemptSendMessage<TAction, ResponsePayload>(message, {
-      timeout,
-    });
-  }
-
-  #attemptSendMessage<TAction extends LedgerAction, ResponsePayload>(
-    message: IFrameMessage<TAction>,
-    { timeout }: { timeout?: number } = {},
-  ): Promise<ResponsePayload> {
     return new Promise((resolve, reject) => {
       let responseTimeout: ReturnType<typeof setTimeout>;
 
@@ -175,9 +178,8 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
           } else {
             const error = response?.payload?.error;
             if (
-              error &&
-              error.name === 'HardwareWalletError' &&
-              typeof error.code === 'number'
+              error?.name === 'HardwareWalletError' &&
+              typeof error?.code === 'number'
             ) {
               reject(
                 new HardwareWalletError(error.message, {
