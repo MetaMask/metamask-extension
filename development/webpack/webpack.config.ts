@@ -163,7 +163,7 @@ const plugins: WebpackPluginInstance[] = [
       }
       // UI pages (identified by the `#app-content` React mount point, present
       // via `partial-body.html` on every page that renders the React UI and no
-      // other extension page) get the UI reload client.
+      // other extension page) get the UI reload client
       if (content.includes('id="app-content"')) {
         return injectEntryScripts(
           content,
