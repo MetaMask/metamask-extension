@@ -14,7 +14,10 @@ import {
   setEnabledAllPopularNetworks,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import type { MetaMaskReduxDispatch } from '../../store/store';
+import type {
+  MetaMaskReduxDispatch,
+  MetaMaskReduxState,
+} from '../../store/store';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
@@ -61,6 +64,9 @@ const {
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
 } = bridgeSlice.actions;
+
+const toBridgeAppState = (state: MetaMaskReduxState): BridgeAppState =>
+  state as unknown as BridgeAppState;
 
 export {
   resetInputFields,
@@ -146,9 +152,11 @@ export const updateQuoteRequestParams = (
 export const setEvmBalances = (assetId: CaipAssetType) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
-    const selectedAddress = getFromAccount(getState())?.address;
+    const selectedAddress = getFromAccount(
+      toBridgeAppState(getState()),
+    )?.address;
     if (!selectedAddress) {
       return;
     }
@@ -173,7 +181,7 @@ export const setEvmBalances = (assetId: CaipAssetType) => {
 export const setFromToken = (token: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
     const { assetId } = token;
     const { chainId } = parseCaipAssetType(assetId);
@@ -188,8 +196,9 @@ export const setFromToken = (token: TokenPayload) => {
     }
 
     if (maybeHexChainId) {
-      const networkConfigs =
-        getMultichainNetworkConfigurationsByChainId(getState());
+      const networkConfigs = getMultichainNetworkConfigurationsByChainId(
+        toBridgeAppState(getState()),
+      );
       if (!networkConfigs[maybeHexChainId]) {
         const featuredRpc = FEATURED_RPCS.find(
           (rpc) => rpc.chainId === maybeHexChainId,
@@ -211,7 +220,9 @@ export const setFromToken = (token: TokenPayload) => {
       }
     }
 
-    const currentChainId = getMultichainProviderConfig(getState()).chainId;
+    const currentChainId = getMultichainProviderConfig(
+      toBridgeAppState(getState()),
+    ).chainId;
     const currentNetworkMatchesToken = [chainId, maybeHexChainId].some(
       (c) => c && c === currentChainId,
     );
@@ -220,15 +231,18 @@ export const setFromToken = (token: TokenPayload) => {
     if (!currentNetworkMatchesToken) {
       // If the source chain changes, enable All Networks view so the user
       // can see their bridging activity on the new chain
-      const lastSelectedChainId = getLastSelectedChainId(getState());
+      const lastSelectedChainId = getLastSelectedChainId(
+        toBridgeAppState(getState()),
+      );
       if (isCrossChain(chainId, lastSelectedChainId)) {
         dispatch(setEnabledAllPopularNetworks());
       }
       if (isNonEvm) {
         dispatch(setActiveNetworkWithError(chainId));
       } else if (maybeHexChainId) {
-        const networkId =
-          selectDefaultNetworkClientIdsByChainId(getState())[maybeHexChainId];
+        const networkId = selectDefaultNetworkClientIdsByChainId(
+          toBridgeAppState(getState()),
+        )[maybeHexChainId];
         if (networkId) {
           dispatch(setActiveNetworkWithError(networkId));
         }
@@ -242,9 +256,9 @@ export const setFromToken = (token: TokenPayload) => {
 export const setToToken = (newToToken: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
-    const state = getState();
+    const state = toBridgeAppState(getState());
     const currentFromAmount = getFromAmount(state);
     const fromToken = getFromToken(state);
     const toToken = getToToken(state);
@@ -267,11 +281,7 @@ export const setToToken = (newToToken: TokenPayload) => {
         );
       }
 
-      await dispatch(
-        setFromToken(fromTokenToUse) as unknown as Parameters<
-          typeof dispatch
-        >[0],
-      );
+      await dispatch(setFromToken(fromTokenToUse));
     }
 
     dispatch(setToTokenAction(newToToken));

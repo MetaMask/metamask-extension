@@ -1,7 +1,10 @@
 import { type BridgeController } from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import type { MetaMaskReduxDispatch } from '../../store/store';
+import type {
+  MetaMaskReduxDispatch,
+  MetaMaskReduxState,
+} from '../../store/store';
 import { getIsSmartTransaction } from '../../../shared/lib/selectors';
 import { BridgeAppState } from '../bridge/selectors';
 import { getMaybeHexChainId } from '../bridge/utils';
@@ -24,11 +27,14 @@ export const updateBatchSellTrades = (
 ) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
     const hexChainId = getMaybeHexChainId(chain);
     const isSmartTransaction = hexChainId
-      ? getIsSmartTransaction(getState(), hexChainId)
+      ? getIsSmartTransaction(
+          getState() as unknown as BridgeAppState,
+          hexChainId,
+        )
       : false;
     await dispatch(
       callBridgeControllerMethod(

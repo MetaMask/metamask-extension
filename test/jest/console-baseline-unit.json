@@ -567,6 +567,9 @@
     "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
     },
+    "ui/hooks/rewards/useLinkAccountGroup.test.tsx": {
+      "warn: Selector unknown returned a different": 1
+    },
     "ui/hooks/rewards/useValidateReferralCode.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
@@ -636,6 +639,9 @@
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {
       "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/bridge/prepare/bridge-cta-info-text.test.tsx": {
+      "warn: Selector _temp returned a different": 1
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "Reselect: Input stability warnings": 1
@@ -716,9 +722,9 @@
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 43,
-      "React: Act warnings (component updates not wrapped)": 17,
-      "Reselect: Identity function warnings": 4
+      "MetaMask: Background connection not initialized": 23,
+      "React: Act warnings (component updates not wrapped)": 2,
+      "warn: Selector getCrossChainMetaMaskCachedBalances returned a diff...": 1
     },
     "ui/pages/confirmations/components/confirm/info/nft-token-transfer/nft-token-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 40,
@@ -864,6 +870,9 @@
       "MetaMask: Background connection not initialized": 235,
       "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/confirmation/alerts/useAlertActions.test.ts": {
+      "warn: Selector unknown returned a different": 2
     },
     "ui/pages/confirmations/context/gas-fee-modal/index.test.tsx": {
       "Test errors: Uncaught Errors": 1
