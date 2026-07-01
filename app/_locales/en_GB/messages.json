@@ -82,12 +82,6 @@
   "account": {
     "message": "Account"
   },
-  "accountActivity": {
-    "message": "Account activity"
-  },
-  "accountActivityText": {
-    "message": "Select the accounts you want to be notified about:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Log in"
   },
@@ -1699,9 +1693,6 @@
   "back": {
     "message": "Back"
   },
-  "backToHome": {
-    "message": "Back to home"
-  },
   "backUpIncomplete": {
     "message": "Back up incomplete"
   },
@@ -2537,9 +2528,6 @@
     "message": "Close $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "You may close this window anytime."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -3105,12 +3093,6 @@
   },
   "customerSupport": {
     "message": "customer support"
-  },
-  "customizeYourNotifications": {
-    "message": "Customize your notifications"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Turn on the types of notifications you want to receive:"
   },
   "dappConnections": {
     "message": "Dapp Connections"
@@ -5109,7 +5091,7 @@
     "message": "MetaMask fee"
   },
   "metamaskNotificationsAreOff": {
-    "message": "Wallet notifications are currently not active."
+    "message": "Turn on notifications"
   },
   "metamaskSwap": {
     "message": "MetaMask Swap"
@@ -5997,6 +5979,9 @@
   "notificationItemUnStakingRequested": {
     "message": "Unstaking requested"
   },
+  "notificationSettings": {
+    "message": "Notification settings"
+  },
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -6051,14 +6036,65 @@
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "CLI connection requests, approvals, and session updates for Agentic"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Agentic CLI"
+  },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
   },
+  "notificationsSettingsDeselectAll": {
+    "message": "Deselect all"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "In-app"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "Product updates, feature announcements, and new releases"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "Updates and rewards"
+  },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1 we protect your privacy while using this feature."
+    "message": "Choose what you're notified about and how."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "Perps position changes, liquidations, funding rates, and margin updates"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "Trading activity"
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "Push"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "Accounts"
+  },
+  "notificationsSettingsSelectAccountsDescription": {
+    "message": "Choose which accounts you'd like to get notifications for."
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "In-app"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "Off"
+  },
+  "notificationsSettingsStatusPush": {
+    "message": "Push"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "Buys, sells, transfers, swaps and rewards"
+  },
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "Wallet activity"
   },
   "numberOfTokens": {
     "message": "Number of tokens"
@@ -7747,9 +7783,6 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
-  },
-  "productAnnouncements": {
-    "message": "Product announcements"
   },
   "provide": {
     "message": "Provide"
@@ -9535,24 +9568,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
   },
-  "smartTransactionCancelled": {
-    "message": "Your transaction was canceled"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Your transaction couldn't be completed, so it was canceled to save you from paying unnecessary gas fees."
-  },
-  "smartTransactionError": {
-    "message": "Your transaction failed"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
-  },
-  "smartTransactionPending": {
-    "message": "Your transaction was submitted"
-  },
-  "smartTransactionSuccess": {
-    "message": "Your transaction is complete"
-  },
   "smartTransactions": {
     "message": "Smart Transactions"
   },
@@ -11015,9 +11030,6 @@
   "view": {
     "message": "View"
   },
-  "viewActivity": {
-    "message": "View activity"
-  },
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
@@ -11044,9 +11056,6 @@
   },
   "viewTokenDetails": {
     "message": "View token details"
-  },
-  "viewTransaction": {
-    "message": "View transaction"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",

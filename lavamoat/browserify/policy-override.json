@@ -83,6 +83,13 @@
         "addEventListener": false
       }
     },
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "document": false,
