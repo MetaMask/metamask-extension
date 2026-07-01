@@ -9,6 +9,10 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../btc/mocks/tokens-api';
+import {
+  mockUnifiedSolanaBalanceEndpoints,
+  shouldUseUnifiedSolanaBalanceMocks,
+} from './unified-solana-assets';
 
 /**
  * Holds the actual transaction signature captured from sendTransaction.
@@ -2098,6 +2102,11 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     const isSwapScenario = Boolean(
       isExecutedSwapScenario || mockSwapWithNoQuotes,
     );
+
+    if (shouldUseUnifiedSolanaBalanceMocks(balance)) {
+      mockList.push(...(await mockUnifiedSolanaBalanceEndpoints(mockServer)));
+    }
+
     mockList.push(await simulateSolanaTransaction(mockServer));
     if (walletConnect) {
       mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
