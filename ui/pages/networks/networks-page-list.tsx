@@ -306,88 +306,90 @@ export const NetworksPageList = ({
     [currentlyOnTestnet, dispatch, trackEvent],
   );
 
-  const networkListContent = showNoSearchResults ? (
-    <NoSearchResult />
-  ) : (
-    <>
-      {defaultNetworks.length > 0 ? (
-        <Box
-          padding={4}
-          paddingBottom={2}
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-        >
-          <Text color={TextColor.TextAlternative}>{t('defaultNetworks')}</Text>
-        </Box>
-      ) : null}
+  return (
+    <Box
+      className="flex h-full min-h-0 w-full flex-col"
+      data-testid="networks-page-list"
+    >
+      <Box className="flex-1 overflow-y-auto">
+        {showNoSearchResults ? <NoSearchResult /> : null}
 
-      <Box className="pb-2">{defaultNetworks.map(renderNetworkListItem)}</Box>
-
-      {customNetworks.length > 0 ? (
-        <>
-          <SectionDivider />
+        {defaultNetworks.length > 0 ? (
           <Box
             padding={4}
             paddingBottom={2}
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
           >
-            <Text color={TextColor.TextAlternative}>{t('customNetworks')}</Text>
-          </Box>
-        </>
-      ) : null}
-
-      <Box className="pb-2">{customNetworks.map(renderNetworkListItem)}</Box>
-
-      {sortedTestNetworks.length > 0 ? (
-        <>
-          <SectionDivider />
-          <Box
-            paddingBottom={4}
-            paddingTop={4}
-            paddingLeft={4}
-            paddingRight={4}
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-          >
             <Text color={TextColor.TextAlternative}>
-              {t('showTestnetNetworks')}
+              {t('defaultNetworks')}
             </Text>
-            <ToggleButton
-              dataTestId="networks-page-show-test-networks"
-              value={showTestnets || currentlyOnTestnet}
-              disabled={currentlyOnTestnet}
-              onToggle={handleToggleTestNetworks}
-            />
           </Box>
-        </>
-      ) : null}
+        ) : null}
 
-      {showTestnets || currentlyOnTestnet ? (
-        <Box className="pb-2">{sortedTestNetworks.map(renderNetworkListItem)}</Box>
-      ) : null}
+        <Box className="pb-2">{defaultNetworks.map(renderNetworkListItem)}</Box>
 
-      {featuredNetworksNotYetEnabled.length > 0 ? (
-        <>
-          <SectionDivider />
-          <AdditionalNetworksInfo />
+        {customNetworks.length > 0 ? (
+          <>
+            <SectionDivider />
+            <Box
+              padding={4}
+              paddingBottom={2}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+            >
+              <Text color={TextColor.TextAlternative}>
+                {t('customNetworks')}
+              </Text>
+            </Box>
+          </>
+        ) : null}
+
+        <Box className="pb-2">{customNetworks.map(renderNetworkListItem)}</Box>
+
+        {sortedTestNetworks.length > 0 ? (
+          <>
+            <SectionDivider />
+            <Box
+              paddingBottom={4}
+              paddingTop={4}
+              paddingLeft={4}
+              paddingRight={4}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+            >
+              <Text color={TextColor.TextAlternative}>
+                {t('showTestnetNetworks')}
+              </Text>
+              <ToggleButton
+                dataTestId="networks-page-show-test-networks"
+                value={showTestnets || currentlyOnTestnet}
+                disabled={currentlyOnTestnet}
+                onToggle={handleToggleTestNetworks}
+              />
+            </Box>
+          </>
+        ) : null}
+
+        {showTestnets || currentlyOnTestnet ? (
           <Box className="pb-2">
-            {featuredNetworksNotYetEnabled.map((network) => (
-              <AdditionalNetworkRow key={network.chainId} network={network} />
-            ))}
+            {sortedTestNetworks.map(renderNetworkListItem)}
           </Box>
-        </>
-      ) : null}
-    </>
-  );
+        ) : null}
 
-  return (
-    <Box
-      className="flex h-full min-h-0 w-full flex-col"
-      data-testid="networks-page-list"
-    >
-      <Box className="flex-1 overflow-y-auto">{networkListContent}</Box>
+        {featuredNetworksNotYetEnabled.length > 0 ? (
+          <>
+            <SectionDivider />
+            <AdditionalNetworksInfo />
+            <Box className="pb-2">
+              {featuredNetworksNotYetEnabled.map((network) => (
+                <AdditionalNetworkRow key={network.chainId} network={network} />
+              ))}
+            </Box>
+          </>
+        ) : null}
+      </Box>
 
       <Box padding={4} gap={4} flexDirection={BoxFlexDirection.Column}>
         {footerContent}
