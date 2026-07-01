@@ -12,6 +12,13 @@ export type TronAssetMetadata = {
   decimals: number;
   name: string;
   symbol: TronAssetSymbol;
+  /**
+   * Short on-chain abbreviation used only for TRC-10 issuance
+   * (`/wallet/createassetissue`'s `abbr` field, capped at 5 chars). Kept
+   * separate from `symbol`, which is the identifying key used elsewhere and
+   * can be longer than 5 chars (e.g. `GAS_FREE`).
+   */
+  abbr?: string;
 };
 
 export type TronTrc10Token = TronAssetMetadata & {
@@ -47,6 +54,7 @@ export type TronNativeAccount = {
 
 export const TRON_TEST_ASSETS = {
   GAS_FREE: {
+    abbr: 'GASF',
     decimals: 6,
     name: 'GasFreeTransferSolution',
     symbol: 'GAS_FREE',

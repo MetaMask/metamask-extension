@@ -162,11 +162,14 @@ export class TronNode {
         }
       }
 
-      await Promise.all([
-        this.initializeTrc10Balances(options.trc10Balances ?? {}),
-        this.initializeTrc20Balances(options.trc20Balances ?? {}),
-        this.initializeStakedTrxBalances(options.stakedTrxBalances ?? {}),
-      ]);
+      // TRC10 issuance and TRC20 deployment both sign from the genesis
+      // funding account; running them concurrently risks conflicting
+      // transactions from that single account, so these stages are
+      // serialized. Transfers *within* each stage stay concurrent (see the
+      // comments in initializeTrc10Balances/initializeTrc20Balances).
+      await this.initializeTrc10Balances(options.trc10Balances ?? {});
+      await this.initializeTrc20Balances(options.trc20Balances ?? {});
+      await this.initializeStakedTrxBalances(options.stakedTrxBalances ?? {});
     } catch (error) {
       await this.quit();
       throw error;
@@ -182,6 +185,18 @@ export class TronNode {
     const configPath = join(runtimeDirectory, 'fullnode.conf');
     const outputDirectory = join(runtimeDirectory, 'output');
     const resolvedPorts = await resolveJavaTronPrivateNetworkPorts(ports);
+    // getAvailablePorts probes ports by briefly binding then releasing them,
+    // which leaves a gap where another process could grab one before we
+    // spawn java-tron. Re-check right before use to fail fast instead of
+    // waiting out the full waitForReady timeout on a silent bind failure.
+    for (const key of JAVA_TRON_PRIVATE_NETWORK_PORT_KEYS) {
+      const port = resolvedPorts[key];
+      if (!(await isTcpPortAvailable(port))) {
+        throw new Error(
+          `${JAVA_TRON_PRIVATE_NETWORK_PORT_LABELS[key]} ${port} is no longer available`,
+        );
+      }
+    }
     await mkdir(outputDirectory, { recursive: true });
     await writeFile(
       configPath,
@@ -381,7 +396,7 @@ export class TronNode {
       body: JSON.stringify({
         owner_address: fundingAccount.address,
         name: metadata.name,
-        abbr: metadata.symbol,
+        abbr: metadata.abbr ?? metadata.symbol,
         description: metadata.name,
         url: 'https://metamask.io',
         total_supply: Number(totalSupply),
@@ -567,6 +582,18 @@ export class TronNode {
     parameter: string;
   }): Promise<void> {
     const fundingAccount = await this.getFundingAccount();
+    const ownerPrivateKey =
+      ownerAddress === fundingAccount.address
+        ? fundingAccount.privateKey
+        : E2E_TEST_ACCOUNT_PRIVATE_KEYS[ownerAddress];
+    if (!ownerPrivateKey) {
+      throw new Error(
+        `triggerSmartContract: no private key for ${ownerAddress}. ` +
+          `Add the BIP44-derived key (m/44'/195'/0'/0/<index> from E2E_SRP) ` +
+          `to E2E_TEST_ACCOUNT_PRIVATE_KEYS in node.ts.`,
+      );
+    }
+
     const resp = (await this.fetchJson('/wallet/triggersmartcontract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -584,7 +611,7 @@ export class TronNode {
     // /wallet/triggersmartcontract wraps the tx under a "transaction" key
     await this.signAndBroadcastTransaction(
       resp.transaction ?? resp,
-      fundingAccount.privateKey,
+      ownerPrivateKey,
     );
   }
 
@@ -737,14 +764,20 @@ export class TronNode {
     }
     const deadline = Date.now() + 30_000;
     while (Date.now() < deadline) {
+      // gettransactionbyid only confirms the node has seen the broadcast tx;
+      // gettransactioninfobyid is only populated once the tx is executed and
+      // included in a block, which is what downstream seeding steps need.
       const checkResp = await fetch(
-        `${this.baseUrl}/wallet/gettransactionbyid?value=${txId}`,
+        `${this.baseUrl}/wallet/gettransactioninfobyid?value=${txId}`,
       );
-      const checkData = (await checkResp.json()) as { txID?: string };
-      if (checkData.txID) {
+      const checkData = (await checkResp.json()) as {
+        id?: string;
+        blockNumber?: number;
+      };
+      if (checkData.id && checkData.blockNumber) {
         return;
       }
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 250));
     }
     throw new Error(`Transaction ${txId} was not confirmed within 30s`);
   }
