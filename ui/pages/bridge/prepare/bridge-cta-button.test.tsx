@@ -30,7 +30,7 @@ import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/u
 import * as useSubmitBridgeTransactionModule from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { BridgeCTAButton } from './bridge-cta-button';
 
-const mockTrackAnalyticsEvent = jest.fn();
+const mockTrackAnalyticsEvent = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -72,7 +72,6 @@ const baseHardwareWalletConfig = {
   isWebUsbAvailable: false,
 };
 
-const mockTrackAnalyticsEvent = jest.fn().mockResolvedValue(undefined);
 const backgroundConnectionMock = new Proxy(
   {
     trackAnalyticsEvent: mockTrackAnalyticsEvent,
