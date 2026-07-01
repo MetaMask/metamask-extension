@@ -82,12 +82,6 @@
   "account": {
     "message": "Счет"
   },
-  "accountActivity": {
-    "message": "Активность счета"
-  },
-  "accountActivityText": {
-    "message": "Выберите счета, о которых хотите получать уведомления:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Войти"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToHome": {
-    "message": "Назад на главную"
-  },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
   },
@@ -2422,9 +2413,6 @@
     "message": "Закрыть $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Вы можете закрыть это окно в любое время."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "поддержка пользователя"
-  },
-  "customizeYourNotifications": {
-    "message": "Настройте свои уведомления"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Включите типы уведомлений, которые хотите получать:"
   },
   "dappConnections": {
     "message": "Соединения dapp"
@@ -5876,9 +5858,6 @@
   "notificationsSettingsBoxError": {
     "message": "Возникла какая-то проблема. Повторите попытку позже."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Будьте в курсе того, что происходит в вашем кошельке, с помощью уведомлений. Для использования уведомлений мы используем профиль для синхронизации некоторых настроек на ваших устройствах. $1 мы защищаем вашу конфиденциальность при использовании этой функции."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Узнайте как"
   },
@@ -7540,9 +7519,6 @@
   },
   "proceedWithTransaction": {
     "message": "Я все равно хочу продолжить"
-  },
-  "productAnnouncements": {
-    "message": "Объявления о продуктах"
   },
   "provide": {
     "message": "Предоставить"
@@ -9297,24 +9273,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "smartTransactionCancelled": {
-    "message": "Ваша транзакция отменена"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Не удалось завершить вашу транзакцию, поэтому она была отменена, чтобы избавить вас от ненужной платы за газ."
-  },
-  "smartTransactionError": {
-    "message": "Ваша транзакция не удалась"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Внезапные изменения на рынке могут привести к неудачам. Если проблема не исчезнет, ​​обратитесь в поддержку MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Ваша транзакция отправляется"
-  },
-  "smartTransactionSuccess": {
-    "message": "Ваша транзакция завершена"
-  },
   "smartTransactions": {
     "message": "Умные транзакции"
   },
@@ -10770,9 +10728,6 @@
   "view": {
     "message": "Просмотр"
   },
-  "viewActivity": {
-    "message": "Смотреть активность"
-  },
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
@@ -10799,9 +10754,6 @@
   },
   "viewTokenDetails": {
     "message": "Смотреть сведения о токене"
-  },
-  "viewTransaction": {
-    "message": "Смотреть транзакцию"
   },
   "viewinExplorer": {
     "message": "Смотреть $1 в обозревателе",

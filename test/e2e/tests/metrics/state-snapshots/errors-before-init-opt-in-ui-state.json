@@ -75,11 +75,18 @@
       "isSignedIn": "boolean",
       "needsProfilePairing": "boolean"
     },
+    "BridgeController": { "inputPrimaryDenomination": "string" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,
       "walletComplianceStatusMap": "object"
+    },
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {

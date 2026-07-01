@@ -31,18 +31,13 @@ import {
 import {
   lockMetamask,
   setShowSupportDataConsentModal,
-  showConfirmTurnOnMetamaskNotifications,
   toggleDefaultView,
 } from '../../../store/actions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
-import {
-  selectIsMetamaskNotificationsEnabled,
-  selectIsMetamaskNotificationsFeatureSeen,
-} from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { selectIsMetamaskNotificationsFeatureSeen } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { Tag } from '../../component-library';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -61,7 +56,6 @@ import {
 import {
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
-  getThirdPartyNotifySnaps,
   getUseExternalServices,
   getAnalyticsId,
   getCompletedMetaMetricsOnboarding,
@@ -106,16 +100,10 @@ export function useGlobalMenuSections(
   const isMetamaskNotificationFeatureSeen = useSelector(
     selectIsMetamaskNotificationsFeatureSeen,
   );
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
-  let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
-  hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
   const isSidePanelEnabled = useSidePanelEnabled();
   const browserSupportsSidePanel = useBrowserSupportsSidePanel();
@@ -152,28 +140,6 @@ export function useGlobalMenuSections(
   const supportLink = SUPPORT_LINK || '';
 
   const handleNotificationsClick = useCallback(() => {
-    const shouldShowEnableModal =
-      !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
-
-    if (shouldShowEnableModal) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.NotificationsActivated)
-          .addCategory(MetaMetricsEventCategory.NotificationsActivationFlow)
-          .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            action_type: 'started',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_profile_syncing_enabled: isBackupAndSyncEnabled,
-          })
-          .build(),
-      );
-      dispatch(showConfirmTurnOnMetamaskNotifications());
-      onClose();
-      return;
-    }
-
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NotificationsMenuOpened)
         .addCategory(MetaMetricsEventCategory.NotificationInteraction)
@@ -192,13 +158,8 @@ export function useGlobalMenuSections(
       { state: { globalMenuTransition: 'forward' } },
     );
   }, [
-    hasThirdPartyNotifySnaps,
-    isMetamaskNotificationsEnabled,
     trackEvent,
     createEventBuilder,
-    isBackupAndSyncEnabled,
-    dispatch,
-    onClose,
     navigate,
     notificationsUnreadCount,
     notificationsReadCount,

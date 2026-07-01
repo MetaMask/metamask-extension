@@ -82,12 +82,6 @@
   "account": {
     "message": "アカウント"
   },
-  "accountActivity": {
-    "message": "アカウントのアクティビティ"
-  },
-  "accountActivityText": {
-    "message": "通知を受けたいアカウントを選択してください:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "ログイン"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "戻る"
   },
-  "backToHome": {
-    "message": "ホームに戻る"
-  },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
   },
@@ -2422,9 +2413,6 @@
     "message": "$1を閉じる",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "このウィンドウはいつでも閉じることができます。"
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "カスタマーサポート"
-  },
-  "customizeYourNotifications": {
-    "message": "通知のカスタマイズ"
-  },
-  "customizeYourNotificationsText": {
-    "message": "受け取る通知の種類をオンにします"
   },
   "dappConnections": {
     "message": "DAppの接続"
@@ -5880,9 +5862,6 @@
   "notificationsSettingsBoxError": {
     "message": "問題が発生しました。もう一度お試しください。"
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "通知を使えば、ウォレットで何が起きているか常に把握できます。通知を使用するには、プロファイルを使用してデバイス間で一部の設定を同期します。この機能を使用する際に当社がユーザーのプライバシーをどのように保護するのか、$1。"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "方法"
   },
@@ -7544,9 +7523,6 @@
   },
   "proceedWithTransaction": {
     "message": "それでも続行"
-  },
-  "productAnnouncements": {
-    "message": "製品に関するお知らせ"
   },
   "provide": {
     "message": "提供"
@@ -9301,24 +9277,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "smartTransactionCancelled": {
-    "message": "トランザクションがキャンセルされました"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "トランザクションを完了できなかったため、不要なガス代の支払いを避けるためにキャンセルされました。"
-  },
-  "smartTransactionError": {
-    "message": "トランザクションに失敗しました"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "突然の市場の変化により失敗する場合があります。問題が解決されない場合は、MetaMaskカスタマーサポートにお問い合わせください。"
-  },
-  "smartTransactionPending": {
-    "message": "トランザクションが送信されました"
-  },
-  "smartTransactionSuccess": {
-    "message": "トランザクションが完了しました"
-  },
   "smartTransactions": {
     "message": "スマートトランザクション"
   },
@@ -10774,9 +10732,6 @@
   "view": {
     "message": "表示"
   },
-  "viewActivity": {
-    "message": "アクティビティを表示"
-  },
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
@@ -10803,9 +10758,6 @@
   },
   "viewTokenDetails": {
     "message": "トークンの詳細を表示"
-  },
-  "viewTransaction": {
-    "message": "トランザクションを表示"
   },
   "viewinExplorer": {
     "message": "$1をエクスプローラーで表示",
