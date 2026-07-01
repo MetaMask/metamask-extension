@@ -1,4 +1,5 @@
 import { DEFAULT_FIXTURE_ACCOUNT_ID, HARDWARE_WALLET_ACCOUNT_ID } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   LOCALHOST_NATIVE_ASSET_ID,
   MAINNET_NATIVE_ASSET_ID,
