@@ -2484,9 +2484,6 @@
   "confirmFieldNeverExpires": {
     "message": "N’expire jamais"
   },
-  "confirmFieldPaymaster": {
-    "message": "Frais payés par"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Bihebdomadaire"
   },
@@ -2511,9 +2508,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Justification de la demande fournie par le site web"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Les frais de cette transaction seront payés par le contrat « Paymaster » intelligent."
   },
   "confirmFieldTotalExposure": {
     "message": "Exposition totale"

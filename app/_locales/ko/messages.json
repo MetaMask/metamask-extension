@@ -2484,9 +2484,6 @@
   "confirmFieldNeverExpires": {
     "message": "만료 없음"
   },
-  "confirmFieldPaymaster": {
-    "message": "수수료 지불:"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "2주마다"
   },
@@ -2511,9 +2508,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "해당 요청에 대한 근거는 웹사이트에서 제시됩니다"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "이 트랜잭션에 대한 수수료는 Paymaster 스마트 계약에서 지불합니다."
   },
   "confirmFieldTotalExposure": {
     "message": "총 익스포저"

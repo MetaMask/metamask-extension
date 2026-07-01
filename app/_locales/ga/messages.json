@@ -1058,12 +1058,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "D’admhaigh mé an foláireamh agus ba mhaith liom leanúint ar aghaidh fós"
   },
-  "confirmFieldPaymaster": {
-    "message": "Táille íoctha ag"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Íocfar an táille don idirbheart seo leis an gconradh cliste pá-mháistir."
-  },
   "confirmGasFeeTokenBalance": {
     "message": "Iarmhéid:"
   },

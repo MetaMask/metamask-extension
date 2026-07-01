@@ -2444,9 +2444,6 @@
   "confirmFieldNeverExpires": {
     "message": "Nunca caduca"
   },
-  "confirmFieldPaymaster": {
-    "message": "Tarifa pagada por"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Quincenal"
   },
@@ -2471,9 +2468,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Justificación de la solicitud proporcionada por el sitio web"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "La tarifa de esta transacción la pagará el contrato inteligente del pagador."
   },
   "confirmFieldTotalExposure": {
     "message": "Exposición total"

@@ -2484,9 +2484,6 @@
   "confirmFieldNeverExpires": {
     "message": "Tidak pernah kedaluwarsa"
   },
-  "confirmFieldPaymaster": {
-    "message": "Biaya dibayar oleh"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Dua kali seminggu"
   },
@@ -2511,9 +2508,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Pembenaran atas permintaan yang diberikan oleh situs web"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Biaya untuk transaksi ini akan dibayar oleh kontrak cerdas paymaster."
   },
   "confirmFieldTotalExposure": {
     "message": "Total eksposur"
