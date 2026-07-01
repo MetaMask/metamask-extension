@@ -16,7 +16,10 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import { mockSnapSimpleKeyringAndSite, SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS } from '../account/snap-keyring-site-mocks';
+import {
+  mockSnapSimpleKeyringAndSite,
+  SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
+} from '../account/snap-keyring-site-mocks';
 import {
   MOCK_ETH_CONVERSION_RATE,
   mockPriceApi,
