@@ -2194,6 +2194,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  extensionUxChainlist: {
+    name: 'extensionUxChainlist',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.38.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   extensionUxTokenManagementFilter: {
     name: 'extensionUxTokenManagementFilter',
     type: FeatureFlagType.Remote,
