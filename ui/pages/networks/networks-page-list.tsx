@@ -63,6 +63,7 @@ import {
 } from '../../../shared/lib/network.utils';
 import { useNetworkManagerState } from '../../components/multichain/network-manager/hooks/useNetworkManagerState';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
+import { NoSearchResult } from './no-search-result';
 
 const filterNetworks = <
   NetworkRecord extends {
@@ -241,6 +242,12 @@ export const NetworksPageList = ({
       ),
     [currentMultichainChainId, testNetworks],
   );
+  const showNoSearchResults =
+    searchQuery.trim().length > 0 &&
+    defaultNetworks.length === 0 &&
+    customNetworks.length === 0 &&
+    sortedTestNetworks.length === 0 &&
+    featuredNetworksNotYetEnabled.length === 0;
 
   const renderNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
@@ -299,88 +306,88 @@ export const NetworksPageList = ({
     [currentlyOnTestnet, dispatch, trackEvent],
   );
 
-  return (
-    <Box
-      className="flex h-full min-h-0 w-full flex-col"
-      data-testid="networks-page-list"
-    >
-      <Box className="flex-1 overflow-y-auto">
-        {defaultNetworks.length > 0 ? (
+  const networkListContent = showNoSearchResults ? (
+    <NoSearchResult />
+  ) : (
+    <>
+      {defaultNetworks.length > 0 ? (
+        <Box
+          padding={4}
+          paddingBottom={2}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+        >
+          <Text color={TextColor.TextAlternative}>{t('defaultNetworks')}</Text>
+        </Box>
+      ) : null}
+
+      <Box className="pb-2">{defaultNetworks.map(renderNetworkListItem)}</Box>
+
+      {customNetworks.length > 0 ? (
+        <>
+          <SectionDivider />
           <Box
             padding={4}
             paddingBottom={2}
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
           >
+            <Text color={TextColor.TextAlternative}>{t('customNetworks')}</Text>
+          </Box>
+        </>
+      ) : null}
+
+      <Box className="pb-2">{customNetworks.map(renderNetworkListItem)}</Box>
+
+      {sortedTestNetworks.length > 0 ? (
+        <>
+          <SectionDivider />
+          <Box
+            paddingBottom={4}
+            paddingTop={4}
+            paddingLeft={4}
+            paddingRight={4}
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+          >
             <Text color={TextColor.TextAlternative}>
-              {t('defaultNetworks')}
+              {t('showTestnetNetworks')}
             </Text>
+            <ToggleButton
+              dataTestId="networks-page-show-test-networks"
+              value={showTestnets || currentlyOnTestnet}
+              disabled={currentlyOnTestnet}
+              onToggle={handleToggleTestNetworks}
+            />
           </Box>
-        ) : null}
+        </>
+      ) : null}
 
-        <Box className="pb-2">{defaultNetworks.map(renderNetworkListItem)}</Box>
+      {showTestnets || currentlyOnTestnet ? (
+        <Box className="pb-2">{sortedTestNetworks.map(renderNetworkListItem)}</Box>
+      ) : null}
 
-        {customNetworks.length > 0 ? (
-          <>
-            <SectionDivider />
-            <Box
-              padding={4}
-              paddingBottom={2}
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-            >
-              <Text color={TextColor.TextAlternative}>
-                {t('customNetworks')}
-              </Text>
-            </Box>
-          </>
-        ) : null}
-
-        <Box className="pb-2">{customNetworks.map(renderNetworkListItem)}</Box>
-
-        {sortedTestNetworks.length > 0 ? (
-          <>
-            <SectionDivider />
-            <Box
-              paddingBottom={4}
-              paddingTop={4}
-              paddingLeft={4}
-              paddingRight={4}
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text color={TextColor.TextAlternative}>
-                {t('showTestnetNetworks')}
-              </Text>
-              <ToggleButton
-                dataTestId="networks-page-show-test-networks"
-                value={showTestnets || currentlyOnTestnet}
-                disabled={currentlyOnTestnet}
-                onToggle={handleToggleTestNetworks}
-              />
-            </Box>
-          </>
-        ) : null}
-
-        {showTestnets || currentlyOnTestnet ? (
+      {featuredNetworksNotYetEnabled.length > 0 ? (
+        <>
+          <SectionDivider />
+          <AdditionalNetworksInfo />
           <Box className="pb-2">
-            {sortedTestNetworks.map(renderNetworkListItem)}
+            {featuredNetworksNotYetEnabled.map((network) => (
+              <AdditionalNetworkRow key={network.chainId} network={network} />
+            ))}
           </Box>
-        ) : null}
+        </>
+      ) : null}
+    </>
+  );
 
-        {featuredNetworksNotYetEnabled.length > 0 ? (
-          <>
-            <SectionDivider />
-            <AdditionalNetworksInfo />
-            <Box className="pb-2">
-              {featuredNetworksNotYetEnabled.map((network) => (
-                <AdditionalNetworkRow key={network.chainId} network={network} />
-              ))}
-            </Box>
-          </>
-        ) : null}
-      </Box>
+  return (
+    <Box
+      className="flex h-full min-h-0 w-full flex-col"
+      data-testid="networks-page-list"
+    >
+      <Box className="flex-1 overflow-y-auto">{networkListContent}</Box>
 
       <Box padding={4} gap={4} flexDirection={BoxFlexDirection.Column}>
         {footerContent}

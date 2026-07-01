@@ -42,6 +42,7 @@ import { SettingsHeader } from '../settings/shared/settings-header';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import { NetworksPageList } from './networks-page-list';
+import { NoSearchResult } from './no-search-result';
 
 const getViewAfterRpcAdd = (view: string) =>
   view === 'edit-rpc' ? 'edit' : 'add';
@@ -168,6 +169,8 @@ const ChainlistNetworkPicker = ({
     () => chainlistNetworks.slice(0, visibleNetworkCount),
     [chainlistNetworks, visibleNetworkCount],
   );
+  const showNoSearchResults =
+    searchValue.trim().length > 0 && chainlistNetworks.length === 0;
 
   useEffect(() => {
     setVisibleNetworkCount(CHAINLIST_PAGE_SIZE);
@@ -213,64 +216,70 @@ const ChainlistNetworkPicker = ({
         data-testid="networks-page-chainlist-network-list"
         onScroll={handleChainlistScroll}
       >
-        {visibleChainlistNetworks.map((network, index) => {
-          const isExistingNetwork = existingNetworkChainIds.has(
-            getHexChainId(network.chainId),
-          );
+        {showNoSearchResults ? (
+          <NoSearchResult dataTestId="networks-page-chainlist-no-results" />
+        ) : (
+          <>
+            {visibleChainlistNetworks.map((network, index) => {
+              const isExistingNetwork = existingNetworkChainIds.has(
+                getHexChainId(network.chainId),
+              );
 
-          return (
-            <button
-              className={`flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed ${
-                isExistingNetwork ? 'bg-muted' : ''
-              }`}
-              data-testid="networks-page-chainlist-network"
-              key={`${network.chainId}-${network.name}`}
-              onClick={() => onSelect(network)}
-              type="button"
-            >
-              <Box
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-medium text-text-default ${
-                  CHAINLIST_ROW_COLORS[index % CHAINLIST_ROW_COLORS.length]
-                }`}
-              >
-                {network.name.charAt(0).toUpperCase()}
-              </Box>
-              <Box className="min-w-0 flex-1">
-                <Box className="flex min-w-0 items-center gap-2">
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                    className="truncate"
-                  >
-                    {network.name}
-                  </Text>
-                  {isExistingNetwork ? (
-                    <Box
-                      className="shrink-0 rounded-full bg-muted px-2 py-0.5"
-                      data-testid="networks-page-chainlist-added-pill"
-                    >
-                      <Text
-                        variant={TextVariant.BodySm}
-                        className="text-text-alternative"
-                      >
-                        {t('added')}
-                      </Text>
-                    </Box>
-                  ) : null}
-                </Box>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  className="truncate text-text-alternative"
+              return (
+                <button
+                  className={`flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed ${
+                    isExistingNetwork ? 'bg-muted' : ''
+                  }`}
+                  data-testid="networks-page-chainlist-network"
+                  key={`${network.chainId}-${network.name}`}
+                  onClick={() => onSelect(network)}
+                  type="button"
                 >
-                  {t('chainlistNetworkDetails', [
-                    network.nativeCurrency.symbol,
-                    String(network.chainId),
-                  ])}
-                </Text>
-              </Box>
-            </button>
-          );
-        })}
+                  <Box
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-medium text-text-default ${
+                      CHAINLIST_ROW_COLORS[index % CHAINLIST_ROW_COLORS.length]
+                    }`}
+                  >
+                    {network.name.charAt(0).toUpperCase()}
+                  </Box>
+                  <Box className="min-w-0 flex-1">
+                    <Box className="flex min-w-0 items-center gap-2">
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                        className="truncate"
+                      >
+                        {network.name}
+                      </Text>
+                      {isExistingNetwork ? (
+                        <Box
+                          className="shrink-0 rounded-full bg-muted px-2 py-0.5"
+                          data-testid="networks-page-chainlist-added-pill"
+                        >
+                          <Text
+                            variant={TextVariant.BodySm}
+                            className="text-text-alternative"
+                          >
+                            {t('added')}
+                          </Text>
+                        </Box>
+                      ) : null}
+                    </Box>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      className="truncate text-text-alternative"
+                    >
+                      {t('chainlistNetworkDetails', [
+                        network.nativeCurrency.symbol,
+                        String(network.chainId),
+                      ])}
+                    </Text>
+                  </Box>
+                </button>
+              );
+            })}
+          </>
+        )}
       </Box>
     </Box>
   );

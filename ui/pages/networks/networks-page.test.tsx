@@ -175,7 +175,7 @@ describe('NetworksPage', () => {
     return renderWithProvider(<NetworksPage />, store, pathname);
   };
 
-  it('renders the sectioned networks view and keeps testnets visible while selected on a testnet', () => {
+  it('renders the sectioned networks view and keeps testnets visible while selected on a testnet', async () => {
     renderNetworksPage({
       networkConfigurationsByChainId: {
         ...mockNetworkConfigurations,
@@ -226,6 +226,22 @@ describe('NetworksPage', () => {
 
     expect(testnetToggle).toBeChecked();
     expect(testnetToggle).toBeDisabled();
+
+    await userEvent.click(screen.getByTestId('settings-header-search-button'));
+    await userEvent.type(
+      screen.getByTestId('settings-header-search-input'),
+      'ugtfvh',
+    );
+
+    expect(screen.getByTestId('networks-page-no-results')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.settingsSearchMatchingNotFound.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByAltText(messages.settingsSearchMatchingNotFound.message),
+    ).toHaveAttribute('src', './images/empty-state-activity-light.png');
+    expect(screen.queryByText('Custom network 1')).not.toBeInTheDocument();
+    expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
   });
 
   it('renders the add network flow from the query param', () => {
@@ -252,6 +268,30 @@ describe('NetworksPage', () => {
           .replace('$2', '100'),
       ),
     ).toBeInTheDocument();
+  });
+
+  it('renders an empty state when the Chainlist search has no results', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'ugtfvh',
+    );
+
+    expect(
+      screen.getByTestId('networks-page-chainlist-no-results'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.settingsSearchMatchingNotFound.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByAltText(messages.settingsSearchMatchingNotFound.message),
+    ).toHaveAttribute('src', './images/empty-state-activity-light.png');
+    expect(screen.queryByText('Gnosis')).not.toBeInTheDocument();
   });
 
   it('loads more Chainlist networks as the user scrolls', async () => {
