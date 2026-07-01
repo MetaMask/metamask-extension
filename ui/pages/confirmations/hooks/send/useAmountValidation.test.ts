@@ -2,7 +2,10 @@ import { waitFor } from '@testing-library/react';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import mockState from '../../../../../test/data/mock-state.json';
-import { EVM_NATIVE_ASSET } from '../../../../../test/data/send/assets';
+import {
+  EVM_NATIVE_ASSET,
+  BITCOIN_ASSET,
+} from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Asset, AssetStandard } from '../../types/send';
 import * as SendContext from '../../context/send';
@@ -13,6 +16,7 @@ import {
   validatePositiveNumericString,
   mapSnapErrorCodeIntoTranslation,
 } from './useAmountValidation';
+import * as SnapAmountOnInput from './useSnapAmountOnInput';
 
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
@@ -299,6 +303,21 @@ describe('useAmountValidation', () => {
     await waitFor(() => expect(result.current.amountError).toEqual(undefined));
   });
 
+  it('returns required error for empty non-EVM amount value', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: BITCOIN_ASSET,
+      chainId: BITCOIN_ASSET.chainId,
+      from: MOCK_ADDRESS_1,
+      value: '',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() => expect(result.current.amountError).toEqual('Required'));
+  });
+
   it('does not return error for null amount value', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_NATIVE_ASSET,
@@ -512,6 +531,66 @@ describe('useAmountValidation', () => {
     );
     await waitFor(() =>
       expect(result.current.amountError).toEqual('Insufficient funds'),
+    );
+  });
+
+  it('ignores stale async non-EVM amount validation results', async () => {
+    let resolveFirstValidation!: (value: {
+      valid: boolean;
+      errors: { code: string }[];
+    }) => void;
+    const validateAmountWithSnap = jest
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveFirstValidation = resolve;
+          }),
+      )
+      .mockResolvedValueOnce({
+        valid: false,
+        errors: [{ code: 'InsufficientBalanceToCoverFee' }],
+      });
+
+    jest.spyOn(SnapAmountOnInput, 'useSnapAmountOnInput').mockReturnValue({
+      validateAmountWithSnap,
+    });
+
+    const sendContext = {
+      asset: BITCOIN_ASSET,
+      chainId: BITCOIN_ASSET.chainId,
+      from: MOCK_ADDRESS_1,
+      value: '0.00001',
+    };
+    const useSendContextMock = jest.spyOn(SendContext, 'useSendContext');
+    useSendContextMock.mockReturnValue(
+      sendContext as unknown as SendContext.SendContextType,
+    );
+
+    const { rerender, result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+
+    useSendContextMock.mockReturnValue({
+      ...sendContext,
+      value: '0.00002',
+    } as unknown as SendContext.SendContextType);
+    rerender();
+
+    await waitFor(() =>
+      expect(result.current.amountError).toEqual(
+        'Insufficient balance to cover fees',
+      ),
+    );
+
+    resolveFirstValidation?.({ valid: true, errors: [] });
+
+    await waitFor(() =>
+      expect(validateAmountWithSnap).toHaveBeenCalledTimes(2),
+    );
+    expect(result.current.amountError).toEqual(
+      'Insufficient balance to cover fees',
     );
   });
 });

@@ -6,7 +6,7 @@ import { useSendContext } from '../../context/send';
 import { validateAmountMultichain } from '../../utils/multichain-snaps';
 
 export const useSnapAmountOnInput = () => {
-  const { asset, fromAccount, value } = useSendContext();
+  const { asset, fromAccount } = useSendContext();
 
   const validateAmountWithSnap = useCallback(
     async (amount: string) => {
@@ -20,7 +20,11 @@ export const useSnapAmountOnInput = () => {
       );
       return result;
     },
-    [fromAccount, value, asset],
+    // Intentionally omit send-context `value`: validation uses the `amount`
+    // argument only. Including `value` would recreate this callback on every
+    // keystroke and retrigger async snap validation, letting stale responses
+    // overwrite newer error state.
+    [fromAccount, asset],
   );
 
   return { validateAmountWithSnap };
