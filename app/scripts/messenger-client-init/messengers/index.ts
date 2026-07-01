@@ -93,7 +93,7 @@ import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
 } from './subscription';
-import { getConnectivityControllerMessenger } from './connectivity';
+import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -142,10 +142,6 @@ import {
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 import {
-  getRemoteFeatureFlagControllerInitMessenger,
-  getRemoteFeatureFlagControllerMessenger,
-} from './remote-feature-flag-controller-messenger';
-import {
   getRewardsControllerInitMessenger,
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
@@ -169,7 +165,6 @@ import {
 import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
-import { getAccountsControllerMessenger } from './accounts-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
@@ -200,6 +195,7 @@ import {
   getClaimsControllerMessenger,
 } from './claims/claims-controller-messenger';
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
+import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
@@ -210,6 +206,7 @@ import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
+import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -217,7 +214,6 @@ export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
-export { getAccountsControllerMessenger } from './accounts-controller-messenger';
 export { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
@@ -229,6 +225,7 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
+export { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 export type { CurrencyRateControllerInitMessenger } from './currency-rate-controller-messenger';
 export {
   getCurrencyRateControllerMessenger,
@@ -291,11 +288,6 @@ export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
-export type { RemoteFeatureFlagControllerInitMessenger } from './remote-feature-flag-controller-messenger';
-export {
-  getRemoteFeatureFlagControllerMessenger,
-  getRemoteFeatureFlagControllerInitMessenger,
-} from './remote-feature-flag-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
 export {
@@ -352,10 +344,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,
   },
-  AccountsController: {
-    getMessenger: getAccountsControllerMessenger,
-    getInitMessenger: noop,
-  },
   AddressBookController: {
     getMessenger: getAddressBookControllerMessenger,
     getInitMessenger: noop,
@@ -388,16 +376,16 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
   },
+  AuthenticatedUserStorageService: {
+    getMessenger: getAuthenticatedUserStorageServiceMessenger,
+    getInitMessenger: noop,
+  },
   BridgeController: {
     getMessenger: getBridgeControllerMessenger,
     getInitMessenger: getBridgeControllerInitMessenger,
   },
   BridgeStatusController: {
     getMessenger: getBridgeStatusControllerMessenger,
-    getInitMessenger: noop,
-  },
-  ConnectivityController: {
-    getMessenger: getConnectivityControllerMessenger,
     getInitMessenger: noop,
   },
   ClaimsController: {
@@ -418,6 +406,14 @@ export const MESSENGER_FACTORIES = {
   },
   ComplianceController: {
     getMessenger: getComplianceControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ConfigRegistryController: {
+    getMessenger: getConfigRegistryControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ConfigRegistryApiService: {
+    getMessenger: getConfigRegistryApiServiceMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
@@ -575,10 +571,6 @@ export const MESSENGER_FACTORIES = {
   RatesController: {
     getMessenger: getRatesControllerMessenger,
     getInitMessenger: noop,
-  },
-  RemoteFeatureFlagController: {
-    getMessenger: getRemoteFeatureFlagControllerMessenger,
-    getInitMessenger: getRemoteFeatureFlagControllerInitMessenger,
   },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
