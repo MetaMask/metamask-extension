@@ -34,11 +34,11 @@ function shouldUseDefaultLinkNavigation(
 ): boolean {
   return Boolean(
     event.defaultPrevented ||
-    event.button !== 0 ||
-    event.metaKey ||
-    event.altKey ||
-    event.ctrlKey ||
-    event.shiftKey,
+      event.button !== 0 ||
+      event.metaKey ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.shiftKey,
   );
 }
 
@@ -73,25 +73,38 @@ const useAnalyticEventCallback = (props: {
 export const ExtensionLinkButton = (props: {
   notification: FeatureAnnouncementNotification;
 }) => {
+  const navigate = useNavigate();
   const { notification } = props;
-  const onClick = useAnalyticEventCallback({
+  const analyticCallback = useAnalyticEventCallback({
     id: notification.id,
     type: notification.type,
     clickType: 'internal_link',
   });
 
-  if (!notification.data.extensionLink) {
+  const { extensionLink } = notification.data;
+
+  if (!extensionLink) {
     return null;
   }
+
+  const href = `/${extensionLink.extensionLinkRoute}`;
+
+  const onClick: React.MouseEventHandler<HTMLElement> = (event) => {
+    analyticCallback();
+
+    if (shouldUseDefaultLinkNavigation(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    navigate(href);
+  };
 
   return (
     <NotificationDetailButton
       variant={ButtonVariant.Primary}
-      text={notification.data.extensionLink.extensionLinkText}
-      href={`/${notification.data.extensionLink.extensionLinkRoute}`}
-      // Even if the link is not external, it will open in a new tab
-      // to avoid breaking the popup
-      isExternal={true}
+      text={extensionLink.extensionLinkText}
+      href={href}
       onClick={onClick}
     />
   );

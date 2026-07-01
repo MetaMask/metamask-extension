@@ -14,7 +14,10 @@ import {
   type MetaMetricsContextValue,
 } from '../../../../contexts/metametrics';
 import * as resolveDeepLinkHrefUtils from '../../../../helpers/utils/resolve-deep-link-href';
-import { ExternalLinkButton } from './annonucement-footer-buttons';
+import {
+  ExtensionLinkButton,
+  ExternalLinkButton,
+} from './annonucement-footer-buttons';
 import type { FeatureAnnouncementNotification } from './types';
 
 const mockTrackEvent = jest.fn();
@@ -50,6 +53,23 @@ function createFeatureAnnouncementNotification(
   }) as FeatureAnnouncementNotification;
 }
 
+function createFeatureAnnouncementNotificationWithExtensionLink(
+  extensionLinkRoute = 'home.html',
+): FeatureAnnouncementNotification {
+  const rawNotification = createMockFeatureAnnouncementRaw();
+
+  return processNotification({
+    ...rawNotification,
+    data: {
+      ...rawNotification.data,
+      extensionLink: {
+        extensionLinkText: linkText,
+        extensionLinkRoute,
+      },
+    },
+  }) as FeatureAnnouncementNotification;
+}
+
 function createExternalLinkButton(externalLinkUrl: string) {
   return (
     <MetaMetricsContext.Provider value={metametricsContext}>
@@ -62,6 +82,18 @@ function createExternalLinkButton(externalLinkUrl: string) {
 
 function renderExternalLinkButton(externalLinkUrl: string) {
   return render(createExternalLinkButton(externalLinkUrl));
+}
+
+function renderExtensionLinkButton(extensionLinkRoute?: string) {
+  render(
+    <MetaMetricsContext.Provider value={metametricsContext}>
+      <ExtensionLinkButton
+        notification={createFeatureAnnouncementNotificationWithExtensionLink(
+          extensionLinkRoute,
+        )}
+      />
+    </MetaMetricsContext.Provider>,
+  );
 }
 
 function createDeferred<ResolvedValue = void>() {
@@ -103,6 +135,23 @@ describe('Feature announcement footer buttons', () => {
       }),
     );
     expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+  });
+
+  it('opens an extension link route with client-side navigation', () => {
+    renderExtensionLinkButton('settings/security');
+
+    const link = screen.getByRole('link', { name: linkText });
+    const clickEvent = createEvent.click(link);
+
+    expect(link).toHaveAttribute('href', '/settings/security');
+    expect(link).not.toHaveAttribute('target');
+
+    fireEvent(link, clickEvent);
+
+    expect(clickEvent.defaultPrevented).toBe(true);
+    expect(mockNavigate).toHaveBeenCalledWith('/settings/security');
+    expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+    expect(global.platform.openTab).not.toHaveBeenCalled();
   });
 
   it('opens an internal deep link route in an extension tab', async () => {
