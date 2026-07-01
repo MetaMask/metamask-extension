@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { BannerAlert } from '../../../../components/component-library';
 import { Severity } from '../../../../helpers/constants/design-system';
@@ -18,8 +18,13 @@ export default function SimulationErrorMessage({
   const t = React.useContext(I18nContext);
 
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const hasTrackedSimulationFails = useRef(false);
 
   useEffect(() => {
+    if (hasTrackedSimulationFails.current) {
+      return;
+    }
+
     trackEvent(
       createEventBuilder(MetaMetricsEventName.SimulationFails)
         .addCategory(MetaMetricsEventCategory.Transactions)
@@ -30,6 +35,7 @@ export default function SimulationErrorMessage({
         })
         .build(),
     );
+    hasTrackedSimulationFails.current = true;
   }, [createEventBuilder, trackEvent]);
 
   return userAcknowledgedGasMissing === true ? (
