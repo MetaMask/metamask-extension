@@ -565,13 +565,9 @@ describe('Swap on Solana', function () {
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkWaitForTransactionStatus('confirmed');
-        if (isUnifiedAssetsEnabled) {
-          // Under unified assets / activity v3, the list amount reflects the
-          // native SOL leg (fee/sent) rather than the USDC received amount.
-          await activityTab.checkTxAmountInActivity('-0.001 SOL', 1);
-        } else {
-          await activityTab.checkTxAmountInActivity('+0.1669 USDC', 1);
+        await activityTab.checkCompletedBridgeTransactionActivity(1);
+        await activityTab.checkTxAmountInActivity('+0.1669 USDC', 1);
+        if (!isUnifiedAssetsEnabled) {
           await activityTab.checkTransactionActivityByText(
             'Swapped SOL to USDC',
           );

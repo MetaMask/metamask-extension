@@ -63,7 +63,7 @@ export const BRIDGED_TOKEN_LIST_API =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getTokens/u;
 
 export const BRIDGE_GET_QUOTE_API =
-  /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u;
+  /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote(?!Stream)/u;
 
 export const BRIDGE_GET_QUOTE_STREAM_API =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuoteStream/u;
