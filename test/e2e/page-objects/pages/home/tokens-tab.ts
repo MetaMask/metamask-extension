@@ -1,5 +1,8 @@
+import { strict as assert } from 'assert';
+import { By, WebElement } from 'selenium-webdriver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { veryLargeDelayMs } from '../../../helpers';
+import NetworkManager from '../network-manager';
 import HomePage from './homepage';
 
 class TokensTab extends HomePage {
@@ -225,6 +228,13 @@ class TokensTab extends HomePage {
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
   }
 
+  /**
+   * Expands the collapsed low-value assets section when the toggle is present.
+   */
+  async expandLowValueAssets(): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
+  }
+
   private async expandLowValueAssetsIfPresent(): Promise<void> {
     // If the low value assets section is already expanded, no action is required.
     try {
@@ -430,10 +440,35 @@ class TokensTab extends HomePage {
         return Boolean(await this.driver.findElement(this.modalCloseButton));
       },
       {
-        timeout: 5000,
+        timeout: 15_000,
         interval: 100,
       },
     );
+  }
+
+  /**
+   * Opens the Network Manager modal and selects only Tron, scoping the asset
+   * list to a single network.
+   */
+  async selectOnlyTronInNetworkFilter(): Promise<void> {
+    console.log('Selecting only Tron in the asset list network filter');
+    await this.openNetworksFilter();
+    const networkManager = new NetworkManager(this.driver);
+    await networkManager.selectTab('Popular');
+    await networkManager.selectNetworkByNameWithWait('Tron');
+  }
+
+  /**
+   * Opens the Network Manager modal and selects all popular networks.
+   */
+  async selectAllNetworksInNetworkFilter(): Promise<void> {
+    console.log(
+      'Selecting all popular networks in the asset list network filter',
+    );
+    await this.openNetworksFilter();
+    const networkManager = new NetworkManager(this.driver);
+    await networkManager.selectTab('Popular');
+    await networkManager.selectAllNetworks();
   }
 
   /**
@@ -609,6 +644,119 @@ class TokensTab extends HomePage {
       );
       console.log(`Token amount ${amount} was found`);
     }
+  }
+
+  async checkTokenRowContainsAllText(
+    tokenName: string,
+    expectedTexts: string[],
+  ): Promise<void> {
+    for (const expectedText of expectedTexts) {
+      await this.checkTokenRowContainsText(tokenName, expectedText);
+    }
+  }
+
+  async checkTokenRowContainsText(
+    tokenName: string,
+    expectedText: string,
+  ): Promise<void> {
+    console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
+    const row = await this.findTokenRowByName(tokenName);
+    assert.ok(
+      (await row.getText()).includes(expectedText),
+      `Expected "${tokenName}" row to contain "${expectedText}"`,
+    );
+  }
+
+  async checkTokenRowHasVisibleLogo(tokenName: string): Promise<void> {
+    console.log(`Checking token row "${tokenName}" has a visible logo`);
+    const row = await this.findTokenRowByName(tokenName);
+    const logo = await row.findElement(By.css('.mm-avatar-token'));
+    assert.ok(
+      await logo.isDisplayed(),
+      `Expected "${tokenName}" row to display a token logo`,
+    );
+  }
+
+  /**
+   * Asserts the asset list contains exactly the given asset names by token-name
+   * cell, and no others.
+   *
+   * @param symbols - Token name texts to require, in any order.
+   */
+  async checkOnlyAssetsArePresent(symbols: string[]): Promise<void> {
+    console.log(
+      `Checking only these assets are present: ${symbols.join(', ')}`,
+    );
+    await this.expandLowValueAssetsIfPresent();
+    for (const symbol of symbols) {
+      await this.driver.waitForSelector({
+        css: this.tokenName,
+        text: symbol,
+      });
+    }
+    await this.checkTokenItemNumber(symbols.length);
+  }
+
+  /**
+   * Waits for the low-value assets toggle with the expected token count label.
+   *
+   * @param expectedCount - Number of tokens in the collapsed low-value section.
+   */
+  async checkLowValueAssetsToggleIsPresent(
+    expectedCount: number,
+  ): Promise<void> {
+    console.log(
+      `Checking low-value assets toggle is present with count ${expectedCount}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.lowValueAssetsToggle,
+      text: `Low value tokens (${expectedCount})`,
+    });
+  }
+
+  /**
+   * Asserts the token list row count without expanding the low-value section.
+   *
+   * @param expectedNumber - Visible token rows in the main list.
+   */
+  async checkCollapsedTokenItemNumber(expectedNumber: number): Promise<void> {
+    console.log(
+      `Waiting for ${expectedNumber} collapsed token items to be displayed`,
+    );
+    await this.driver.wait(
+      async () => {
+        const tokenItemsNumber = await this.getNumberOfAssets();
+        return tokenItemsNumber === expectedNumber;
+      },
+      30_000,
+    );
+  }
+
+  /**
+   * Waits for a token name cell without expanding the low-value section.
+   *
+   * @param tokenName - Token name text to match.
+   */
+  async checkTokenNameVisible(
+    tokenName: string,
+    options: { timeout?: number } = {},
+  ): Promise<void> {
+    console.log(`Checking token name "${tokenName}" is visible`);
+    await this.driver.waitForSelector(
+      {
+        css: this.tokenName,
+        text: tokenName,
+      },
+      options.timeout === undefined ? {} : { timeout: options.timeout },
+    );
+  }
+
+  async checkAssetIsAbsent(symbol: string): Promise<void> {
+    console.log(`Checking asset is absent: ${symbol}`);
+    await this.driver.assertElementNotPresent({
+      css: this.tokenName,
+      text: symbol,
+    });
   }
 
   /**
@@ -856,6 +1004,34 @@ class TokensTab extends HomePage {
         stableFor: veryLargeDelayMs,
       },
     );
+  }
+
+  private async findTokenRowByName(tokenName: string): Promise<WebElement> {
+    await this.expandLowValueAssetsIfPresent();
+
+    let matchingRow: WebElement | undefined;
+
+    await this.driver.waitUntil(
+      async () => {
+        const rows = await this.driver.findElements(this.tokenListItem);
+        for (const row of rows) {
+          const nameElement = await row.findElement(By.css(this.tokenName));
+          if ((await nameElement.getText()) === tokenName) {
+            matchingRow = row;
+            return true;
+          }
+        }
+
+        return false;
+      },
+      { timeout: 10000, interval: 500 },
+    );
+
+    if (!matchingRow) {
+      throw new Error(`Could not find token row for ${tokenName}`);
+    }
+
+    return matchingRow;
   }
 }
 
