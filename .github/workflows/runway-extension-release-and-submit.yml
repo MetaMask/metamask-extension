@@ -12,6 +12,7 @@ name: Runway extension release and store submit
 # skip_* inputs are manual break-glass overrides only.
 #
 # workflow_call (not gh workflow run) preserves Runway github.actor for WIF CEL on CWS/AMO.
+# Ops runbook: runway-extension-release-and-submit.md (same directory).
 
 on:
   workflow_dispatch:
@@ -136,16 +137,25 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ steps.validate-version.outputs.release_tag }}
           RELEASE_SHA: ${{ steps.resolve-sha.outputs.release_sha }}
+          EXECUTE_STORE: ${{ inputs.execute_store_phases }}
         run: |
           set -euo pipefail
           existing_target=$(gh release view "${RELEASE_TAG}" --json targetCommitish --jq .targetCommitish 2>/dev/null || true)
           if [[ -n "${existing_target}" && "${existing_target}" == "${RELEASE_SHA}" ]]; then
             echo "GitHub Release ${RELEASE_TAG} already exists at ${RELEASE_SHA:0:7} — Phase 1 will auto-skip."
             echo "release_exists=true" >> "${GITHUB_OUTPUT}"
-          else
-            if [[ -n "${existing_target}" ]]; then
-              echo "::warning::Release ${RELEASE_TAG} exists at ${existing_target:0:7} but workflow SHA is ${RELEASE_SHA:0:7}; Phase 1 will run."
+          elif [[ -n "${existing_target}" ]]; then
+            echo "Release ${RELEASE_TAG} exists at ${existing_target:0:7}; workflow SHA is ${RELEASE_SHA:0:7}."
+            if [[ "${EXECUTE_STORE}" == "true" ]]; then
+              echo "::error::Cannot run store phases: GitHub Release ${RELEASE_TAG} targets ${existing_target:0:7} but this workflow runs on ${RELEASE_SHA:0:7}."
+              echo "::error::Phase 1 would fail after release-branch approval and prod builds (tag/release SHA conflict in release-create-gh-release.sh)."
+              echo "::error::With skip_publish, Phases 2–3 would download release assets from the wrong commit."
+              echo "::error::Fix the version or release_sha mismatch before re-dispatching."
+              exit 1
             fi
+            echo "::warning::Release SHA mismatch; store phases disabled (execute_store_phases=false). Phase 1 would fail if publish were requested."
+            echo "release_exists=false" >> "${GITHUB_OUTPUT}"
+          else
             echo "release_exists=false" >> "${GITHUB_OUTPUT}"
           fi
 
