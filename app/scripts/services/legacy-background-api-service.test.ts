@@ -20,6 +20,7 @@ import {
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
+import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
@@ -692,6 +693,66 @@ describe('LegacyBackgroundApiService', () => {
           Caip25CaveatType,
           expect.any(Function),
         );
+      });
+    });
+  });
+
+  describe('rejectPermissionsRequest', () => {
+    it('rejects the pending permissions request', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PermissionController:rejectPermissionsRequest',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectPermissionsRequest',
+          'DUMMY_ID',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PermissionController:rejectPermissionsRequest',
+          'DUMMY_ID',
+        );
+      });
+    });
+
+    it('does not propagate PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PermissionController:rejectPermissionsRequest',
+          jest.fn().mockImplementation(() => {
+            throw new PermissionsRequestNotFoundError('123');
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:rejectPermissionsRequest',
+            'DUMMY_ID',
+          ),
+        ).not.toThrow();
+      });
+    });
+
+    it('propagates errors other than PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('Some other error');
+        rootMessenger.registerActionHandler(
+          'PermissionController:rejectPermissionsRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:rejectPermissionsRequest',
+            'DUMMY_ID',
+          ),
+        ).toThrow(error);
       });
     });
   });
@@ -2383,6 +2444,7 @@ function getMessenger(
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',
+      'PermissionController:rejectPermissionsRequest',
       'PermissionController:updatePermissionsByCaveat',
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
