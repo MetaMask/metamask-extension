@@ -14,7 +14,7 @@ const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 // Storage key holding the UI build hash this page's code was loaded under.
 // `globalThis.sessionStorage` (not `browser.storage.session`) on purpose: it is
 // scoped to the tab, so concurrently open pages each keep their own record.
-const HASH_KEY = 'MM_UI_CLIENT_HASH';
+const HASH_KEY = 'MM_UI_HASH';
 
 /**
  * @returns The UI build hash this page's code was loaded under, or `null` if

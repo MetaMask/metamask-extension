@@ -13,7 +13,7 @@ const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 // Storage key holding the last background fingerprint seen during this session.
 // The fingerprint is stored in the session storage instead of a module-level variable so
 // that the value survives service worker restarts during the same session.
-const FINGERPRINT_KEY = 'MM_BACKGROUND_CLIENT_FINGERPRINT';
+const FINGERPRINT_KEY = 'MM_BACKGROUND_FINGERPRINT';
 
 /**
  * @returns The fingerprint of the code this extension instance is running, or
