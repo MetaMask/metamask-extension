@@ -68,7 +68,6 @@ export default class ConfirmDeleteNetwork extends PureComponent {
       <Modal
         isOpen
         onClose={() => this.props.hideModal()}
-        isClosedOnOutsideClick={false}
         data-testid="confirm-delete-network-modal"
       >
         <ModalOverlay />
@@ -79,7 +78,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
           className="items-center p-4 sm:py-6 md:py-6"
         >
           <ModalHeader
-            className="px-0 pb-4"
+            className="items-start px-0 pb-4"
             onClose={() => this.props.hideModal()}
             closeButtonProps={{
               ariaLabel: t('close'),
