@@ -12,8 +12,6 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 
-const POST_ONBOARDING_NETWORK_ACTIVITY_TIMEOUT_MS = 20_000;
-
 type OnboardingPrivacyMocks = {
   infuraMocks: MockedEndpoint[];
   accountsApiBalancesMock: MockedEndpoint;
@@ -138,6 +136,7 @@ async function waitForPostOnboardingNetworkActivity(
   driver: Driver,
   infuraMocks: MockedEndpoint[],
   accountsApiBalancesMock: MockedEndpoint,
+  timeoutMs: number,
 ): Promise<void> {
   await driver.wait(async () => {
     const accountsApiRequests =
@@ -153,7 +152,7 @@ async function waitForPostOnboardingNetworkActivity(
     }
 
     return false;
-  }, POST_ONBOARDING_NETWORK_ACTIVITY_TIMEOUT_MS);
+  }, timeoutMs);
 
   const accountsApiRequests = await accountsApiBalancesMock.getSeenRequests();
   const infuraRequests = (
@@ -203,6 +202,7 @@ describe('MetaMask onboarding', function () {
           driver,
           infuraMocks,
           accountsApiBalancesMock,
+          driver.timeout,
         );
       },
     );
@@ -243,6 +243,7 @@ describe('MetaMask onboarding', function () {
           driver,
           infuraMocks,
           accountsApiBalancesMock,
+          20000,
         );
       },
     );

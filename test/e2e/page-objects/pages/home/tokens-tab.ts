@@ -429,10 +429,11 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.tokenConfirmListItem);
     await this.driver.waitForSelector(this.confirmImportMultipleTokensMessage);
-    await this.driver.clickElement(this.confirmImportTokenButton);
-    await this.driver.waitForSelector(this.tokenImportedSuccessMessage, {
-      timeout: 30000,
-    });
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmImportTokenButton,
+      20000,
+    );
+    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
   async openNetworksFilter(): Promise<void> {
