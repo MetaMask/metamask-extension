@@ -243,6 +243,9 @@
       "React: Act warnings (component updates not wrapped)": 10,
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/components/app/connected-accounts-permissions/connected-accounts-permissions.test.tsx": {
+      "React: DOM nesting violations": 1
+    },
     "ui/components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 4
@@ -263,7 +266,7 @@
       "error: Error: MetaMetrics context trackEvent was": 2
     },
     "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
-      "Reselect: Input stability warnings": 2
+      "Reselect: Input stability warnings": 3
     },
     "ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
@@ -635,8 +638,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "error: TypeError: background[method] is not a": 2
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "Reselect: Input stability warnings": 1
@@ -969,13 +971,13 @@
     },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Input stability warnings": 3
+    },
+    "ui/pages/notifications-settings/notifications-settings.test.tsx": {
       "Reselect: Input stability warnings": 2
     },
     "ui/pages/notifications/notification-components/snap/snap-footer-button.test.tsx": {
       "error: Warning: React does not recognize": 1
-    },
-    "ui/pages/notifications/notifications-list-turn-on-notifications.test.tsx": {
-      "Reselect: Input stability warnings": 2
     },
     "ui/pages/notifications/notifications-list.test.tsx": {
       "Reselect: Input stability warnings": 1,
@@ -1122,7 +1124,6 @@
       "error: Warning: React does not recognize": 1
     },
     "ui/pages/swaps/awaiting-signatures/awaiting-signatures.test.js": {
-      "MetaMask: Background connection not initialized": 1,
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/swaps/awaiting-swap/awaiting-swap.test.js": {

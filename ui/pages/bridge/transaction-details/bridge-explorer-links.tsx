@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import type { CaipChainId } from '@metamask/utils';
 import {
   formatChainIdToHex,
@@ -6,18 +6,14 @@ import {
 } from '@metamask/bridge-controller';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventLinkType,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
 import {
   IconName,
   ButtonSecondary,
 } from '../../../components/component-library';
+import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getURLHostName } from '../../../helpers/utils/util';
 
 const getBlockExplorerName = (
   chainId: CaipChainId | undefined,
@@ -60,23 +56,18 @@ export default function BridgeExplorerLinks({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
 
-  const openExplorer = (url: string) => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          link_type: MetaMetricsEventLinkType.AccountTracker,
-          location: METRICS_LOCATION,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          url_domain: getURLHostName(url),
-        })
-        .build(),
-    );
-    global.platform.openTab({ url });
-  };
+  const trackExplorerLink = useCallback(
+    (payload: MetaMetricsEventPayload) => {
+      trackEvent(
+        createEventBuilder(payload.event)
+          .addCategory(payload.category)
+          .addProperties(payload.properties ?? {})
+          .build(),
+      );
+      return Promise.resolve();
+    },
+    [createEventBuilder, trackEvent],
+  );
 
   // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render
   const srcButtonText = t('bridgeExplorerLinkViewOn', [
@@ -94,7 +85,13 @@ export default function BridgeExplorerLinks({
         <ButtonSecondary
           endIconName={IconName.Export}
           onClick={() => {
-            openExplorer(srcBlockExplorerUrl);
+            if (srcBlockExplorerUrl) {
+              openBlockExplorer(
+                srcBlockExplorerUrl,
+                METRICS_LOCATION,
+                trackExplorerLink,
+              );
+            }
           }}
         >
           {srcButtonText}
@@ -105,7 +102,11 @@ export default function BridgeExplorerLinks({
           endIconName={IconName.Export}
           onClick={() => {
             if (destBlockExplorerUrl) {
-              openExplorer(destBlockExplorerUrl);
+              openBlockExplorer(
+                destBlockExplorerUrl,
+                METRICS_LOCATION,
+                trackExplorerLink,
+              );
             }
           }}
         >
