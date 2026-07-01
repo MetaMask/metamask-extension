@@ -78,7 +78,8 @@ import {
 import { toBridgeToken } from './utils';
 
 describe('Bridge selectors', () => {
-  const OPTIMISM_USDC_ASSET_ID = mockErc20Erc20Quotes[0]!.quote.srcAsset.assetId.toLowerCase();
+  const OPTIMISM_USDC_ASSET_ID =
+    mockErc20Erc20Quotes[0]!.quote.srcAsset.assetId.toLowerCase();
 
   const getOptimismUsdcAssetExchangeRates = (usdExchangeRate: string) => ({
     [OPTIMISM_USDC_ASSET_ID]: {
