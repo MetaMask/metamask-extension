@@ -4,6 +4,12 @@ import {
   type PerpsPlatformDependencies,
 } from '@metamask/perps-controller';
 import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+  PerpsAnalyticsEvent,
+} from '../../../shared/constants/perps-events';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import {
   createPerpsInfrastructure,
   type InfrastructureDeps,
 } from '../controllers/perps/infrastructure';
@@ -11,6 +17,16 @@ import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsControllerInit } from './perps-controller-init';
 import type { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 import type { MessengerClientInitRequest } from './types';
+
+const mockTrackAnalyticsEvent = jest.fn();
+
+jest.mock('../controllers/analytics', () => {
+  const actual = jest.requireActual('../controllers/analytics');
+  return {
+    ...actual,
+    trackEvent: (...args: unknown[]) => mockTrackAnalyticsEvent(...args),
+  };
+});
 
 jest.mock('@metamask/perps-controller', () => ({
   getDefaultPerpsControllerState: jest.fn().mockReturnValue({
@@ -295,6 +311,40 @@ describe('PerpsControllerInit', () => {
         isDisconnecting: expect.any(Function),
         getPerpsDiscountForAccount: expect.any(Function),
       });
+    });
+
+    it('trackPerpsEvent from createPerpsInfrastructure delegates to AnalyticsController trackEvent', () => {
+      const request = getInitRequestMock();
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          const actual = jest.requireActual(
+            '../controllers/perps/infrastructure',
+          ) as typeof import('../controllers/perps/infrastructure');
+          const infrastructure = actual.createPerpsInfrastructure(deps);
+          infrastructure.metrics.trackPerpsEvent(
+            PerpsAnalyticsEvent.ScreenViewed,
+            {
+              [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+                PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+            },
+          );
+          return infrastructure;
+        });
+
+      PerpsControllerInit(request);
+
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: PerpsAnalyticsEvent.ScreenViewed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+          }),
+        }),
+      );
     });
 
     it('getPerpsDiscountForAccount from createPerpsInfrastructure delegates to RewardsController:getPerpsDiscountForAccount', async () => {

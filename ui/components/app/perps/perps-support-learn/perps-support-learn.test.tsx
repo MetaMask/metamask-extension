@@ -11,15 +11,10 @@ import {
   FEEDBACK_CONFIG,
   SUPPORT_CONFIG,
 } from '../../../../../shared/constants/perps';
+import { PERPS_ROUTE } from '../../../../helpers/constants/routes';
 import { PerpsSupportLearn } from './perps-support-learn';
 
 const mockTrackEvent = jest.fn();
-
-jest.mock('../../../../hooks/useSegmentContext', () => ({
-  useSegmentContext: () => ({
-    page: { title: 'Perps', path: '/perps', url: '/perps' },
-  }),
-}));
 
 jest.mock('../../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -44,19 +39,21 @@ describe('PerpsSupportLearn', () => {
     };
   });
 
-  it('opens the support URL and tracks analytics when Contact support is clicked', () => {
+  it('opens the support URL and tracks analytics when Contact support is clicked on the Perps tab', () => {
     const store = configureStore(mockState);
-    renderWithProvider(<PerpsSupportLearn />, store);
+    renderWithProvider(<PerpsSupportLearn />, store, PERPS_ROUTE);
 
     fireEvent.click(screen.getByTestId('perps-contact-support'));
 
+    // Legacy MetaMetrics used PageTitle, which overwrote the hardcoded
+    // `perps_support_learn` location with PATH_NAME_MAP title for /perps.
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         name: MetaMetricsEventName.SupportLinkClicked,
         properties: expect.objectContaining({
           category: MetaMetricsEventCategory.Settings,
           url: SUPPORT_CONFIG.Url,
-          location: 'Perps',
+          location: 'Perps Tab',
         }),
       }),
     );
@@ -65,9 +62,9 @@ describe('PerpsSupportLearn', () => {
     });
   });
 
-  it('opens the feedback survey and tracks analytics when Give feedback is clicked', () => {
+  it('opens the feedback survey and tracks analytics when Give feedback is clicked on the Perps tab', () => {
     const store = configureStore(mockState);
-    renderWithProvider(<PerpsSupportLearn />, store);
+    renderWithProvider(<PerpsSupportLearn />, store, PERPS_ROUTE);
 
     fireEvent.click(screen.getByTestId('perps-give-feedback'));
 
@@ -77,7 +74,7 @@ describe('PerpsSupportLearn', () => {
         properties: expect.objectContaining({
           category: MetaMetricsEventCategory.Feedback,
           url: FEEDBACK_CONFIG.Url,
-          location: 'Perps',
+          location: 'Perps Tab',
           text: 'perps_feedback_survey',
         }),
       }),
