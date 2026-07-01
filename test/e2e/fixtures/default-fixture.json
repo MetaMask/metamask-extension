@@ -1265,9 +1265,6 @@
       "transactionBatches": [],
       "transactions": []
     },
-    "UserOperationController": {
-      "userOperations": {}
-    },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
