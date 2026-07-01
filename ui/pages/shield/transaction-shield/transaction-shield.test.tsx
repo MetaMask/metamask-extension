@@ -15,7 +15,7 @@ import { initialState as rewardsInitialState } from '../../../ducks/rewards';
 import TransactionShield from './transaction-shield';
 
 const mockUseNavigate = jest.fn();
-const mockUseLocation = jest.fn(() => ({ pathname: '/' }));
+const mockUseLocation = jest.fn(() => ({ pathname: '/', search: '' }));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
