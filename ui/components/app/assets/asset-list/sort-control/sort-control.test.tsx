@@ -100,9 +100,9 @@ describe('SortControl', () => {
 
     expect(screen.getByTestId('sortByAlphabetically')).toBeInTheDocument();
     expect(screen.getByTestId('sortByDecliningBalance')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('sortByDecliningBalance__button'),
-    ).toHaveClass('selectable-list-item--selected');
+    expect(screen.getByTestId('sortByDecliningBalance__button')).toHaveClass(
+      'selectable-list-item--selected',
+    );
   });
 
   it('dispatches setTokenSortConfig with expected config, and tracks event when Alphabetically is clicked', () => {
