@@ -232,14 +232,16 @@ export const DEFAULT_MAINNET_ETH_HUMAN_BALANCE = '25';
  *
  * @param conversionRate - ETH/USD rate used for {@link getMockAssetsPrice}.
  * @param accountId - Internal account id to seed (defaults to fixture account 1).
+ * @param amount - Native ETH balance in human-readable units (defaults to 25).
  */
 export const getMainnet25EthAssetsControllerPatch = (
   conversionRate: number = MOCK_ETH_CONVERSION_RATE,
   accountId: string = DEFAULT_FIXTURE_ACCOUNT_ID,
+  amount: string = DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
 ) => ({
   assetsBalance: {
     [accountId]: {
-      [MAINNET_NATIVE_ASSET_ID]: { amount: DEFAULT_MAINNET_ETH_HUMAN_BALANCE },
+      [MAINNET_NATIVE_ASSET_ID]: { amount },
     },
   },
   assetsPrice: getMockAssetsPrice(conversionRate),

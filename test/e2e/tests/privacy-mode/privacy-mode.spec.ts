@@ -4,7 +4,10 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { mockPriceApi, getMainnet25EthAssetsControllerPatch } from '../tokens/utils/mocks';
+import {
+  mockPriceApi,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 import { login } from '../../page-objects/flows/login.flow';
 
 describe('Privacy Mode', function () {

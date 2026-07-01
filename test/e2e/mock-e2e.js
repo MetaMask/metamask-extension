@@ -2043,7 +2043,9 @@ async function setupMocking(
    * @returns {string[]} privacy report for the current test suite.
    */
   function getPrivacyReport() {
-    return [...privacyReport].sort();
+    return [...privacyReport]
+      .filter((host) => typeof host === 'string' && host.length > 0 && host !== 'null')
+      .sort();
   }
 
   /**
@@ -2066,7 +2068,7 @@ async function setupMocking(
     const privateHosts = new Set();
 
     for (const { pattern, host: privateHost } of privateHostMatchers) {
-      if (request.headers.host.match(pattern)) {
+      if (privateHost && request.headers.host?.match(pattern)) {
         privateHosts.add(privateHost);
       }
     }
@@ -2096,6 +2098,7 @@ async function setupMocking(
     }
 
     if (
+      request.headers.host &&
       request.headers.host.match(browserAPIRequestDomains) === null &&
       !portfolioRequestsMatcher(request)
     ) {

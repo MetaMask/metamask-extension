@@ -1,6 +1,10 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -14,7 +18,10 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 import { mockGetTxStatus } from '../bridge/bridge-test-utils';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import {
+  mockSpotPrices,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
@@ -48,6 +55,13 @@ async function withFixturesForSmartTransactions(
             '0x1': true,
           },
         })
+        .withAssetsController(
+          getMainnet25EthAssetsControllerPatch(
+            1700,
+            DEFAULT_FIXTURE_ACCOUNT_ID,
+            '20',
+          ),
+        )
         .build(),
       title,
       localNodeOptions: {
