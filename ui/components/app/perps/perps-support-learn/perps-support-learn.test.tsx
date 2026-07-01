@@ -15,6 +15,12 @@ import { PerpsSupportLearn } from './perps-support-learn';
 
 const mockTrackEvent = jest.fn();
 
+jest.mock('../../../../hooks/useSegmentContext', () => ({
+  useSegmentContext: () => ({
+    page: { title: 'Perps', path: '/perps', url: '/perps' },
+  }),
+}));
+
 jest.mock('../../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../../shared/lib/analytics/create-event-builder',
@@ -50,7 +56,7 @@ describe('PerpsSupportLearn', () => {
         properties: expect.objectContaining({
           category: MetaMetricsEventCategory.Settings,
           url: SUPPORT_CONFIG.Url,
-          location: 'perps_support_learn',
+          location: 'Perps',
         }),
       }),
     );
@@ -71,7 +77,7 @@ describe('PerpsSupportLearn', () => {
         properties: expect.objectContaining({
           category: MetaMetricsEventCategory.Feedback,
           url: FEEDBACK_CONFIG.Url,
-          location: 'perps_support_learn',
+          location: 'Perps',
           text: 'perps_feedback_survey',
         }),
       }),

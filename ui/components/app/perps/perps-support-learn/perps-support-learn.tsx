@@ -15,6 +15,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../../hooks/useSegmentContext';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -77,6 +78,7 @@ export const PerpsSupportLearn = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const { track } = usePerpsEventTracking();
 
   const handleLearnPerps = useCallback(() => {
@@ -105,12 +107,12 @@ export const PerpsSupportLearn = () => {
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
           url: SUPPORT_CONFIG.Url,
-          location: 'perps_support_learn',
+          location: segmentContext.page?.title,
         })
         .build(),
     );
     globalThis.platform.openTab({ url: SUPPORT_CONFIG.Url });
-  }, [createEventBuilder, track, trackEvent]);
+  }, [createEventBuilder, segmentContext.page?.title, track, trackEvent]);
 
   const handleFeedback = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -126,13 +128,13 @@ export const PerpsSupportLearn = () => {
         .addCategory(MetaMetricsEventCategory.Feedback)
         .addProperties({
           url: FEEDBACK_CONFIG.Url,
-          location: 'perps_support_learn',
+          location: segmentContext.page?.title,
           text: 'perps_feedback_survey',
         })
         .build(),
     );
     globalThis.platform.openTab({ url: FEEDBACK_CONFIG.Url });
-  }, [createEventBuilder, track, trackEvent]);
+  }, [createEventBuilder, segmentContext.page?.title, track, trackEvent]);
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
