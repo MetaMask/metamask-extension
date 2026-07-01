@@ -8,9 +8,7 @@ import {
   NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import {
-  NetworkId,
-} from '../../page-objects/pages/network-manager';
+import { NetworkId } from '../../page-objects/pages/network-manager';
 import { login } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
