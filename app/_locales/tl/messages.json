@@ -2484,9 +2484,6 @@
   "confirmFieldNeverExpires": {
     "message": "Hindi nag-e-expire"
   },
-  "confirmFieldPaymaster": {
-    "message": "Ang bayarin ay binayaran ni"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Tuwing dalawang linggo"
   },
@@ -2511,9 +2508,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Katwiran para sa kahilingan na ibinigay ng website"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Ang bayarin para sa transaksyong ito ay babayaran ng paymaster smart contract."
   },
   "confirmFieldTotalExposure": {
     "message": "Kabuuang exposure"
