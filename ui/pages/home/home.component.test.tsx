@@ -77,7 +77,6 @@ function buildDefaultProps(overrides: Record<string, unknown> = {}) {
     attemptCloseNotificationPopup: jest.fn(),
     setNewTokensImported: jest.fn(),
     setNewTokensImportedError: jest.fn(),
-    fetchBuyableChains: jest.fn(),
     lookupSelectedNetworks: jest.fn(),
     showPna25Modal: false,
     envType: ENVIRONMENT_TYPE_POPUP,

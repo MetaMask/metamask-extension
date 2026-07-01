@@ -24,5 +24,4 @@ export {
   selectMusdMinAssetBalanceRequired,
   selectAllMusdFeatureFlags,
   selectShouldShowAnyMusdCta,
-  selectMusdBuyableChainIds,
 } from './feature-flags';

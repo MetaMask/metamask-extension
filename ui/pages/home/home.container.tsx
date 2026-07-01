@@ -58,7 +58,6 @@ import {
   getIsSeedlessPasswordOutdated,
   getWeb3ShimUsageAlertEnabledness,
 } from '../../ducks/metamask/metamask';
-import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
   selectRewardsModalOpen,
@@ -314,7 +313,6 @@ function useHomeActions() {
         dispatch(setActiveNetwork(networkConfigurationId)),
       setBasicFunctionalityModalOpen: () =>
         dispatch(openBasicFunctionalityModal()),
-      fetchBuyableChains: () => dispatch(fetchBuyableChains()),
       setRedirectAfterDefaultPage: (redirect: object) =>
         dispatch(setRedirectAfterDefaultPage(redirect)),
       clearRedirectAfterDefaultPage: () =>
