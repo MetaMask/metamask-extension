@@ -859,6 +859,7 @@ module.exports = {
         'test/e2e/page-objects/pages/home/perps-tab.ts',
         'test/e2e/page-objects/pages/home/tokens-tab.ts',
         'test/e2e/page-objects/pages/home/transaction-details.ts',
+        'test/e2e/page-objects/pages/home/tron-transaction-details.ts',
         'test/e2e/page-objects/pages/login-page.ts',
         'test/e2e/page-objects/pages/multichain/account-address-modal.ts',
         'test/e2e/page-objects/pages/multichain/address-list-modal.ts',
