@@ -34,8 +34,39 @@ import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events'
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { createEventBuilder, trackEvent } from '../analytics';
 import { captureException } from '../../../../shared/lib/sentry';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
+import { isBeta } from '../../../../shared/lib/build-types';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
 import { isBenignDisconnectError } from './perps-error-utils';
+
+const TERMINAL_API_URLS = {
+  dev: 'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+  uat: 'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+  prd: 'https://terminal.api.cx.metamask.io/v1/perpetuals',
+} as const;
+
+function getTerminalApiUrl(): string {
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  ) {
+    return TERMINAL_API_URLS.dev;
+  }
+
+  // Beta builds target UAT for all non-dev/testing environments.
+  if (isBeta()) {
+    return TERMINAL_API_URLS.uat;
+  }
+
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE
+  ) {
+    return TERMINAL_API_URLS.prd;
+  }
+
+  return TERMINAL_API_URLS.uat;
+}
 
 /**
  * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
@@ -363,6 +394,7 @@ export function createPerpsInfrastructure(
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
     diskCache: createDiskCache(deps),
+    terminalApiUrl: getTerminalApiUrl(),
     rewards: {
       // The perps package only passes `caipAccountId`; the rewards controller
       // additionally needs the perps MetaMask builder base fee in bips so it

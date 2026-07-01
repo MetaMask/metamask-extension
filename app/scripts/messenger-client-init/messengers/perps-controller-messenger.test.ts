@@ -32,6 +32,8 @@ describe('getPerpsControllerMessenger', () => {
           'StorageService:getItem',
           'StorageService:setItem',
           'StorageService:removeItem',
+          'AuthenticatedUserStorageService:getNotificationPreferences',
+          'AuthenticatedUserStorageService:putNotificationPreferences',
         ]),
       }),
     );
