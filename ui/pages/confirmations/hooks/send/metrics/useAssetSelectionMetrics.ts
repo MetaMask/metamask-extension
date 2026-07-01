@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback } from 'react';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import {
+  isCaipChainId,
+  isStrictHexString,
+  numberToHex,
+  type Hex,
+} from '@metamask/utils';
 
 import {
   MetaMetricsEventCategory,
@@ -19,6 +26,22 @@ const ASSET_TYPE = {
   NATIVE: 'native',
   TOKEN: 'token',
 };
+
+function getEvmChainIdCaip(chainId: string | number): string {
+  if (typeof chainId === 'number') {
+    return toEvmCaipChainId(numberToHex(chainId));
+  }
+
+  if (isCaipChainId(chainId)) {
+    return chainId;
+  }
+
+  if (isStrictHexString(chainId)) {
+    return toEvmCaipChainId(chainId);
+  }
+
+  return toEvmCaipChainId(numberToHex(Number(chainId)) as Hex);
+}
 
 export const useAssetSelectionMetrics = () => {
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -103,7 +126,7 @@ export const useAssetSelectionMetrics = () => {
             asset_list_size: assetListSize,
             chain_id: sendAsset?.chainId,
             chain_id_caip: isEvmSend
-              ? `eip155:${parseInt(sendAsset?.chainId as string, 16)}`
+              ? getEvmChainIdCaip(sendAsset?.chainId as string | number)
               : sendAsset?.chainId,
             filter_method: assetFilterMethod,
           })

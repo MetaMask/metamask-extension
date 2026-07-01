@@ -291,7 +291,7 @@ describe('useAssetSelectionMetrics', () => {
             asset_list_position: 3,
             asset_list_size: '5',
             chain_id: 8453,
-            chain_id_caip: 'eip155:33875',
+            chain_id_caip: 'eip155:8453',
             filter_method: [AssetFilterMethod.None],
           })
           .build({ excludeMetaMetricsId: false }),
@@ -324,7 +324,7 @@ describe('useAssetSelectionMetrics', () => {
 
     it('calculates correct position for asset not in list', () => {
       const unknownAsset = {
-        address: '0x123',
+        address: '0x1234567890123456789012345678901234567890',
         chainId: 1,
         symbol: 'UNK',
         decimals: 18,
@@ -346,7 +346,7 @@ describe('useAssetSelectionMetrics', () => {
             asset_list_position: 0,
             asset_list_size: '5',
             chain_id: 1,
-            chain_id_caip: 1,
+            chain_id_caip: 'eip155:1',
             filter_method: [AssetFilterMethod.None],
           })
           .build({ excludeMetaMetricsId: false }),
