@@ -17,6 +17,13 @@ const mockSafeChains = [
     rpc: ['https://rpc.gnosischain.com'],
     explorers: [{ url: 'https://gnosisscan.io' }],
   },
+  {
+    name: 'HTTP Only Network',
+    chainId: 200,
+    nativeCurrency: { symbol: 'HTTP' },
+    rpc: ['http://rpc.http-only.example.com'],
+    explorers: [{ url: 'http://explorer.http-only.example.com' }],
+  },
   ...Array.from({ length: 101 }, (_, index) => ({
     name: `Chainlist Network ${index + 1}`,
     chainId: 1000 + index,
@@ -313,6 +320,7 @@ describe('NetworksPage', () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getByText('Gnosis')).toBeInTheDocument();
+    expect(screen.queryByText('HTTP Only Network')).not.toBeInTheDocument();
     expect(
       screen.getByText(
         messages.chainlistNetworkDetails.message

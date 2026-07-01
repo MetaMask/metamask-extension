@@ -2,10 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   FontWeight,
-  Icon,
-  IconName,
-  IconSize,
   Text,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -32,7 +31,7 @@ export const getUsableUrls = (urls: string[] = []) =>
 
     try {
       const { protocol } = new URL(url);
-      return protocol === 'https:' || protocol === 'http:';
+      return protocol === 'https:';
     } catch {
       return false;
     }
@@ -116,21 +115,16 @@ export const ChainlistNetworkPicker = ({
   return (
     <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
       <Box className="px-4 pb-4">
-        <Box className="relative">
-          <Icon
-            name={IconName.Search}
-            size={IconSize.Sm}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-icon-muted"
-          />
-          <input
-            aria-label={t('searchNetworkNameOrChainId')}
-            className="h-14 w-full rounded-xl border border-border-muted bg-background-default pl-11 pr-4 text-base text-text-default outline-none focus:border-primary-default"
-            data-testid="networks-page-chainlist-search"
-            onChange={(event) => setSearchValue(event.target.value)}
-            placeholder={t('searchNetworkNameOrChainId')}
-            value={searchValue}
-          />
-        </Box>
+        <TextFieldSearch
+          clearButtonOnClick={() => setSearchValue('')}
+          clearButtonProps={{ ariaLabel: t('clear') }}
+          className="w-full rounded-xl bg-background-default"
+          data-testid="networks-page-chainlist-search"
+          onChange={(event) => setSearchValue(event.target.value)}
+          placeholder={t('searchNetworkNameOrChainId')}
+          size={TextFieldSize.Lg}
+          value={searchValue}
+        />
       </Box>
       <Box
         className="min-h-0 flex-1 overflow-y-auto"

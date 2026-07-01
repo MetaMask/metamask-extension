@@ -189,12 +189,8 @@ export const NetworksPage = () => {
   }, [setView]);
 
   const handleAddFromChainlist = useCallback(() => {
-    if (!isChainlistEnabled) {
-      return;
-    }
-
     setView('add-from-chainlist');
-  }, [isChainlistEnabled, setView]);
+  }, [setView]);
 
   const handleChainlistNetworkSelect = useCallback(
     (network: ChainlistNetwork) => {
