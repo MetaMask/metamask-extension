@@ -5,27 +5,28 @@ on:
     types: [opened, edited, labeled, unlabeled, reopened]
   pull_request_target:
     types: [opened, edited, labeled, unlabeled, reopened, synchronize]
+  # Required checks must be reported on merge queue refs. The job is skipped
+  # for this event below because the script expects an issue or PR payload.
   merge_group:
 
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    if: >
-      github.event_name == 'issues' ||
-      (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository)
+    timeout-minutes: 2
+    if: ${{ github.event_name != 'merge_group' }}
     permissions:
       contents: read
       id-token: write
+      # Non-MetaMask test repos cannot use MetaMask's token exchange service,
+      # so the script falls back to github.token there and needs label access.
+      issues: write
+      pull-requests: write
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
       - name: Get access token
-        id: get-token
+        id: label-token
+        # Production MetaMask repos use token exchange so the script can create
+        # labels and read org membership. Test repos fall back to github.token.
+        if: ${{ github.repository_owner == 'MetaMask' }}
         uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
@@ -34,8 +35,58 @@ jobs:
             members: read
             pull_requests: write
 
+      - name: Checkout .github/ directory
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install script dependencies
+        run: npm install --no-save @actions/core@^3.0.1 @actions/github@^9.1.1
+
+      - name: Get planning token
+        id: planning-token
+        # Team labels come from MetaMask-planning topology and only apply to
+        # internal same-repo PRs. Forks and test repos use external-contributor.
+        if: >-
+          ${{
+            github.repository_owner == 'MetaMask'
+            && github.event_name == 'pull_request_target'
+            && github.event.action == 'opened'
+            && github.event.pull_request.head.repo.full_name == github.repository
+          }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/MetaMask-planning
+          permissions: |
+            contents: read
+
+      - name: Add team label
+        if: >-
+          ${{
+            github.repository_owner == 'MetaMask'
+            && github.event_name == 'pull_request_target'
+            && github.event.action == 'opened'
+            && github.event.pull_request.head.repo.full_name == github.repository
+          }}
+        uses: MetaMask/github-tools/.github/actions/add-team-label@v1
+        with:
+          planning-token: ${{ steps.planning-token.outputs.token }}
+          team-label-token: ${{ steps.label-token.outputs.token }}
+
       - name: Check template and add labels
         id: check-template-and-add-labels
         env:
-          LABEL_TOKEN: ${{ steps.get-token.outputs.token }}
-        run: npm run check-template-and-add-labels
+          LABEL_TOKEN: ${{ steps.label-token.outputs.token || github.token }}
+          # Test repos cannot read MetaMask org membership. Treat authors as
+          # external there so the rest of the label/template path can run.
+          SKIP_ORG_MEMBERSHIP_CHECK: ${{ github.repository_owner != 'MetaMask' }}
+        run: node ./.github/scripts/check-template-and-add-labels.mts
