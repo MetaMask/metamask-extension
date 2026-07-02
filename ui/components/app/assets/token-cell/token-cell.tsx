@@ -2,6 +2,15 @@ import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  ButtonsAlignment,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '@metamask/design-system-react';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useMusdBalance, useMusdCtaVisibility } from '../../../../hooks/musd';
@@ -11,15 +20,6 @@ import {
   type SafeChain,
 } from '../../../multichain/networks-form/use-safe-chains';
 import { setEditedNetwork } from '../../../../store/actions';
-import {
-  ButtonSecondary,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../component-library';
 import { ClaimBonusBadge, MusdConvertLink, useMerklRewards } from '../../musd';
 import { getBonusAmountRange } from '../../musd/merkl-bonus-analytics';
 import type {
@@ -200,27 +200,29 @@ export default function TokenCell({
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+            <ModalHeader
+              onClose={() => setShowScamWarningModal(false)}
+              closeButtonProps={{ ariaLabel: t('close') }}
+            >
               {t('nativeTokenScamWarningTitle')}
             </ModalHeader>
-            <ModalBody marginTop={4} marginBottom={4}>
+            <ModalBody className="mt-4 mb-4">
               {t('nativeTokenScamWarningDescription', [
                 token.symbol,
                 nativeCurrencySymbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
               ])}
             </ModalBody>
-            <ModalFooter>
-              <ButtonSecondary
-                onClick={() => {
+            <ModalFooter
+              buttonsAlignment={ButtonsAlignment.Vertical}
+              secondaryButtonProps={{
+                onClick: () => {
                   dispatch(setEditedNetwork({ chainId: token.chainId }));
                   navigate(NETWORKS_ROUTE);
-                }}
-                block
-              >
-                {t('nativeTokenScamWarningConversion')}
-              </ButtonSecondary>
-            </ModalFooter>
+                },
+                children: t('nativeTokenScamWarningConversion'),
+              }}
+            />
           </ModalContent>
         </Modal>
       )}
