@@ -107,30 +107,32 @@ export const getCurrentNetworkTransactions = (state) => {
   return getTransactionsByChainId(state, providerConfig.chainId);
 };
 
-export const incomingTxListSelectorAllChains = createSelector(
-  getTransactions,
-  getSelectedInternalAccount,
-  (allNetworkTransactions, { address: selectedAddress }) =>
-    allNetworkTransactions.filter(
-      (tx) =>
-        tx.type === TransactionType.incoming &&
-        tx.txParams.to === selectedAddress,
-    ),
-);
-
-export const getApprovedAndSignedTransactions = createSelector(
-  getTransactions,
-  // Fetch transactions across all networks to address a nonce management limitation.
-  // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
-  (transactions) =>
-    transactions.filter((transaction) =>
-      [TransactionStatus.approved, TransactionStatus.signed].includes(
-        transaction.status,
+export const incomingTxListSelectorAllChains =
+  createShallowEqualInputAndResultSelector(
+    getTransactions,
+    getSelectedInternalAccount,
+    (allNetworkTransactions, { address: selectedAddress }) =>
+      allNetworkTransactions.filter(
+        (tx) =>
+          tx.type === TransactionType.incoming &&
+          tx.txParams.to === selectedAddress,
       ),
-    ),
-);
+  );
 
-export const incomingTxListSelector = createSelector(
+export const getApprovedAndSignedTransactions =
+  createShallowEqualInputAndResultSelector(
+    getTransactions,
+    // Fetch transactions across all networks to address a nonce management limitation.
+    // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
+    (transactions) =>
+      transactions.filter((transaction) =>
+        [TransactionStatus.approved, TransactionStatus.signed].includes(
+          transaction.status,
+        ),
+      ),
+  );
+
+export const incomingTxListSelector = createShallowEqualInputAndResultSelector(
   getCurrentNetworkTransactions,
   getSelectedInternalAccount,
   (currentNetworkTransactions, { address: selectedAddress }) =>
