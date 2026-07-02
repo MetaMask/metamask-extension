@@ -414,7 +414,7 @@
     "@metamask/multichain-transactions-controller": "^7.1.0",
     "@metamask/name-controller": "^9.1.0",
     "@metamask/network-controller": "^32.0.0",
-    "@metamask/network-enablement-controller": "^5.4.0",
+    "@metamask/network-enablement-controller": "^5.4.1",
     "@metamask/notification-services-controller": "^23.1.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
