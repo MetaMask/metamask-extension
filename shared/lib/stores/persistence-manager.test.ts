@@ -30,6 +30,7 @@ jest.mock('./extension-store', () => {
 jest.mock('loglevel', () => ({
   error: jest.fn(),
   info: jest.fn(),
+  warn: jest.fn(),
 }));
 jest.mock('../sentry', () => ({
   captureException: jest.fn(),
@@ -193,6 +194,163 @@ describe('PersistenceManager', () => {
   });
 
   describe('get', () => {
+    it('uses IndexedDB as primary storage for empty installs when the remote flag is enabled', async () => {
+      const localStore = {
+        get: jest.fn().mockResolvedValue({}),
+        set: jest.fn(),
+        setKeyValues: jest.fn(),
+        reset: jest.fn(),
+      };
+      const indexedDBStore = {
+        get: jest.fn().mockResolvedValue({}),
+        set: jest.fn(),
+        setKeyValues: jest.fn(),
+        reset: jest.fn(),
+      };
+      const localBackupStore = {
+        get: jest.fn().mockResolvedValue([]),
+        set: jest.fn(),
+        reset: jest.fn(),
+      };
+      const shouldUseIndexedDBForNewUsers = jest
+        .fn()
+        .mockResolvedValue(true);
+      manager = new PersistenceManager({
+        localStore,
+        indexedDBStore,
+        localBackupStore,
+        shouldUseIndexedDBForNewUsers,
+      });
+
+      const result = await manager.get({ validateVault: false });
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+      await manager.set({ appState: { test: true } });
+
+      expect(result).toBeUndefined();
+      expect(shouldUseIndexedDBForNewUsers).toHaveBeenCalledTimes(1);
+      expect(indexedDBStore.set).toHaveBeenCalledWith({
+        data: { appState: { test: true } },
+        meta: { version: 10 },
+      });
+      expect(localStore.set).not.toHaveBeenCalled();
+    });
+
+    it('keeps local storage as primary for empty installs when the remote flag is disabled', async () => {
+      const localStore = {
+        get: jest.fn().mockResolvedValue({}),
+        set: jest.fn(),
+        setKeyValues: jest.fn(),
+        reset: jest.fn(),
+      };
+      const indexedDBStore = {
+        get: jest.fn().mockResolvedValue({}),
+        set: jest.fn(),
+        setKeyValues: jest.fn(),
+        reset: jest.fn(),
+      };
+      const shouldUseIndexedDBForNewUsers = jest
+        .fn()
+        .mockResolvedValue(false);
+      manager = new PersistenceManager({
+        localStore,
+        indexedDBStore,
+        shouldUseIndexedDBForNewUsers,
+      });
+
+      const result = await manager.get({ validateVault: false });
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+      await manager.set({ appState: { test: true } });
+
+      expect(result).toBeUndefined();
+      expect(shouldUseIndexedDBForNewUsers).toHaveBeenCalledTimes(1);
+      expect(localStore.set).toHaveBeenCalledWith({
+        data: { appState: { test: true } },
+        meta: { version: 10 },
+      });
+      expect(indexedDBStore.set).not.toHaveBeenCalled();
+    });
+
+    it('uses existing IndexedDB primary storage without checking the remote flag', async () => {
+      const indexedDBState = {
+        data: { appState: { fromIndexedDB: true } },
+        meta: { version: 10 },
+      };
+      const localStore = {
+        get: jest.fn().mockResolvedValue({}),
+        set: jest.fn(),
+        setKeyValues: jest.fn(),
+        reset: jest.fn(),
+      };
+      const indexedDBStore = {
+        get: jest.fn().mockResolvedValue(indexedDBState),
+        set: jest.fn(),
+        setKeyValues: jest.fn(),
+        reset: jest.fn(),
+      };
+      const shouldUseIndexedDBForNewUsers = jest.fn();
+      manager = new PersistenceManager({
+        localStore,
+        indexedDBStore,
+        localBackupStore: {
+          get: jest.fn().mockResolvedValue([]),
+          set: jest.fn(),
+          reset: jest.fn(),
+        },
+        shouldUseIndexedDBForNewUsers,
+      });
+
+      const result = await manager.get({ validateVault: false });
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 11 });
+      await manager.set({ appState: { updated: true } });
+
+      expect(result).toStrictEqual(indexedDBState);
+      expect(shouldUseIndexedDBForNewUsers).not.toHaveBeenCalled();
+      expect(indexedDBStore.set).toHaveBeenCalledWith({
+        data: { appState: { updated: true } },
+        meta: { version: 11 },
+      });
+      expect(localStore.set).not.toHaveBeenCalled();
+    });
+
+    it('stores backups in chrome.storage.local when IndexedDB is primary storage', async () => {
+      const localBackupStore = {
+        get: jest.fn().mockResolvedValue([]),
+        set: jest.fn(),
+        reset: jest.fn(),
+      };
+      manager = new PersistenceManager({
+        localStore: {
+          get: jest.fn().mockResolvedValue({}),
+          set: jest.fn(),
+          setKeyValues: jest.fn(),
+          reset: jest.fn(),
+        },
+        indexedDBStore: {
+          get: jest.fn().mockResolvedValue({}),
+          set: jest.fn(),
+          setKeyValues: jest.fn(),
+          reset: jest.fn(),
+        },
+        localBackupStore,
+        shouldUseIndexedDBForNewUsers: jest.fn().mockResolvedValue(true),
+      });
+
+      await manager.get({ validateVault: false });
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+      await manager.set({
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType);
+
+      expect(localBackupStore.set).toHaveBeenCalledWith({
+        KeyringController: { vault: 'encrypted-vault' },
+        meta: { version: 10 },
+      });
+    });
+
     it('returns undefined and clears mostRecentRetrievedState if store returns empty', async () => {
       mockStoreGet.mockResolvedValueOnce({});
       const result = await manager.get({ validateVault: false });
