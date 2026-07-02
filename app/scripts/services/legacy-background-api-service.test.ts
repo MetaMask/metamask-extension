@@ -2723,6 +2723,40 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('syncAccountTreeWithUserStorage', () => {
+    it('syncs the account tree with user storage', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const syncWithUserStorageHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:syncWithUserStorage',
+          syncWithUserStorageHandler,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:syncAccountTreeWithUserStorage',
+        );
+
+        expect(syncWithUserStorageHandler).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('propagates errors from the account tree controller', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('Test error');
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:syncWithUserStorage',
+          jest.fn().mockRejectedValue(error),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:syncAccountTreeWithUserStorage',
+          ),
+        ).rejects.toThrow(error);
+      });
+    });
+  });
 });
 
 /**
@@ -2836,6 +2870,7 @@ function getMessenger(
       'AccountsController:updateAccounts',
       'AccountTreeController:init',
       'AccountTreeController:getSelectedAccountGroup',
+      'AccountTreeController:syncWithUserStorage',
       'MultichainAccountService:init',
       'MultichainAccountService:resyncAccounts',
       'MultichainAccountService:alignWallets',

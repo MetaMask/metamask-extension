@@ -197,6 +197,14 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 };
 
 /**
+ * Synchronizes the account tree with user storage between devices.
+ */
+export type LegacyBackgroundApiServiceSyncAccountTreeWithUserStorageAction = {
+  type: `LegacyBackgroundApiService:syncAccountTreeWithUserStorage`;
+  handler: LegacyBackgroundApiService['syncAccountTreeWithUserStorage'];
+};
+
+/**
  * Returns the next nonce according to the nonce-tracker
  *
  * @param address - The hex string address for the transaction
@@ -364,6 +372,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRemovePermissionsForAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
+  | LegacyBackgroundApiServiceSyncAccountTreeWithUserStorageAction
   | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceChangePasswordAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction

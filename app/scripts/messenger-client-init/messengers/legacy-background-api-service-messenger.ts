@@ -82,6 +82,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'AccountsController:updateAccounts',
       'AccountTreeController:init',
       'AccountTreeController:getSelectedAccountGroup',
+      'AccountTreeController:syncWithUserStorage',
       'MultichainAccountService:init',
       'MultichainAccountService:resyncAccounts',
       'MultichainAccountService:alignWallets',
