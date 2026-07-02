@@ -14,6 +14,7 @@ import React, {
   type ComponentType,
 } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import type { Span } from '@sentry/types';
 import { omit } from 'lodash';
 
@@ -27,13 +28,20 @@ import {
 } from '../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
+  MetaMetricsEventName,
   type UnsanitizedMetaMetricsEventPayload,
   type MetaMetricsEventOptions,
+  type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
+import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-import { useAnalytics } from '../hooks/useAnalytics';
+import {
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
+} from '../selectors';
 import { submitRequestToBackground } from '../store/background-connection';
-import { trackMetaMetricsPage } from '../store/actions';
+import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
 import type {
   TraceName,
   TraceRequest,
@@ -135,7 +143,17 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
-  const { trackEvent: trackBuiltEvent, createEventBuilder } = useAnalytics();
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const analyticsId = useSelector(getAnalyticsId);
+  const isMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
+  // Buffer events until we know whether or not we can submit them.
+  const canMaybeTrackLater =
+    !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
+
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
   // Sometimes we want to track context properties inside the event's "properties" object.
@@ -160,20 +178,55 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     async (payload, options) => {
       addContextPropsIntoEventProperties(payload, options);
 
-      let builder = createEventBuilder(payload.event);
-      if (payload.category) {
-        builder = builder.addCategory(payload.category);
-      }
-      if (payload.properties) {
-        builder = builder.addProperties(payload.properties);
-      }
-      if (payload.sensitiveProperties) {
-        builder = builder.addSensitiveProperties(payload.sensitiveProperties);
-      }
+      const fullPayload = {
+        ...payload,
+        environmentType: getEnvironmentType(),
+        ...context,
+      };
 
-      trackBuiltEvent(builder.build(options));
+      if (
+        canTrackImmediately ||
+        payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
+      ) {
+        let builder = createEventBuilder(fullPayload.event);
+        if (fullPayload.category) {
+          builder = builder.addCategory(fullPayload.category);
+        }
+        if (fullPayload.properties) {
+          builder = builder.addProperties(fullPayload.properties);
+        }
+        if (fullPayload.sensitiveProperties) {
+          builder = builder.addSensitiveProperties(
+            fullPayload.sensitiveProperties,
+          );
+        }
+
+        const built = builder.build({
+          environmentType: fullPayload.environmentType,
+          page: fullPayload.page,
+          referrer: fullPayload.referrer,
+          excludeMetaMetricsId: options?.excludeMetaMetricsId,
+          matomoEvent: options?.matomoEvent,
+        });
+
+        trackAnalyticsEvent(built, {
+          ...built.options,
+          environmentType: fullPayload.environmentType,
+          page: fullPayload.page,
+          referrer: fullPayload.referrer,
+        });
+      } else if (canMaybeTrackLater) {
+        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
+          fullPayload as MetaMetricsEventPayload,
+        ]);
+      }
     },
-    [addContextPropsIntoEventProperties, createEventBuilder, trackBuiltEvent],
+    [
+      addContextPropsIntoEventProperties,
+      canMaybeTrackLater,
+      canTrackImmediately,
+      context,
+    ],
   );
 
   const bufferedTrace: UITraceMethod = useCallback((request, fn) => {

@@ -102,10 +102,8 @@ describe('MetaMetricsProvider', () => {
         'addEventBeforeMetricsOptIn',
         [
           expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
             event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-            properties: expect.objectContaining({
-              category: MetaMetricsEventCategory.Onboarding,
-            }),
           }),
         ],
       );
