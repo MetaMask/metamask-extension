@@ -148,6 +148,17 @@ export type LegacyBackgroundApiServiceRemoveAccountAction = {
 };
 
 /**
+ * Sets the label for the account at the given address.
+ *
+ * @param address - The address of the account to set the label for.
+ * @param label - The label to set for the account.
+ */
+export type LegacyBackgroundApiServiceSetAccountLabelAction = {
+  type: `LegacyBackgroundApiService:setAccountLabel`;
+  handler: LegacyBackgroundApiService['setAccountLabel'];
+};
+
+/**
  * Execute side effects of a removed account.
  *
  * @param address - The address of the account to remove.
@@ -170,6 +181,16 @@ export type LegacyBackgroundApiServiceRejectPermissionsRequestAction = {
   handler: LegacyBackgroundApiService['rejectPermissionsRequest'];
 };
 
+/**
+ * Removes the given permissions for the given subjects.
+ *
+ * @param subjects - The subjects and their permissions to remove.
+ */
+export type LegacyBackgroundApiServiceRemovePermissionsForAction = {
+  type: `LegacyBackgroundApiService:removePermissionsFor`;
+  handler: LegacyBackgroundApiService['removePermissionsFor'];
+};
+
 export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
   type: `LegacyBackgroundApiService:importAccountWithStrategy`;
   handler: LegacyBackgroundApiService['importAccountWithStrategy'];
@@ -184,6 +205,16 @@ export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
 export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
   type: `LegacyBackgroundApiService:getAccountsBySnapId`;
   handler: LegacyBackgroundApiService['getAccountsBySnapId'];
+};
+
+/**
+ * Sets the currently selected internal account.
+ *
+ * @param id - The ID of the account to set as selected.
+ */
+export type LegacyBackgroundApiServiceSetSelectedInternalAccountAction = {
+  type: `LegacyBackgroundApiService:setSelectedInternalAccount`;
+  handler: LegacyBackgroundApiService['setSelectedInternalAccount'];
 };
 
 /**
@@ -296,6 +327,55 @@ export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
   };
 
 /**
+ * Creates or updates the UI metrics fragment for a given transaction.
+ *
+ * @param transactionId - The id of the transaction.
+ * @param payload - The fragment settings and properties to store.
+ */
+export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
+  {
+    type: `LegacyBackgroundApiService:upsertTransactionUIMetricsFragment`;
+    handler: LegacyBackgroundApiService['upsertTransactionUIMetricsFragment'];
+  };
+
+/**
+ * Rejects a pending approval request.
+ *
+ * @param id - The ID of the approval request to reject.
+ * @param error - The error to reject the approval request with.
+ * @param error.code - The error code.
+ * @param error.message - The error message.
+ * @param error.data - The error data.
+ */
+export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
+  type: `LegacyBackgroundApiService:rejectPendingApproval`;
+  handler: LegacyBackgroundApiService['rejectPendingApproval'];
+};
+
+/**
+ * Rejects all pending approval requests.
+ *
+ * Snap dialogs and account confirmations are accepted with a falsy value and
+ * their interface deleted where applicable, while all other approvals are
+ * rejected with a user-rejected-request error.
+ */
+export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
+  type: `LegacyBackgroundApiService:rejectAllPendingApprovals`;
+  handler: LegacyBackgroundApiService['rejectAllPendingApprovals'];
+};
+
+/**
+ * Accepts a permissions request. Silently ignores the request if it can no
+ * longer be found.
+ *
+ * @param request - The permissions request to accept.
+ */
+export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
+  type: `LegacyBackgroundApiService:acceptPermissionsRequest`;
+  handler: LegacyBackgroundApiService['acceptPermissionsRequest'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -312,10 +392,13 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
+  | LegacyBackgroundApiServiceSetAccountLabelAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
   | LegacyBackgroundApiServiceRejectPermissionsRequestAction
+  | LegacyBackgroundApiServiceRemovePermissionsForAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
+  | LegacyBackgroundApiServiceSetSelectedInternalAccountAction
   | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceChangePasswordAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
@@ -324,4 +407,8 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
   | LegacyBackgroundApiServiceExportAccountAction
-  | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction;
+  | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
+  | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
+  | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
+  | LegacyBackgroundApiServiceAcceptPermissionsRequestAction;
