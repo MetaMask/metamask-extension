@@ -4313,9 +4313,6 @@
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Incluye"
-  },
   "includesXTransactions": {
     "message": "Incluye $1 transacciones"
   },
