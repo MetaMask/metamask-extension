@@ -58,7 +58,12 @@
   "bridge": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
-  "gas": { "customData": { "limit": null, "price": null } },
+  "gas": {
+    "customData": {
+      "limit": null,
+      "price": null
+    }
+  },
   "history": {
     "mostRecentOverviewPage": "/",
     "redirectAfterDefaultPage": null
@@ -105,7 +110,10 @@
     "balances": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
-    "browserEnvironment": { "browser": "string", "os": "string" },
+    "browserEnvironment": {
+      "browser": "string",
+      "os": "string"
+    },
     "cacheTimestamp": "number",
     "cachedMarketDataByProvider": "object",
     "cachedUserDataByProvider": "object",
@@ -186,7 +194,10 @@
     "inputPrimaryDenomination": "string",
     "insights": "object",
     "interfaces": "object",
-    "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
+    "internalAccounts": {
+      "accounts": "object",
+      "selectedAccount": "string"
+    },
     "ipfsGateway": "string",
     "isAccountSyncingEnabled": true,
     "isAccountTreeSyncingInProgress": "boolean",
@@ -310,7 +321,9 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
-      "tokenNetworkFilter": { "0x539": "boolean" },
+      "tokenNetworkFilter": {
+        "0x539": "boolean"
+      },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
@@ -328,8 +341,14 @@
     "quotesLoadingStatus": null,
     "quotesRefreshCount": 0,
     "rates": {
-      "btc": { "conversionDate": 0, "conversionRate": 0 },
-      "sol": { "conversionDate": 0, "conversionRate": 0 }
+      "btc": {
+        "conversionDate": 0,
+        "conversionRate": 0
+      },
+      "sol": {
+        "conversionDate": 0,
+        "conversionRate": 0
+      }
     },
     "rawRemoteFeatureFlags": "object",
     "recoveryPhraseReminderHasBeenShown": false,
@@ -338,7 +357,10 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupA", "value": "valueA" }
+      "feature3": {
+        "name": "groupA",
+        "value": "valueA"
+      }
     },
     "rewardsAccounts": "object",
     "rewardsActiveAccount": null,
@@ -366,7 +388,10 @@
     "signatureSecurityAlertResponses": "object",
     "slides": "object",
     "smartTransactionsState": {
-      "fees": { "approvalTxFees": null, "tradeTxFees": null },
+      "fees": {
+        "approvalTxFees": null,
+        "tradeTxFees": null
+      },
       "feesByChainId": "object",
       "liveness": true,
       "livenessByChainId": "object",
@@ -439,9 +464,10 @@
     "withdrawalRequests": "object"
   },
   "perpsTutorial": "object",
-  "ramps": "object",
   "rewards": "object",
   "smartAccounts": "object",
   "swaps": "object",
-  "unconnectedAccount": { "state": "CLOSED" }
+  "unconnectedAccount": {
+    "state": "CLOSED"
+  }
 }

@@ -103,16 +103,6 @@ export const MUSD_TOKEN_ASSET_ID_BY_CHAIN: Record<Hex, string> = {
 };
 
 /**
- * Chains where mUSD CTA should show (buy routes available)
- * BSC is excluded as buy routes are not yet available
- */
-export const MUSD_BUYABLE_CHAIN_IDS: Hex[] = [
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.LINEA_MAINNET,
-  // CHAIN_IDS.BSC - TODO: Uncomment once buy routes are available
-];
-
-/**
  * mUSD currency symbol for display
  */
 export const MUSD_CURRENCY = 'MUSD';
@@ -220,16 +210,4 @@ export const getMusdAssetIdForChain = (chainId: Hex): string | undefined => {
  */
 export const isMusdSupportedChain = (chainId: Hex): boolean => {
   return chainId.toLowerCase() in MUSD_TOKEN_ADDRESS_BY_CHAIN;
-};
-
-/**
- * Check if mUSD is buyable (via Ramp) on a specific chain
- *
- * @param chainId - The chain ID in hex format
- * @returns true if mUSD can be purchased via Ramp on the chain
- */
-export const isMusdBuyableOnChain = (chainId: Hex): boolean => {
-  return MUSD_BUYABLE_CHAIN_IDS.some(
-    (id) => id.toLowerCase() === chainId.toLowerCase(),
-  );
 };

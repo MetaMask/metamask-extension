@@ -156,7 +156,6 @@ export type HomeProps = {
   setActiveNetwork?: (networkConfigurationId: string) => void;
   useExternalServices?: boolean;
   setBasicFunctionalityModalOpen?: () => void;
-  fetchBuyableChains: () => void;
   redirectAfterDefaultPage?: RedirectAfterDefaultPage;
   setRedirectAfterDefaultPage?: (redirect: { path: string }) => void;
   clearRedirectAfterDefaultPage?: () => void;
@@ -347,8 +346,6 @@ class HomeBase extends PureComponent<HomeProps, HomeState> {
   }
 
   componentDidMount() {
-    this.props.fetchBuyableChains();
-
     this.checkPendingRedirectRoute();
     this.checkLastVisitedPerpsRoute();
     this.checkRedirectAfterDefaultPage();

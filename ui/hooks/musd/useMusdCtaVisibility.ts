@@ -19,10 +19,7 @@ import {
   selectMusdCtaTokens,
   selectMusdConversionDismissedCtaKeys,
 } from '../../selectors/musd';
-import {
-  MUSD_BUYABLE_CHAIN_IDS,
-  isMusdSupportedChain,
-} from '../../components/app/musd/constants';
+import { isMusdSupportedChain } from '../../components/app/musd/constants';
 import { isTokenInWildcardList } from '../../components/app/musd/utils/token-allowlist';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
@@ -267,21 +264,14 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         };
       }
 
-      // BUY variant: Empty wallet and mUSD is buyable
+      // BUY variant: Empty wallet
       if (isEmptyWallet) {
-        // Check if mUSD is buyable on the selected chain
-        const isMusdBuyable = selectedChainId
-          ? MUSD_BUYABLE_CHAIN_IDS.includes(selectedChainId)
-          : MUSD_BUYABLE_CHAIN_IDS.length > 0;
-
-        if (isMusdBuyable) {
-          return {
-            shouldShowCta: true,
-            selectedChainId,
-            isEmptyWallet: true,
-            variant: BuyGetMusdCtaVariant.BUY,
-          };
-        }
+        return {
+          shouldShowCta: true,
+          selectedChainId,
+          isEmptyWallet: true,
+          variant: BuyGetMusdCtaVariant.BUY,
+        };
       }
 
       return {

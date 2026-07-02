@@ -75,7 +75,13 @@ jest.mock('../../../hooks/musd', () => ({
   }),
 }));
 
-const mockOpenTab = jest.fn();
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
+}));
 
 const createMockStore = (overrides = {}) => {
   return configureStore({
@@ -125,10 +131,6 @@ const createMockStore = (overrides = {}) => {
 describe('MusdBuyGetCta', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    Object.defineProperty(global, 'platform', {
-      value: { openTab: mockOpenTab },
-      writable: true,
-    });
   });
 
   describe('GET variant', () => {
@@ -256,11 +258,7 @@ describe('MusdBuyGetCta', () => {
       const ctaElement = screen.getByTestId('multichain-token-list-button');
       fireEvent.click(ctaElement);
 
-      expect(mockOpenTab).toHaveBeenCalledWith(
-        expect.objectContaining({
-          url: expect.stringContaining('/buy'),
-        }),
-      );
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledWith('0x1');
     });
 
     it('opens buy crypto page when inner CTA button is clicked for BUY variant', () => {
@@ -277,11 +275,7 @@ describe('MusdBuyGetCta', () => {
         screen.getByRole('button', { name: messages.musdBuyMusd.message }),
       );
 
-      expect(mockOpenTab).toHaveBeenCalledWith(
-        expect.objectContaining({
-          url: expect.stringContaining('/buy'),
-        }),
-      );
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledWith('0x1');
     });
   });
 
