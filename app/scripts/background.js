@@ -916,7 +916,9 @@ async function initialize(backup) {
     .on('navigate', async ({ url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
-        trackEvent(createEvent({ signature: parsed.signature, url }));
+        await controller.metaMetricsController.trackEvent(
+          createEvent({ signature: parsed.signature, url }),
+        );
       }
     })
     .on('error', (error) => sentry?.captureException(error))
