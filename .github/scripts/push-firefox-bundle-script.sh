@@ -52,3 +52,16 @@ done
 git add bundle.sh
 git commit --allow-empty -m "${version}"
 git push origin release
+
+# Per-release tag so prepare_release.sh can fetch bundle.sh at v{X.Y.Z}
+# instead of release branch HEAD (INFRA-3753).
+if git rev-parse "${version}^{commit}" >/dev/null 2>&1; then
+  echo "Tag ${version} already exists locally; skipping tag creation"
+else
+  git tag -a "${version}" -m "${version}"
+fi
+if git push origin "refs/tags/${version}" 2>/dev/null; then
+  echo "Pushed tag ${version}"
+else
+  echo "::warning::Tag ${version} already exists on origin (idempotent re-run)"
+fi
