@@ -4,6 +4,7 @@ import type { Position } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PositionCard } from './position-card';
 
 jest.mock('../../../../hooks/useFormatters', () => ({
@@ -66,6 +67,21 @@ describe('PositionCard', () => {
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByText('TSLA')).toBeInTheDocument();
+  });
+
+  it('displays the full asset name as the title while keeping the ticker next to the size', () => {
+    const position = createMockPosition({ symbol: 'BTC', size: '2.5' });
+    renderWithProvider(
+      <PositionCard position={position} assetName="Bitcoin" />,
+      mockStore,
+    );
+
+    // Title shows the full name
+    expect(
+      screen.getByText(messages.networkNameBitcoin.message),
+    ).toBeInTheDocument();
+    // Size line keeps the ticker as its unit
+    expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
   });
 
   it('displays long direction for positive size', () => {

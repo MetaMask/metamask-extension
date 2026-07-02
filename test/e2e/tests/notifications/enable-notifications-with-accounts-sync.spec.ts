@@ -32,7 +32,10 @@ async function getNotificationsMockResponse() {
 }
 
 describe('Enable Notifications - With Accounts Syncing On', function () {
-  this.timeout(120000); // Multiple Syncing features can cause this test to take some time
+  // This test runs two full identity onboarding flows back-to-back, each
+  // incurring SRP import, sign-in and account-sync settling, so it needs more
+  // than the default budget.
+  this.timeout(180000);
 
   describe('from inside MetaMask', function () {
     /**
@@ -40,7 +43,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      *
      * Part 1: Initial Configuration
      * - Complete onboarding with pre-synced accounts
-     * - Enable notifications and verify default state (all enabled)
+     * - Enable notifications and verify initial default state
      * - Modify settings:
      * → Disable second account notifications
      * → Disable product notifications
@@ -50,9 +53,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      * - Re-enable general notifications (required for each new session)
      * - Verify settings:
      * → General notifications: requires manual re-enable
-     * → Product notifications: enabled (resets on new session)
+     * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted from Part 1)
+     * → Second account: disabled (persisted in AUS from Part 1)
      */
     // TODO: Re-write this test when multichain account syncing has been merged
     // eslint-disable-next-line mocha/no-skipped-tests
@@ -93,12 +96,14 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
           );
-          await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
+          await notificationsSettingsPage.assertMainNotificationSettingsTogglesState(
             driver,
+            { marketingInAppExpectedState: 'disabled' },
           );
           await assertAllAccountsEnabled(driver);
 
-          // Switch off address 2 and product notifications toggle
+          // Update preferences for persistence check:
+          // disable account 2 and toggle marketing in-app notifications.
           await notificationsSettingsPage.clickNotificationToggle({
             address: notificationsMockAccounts[1].a,
             toggleType: 'address',
@@ -139,7 +144,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
           );
-          await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
+          await notificationsSettingsPage.assertMainNotificationSettingsTogglesState(
             driver,
           );
 
