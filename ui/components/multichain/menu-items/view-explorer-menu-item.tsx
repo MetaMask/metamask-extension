@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getMultichainAccountUrl,
   getMultichainBlockExplorerUrl,
@@ -11,7 +12,6 @@ import {
 
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
@@ -89,7 +89,7 @@ export const ViewExplorerMenuItem = ({
   account,
 }: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
 
   const multichainNetwork = useMultichainSelector(
@@ -154,20 +154,27 @@ export const ViewExplorerMenuItem = ({
           : openBlockExplorer(
               actualAddressLink,
               metricsLocation,
-              trackEvent,
+              (payload) =>
+                trackEvent(
+                  createEventBuilder(payload.event)
+                    .addCategory(payload.category)
+                    .addProperties(payload.properties ?? {})
+                    .build(),
+                ),
               closeMenu,
             );
 
-        trackEvent({
-          event: MetaMetricsEventName.BlockExplorerLinkClicked,
-          category: MetaMetricsEventCategory.Accounts,
-          properties: {
-            location: metricsLocation,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainId,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.BlockExplorerLinkClicked)
+            .addCategory(MetaMetricsEventCategory.Accounts)
+            .addProperties({
+              location: metricsLocation,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainId,
+            })
+            .build(),
+        );
 
         closeMenu?.();
       }}
