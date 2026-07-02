@@ -898,19 +898,9 @@
     "ui/pages/notifications/notifications.test.tsx": {
       "Reselect: Input stability warnings": 2
     },
-    "ui/pages/onboarding-flow/account-exist/account-exist.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
-    "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
-    "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
     "ui/pages/onboarding-flow/privacy-settings/privacy-settings.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 1,
-      "error: Warning: Encountered two children with": 1
+      "Reselect: Input stability warnings": 1
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5

@@ -201,6 +201,7 @@ import {
   endTrace,
   TraceName,
   TraceOperation,
+  getPerformanceTimestamp,
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
@@ -234,7 +235,6 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
-import { checkGmxHasReferralCode } from './lib/defi-referral-onchain-check';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -279,10 +279,11 @@ import {
   convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
 import {
   createDefiReferralMiddleware,
   ReferralTriggerType,
-} from './lib/createDefiReferralMiddleware';
+} from './lib/defi-referrals/createDefiReferralMiddleware';
 
 import {
   diffMap,
@@ -3403,8 +3404,10 @@ export default class MetamaskController extends EventEmitter {
             waitForSubmit: true,
           }),
         ),
-      upsertTransactionUIMetricsFragment:
-        this.upsertTransactionUIMetricsFragment.bind(this),
+      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+      ),
       setTransactionActive:
         txController.setTransactionActive.bind(txController),
       // decryptMessageController
@@ -3447,9 +3450,18 @@ export default class MetamaskController extends EventEmitter {
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
 
       // permissions
-      removePermissionsFor: this.removePermissionsFor,
-      approvePermissionsRequest: this.acceptPermissionsRequest,
-      rejectPermissionsRequest: this.rejectPermissionsRequest,
+      removePermissionsFor: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermissionsFor',
+      ),
+      approvePermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:acceptPermissionsRequest',
+      ),
+      rejectPermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectPermissionsRequest',
+      ),
       ...getPermissionBackgroundApiMethods({
         permissionController,
         approvalController,
@@ -3619,7 +3631,10 @@ export default class MetamaskController extends EventEmitter {
 
       // ApprovalController
       rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
-      rejectPendingApproval: this.rejectPendingApproval,
+      rejectPendingApproval: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectPendingApproval',
+      ),
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
@@ -4790,10 +4805,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
    */
   async discoverAndCreateAccounts(id) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
+    // Hold the start time so the span can be backdated if discovery does real
+    // work. The common no-op discovery (every login, per keyring) is not traced.
+    const startTime = getPerformanceTimestamp();
     try {
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
@@ -4811,6 +4825,18 @@ export default class MetamaskController extends EventEmitter {
 
       const counts = this.getDiscoveryCountByProvider(result);
 
+      // Only emit a span when discovery actually created accounts.
+      if (result.length > 0) {
+        trace({
+          name: TraceName.DiscoverAccounts,
+          op: TraceOperation.AccountDiscover,
+          startTime,
+        });
+        endTrace({
+          name: TraceName.DiscoverAccounts,
+        });
+      }
+
       return counts;
     } catch (error) {
       log.warn(`Failed to add accounts with balance. ${error}`);
@@ -4819,10 +4845,6 @@ export default class MetamaskController extends EventEmitter {
         Solana: 0,
         Tron: 0,
       };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-      });
     }
   }
 
@@ -7999,44 +8021,15 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  upsertTransactionUIMetricsFragment(transactionId, payload) {
-    if (!transactionId || !payload) {
-      return;
-    }
-
-    const fragmentId = this.getTransactionUIMetricsFragmentId(transactionId);
-    const existingFragment =
-      this.getTransactionUIMetricsFragment(transactionId);
-
-    if (existingFragment) {
-      this.controllerMessenger.call(
-        'MetaMetricsController:updateEventFragment',
-        fragmentId,
-        payload,
-      );
-      return;
-    }
-
-    this.controllerMessenger.call('MetaMetricsController:createEventFragment', {
-      id: fragmentId,
-      uniqueIdentifier: fragmentId,
-      // Required by createEventFragment, but this fragment is storage-only.
-      // We never finalize this fragment and we do not set initialEvent.
-      successEvent: 'Transaction Fragment Created',
-      category: MetaMetricsEventCategory.Transactions,
-      canDeleteIfAbandoned: true,
-      properties: payload.properties ?? {},
-      sensitiveProperties: payload.sensitiveProperties ?? {},
-    });
-  }
-
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Transaction metrics state
       getTransactionUIMetricsFragment:
         this.getTransactionUIMetricsFragment.bind(this),
-      upsertTransactionUIMetricsFragment:
-        this.upsertTransactionUIMetricsFragment.bind(this),
+      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+      ),
       // Metametrics Actions
       getParticipateInMetrics: () => {
         const { completedMetaMetricsOnboarding } =
@@ -8372,16 +8365,6 @@ export default class MetamaskController extends EventEmitter {
     await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
 
-  removePermissionsFor = (subjects) => {
-    try {
-      this.permissionController.revokePermissions(subjects);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
       this.controllerMessenger.call(
@@ -8461,26 +8444,6 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  rejectPermissionsRequest = (requestId) => {
-    try {
-      this.permissionController.rejectPermissionsRequest(requestId);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  acceptPermissionsRequest = (request) => {
-    try {
-      this.permissionController.acceptPermissionsRequest(request);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
   /**
    * Resolve a pending approval. For hardware wallet transactions and signatures,
    * this handles error parsing.
@@ -8513,19 +8476,6 @@ export default class MetamaskController extends EventEmitter {
       }
 
       throw error;
-    }
-  };
-
-  rejectPendingApproval = (id, error) => {
-    try {
-      this.approvalController.rejectRequest(
-        id,
-        new JsonRpcError(error.code, error.message, error.data),
-      );
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
-      }
     }
   };
 

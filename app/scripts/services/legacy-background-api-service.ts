@@ -6,7 +6,7 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
-import { add0x, Hex, hexToBytes, Json } from '@metamask/utils';
+import { add0x, Hex, hexToBytes, Json, NonEmptyArray } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import {
   AccountImportStrategy,
@@ -71,7 +71,18 @@ import {
   SeedlessOnboardingControllerSyncLatestGlobalPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
 } from '@metamask/seedless-onboarding-controller';
-import { PermissionControllerUpdatePermissionsByCaveatAction } from '@metamask/permission-controller';
+import {
+  CaveatSpecificationConstraint,
+  ExtractPermission,
+  OriginString,
+  PermissionControllerAcceptPermissionsRequestAction,
+  PermissionControllerRejectPermissionsRequestAction,
+  PermissionControllerRevokePermissionsAction,
+  PermissionControllerUpdatePermissionsByCaveatAction,
+  PermissionSpecificationConstraint,
+  PermissionsRequest,
+  PermissionsRequestNotFoundError,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -106,6 +117,10 @@ import {
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventFragment,
+} from '../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
@@ -114,7 +129,10 @@ import { TransactionControllerInitMessenger } from '../messenger-client-init/mes
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
+  MetaMetricsControllerCreateEventFragmentAction,
+  MetaMetricsControllerGetEventFragmentByIdAction,
   MetaMetricsControllerTrackEventAction,
+  MetaMetricsControllerUpdateEventFragmentAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
 } from '../controllers/metametrics-controller-method-action-types';
@@ -132,6 +150,7 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'acceptPermissionsRequest',
   'applyTransactionContainersExisting',
   'changePassword',
   'checkIsSeedlessPasswordOutdated',
@@ -149,7 +168,10 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'rejectPendingApproval',
+  'rejectPermissionsRequest',
   'removeAccount',
+  'removePermissionsFor',
   'resetAccount',
   'setCurrentCurrency',
   'setLocked',
@@ -157,6 +179,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
   'unMarkPasswordForgotten',
+  'upsertTransactionUIMetricsFragment',
 ] as const;
 
 /**
@@ -190,7 +213,10 @@ type AllowedActions =
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
   | KeyringControllerWithKeyringV2Action
+  | MetaMetricsControllerCreateEventFragmentAction
+  | MetaMetricsControllerGetEventFragmentByIdAction
   | MetaMetricsControllerTrackEventAction
+  | MetaMetricsControllerUpdateEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSubmitEncryptionKeyAction
@@ -208,6 +234,9 @@ type AllowedActions =
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PermissionControllerAcceptPermissionsRequestAction
+  | PermissionControllerRejectPermissionsRequestAction
+  | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PreferencesControllerSetPasswordForgottenAction
   | RemoteFeatureFlagControllerGetStateAction
@@ -600,6 +629,52 @@ export class LegacyBackgroundApiService {
           address as Hex,
         ),
     );
+  }
+
+  /**
+   * Rejects a pending permissions request.
+   *
+   * Swallows `PermissionsRequestNotFoundError` so that rejecting an already
+   * resolved request does not throw.
+   *
+   * @param requestId - The ID of the permissions request to reject.
+   */
+  rejectPermissionsRequest(requestId: string): void {
+    try {
+      this.#messenger.call(
+        'PermissionController:rejectPermissionsRequest',
+        requestId,
+      );
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Removes the given permissions for the given subjects.
+   *
+   * @param subjects - The subjects and their permissions to remove.
+   */
+  removePermissionsFor(
+    subjects: Record<
+      OriginString,
+      NonEmptyArray<
+        ExtractPermission<
+          PermissionSpecificationConstraint,
+          CaveatSpecificationConstraint
+        >['parentCapability']
+      >
+    >,
+  ): void {
+    try {
+      this.#messenger.call('PermissionController:revokePermissions', subjects);
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
   }
 
   async importAccountWithStrategy(
@@ -1223,5 +1298,116 @@ export class LegacyBackgroundApiService {
         value: newTransactionMeta.txParams.value,
       },
     );
+  }
+
+  /**
+   * Builds the event fragment id used to store the UI metrics fragment for a
+   * given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @returns The event fragment id.
+   */
+  #getTransactionUIMetricsFragmentId(transactionId: string): string {
+    return `transaction-ui-${transactionId}`;
+  }
+
+  /**
+   * Retrieves the UI metrics fragment for a given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @returns The event fragment, or `undefined` if it does not exist.
+   */
+  #getTransactionUIMetricsFragment(
+    transactionId: string,
+  ): MetaMetricsEventFragment | undefined {
+    return this.#messenger.call(
+      'MetaMetricsController:getEventFragmentById',
+      this.#getTransactionUIMetricsFragmentId(transactionId),
+    );
+  }
+
+  /**
+   * Creates or updates the UI metrics fragment for a given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @param payload - The fragment settings and properties to store.
+   */
+  upsertTransactionUIMetricsFragment(
+    transactionId: string,
+    payload: Partial<MetaMetricsEventFragment>,
+  ): void {
+    if (!transactionId || !payload) {
+      return;
+    }
+
+    const fragmentId = this.#getTransactionUIMetricsFragmentId(transactionId);
+    const existingFragment =
+      this.#getTransactionUIMetricsFragment(transactionId);
+
+    if (existingFragment) {
+      this.#messenger.call(
+        'MetaMetricsController:updateEventFragment',
+        fragmentId,
+        payload,
+      );
+      return;
+    }
+
+    this.#messenger.call('MetaMetricsController:createEventFragment', {
+      // `createEventFragment` derives the fragment `id` from `uniqueIdentifier`.
+      uniqueIdentifier: fragmentId,
+      // Required by createEventFragment, but this fragment is storage-only.
+      // We never finalize this fragment and we do not set initialEvent.
+      successEvent: 'Transaction Fragment Created',
+      category: MetaMetricsEventCategory.Transactions,
+      canDeleteIfAbandoned: true,
+      properties: payload.properties ?? {},
+      sensitiveProperties: payload.sensitiveProperties ?? {},
+    });
+  }
+
+  /**
+   * Rejects a pending approval request.
+   *
+   * @param id - The ID of the approval request to reject.
+   * @param error - The error to reject the approval request with.
+   * @param error.code - The error code.
+   * @param error.message - The error message.
+   * @param error.data - The error data.
+   */
+  rejectPendingApproval(
+    id: string,
+    error: { code: number; message: string; data?: Json },
+  ): void {
+    try {
+      this.#messenger.call(
+        'ApprovalController:rejectRequest',
+        id,
+        new JsonRpcError(error.code, error.message, error.data),
+      );
+    } catch (err) {
+      if (!(err instanceof ApprovalRequestNotFoundError)) {
+        throw err;
+      }
+    }
+  }
+
+  /**
+   * Accepts a permissions request. Silently ignores the request if it can no
+   * longer be found.
+   *
+   * @param request - The permissions request to accept.
+   */
+  acceptPermissionsRequest(request: PermissionsRequest): void {
+    try {
+      this.#messenger.call(
+        'PermissionController:acceptPermissionsRequest',
+        request,
+      );
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
   }
 }
