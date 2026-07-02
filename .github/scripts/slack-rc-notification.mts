@@ -28,6 +28,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { parseChangelog } from '@metamask/auto-changelog';
+import packageJson from '../../package.json' with { type: 'json' };
 import {
   getBuildLinks,
   type BuildLinks,
@@ -90,21 +91,6 @@ function getExtensionMainBuildLinks(
     browserify: buildLinks.browserify.main,
     webpack: buildLinks.webpack.main,
   };
-}
-
-function getPackageVersion(): string | null {
-  const packageJsonPath = path.join(REPO_ROOT, 'package.json');
-
-  try {
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as {
-      version?: unknown;
-    };
-    return typeof packageJson.version === 'string' ? packageJson.version : null;
-  } catch (error) {
-    const err = error as Error;
-    console.error(`Failed to read package.json: ${err.message}`);
-    return null;
-  }
 }
 
 /**
@@ -482,7 +468,7 @@ export async function main(): Promise<void> {
   const trimmedHostUrl = process.env.HOST_URL?.trim() ?? '';
   const channelOverride = getChannelOverride();
 
-  const packageVersion = getPackageVersion() ?? semver;
+  const packageVersion = packageJson.version;
 
   const hostUrlOk = trimmedHostUrl !== '' && isValidUrl(trimmedHostUrl);
 
