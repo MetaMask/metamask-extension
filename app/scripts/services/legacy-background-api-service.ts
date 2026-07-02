@@ -48,6 +48,7 @@ import { AssetsControllerSetSelectedCurrencyAction } from '@metamask/assets-cont
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
+  ApprovalControllerAcceptRequestAction,
   ApprovalControllerGetStateAction,
   ApprovalControllerRejectRequestAction,
   ApprovalRequestNotFoundError,
@@ -91,6 +92,9 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { SnapInterfaceControllerDeleteInterfaceAction } from '@metamask/snaps-controllers';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
@@ -100,7 +104,7 @@ import {
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
 } from '@metamask/account-tree-controller';
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
 import {
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
@@ -118,7 +122,10 @@ import {
   AssetsUnifyStateFeatureFlag,
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
@@ -170,6 +177,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'rejectAllPendingApprovals',
   'rejectPendingApproval',
   'rejectPermissionsRequest',
   'removeAccount',
@@ -201,6 +209,7 @@ type AllowedActions =
   | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
+  | ApprovalControllerAcceptRequestAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
@@ -260,6 +269,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
+  | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerStopAllPollingAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
@@ -1427,6 +1437,77 @@ export class LegacyBackgroundApiService {
     } catch (err) {
       if (!(err instanceof ApprovalRequestNotFoundError)) {
         throw err;
+      }
+    }
+  }
+
+  /**
+   * Rejects all pending approval requests.
+   *
+   * Snap dialogs and account confirmations are accepted with a falsy value and
+   * their interface deleted where applicable, while all other approvals are
+   * rejected with a user-rejected-request error.
+   */
+  rejectAllPendingApprovals(): void {
+    const { pendingApprovals } = this.#messenger.call(
+      'ApprovalController:getState',
+    );
+
+    const approvalRequests = Object.values(pendingApprovals);
+
+    for (const approvalRequest of approvalRequests) {
+      const { id, type, origin } = approvalRequest;
+      const interfaceId = approvalRequest.requestData?.id as string;
+
+      switch (type) {
+        case ApprovalType.SnapDialogAlert:
+        case ApprovalType.SnapDialogPrompt:
+        case DIALOG_APPROVAL_TYPES.default:
+          log.debug('Rejecting snap dialog', { id, interfaceId, origin, type });
+          this.#messenger.call('ApprovalController:acceptRequest', id, null);
+          this.#messenger.call(
+            'SnapInterfaceController:deleteInterface',
+            interfaceId,
+          );
+          break;
+
+        case ApprovalType.SnapDialogConfirmation:
+          log.debug('Rejecting snap confirmation', {
+            id,
+            interfaceId,
+            origin,
+            type,
+          });
+          this.#messenger.call('ApprovalController:acceptRequest', id, false);
+          this.#messenger.call(
+            'SnapInterfaceController:deleteInterface',
+            interfaceId,
+          );
+          break;
+
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
+          log.debug('Rejecting snap account confirmation', {
+            id,
+            origin,
+            type,
+          });
+          this.#messenger.call('ApprovalController:acceptRequest', id, false);
+          break;
+
+        default:
+          log.debug('Rejecting pending approval', { id, origin, type });
+          this.#messenger.call(
+            'ApprovalController:rejectRequest',
+            id,
+            providerErrors.userRejectedRequest({
+              data: {
+                cause: 'rejectAllApprovals',
+              },
+            }),
+          );
+          break;
       }
     }
   }

@@ -22,9 +22,15 @@ import {
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
@@ -2760,6 +2766,251 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('rejectAllPendingApprovals', () => {
+    it('accepts snap dialog approvals with null and deletes their interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const acceptRequestHandler = jest.fn();
+        const deleteInterfaceHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogAlert,
+                requestData: { id: 'interface-1' },
+              },
+              '2': {
+                id: '2',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogPrompt,
+                requestData: { id: 'interface-2' },
+              },
+              '3': {
+                id: '3',
+                origin: 'npm:@metamask/snap',
+                type: DIALOG_APPROVAL_TYPES.default,
+                requestData: { id: 'interface-3' },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          acceptRequestHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          deleteInterfaceHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '2',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '3',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-1',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-2',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-3',
+        );
+      });
+    });
+
+    it('accepts snap confirmation approvals with false and deletes their interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogConfirmation,
+                requestData: { id: 'interface-1' },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-1',
+        );
+      });
+    });
+
+    it('accepts snap account confirmations with false without deleting an interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const deleteInterfaceHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+                requestData: {},
+              },
+              '2': {
+                id: '2',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+                requestData: {},
+              },
+              '3': {
+                id: '3',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+                requestData: {},
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          deleteInterfaceHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '2',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '3',
+          false,
+        );
+        expect(deleteInterfaceHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('rejects all other approvals with a user-rejected-request error', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'https://example.com',
+                type: ApprovalType.Transaction,
+                requestData: {},
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:rejectRequest',
+          '1',
+          providerErrors.userRejectedRequest({
+            data: {
+              cause: 'rejectAllApprovals',
+            },
+          }),
+        );
+      });
+    });
+
+    it('does nothing when there are no pending approvals', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const acceptRequestHandler = jest.fn();
+        const rejectRequestHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({ pendingApprovals: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          acceptRequestHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          rejectRequestHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(acceptRequestHandler).not.toHaveBeenCalled();
+        expect(rejectRequestHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('acceptPermissionsRequest', () => {
     it('accepts the permissions request', async () => {
       await withService(async ({ rootMessenger }) => {
@@ -2895,6 +3146,8 @@ function getMessenger(
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
+      'ApprovalController:acceptRequest',
+      'SnapInterfaceController:deleteInterface',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
       'ApprovalController:rejectRequest',
