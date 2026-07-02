@@ -5758,6 +5758,23 @@ describe('MetaMaskController', () => {
 
           expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
         });
+
+        it('does not call checkHyperliquidHasReferralCode when basic functionality is disabled', async () => {
+          metamaskController.preferencesController.update((state) => {
+            state.useExternalServices = false;
+          });
+          jest
+            .spyOn(metamaskController.approvalController, 'add')
+            .mockResolvedValueOnce({});
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
+        });
       });
 
       describe('_handleDefiReferralApprovedAccount', () => {
