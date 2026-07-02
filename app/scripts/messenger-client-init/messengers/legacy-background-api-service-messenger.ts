@@ -35,6 +35,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
+      'ApprovalController:acceptRequest',
+      'SnapInterfaceController:deleteInterface',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
       'ApprovalController:rejectRequest',
