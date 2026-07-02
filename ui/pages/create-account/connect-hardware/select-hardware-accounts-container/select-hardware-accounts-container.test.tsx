@@ -96,7 +96,9 @@ describe('SelectHardwareAccountsContainer', () => {
     it('forwards connected account state to the account cards', () => {
       renderContainer({
         accounts: [MOCK_RAW_HARDWARE_ACCOUNTS[0]],
-        connectedAccounts: [MOCK_RAW_HARDWARE_ACCOUNTS[0].address.toLowerCase()],
+        connectedAccounts: [
+          MOCK_RAW_HARDWARE_ACCOUNTS[0].address.toLowerCase(),
+        ],
         selectedAccountIndices: [],
       });
 
@@ -241,7 +243,9 @@ describe('SelectHardwareAccountsContainer', () => {
         screen.getByTestId('select-hardware-accounts-page-settings-button'),
       );
       fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
-      fireEvent.click(screen.getByTestId('select-hd-path-page-continue-button'));
+      fireEvent.click(
+        screen.getByTestId('select-hd-path-page-continue-button'),
+      );
 
       expect(props.onPathChange).toHaveBeenCalledWith(LEDGER_HD_PATHS[1].value);
       expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
@@ -265,7 +269,9 @@ describe('SelectHardwareAccountsContainer', () => {
       fireEvent.click(
         screen.getByTestId('select-hardware-accounts-page-settings-button'),
       );
-      fireEvent.click(screen.getByTestId('select-hd-path-page-continue-button'));
+      fireEvent.click(
+        screen.getByTestId('select-hd-path-page-continue-button'),
+      );
 
       expect(props.onPathChange).not.toHaveBeenCalled();
       expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
