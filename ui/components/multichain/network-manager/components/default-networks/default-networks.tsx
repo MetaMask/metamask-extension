@@ -176,6 +176,16 @@ const DefaultNetworks = memo(() => {
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
 
+  // The "custom networks" view of the same hook returns only user-added
+  // (non-featured) networks, which is what we need to decide whether the
+  // top "select all" row should read `All networks` rather than
+  // `All popular networks` (#43727).
+  const { nonTestNetworks: customNonTestNetworks } = useNetworkManagerState();
+  const hasCustomNetworks = useMemo(
+    () => Object.keys(customNonTestNetworks).length > 0,
+    [customNonTestNetworks],
+  );
+
   // Memoize sorted networks to avoid expensive sorting on every render
   const orderedNetworks = useMemo(() => {
     // Filter nonTestNetworks object based on basic functionality toggle
@@ -233,6 +243,7 @@ const DefaultNetworks = memo(() => {
     () => allEnabledNetworksForAllNamespaces.length > 1,
     [allEnabledNetworksForAllNamespaces],
   );
+
 
   const isSingleNetworkSelected = useCallback(
     (hexChainId: Hex) => {
@@ -401,7 +412,7 @@ const DefaultNetworks = memo(() => {
           data-testid="network-manager-select-all"
         >
           <NetworkListItem
-            name={t('allPopularNetworks')}
+            name={t(hasCustomNetworks ? 'allNetworks' : 'allPopularNetworks')}
             onClick={selectAllDefaultNetworks}
             iconSrc={IconName.Global}
             iconSize={IconSize.Xl}
