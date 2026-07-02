@@ -1,10 +1,10 @@
-import type { Client, Event as SentryEvent, EventHint } from '@sentry/types';
+import type { Client, Event as SentryEvent, EventHint } from '@sentry/core';
 import {
   getActiveSpan,
   getCurrentScope,
   getIsolationScope,
 } from '@sentry/browser';
-import { addFetchInstrumentationHandler } from '@sentry/utils';
+import { addFetchInstrumentationHandler } from '@sentry/core';
 import {
   buildAugmentedHeaders,
   buildConsensysBaggage,
@@ -16,7 +16,7 @@ import {
   setConsensysRequestIdProvider,
 } from './sentry-trace-propagation';
 
-jest.mock('@sentry/utils', () => ({
+jest.mock('@sentry/core', () => ({
   addFetchInstrumentationHandler: jest.fn(),
 }));
 
@@ -103,7 +103,7 @@ describe('getCurrentTraceparent', () => {
     getCurrentScopeMock.mockReturnValue({
       getPropagationContext: () => ({
         traceId: TRACE_ID,
-        spanId: SPAN_ID,
+        propagationSpanId: SPAN_ID,
         sampled: false,
       }),
     } as unknown as ReturnType<typeof getCurrentScope>);
