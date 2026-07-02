@@ -3,6 +3,10 @@ import {
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PRIVACY_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
@@ -118,6 +122,26 @@ describe('settings-registry', () => {
         }),
       );
     });
+
+    it('matches notification section sub-pages', () => {
+      expect(
+        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'notificationsSettingsWalletActivityTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+        }),
+      );
+
+      expect(
+        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'notificationsSettingsMarketingTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+        }),
+      );
+    });
   });
 
   describe('SETTINGS_TABS', () => {
@@ -158,6 +182,9 @@ describe('settings-registry', () => {
       expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
       expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE);
       expect(paths).toContain(`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE);
     });
 
     it('does not include settings root', () => {
