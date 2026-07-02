@@ -6,11 +6,13 @@ import {
   AvatarAccountSize,
   AvatarToken,
   AvatarTokenSize,
+  Button,
+  ButtonVariant,
+  TextButton,
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../tooltip';
 import Popover from '../popover';
-import Button from '../button';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getTokenList, getBlockExplorerLinkText } from '../../../selectors';
@@ -86,16 +88,13 @@ const NicknamePopover = ({
         </div>
 
         <div className="nickname-popover__view-on-block-explorer">
-          <Button
-            type="link"
+          <TextButton
             className="nickname-popover__etherscan-link"
             onClick={
               blockExplorerLinkText.firstPart === 'addBlockExplorer'
                 ? routeToAddBlockExplorerUrl
                 : openBlockExplorer
             }
-            target="_blank"
-            rel="noopener noreferrer"
             title={
               blockExplorerLinkText.firstPart === 'addBlockExplorer'
                 ? t('addBlockExplorer')
@@ -105,10 +104,10 @@ const NicknamePopover = ({
             {blockExplorerLinkText.firstPart === 'addBlockExplorer'
               ? t('addBlockExplorer')
               : t('viewOnBlockExplorer')}
-          </Button>
+          </TextButton>
         </div>
         <Button
-          type="primary"
+          variant={ButtonVariant.Primary}
           className="nickname-popover__footer-button"
           onClick={onAddClick}
         >

@@ -5,10 +5,11 @@ import {
   AvatarAccountSize,
   AvatarToken,
   AvatarTokenSize,
+  Button,
+  ButtonVariant,
 } from '@metamask/design-system-react';
 
 import Popover from '../popover';
-import Button from '../button';
 import TextField from '../text-field';
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -63,16 +64,16 @@ export default function UpdateNicknamePopover({
         <>
           <Button
             className="update-nickname__cancel"
-            type="secondary"
+            variant={ButtonVariant.Secondary}
             onClick={onCancel}
           >
             {t('cancel')}
           </Button>
           <Button
             className="update-nickname__save"
-            type="primary"
+            variant={ButtonVariant.Primary}
             onClick={onSubmit}
-            disabled={!nicknameInput}
+            isDisabled={!nicknameInput}
           >
             {t('save')}
           </Button>
