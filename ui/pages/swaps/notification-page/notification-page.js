@@ -2,15 +2,15 @@ import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import { setSwapsErrorKey } from '../../../store/actions';
-import Box from '../../../components/ui/box';
 import {
-  DISPLAY,
-  AlignItems,
   TextVariant,
-  FLEX_DIRECTION,
-  TEXT_ALIGN,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { Icon, IconName, Text } from '../../../components/component-library';
@@ -37,14 +37,12 @@ export default function NotificationPage({ notificationKey }) {
   return (
     <div className="notification-page">
       <Box
-        alignItems={AlignItems.center}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        alignItems={BoxAlignItems.Center}
+        flexDirection={BoxFlexDirection.Column}
         marginTop={10}
         marginLeft={4}
         marginRight={4}
-        textAlign={TEXT_ALIGN.CENTER}
-        className="notification-page__content"
+        className="notification-page__content text-center"
       >
         <Box marginTop={8} marginBottom={4}>
           <Icon
