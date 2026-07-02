@@ -419,7 +419,6 @@ import { PermissionControllerInit } from './messenger-client-init/permission-con
 import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
-import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
 import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
@@ -550,6 +549,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
+      infuraProjectId: this.opts.infuraProjectId,
       showApprovalRequest: this.opts.showUserConfirmation,
       connectivityAdapter,
     });
@@ -639,7 +639,6 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       PasskeyController: PasskeyControllerInit,
-      NetworkController: NetworkControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -775,7 +774,7 @@ export default class MetamaskController extends EventEmitter {
     this.subjectMetadataController =
       messengerClientsByName.SubjectMetadataController;
     this.appStateController = messengerClientsByName.AppStateController;
-    this.networkController = messengerClientsByName.NetworkController;
+    this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
