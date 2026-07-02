@@ -91,7 +91,7 @@ export function useNotificationPreferences() {
 
       if (!latestCachedPreferences) {
         log.error(
-          `No notification preferences found when updating ${type} section, enable notifications first`,
+          `No notification preferences found when updating ${String(type)} section, enable notifications first`,
         );
         return;
       }

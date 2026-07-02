@@ -10,6 +10,19 @@ import configureStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { NotificationDetailBlockExplorerButton } from './notification-detail-block-explorer-button';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockStore = configureStore();
 const store = mockStore({
   ...mockState,
