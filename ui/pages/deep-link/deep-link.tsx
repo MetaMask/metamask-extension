@@ -7,8 +7,12 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '../../components/component-library/button';
+import { canonicalize } from '../../../shared/lib/deep-links/canonicalize';
 import { parse } from '../../../shared/lib/deep-links/parse';
-import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
+import {
+  DEEP_LINK_HOST,
+  SIG_PARAM,
+} from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -45,6 +49,16 @@ type Route = {
 };
 
 const { getExtensionURL } = globalThis.platform;
+
+async function hasValidSignature(url: URL): Promise<boolean> {
+  const signatureStr = url.searchParams.get(SIG_PARAM);
+
+  if (!signatureStr) {
+    return false;
+  }
+
+  return (await verify(signatureStr, canonicalize(url))) === VALID;
+}
 
 /**
  * Sets the description and title state for a 404 error.
@@ -130,11 +144,11 @@ async function updateStateFromUrl(
       set404(setDescription, setTitle, t, setPageNotFoundError);
       setCta(t('deepLink_GoToTheHomePageButton'));
 
-      const signature = await verify(url);
+      const isValidSignature = await hasValidSignature(url);
       if (abortController.signal.aborted) {
         return;
       }
-      if (signature === VALID) {
+      if (isValidSignature) {
         setExtraDescription(
           t('deepLink_Error404_CTA', [
             <ButtonLink
@@ -210,14 +224,14 @@ export const DeepLink = () => {
             try {
               const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
               const url = new URL(fullUrlStr);
-              const signature = await verify(url);
+              const isValidSignature = await hasValidSignature(url);
 
               // Check if aborted after async operation
               if (abortController.signal.aborted) {
                 return;
               }
 
-              if (signature === VALID) {
+              if (isValidSignature) {
                 setExtraDescription(
                   t('deepLink_Error404_CTA', [
                     <ButtonLink

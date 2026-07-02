@@ -1,5 +1,3 @@
-import { canonicalize } from './canonicalize';
-import { SIG_PARAM } from './constants';
 import { getKeyData, sigToBytes } from './helpers';
 
 export const MISSING = 'missing' as const;
@@ -41,21 +39,18 @@ async function lazyGetTools() {
 
 /**
  * Verifies the signature of a deep link URL.
- * This function checks if the URL contains a valid signature
- * and returns the status of the verification.
  *
- * @param url - The URL to verify.
+ * @param signatureStr - The signature to verify.
+ * @param canonicalUrl - The canonical URL to verify the signature against.
  */
-export const verify = async (url: URL) => {
-  const signatureStr = url.searchParams.get(SIG_PARAM);
-  if (!signatureStr) {
-    return MISSING;
-  }
-
+export const verify = async (
+  signatureStr: string,
+  canonicalUrl: URL,
+): Promise<typeof VALID | typeof INVALID> => {
   const { algorithm, encoder, publicKey } = tools || (await lazyGetTools());
 
   const signature = sigToBytes(signatureStr);
-  const data = encoder.encode(canonicalize(url));
+  const data = encoder.encode(canonicalUrl.toString());
 
   const ok = await crypto.subtle.verify(algorithm, publicKey, signature, data);
   return ok ? VALID : INVALID;

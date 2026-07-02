@@ -1,9 +1,9 @@
 import log from 'loglevel';
 import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
-import { verify, type SignatureStatus } from './verify';
+import { MISSING, verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
-import { SIG_PARAMS_PARAM } from './constants';
+import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
 
 type ParsedDeepLinkWithSignature = {
   destination: Destination;
@@ -34,8 +34,9 @@ export async function parse<Options extends ParseOptions = { verify: true }>(
   }
 
   let destination: Destination;
+  let canonicalUrl: URL;
   try {
-    const canonicalUrl = new URL(canonicalize(url));
+    canonicalUrl = canonicalize(url);
     const canonicalSearchParams = new URLSearchParams(
       canonicalUrl.searchParams,
     );
@@ -60,6 +61,10 @@ export async function parse<Options extends ParseOptions = { verify: true }>(
     return { destination, route } as ParsedDeepLink<Options>;
   }
 
-  const signature = await verify(url);
+  const signatureStr = url.searchParams.get(SIG_PARAM);
+  const signature = signatureStr
+    ? await verify(signatureStr, canonicalUrl)
+    : MISSING;
+
   return { destination, signature, route } as ParsedDeepLink<Options>;
 }
