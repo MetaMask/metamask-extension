@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
   IconSize,
   IconName,
-  TextButton,
-  TextVariant,
   Icon,
   IconColor,
 } from '@metamask/design-system-react';
@@ -32,21 +33,21 @@ const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
   }
 
   return (
-    <TextButton
+    <Button
+      variant={ButtonVariant.Tertiary}
+      size={ButtonSize.Sm}
       onClick={handleClick}
-      textProps={{ variant: TextVariant.BodySm }}
       data-testid="add-rewards-account-button"
+      isLoading={isLoading}
+      isDisabled={isLoading}
+      loadingText={t('rewardsLinkAccount')}
       startAccessory={
-        isLoading ? (
-          <Icon name={IconName.Loading} size={IconSize.Sm} />
-        ) : (
-          <img
-            src={'./images/metamask-rewards-points-alternative.svg'}
-            alt={t('rewardsPointsIcon')}
-            width={16}
-            height={16}
-          />
-        )
+        <img
+          src={'./images/metamask-rewards-points-alternative.svg'}
+          alt={t('rewardsPointsIcon')}
+          width={16}
+          height={16}
+        />
       }
       endAccessory={
         isError ? (
@@ -57,10 +58,9 @@ const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
           />
         ) : undefined
       }
-      disabled={isLoading}
     >
       {isError ? t('rewardsLinkAccountError') : t('rewardsLinkAccount')}
-    </TextButton>
+    </Button>
   );
 };
 
