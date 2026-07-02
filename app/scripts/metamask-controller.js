@@ -757,7 +757,9 @@ export default class MetamaskController extends EventEmitter {
     this.connectivityController = this.wallet.getInstance(
       'ConnectivityController',
     );
-    this.addressBookController = this.wallet.getInstance('AddressBookController');
+    this.addressBookController = this.wallet.getInstance(
+      'AddressBookController',
+    );
     this.alertController = messengerClientsByName.AlertController;
     this.decryptMessageController =
       messengerClientsByName.DecryptMessageController;
