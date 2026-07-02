@@ -43,8 +43,7 @@ export function getSmartTransactionsControllerMessenger(
   return controllerMessenger;
 }
 
-type InitActions = never;
-type InitEvents = never;
+type AllowedInitializationActions = never;
 
 export type SmartTransactionsControllerInitMessenger = ReturnType<
   typeof getSmartTransactionsControllerInitMessenger
@@ -59,12 +58,12 @@ export type SmartTransactionsControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getSmartTransactionsControllerInitMessenger(
-  messenger: RootMessenger<InitActions, InitEvents>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
   const controllerInitMessenger = new Messenger<
     'SmartTransactionsControllerInit',
-    InitActions,
-    InitEvents,
+    AllowedInitializationActions,
+    never,
     typeof messenger
   >({
     namespace: 'SmartTransactionsControllerInit',

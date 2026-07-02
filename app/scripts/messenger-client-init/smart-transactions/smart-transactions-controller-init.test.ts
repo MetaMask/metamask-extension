@@ -24,7 +24,6 @@ import {
 } from '../messengers/smart-transactions-controller-messenger';
 import { MessengerClientFlatState } from '../controller-list';
 import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { trackEvent } from '../../controllers/analytics';
 import { SmartTransactionsControllerInit } from './smart-transactions-controller-init';
 
@@ -305,7 +304,7 @@ describe('SmartTransactionsController Init', () => {
 
     const testPayload: MetaMetricsEventPayload = {
       event: 'TestEvent',
-      category: MetaMetricsEventCategory.Transactions,
+      category: 'TestCategory',
       properties: { test: true },
     };
 
@@ -320,7 +319,7 @@ describe('SmartTransactionsController Init', () => {
         name: 'TestEvent',
         properties: {
           test: true,
-          category: MetaMetricsEventCategory.Transactions,
+          category: 'TestCategory',
         },
       }),
     );
