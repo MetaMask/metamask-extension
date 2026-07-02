@@ -305,7 +305,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
           .build(),
       );
     },
-    [hdEntropyIndex, trackEvent],
+    [createEventBuilder, hdEntropyIndex, trackEvent],
   );
 
   useEffect(() => {
