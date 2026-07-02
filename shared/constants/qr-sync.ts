@@ -25,7 +25,11 @@ export const QR_SYNC_TERMINAL_PHASES = [
   QR_SYNC_PHASES.FAILED,
 ] as const;
 
-export const MWP_SESSION_REQUEST_EXPIRY_SECONDS = 60;
+export const QR_SYNC_TIMEOUT_MS = {
+  SYNC_OFFER_TIMEOUT: 5_000, // 5 seconds
+  SYNC_COMPLETION_TIMEOUT: 5_000, // 5 seconds
+  MWP_SESSION_TIMEOUT: 60_000, // 60 seconds
+} as const;
 
 export const QrSyncErrorCodes = {
   CHANNEL_INIT_FAILED: 'CHANNEL_INIT_FAILED',

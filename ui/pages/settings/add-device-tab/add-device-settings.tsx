@@ -79,7 +79,7 @@ const AddDeviceSettings = () => {
 
   const handleAddWallets = useCallback(
     async ({
-      entropyIds,
+      selectedAccountGroupIds,
       syncedAccountCount,
       syncedWalletCount,
     }: AddDeviceSyncRequest) => {
@@ -91,7 +91,7 @@ const AddDeviceSettings = () => {
 
       await submitRequestToBackground<void>('messengerCall', [
         'QrSyncController:syncAccounts',
-        [password, entropyIds],
+        [password, selectedAccountGroupIds],
       ]);
     },
     [password],

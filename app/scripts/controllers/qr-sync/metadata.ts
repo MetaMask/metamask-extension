@@ -46,13 +46,7 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
     usedInUi: false,
     includeInStateLogs: false,
   },
-  qrSyncSelectedAccountIds: {
-    persist: false,
-    includeInDebugSnapshot: false,
-    usedInUi: false,
-    includeInStateLogs: false,
-  },
-  qrSyncImportedAccountIds: {
+  qrSyncSelectedAccountGroupIds: {
     persist: false,
     includeInDebugSnapshot: false,
     usedInUi: false,
@@ -84,8 +78,7 @@ export function getDefaultQrSyncControllerState(): QrSyncControllerState {
     qrSyncUpdatedAt: null,
     qrSyncQrPayload: null,
     syncOffer: null,
-    qrSyncSelectedAccountIds: [],
-    qrSyncImportedAccountIds: [],
+    qrSyncSelectedAccountGroupIds: [],
     qrSyncError: null,
   };
 }
