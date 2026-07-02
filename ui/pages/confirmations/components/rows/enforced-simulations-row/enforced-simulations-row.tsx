@@ -101,16 +101,6 @@ function EnforcedSimulationsCheckbox({
 
   const isToggling = pendingEnabled !== null;
 
-  useEffect(() => {
-    if (pendingEnabled === null) {
-      return;
-    }
-
-    if (isEnabled === pendingEnabled) {
-      setPendingEnabled(null);
-    }
-  }, [isEnabled, pendingEnabled]);
-
   const handleToggle = useCallback(async () => {
     const targetEnabled = !isEnabled;
     setPendingEnabled(targetEnabled);
@@ -134,7 +124,9 @@ function EnforcedSimulationsCheckbox({
         transactionId,
         newContainerTypes,
       );
-    } catch {
+    } catch (error) {
+      console.error(error);
+    } finally {
       setPendingEnabled(null);
     }
   }, [containerTypes, isEnabled, transactionId]);
