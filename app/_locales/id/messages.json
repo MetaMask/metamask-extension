@@ -82,12 +82,6 @@
   "account": {
     "message": "Akun"
   },
-  "accountActivity": {
-    "message": "Aktivitas akun"
-  },
-  "accountActivityText": {
-    "message": "Pilih akun yang ingin mendapatkan notifikasi:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Masuk"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "dukungan pelanggan"
   },
-  "customizeYourNotifications": {
-    "message": "Sesuaikan notifikasi"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Aktifkan jenis notifikasi yang ingin diterima:"
-  },
   "dappConnections": {
     "message": "Koneksi Dapp"
   },
@@ -4412,9 +4400,6 @@
   "imported": {
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Termasuk"
   },
   "includesXTransactions": {
     "message": "Termasuk transaksi $1"
@@ -5873,9 +5858,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Terjadi kesalahan. Coba lagi."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Pantau terus segala yang terjadi di dompet Anda dengan notifikasi. Untuk menggunakan notifikasi, kami menggunakan profil untuk menyinkronkan beberapa pengaturan di seluruh perangkat Anda. $1 kami melindungi privasi Anda saat menggunakan fitur ini."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Pelajari caranya"
@@ -7542,9 +7524,6 @@
   },
   "proceedWithTransaction": {
     "message": "Saya tetap ingin melanjutkan"
-  },
-  "productAnnouncements": {
-    "message": "Pengumuman produk"
   },
   "provide": {
     "message": "Berikan"

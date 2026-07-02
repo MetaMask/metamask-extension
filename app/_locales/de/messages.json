@@ -82,12 +82,6 @@
   "account": {
     "message": "Konto"
   },
-  "accountActivity": {
-    "message": "Kontoaktivität"
-  },
-  "accountActivityText": {
-    "message": "Wählen Sie die Konten aus, über die Sie benachrichtigt werden möchten:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Anmelden"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "Kundendienst"
   },
-  "customizeYourNotifications": {
-    "message": "Passen Sie Ihre Benachrichtigungen an"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Schalten Sie die Arten von Benachrichtigungen ein, die Sie erhalten möchten:"
-  },
   "dappConnections": {
     "message": "dApp-Verbindungen"
   },
@@ -4408,9 +4396,6 @@
   "imported": {
     "message": "Importiert",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Beinhaltet"
   },
   "includesXTransactions": {
     "message": "Beinhaltet $1 Transaktionen"
@@ -5869,9 +5854,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Etwas ist schiefgelaufen! Bitte versuchen Sie es erneut."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Bleiben Sie mit Benachrichtigungen auf dem Laufenden darüber, was in Ihrer Wallet passiert. Zur Nutzung von Benachrichtigungen verwenden wir ein Profil, um einige Einstellungen auf Ihren Geräten zu synchronisieren. $1, wir schützen Ihre Privatsphäre bei der Nutzung dieser Funktion."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Erfahren Sie, wie es funktioniert"
@@ -7534,9 +7516,6 @@
   },
   "proceedWithTransaction": {
     "message": "Ich möchte dennoch fortfahren."
-  },
-  "productAnnouncements": {
-    "message": "Produktankündigungen"
   },
   "provide": {
     "message": "Bereitstellen"

@@ -82,12 +82,6 @@
   "account": {
     "message": "Conta"
   },
-  "accountActivity": {
-    "message": "Atividade da conta"
-  },
-  "accountActivityText": {
-    "message": "Selecione as contas das quais deseja receber notificações:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Fazer login"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "suporte ao cliente"
   },
-  "customizeYourNotifications": {
-    "message": "Personalize suas notificações"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Ative os tipos de notificações que você deseja receber:"
-  },
   "dappConnections": {
     "message": "Conexões do dapp"
   },
@@ -4408,9 +4396,6 @@
   "imported": {
     "message": "Importada",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Inclui"
   },
   "includesXTransactions": {
     "message": "Inclui $1 transações"
@@ -5869,9 +5854,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Algo deu errado. Tente novamente."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fique por dentro de tudo o que acontece em sua carteira com as notificações. Para usar as notificações, usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1 protegemos sua privacidade durante o uso deste recurso."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Saiba como"
@@ -7534,9 +7516,6 @@
   },
   "proceedWithTransaction": {
     "message": "Quero prosseguir mesmo assim"
-  },
-  "productAnnouncements": {
-    "message": "Comunicados sobre produtos"
   },
   "provide": {
     "message": "Fornecer"

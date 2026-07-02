@@ -898,12 +898,31 @@
         "eslint>json-stable-stringify-without-jsonify": true
       }
     },
+    "@metamask/authenticated-user-storage": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
+        "@metamask/superstruct": true
+      }
+    },
     "@metamask/base-controller": {
       "globals": {
         "console.error": true
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/react-data-query>@metamask/base-data-service": {
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/messenger": true,
+        "@metamask/utils": true,
+        "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": true,
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/bridge-controller": {
@@ -1109,24 +1128,6 @@
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
-    "@metamask/notification-services-controller>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
@@ -1904,8 +1905,9 @@
       },
       "packages": {
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
+        "@metamask/authenticated-user-storage": true,
         "@metamask/base-controller": true,
-        "@metamask/notification-services-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
@@ -2566,11 +2568,15 @@
     },
     "@metamask/wallet": {
       "packages": {
+        "@metamask/accounts-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
+        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
+        "@metamask/network-controller": true,
+        "@metamask/remote-feature-flag-controller": true,
         "@metamask/storage-service": true,
         "@metamask/utils": true
       }
@@ -3374,6 +3380,18 @@
       "packages": {
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": true,
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
+      }
+    },
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setTimeout": true
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {

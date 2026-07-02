@@ -434,7 +434,7 @@ export default function PrivacySettings() {
                         {t('onboardingAdvancedPrivacyNetworkDescription', [
                           <a
                             href="https://consensys.io/privacy-policy/"
-                            key="link"
+                            key="privacy-policy-link"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -442,7 +442,7 @@ export default function PrivacySettings() {
                           </a>,
                           <a
                             href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}
-                            key="link"
+                            key="add-solana-accounts-link"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
