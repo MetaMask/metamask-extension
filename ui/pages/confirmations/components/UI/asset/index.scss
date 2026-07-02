@@ -5,4 +5,13 @@
     background-color: var(--color-background-hover) !important;
     cursor: pointer;
   }
+
+  &__nft-fallback {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+  }
 }
