@@ -4,12 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { UITrackEventMethod } from '../../../contexts/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import {
-  createEventBuilder,
-  type AnalyticsEvent,
-} from '../../../../shared/lib/analytics/create-event-builder';
 import {
   getMultichainAccountUrl,
   getMultichainBlockExplorerUrl,
@@ -21,6 +16,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
 import {
@@ -56,48 +53,28 @@ export type ViewExplorerMenuItemProps = {
   account: InternalAccount;
 };
 
-type BlockExplorerTrackEvent =
-  | UITrackEventMethod
-  | ((built: AnalyticsEvent) => void);
-
 export const openBlockExplorer = (
   addressLink: string,
   metricsLocation: string,
-  trackEvent: BlockExplorerTrackEvent,
+  trackEvent: (
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ) => Promise<void>,
   closeMenu?: () => void,
 ) => {
-  const properties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    link_type: MetaMetricsEventLinkType.AccountTracker,
-    location: metricsLocation,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    url_domain: getURLHostName(addressLink),
-  };
-  const legacyPayload = {
+  trackEvent({
     event: MetaMetricsEventName.ExternalLinkClicked,
     category: MetaMetricsEventCategory.Navigation,
-    properties,
-  };
-  const built = createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
-    .addCategory(MetaMetricsEventCategory.Navigation)
-    .addProperties(properties)
-    .build();
-  try {
-    const legacyResult = (trackEvent as UITrackEventMethod)(legacyPayload);
-    if (
-      typeof legacyResult === 'object' &&
-      legacyResult !== null &&
-      'then' in legacyResult
-    ) {
-      legacyResult.catch(() => undefined);
-    } else {
-      (trackEvent as (built: AnalyticsEvent) => void)(built);
-    }
-  } catch {
-    // Analytics must not block navigation.
-  }
+    properties: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      link_type: MetaMetricsEventLinkType.AccountTracker,
+      location: metricsLocation,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      url_domain: getURLHostName(addressLink),
+    },
+  });
 
   global.platform.openTab({
     url: addressLink,
@@ -112,7 +89,7 @@ export const ViewExplorerMenuItem = ({
   account,
 }: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
 
   const multichainNetwork = useMultichainSelector(
@@ -177,7 +154,13 @@ export const ViewExplorerMenuItem = ({
           : openBlockExplorer(
               actualAddressLink,
               metricsLocation,
-              trackEvent,
+              (payload) =>
+                trackEvent(
+                  createEventBuilder(payload.event)
+                    .addCategory(payload.category)
+                    .addProperties(payload.properties ?? {})
+                    .build(),
+                ),
               closeMenu,
             );
 

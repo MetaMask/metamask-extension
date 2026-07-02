@@ -68,6 +68,7 @@ import {
 } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
+import { getFeaturedEvmNetworks } from '../../../selectors/config-registry/config-registry';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -208,6 +209,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
+  const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
   const canSelectNetwork: boolean =
     Boolean(selectedTabOrigin) &&
     Boolean(domains[selectedTabOrigin]) &&
@@ -283,7 +285,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   const featuredNetworksNotYetEnabled = useMemo(() => {
     // Filter out networks that are already enabled
-    const availableNetworks = FEATURED_RPCS.filter(
+    const availableNetworks = featuredNetworksBaseList.filter(
       ({ chainId }) => !evmNetworks[chainId],
     );
 
@@ -295,7 +297,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
     // Sort alphabetically
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
-  }, [evmNetworks, blacklistedChainIds]);
+  }, [evmNetworks, blacklistedChainIds, featuredNetworksBaseList]);
 
   // Searches networks by user input
   const [searchQuery, setSearchQuery] = useState('');
