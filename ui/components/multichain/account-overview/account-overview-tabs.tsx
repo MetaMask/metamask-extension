@@ -13,12 +13,14 @@ import {
 } from '@metamask/design-system-react';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
   AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
@@ -33,7 +35,6 @@ import {
   getIsPerpsExperienceAvailable,
   getPerpsTabBadgeSeen,
 } from '../../../selectors/perps';
-import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import {
   detectNfts,
   setDefaultHomeActiveTabName,
@@ -158,10 +159,6 @@ export const AccountOverviewTabs = ({
     }
   }, [showPerpsTabBadge, perpsIsEffectiveActiveTab, dispatch]);
 
-  const networkFilterForMetrics = useSelector(
-    selectEnabledNetworksAsCaipChainIds,
-  );
-
   // EVM token-balance polling is handled by TokenBalancesPoller (rendered below).
   // Keeping it in an isolated child prevents balance updates from re-rendering
   // this entire subtree every ~30 s.
@@ -179,42 +176,22 @@ export const AccountOverviewTabs = ({
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      // For ActivityListV3, ActivityScreenOpened is deferred to the list
-      // component so it can include accurate is_empty / pending_transactions
-      // after all data sources have loaded. For ActivityListV2 there is no
-      // equivalent deferred tracking, so fire immediately on click.
-      if (
-        tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
-        (tabName !== AccountOverviewTabKey.Activity ||
-          !isActivityListRedesignEnabled)
-      ) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Home,
-          event:
-            ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
-              tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
-            ],
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            network_filter: networkFilterForMetrics,
-          },
-        });
-      }
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.HomeSubtabClicked,
+        properties: {
+          name: tabName,
+        },
+      });
+
       if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
         trace({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
         });
       }
     },
-    [
-      activeTabKey,
-      isActivityListRedesignEnabled,
-      networkFilterForMetrics,
-      setActiveTabKey,
-      dispatch,
-      selectedChainIds,
-      trackEvent,
-    ],
+    [activeTabKey, setActiveTabKey, dispatch, selectedChainIds, trackEvent],
   );
 
   const onClickAsset = useCallback(

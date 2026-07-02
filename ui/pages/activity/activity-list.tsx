@@ -25,7 +25,7 @@ import {
   groupActivityListItems,
   type ActivityListFilter,
 } from './helpers';
-import { useActivityScreenOpened } from './useActivityScreenOpened';
+import { useActivityScreenViewed } from './useActivityScreenViewed';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
@@ -66,7 +66,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     [evmItems, groupedItems],
   );
 
-  useActivityScreenOpened({
+  useActivityScreenViewed({
     filter,
     isSettled: networks !== null && !isInitialLoading,
     isEmpty: groupedItems.length === 0,

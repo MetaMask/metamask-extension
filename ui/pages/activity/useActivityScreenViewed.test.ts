@@ -7,7 +7,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { useActivityScreenOpened } from './useActivityScreenOpened';
+import { useActivityScreenViewed } from './useActivityScreenViewed';
 import type { ActivityListFilter } from './helpers';
 
 const mockTrackEvent = jest.fn();
@@ -48,14 +48,14 @@ const defaultProps = {
   pendingLength: 0,
 };
 
-describe('useActivityScreenOpened', () => {
+describe('useActivityScreenViewed', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('does not fire when isSettled is false', () => {
     renderHook(
-      () => useActivityScreenOpened({ ...defaultProps, isSettled: false }),
+      () => useActivityScreenViewed({ ...defaultProps, isSettled: false }),
       { wrapper: makeWrapper() },
     );
 
@@ -63,14 +63,14 @@ describe('useActivityScreenOpened', () => {
   });
 
   it('fires once with is_empty: true when the list has no items', () => {
-    renderHook(() => useActivityScreenOpened(defaultProps), {
+    renderHook(() => useActivityScreenViewed(defaultProps), {
       wrapper: makeWrapper(),
     });
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith({
       category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.ActivityScreenOpened,
+      event: MetaMetricsEventName.ActivityScreenViewed,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         network_filter: ['eip155:1'],
@@ -85,7 +85,7 @@ describe('useActivityScreenOpened', () => {
   it('fires with correct properties when items are present', () => {
     renderHook(
       () =>
-        useActivityScreenOpened({
+        useActivityScreenViewed({
           ...defaultProps,
           isEmpty: false,
           pendingLength: 3,
@@ -109,7 +109,7 @@ describe('useActivityScreenOpened', () => {
     let isSettled = true;
 
     const { rerender } = renderHook(
-      () => useActivityScreenOpened({ ...defaultProps, isSettled }),
+      () => useActivityScreenViewed({ ...defaultProps, isSettled }),
       { wrapper: makeWrapper() },
     );
 
@@ -125,7 +125,7 @@ describe('useActivityScreenOpened', () => {
   it('does not fire when a filter prop is provided (embedded view)', () => {
     renderHook(
       () =>
-        useActivityScreenOpened({
+        useActivityScreenViewed({
           ...defaultProps,
           filter: { networks: ['eip155:1'] },
         }),

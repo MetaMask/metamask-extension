@@ -8,7 +8,7 @@ import {
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListFilter } from './helpers';
 
-type UseActivityScreenOpenedProps = {
+type UseActivityScreenViewedProps = {
   filter: ActivityListFilter | undefined;
   isSettled: boolean;
   isEmpty: boolean;
@@ -16,7 +16,7 @@ type UseActivityScreenOpenedProps = {
 };
 
 /**
- * Fires the ActivityScreenOpened metric once, after the activity list has
+ * Fires the ActivityScreenViewed metric once, after the activity list has
  * settled (networks initialised + initial load complete).
  * Does nothing when `filter` is provided so it doesn't fire on asset detail view.
  * @param options0
@@ -25,12 +25,12 @@ type UseActivityScreenOpenedProps = {
  * @param options0.isEmpty
  * @param options0.pendingLength
  */
-export const useActivityScreenOpened = ({
+export const useActivityScreenViewed = ({
   filter,
   isSettled,
   isEmpty,
   pendingLength,
-}: UseActivityScreenOpenedProps) => {
+}: UseActivityScreenViewedProps) => {
   const { trackEvent } = useContext(MetaMetricsContext);
   const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
 
@@ -55,7 +55,7 @@ export const useActivityScreenOpened = ({
 
     trackEvent({
       category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.ActivityScreenOpened,
+      event: MetaMetricsEventName.ActivityScreenViewed,
       properties: {
         /* eslint-disable @typescript-eslint/naming-convention */
         network_filter: networks,
