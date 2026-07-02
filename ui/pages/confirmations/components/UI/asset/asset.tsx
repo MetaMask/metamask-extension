@@ -66,19 +66,19 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingLeft={4}
       paddingRight={4}
     >
-      <Box marginRight={4} display={Display.Flex} style={{ minWidth: 32 }}>
-        <BadgeWrapper
-          badge={
-            nftData.chainId ? (
-              <AvatarNetwork
-                size={AvatarNetworkSize.Xs}
-                name={nftData.networkName ?? ''}
-                src={nftData.networkImage}
-              />
-            ) : null
-          }
-        >
-          {image || collection?.imageUrl ? (
+      <Box marginRight={4} display={Display.Flex} style={{ minWidth: 32, minHeight: 32 }}>
+        {image || collection?.imageUrl ? (
+          <BadgeWrapper
+            badge={
+              nftData.chainId ? (
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Xs}
+                  name={nftData.networkName ?? ''}
+                  src={nftData.networkImage}
+                />
+              ) : null
+            }
+          >
             <Box
               as="img"
               src={nftItemSrc || (collection?.imageUrl as string)}
@@ -90,8 +90,8 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
-        </BadgeWrapper>
+          </BadgeWrapper>
+        ) : null}
       </Box>
       <Box
         display={Display.Flex}
