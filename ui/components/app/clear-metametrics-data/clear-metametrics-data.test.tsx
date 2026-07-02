@@ -7,6 +7,21 @@ import * as Actions from '../../../store/actions';
 import { DELETE_METAMETRICS_DATA_MODAL_CLOSE } from '../../../store/actionConstants';
 import ClearMetaMetricsData from './clear-metametrics-data';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockCloseDeleteMetaMetricsDataModal = jest.fn().mockImplementation(() => {
   return {
     type: DELETE_METAMETRICS_DATA_MODAL_CLOSE,
@@ -14,6 +29,7 @@ const mockCloseDeleteMetaMetricsDataModal = jest.fn().mockImplementation(() => {
 });
 
 jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
   createMetaMetricsDataDeletionTask: jest.fn(),
 }));
 
