@@ -53,11 +53,40 @@ describe('SelectHardwareAccountsPage', () => {
       ).toBeInTheDocument();
     });
 
+    it('keeps the page title outside the scrollable accounts list', () => {
+      renderPage();
+
+      const scrollRegion = screen.getByTestId(
+        'select-hardware-accounts-page-accounts-scroll',
+      );
+      const title = screen.getByTestId('select-hardware-accounts-page-title');
+
+      expect(scrollRegion).not.toContainElement(title);
+      expect(scrollRegion).toHaveClass('overflow-y-auto');
+    });
+
     it('renders no account cards when accounts is empty', () => {
       renderPage({ accounts: [] });
 
       expect(
         screen.queryByTestId('hardware-account-card'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('hides balances when accounts have no balance data', () => {
+      renderPage({
+        accounts: createMockHardwareAccounts(2).map((account) => ({
+          ...account,
+          totalBalance: undefined,
+          addresses: account.addresses.map(({ balance, ...address }) => address),
+        })),
+      });
+
+      expect(
+        screen.queryByTestId('hardware-account-card-total-balance'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('hardware-account-address-row-balance'),
       ).not.toBeInTheDocument();
     });
   });
@@ -196,7 +225,18 @@ describe('SelectHardwareAccountsPage', () => {
       ).toBeEnabled();
     });
 
-    it('calls onContinue with selected account ids', () => {
+    it('disables continue while unlock is in progress', () => {
+      renderPage({
+        selectedAccountIds: ['account-0'],
+        isContinuing: true,
+      });
+
+      expect(
+        screen.getByTestId('select-hardware-accounts-page-continue-button'),
+      ).toBeDisabled();
+    });
+
+    it('calls onContinue when the continue button is clicked', () => {
       const { props } = renderPage({
         selectedAccountIds: ['account-0', 'account-1'],
       });
@@ -206,7 +246,6 @@ describe('SelectHardwareAccountsPage', () => {
       );
 
       expect(props.onContinue).toHaveBeenCalledTimes(1);
-      expect(props.onContinue).toHaveBeenCalledWith(['account-0', 'account-1']);
     });
 
     it('calls onForgetDevice when the forget device button is clicked', () => {

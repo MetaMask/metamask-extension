@@ -13,29 +13,27 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Content,
-  Footer,
-  Page,
-} from '../../../../components/multichain/pages/page';
+import { Footer, Page } from '../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { HardwareAccountCard } from '../../../../components/multichain-accounts/hardware-account-card';
 import type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';
 
 /**
  * Lets the user select hardware wallet accounts to import.
- * @param options0
- * @param options0.accounts
- * @param options0.selectedAccountIds
- * @param options0.onAccountSelectionChange
- * @param options0.onBack
- * @param options0.onShowMore
- * @param options0.onContinue
- * @param options0.onForgetDevice
- * @param options0.hasMoreAccounts
- * @param options0.isLoadingMore
- * @param options0.onSettingsClick
- * @param options0.showSettingsButton
+ *
+ * @param options - Component props.
+ * @param options.accounts - Hardware wallet accounts to display.
+ * @param options.selectedAccountIds - Currently selected account card ids.
+ * @param options.onAccountSelectionChange - Called when the user changes account selection.
+ * @param options.onBack - Called when the user navigates back.
+ * @param options.onShowMore - Called when the user requests more accounts.
+ * @param options.onContinue - Called when the user confirms account selection.
+ * @param options.onForgetDevice - Called when the user disconnects the device.
+ * @param options.hasMoreAccounts - Whether the show more button is displayed.
+ * @param options.isLoadingMore - Whether a load-more request is in progress.
+ * @param options.isContinuing - Whether account import is in progress.
+ * @param options.onSettingsClick - Called when the user opens HD path settings.
+ * @param options.showSettingsButton - Whether the settings button is displayed.
  */
 export const SelectHardwareAccountsPage = ({
   accounts,
@@ -47,6 +45,7 @@ export const SelectHardwareAccountsPage = ({
   onForgetDevice,
   hasMoreAccounts = false,
   isLoadingMore = false,
+  isContinuing = false,
   onSettingsClick,
   showSettingsButton = Boolean(onSettingsClick),
 }: SelectHardwareAccountsPageProps) => {
@@ -64,19 +63,15 @@ export const SelectHardwareAccountsPage = ({
     [onAccountSelectionChange, selectedAccountIds],
   );
 
-  const handleContinue = useCallback(() => {
-    onContinue(selectedAccountIds);
-  }, [onContinue, selectedAccountIds]);
-
-  const isContinueDisabled = selectedAccountIds.length === 0;
+  const isContinueDisabled = selectedAccountIds.length === 0 || isContinuing;
 
   return (
-    <Page className="mx-auto w-full max-w-[460px] sm:max-w-[520px]">
+    <Page className="mx-auto h-full min-h-0 w-full max-w-[460px] overflow-hidden sm:max-w-[520px]">
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Between}
-        className="min-h-14 px-1 py-2"
+        className="min-h-14 shrink-0 px-1 py-2"
       >
         <ButtonIcon
           size={ButtonIconSize.Md}
@@ -97,14 +92,23 @@ export const SelectHardwareAccountsPage = ({
           <Box className="w-10 shrink-0" />
         )}
       </Box>
-      <Content className="flex flex-col gap-6">
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        className="min-h-0 w-full flex-1 gap-6 overflow-hidden px-4 pb-4"
+      >
         <Text
           variant={TextVariant.HeadingLg}
-          className="md:text-s-heading-lg md:leading-s-heading-lg md:tracking-s-heading-lg"
+          className="shrink-0 md:text-s-heading-lg md:leading-s-heading-lg md:tracking-s-heading-lg"
+          data-testid="select-hardware-accounts-page-title"
         >
           {t('selectAnAccount')}
         </Text>
-        <Box flexDirection={BoxFlexDirection.Column} gap={3} className="w-full">
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={3}
+          className="min-h-0 w-full flex-1 overflow-y-auto"
+          data-testid="select-hardware-accounts-page-accounts-scroll"
+        >
           {accounts.map((account) => (
             <HardwareAccountCard
               key={account.id}
@@ -126,8 +130,8 @@ export const SelectHardwareAccountsPage = ({
             </Button>
           ) : null}
         </Box>
-      </Content>
-      <Footer>
+      </Box>
+      <Footer className="shrink-0">
         <Box flexDirection={BoxFlexDirection.Row} gap={4} className="w-full">
           <Button
             variant={ButtonVariant.Secondary}
@@ -143,7 +147,8 @@ export const SelectHardwareAccountsPage = ({
             size={ButtonSize.Lg}
             isFullWidth
             isDisabled={isContinueDisabled}
-            onClick={handleContinue}
+            isLoading={isContinuing}
+            onClick={onContinue}
             data-testid="select-hardware-accounts-page-continue-button"
           >
             {t('continue')}

@@ -10,7 +10,7 @@ const renderRow = (address: HardwareWalletAccountAddress) =>
 
 describe('HardwareAccountAddressRow', () => {
   describe('rendering', () => {
-    it('renders network name, chain icon, truncated address, and balance', () => {
+    it('renders network name, chain icon, and truncated address', () => {
       renderRow(MOCK_ETHEREUM_HARDWARE_ADDRESS);
 
       expect(
@@ -18,7 +18,25 @@ describe('HardwareAccountAddressRow', () => {
       ).toBeInTheDocument();
       expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
       expect(screen.getByText('0x091...b272')).toBeInTheDocument();
-      expect(screen.getByText('$120.00')).toBeInTheDocument();
+    });
+
+    it('renders balance when balance is provided', () => {
+      renderRow(MOCK_ETHEREUM_HARDWARE_ADDRESS);
+
+      expect(
+        screen.getByTestId('hardware-account-address-row-balance'),
+      ).toHaveTextContent('$120.00');
+    });
+
+    it('hides balance when balance is not provided', () => {
+      renderRow({
+        ...MOCK_ETHEREUM_HARDWARE_ADDRESS,
+        balance: undefined,
+      });
+
+      expect(
+        screen.queryByTestId('hardware-account-address-row-balance'),
+      ).not.toBeInTheDocument();
     });
 
     it('renders address type badge when addressType is provided', () => {
