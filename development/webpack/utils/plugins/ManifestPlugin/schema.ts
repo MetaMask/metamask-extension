@@ -1,4 +1,4 @@
-import { ExtendedJSONSchema } from 'json-schema-to-ts';
+import type { ExtendedJSONSchema } from 'json-schema-to-ts';
 import { Browsers } from '../../helpers';
 import {
   DEFAULT_ZIP_MTIME,
