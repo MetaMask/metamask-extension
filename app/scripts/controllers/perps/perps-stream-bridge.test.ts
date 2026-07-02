@@ -1475,6 +1475,63 @@ describe('PerpsStreamBridge', () => {
       expect(emit).not.toHaveBeenCalledWith('markets', expect.anything());
     });
 
+    it('ignores a stale terminal refetch settling from a prior generation', async () => {
+      const controller = createMockController();
+      const resolvers: ((value: unknown) => void)[] = [];
+      controller.getMarketDataWithPrices.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolvers.push(resolve);
+          }) as never,
+      );
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => true,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const makeState = (timestamp: number) => ({
+        activeProvider: 'hyperliquid',
+        isTestnet: false,
+        cachedMarketDataByProvider: {
+          'hyperliquid:mainnet': { data: [{ symbol: 'ETH' }], timestamp },
+        },
+      });
+
+      const firstCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      // Generation 0: start a Terminal refetch that stays pending.
+      firstCallback(makeState(1000), []);
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+
+      // Tear down and start a fresh generation with its own in-flight refetch.
+      bridge.destroy();
+      await bridge.bridgeApi().perpsInit();
+      const secondCallback = onControllerStateChange.mock.calls[1][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+      secondCallback(makeState(2000), []);
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(2);
+
+      // The prior generation's fetch settles late. Its finally block must not
+      // clear the current generation's in-flight flag.
+      resolvers[0]?.([{ symbol: 'STALE' }]);
+      await new Promise((resolve) => setImmediate(resolve));
+
+      // A new bump while the current fetch is still in flight must coalesce into
+      // a single pending follow-up, not spawn an extra concurrent Terminal REST
+      // call. If the stale finally had cleared in-flight, this would start a
+      // third concurrent fetch.
+      secondCallback(makeState(3000), []);
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(2);
+    });
+
     it('skips emit when market data is empty', async () => {
       const controller = createMockController();
       const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());

@@ -561,10 +561,18 @@ export class PerpsStreamBridge {
         );
       })
       .finally(() => {
+        // destroy() (and possibly a fresh init + refetch) may have fired during
+        // the await. If so, this settled fetch belongs to a prior bridge
+        // generation and must not touch the current generation's coordination
+        // state: clearing #terminalMarketRefetchInFlight here could let an extra
+        // concurrent Terminal REST call slip past the serializer, and clearing
+        // #terminalMarketRefetchPending could drop a queued follow-up, delaying
+        // the newest enriched market update until the next preload bump.
+        if (this.#destroyGeneration !== generationAtStart) {
+          return;
+        }
         this.#terminalMarketRefetchInFlight = false;
-        const shouldRerun =
-          this.#terminalMarketRefetchPending &&
-          this.#destroyGeneration === generationAtStart;
+        const shouldRerun = this.#terminalMarketRefetchPending;
         this.#terminalMarketRefetchPending = false;
         if (shouldRerun) {
           this.#refetchTerminalMarketData();
