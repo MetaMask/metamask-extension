@@ -77,6 +77,12 @@ import {
 } from './selectors';
 import { toBridgeToken } from './utils';
 
+// Source token asset ID for the `mockErc20Erc20Quotes` fixtures (USDC on Optimism).
+// `selectBridgeQuotesWithMetadata` derives `sentAmount`/`cost` from each quote's
+// own source token exchange rate, so tests must provide a rate for this asset.
+const MOCK_ERC20_ERC20_SRC_ASSET_ID =
+  'eip155:10/erc20:0x0b2c639c533813f4aa9d7837caf62653d097ff85';
+
 describe('Bridge selectors', () => {
   beforeAll(() => {
     setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
@@ -899,6 +905,12 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: {
+            [MOCK_ERC20_ERC20_SRC_ASSET_ID]: {
+              exchangeRate: '1',
+              usdExchangeRate: '1',
+            },
+          },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
@@ -977,6 +989,12 @@ describe('Bridge selectors', () => {
             srcTokenAddress: zeroAddress(),
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
+          },
+          assetExchangeRates: {
+            [MOCK_ERC20_ERC20_SRC_ASSET_ID]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
@@ -1072,6 +1090,12 @@ describe('Bridge selectors', () => {
             srcTokenAddress: zeroAddress(),
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
+          },
+          assetExchangeRates: {
+            [MOCK_ERC20_ERC20_SRC_ASSET_ID]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 1,
@@ -1270,6 +1294,12 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: {
+            [MOCK_ERC20_ERC20_SRC_ASSET_ID]: {
+              exchangeRate: '1',
+              usdExchangeRate: '1',
+            },
+          },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
@@ -1358,6 +1388,12 @@ describe('Bridge selectors', () => {
             srcTokenAddress: zeroAddress(),
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
+          },
+          assetExchangeRates: {
+            [MOCK_ERC20_ERC20_SRC_ASSET_ID]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
@@ -1461,6 +1497,12 @@ describe('Bridge selectors', () => {
             srcTokenAddress: zeroAddress(),
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
+          },
+          assetExchangeRates: {
+            [MOCK_ERC20_ERC20_SRC_ASSET_ID]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 1,
@@ -1597,6 +1639,12 @@ describe('Bridge selectors', () => {
             srcTokenAddress: zeroAddress(),
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
+          },
+          assetExchangeRates: {
+            [MOCK_ERC20_ERC20_SRC_ASSET_ID]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
           },
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
