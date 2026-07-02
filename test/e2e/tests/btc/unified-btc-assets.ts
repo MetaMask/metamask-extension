@@ -1,10 +1,17 @@
 import { merge } from 'lodash';
 import {
+  AccountGroupType,
+  AccountWalletType,
+} from '@metamask/account-api';
+import {
   DEFAULT_BTC_ADDRESS,
   DEFAULT_BTC_BALANCE,
   DEFAULT_BTC_CONVERSION_RATE,
 } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import {
+  BITCOIN_WALLET_SNAP_ID,
+} from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { BTC_CHAIN_ID } from './mocks/bridge';
 
 /** Deterministic Bitcoin snap account id for the default E2E SRP (BIP84 /0). */
@@ -12,7 +19,6 @@ export const BTC_ACCOUNT_ID = '75ad4470-156b-4f7f-b0a5-ffe6cd114ac9';
 
 const BTC_ENTROPY_SOURCE = '01KGPGYE2JJGMXDJPEVXKPJ1JG';
 const BTC_DERIVATION_PATH = "m/84'/0'/0'/0/0";
-const BITCOIN_WALLET_SNAP_ID = 'npm:@metamask/bitcoin-wallet-snap';
 
 const BTC_NATIVE_CAIP_ASSET_ID = `${BTC_CHAIN_ID}/slip44:0`;
 
@@ -140,12 +146,12 @@ export function buildBtcSwapFixtures(
         wallets: {
           [DEFAULT_ENTROPY_WALLET_ID]: {
             id: DEFAULT_ENTROPY_WALLET_ID,
-            type: 'entropy',
+            type: AccountWalletType.Entropy,
             status: 'ready',
             groups: {
               [DEFAULT_ACCOUNT_GROUP_ID]: {
                 id: DEFAULT_ACCOUNT_GROUP_ID,
-                type: 'multichain-account',
+                type: AccountGroupType.MultichainAccount,
                 accounts: [
                   DEFAULT_EVM_ACCOUNT_ID,
                   DEFAULT_SOLANA_ACCOUNT_ID,
@@ -170,6 +176,7 @@ export function buildBtcSwapFixtures(
     })
     .withAccountsController({
       internalAccounts: {
+        selectedAccount: DEFAULT_EVM_ACCOUNT_ID,
         accounts: {
           [BTC_ACCOUNT_ID]: {
             address: DEFAULT_BTC_ADDRESS,
@@ -182,9 +189,7 @@ export function buildBtcSwapFixtures(
               lastSelected: 0,
               name: '',
               snap: {
-                enabled: true,
                 id: BITCOIN_WALLET_SNAP_ID,
-                name: 'Bitcoin',
               },
             },
             methods: [...BTC_ACCOUNT_METHODS],

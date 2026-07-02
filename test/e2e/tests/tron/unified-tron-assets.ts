@@ -1,5 +1,10 @@
 import { merge } from 'lodash';
+import {
+  AccountGroupType,
+  AccountWalletType,
+} from '@metamask/account-api';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { TRON_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/tron-wallet-snap';
 import {
   TRON_ACCOUNT_ADDRESS,
   TRON_CHAIN_ID,
@@ -12,7 +17,6 @@ export const TRON_ACCOUNT_ID = 'c8f3a2e1-4d5b-6c7a-8e9f-0a1b2c3d4e5f';
 
 const TRON_ENTROPY_SOURCE = '01KGPGYE2JJGMXDJPEVXKPJ1JG';
 const TRON_DERIVATION_PATH = "m/44'/195'/0'/0/0";
-const TRON_WALLET_SNAP_ID = 'npm:@metamask/tron-wallet-snap';
 
 const TRON_NATIVE_CAIP_ASSET_ID = `${TRON_CHAIN_ID}/slip44:195`;
 const TRON_HTX_CAIP_ASSET_ID =
@@ -228,12 +232,12 @@ export function buildTronFixtures(
         wallets: {
           [DEFAULT_ENTROPY_WALLET_ID]: {
             id: DEFAULT_ENTROPY_WALLET_ID,
-            type: 'entropy',
+            type: AccountWalletType.Entropy,
             status: 'ready',
             groups: {
               [DEFAULT_ACCOUNT_GROUP_ID]: {
                 id: DEFAULT_ACCOUNT_GROUP_ID,
-                type: 'multichain-account',
+                type: AccountGroupType.MultichainAccount,
                 accounts: [
                   DEFAULT_EVM_ACCOUNT_ID,
                   DEFAULT_SOLANA_ACCOUNT_ID,
@@ -258,6 +262,7 @@ export function buildTronFixtures(
     })
     .withAccountsController({
       internalAccounts: {
+        selectedAccount: DEFAULT_EVM_ACCOUNT_ID,
         accounts: {
           [TRON_ACCOUNT_ID]: {
             address: TRON_ACCOUNT_ADDRESS,
@@ -270,9 +275,7 @@ export function buildTronFixtures(
               lastSelected: 0,
               name: '',
               snap: {
-                enabled: true,
                 id: TRON_WALLET_SNAP_ID,
-                name: 'Tron',
               },
             },
             methods: [...TRON_ACCOUNT_METHODS],
