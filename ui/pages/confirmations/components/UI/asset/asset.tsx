@@ -78,19 +78,41 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
             ) : null
           }
         >
-          {image || collection?.imageUrl ? (
-            <Box
-              as="img"
-              src={nftItemSrc || (collection?.imageUrl as string)}
-              alt={name}
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                objectFit: 'cover',
-              }}
-            />
-          ) : null}
+          <Box
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              minWidth: 32,
+              minHeight: 32,
+            }}
+          >
+            {(image || collection?.imageUrl) ? (
+              <Box
+                as="img"
+                src={nftItemSrc || (collection?.imageUrl as string)}
+                alt={name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 8,
+                  objectFit: 'cover',
+                }}
+              />
+            ) : (
+              <Box
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 8,
+                  backgroundColor: 'var(--color-background-alternative)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              />
+            )}
+          </Box>
         </BadgeWrapper>
       </Box>
       <Box
