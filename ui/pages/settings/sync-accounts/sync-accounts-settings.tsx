@@ -98,7 +98,7 @@ const SyncAccountsSettings = () => {
       case QR_SYNC_PHASES.DISPLAYING_QR:
         return <QrCodeScan />;
       case QR_SYNC_PHASES.AWAITING_OTP_INPUT:
-        return <EnterVerificationCode />;
+        return <EnterVerificationCode onRestart={handleRetry} />;
       case QR_SYNC_PHASES.AWAITING_SYNC_OFFER:
         return (
           <LoadingStep
