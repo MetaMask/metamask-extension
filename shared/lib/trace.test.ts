@@ -421,6 +421,28 @@ describe('Trace', () => {
       expect(getActiveSpanMock).not.toHaveBeenCalled();
     });
 
+    it('does not inherit from active span when rooted explicitly', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, root: true }, () => true);
+
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: null,
+          forceTransaction: undefined,
+        }),
+        expect.any(Function),
+      );
+    });
+
     it('uses null parentSpan when no active span and no parentContext', () => {
       getActiveSpanMock.mockReturnValue(undefined);
 

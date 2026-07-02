@@ -52,7 +52,7 @@ export enum TraceName {
   LoadCollectibles = 'Load Collectibles',
   GetAssetHistoricalPrices = 'Get Asset Historical Prices',
   OnFinishedTransaction = 'On Finished Transaction',
-  AccountSyncFull = 'Account Sync Full',
+  AccountSyncFull = 'Multichain Account Syncing - Full',
   AccountSyncSaveIndividual = 'Account Sync Save Individual',
   ContactSyncFull = 'Contact Sync Full',
   ContactSyncDeleteRemote = 'Contact Sync Delete Remote',
@@ -200,6 +200,12 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * Whether this trace should start a new root trace instead of inheriting
+   * the currently active Sentry span.
+   */
+  root?: boolean;
 };
 
 /**
@@ -555,7 +561,14 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    root,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
@@ -564,7 +577,7 @@ function startSpan<T>(
   // forceTransaction preserves transaction-level visibility for monitoring while
   // linking to the auto-instrumentation hierarchy.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!root && !parentSpan && !parentContext) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
