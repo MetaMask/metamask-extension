@@ -10,7 +10,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
@@ -48,29 +47,17 @@ export const persistenceManager = new PersistenceManager({ localStore })
     );
   })
   .on('splitStateMigrationSucceeded', (payload) => {
-    const builtEvent = createEventBuilder(
-      MetaMetricsEventName.StateMigrationSucceeded,
-    )
-      .addCategory(MetaMetricsEventCategory.StateMigration)
-      .build();
-
     trackEarlySegmentEvent({
       state: payload.state,
-      event: builtEvent.name,
-      category: builtEvent.properties.category,
+      event: MetaMetricsEventName.StateMigrationSucceeded,
+      category: MetaMetricsEventCategory.StateMigration,
     });
   })
   .on('splitStateMigrationFailed', (payload) => {
-    const builtEvent = createEventBuilder(
-      MetaMetricsEventName.StateMigrationFailed,
-    )
-      .addCategory(MetaMetricsEventCategory.StateMigration)
-      .build();
-
     trackEarlySegmentEvent({
       state: payload.state,
-      event: builtEvent.name,
-      category: builtEvent.properties.category,
+      event: MetaMetricsEventName.StateMigrationFailed,
+      category: MetaMetricsEventCategory.StateMigration,
     });
   });
 
