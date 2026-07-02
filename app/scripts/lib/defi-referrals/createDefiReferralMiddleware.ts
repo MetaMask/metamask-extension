@@ -8,12 +8,12 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import log from 'loglevel';
-import { SECOND } from '../../../shared/constants/time';
+import { SECOND } from '../../../../shared/constants/time';
 import {
   getPartnerByOrigin,
   ConnectionFlow,
   type DefiReferralPartnerConfig,
-} from '../../../shared/constants/defi-referrals';
+} from '../../../../shared/constants/defi-referrals';
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & {
   origin: string;

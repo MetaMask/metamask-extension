@@ -4397,9 +4397,6 @@
     "message": "इम्पोर्ट किया गया",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "शामिल है"
-  },
   "includesXTransactions": {
     "message": "इसमें $1 का ट्रांसेक्शन शामिल है"
   },
