@@ -60,7 +60,7 @@ export const BridgeCTAInfoText = () => {
         : t('willApproveAmountForSwapping')),
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(showMmFeeText && showApprovalText ? '. ' : ' ');
 
   if (!infoText) {
     return null;
