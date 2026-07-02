@@ -1,4 +1,5 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
@@ -48,6 +49,8 @@ export async function mockIdentityServices(
     USER_STORAGE_GROUPS_FEATURE_KEY,
     server,
   );
+
+  mockAuthenticatedUserStorageNotificationPreferences(server);
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
@@ -116,6 +119,38 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
       json,
     };
   });
+}
+
+function mockAuthenticatedUserStorageNotificationPreferences(server: Mockttp) {
+  let notificationPreferences: NotificationPreferences | null = null;
+  const notificationPreferencesUrl =
+    'https://user-storage.api.cx.metamask.io/api/v1/preferences/notifications';
+
+  server
+    .forGet(notificationPreferencesUrl)
+    .always()
+    .thenCallback(() => {
+      if (!notificationPreferences) {
+        return { statusCode: 404 };
+      }
+
+      return {
+        statusCode: 200,
+        json: notificationPreferences,
+      };
+    });
+
+  server
+    .forPut(notificationPreferencesUrl)
+    .always()
+    .thenCallback(async (request) => {
+      notificationPreferences =
+        (await request.body.getJson()) as NotificationPreferences;
+
+      return {
+        statusCode: 200,
+      };
+    });
 }
 
 type MockInfuraAndAccountSyncOptions = {

@@ -5,6 +5,7 @@ import {
   Button as DSButton,
   ButtonSize as DSButtonSize,
   ButtonVariant as DSButtonVariant,
+  IconName as DSIconName,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -94,6 +95,7 @@ export const NetworksForm = ({
   usePageFooterStyle = false,
   onComplete,
   onEdit,
+  onAddFromChainlist,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
@@ -104,6 +106,7 @@ export const NetworksForm = ({
   usePageFooterStyle?: boolean;
   onComplete?: () => void;
   onEdit?: () => void;
+  onAddFromChainlist?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -464,6 +467,20 @@ export const NetworksForm = ({
         paddingRight={4}
         paddingBottom={2}
       >
+        {onAddFromChainlist && !existingNetwork ? (
+          <DSButton
+            variant={DSButtonVariant.Secondary}
+            size={DSButtonSize.Lg}
+            startIconName={DSIconName.Flash}
+            isFullWidth
+            onClick={onAddFromChainlist}
+            className="mb-4 rounded-xl"
+            data-testid="network-form-add-from-chainlist"
+          >
+            {t('addFromChainlist')}
+          </DSButton>
+        ) : null}
+
         <FormTextField
           id="networkName"
           size={FormTextFieldSize.Lg}

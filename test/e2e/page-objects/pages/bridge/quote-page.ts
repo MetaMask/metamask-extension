@@ -49,6 +49,11 @@ class BridgeQuotePage {
     css: '[data-testid="bridge-cta-button"]',
   };
 
+  private rwaGeoRestrictedMessage = {
+    css: '[data-testid="bridge-no-quotes"]',
+    text: "This swap isn't available in your region.",
+  };
+
   private maxButton = { text: 'Max' };
 
   private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
@@ -340,6 +345,18 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('The message "no trade route is available" is displayed');
+  }
+
+  async checkRwaGeoRestrictedMessageIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.rwaGeoRestrictedMessage);
+    } catch (e) {
+      console.log(
+        `Expected message that "This swap isn't available in your region" is not present`,
+      );
+      throw e;
+    }
+    console.log('The RWA geo-restricted message is displayed');
   }
 
   async checkInsufficientFundsButtonIsDisplayed(): Promise<void> {

@@ -82,12 +82,6 @@
   "account": {
     "message": "Account"
   },
-  "accountActivity": {
-    "message": "Aktibidad ng account"
-  },
-  "accountActivityText": {
-    "message": "Piliin ang mga account na nais mong makakuha ng abiso:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Mag-log in"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "suporta sa kostumer"
   },
-  "customizeYourNotifications": {
-    "message": "I-customize ang mga notipikasyon mo"
-  },
-  "customizeYourNotificationsText": {
-    "message": "I-on ang mga uri ng notipikasyon na nais mong matanggap:"
-  },
   "dappConnections": {
     "message": "Mga koneksyon ng Dapp"
   },
@@ -5870,9 +5858,6 @@
   "notificationsSettingsBoxError": {
     "message": "Nagkaproblema. Subukang muli."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet sa pamamagitan ng mga notipikasyon. Para gamitin ang mga notipikasyon, gumagamit kami ng profile para i-sync ang ilang setting sa lahat ng iyong device. $1 namin pinoprotektahan ang iyong pagkapribado habang ginagamit ang feature na ito."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Alamin kung paano"
   },
@@ -7534,9 +7519,6 @@
   },
   "proceedWithTransaction": {
     "message": "Gusto ko pa ring magpatuloy"
-  },
-  "productAnnouncements": {
-    "message": "Mga anunsiyo ng produkto"
   },
   "provide": {
     "message": "Ibigay"
