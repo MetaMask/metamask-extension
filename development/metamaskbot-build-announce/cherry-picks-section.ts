@@ -9,6 +9,13 @@ const REPO_URL = process.env.GITHUB_REPOSITORY
   ? `https://github.com/${process.env.GITHUB_REPOSITORY}`
   : 'https://github.com/MetaMask/metamask-extension';
 
+const RELEASE_TAG_PATTERN = 'v[0-9]*.[0-9]*.[0-9]*';
+
+const PRERELEASE_TAG_PATTERN = '*-*';
+
+// GitHub-hosted Ubuntu runners install Git here; avoid resolving it via PATH.
+const GIT_EXECUTABLE = '/usr/bin/git';
+
 type CommitInfo = {
   hash: string;
   subject: string;
@@ -21,8 +28,28 @@ export type WhatsInRcResult = {
   previousTag: string | null;
 };
 
+export function getWhatsInRcAnchorId(anchorSuffix?: string): string {
+  if (!anchorSuffix) {
+    return 'whats-in-this-rc';
+  }
+
+  const sanitizedSuffix = anchorSuffix
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/gu, '-')
+    .replace(/-+/gu, '-')
+    .replace(/^-|-$/gu, '');
+
+  return sanitizedSuffix
+    ? `whats-in-this-rc-${sanitizedSuffix}`
+    : 'whats-in-this-rc';
+}
+
 function git(...args: string[]): string {
-  return execFileSync('git', args, { encoding: 'utf8' }).trim();
+  return execFileSync(GIT_EXECUTABLE, args, { encoding: 'utf8' }).trim();
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 function parseGitLog(logOutput: string): CommitInfo[] {
@@ -35,21 +62,28 @@ function parseGitLog(logOutput: string): CommitInfo[] {
   });
 }
 
-function getPreviousTag(mergeBase: string): string | null {
+function getPreviousReleaseTag(mergeBase: string): string {
   try {
-    return git('describe', '--tags', '--abbrev=0', `${mergeBase}^`);
-  } catch {
-    return null;
+    return git(
+      'describe',
+      '--tags',
+      '--abbrev=0',
+      '--match',
+      RELEASE_TAG_PATTERN,
+      '--exclude',
+      PRERELEASE_TAG_PATTERN,
+      `${mergeBase}^`,
+    );
+  } catch (error) {
+    throw new Error(
+      `Unable to find previous release tag before merge base ${mergeBase}: ${getErrorMessage(error)}`,
+    );
   }
 }
 
 function getCherryPicks(mergeBase: string): CommitInfo[] {
-  try {
-    const log = git('log', '--oneline', '--format=%h %s', `${mergeBase}..HEAD`);
-    return parseGitLog(log);
-  } catch {
-    return [];
-  }
+  const log = git('log', '--format=%h %s', `${mergeBase}..HEAD`);
+  return parseGitLog(log);
 }
 
 function getChangelogCommits(
@@ -59,32 +93,29 @@ function getChangelogCommits(
   if (!previousTag) {
     return [];
   }
-  try {
-    const log = git(
-      'log',
-      '--oneline',
-      '--format=%h %s',
-      `${previousTag}..${mergeBase}`,
-    );
-    return parseGitLog(log);
-  } catch {
-    return [];
-  }
+  const log = git('log', '--format=%h %s', `${previousTag}..${mergeBase}`);
+  return parseGitLog(log);
 }
 
 export function extractWhatsInRc(): WhatsInRcResult {
   const mergeBase = git('merge-base', 'HEAD', 'origin/main');
-  const previousTag = getPreviousTag(mergeBase);
+  const previousTag = getPreviousReleaseTag(mergeBase);
   const cherryPicks = getCherryPicks(mergeBase);
   const changelog = getChangelogCommits(mergeBase, previousTag);
 
   return { cherryPicks, changelog, mergeBase, previousTag };
 }
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/gu, '&amp;')
+    .replace(/</gu, '&lt;')
+    .replace(/>/gu, '&gt;');
+}
+
 function formatCommitRow(commit: CommitInfo): string {
   const commitLink = `[\`${commit.hash}\`](${REPO_URL}/commit/${commit.hash})`;
-  const subject = commit.subject
-    .replace(/\r?\n/gu, ' ')
+  const subject = escapeHtml(commit.subject.replace(/\r?\n/gu, ' '))
     .replace(/\\/gu, '\\\\')
     .replace(/\|/gu, '\\|')
     .replace(/\(#(\d+)\)/gu, `([#$1](${REPO_URL}/pull/$1))`);
@@ -115,10 +146,14 @@ ${rows}
 `;
 }
 
-export function buildWhatsInRcSection(result: WhatsInRcResult): string {
+export function buildWhatsInRcSection(
+  result: WhatsInRcResult,
+  anchorSuffix?: string,
+): string {
   const { cherryPicks, changelog } = result;
+  const anchorId = getWhatsInRcAnchorId(anchorSuffix);
 
-  let section = `<a id="whats-in-this-rc"></a>
+  let section = `<a id="${anchorId}"></a>
 ### :cherries: What's in this RC
 
 `;
@@ -146,9 +181,13 @@ export function buildWhatsInRcSection(result: WhatsInRcResult): string {
   return section;
 }
 
-export function buildWhatsInRcFailureSection(error?: string): string {
-  const errorMsg = error ? `: ${error}` : '';
-  return `<a id="whats-in-this-rc"></a>
+export function buildWhatsInRcFailureSection(
+  error?: string,
+  anchorSuffix?: string,
+): string {
+  const errorMsg = error ? `: ${escapeHtml(error)}` : '';
+  const anchorId = getWhatsInRcAnchorId(anchorSuffix);
+  return `<a id="${anchorId}"></a>
 ### :cherries: What's in this RC
 
 <p><i>Unable to extract cherry-picks and changelog${errorMsg}</i></p>

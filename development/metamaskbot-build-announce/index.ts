@@ -17,7 +17,7 @@ start().catch((error) => {
 
 async function start(): Promise<void> {
   const {
-    PR_COMMENT_TOKEN,
+    BUILD_ANNOUNCE_TOKEN,
     OWNER,
     REPOSITORY,
     RUN_ID,
@@ -39,7 +39,7 @@ async function start(): Promise<void> {
   }
 
   if (
-    !PR_COMMENT_TOKEN ||
+    !BUILD_ANNOUNCE_TOKEN ||
     !OWNER ||
     !REPOSITORY ||
     !RUN_ID ||
@@ -47,7 +47,7 @@ async function start(): Promise<void> {
     !HOST_URL
   ) {
     throw new Error(
-      'Missing required environment variables: PR_COMMENT_TOKEN, OWNER, REPOSITORY, RUN_ID, HEAD_COMMIT_HASH, HOST_URL',
+      'Missing required environment variables: BUILD_ANNOUNCE_TOKEN, OWNER, REPOSITORY, RUN_ID, HEAD_COMMIT_HASH, HOST_URL',
     );
   }
 
@@ -87,10 +87,10 @@ async function start(): Promise<void> {
     commentBody += await buildSectionWithFallback(async () => {
       try {
         const result = extractWhatsInRc();
-        return buildWhatsInRcSection(result) || null;
+        return buildWhatsInRcSection(result, RUN_ID) || null;
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        return buildWhatsInRcFailureSection(message);
+        return buildWhatsInRcFailureSection(message, RUN_ID);
       }
     }, "What's in this RC");
   }
@@ -108,6 +108,6 @@ async function start(): Promise<void> {
     owner: OWNER,
     repository: REPOSITORY,
     prNumber: PR_NUMBER,
-    commentToken: PR_COMMENT_TOKEN,
+    commentToken: BUILD_ANNOUNCE_TOKEN,
   });
 }
