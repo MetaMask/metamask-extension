@@ -105,6 +105,7 @@ describe('AccountOverviewTabs - event metrics', () => {
     );
   };
 
+  // @ts-expect-error it.each is missing from the Mocha type definitions
   it.each([
     ['nfts', 'account-overview__nfts-tab'],
     ['defi', 'account-overview__defi-tab'],
