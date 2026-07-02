@@ -9,6 +9,11 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  ButtonIcon as DsButtonIcon,
+  ButtonIconSize as DsButtonIconSize,
+  IconName as DsIconName,
+} from '@metamask/design-system-react';
+import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
@@ -24,8 +29,6 @@ import {
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -49,10 +52,7 @@ import {
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
-} from '../../../../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -158,6 +158,7 @@ const AssetListControlBar = ({
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
+  const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
   const networkButtonText = useNetworkFilterButtonLabel();
 
   const shouldShowRefreshButtons = useMemo(
@@ -334,17 +335,6 @@ const AssetListControlBar = ({
     });
   };
 
-  const singleNetworkIconUrl = useMemo(() => {
-    const chainIds = allEnabledNetworksForAllNamespaces;
-
-    if (totalEnabledNetworkCount !== 1) {
-      return undefined;
-    }
-
-    const singleEnabledChainId = chainIds[0];
-    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [allEnabledNetworksForAllNamespaces, totalEnabledNetworkCount]);
-
   return (
     <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -354,27 +344,32 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
-          endIconName={IconName.ArrowDown}
+          startIconName={IconName.Filter}
+          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           backgroundColor={
             isNetworkFilterModalOpen
               ? BackgroundColor.backgroundPressed
               : BackgroundColor.backgroundDefault
           }
-          color={TextColor.textDefault}
+          color={
+            isSingleNetworkFilterSelected
+              ? TextColor.primaryDefault
+              : TextColor.textDefault
+          }
           marginRight={isFullScreen ? 2 : null}
           borderColor={BorderColor.borderMuted}
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {singleNetworkIconUrl && (
-              <AvatarNetwork
-                name={currentMultichainNetwork.nickname}
-                src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Xs}
-                borderWidth={0}
-              />
-            )}
-            <Text variant={TextVariant.bodySmMedium} ellipsis>
+            <Text
+              variant={TextVariant.bodySmMedium}
+              color={
+                isSingleNetworkFilterSelected
+                  ? TextColor.primaryDefault
+                  : TextColor.textDefault
+              }
+              ellipsis
+            >
               {networkButtonText}
             </Text>
           </Box>
@@ -384,6 +379,7 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__buttons"
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
+          alignItems={AlignItems.center}
         >
           {showSortControl && (
             <Tooltip
@@ -392,21 +388,16 @@ const AssetListControlBar = ({
               distance={20}
               disabled={isTokenSortPopoverOpen}
             >
-              <ButtonBase
+              <DsButtonIcon
                 ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
-                className="asset-list-control-bar__button"
+                className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
+                  isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
+                } hover:bg-hover active:bg-pressed`}
                 onClick={toggleTokenSortPopover}
-                size={ButtonBaseSize.Sm}
-                startIconName={IconName.Filter}
-                startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                backgroundColor={
-                  isTokenSortPopoverOpen
-                    ? BackgroundColor.backgroundPressed
-                    : BackgroundColor.backgroundDefault
-                }
-                color={TextColor.textDefault}
-                marginRight={isFullScreen ? 2 : null}
+                size={DsButtonIconSize.Sm}
+                iconName={DsIconName.ListArrow}
+                ariaLabel={t('sortBy')}
               />
             </Tooltip>
           )}
@@ -432,29 +423,26 @@ const AssetListControlBar = ({
                 position="bottom"
                 distance={20}
               >
-                <ButtonBase
+                <DsButtonIcon
                   ref={importButtonRef}
                   data-testid="importTokens-button"
-                  className="asset-list-control-bar__button"
+                  className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
                   onClick={
                     isTokenManagementFilterEnabled
                       ? handleOpenTokenManagement
                       : handleTokenImportModal
                   }
-                  size={ButtonBaseSize.Sm}
-                  startIconName={
+                  size={DsButtonIconSize.Sm}
+                  iconName={
                     isTokenManagementFilterEnabled
-                      ? IconName.MoreVertical
-                      : IconName.Add
+                      ? DsIconName.MoreVertical
+                      : DsIconName.Add
                   }
-                  startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                  backgroundColor={
-                    isTokenSortPopoverOpen
-                      ? BackgroundColor.backgroundPressed
-                      : BackgroundColor.backgroundDefault
+                  ariaLabel={
+                    isTokenManagementFilterEnabled
+                      ? t('manageTokens')
+                      : t('importTokensCamelCase')
                   }
-                  color={TextColor.textDefault}
-                  marginRight={isFullScreen ? 2 : null}
                 />
               </Tooltip>
             ))}

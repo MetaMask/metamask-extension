@@ -56,6 +56,7 @@
       "outdatedBrowserWarningLastShown": "object",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -74,11 +75,18 @@
       "isSignedIn": "boolean",
       "needsProfilePairing": "boolean"
     },
+    "BridgeController": { "inputPrimaryDenomination": "string" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,
       "walletComplianceStatusMap": "object"
+    },
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -145,6 +153,7 @@
         "bip122": "object",
         "eip155": "object",
         "solana": "object",
+        "stellar": "object",
         "tron": "object"
       },
       "nativeAssetIdentifiers": "object"
@@ -202,6 +211,7 @@
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
+        "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,

@@ -82,12 +82,6 @@
   "account": {
     "message": "Akun"
   },
-  "accountActivity": {
-    "message": "Aktivitas akun"
-  },
-  "accountActivityText": {
-    "message": "Pilih akun yang ingin mendapatkan notifikasi:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Masuk"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backToHome": {
-    "message": "Kembali ke beranda"
-  },
   "backUpIncomplete": {
     "message": "Pencadangan tidak selesai"
   },
@@ -2422,9 +2413,6 @@
     "message": "Tutup $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Anda dapat menutup jendela ini setiap saat."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "dukungan pelanggan"
-  },
-  "customizeYourNotifications": {
-    "message": "Sesuaikan notifikasi"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Aktifkan jenis notifikasi yang ingin diterima:"
   },
   "dappConnections": {
     "message": "Koneksi Dapp"
@@ -4418,9 +4400,6 @@
   "imported": {
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Termasuk"
   },
   "includesXTransactions": {
     "message": "Termasuk transaksi $1"
@@ -5879,9 +5858,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Terjadi kesalahan. Coba lagi."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Pantau terus segala yang terjadi di dompet Anda dengan notifikasi. Untuk menggunakan notifikasi, kami menggunakan profil untuk menyinkronkan beberapa pengaturan di seluruh perangkat Anda. $1 kami melindungi privasi Anda saat menggunakan fitur ini."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Pelajari caranya"
@@ -7548,9 +7524,6 @@
   },
   "proceedWithTransaction": {
     "message": "Saya tetap ingin melanjutkan"
-  },
-  "productAnnouncements": {
-    "message": "Pengumuman produk"
   },
   "provide": {
     "message": "Berikan"
@@ -9305,24 +9278,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swap tidak tersedia untuk sementara waktu."
   },
-  "smartTransactionCancelled": {
-    "message": "Transaksi Anda dibatalkan"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Transaksi Anda tidak dapat diselesaikan, sehingga dibatalkan agar Anda tidak perlu membayar biaya gas yang tidak seharusnya."
-  },
-  "smartTransactionError": {
-    "message": "Transaksi Anda gagal"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Perubahan pasar yang mendadak dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi dukungan pelanggan MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Transaksi Anda telah dikirim"
-  },
-  "smartTransactionSuccess": {
-    "message": "Transaksi Anda selesai"
-  },
   "smartTransactions": {
     "message": "Transaksi Pintar"
   },
@@ -10289,9 +10244,6 @@
   "tokenContractAddress": {
     "message": "Alamat kontrak token"
   },
-  "tokenContractError": {
-    "message": "Alamat ini merupakan alamat kontrak token. Jika mengirim token ke alamat ini, Anda akan kehilangan token tersebut."
-  },
   "tokenContractWarning": {
     "message": "Peringatan kontrak token"
   },
@@ -10781,9 +10733,6 @@
   "view": {
     "message": "Lihat"
   },
-  "viewActivity": {
-    "message": "Lihat aktivitas"
-  },
   "viewAddressOnExplorer": {
     "message": "Lihat di $1",
     "description": "$1 is the block explorer name"
@@ -10810,9 +10759,6 @@
   },
   "viewTokenDetails": {
     "message": "Lihat detail token"
-  },
-  "viewTransaction": {
-    "message": "Lihat transaksi"
   },
   "viewinExplorer": {
     "message": "Lihat $1 di explorer",

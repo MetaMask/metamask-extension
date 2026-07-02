@@ -130,6 +130,7 @@ export type ControllerStatePropertiesEnumerated = {
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
+  perpsTabBadgeSeen: AppStateControllerState['perpsTabBadgeSeen'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
@@ -161,6 +162,7 @@ export type ControllerStatePropertiesEnumerated = {
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   tokenSecurityTypeDestination: BridgeControllerState['tokenSecurityTypeDestination'];
+  inputPrimaryDenomination: BridgeControllerState['inputPrimaryDenomination'];
   tokenWarnings: BridgeControllerState['tokenWarnings'];
   batchSellTrades: BridgeControllerState['batchSellTrades'];
   batchSellTradesLoadingStatus: BridgeControllerState['batchSellTradesLoadingStatus'];

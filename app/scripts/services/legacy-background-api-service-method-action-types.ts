@@ -85,6 +85,19 @@ export type LegacyBackgroundApiServiceGetCodeAction = {
 };
 
 /**
+ * Estimates the gas for a given transaction using the currently selected
+ * network client.
+ *
+ * @param estimateGasParams - The parameters of the transaction to estimate
+ * the gas for.
+ * @returns The estimated gas as a hexadecimal string.
+ */
+export type LegacyBackgroundApiServiceEstimateGasAction = {
+  type: `LegacyBackgroundApiService:estimateGas`;
+  handler: LegacyBackgroundApiService['estimateGas'];
+};
+
+/**
  * Verifies the validity of the current vault's seed phrase.
  *
  * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -144,6 +157,29 @@ export type LegacyBackgroundApiServiceOnAccountRemovedAction = {
   handler: LegacyBackgroundApiService['onAccountRemoved'];
 };
 
+/**
+ * Rejects a pending permissions request.
+ *
+ * Swallows `PermissionsRequestNotFoundError` so that rejecting an already
+ * resolved request does not throw.
+ *
+ * @param requestId - The ID of the permissions request to reject.
+ */
+export type LegacyBackgroundApiServiceRejectPermissionsRequestAction = {
+  type: `LegacyBackgroundApiService:rejectPermissionsRequest`;
+  handler: LegacyBackgroundApiService['rejectPermissionsRequest'];
+};
+
+/**
+ * Removes the given permissions for the given subjects.
+ *
+ * @param subjects - The subjects and their permissions to remove.
+ */
+export type LegacyBackgroundApiServiceRemovePermissionsForAction = {
+  type: `LegacyBackgroundApiService:removePermissionsFor`;
+  handler: LegacyBackgroundApiService['removePermissionsFor'];
+};
+
 export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
   type: `LegacyBackgroundApiService:importAccountWithStrategy`;
   handler: LegacyBackgroundApiService['importAccountWithStrategy'];
@@ -170,6 +206,19 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 export type LegacyBackgroundApiServiceGetNextNonceAction = {
   type: `LegacyBackgroundApiService:getNextNonce`;
   handler: LegacyBackgroundApiService['getNextNonce'];
+};
+
+/**
+ * Changes the password for the wallet.
+ *
+ * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
+ *
+ * @param newPassword - The new password.
+ * @param oldPassword - The old password.
+ */
+export type LegacyBackgroundApiServiceChangePasswordAction = {
+  type: `LegacyBackgroundApiService:changePassword`;
+  handler: LegacyBackgroundApiService['changePassword'];
 };
 
 /**
@@ -233,6 +282,67 @@ export type LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction = {
 };
 
 /**
+ * Verifies the password and exports the private key for the given account.
+ *
+ * @param address - The address of the account to export.
+ * @param password - The password of the vault.
+ * @returns The private key of the account.
+ */
+export type LegacyBackgroundApiServiceExportAccountAction = {
+  type: `LegacyBackgroundApiService:exportAccount`;
+  handler: LegacyBackgroundApiService['exportAccount'];
+};
+
+/**
+ * Applies the given transaction container types to an existing transaction.
+ *
+ * @param transactionId - The ID of the transaction to update.
+ * @param containerTypes - The container types to apply to the transaction.
+ */
+export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
+  {
+    type: `LegacyBackgroundApiService:applyTransactionContainersExisting`;
+    handler: LegacyBackgroundApiService['applyTransactionContainersExisting'];
+  };
+
+/**
+ * Creates or updates the UI metrics fragment for a given transaction.
+ *
+ * @param transactionId - The id of the transaction.
+ * @param payload - The fragment settings and properties to store.
+ */
+export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
+  {
+    type: `LegacyBackgroundApiService:upsertTransactionUIMetricsFragment`;
+    handler: LegacyBackgroundApiService['upsertTransactionUIMetricsFragment'];
+  };
+
+/**
+ * Rejects a pending approval request.
+ *
+ * @param id - The ID of the approval request to reject.
+ * @param error - The error to reject the approval request with.
+ * @param error.code - The error code.
+ * @param error.message - The error message.
+ * @param error.data - The error data.
+ */
+export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
+  type: `LegacyBackgroundApiService:rejectPendingApproval`;
+  handler: LegacyBackgroundApiService['rejectPendingApproval'];
+};
+
+/**
+ * Accepts a permissions request. Silently ignores the request if it can no
+ * longer be found.
+ *
+ * @param request - The permissions request to accept.
+ */
+export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
+  type: `LegacyBackgroundApiService:acceptPermissionsRequest`;
+  handler: LegacyBackgroundApiService['acceptPermissionsRequest'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -244,16 +354,25 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction
+  | LegacyBackgroundApiServiceEstimateGasAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
+  | LegacyBackgroundApiServiceRejectPermissionsRequestAction
+  | LegacyBackgroundApiServiceRemovePermissionsForAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
   | LegacyBackgroundApiServiceGetNextNonceAction
+  | LegacyBackgroundApiServiceChangePasswordAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
   | LegacyBackgroundApiServiceSetLockedAction
-  | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction;
+  | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
+  | LegacyBackgroundApiServiceExportAccountAction
+  | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
+  | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
+  | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceAcceptPermissionsRequestAction;

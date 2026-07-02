@@ -49,7 +49,7 @@ export function NotificationsSettingsBox({
           className="w-10 min-w-10 shrink-0"
         >
           {loading ? (
-            <Box className="text-right">
+            <Box className="flex justify-end">
               <Preloader size={24} />
             </Box>
           ) : (
