@@ -404,7 +404,7 @@ const CoinButtons = ({
           chain_id: chainId,
           ...getSnapAccountMetaMetricsPropertiesIfAny(account),
         })
-        .build(),
+        .build({ excludeMetaMetricsId: false }),
     );
 
     // Native Send flow
