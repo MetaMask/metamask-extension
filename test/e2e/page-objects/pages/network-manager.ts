@@ -120,7 +120,7 @@ class NetworkManager {
 
   async selectNetworkByName(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName} on network manager`);
-    await this.driver.clickElement(`[data-testid="${networkName}"]`);
+    await this.driver.clickElement(this.networkListItemByName(networkName));
   }
 
   async checkAllPopularNetworksIsSelected(): Promise<void> {
