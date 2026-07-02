@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
   PerpsAnalyticsEvent,
 } from '../../../../shared/constants/perps-events';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 import {
   createPerpsInfrastructure,
@@ -191,14 +192,25 @@ describe('createPerpsInfrastructure', () => {
           PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
       });
 
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-      expect(mockTrackEvent).toHaveBeenCalledWith({
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         event: PerpsAnalyticsEvent.ScreenViewed,
         category: MetaMetricsEventCategory.Perps,
         properties: {
           [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
             PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
           [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+        event: MetaMetricsEventName.AssetViewed,
+        category: MetaMetricsEventCategory.Perps,
+        properties: {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+            PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+          [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+          trade_type: 'Perps',
+          implementation_type: 'native',
         },
       });
     });

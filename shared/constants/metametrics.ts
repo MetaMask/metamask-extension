@@ -1079,6 +1079,7 @@ export enum MetaMetricsEventName {
   DeFiDetailsOpened = 'DeFi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
   PerpsScreenViewed = 'Perp Screen Viewed',
+  AssetViewed = 'Asset Viewed',
   PerpsUiInteraction = 'Perp UI Interaction',
   PerpsTradeTransaction = 'Perp Trade Transaction',
   PerpsPositionCloseTransaction = 'Perp Position Close Transaction',

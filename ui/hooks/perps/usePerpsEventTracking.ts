@@ -1,6 +1,10 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { Json } from '@metamask/utils';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
+import {
+  mergeAssetViewedProperties,
+  shouldEmitAssetViewedForPerpsScreenViewed,
+} from '../../../shared/lib/analytics/trade-transaction-funnel/assetViewedAnalytics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -41,18 +45,41 @@ export function usePerpsEventTracking(
   const { trackEvent } = useContext(MetaMetricsContext);
   const hasFiredDeclarativeRef = useRef(false);
 
-  const track = useCallback<PerpsTrackEventFn>(
-    (eventName, properties) => {
+  const trackPerpsMetricsEvent = useCallback(
+    (
+      eventName: MetaMetricsEventName,
+      properties: Record<string, Json> = {},
+    ) => {
+      const props = {
+        ...properties,
+        [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
+      };
+
       trackEvent({
         event: eventName,
         category: MetaMetricsEventCategory.Perps,
-        properties: {
-          ...properties,
-          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
-        },
+        properties: props,
       });
+
+      if (
+        eventName === MetaMetricsEventName.PerpsScreenViewed &&
+        shouldEmitAssetViewedForPerpsScreenViewed(props)
+      ) {
+        trackEvent({
+          event: MetaMetricsEventName.AssetViewed,
+          category: MetaMetricsEventCategory.Perps,
+          properties: mergeAssetViewedProperties('Perps', props),
+        });
+      }
     },
     [trackEvent],
+  );
+
+  const track = useCallback<PerpsTrackEventFn>(
+    (eventName, properties) => {
+      trackPerpsMetricsEvent(eventName, properties ?? {});
+    },
+    [trackPerpsMetricsEvent],
   );
 
   const imperativeApi = useMemo(() => ({ track }), [track]);
@@ -88,15 +115,8 @@ export function usePerpsEventTracking(
     }
 
     hasFiredDeclarativeRef.current = true;
-    trackEvent({
-      event: eventName,
-      category: MetaMetricsEventCategory.Perps,
-      properties: {
-        ...properties,
-        [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
-      },
-    });
-  }, [options, trackEvent]);
+    trackPerpsMetricsEvent(eventName, properties ?? {});
+  }, [options, trackPerpsMetricsEvent]);
 
   if (options) {
     return undefined;
