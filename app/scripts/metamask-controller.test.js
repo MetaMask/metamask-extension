@@ -5679,6 +5679,7 @@ describe('MetaMaskController', () => {
           );
           metamaskController.preferencesController.update((state) => {
             state.referrals[DefiReferralPartner.Hyperliquid] = {};
+            state.useExternalServices = true;
           });
         });
 
