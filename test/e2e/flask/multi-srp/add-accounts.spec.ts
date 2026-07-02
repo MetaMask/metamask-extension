@@ -8,7 +8,10 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
-import { MAINNET_NATIVE_ASSET_ID, LOCALHOST_NATIVE_ASSET_ID } from '../../tests/tokens/utils/mocks';
+import {
+  MAINNET_NATIVE_ASSET_ID,
+  LOCALHOST_NATIVE_ASSET_ID,
+} from '../../tests/tokens/utils/mocks';
 import { mockActiveNetworks } from './common-multi-srp';
 
 const ZERO_UNIFIED_EVM_BALANCES = {

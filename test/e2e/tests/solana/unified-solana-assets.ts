@@ -86,7 +86,9 @@ export function buildSolanaPositiveBalanceFixture(
   }
 
   return merge(
-    builder.withAssetsController(SOLANA_POSITIVE_BALANCE_ASSETS_CONTROLLER).build(),
+    builder
+      .withAssetsController(SOLANA_POSITIVE_BALANCE_ASSETS_CONTROLLER)
+      .build(),
     MULTICHAIN_SOL_ASSETS_PATCH,
   );
 }
