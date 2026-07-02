@@ -23,7 +23,10 @@ import {
   SmartTransactionsControllerInitMessenger,
 } from '../messengers/smart-transactions-controller-messenger';
 import { MessengerClientFlatState } from '../controller-list';
-import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
+import type {
+  MetaMetricsEventPayload,
+  MetaMetricsEventOptions,
+} from '../../../../shared/constants/metametrics';
 import { trackEvent } from '../../controllers/analytics';
 import { SmartTransactionsControllerInit } from './smart-transactions-controller-init';
 
@@ -302,17 +305,18 @@ describe('SmartTransactionsController Init', () => {
 
     expect(typeof constructorCall.trackMetaMetricsEvent).toBe('function');
 
+    const trackMetaMetricsEvent = constructorCall.trackMetaMetricsEvent as (
+      payload: MetaMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ) => void;
+
     const testPayload: MetaMetricsEventPayload = {
       event: 'TestEvent',
       category: 'TestCategory',
       properties: { test: true },
     };
 
-    constructorCall.trackMetaMetricsEvent?.(
-      testPayload as Parameters<
-        NonNullable<typeof constructorCall.trackMetaMetricsEvent>
-      >[0],
-    );
+    trackMetaMetricsEvent(testPayload);
 
     expect(trackEventMock).toHaveBeenCalledWith(
       expect.objectContaining({
