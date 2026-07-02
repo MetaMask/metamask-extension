@@ -165,6 +165,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'rejectPendingApproval',
   'rejectPermissionsRequest',
   'removeAccount',
   'removePermissionsFor',
@@ -1359,5 +1360,31 @@ export class LegacyBackgroundApiService {
       properties: payload.properties ?? {},
       sensitiveProperties: payload.sensitiveProperties ?? {},
     });
+  }
+
+  /**
+   * Rejects a pending approval request.
+   *
+   * @param id - The ID of the approval request to reject.
+   * @param error - The error to reject the approval request with.
+   * @param error.code - The error code.
+   * @param error.message - The error message.
+   * @param error.data - The error data.
+   */
+  rejectPendingApproval(
+    id: string,
+    error: { code: number; message: string; data?: Json },
+  ): void {
+    try {
+      this.#messenger.call(
+        'ApprovalController:rejectRequest',
+        id,
+        new JsonRpcError(error.code, error.message, error.data),
+      );
+    } catch (err) {
+      if (!(err instanceof ApprovalRequestNotFoundError)) {
+        throw err;
+      }
+    }
   }
 }
