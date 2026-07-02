@@ -27,6 +27,7 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
+  AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSetSelectedAccountAction,
@@ -175,6 +176,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'resetAccount',
   'setCurrentCurrency',
   'setLocked',
+  'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
@@ -191,6 +193,7 @@ export type LegacyBackgroundApiServiceActions =
 type AllowedActions =
   | AccountTreeControllerGetSelectedAccountGroupAction
   | AccountTreeControllerInitAction
+  | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerSetSelectedAccountAction
@@ -812,6 +815,18 @@ export class LegacyBackgroundApiService {
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
     return getAccountsBySnapId(this.#messenger, snapId);
+  }
+
+  /**
+   * Sets the currently selected internal account.
+   *
+   * @param id - The ID of the account to set as selected.
+   */
+  setSelectedInternalAccount(id: string): void {
+    const account = this.#messenger.call('AccountsController:getAccount', id);
+    if (account) {
+      this.#messenger.call('AccountsController:setSelectedAccount', id);
+    }
   }
 
   /**

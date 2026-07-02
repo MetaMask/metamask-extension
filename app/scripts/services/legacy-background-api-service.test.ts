@@ -1451,6 +1451,66 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('setSelectedInternalAccount', () => {
+    it('sets the selected account when the account exists', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccount',
+          jest.fn().mockReturnValue({ id: 'mock-id' }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:setSelectedInternalAccount',
+          'mock-id',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:getAccount',
+          'mock-id',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:setSelectedAccount',
+          'mock-id',
+        );
+      });
+    });
+
+    it('does not set the selected account when the account does not exist', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccount',
+          jest.fn().mockReturnValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:setSelectedInternalAccount',
+          'mock-id',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:getAccount',
+          'mock-id',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AccountsController:setSelectedAccount',
+          'mock-id',
+        );
+      });
+    });
+  });
+
   describe('checkIsSeedlessPasswordOutdated', () => {
     it("returns false if it's a social login flow", async () => {
       await withService(async ({ rootMessenger }) => {
@@ -2802,6 +2862,7 @@ function getMessenger(
       'OnboardingController:getIsSocialLoginFlow',
       'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
+      'AccountsController:getAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
