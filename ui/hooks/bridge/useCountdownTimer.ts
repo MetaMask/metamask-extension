@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
@@ -18,12 +18,6 @@ export const useCountdownTimer = () => {
   const refreshRate = useSelector(getQuoteRefreshRate);
 
   const [timeRemaining, setTimeRemaining] = useState(refreshRate + STEP);
-  const timeRemainingRef = useRef(refreshRate);
-
-  // Update ref whenever timeRemaining changes
-  useEffect(() => {
-    timeRemainingRef.current = timeRemaining;
-  }, [timeRemaining]);
 
   useEffect(() => {
     if (quotesLastFetchedMs) {
@@ -33,7 +27,7 @@ export const useCountdownTimer = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining(Math.max(0, timeRemainingRef.current - STEP));
+      setTimeRemaining((prev) => Math.max(0, prev - STEP));
     }, STEP);
     return () => clearInterval(interval);
   }, []);
