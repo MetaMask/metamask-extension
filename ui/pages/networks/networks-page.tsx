@@ -3,6 +3,7 @@ import {
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
@@ -31,6 +32,7 @@ import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu
 import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
 import { Header } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -161,6 +163,16 @@ export const NetworksPage = () => {
       ),
     [evmNetworks],
   );
+  const existingNetworkNamesByChainId = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.values(evmNetworks).map((network) => [
+          network.chainId.toLowerCase(),
+          network.name,
+        ]),
+      ),
+    [evmNetworks],
+  );
 
   const setView = useCallback(
     (nextView?: string) => {
@@ -216,8 +228,14 @@ export const NetworksPage = () => {
       const blockExplorerUrls = getUsableUrls(
         network.explorers?.map((explorer) => explorer.url ?? '') ?? [],
       );
+      const networkName =
+        NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.name ??
+        network.name;
 
-      networkFormState.setName(network.name);
+      networkFormState.setName(networkName);
       networkFormState.setChainId(String(network.chainId));
       networkFormState.setTicker(network.nativeCurrency.symbol);
       networkFormState.setRpcUrls({
@@ -431,6 +449,7 @@ export const NetworksPage = () => {
           <NetworksPageFormBody>
             <ChainlistNetworkPicker
               existingNetworkChainIds={existingNetworkChainIds}
+              existingNetworkNamesByChainId={existingNetworkNamesByChainId}
               onSelect={handleChainlistNetworkSelect}
             />
           </NetworksPageFormBody>
