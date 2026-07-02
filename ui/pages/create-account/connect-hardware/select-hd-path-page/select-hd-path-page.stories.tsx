@@ -32,6 +32,4 @@ DefaultStory.storyName = 'Default';
 
 export const LegacySelected: StoryFn<typeof SelectHdPathPage> = (
   args: SelectHdPathPageProps,
-) => (
-  <SelectHdPathPage {...args} selectedPath={LEDGER_HD_PATHS[1].value} />
-);
+) => <SelectHdPathPage {...args} selectedPath={LEDGER_HD_PATHS[1].value} />;

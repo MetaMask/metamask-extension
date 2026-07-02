@@ -79,7 +79,9 @@ describe('SelectHdPathPage', () => {
       const { props } = renderPage();
 
       fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
-      fireEvent.click(screen.getByTestId('select-hd-path-page-continue-button'));
+      fireEvent.click(
+        screen.getByTestId('select-hd-path-page-continue-button'),
+      );
 
       expect(props.onPathChange).toHaveBeenCalledTimes(1);
       expect(props.onPathChange).toHaveBeenCalledWith(LEDGER_HD_PATHS[1].value);
@@ -88,7 +90,9 @@ describe('SelectHdPathPage', () => {
     it('calls onPathChange with the current path when Continue is clicked without changes', () => {
       const { props } = renderPage();
 
-      fireEvent.click(screen.getByTestId('select-hd-path-page-continue-button'));
+      fireEvent.click(
+        screen.getByTestId('select-hd-path-page-continue-button'),
+      );
 
       expect(props.onPathChange).toHaveBeenCalledTimes(1);
       expect(props.onPathChange).toHaveBeenCalledWith(LEDGER_HD_PATHS[0].value);

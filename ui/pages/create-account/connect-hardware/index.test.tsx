@@ -1011,9 +1011,7 @@ describe('ConnectHardwareForm', () => {
     });
 
     it('hides show more when the last fetched batch is smaller than five accounts', async () => {
-      mockConnectHardware.mockResolvedValue(
-        createMockRawHardwareAccounts(3),
-      );
+      mockConnectHardware.mockResolvedValue(createMockRawHardwareAccounts(3));
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -1047,7 +1045,9 @@ describe('ConnectHardwareForm', () => {
         screen.getByTestId('select-hardware-accounts-page-settings-button'),
       );
       fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
-      fireEvent.click(screen.getByTestId('select-hd-path-page-continue-button'));
+      fireEvent.click(
+        screen.getByTestId('select-hd-path-page-continue-button'),
+      );
 
       await waitFor(() => {
         expect(mockConnectHardwareAction).toHaveBeenCalledTimes(2);

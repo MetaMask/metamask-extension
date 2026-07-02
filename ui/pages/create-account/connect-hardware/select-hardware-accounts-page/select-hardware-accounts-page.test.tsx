@@ -78,7 +78,9 @@ describe('SelectHardwareAccountsPage', () => {
         accounts: createMockHardwareAccounts(2).map((account) => ({
           ...account,
           totalBalance: undefined,
-          addresses: account.addresses.map(({ balance, ...address }) => address),
+          addresses: account.addresses.map(
+            ({ balance, ...address }) => address,
+          ),
         })),
       });
 

@@ -18,9 +18,9 @@ const createRawAccount = (
 
 describe('mapHardwareAccountsToWalletAccounts', () => {
   it('returns an empty array when no accounts are provided', () => {
-    expect(mapHardwareAccountsToWalletAccounts([], [], 'Ethereum')).toStrictEqual(
-      [],
-    );
+    expect(
+      mapHardwareAccountsToWalletAccounts([], [], 'Ethereum'),
+    ).toStrictEqual([]);
   });
 
   it('maps a single account to a wallet card with Ethereum-only addresses', () => {
