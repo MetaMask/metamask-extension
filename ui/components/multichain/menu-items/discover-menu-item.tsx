@@ -4,6 +4,7 @@ import { Box } from '@metamask/design-system-react';
 import { MenuItem } from '../../ui/menu';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   getDataCollectionForMarketing,
   getAnalyticsId,
@@ -31,7 +32,7 @@ export const DiscoverMenuItem = ({
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const t = useI18nContext();
 
   const handlePortfolioOnClick = useCallback(() => {

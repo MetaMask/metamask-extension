@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   Modal,
   ModalContent,
@@ -53,7 +54,7 @@ export const FundingMethodModal = ({
   ...props
 }: FundingMethodModalProps) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const { openBuyCryptoInPdapp } = useRamps();
   const { address: accountAddress } = useSelector(getSelectedAccount);
   const { chainId } = useSelector(getMultichainCurrentNetwork);

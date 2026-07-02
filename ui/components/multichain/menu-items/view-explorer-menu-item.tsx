@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   getMultichainAccountUrl,
   getMultichainBlockExplorerUrl,
@@ -89,7 +90,7 @@ export const ViewExplorerMenuItem = ({
   account,
 }: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const navigate = useNavigate();
 
   const multichainNetwork = useMultichainSelector(
@@ -154,13 +155,16 @@ export const ViewExplorerMenuItem = ({
           : openBlockExplorer(
               actualAddressLink,
               metricsLocation,
-              (payload) =>
+              async (payload) => {
                 trackEvent(
                   createEventBuilder(payload.event)
-                    .addCategory(payload.category)
+                    .addCategory(
+                      payload.category ?? MetaMetricsEventCategory.Navigation,
+                    )
                     .addProperties(payload.properties ?? {})
                     .build(),
-                ),
+                );
+              },
               closeMenu,
             );
 
