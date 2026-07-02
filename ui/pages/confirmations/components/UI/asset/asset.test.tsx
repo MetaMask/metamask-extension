@@ -200,4 +200,22 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders NftDefaultImage when no image or collection imageUrl is provided', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutAnyImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutAnyImage} />);
+
+    expect(getByTestId('nft-default-image')).toBeInTheDocument();
+    expect(getByTestId('nft-default-image')).toHaveClass(
+      'nft-asset-default-image',
+    );
+  });
 });

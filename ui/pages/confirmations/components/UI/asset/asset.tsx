@@ -10,6 +10,7 @@ import {
   Text,
   AvatarTokenSize,
 } from '../../../../../components/component-library';
+import NftDefaultImage from '../../../../../components/app/assets/nfts/nft-default-image/nft-default-image';
 import {
   AlignItems,
   BackgroundColor,
@@ -18,6 +19,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import './asset.scss';
 import {
   type Asset as AssetType,
   AssetStandard,
@@ -90,7 +92,12 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 objectFit: 'cover',
               }}
             />
-          ) : null}
+          ) : (
+            <NftDefaultImage
+              className="nft-asset-default-image"
+              clickable={false}
+            />
+          )}
         </BadgeWrapper>
       </Box>
       <Box
