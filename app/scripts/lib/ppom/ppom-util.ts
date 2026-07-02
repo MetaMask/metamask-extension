@@ -181,11 +181,50 @@ export function handlePPOMError(
   };
 }
 
+/**
+ * Ensures only standard EIP-712 top-level keys are retained when params[1]
+ * is received as a parsed object rather than a JSON string.
+ */
+function sanitizeTypedDataParams(request: PPOMRequest): PPOMRequest {
+  if (
+    request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
+    request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
+  ) {
+    return request;
+  }
+
+  if (!Array.isArray(request.params) || !request.params[1]) {
+    return request;
+  }
+
+  const rawParam = request.params[1];
+
+  if (typeof rawParam !== 'object') {
+    return request;
+  }
+
+  const typedData = rawParam as Record<string, unknown>;
+
+  return {
+    ...request,
+    params: [
+      request.params[0],
+      {
+        primaryType: typedData.primaryType,
+        domain: typedData.domain,
+        types: typedData.types,
+        message: typedData.message,
+      },
+    ],
+  };
+}
+
 function normalizePPOMRequest(
   request: PPOMRequest,
   controllerObject: TransactionMeta | SignatureRequest,
 ): PPOMRequest {
-  let normalizedRequest = cloneDeep(request);
+  const sanitizedRequest = sanitizeTypedDataParams(request);
+  let normalizedRequest = cloneDeep(sanitizedRequest);
 
   normalizedRequest = normalizeSignatureRequest(
     normalizedRequest,
@@ -290,7 +329,9 @@ export function normalizeSignatureRequest(
     params: [
       request.params[0],
       JSON.stringify({
-        ...typedDataMessage,
+        primaryType: typedDataMessage.primaryType,
+        domain: typedDataMessage.domain,
+        types: typedDataMessage.types,
         message: sanitizedMessageRecursively,
       }),
     ],
