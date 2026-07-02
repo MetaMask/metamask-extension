@@ -85,6 +85,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'MultichainAccountService:init',
       'MultichainAccountService:resyncAccounts',
       'MultichainAccountService:alignWallets',
+      'MultichainAccountService:createNextMultichainAccountGroup',
       'SubscriptionController:stopAllPolling',
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',

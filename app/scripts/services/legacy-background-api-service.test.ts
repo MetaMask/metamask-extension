@@ -1294,6 +1294,67 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('createNextMultichainAccountGroup', () => {
+    it('creates the next multichain account group for the given wallet', async () => {
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const createNextMultichainAccountGroupHandler = jest
+          .fn()
+          .mockResolvedValue(undefined);
+
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:createNextMultichainAccountGroup',
+          createNextMultichainAccountGroupHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:createNextMultichainAccountGroup',
+            walletId,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'MultichainAccountService:createNextMultichainAccountGroup',
+          { entropySource: walletId },
+        );
+      });
+    });
+
+    it('rejects when the multichain account service throws', async () => {
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const error = new Error('Failed to create account group');
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const createNextMultichainAccountGroupHandler = jest
+          .fn()
+          .mockRejectedValue(error);
+
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:createNextMultichainAccountGroup',
+          createNextMultichainAccountGroupHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:createNextMultichainAccountGroup',
+            walletId,
+          ),
+        ).rejects.toThrow(error);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'MultichainAccountService:createNextMultichainAccountGroup',
+          { entropySource: walletId },
+        );
+      });
+    });
+  });
+
   describe('upsertTransactionUIMetricsFragment', () => {
     it('does nothing if the transaction id is missing', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -2839,6 +2900,7 @@ function getMessenger(
       'MultichainAccountService:init',
       'MultichainAccountService:resyncAccounts',
       'MultichainAccountService:alignWallets',
+      'MultichainAccountService:createNextMultichainAccountGroup',
       'SubscriptionController:stopAllPolling',
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
