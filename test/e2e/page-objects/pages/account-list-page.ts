@@ -427,11 +427,9 @@ class AccountListPage {
    *
    * @param options - Options for opening the multichain account menu
    * @param options.accountLabel - The label of the account to open the menu for
-   * @param options.srpIndex - Optional SRP index if there are multiple SRPs
    */
   async openMultichainAccountMenu(options: {
     accountLabel: string;
-    srpIndex?: number;
   }): Promise<void> {
     console.log(
       `Open multichain account menu in account list for account ${options.accountLabel}`,
@@ -441,11 +439,9 @@ class AccountListPage {
       waitAtLeastGuard: largeDelayMs,
     });
 
-    const multichainAccountMenuIcons = await this.driver.findElements(
+    await this.driver.clickElement(
       `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
     );
-
-    await multichainAccountMenuIcons[options.srpIndex ?? 0].click();
   }
 
   /**
