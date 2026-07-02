@@ -14,7 +14,7 @@ import { hexWEIToDecETH } from '../../../../shared/lib/conversion.utils';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 
 export async function handleSwapPostTransactionMetricHandler(
-  { getHDEntropyIndex }: TransactionMetricsRequest,
+  { getParticipateInMetrics, getHDEntropyIndex }: TransactionMetricsRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
@@ -23,7 +23,7 @@ export async function handleSwapPostTransactionMetricHandler(
     approvalTransactionMeta?: TransactionMeta;
   },
 ) {
-  if (transactionMeta.swapMetaData) {
+  if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.SwapFailed)
