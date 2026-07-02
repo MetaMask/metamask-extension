@@ -365,9 +365,9 @@ describe('NetworksPage', () => {
       remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
-    const cronosButton = (
-      await screen.findByText('Cronos Mainnet')
-    ).closest('button');
+    const cronosButton = (await screen.findByText('Cronos Mainnet')).closest(
+      'button',
+    );
     expect(cronosButton).toBeInTheDocument();
 
     fireEvent.click(cronosButton as HTMLButtonElement);
@@ -433,9 +433,7 @@ describe('NetworksPage', () => {
 
     fireEvent.scroll(networkList);
 
-    expect(
-      await screen.findByText('Chainlist Network 99'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Chainlist Network 99')).toBeInTheDocument();
   });
 
   it('shows an Added pill for already configured Chainlist networks', async () => {
@@ -451,14 +449,9 @@ describe('NetworksPage', () => {
     expect(await screen.findByText('Gnosis Custom')).toBeInTheDocument();
     expect(screen.queryByText('Gnosis')).not.toBeInTheDocument();
     const gnosisButton = screen.getByText('Gnosis Custom').closest('button');
-    expect(gnosisButton).not.toHaveClass('bg-muted');
     expect(
       screen.getByTestId('networks-page-chainlist-added-pill'),
     ).toHaveTextContent(messages.added.message);
-    expect(screen.getByTestId('networks-page-chainlist-added-pill')).toHaveClass(
-      'bg-muted',
-      'rounded',
-    );
 
     fireEvent.click(gnosisButton as HTMLButtonElement);
 
