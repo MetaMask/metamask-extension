@@ -40,6 +40,9 @@ import {
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
+import ScamQuestionnaire, {
+  useSendScamQuestionnaire,
+} from '../../../external/scam-questionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
@@ -135,6 +138,13 @@ const ConfirmButton = ({
     setConfirmModalVisible(true);
   }, []);
 
+  const {
+    isScamQuestionnaireRequired,
+    isScamQuestionnaireVisible,
+    showScamQuestionnaire,
+    scamQuestionnaireProps,
+  } = useSendScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
+
   const handleSubmitConfirmModal = useCallback(async () => {
     if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
       const [selectedUnconfirmedDangerAlert] = unconfirmedDangerAlerts;
@@ -165,6 +175,9 @@ const ConfirmButton = ({
           onSubmit={handleSubmitConfirmModal}
         />
       )}
+      {isScamQuestionnaireVisible && (
+        <ScamQuestionnaire {...scamQuestionnaireProps} />
+      )}
       {shouldShowDangerConfirmButton ? (
         <Button
           block
@@ -175,7 +188,11 @@ const ConfirmButton = ({
             hasDangerBlockingAlerts,
             disabled,
           )}
-          onClick={handleOpenConfirmModal}
+          onClick={
+            isScamQuestionnaireRequired
+              ? showScamQuestionnaire
+              : handleOpenConfirmModal
+          }
           size={ButtonSize.Lg}
           startIconName={
             hasUnconfirmedFieldDangerAlerts
