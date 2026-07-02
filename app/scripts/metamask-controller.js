@@ -5798,7 +5798,10 @@ export default class MetamaskController extends EventEmitter {
     const checkExistingCodeMap = {
       [DefiReferralPartner.GMX]: (account) =>
         checkGmxHasReferralCode(this.networkController, account),
-      [DefiReferralPartner.Hyperliquid]: checkHyperliquidHasReferralCode,
+      [DefiReferralPartner.Hyperliquid]: this.preferencesController.state
+        .useExternalServices
+        ? checkHyperliquidHasReferralCode
+        : undefined,
     };
 
     if (shouldShowApproval || shouldRedirect) {
