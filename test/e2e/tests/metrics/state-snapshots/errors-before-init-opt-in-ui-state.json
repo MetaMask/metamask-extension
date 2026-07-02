@@ -74,6 +74,7 @@
       "isSignedIn": "boolean",
       "needsProfilePairing": "boolean"
     },
+    "BridgeController": { "inputPrimaryDenomination": "string" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "ComplianceController": {
@@ -151,6 +152,7 @@
         "bip122": "object",
         "eip155": "object",
         "solana": "object",
+        "stellar": "object",
         "tron": "object"
       },
       "nativeAssetIdentifiers": "object"

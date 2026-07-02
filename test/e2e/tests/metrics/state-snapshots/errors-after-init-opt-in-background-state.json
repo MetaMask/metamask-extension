@@ -103,6 +103,7 @@
     "assetExchangeRates": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
+    "inputPrimaryDenomination": "string",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",
@@ -217,6 +218,7 @@
       "bip122": "object",
       "eip155": "object",
       "solana": "object",
+      "stellar": "object",
       "tron": "object"
     },
     "nativeAssetIdentifiers": "object"

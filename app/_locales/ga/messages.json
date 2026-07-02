@@ -64,12 +64,6 @@
   "account": {
     "message": "Cuntas"
   },
-  "accountActivity": {
-    "message": "Gníomhaíocht chuntais"
-  },
-  "accountActivityText": {
-    "message": "Roghnaigh na cuntais ar mhaith leat fógra a fháil fúthu:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Logáil isteach"
   },
@@ -1462,12 +1456,6 @@
   },
   "customerSupport": {
     "message": "tacaíocht do chustaiméirí"
-  },
-  "customizeYourNotifications": {
-    "message": "Saincheap do fhógraí"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Cas air na cineálacha fógraí is mian leat a fháil:"
   },
   "dappSuggested": {
     "message": "Suíomh molta"
@@ -3557,9 +3545,6 @@
   "notificationsSettingsBoxError": {
     "message": "Chuaigh rud éigin mícheart. Déan iarracht arís."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fan ar an eolas faoi na rudaí atá ag tarlú i do sparán le fógraí. Chun fógraí a úsáid, úsáidimid próifíl chun roinnt socruithe a shioncronú ar fud do ghléasanna. $1"
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Foghlaim conas a chosnaímid do phríobháideacht agus an ghné seo in úsáid agat."
   },
@@ -4166,9 +4151,6 @@
   },
   "proceedWithTransaction": {
     "message": "Ba mhaith liom dul ar aghaidh ar aon nós"
-  },
-  "productAnnouncements": {
-    "message": "Fógraí táirgí"
   },
   "provide": {
     "message": "Cuir ar fáil"
