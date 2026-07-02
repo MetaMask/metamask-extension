@@ -47,7 +47,6 @@ import {
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
   getQuoteRequestInsufficientBal,
-  selectNoFeeAssets,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -210,12 +209,6 @@ const PrepareBridgePage = ({
   }, [isLoading]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
-  const noFeeAssets = useSelector((state) =>
-    selectNoFeeAssets(state, toToken?.chainId),
-  );
-  const isToTokenNoFee = noFeeAssets.some((asset) =>
-    toToken?.assetId.toLowerCase().includes(asset.toLowerCase()),
-  );
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(() => {
@@ -243,7 +236,6 @@ const PrepareBridgePage = ({
       destWalletAddress: selectedDestinationAccount?.address,
       gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,
       gasIncluded7702: effectiveGasIncluded7702,
-      ...(isToTokenNoFee ? { fee: 0 } : {}),
     };
   }, [
     fromToken?.assetId,
@@ -258,7 +250,6 @@ const PrepareBridgePage = ({
     effectiveGasIncluded,
     effectiveGasIncluded7702,
     isQuoteRequestInsufficientBal,
-    noFeeAssets,
   ]);
 
   // `useRef` is used here to manually memoize a function reference.

@@ -197,6 +197,7 @@ export const readMmFee = (quote: QuoteResponse) => {
   const baseFeePercentage = bpsToPercentage(baseBpsFee);
 
   const isDiscounted = Boolean(
+    discountType &&
     quoteFeePercentage &&
     baseFeePercentage &&
     Number(baseBpsFee) > Number(quoteBpsFee),
