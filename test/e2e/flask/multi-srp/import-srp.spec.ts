@@ -42,9 +42,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        await importAdditionalSecretRecoveryPhrase(driver, {
-          validateBalance: false,
-        });
+        await importAdditionalSecretRecoveryPhrase(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkAccountBelongsToSrp('Account 1', 2);
       },
@@ -60,9 +58,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        await importAdditionalSecretRecoveryPhrase(driver, {
-          validateBalance: false,
-        });
+        await importAdditionalSecretRecoveryPhrase(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);

@@ -38,9 +38,7 @@ describe('Multi SRP - Add accounts', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        await importAdditionalSecretRecoveryPhrase(driver, {
-          validateBalance: false,
-        });
+        await importAdditionalSecretRecoveryPhrase(driver);
         await addAccountToSrp(driver, 0);
       },
     );
@@ -55,9 +53,7 @@ describe('Multi SRP - Add accounts', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        await importAdditionalSecretRecoveryPhrase(driver, {
-          validateBalance: false,
-        });
+        await importAdditionalSecretRecoveryPhrase(driver);
         await addAccountToSrp(driver, 1);
       },
     );

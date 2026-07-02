@@ -23,9 +23,7 @@ describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        await importAdditionalSecretRecoveryPhrase(driver, {
-          validateBalance: false,
-        });
+        await importAdditionalSecretRecoveryPhrase(driver);
         await verifySrp(driver, FIRST_TEST_E2E_SRP, firstSrpIndex);
       },
     );
@@ -40,9 +38,7 @@ describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        await importAdditionalSecretRecoveryPhrase(driver, {
-          validateBalance: false,
-        });
+        await importAdditionalSecretRecoveryPhrase(driver);
         await verifySrp(driver, SECOND_TEST_E2E_SRP, secondSrpIndex);
       },
     );

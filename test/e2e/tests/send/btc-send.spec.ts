@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -10,8 +11,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import {
-  mockAccountsApiV2WithBtc,
-  mockAccountsApiV5WithBtc,
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,
@@ -22,12 +21,9 @@ import {
   mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
-import { buildBtcUnifiedAssetsFixtures } from '../btc/btc-assets-fixture';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
-    await mockAccountsApiV2WithBtc(mockServer),
-    await mockAccountsApiV5WithBtc(mockServer),
     await mockInitialFullScan(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),
@@ -44,15 +40,11 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
 describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
-  const fixtureOptions = {
-    fixtures: buildBtcUnifiedAssetsFixtures(),
-    localNodeOptions: [{ type: 'none' as const }],
-  };
 
   it('fields validation', async function () {
     await withFixtures(
       {
-        ...fixtureOptions,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -85,7 +77,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        ...fixtureOptions,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -121,7 +113,7 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        ...fixtureOptions,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
@@ -156,10 +148,12 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(expectedTotal);
         await bitcoinReviewTxPage.clickConfirmButton();
 
-        await homePage.goToActivityList();
+        // Wait for the transaction to appear in the activity list
+        await activityTab.checkTransactionActivityByText('Sending');
 
-        // BTC snap transactions stay pending until confirmed on-chain.
-        await activityTab.checkPendingTxNumberDisplayedInActivity(1);
+        // Note: Transaction shows as "Pending" immediately after broadcast.
+        // The BTC snap stores it with "Unconfirmed" status when broadcast.
+        await activityTab.checkWaitForTransactionStatus('pending');
       },
     );
   });

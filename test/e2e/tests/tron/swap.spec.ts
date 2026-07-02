@@ -1,3 +1,4 @@
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -5,11 +6,11 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
-  buildTronFixtures,
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
+import { buildTronFixtures } from './unified-tron-assets';
 
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
@@ -33,7 +34,6 @@ describe('Swap on Tron', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('6.07');
 
         const swapPage = new SwapPage(driver);
@@ -74,7 +74,6 @@ describe('Swap on Tron', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('6.07');
 
         const swapPage = new SwapPage(driver);

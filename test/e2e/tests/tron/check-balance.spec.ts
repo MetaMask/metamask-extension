@@ -6,7 +6,8 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { buildTronFixtures, mockTronApis } from './mocks/common-tron';
+import { mockTronApis } from './mocks/common-tron';
+import { buildTronFixtures } from './unified-tron-assets';
 
 describe('Check balance', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {

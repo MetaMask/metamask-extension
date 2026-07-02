@@ -5,7 +5,6 @@ import { merge } from 'lodash';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -45,8 +44,6 @@ const USDC_CAIP_ASSET =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 const SOL_PRICE = 168.88;
 const USDC_PRICE = 0.999761;
-const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 const USDC_BALANCE_HUMAN = '8.908267';
 
 // --- Unified-assets-only helpers ---

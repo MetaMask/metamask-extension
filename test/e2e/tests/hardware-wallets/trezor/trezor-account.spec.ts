@@ -25,7 +25,7 @@ describe('Trezor Hardware', function () {
       async ({ driver }) => {
         await login(driver, {
           waitForNonEvmAccounts: false,
-          validateBalance: false,
+          expectedBalance: '0',
         });
 
         const headerNavbar = new HeaderNavbar(driver);
@@ -77,7 +77,7 @@ describe('Trezor Hardware', function () {
       async ({ driver }) => {
         await login(driver, {
           waitForNonEvmAccounts: false,
-          validateBalance: false,
+          expectedBalance: '0',
         });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();

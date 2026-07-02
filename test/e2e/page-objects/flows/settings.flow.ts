@@ -20,8 +20,8 @@ export const closeSettings = async (driver: Driver): Promise<void> => {
   const settingsPage = new SettingsPage(driver);
   await settingsPage.closeSettings();
 
-  // Nested settings pages (e.g. About) may already land on home with the drawer closed.
-  await driver.clickElementSafe('[data-testid="drawer-close-button"]');
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.clickDrawerBackButton();
 };
 
 /**
