@@ -4,6 +4,9 @@
 //
 // run any task with "yarn build ${taskName}"
 //
+// Allow `require()` of shared TypeScript modules from CommonJS build code (e.g. utils.js).
+require('tsx/cjs/api').register();
+
 const path = require('path');
 const livereload = require('gulp-livereload');
 const yargs = require('yargs/yargs');
