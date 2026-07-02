@@ -12,7 +12,6 @@ import {
 import type { MetaMaskReduxState } from '../../../store/store';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { THIRD_PARTY_API_ITEMS } from '../search-config';
-import { IpfsGatewayItem } from './ipfs-gateway-item';
 
 const NetworkDetailsCheckToggleItem = createToggleItem({
   name: 'NetworkDetailsCheckToggleItem',
@@ -80,7 +79,6 @@ const THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] = [
     id: 'make-smart-contracts-easier',
     component: MakeSmartContractsEasierToggleItem,
   },
-  { id: 'ipfs-gateway', component: IpfsGatewayItem },
   {
     id: 'display-nft-media',
     component: DisplayNftMediaToggleItem,
