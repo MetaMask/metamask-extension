@@ -5,8 +5,26 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../../shared/constants/app';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import Home from './home.component';
+
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: () => ({ page: { title: 'Home' } }),
+}));
 
 jest.mock('../../components/multichain', () => ({
   AccountOverview: () => null,
@@ -46,13 +64,6 @@ const t = ((key: string) =>
   key) as unknown as typeof I18nContext extends React.Context<infer V>
   ? V
   : never;
-
-const mockMetaMetricsContext = {
-  trackEvent: jest.fn().mockResolvedValue(undefined),
-  bufferedTrace: jest.fn().mockResolvedValue(undefined),
-  bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-  onboardingParentContext: { current: null },
-} as unknown as React.ContextType<typeof MetaMetricsContext>;
 
 function buildDefaultProps(overrides: Record<string, unknown> = {}) {
   return {
@@ -96,13 +107,7 @@ function buildDefaultProps(overrides: Record<string, unknown> = {}) {
 }
 
 function wrapWithContext(element: React.ReactElement) {
-  return (
-    <I18nContext.Provider value={t}>
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        {element}
-      </MetaMetricsContext.Provider>
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={t}>{element}</I18nContext.Provider>;
 }
 
 function renderHome(overrides: Record<string, unknown> = {}) {
