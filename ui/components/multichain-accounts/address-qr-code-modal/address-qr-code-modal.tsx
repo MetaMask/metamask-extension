@@ -25,6 +25,13 @@ import {
   AvatarNetwork,
   FontWeight,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getURLHostName } from '../../../helpers/utils/util';
 import {
   BackgroundColor,
   TextColor as DesignSystemTextColor,
@@ -39,8 +46,6 @@ import {
 import type { ModalProps } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 
 // Constants for QR code generation
@@ -79,7 +84,7 @@ export const AddressQRCodeModal = ({
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [addressCopied, setAddressCopied] = useState(false);
   const timeoutRef = useRef<number | null>(null);
@@ -140,12 +145,22 @@ export const AddressQRCodeModal = ({
       return;
     }
 
-    openBlockExplorer(
-      explorerInfo.addressUrl,
-      'Address QR Code Modal',
-      trackEvent,
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          link_type: MetaMetricsEventLinkType.AccountTracker,
+          location: 'Address QR Code Modal',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          url_domain: getURLHostName(explorerInfo.addressUrl),
+        })
+        .build(),
     );
-  }, [explorerInfo, trackEvent]);
+    global.platform.openTab({ url: explorerInfo.addressUrl });
+  }, [createEventBuilder, explorerInfo, trackEvent]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
