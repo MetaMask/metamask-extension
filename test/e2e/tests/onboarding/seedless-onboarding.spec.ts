@@ -14,6 +14,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
+  HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
   MOCK_GOOGLE_ACCOUNT,
   MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS,
   MOCK_TELEGRAM_ACCOUNT,
@@ -22,6 +23,35 @@ import {
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
+
+async function mockSpotPrices(mockServer: Mockttp) {
+  await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .asPriority(99)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1/slip44:60': {
+          id: 'ethereum',
+          price: 1700,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+}
+
+async function setupSeedlessImportMocks(
+  server: Mockttp,
+  options?: {
+    userEmail?: string;
+  },
+) {
+  const oAuthMockttpService = new OAuthMockttpService();
+  await oAuthMockttpService.setup(server, options);
+  await mockSpotPrices(server);
+}
 
 describe('Metamask onboarding (with social login)', function () {
   it('Creates a new wallet with Google login and completes the onboarding process', async function () {
@@ -97,21 +127,24 @@ describe('Metamask onboarding (with social login)', function () {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
-          const oAuthMockttpService = new OAuthMockttpService();
-          return oAuthMockttpService.setup(server, {
+        testSpecificMock: (server: Mockttp) =>
+          setupSeedlessImportMocks(server, {
             userEmail: MOCK_GOOGLE_ACCOUNT,
-          });
-        },
+          }),
       },
       async ({ driver }: { driver: Driver }) => {
         await importWalletWithSocialLoginOnboardingFlow({
           driver,
         });
+        await handleSidepanelPostOnboarding(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
+        await homePage.waitForLoadingOverlayToDisappear();
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '25',
+          symbol: 'ETH',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
@@ -138,22 +171,25 @@ describe('Metamask onboarding (with social login)', function () {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
-          const oAuthMockttpService = new OAuthMockttpService();
-          return oAuthMockttpService.setup(server, {
+        testSpecificMock: (server: Mockttp) =>
+          setupSeedlessImportMocks(server, {
             userEmail: MOCK_TELEGRAM_ACCOUNT,
-          });
-        },
+          }),
       },
       async ({ driver }: { driver: Driver }) => {
         await importWalletWithSocialLoginOnboardingFlow({
           driver,
           authConnection: AuthConnection.Telegram,
         });
+        await handleSidepanelPostOnboarding(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
+        await homePage.waitForLoadingOverlayToDisappear();
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '25',
+          symbol: 'ETH',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);

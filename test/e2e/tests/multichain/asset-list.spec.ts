@@ -17,6 +17,7 @@ import {
 } from '../../constants';
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
+const NETWORK_NAME_POLYGON = 'Polygon';
 
 async function mockSetup(mockServer: Mockttp) {
   return [
@@ -52,17 +53,17 @@ async function mockSetup(mockServer: Mockttp) {
 function buildFixtures(title: string) {
   return {
     fixtures: new FixtureBuilderV2()
-      .withSelectedNetwork(NETWORK_CLIENT_ID.POLYGON_MAINNET)
+      .withSelectedNetwork(NETWORK_CLIENT_ID.LOCALHOST)
       .withEnabledNetworks({
         eip155: {
-          [CHAIN_IDS.POLYGON]: true,
+          [CHAIN_IDS.LOCALHOST]: true,
         },
       })
       .withAssetsController({
         assetsBalance: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            // Pre-seed Polygon native balance so the home page shows 25 at login
-            'eip155:137/slip44:60': { amount: '25' },
+            // Localhost native balance after HST deploy on chain-1 Anvil (synced via Accounts API v5 mock).
+            'eip155:1337/slip44:1': { amount: '24.998' },
           },
         },
       })
@@ -129,6 +130,11 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          NETWORK_NAME_POLYGON,
+        );
         const tokensTab = new TokensTab(driver);
         const sendPage = new SendPage(driver);
         await tokensTab.importCustomTokenByChain(

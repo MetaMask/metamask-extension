@@ -56,12 +56,65 @@ export const LOCATOR = {
 };
 
 export const ETH_CONVERSION_RATE_USD = 1;
+
+/** Aggregated homepage fiat total for bridge fixtures. */
+export const BRIDGE_EXPECTED_FIAT_BALANCE_USD = 225_730.11;
+
+/** Mainnet native ETH after HST deploy gas on the local Anvil node. */
+export const BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST = 24.997797036;
+
+export const BRIDGE_L2_ETH_BALANCE_PER_CHAIN = 25;
+
+/**
+ * Total native ETH across mainnet + Linea + Arbitrum in standard bridge fixtures.
+ * All 3 chains read from the same Anvil node via RpcDataSource (L2 Infura hosts
+ * are blocklisted → redirected to localhost:8545), so all converge to the same balance.
+ */
+export const BRIDGE_TOTAL_ETH_BALANCE_HUMAN =
+  BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST * 3;
+
+/** Total native ETH on mainnet + Linea + Arbitrum when each chain has 25 ETH (L2 bridge E2E). */
+export const BRIDGE_L2_TOTAL_ETH_BALANCE_HUMAN =
+  BRIDGE_L2_ETH_BALANCE_PER_CHAIN * 3;
+
+export const BRIDGE_ETH_USD_SPOT_PRICE =
+  BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_TOTAL_ETH_BALANCE_HUMAN;
+
+export const BRIDGE_L2_ETH_USD_SPOT_PRICE =
+  BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_L2_TOTAL_ETH_BALANCE_HUMAN;
+
+/** Homepage fiat total string for bridge login assertions. */
+export const BRIDGE_EXPECTED_FIAT_BALANCE_FORMATTED = `$${BRIDGE_EXPECTED_FIAT_BALANCE_USD.toLocaleString(
+  'en-US',
+  { minimumFractionDigits: 2, maximumFractionDigits: 2 },
+)}`;
+
 export const MOCK_CURRENCY_RATES = {
   currencyRates: {
     ETH: {
       conversionDate: 1665507609.0,
       conversionRate: ETH_CONVERSION_RATE_USD,
       usdConversionRate: ETH_CONVERSION_RATE_USD,
+    },
+  },
+};
+
+export const BRIDGE_MOCK_CURRENCY_RATES = {
+  currencyRates: {
+    ETH: {
+      conversionDate: 1665507609.0,
+      conversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
+      usdConversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
+    },
+  },
+};
+
+export const BRIDGE_L2_MOCK_CURRENCY_RATES = {
+  currencyRates: {
+    ETH: {
+      conversionDate: 1665507609.0,
+      conversionRate: BRIDGE_L2_ETH_USD_SPOT_PRICE,
+      usdConversionRate: BRIDGE_L2_ETH_USD_SPOT_PRICE,
     },
   },
 };

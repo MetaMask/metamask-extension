@@ -58,6 +58,7 @@ import {
   addImportedTokens,
   hideAsset,
   ignoreTokens as ignoreTokensAction,
+  importCustomAssetsBatch,
   multichainAddAssets,
   multichainIgnoreAssets,
   showModal,
@@ -215,6 +216,23 @@ const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
 
   return properties;
 };
+
+const importEvmSearchResultToUnifiedAssets = (
+  accountId: string,
+  payload: SearchResultImportPayload,
+) =>
+  importCustomAssetsBatch(
+    accountId,
+    [{ assetId: payload.assetId, isHidden: false }],
+    {
+      [payload.assetId]: {
+        address: payload.assetReference,
+        symbol: payload.symbol,
+        name: payload.name,
+        decimals: payload.decimals,
+      },
+    },
+  );
 
 const normalizeToHexChainId = (chainId: string): string => {
   if (!chainId.startsWith('eip155:')) {
@@ -1038,7 +1056,14 @@ export const TokenManagementPage = () => {
               ),
             ),
             ...(isAssetsUnifiedStateInBuild
-              ? [dispatch(addCustomAsset(evmAccount.id, payload.assetId))]
+              ? [
+                  dispatch(
+                    importEvmSearchResultToUnifiedAssets(
+                      evmAccount.id,
+                      payload,
+                    ),
+                  ),
+                ]
               : []),
           ]);
 

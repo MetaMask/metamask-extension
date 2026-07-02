@@ -1,12 +1,12 @@
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
+  buildTronFixtures,
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
@@ -16,7 +16,7 @@ describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildTronFixtures(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApis,
         ignoredConsoleErrors: [
@@ -58,7 +58,7 @@ describe('Swap on Tron', function () {
   it('No quotes available for the pair', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildTronFixtures(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApisNoQuotes,
       },
