@@ -1,0 +1,3 @@
+File Path,Build Type,Fixed,Assignee,Run Name,Total Tests,Passed,Failed,Skipped,Time (s),Failing Test Name,Error Category,Short Error
+test/e2e/tests/account/incremental-security.spec.ts,webpack,,,test-e2e-firefox-webpack,1,0,1,0,75.7,Incremental Security Back up Secret Recovery Phrase from backup reminder,Timeout,"TimeoutError: Waiting for element to be located By(css selector, [data-testid=""eth-overview__primary-currency""])"
+test/e2e/tests/account/incremental-security.spec.ts,browserify,,,test-e2e-firefox-browserify,1,0,1,0,74.9,Incremental Security Back up Secret Recovery Phrase from backup reminder,Timeout,"TimeoutError: Waiting for element to be located By(css selector, [data-testid=""eth-overview__primary-currency""])"
