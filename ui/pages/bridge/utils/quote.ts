@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { DiscountType, type QuoteResponse } from '@metamask/bridge-controller';
+import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -207,8 +207,6 @@ export const readMmFee = (quote: QuoteResponse) => {
     isDiscounted,
     baseFeePercentage,
     quoteFeePercentage,
-    discountType: isDiscounted
-      ? (discountType ?? DiscountType.PROMO)
-      : discountType,
+    discountType,
   };
 };
