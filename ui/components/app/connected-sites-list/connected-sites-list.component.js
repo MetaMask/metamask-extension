@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isSnapId } from '@metamask/snaps-utils';
-import Button from '../../ui/button';
+import { Button, ButtonVariant } from '../../component-library';
 import { AvatarFavicon, IconSize } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
@@ -46,7 +46,7 @@ export default class ConnectedSitesList extends Component {
             <Button
               className="connected-sites-list__content-row-link-button"
               onClick={() => onDisconnect(subject.origin)}
-              type="link"
+              variant={ButtonVariant.Link}
             >
               {t('disconnect')}
             </Button>
@@ -71,7 +71,7 @@ export default class ConnectedSitesList extends Component {
           <Button
             className="connected-sites-list__content-row-link-button"
             onClick={() => onDisconnect(subject.origin)}
-            type="link"
+            variant={ButtonVariant.Link}
           >
             {t('disconnect')}
           </Button>
