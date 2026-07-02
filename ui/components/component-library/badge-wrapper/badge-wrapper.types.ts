@@ -6,7 +6,8 @@ import type {
 } from '../box';
 
 /**
- * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#badgewrapper-component | Migration Guide}
  */
 export enum BadgeWrapperPosition {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -24,7 +25,8 @@ export enum BadgeWrapperPosition {
 }
 
 /**
- * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#badgewrapper-component | Migration Guide}
  */
 export enum BadgeWrapperAnchorElementShape {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
