@@ -98,6 +98,7 @@
       "inputPrimaryDenomination": "token_amount"
     },
     "BridgeStatusController": {
+      "quoteUpdateStatusStore": {},
       "txHistory": {}
     },
     "ClaimsController": {
