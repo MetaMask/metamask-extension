@@ -2,8 +2,8 @@ import React from 'react';
 import type { Meta, StoryFn } from '@storybook/react';
 import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { HardwareDeviceNames } from '../../../../../shared/constants/hardware-wallets';
 import { LEDGER_HD_PATHS } from '../utils/hardware-hd-paths';
 import {
   createMockRawHardwareAccounts,
