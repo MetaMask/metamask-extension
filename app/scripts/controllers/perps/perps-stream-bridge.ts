@@ -475,6 +475,18 @@ export class PerpsStreamBridge {
    * @param state
    */
   #handleMarketDataPreload(state: PerpsControllerState): void {
+    // The controller's background preload (startMarketDataPreload) always
+    // fetches via getMarketDataWithPrices({ standalone: true }) without the
+    // Terminal API, so cachedMarketDataByProvider only ever holds
+    // direct-provider data (no display names / keywords / tags / categories).
+    // When the Terminal backend is enabled we must not let that snapshot warm
+    // the UI 'markets' channel — doing so would satisfy the channel and
+    // suppress the Terminal-enabled REST fallback / reconnect hydration,
+    // leaving the UI on un-enriched direct-provider data.
+    if (this.#isTerminalBackendEnabled()) {
+      return;
+    }
+
     const provider = state.activeProvider ?? 'hyperliquid';
     const isTestnet = state.isTestnet ?? false;
     const cacheKey = `${provider}:${isTestnet ? 'testnet' : 'mainnet'}`;

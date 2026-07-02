@@ -72,16 +72,38 @@ jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
+const mockHydrateFromControllerCache = jest.fn();
+const mockSetUseTerminalApi = jest.fn();
+jest.mock('../../providers/perps/PerpsStreamManager', () => ({
+  getPerpsStreamManager: () => ({
+    hydrateFromControllerCache: mockHydrateFromControllerCache,
+    setUseTerminalApi: mockSetUseTerminalApi,
+  }),
+}));
+
+let mockTerminalBackendEnabled = false;
+jest.mock('../../selectors/perps', () => ({
+  getIsPerpsTerminalBackendEnabled: () => mockTerminalBackendEnabled,
+}));
+
+const MARKET_ENTRY = [{ symbol: 'BTC' }, { symbol: 'ETH' }];
+
 describe('PerpsLayout', () => {
   const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      activeProvider: 'hyperliquid',
+      isTestnet: false,
+      cachedMarketDataByProvider: {
+        'hyperliquid:mainnet': { data: MARKET_ENTRY, timestamp: 1000 },
+      },
     },
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTerminalBackendEnabled = false;
   });
 
   it('signals perpsViewActive on mount and unmount', () => {
@@ -149,5 +171,29 @@ describe('PerpsLayout', () => {
       );
       unmount();
     }).not.toThrow();
+  });
+
+  it('seeds the markets channel from the controller cache when terminal backend is disabled', () => {
+    mockTerminalBackendEnabled = false;
+
+    renderWithProvider(<PerpsLayout />, store);
+
+    expect(mockSetUseTerminalApi).toHaveBeenCalledWith(false);
+    expect(mockHydrateFromControllerCache).toHaveBeenCalledWith(
+      expect.objectContaining({ markets: MARKET_ENTRY }),
+      expect.anything(),
+    );
+  });
+
+  it('does not seed markets from the direct-provider cache when terminal backend is enabled', () => {
+    mockTerminalBackendEnabled = true;
+
+    renderWithProvider(<PerpsLayout />, store);
+
+    expect(mockSetUseTerminalApi).toHaveBeenCalledWith(true);
+    expect(mockHydrateFromControllerCache).toHaveBeenCalledWith(
+      expect.objectContaining({ markets: undefined }),
+      expect.anything(),
+    );
   });
 });

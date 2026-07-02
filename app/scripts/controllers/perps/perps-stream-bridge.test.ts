@@ -1261,6 +1261,39 @@ describe('PerpsStreamBridge', () => {
       expect(emit).toHaveBeenCalledWith('markets', mockMarkets);
     });
 
+    it('does not emit preload markets when terminal backend is enabled', async () => {
+      const controller = createMockController();
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => true,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': {
+              data: [{ symbol: 'ETH' }, { symbol: 'BTC' }],
+              timestamp: 1000,
+            },
+          },
+        },
+        [],
+      );
+
+      expect(emit).not.toHaveBeenCalledWith('markets', expect.anything());
+    });
+
     it('skips emit when market data is empty', async () => {
       const controller = createMockController();
       const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
