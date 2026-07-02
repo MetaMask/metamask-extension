@@ -32,6 +32,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  attestations: read # Required for gh attestation verify (INFRA-3661)
 
 jobs:
   upload:
@@ -229,6 +230,36 @@ jobs:
             --pattern "${ZIP_NAME}"
           ls -lh "${ZIP_NAME}"
 
+      - name: Verify artifact attestation
+        if: ${{ !inputs.dry-run }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZIP_NAME: ${{ env.ZIP_NAME }}
+        run: |
+          set -euo pipefail
+          echo "=== Verifying build provenance attestation ==="
+          gh attestation verify "${ZIP_NAME}" \
+            --repo "${{ github.repository }}" \
+            --signer-workflow "${{ github.repository }}/.github/workflows/publish-release-from-release-head.yml"
+          echo "Attestation verified for ${ZIP_NAME}"
+
+      - name: Verify SHA256SUMS
+        if: ${{ !inputs.dry-run }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZIP_NAME: ${{ env.ZIP_NAME }}
+        run: |
+          set -euo pipefail
+          echo "=== Downloading SHA256SUMS from release ==="
+          gh release download "${RELEASE_TAG}" \
+            --repo "${{ github.repository }}" \
+            --pattern "SHA256SUMS"
+          cat SHA256SUMS
+          echo ""
+          echo "=== Verifying ${ZIP_NAME} digest ==="
+          grep -F "${ZIP_NAME}" SHA256SUMS | sha256sum -c -
+          echo "SHA256SUMS check: PASSED"
+
       # Dev listing rejects manifest.key tied to production extension ID (POC lesson).
       - name: Strip manifest key from zip (dev only)
         if: inputs.target == 'dev' && !inputs.dry-run
@@ -340,6 +371,8 @@ jobs:
             echo "|-------|-------|"
             echo "| HTTP status | \`${{ steps.cws-upload.outputs.http_code || 'n/a' }}\` |"
             echo "| CWS uploadState | \`${{ steps.cws-upload.outputs.upload_state || 'n/a' }}\` |"
+            echo "| Attestation verified | ✅ |"
+            echo "| SHA256SUMS verified | ✅ |"
             echo "| Published to users | no (upload only) |"
             echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
           } >> "${GITHUB_STEP_SUMMARY}"
