@@ -96,6 +96,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'TransactionController:isAtomicBatchSupported',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
+      'PermissionController:acceptPermissionsRequest',
     ],
   });
 
