@@ -29,7 +29,6 @@ const pageWrapProps = {
   style: {
     width: '328px',
     height: '600px',
-    border: '1px solid var(--color-border-muted)',
   },
 };
 
@@ -37,7 +36,6 @@ const responsivePageWrapProps = {
   style: {
     width: '100%',
     height: '600px',
-    border: '1px solid var(--color-border-muted)',
   },
 };
 export const HeaderStory = (args) => (

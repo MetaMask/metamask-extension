@@ -30,7 +30,7 @@ import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-o
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
-  border: '1px solid var(--color-border-default)',
+  border: '1px solid var(--color-border-muted)',
   borderRadius: '8px',
   backgroundColor: 'var(--color-background-default)',
   boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
