@@ -141,6 +141,20 @@ export class PerpsStreamBridge {
 
   #lastMarketCacheKey: string | null = null;
 
+  /**
+   * Serializes the Terminal-mode market refetch triggered by preload-cache
+   * bumps so a burst of state changes cannot fan out into concurrent Terminal
+   * REST hits (the exact rate-limit pressure this stack is trying to avoid).
+   */
+  #terminalMarketRefetchInFlight = false;
+
+  /**
+   * Set when a preload-cache bump arrives while a Terminal market refetch is
+   * already in flight. The in-flight fetch re-runs once on settle so the newest
+   * market set (e.g. post-HIP-3) still reaches the UI instead of being dropped.
+   */
+  #terminalMarketRefetchPending = false;
+
   #wasDeviceOffline = false;
 
   constructor(options: PerpsStreamBridgeOptions) {
@@ -358,6 +372,8 @@ export class PerpsStreamBridge {
     this.#hydrationSeq += 1;
     this.#isHydrating = false;
     this.#lastMarketCacheKey = null;
+    this.#terminalMarketRefetchInFlight = false;
+    this.#terminalMarketRefetchPending = false;
     this.#wasDeviceOffline = false;
   }
 
@@ -475,18 +491,6 @@ export class PerpsStreamBridge {
    * @param state
    */
   #handleMarketDataPreload(state: PerpsControllerState): void {
-    // The controller's background preload (startMarketDataPreload) always
-    // fetches via getMarketDataWithPrices({ standalone: true }) without the
-    // Terminal API, so cachedMarketDataByProvider only ever holds
-    // direct-provider data (no display names / keywords / tags / categories).
-    // When the Terminal backend is enabled we must not let that snapshot warm
-    // the UI 'markets' channel — doing so would satisfy the channel and
-    // suppress the Terminal-enabled REST fallback / reconnect hydration,
-    // leaving the UI on un-enriched direct-provider data.
-    if (this.#isTerminalBackendEnabled()) {
-      return;
-    }
-
     const provider = state.activeProvider ?? 'hyperliquid';
     const isTestnet = state.isTestnet ?? false;
     const cacheKey = `${provider}:${isTestnet ? 'testnet' : 'mainnet'}`;
@@ -501,7 +505,71 @@ export class PerpsStreamBridge {
       return;
     }
     this.#lastMarketCacheKey = snapshotKey;
+
+    // The controller's background preload (startMarketDataPreload) always
+    // fetches via getMarketDataWithPrices({ standalone: true }) without the
+    // Terminal API, so cachedMarketDataByProvider only ever holds
+    // direct-provider data (no display names / keywords / tags / categories).
+    // When the Terminal backend is enabled we must not warm the UI 'markets'
+    // channel with that un-enriched snapshot. But the preload timestamp bump
+    // still signals that the market set changed (e.g. a HIP-3 config arrived or
+    // the 5-minute refresh ran), so re-fetch the enriched Terminal data and
+    // emit that instead. Otherwise the channel would hold whatever the last
+    // REST/reconnect hydration produced and silently go stale.
+    if (this.#isTerminalBackendEnabled()) {
+      this.#refetchTerminalMarketData();
+      return;
+    }
+
     this.#emit('markets', entry.data);
+  }
+
+  /**
+   * Re-fetches enriched market data via the Terminal API and emits it on the
+   * 'markets' channel. Used to keep Terminal-mode UI in sync when the
+   * direct-provider preload cache updates (the raw snapshot is unfit to emit).
+   *
+   * Serialized via #terminalMarketRefetchInFlight; a bump that lands mid-fetch
+   * flips #terminalMarketRefetchPending so exactly one follow-up fetch runs.
+   * getMarketDataWithPrices with the Terminal API does not write
+   * cachedMarketDataByProvider, so this cannot re-trigger the state listener.
+   */
+  #refetchTerminalMarketData(): void {
+    if (!this.#isConnectionAlive()) {
+      return;
+    }
+    if (this.#terminalMarketRefetchInFlight) {
+      this.#terminalMarketRefetchPending = true;
+      return;
+    }
+    this.#terminalMarketRefetchInFlight = true;
+    const generationAtStart = this.#destroyGeneration;
+    this.#controller
+      .getMarketDataWithPrices({ useTerminalApi: true })
+      .then((markets) => {
+        // destroy() may have fired during the await; never emit onto a torn-down
+        // stream. A generation bump (rather than a latched flag) lets later init
+        // cycles resume refetching without an explicit reset.
+        if (this.#destroyGeneration === generationAtStart && markets) {
+          this.#emit('markets', markets);
+        }
+      })
+      .catch((error) => {
+        console.debug(
+          '[PerpsStreamBridge] terminal market data refetch failed',
+          error,
+        );
+      })
+      .finally(() => {
+        this.#terminalMarketRefetchInFlight = false;
+        const shouldRerun =
+          this.#terminalMarketRefetchPending &&
+          this.#destroyGeneration === generationAtStart;
+        this.#terminalMarketRefetchPending = false;
+        if (shouldRerun) {
+          this.#refetchTerminalMarketData();
+        }
+      });
   }
 
   /**

@@ -1261,8 +1261,50 @@ describe('PerpsStreamBridge', () => {
       expect(emit).toHaveBeenCalledWith('markets', mockMarkets);
     });
 
-    it('does not emit preload markets when terminal backend is enabled', async () => {
+    it('does not emit the un-enriched preload snapshot when terminal backend is enabled', async () => {
       const controller = createMockController();
+      controller.getMarketDataWithPrices.mockResolvedValue([] as never);
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => true,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const rawSnapshot = [{ symbol: 'ETH' }, { symbol: 'BTC' }];
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': {
+              data: rawSnapshot,
+              timestamp: 1000,
+            },
+          },
+        },
+        [],
+      );
+
+      expect(emit).not.toHaveBeenCalledWith('markets', rawSnapshot);
+    });
+
+    it('refetches enriched terminal market data and emits it when the preload cache updates', async () => {
+      const controller = createMockController();
+      const enrichedMarkets = [
+        { symbol: 'ETH', name: 'Ethereum' },
+        { symbol: 'BTC', name: 'Bitcoin' },
+      ];
+      controller.getMarketDataWithPrices.mockResolvedValue(
+        enrichedMarkets as never,
+      );
       const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -1283,13 +1325,152 @@ describe('PerpsStreamBridge', () => {
           isTestnet: false,
           cachedMarketDataByProvider: {
             'hyperliquid:mainnet': {
-              data: [{ symbol: 'ETH' }, { symbol: 'BTC' }],
+              data: [{ symbol: 'ETH' }],
               timestamp: 1000,
             },
           },
         },
         [],
       );
+
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledWith({
+        useTerminalApi: true,
+      });
+      expect(emit).toHaveBeenCalledWith('markets', enrichedMarkets);
+    });
+
+    it('does not refetch terminal market data when the timestamp is unchanged', async () => {
+      const controller = createMockController();
+      controller.getMarketDataWithPrices.mockResolvedValue([] as never);
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => true,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      const state = {
+        activeProvider: 'hyperliquid',
+        isTestnet: false,
+        cachedMarketDataByProvider: {
+          'hyperliquid:mainnet': {
+            data: [{ symbol: 'ETH' }],
+            timestamp: 1000,
+          },
+        },
+      };
+
+      stateChangeCallback(state, []);
+      stateChangeCallback(state, []);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+    });
+
+    it('serializes concurrent preload bumps into a single follow-up terminal refetch', async () => {
+      const controller = createMockController();
+      let resolveFirst: ((value: unknown) => void) | undefined;
+      let calls = 0;
+      controller.getMarketDataWithPrices.mockImplementation(() => {
+        calls += 1;
+        if (calls === 1) {
+          return new Promise((resolve) => {
+            resolveFirst = resolve;
+          }) as never;
+        }
+        return Promise.resolve([{ symbol: 'FINAL' }] as never);
+      });
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => true,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      const makeState = (timestamp: number) => ({
+        activeProvider: 'hyperliquid',
+        isTestnet: false,
+        cachedMarketDataByProvider: {
+          'hyperliquid:mainnet': {
+            data: [{ symbol: 'ETH' }],
+            timestamp,
+          },
+        },
+      });
+
+      // First bump starts a fetch that is still pending.
+      stateChangeCallback(makeState(1000), []);
+      // Two more bumps land mid-fetch; they must coalesce into one re-run.
+      stateChangeCallback(makeState(2000), []);
+      stateChangeCallback(makeState(3000), []);
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+
+      resolveFirst?.([{ symbol: 'FIRST' }]);
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(2);
+      expect(emit).toHaveBeenCalledWith('markets', [{ symbol: 'FINAL' }]);
+    });
+
+    it('does not emit a terminal refetch result after destroy', async () => {
+      const controller = createMockController();
+      let resolveFetch: ((value: unknown) => void) | undefined;
+      controller.getMarketDataWithPrices.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveFetch = resolve;
+          }) as never,
+      );
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => true,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': {
+              data: [{ symbol: 'ETH' }],
+              timestamp: 1000,
+            },
+          },
+        },
+        [],
+      );
+
+      bridge.destroy();
+      resolveFetch?.([{ symbol: 'LATE' }]);
+      await Promise.resolve();
+      await Promise.resolve();
 
       expect(emit).not.toHaveBeenCalledWith('markets', expect.anything());
     });
