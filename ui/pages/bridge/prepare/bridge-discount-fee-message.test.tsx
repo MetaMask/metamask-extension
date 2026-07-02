@@ -14,7 +14,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { BridgeVipFeeMessage } from './bridge-vip-fee-message';
+import { BridgeDiscountFeeMessage } from './bridge-discount-fee-message';
 
 const mockGetVipTierForAccount = jest.fn();
 setBackgroundConnection({
@@ -22,7 +22,9 @@ setBackgroundConnection({
     mockGetVipTierForAccount(...args),
 } as never);
 
-const createDiscountedQuotes = (): QuoteResponse[] =>
+const createDiscountedQuotes = (
+  discountType?: string | null,
+): QuoteResponse[] =>
   (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map((quote) => ({
     ...quote,
     quote: {
@@ -34,6 +36,7 @@ const createDiscountedQuotes = (): QuoteResponse[] =>
           amount: '1000000000000000000',
           quoteBpsFee: 50,
           baseBpsFee: 87.5,
+          ...(discountType !== undefined && { discountType }),
         },
       },
     },
@@ -111,7 +114,7 @@ const createBridgeStoreWithQuotes = (
     },
   });
 
-describe('BridgeVipFeeMessage', () => {
+describe('BridgeDiscountFeeMessage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetVipTierForAccount.mockResolvedValue(5);
@@ -119,7 +122,7 @@ describe('BridgeVipFeeMessage', () => {
 
   it('renders null when the active quote is not discounted', () => {
     const { container } = renderWithProvider(
-      <BridgeVipFeeMessage />,
+      <BridgeDiscountFeeMessage />,
       configureStore(
         createBridgeStoreWithQuotes(
           mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
@@ -133,7 +136,7 @@ describe('BridgeVipFeeMessage', () => {
 
   it('renders null when there is no active quote', () => {
     const { container } = renderWithProvider(
-      <BridgeVipFeeMessage />,
+      <BridgeDiscountFeeMessage />,
       configureStore(createBridgeStoreWithQuotes([])),
     );
 
@@ -143,9 +146,9 @@ describe('BridgeVipFeeMessage', () => {
 
   it('renders null when the quote is expired', () => {
     const { container } = renderWithProvider(
-      <BridgeVipFeeMessage />,
+      <BridgeDiscountFeeMessage />,
       configureStore(
-        createBridgeStoreWithQuotes(createDiscountedQuotes(), {
+        createBridgeStoreWithQuotes(createDiscountedQuotes('vip'), {
           quotesRefreshCount: 5,
           quotesLastFetched: Date.now() - 60000,
         }),
@@ -157,14 +160,13 @@ describe('BridgeVipFeeMessage', () => {
   });
 
   it('renders discounted fee copy and VIP badge when a VIP discount applies', async () => {
-    const store = createBridgeStoreWithQuotes(createDiscountedQuotes());
+    const store = createBridgeStoreWithQuotes(createDiscountedQuotes('vip'));
     store.metamask.remoteFeatureFlags.vipProgramEnabled = {
       enabled: true,
       minimumVersion: '0.0.0',
     };
-    renderWithProvider(<BridgeVipFeeMessage />, configureStore(store));
+    renderWithProvider(<BridgeDiscountFeeMessage />, configureStore(store));
 
-    expect(screen.getByText(messages.includes.message)).toBeInTheDocument();
     expect(
       screen.getByText(messages.percent.message.replace('$1', '0.875')),
     ).toBeInTheDocument();
@@ -182,14 +184,13 @@ describe('BridgeVipFeeMessage', () => {
   it('renders fee copy without VIP badge when tier fetch returns null', async () => {
     mockGetVipTierForAccount.mockResolvedValueOnce(null);
 
-    const store = createBridgeStoreWithQuotes(createDiscountedQuotes());
+    const store = createBridgeStoreWithQuotes(createDiscountedQuotes('vip'));
     store.metamask.remoteFeatureFlags.vipProgramEnabled = {
       enabled: true,
       minimumVersion: '0.0.0',
     };
-    renderWithProvider(<BridgeVipFeeMessage />, configureStore(store));
+    renderWithProvider(<BridgeDiscountFeeMessage />, configureStore(store));
 
-    expect(screen.getByText(messages.includes.message)).toBeInTheDocument();
     expect(
       screen.getByText(messages.percent.message.replace('$1', '0.875')),
     ).toBeInTheDocument();
@@ -201,5 +202,43 @@ describe('BridgeVipFeeMessage', () => {
       expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
     });
     expect(screen.queryByTestId('rewards-vip-badge')).not.toBeInTheDocument();
+  });
+
+  it('renders null when fees are discounted but discountType is absent', () => {
+    const { container } = renderWithProvider(
+      <BridgeDiscountFeeMessage />,
+      configureStore(createBridgeStoreWithQuotes(createDiscountedQuotes())),
+    );
+
+    expect(container).toBeEmptyDOMElement();
+    expect(mockGetVipTierForAccount).not.toHaveBeenCalled();
+  });
+
+  (
+    [
+      ['promo', messages.bridgeDiscountBadgePromo.message],
+      ['dao', messages.bridgeDiscountBadgeDao.message],
+      ['seasonal', messages.bridgeDiscountBadgePromo.message],
+    ] as const
+  ).forEach(([discountType, badgeLabel]) => {
+    it(`renders discounted fee copy and discount badge for ${discountType} discountType`, async () => {
+      renderWithProvider(
+        <BridgeDiscountFeeMessage />,
+        configureStore(
+          createBridgeStoreWithQuotes(createDiscountedQuotes(discountType)),
+        ),
+      );
+
+      expect(
+        screen.getByText(messages.percent.message.replace('$1', '0.875')),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.mmFee.message.replace('$1', '0.5')),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('rewards-discount-badge')).toBeInTheDocument();
+      expect(screen.getByText(badgeLabel)).toBeInTheDocument();
+      expect(screen.queryByTestId('rewards-vip-badge')).not.toBeInTheDocument();
+      expect(mockGetVipTierForAccount).not.toHaveBeenCalled();
+    });
   });
 });

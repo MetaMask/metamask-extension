@@ -4401,9 +4401,6 @@
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "포함됨"
-  },
   "includesXTransactions": {
     "message": "$1건의 트랜잭션 포함"
   },
