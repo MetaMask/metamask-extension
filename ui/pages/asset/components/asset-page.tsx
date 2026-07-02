@@ -36,7 +36,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isAssetRequireActivate } from '../../../../shared/lib/multichain/trustline';
-import { getNativeReserveAssetPageState } from '../../../../shared/lib/multichain/reserve-balance';
+import { computeBaseReserve } from '../../../../shared/lib/multichain/reserve-balance';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -283,14 +283,10 @@ const AssetPage = ({
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   });
 
-  const nativeReservePageState = getNativeReserveAssetPageState({
-    chainId,
-    type,
+  const baseReserve = computeBaseReserve({
+    assetId: bip44Asset?.assetId ?? assetId,
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   });
-
-  const { nativeReserveBaseReserve, showNativeReserveBalanceSection } =
-    nativeReservePageState;
 
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
@@ -402,12 +398,12 @@ const AssetPage = ({
       );
     }
 
-    if (showNativeReserveBalanceSection) {
+    if (baseReserve !== undefined) {
       return (
         <StellarNativeBalanceSection
           totalBalance={String(balance)}
           symbol={symbol}
-          baseReserve={nativeReserveBaseReserve ?? '0'}
+          baseReserve={baseReserve}
           fiatValue={tokenFiatAmount}
         />
       );
@@ -455,11 +451,13 @@ const AssetPage = ({
         </Box>
         {optionsButton}
       </Box>
-      <StellarClassicTrustlineActivateCard
-        visible={isTrustlineInactive}
-        assetId={assetId as CaipAssetType}
-        symbol={symbol}
-      />
+      {
+        isTrustlineInactive && (
+          <StellarClassicTrustlineActivateCard
+             asset={tokenAsset as Asset}
+          />
+        )
+      }
       <Box paddingLeft={4}>{renderAssetTitleSection()}</Box>
       <AssetChart
         chainId={chainId}

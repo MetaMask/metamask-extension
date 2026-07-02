@@ -1,4 +1,3 @@
-import { XlmScope } from '@metamask/keyring-api';
 import { isAssetRequireActivate, isTrustlineAsset } from './trustline';
 
 const CLASSIC_ASSET_ID =

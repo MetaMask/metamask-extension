@@ -2,14 +2,28 @@ import { CaipAssetTypeStruct, parseCaipAssetType } from '@metamask/utils';
 import type { CaipChainId } from '@metamask/utils';
 import { XlmScope } from '@metamask/keyring-api';
 
+/**
+ * Account-scoped metadata for a trustline asset, when provided by the
+ * account asset controller.
+ */
 type TrustlineAccountAssetInfo = {
   limit?: string;
 };
 
+/**
+ * CAIP asset namespace used for classic trustline assets on each supported
+ * chain (for example, Stellar's `asset` namespace).
+ */
 export const TRUSTLINE_ASSET_NAMESPACE: Record<CaipChainId, string> = {
   [XlmScope.Pubnet]: 'asset',
 };
 
+/**
+ * Determines whether a CAIP asset ID refers to a classic trustline asset.
+ *
+ * @param assetId - CAIP asset ID to check.
+ * @returns `true` when the asset uses a supported trustline namespace.
+ */
 export function isTrustlineAsset(assetId: string): boolean {
   if (!assetId || !CaipAssetTypeStruct.is(assetId)) {
     return false;
@@ -21,19 +35,22 @@ export function isTrustlineAsset(assetId: string): boolean {
 }
 
 /**
- * Generic helper that determines whether a classic `asset:` trustline
- * should be considered inactive for display purposes.
- * This logic was previously colocated in the Stellar-specific helper. It is
- * kept generic here and exported as `isAssetRequireActivate`.
- * @param options
- * @param options.assetId
- * @param options.accountAssetInfo
+ * Determines whether a classic trustline asset should be treated as inactive
+ * and require activation before use.
+ *
+ * When account metadata is unavailable (for example, on first import), the
+ * asset is assumed inactive.
+ *
+ * @param params - Parameters for checking if an asset requires activation.
+ * @param params.assetId - CAIP asset ID for the asset to check.
+ * @param params.accountAssetInfo - Optional account asset metadata.
+ * @returns `true` when the asset is a trustline asset that is inactive.
  */
-export function isAssetRequireActivate(options: {
+export function isAssetRequireActivate(params: {
   assetId?: string;
   accountAssetInfo?: TrustlineAccountAssetInfo;
 }): boolean {
-  const { assetId, accountAssetInfo } = options;
+  const { assetId, accountAssetInfo } = params;
 
   if (!isTrustlineAsset(assetId ?? '')) {
     return false;

@@ -1,30 +1,60 @@
 import { XlmScope } from '@metamask/keyring-api';
-import { AssetType } from '../../constants/transaction';
-import { getNativeReserveAssetPageState } from './reserve-balance';
+import {
+  computeBaseReserve,
+  isSupportBaseReserve,
+  NATIVE_RESERVE_SLIP44_IDS,
+} from './reserve-balance';
 
-describe('getNativeReserveAssetPageState', () => {
-  it('returns non-stellar state for non-stellar chain', () => {
-    const state = getNativeReserveAssetPageState({
-      chainId: 'eip155:1',
-      type: AssetType.native,
-      accountAssetInfo: undefined,
-    });
+const STELLAR_NATIVE_ASSET_ID = `${XlmScope.Pubnet}/slip44:148`;
+const ETHER_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 
-    expect(state.showNativeReserveBalanceSection).toBe(false);
-    expect(state.nativeReserveBaseReserve).toBeUndefined();
+describe('isSupportBaseReserve', () => {
+  it('returns true for supported native reserve assets', () => {
+    expect(isSupportBaseReserve(STELLAR_NATIVE_ASSET_ID)).toBe(true);
+    expect(NATIVE_RESERVE_SLIP44_IDS.has(STELLAR_NATIVE_ASSET_ID)).toBe(true);
   });
 
-  it('extracts base reserve for Stellar native assets', () => {
-    const state = getNativeReserveAssetPageState({
-      chainId: XlmScope.Pubnet,
-      type: AssetType.native,
-      accountAssetInfo: { baseReserve: '0.5' } as unknown as Record<
-        string,
-        unknown
-      >,
-    });
+  it('returns false for unsupported assets', () => {
+    expect(isSupportBaseReserve(ETHER_NATIVE_ASSET_ID)).toBe(false);
+    expect(isSupportBaseReserve('')).toBe(false);
+    expect(isSupportBaseReserve('not-a-caip-asset-id')).toBe(false);
+  });
+});
 
-    expect(state.showNativeReserveBalanceSection).toBe(true);
-    expect(state.nativeReserveBaseReserve).toBe('0.5');
+describe('computeBaseReserve', () => {
+  it('returns undefined for assets that do not support base reserve', () => {
+    expect(
+      computeBaseReserve({
+        assetId: ETHER_NATIVE_ASSET_ID,
+        accountAssetInfo: undefined,
+      }),
+    ).toBeUndefined();
+  });
+
+  it('extracts base reserve for supported native assets', () => {
+    expect(
+      computeBaseReserve({
+        assetId: STELLAR_NATIVE_ASSET_ID,
+        accountAssetInfo: { baseReserve: '0.5' },
+      }),
+    ).toStrictEqual('0.5');
+  });
+
+  it('defaults to "0" when account metadata is missing', () => {
+    expect(
+      computeBaseReserve({
+        assetId: STELLAR_NATIVE_ASSET_ID,
+        accountAssetInfo: undefined,
+      }),
+    ).toStrictEqual('0');
+  });
+
+  it('defaults to "0" when baseReserve is invalid', () => {
+    expect(
+      computeBaseReserve({
+        assetId: STELLAR_NATIVE_ASSET_ID,
+        accountAssetInfo: { baseReserve: 'not-a-number' },
+      }),
+    ).toStrictEqual('0');
   });
 });

@@ -1,39 +1,46 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { errorCodes } from '@metamask/rpc-errors';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { getAsset } from '../../../selectors/assets';
-import type { CaipAssetType } from '@metamask/utils';
 import { isAssetRequireActivate, isTrustlineAsset } from '../../../../shared/lib/multichain/trustline';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { forceUpdateMetamaskState } from '../../../store/actions';
-import { requestStellarChangeTrustOptDelete } from '../utils/stellar-snap-client-requests';
+import { requestStellarChangeTrustOptAdd, requestStellarChangeTrustOptDelete } from '../utils/stellar-snap-client-requests';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { Asset } from '../types/asset';
 
 /**
- * Keeps the activate / deactivate logic for a trustline-backed asset (e.g. a Stellar
- * classic asset) in one place, alongside the loading and error state for the operation.
- * @param options0
- * @param options0.assetId
- * @param options0.hasNonZeroBalance
- * @param options0.balanceDisplay
- * @param options0.symbol
+ * Manages trustline activation and deactivation for supported assets (currently Stellar classic tokens).
+ *
+ * @param params - Hook parameters.
+ * @param params.asset - Asset to activate or deactivate.
+ * @returns Trustline actions, loading flags, error state, and whether deactivation is allowed.
+ *   For assets that do not require a trustline, actions are inert and deactivation is disabled.
  */
 export const useAssetActivation = ({
-  assetId,
-  hasNonZeroBalance,
-  balanceDisplay,
-  symbol,
+  asset,
 }: {
-  assetId: CaipAssetType;
-  hasNonZeroBalance: boolean;
-  balanceDisplay?: string;
-  symbol?: string;
+  asset: Asset;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const chainId = getChainIdFromAssetId(assetId);
+
+  // For non trusline asset, assetId and chainId are undefined.
+  let assetId: CaipAssetType | undefined;
+  let chainId: CaipChainId | undefined;
+  let isAssetIsTrustlineAsset: boolean = false;
+  if (asset.type === AssetType.token) {
+    assetId = asset.address as CaipAssetType;
+    isAssetIsTrustlineAsset = isTrustlineAsset(assetId);
+    if (isAssetIsTrustlineAsset) {
+      chainId = getChainIdFromAssetId(assetId);
+    }
+  }
 
   const account = useSelector((state) =>
     chainId
@@ -41,29 +48,36 @@ export const useAssetActivation = ({
       : undefined,
   ) as InternalAccount | undefined;
 
-  const [isDeactivating, setIsDeactivating] = useState(false);
-  const [trustlineRemoveErrorMessage, setTrustlineRemoveErrorMessage] =
-    useState<string | null>(null);
-
-  const dismissTrustlineRemoveErrorToast = useCallback(() => {
-    setTrustlineRemoveErrorMessage(null);
-  }, []);
-
   const assetFromState = useSelector((state) =>
-    chainId ? getAsset(state, assetId, chainId) : undefined,
+    chainId && assetId ? getAsset(state, assetId, chainId) : undefined,
   );
 
+  const [isDeactivating, setIsDeactivating] = useState(false);
+  const [isActivating, setIsActivating] = useState(false);
+  const [errorMessage, setErrorMessage] =
+    useState<string | null>(null);
+  const dismissErrorMessage = useCallback(() => {
+    setErrorMessage(null);
+  }, []);
+
   const canDeactivate =
-    isTrustlineAsset(assetId) &&
+    assetId &&
+    isAssetIsTrustlineAsset &&
     !isAssetRequireActivate({
       assetId,
       accountAssetInfo: assetFromState?.accountAssetInfo,
     });
+
   const deactivateAsset = useCallback(async () => {
-    if (!canDeactivate || !account || !chainId) {
+    if (!canDeactivate || !account || !chainId || !assetId || !asset || !asset.balance?.display) {
       return;
     }
-    setTrustlineRemoveErrorMessage(null);
+
+    const hasNonZeroBalance = Boolean(asset.balance?.value && asset.balance.value !== '0');
+    const balance = asset.balance?.display;
+    const {symbol} = asset;
+
+    setErrorMessage(null);
     setIsDeactivating(true);
     try {
       await requestStellarChangeTrustOptDelete({
@@ -77,10 +91,10 @@ export const useAssetActivation = ({
       const isUserRejection =
         errorCode === errorCodes.provider.userRejectedRequest;
       if (!isUserRejection) {
-        setTrustlineRemoveErrorMessage(
+        setErrorMessage(
           hasNonZeroBalance
             ? (t('stellarClassicTrustlineRemoveNonZeroBalanceError', [
-                balanceDisplay ?? '0',
+                balance,
                 symbol,
               ]) as string)
             : (t('stellarClassicTrustlineRemoveError') as string),
@@ -92,20 +106,49 @@ export const useAssetActivation = ({
   }, [
     account,
     assetId,
-    balanceDisplay,
+    asset,
     canDeactivate,
     chainId,
     dispatch,
-    hasNonZeroBalance,
-    symbol,
     t,
   ]);
 
+  const activateAsset = useCallback(async () => {
+    if (!account || !chainId || !assetId) {
+      return;
+    }
+    setErrorMessage(null);
+    setIsActivating(true);
+    try {
+      const result = await requestStellarChangeTrustOptAdd({
+        accountId: account.id,
+        assetId,
+        scope: chainId,
+      });
+      if (result.status === false) {
+        // Snap showed the account funding prompt; no trustline tx was submitted.
+        return;
+      }
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error: unknown) {
+      const errorCode = (error as { code?: number })?.code;
+      const isUserRejection =
+        errorCode === errorCodes.provider.userRejectedRequest;
+      if (!isUserRejection) {
+        setErrorMessage(t('stellarClassicTrustlineAddError') as string);
+      }
+    } finally {
+      setIsActivating(false);
+    }
+  }, [account, assetId, chainId, dispatch, t]);
+
   return {
     deactivateAsset,
+    activateAsset,
     canDeactivate,
     isDeactivating,
-    trustlineRemoveErrorMessage,
-    dismissTrustlineRemoveErrorToast,
+    isActivating,
+    errorMessage,
+    dismissErrorMessage,
   };
 };

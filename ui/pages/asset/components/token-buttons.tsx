@@ -1,4 +1,3 @@
-import type { CaipAssetType } from '@metamask/utils';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { forceUpdateMetamaskState, showModal } from '../../../store/actions';
+import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
@@ -19,7 +18,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { IconColor } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
-import Tooltip from '../../../components/ui/tooltip/tooltip';
 import {
   Icon,
   IconName,
@@ -132,14 +130,11 @@ const TokenButtons = ({
   const {
     deactivateAsset,
     canDeactivate,
-    dismissTrustlineRemoveErrorToast,
+    dismissErrorMessage,
     isDeactivating,
-    trustlineRemoveErrorMessage,
+    errorMessage,
   } = useAssetActivation({
-    assetId: token.address as CaipAssetType,
-    hasNonZeroBalance: hasNonZeroTokenBalance,
-    balanceDisplay: token.balance?.display ?? token.balance?.value,
-    symbol: token.symbol,
+    asset: token,
   });
   return (
     <>
@@ -214,8 +209,8 @@ const TokenButtons = ({
         ) : null}
       </Box>
       <StellarClassicTrustlineErrorToast
-        message={trustlineRemoveErrorMessage}
-        onClose={dismissTrustlineRemoveErrorToast}
+        message={errorMessage}
+        onClose={dismissErrorMessage}
         dataTestId="stellar-classic-trustline-remove-error-toast"
       />
     </>
