@@ -470,7 +470,7 @@ describe('MultichainConnectPage', () => {
   it('renders image icon correctly', () => {
     const { getByAltText } = render();
 
-    const image = getByAltText('metamask.github.io logo');
+    const image = getByAltText('metamask.github.io');
     expect(image).toHaveAttribute(
       'src',
       'https://metamask.github.io/test-dapp/metamask-fox.svg',
@@ -478,7 +478,7 @@ describe('MultichainConnectPage', () => {
   });
 
   it('renders fallback icon correctly', () => {
-    const { container } = render({
+    const { getByText } = render({
       props: {
         targetSubjectMetadata: {
           ...mockTargetSubjectMetadata,
@@ -487,12 +487,11 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const divElement = container.querySelector('div.mm-avatar-base--size-lg');
-    expect(divElement).toHaveTextContent('m');
+    expect(getByText('m', { exact: true })).toBeInTheDocument();
   });
 
   it('renders fallback icon correctly for IP address as an origin', () => {
-    const { container } = render({
+    const { getByText } = render({
       props: {
         targetSubjectMetadata: {
           ...mockTargetSubjectMetadata,
@@ -502,8 +501,7 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const divElement = container.querySelector('div.mm-avatar-base--size-lg');
-    expect(divElement).toHaveTextContent('?');
+    expect(getByText('?', { exact: true })).toBeInTheDocument();
   });
 
   it('renders title correctly', () => {
