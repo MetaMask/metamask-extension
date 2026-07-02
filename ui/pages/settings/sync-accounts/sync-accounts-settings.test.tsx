@@ -39,6 +39,22 @@ jest.mock('./components', () => ({
   AddWallets: () => <div data-testid="add-wallets" />,
   LoadingStep: () => <div data-testid="loading-step" />,
   Success: () => <div data-testid="success" />,
+  SyncError: ({
+    onRetry,
+    onCancel,
+  }: {
+    onRetry: () => void;
+    onCancel: () => void;
+  }) => (
+    <div data-testid="sync-error">
+      <button type="button" data-testid="sync-error-retry" onClick={onRetry}>
+        retry
+      </button>
+      <button type="button" data-testid="sync-error-cancel" onClick={onCancel}>
+        cancel
+      </button>
+    </div>
+  ),
 }));
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
@@ -141,7 +157,7 @@ describe('SyncAccountsSettings', () => {
     });
   });
 
-  it('exits automatically when the flow reaches a terminal phase', async () => {
+  it('renders SyncError when the phase is cancelled', () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -150,6 +166,53 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+  });
+
+  it('renders SyncError when the phase is failed', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+  });
+
+  it('resets the session when retry is clicked on the error step', async () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+
+    fireEvent.click(screen.getByTestId('sync-error-retry'));
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'messengerCall',
+        ['QrSyncController:resetState', []],
+      );
+    });
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('resets and navigates away when cancel is clicked on the error step', async () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.CANCELLED,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+
+    fireEvent.click(screen.getByTestId('sync-error-cancel'));
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(

@@ -23,7 +23,11 @@ const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
 
 const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
 
-const EnterVerificationCode = () => {
+type EnterVerificationCodeProps = {
+  onRestart: () => void;
+};
+
+const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
   const [isError, setIsError] = useState(false);
   const [code, setCode] = useState<string[]>(createEmptyCode);
@@ -44,13 +48,6 @@ const EnterVerificationCode = () => {
 
     return () => clearInterval(intervalId);
   }, [isExpired]);
-
-  const handleRestart = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]);
-  }, []);
 
   const focusInput = useCallback((index: number) => {
     const clampedIndex = Math.max(0, Math.min(index, CODE_LENGTH - 1));
@@ -245,7 +242,7 @@ const EnterVerificationCode = () => {
           {isExpired && t('enter_verification_code_expired')}
         </Text>
         {(isExpired || isError) && (
-          <TextButton onClick={handleRestart}>
+          <TextButton onClick={onRestart}>
             {t('start_with_new_qr_code')}
           </TextButton>
         )}
