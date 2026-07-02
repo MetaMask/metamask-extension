@@ -3077,12 +3077,10 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // AccountsController
-      setSelectedInternalAccount: (id) => {
-        const account = this.accountsController.getAccount(id);
-        if (account) {
-          this.accountsController.setSelectedAccount(id);
-        }
-      },
+      setSelectedInternalAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setSelectedInternalAccount',
+      ),
 
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
