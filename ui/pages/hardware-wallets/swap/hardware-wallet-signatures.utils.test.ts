@@ -1,5 +1,5 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
 import { SignatureStepStatus } from './types';
 import {
@@ -19,8 +19,9 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const mockRejectPendingApproval =
-  jest.requireMock('../../../store/actions').rejectPendingApproval;
+const mockRejectPendingApproval = jest.requireMock(
+  '../../../store/actions',
+).rejectPendingApproval;
 
 const t = (key: string, params?: (string | undefined)[]) => {
   if (params) {
@@ -518,7 +519,10 @@ describe('hardware-wallet-signatures utils', () => {
 
       expect(mockRejectPendingApproval).toHaveBeenCalledWith(
         'approval-123',
-        serializeError(providerErrors.userRejectedRequest()),
+        expect.objectContaining({
+          code: providerErrors.userRejectedRequest().code,
+          message: providerErrors.userRejectedRequest().message,
+        }),
       );
       expect(dispatch).toHaveBeenCalledWith('REJECT_ACTION');
     });
