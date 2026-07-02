@@ -319,10 +319,7 @@ import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import {
-  rejectAllApprovals,
-  rejectOriginApprovals,
-} from './lib/approval/utils';
+import { rejectOriginApprovals } from './lib/approval/utils';
 import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
   MultichainAssetsControllerInit,
@@ -3618,7 +3615,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // ApprovalController
-      rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
+      rejectAllPendingApprovals: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectAllPendingApprovals',
+      ),
       rejectPendingApproval: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:rejectPendingApproval',
@@ -8525,19 +8525,6 @@ export default class MetamaskController extends EventEmitter {
       { waitForResult: true, walletType },
     );
   };
-
-  rejectAllPendingApprovals() {
-    const deleteInterface = (id) =>
-      this.controllerMessenger.call(
-        'SnapInterfaceController:deleteInterface',
-        id,
-      );
-
-    rejectAllApprovals({
-      approvalController: this.approvalController,
-      deleteInterface,
-    });
-  }
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(

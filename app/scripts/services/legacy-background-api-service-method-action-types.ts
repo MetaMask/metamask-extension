@@ -353,6 +353,18 @@ export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
 };
 
 /**
+ * Rejects all pending approval requests.
+ *
+ * Snap dialogs and account confirmations are accepted with a falsy value and
+ * their interface deleted where applicable, while all other approvals are
+ * rejected with a user-rejected-request error.
+ */
+export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
+  type: `LegacyBackgroundApiService:rejectAllPendingApprovals`;
+  handler: LegacyBackgroundApiService['rejectAllPendingApprovals'];
+};
+
+/**
  * Accepts a permissions request. Silently ignores the request if it can no
  * longer be found.
  *
@@ -398,4 +410,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction;
