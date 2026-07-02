@@ -136,6 +136,7 @@ import {
   type PerpsToastRouteState,
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
+import { OrderBookToggle, OrderBookPanel } from '../../components/app/perps/order-book';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
 
@@ -339,6 +340,38 @@ const PerpsOrderEntryPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSlippageModalOpen, setIsSlippageModalOpen] = useState(false);
+  const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
+  const [orderBookWidthPct, setOrderBookWidthPct] = useState(33);
+  const isDraggingRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    isDraggingRef.current = true;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!isDraggingRef.current || !containerRef.current) {
+        return;
+      }
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const offsetFromRight = containerRect.right - moveEvent.clientX;
+      const pct = (offsetFromRight / containerRect.width) * 100;
+      setOrderBookWidthPct(Math.min(60, Math.max(20, pct)));
+    };
+
+    const handleMouseUp = () => {
+      isDraggingRef.current = false;
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  }, []);
   const {
     maxSlippageBps,
     maxSlippageSource,
@@ -1673,50 +1706,77 @@ const PerpsOrderEntryPage = () => {
             )}
           </Box>
         </Box>
-        <Box className="w-9 shrink-0" aria-hidden="true" />
+        <Box className="w-9 shrink-0 flex items-center justify-center">
+          {decodedSymbol && (
+            <OrderBookToggle
+              isExpanded={isOrderBookOpen}
+              onToggle={() => setIsOrderBookOpen((prev) => !prev)}
+            />
+          )}
+        </Box>
       </Box>
 
-      {/* Scrollable form */}
-      <Box
-        paddingLeft={4}
-        paddingRight={4}
-        paddingBottom={4}
-        flexDirection={BoxFlexDirection.Column}
-        gap={4}
-        className={twMerge(
-          'flex-1 overflow-y-auto overflow-x-hidden',
-          isOrderPending && 'pointer-events-none opacity-50',
-        )}
-      >
-        {orderMode === 'new' && (
-          <DirectionTabs
-            direction={orderDirection}
-            onDirectionChange={handleDirectionChange}
+      {/* Scrollable form + order book side panel */}
+      <div ref={containerRef} className="flex flex-row flex-1 overflow-hidden">
+        <Box
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={4}
+          flexDirection={BoxFlexDirection.Column}
+          gap={4}
+          className={twMerge(
+            'overflow-y-auto overflow-x-hidden',
+            !isOrderBookOpen && 'w-full',
+            isOrderPending && 'pointer-events-none opacity-50',
+          )}
+          style={isOrderBookOpen ? { width: `${100 - orderBookWidthPct}%` } : undefined}
+        >
+          {orderMode === 'new' && (
+            <DirectionTabs
+              direction={orderDirection}
+              onDirectionChange={handleDirectionChange}
+            />
+          )}
+          <OrderEntry
+            asset={decodedSymbol}
+            currentPrice={currentPrice}
+            markPrice={oraclePrice}
+            maxLeverage={maxLeverage}
+            availableBalance={availableBalance}
+            initialDirection={orderDirection}
+            showSubmitButton={false}
+            showOrderSummary={false}
+            onFormStateChange={handleFormStateChange}
+            onCalculationsChange={handleCalculationsChange}
+            mode={orderMode}
+            orderType={orderType}
+            existingPosition={existingPositionForOrder}
+            midPrice={topOfBook?.midPrice}
+            onOrderTypeChange={setOrderType}
+            onAddFunds={handleAddFunds}
+            initialLeverage={initialLeverage}
+            autoFocusUsd={orderMode !== 'close'}
+            autoFocusLimitPrice={orderMode !== 'close'}
+            sizeDecimals={marketInfo?.szDecimals}
           />
+        </Box>
+
+        {isOrderBookOpen && decodedSymbol && (
+          <div
+            className="flex flex-row overflow-hidden"
+            style={{ width: `${orderBookWidthPct}%` }}
+          >
+            <div
+              className="w-1 cursor-col-resize bg-border-muted hover:bg-primary-default active:bg-primary-default shrink-0 transition-colors"
+              onMouseDown={handleResizeStart}
+              data-testid="perps-order-book-resize-handle"
+            />
+            <div className="flex-1 overflow-y-auto p-2">
+              <OrderBookPanel symbol={decodedSymbol} />
+            </div>
+          </div>
         )}
-        <OrderEntry
-          asset={decodedSymbol}
-          currentPrice={currentPrice}
-          markPrice={oraclePrice}
-          maxLeverage={maxLeverage}
-          availableBalance={availableBalance}
-          initialDirection={orderDirection}
-          showSubmitButton={false}
-          showOrderSummary={false}
-          onFormStateChange={handleFormStateChange}
-          onCalculationsChange={handleCalculationsChange}
-          mode={orderMode}
-          orderType={orderType}
-          existingPosition={existingPositionForOrder}
-          midPrice={topOfBook?.midPrice}
-          onOrderTypeChange={setOrderType}
-          onAddFunds={handleAddFunds}
-          initialLeverage={initialLeverage}
-          autoFocusUsd={orderMode !== 'close'}
-          autoFocusLimitPrice={orderMode !== 'close'}
-          sizeDecimals={marketInfo?.szDecimals}
-        />
-      </Box>
+      </div>
 
       {/* Sticky bottom: summary + button */}
       <Box

@@ -304,6 +304,11 @@ jest.mock('react-router-dom', () => ({
   },
 }));
 
+jest.mock('../../components/app/perps/order-book', () => ({
+  OrderBookToggle: () => null,
+  OrderBookPanel: () => null,
+}));
+
 const mockIsNearLiquidationPrice = jest.fn();
 jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
   const actual = jest.requireActual(
