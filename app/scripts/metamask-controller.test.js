@@ -139,21 +139,6 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         // past `ensureReady`, so no Snap accounts get created during init.
         () => new Promise(() => undefined),
       );
-      controllerMessenger.registerActionHandler(
-        'SnapAccountService:getLegacySnapKeyring',
-        async () => {
-          const result = await controllerMessenger.call(
-            'KeyringController:withController',
-            async (controller) => {
-              const found = controller.keyrings.find(
-                ({ keyring }) => keyring.type === 'Snap Keyring',
-              );
-              return { snapKeyring: found?.keyring };
-            },
-          );
-          return result.snapKeyring;
-        },
-      );
       return {
         memStateKey: null,
         persistedStateKey: null,
@@ -5562,6 +5547,110 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.approvalController.add,
         ).not.toHaveBeenCalled();
+      });
+
+      describe('GMX on-chain referral code check', () => {
+        const GMX_ORIGIN =
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin;
+        const GMX_APPROVAL_TYPE =
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].approvalType;
+
+        beforeEach(() => {
+          jest
+            .spyOn(
+              metamaskController.remoteFeatureFlagController,
+              'state',
+              'get',
+            )
+            .mockReturnValue({
+              remoteFeatureFlags: {
+                extensionUxDefiReferralPartners: {
+                  [DefiReferralPartner.GMX]: true,
+                },
+              },
+            });
+          jest
+            .spyOn(metamaskController, 'getPermittedAccounts')
+            .mockReturnValue(mockPermittedAccounts);
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'addReferralPassedAccount',
+          );
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.GMX] = {};
+          });
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is undefined', async () => {
+          checkGmxHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(DefiReferralPartner.GMX, mockPermittedAccount);
+          expect(
+            metamaskController.approvalController.add,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is Approved', async () => {
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.GMX] = {
+              [mockPermittedAccount]: ReferralStatus.Approved,
+            };
+          });
+          checkGmxHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(DefiReferralPartner.GMX, mockPermittedAccount);
+          expect(
+            metamaskController._handleDefiReferralRedirect,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('proceeds to show the prompt when wallet has no GMX referral code', async () => {
+          checkGmxHasReferralCode.mockResolvedValueOnce(false);
+          jest
+            .spyOn(metamaskController.approvalController, 'add')
+            .mockResolvedValueOnce({});
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.approvalController.add,
+          ).toHaveBeenCalledWith(
+            expect.objectContaining({
+              origin: GMX_ORIGIN,
+              type: GMX_APPROVAL_TYPE,
+            }),
+          );
+        });
+
+        it('does not call checkGmxHasReferralCode for non-GMX partners', async () => {
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(checkGmxHasReferralCode).not.toHaveBeenCalled();
+        });
       });
 
       describe('_handleDefiReferralApprovedAccount', () => {

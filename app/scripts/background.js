@@ -503,9 +503,6 @@ function maybeDetectPhishing(theController) {
               .build({
                 excludeMetaMetricsId: true,
               }),
-            {
-              excludeMetaMetricsId: true,
-            },
           );
         }
       };
@@ -1314,9 +1311,6 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
         },
         excludeMetaMetricsId: true,
       }),
-    {
-      excludeMetaMetricsId: true,
-    },
   );
 }
 

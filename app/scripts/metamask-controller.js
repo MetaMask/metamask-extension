@@ -2238,99 +2238,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstallStarted`,
-      (snapId, origin, isUpdate) => {
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackEvent(
-          createEventBuilder(
-            isUpdate
-              ? MetaMetricsEventName.SnapUpdateStarted
-              : MetaMetricsEventName.SnapInstallStarted,
-          )
-            .addCategory(MetaMetricsEventCategory.Snaps)
-            .addProperties({
-              snap_id: snapId,
-              origin,
-              snap_category: snapCategory,
-            })
-            .build(),
-        );
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstallFailed`,
-      (snapId, origin, isUpdate, error) => {
-        const isRejected = error.includes('User rejected the request.');
-        const failedEvent = isUpdate
-          ? MetaMetricsEventName.SnapUpdateFailed
-          : MetaMetricsEventName.SnapInstallFailed;
-        const rejectedEvent = isUpdate
-          ? MetaMetricsEventName.SnapUpdateRejected
-          : MetaMetricsEventName.SnapInstallRejected;
-
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackEvent(
-          createEventBuilder(isRejected ? rejectedEvent : failedEvent)
-            .addCategory(MetaMetricsEventCategory.Snaps)
-            .addProperties({
-              snap_id: snapId,
-              origin,
-              snap_category: snapCategory,
-            })
-            .build(),
-        );
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstalled`,
-      (truncatedSnap, origin, preinstalled) => {
-        if (preinstalled) {
-          return;
-        }
-
-        const snapId = truncatedSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.SnapInstalled)
-            .addCategory(MetaMetricsEventCategory.Snaps)
-            .addProperties({
-              snap_id: snapId,
-              version: truncatedSnap.version,
-              origin,
-              snap_category: snapCategory,
-            })
-            .build(),
-        );
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapUpdated`,
-      (newSnap, oldVersion, origin, preinstalled) => {
-        if (preinstalled) {
-          return;
-        }
-
-        const snapId = newSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.SnapUpdated)
-            .addCategory(MetaMetricsEventCategory.Snaps)
-            .addProperties({
-              snap_id: snapId,
-              old_version: oldVersion,
-              new_version: newSnap.version,
-              origin,
-              snap_category: snapCategory,
-            })
-            .build(),
-        );
-      },
-    );
-
-    this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapTerminated`,
       (truncatedSnap) => {
         const approvals = Object.values(
@@ -2361,19 +2268,6 @@ export default class MetamaskController extends EventEmitter {
 
         this.notificationServicesController.deleteNotificationsById(
           notificationIds,
-        );
-
-        const snapId = truncatedSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.SnapUninstalled)
-            .addCategory(MetaMetricsEventCategory.Snaps)
-            .addProperties({
-              snap_id: snapId,
-              version: truncatedSnap.version,
-              snap_category: snapCategory,
-            })
-            .build(),
         );
       },
     );
@@ -3442,7 +3336,10 @@ export default class MetamaskController extends EventEmitter {
       restoreSocialBackupAndGetSeedPhrase:
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
-      changePassword: this.changePassword.bind(this),
+      changePassword: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:changePassword',
+      ),
       getIsSeedlessOnboardingUserAuthenticated:
         this.seedlessOnboardingController.getIsUserAuthenticated.bind(
           this.seedlessOnboardingController,
@@ -3484,7 +3381,10 @@ export default class MetamaskController extends EventEmitter {
         txController.approveTransactionsWithSameNonce.bind(txController),
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
-      estimateGas: this.estimateGas.bind(this),
+      estimateGas: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:estimateGas',
+      ),
       estimateGasFee: txController.estimateGasFee.bind(txController),
       getNextNonce: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -4809,61 +4709,6 @@ export default class MetamaskController extends EventEmitter {
         data: seedPhraseAsUint8Array,
         type: SecretType.Mnemonic,
       });
-    }
-  }
-
-  /**
-   * Changes the password for the wallet.
-   *
-   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
-   *
-   * @param {string} newPassword - The new password.
-   * @param {string} oldPassword - The old password.
-   */
-  async changePassword(newPassword, oldPassword) {
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    try {
-      await this.keyringController.changePassword(newPassword);
-
-      if (isSocialLoginFlow) {
-        try {
-          await this.seedlessOnboardingController.changePassword(
-            newPassword,
-            oldPassword,
-          );
-          // store the new keyring encryption key in the seedless onboarding controller
-          const keyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            keyringEncKey,
-          );
-        } catch (err) {
-          log.error('error while changing seedless-onboarding password', err);
-          log.error('reverting keyring password change');
-          // revert the keyring password change by changing the password back to the old password
-          await this.keyringController.changePassword(oldPassword);
-          // store the old keyring encryption key in the seedless onboarding controller
-          const revertedKeyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            revertedKeyringEncKey,
-          );
-
-          this.controllerMessenger?.captureException?.(
-            createSentryError(
-              'error while changing password for social login flow',
-              err,
-            ),
-          );
-          throw err;
-        }
-      }
-    } catch (error) {
-      log.error('error while changing password', error);
-      throw error;
-    } finally {
-      releaseLock();
     }
   }
 
@@ -6424,18 +6269,6 @@ export default class MetamaskController extends EventEmitter {
     );
     const state = this.getState();
     return state;
-  }
-
-  async estimateGas(estimateGasParams) {
-    return new Promise((resolve, reject) => {
-      this.provider
-        .request({
-          method: 'eth_estimateGas',
-          params: [estimateGasParams],
-        })
-        .then((result) => resolve(result.toString(16)))
-        .catch((err) => reject(err));
-    });
   }
 
   /**
@@ -8606,9 +8439,6 @@ export default class MetamaskController extends EventEmitter {
             },
             excludeMetaMetricsId: true,
           }),
-        {
-          excludeMetaMetricsId: true,
-        },
       );
     }
 
@@ -9230,9 +9060,6 @@ export default class MetamaskController extends EventEmitter {
         .build({
           matomoEvent: true,
         }),
-      {
-        matomoEvent: true,
-      },
     );
   }
 
