@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback } from 'react';
 import type { CaipChainId } from '@metamask/utils';
 import {
   formatChainIdToHex,
@@ -6,12 +6,13 @@ import {
 } from '@metamask/bridge-controller';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
+import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
 import {
   IconName,
   ButtonSecondary,
 } from '../../../components/component-library';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const getBlockExplorerName = (
@@ -52,8 +53,20 @@ export default function BridgeExplorerLinks({
   srcBlockExplorerUrl,
   destBlockExplorerUrl,
 }: ExplorerLinksProps) {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
+
+  const trackExplorerLink = useCallback(
+    (payload: MetaMetricsEventPayload) => {
+      let builder = createEventBuilder(payload.event);
+      if (payload.category) {
+        builder = builder.addCategory(payload.category);
+      }
+      trackEvent(builder.addProperties(payload.properties ?? {}).build());
+      return Promise.resolve();
+    },
+    [createEventBuilder, trackEvent],
+  );
 
   // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render
   const srcButtonText = t('bridgeExplorerLinkViewOn', [
@@ -75,7 +88,7 @@ export default function BridgeExplorerLinks({
               openBlockExplorer(
                 srcBlockExplorerUrl,
                 METRICS_LOCATION,
-                trackEvent,
+                trackExplorerLink,
               );
             }
           }}
@@ -91,7 +104,7 @@ export default function BridgeExplorerLinks({
               openBlockExplorer(
                 destBlockExplorerUrl,
                 METRICS_LOCATION,
-                trackEvent,
+                trackExplorerLink,
               );
             }
           }}

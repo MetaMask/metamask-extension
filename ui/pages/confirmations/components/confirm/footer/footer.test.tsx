@@ -72,6 +72,21 @@ const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
   trackHardwareWalletRecoveryConnectCtaClicked,
 );
 
+const mockAnalyticsTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockAnalyticsTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
 
@@ -258,6 +273,7 @@ describe('ConfirmFooter', () => {
     mockIsHardwareWalletError.mockReset();
     mockIsUserRejectedHardwareWalletError.mockReset();
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
+    mockAnalyticsTrackEvent.mockClear();
 
     mockOnTransactionConfirm.mockResolvedValue(undefined);
     ensureDeviceReadyMock.mockResolvedValue(true);
@@ -753,7 +769,6 @@ describe('ConfirmFooter', () => {
     });
 
     it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const connectionState = {
         status: ConnectionStatus.Disconnected as const,
       };
@@ -771,16 +786,14 @@ describe('ConfirmFooter', () => {
         isDeviceConnected: false,
       });
 
-      const { getByTestId } = render(undefined, {
-        getMockTrackEvent: () => mockTrackEvent,
-      });
+      const { getByTestId } = render(undefined);
 
       fireEvent.click(getByTestId('reconnect-hardware-wallet-button'));
 
       await waitFor(() => {
         expect(
           mockTrackHardwareWalletRecoveryConnectCtaClicked,
-        ).toHaveBeenCalledWith(mockTrackEvent, {
+        ).toHaveBeenCalledWith(mockAnalyticsTrackEvent, {
           location: MetaMetricsHardwareWalletRecoveryLocation.Send,
           walletType: HardwareWalletType.Ledger,
           connectionState,
