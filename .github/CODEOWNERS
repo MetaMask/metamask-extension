@@ -287,6 +287,7 @@ app/scripts/wallet-init/remote-feature-flags* @MetaMask/extension-platform @Meta
 app/scripts/wallet-init/instance-options/approval-controller* @MetaMask/confirmations
 app/scripts/wallet-init/instance-options/connectivity-controller* @MetaMask/extension-platform @MetaMask/core-platform
 app/scripts/wallet-init/instance-options/keyring-controller* @MetaMask/accounts-engineers @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/network-controller* @MetaMask/core-platform
 app/scripts/wallet-init/instance-options/remote-feature-flag-controller* @MetaMask/extension-platform @MetaMask/core-platform
 app/scripts/wallet-init/instance-options/storage-service* @MetaMask/extension-platform @MetaMask/core-platform
 

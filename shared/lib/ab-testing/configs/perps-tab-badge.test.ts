@@ -1,20 +1,20 @@
-import { MetaMetricsEventName } from '../../constants/metametrics';
-import type { AnalyticsEvent } from '../analytics/create-event-builder';
+import { MetaMetricsEventName } from '../../../constants/metametrics';
+import type { AnalyticsEvent } from '../../analytics/create-event-builder';
 import {
   AB_TEST_ANALYTICS_MAPPINGS,
   clearABTestAnalyticsMappings,
   enrichWithABTests,
   hasABTestAnalyticsMappingForEvent,
   registerABTestAnalyticsMapping,
-} from './ab-test-analytics';
-import { createActiveABTestAssignment } from './active-ab-test-assignment';
+} from '../ab-test-analytics';
+import { createActiveABTestAssignment } from '../active-ab-test-assignment';
+import { ABTestVariant } from '../variants';
 import {
   PERPS_TAB_BADGE_AB_KEY,
   PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING,
   PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
   PERPS_TAB_BADGE_VARIANTS,
 } from './perps-tab-badge';
-import { ABTestVariant } from './variants';
 
 describe('perps-tab-badge config', () => {
   it('uses a compliant remote feature flag key', () => {

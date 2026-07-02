@@ -79,6 +79,7 @@ import {
 } from '../../shared/constants/defi-referrals';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
+import { trace, endTrace, TraceName } from '../../shared/lib/trace';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
 import * as utils from './lib/util';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -90,6 +91,7 @@ import {
 } from './controllers/permissions';
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
+import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
 
@@ -350,6 +352,10 @@ jest.mock('./lib/forwardRequestToSnap', () => ({
 
 jest.mock('./lib/defi-referrals/referral-onchain-check', () => ({
   checkGmxHasReferralCode: jest.fn().mockResolvedValue(false),
+}));
+
+jest.mock('./lib/defi-referrals/referral-api-check', () => ({
+  checkHyperliquidHasReferralCode: jest.fn().mockResolvedValue(false),
 }));
 
 const TEST_SEED =
@@ -5649,6 +5655,129 @@ describe('MetaMaskController', () => {
         });
       });
 
+      describe('Hyperliquid API referral code check', () => {
+        beforeEach(() => {
+          jest
+            .spyOn(
+              metamaskController.remoteFeatureFlagController,
+              'state',
+              'get',
+            )
+            .mockReturnValue({
+              remoteFeatureFlags: {
+                extensionUxDefiReferralPartners: {
+                  [DefiReferralPartner.Hyperliquid]: true,
+                },
+              },
+            });
+          jest
+            .spyOn(metamaskController, 'getPermittedAccounts')
+            .mockReturnValue(mockPermittedAccounts);
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'addReferralPassedAccount',
+          );
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.Hyperliquid] = {};
+            state.useExternalServices = true;
+          });
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is undefined', async () => {
+          checkHyperliquidHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(
+            DefiReferralPartner.Hyperliquid,
+            mockPermittedAccount,
+          );
+          expect(
+            metamaskController.approvalController.add,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is Approved', async () => {
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.Hyperliquid] = {
+              [mockPermittedAccount]: ReferralStatus.Approved,
+            };
+          });
+          checkHyperliquidHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(
+            DefiReferralPartner.Hyperliquid,
+            mockPermittedAccount,
+          );
+          expect(
+            metamaskController._handleDefiReferralRedirect,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('proceeds to show the prompt when wallet has no Hyperliquid referral code', async () => {
+          checkHyperliquidHasReferralCode.mockResolvedValueOnce(false);
+          jest
+            .spyOn(metamaskController.approvalController, 'add')
+            .mockResolvedValueOnce({});
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.approvalController.add,
+          ).toHaveBeenCalledWith(
+            expect.objectContaining({
+              origin: HYPERLIQUID_ORIGIN,
+              type: HYPERLIQUID_APPROVAL_TYPE,
+            }),
+          );
+        });
+
+        it('does not call checkHyperliquidHasReferralCode for non-Hyperliquid partners', async () => {
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
+        });
+
+        it('does not call checkHyperliquidHasReferralCode when basic functionality is disabled', async () => {
+          metamaskController.preferencesController.update((state) => {
+            state.useExternalServices = false;
+          });
+          jest
+            .spyOn(metamaskController.approvalController, 'add')
+            .mockResolvedValueOnce({});
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
+        });
+      });
+
       describe('_handleDefiReferralApprovedAccount', () => {
         beforeEach(() => {
           jest.spyOn(
@@ -5738,6 +5867,9 @@ describe('MetaMaskController', () => {
     describe('_handleDefiReferralOnPermittedAccountsAdded', () => {
       const HL_ORIGIN =
         DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
+      const GMX_ORIGIN = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin;
+      const ASTER_ORIGIN =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX].origin;
 
       let mockEvmAccount;
       let mockCaipAccountId;
@@ -5770,7 +5902,14 @@ describe('MetaMaskController', () => {
           state.internalAccounts.accounts[mockEvmAccount.id] = mockEvmAccount;
           state.internalAccounts.selectedAccount = mockEvmAccount.id;
         });
+      });
 
+      afterEach(() => {
+        handleDefiReferralSpy.mockRestore();
+        jest.mocked(parseCaipAccountId).mockReset();
+      });
+
+      it('calls handleDefiReferral for Hyperliquid when selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
         metamaskController.appStateController.update((state) => {
           state.appActiveTab = {
             id: 914,
@@ -5782,14 +5921,7 @@ describe('MetaMaskController', () => {
             href: `${HL_ORIGIN}/trade`,
           };
         });
-      });
 
-      afterEach(() => {
-        handleDefiReferralSpy.mockRestore();
-        jest.mocked(parseCaipAccountId).mockReset();
-      });
-
-      it('calls handleDefiReferral when the selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
           origin: HL_ORIGIN,
           newCaipAccountIds: [mockCaipAccountId],
@@ -5806,9 +5938,67 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('does nothing when origin is not Hyperliquid', () => {
+      it('calls handleDefiReferral for GMX when selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 915,
+            title: 'GMX',
+            origin: GMX_ORIGIN,
+            protocol: 'https:',
+            url: `${GMX_ORIGIN}/trade`,
+            host: 'app.gmx.io',
+            href: `${GMX_ORIGIN}/trade`,
+          };
+        });
+
         metamaskController._handleDefiReferralOnPermittedAccountsAdded({
-          origin: DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin,
+          origin: GMX_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).toHaveBeenCalledTimes(1);
+        expect(handleDefiReferralSpy).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+          915,
+          ReferralTriggerType.PermittedAccountAdded,
+          {
+            activePermittedAddressOverride: mockEvmAccount.address,
+          },
+        );
+      });
+
+      it('calls handleDefiReferral for AsterDEX when selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 916,
+            title: 'AsterDEX',
+            origin: ASTER_ORIGIN,
+            protocol: 'https:',
+            url: `${ASTER_ORIGIN}/trade`,
+            host: 'www.asterdex.com',
+            href: `${ASTER_ORIGIN}/trade`,
+          };
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: ASTER_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).toHaveBeenCalledTimes(1);
+        expect(handleDefiReferralSpy).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX],
+          916,
+          ReferralTriggerType.PermittedAccountAdded,
+          {
+            activePermittedAddressOverride: mockEvmAccount.address,
+          },
+        );
+      });
+
+      it('does nothing when origin does not match any referral partner', () => {
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: 'https://example.com',
           newCaipAccountIds: [mockCaipAccountId],
         });
 
@@ -6176,6 +6366,59 @@ describe('MetaMaskController', () => {
       );
 
       warnSpy.mockRestore();
+    });
+
+    it('emits a backdated Discover Accounts span when accounts were discovered', async () => {
+      trace.mockClear();
+      endTrace.mockClear();
+
+      const wallet = {
+        discoverAccounts: jest
+          .fn()
+          .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
+      };
+
+      jest
+        .spyOn(
+          metamaskController.multichainAccountService,
+          'getMultichainAccountWallet',
+        )
+        .mockReturnValue(wallet);
+
+      await metamaskController.discoverAndCreateAccounts('test-keyring-id');
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.DiscoverAccounts,
+          startTime: expect.any(Number),
+        }),
+      );
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+      });
+    });
+
+    it('does not emit a Discover Accounts span when nothing was discovered', async () => {
+      trace.mockClear();
+      endTrace.mockClear();
+
+      const wallet = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+
+      jest
+        .spyOn(
+          metamaskController.multichainAccountService,
+          'getMultichainAccountWallet',
+        )
+        .mockReturnValue(wallet);
+
+      const result =
+        await metamaskController.discoverAndCreateAccounts('test-keyring-id');
+
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
+      expect(trace).not.toHaveBeenCalled();
+      expect(endTrace).not.toHaveBeenCalled();
     });
   });
 
