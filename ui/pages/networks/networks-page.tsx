@@ -20,6 +20,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import {
+  transitionBack,
+  transitionForward,
+} from '../../components/ui/transition';
 import { useNetworkFormState } from '../../components/multichain/networks-form/networks-form-state';
 import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
@@ -31,11 +35,18 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
 } from '../../selectors/multichain/networks';
+import { getIsChainlistEnabled } from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsHeader } from '../settings/shared/settings-header';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
+import {
+  ChainlistNetworkPicker,
+  getHexChainId,
+  getUsableUrls,
+  type ChainlistNetwork,
+} from './chainlist-network-picker';
 import { NetworksPageList } from './networks-page-list';
 
 const getViewAfterRpcAdd = (view: string) =>
@@ -45,6 +56,18 @@ const getViewAfterExplorerAdd = (view: string) =>
   view === 'edit-explorer-url' ? 'edit' : 'add';
 
 const NETWORKS_PAGE_TOAST_DURATION_MS = 5000;
+
+const NETWORKS_PAGE_VIEW_DEPTH: Record<string, number> = {
+  '': 0,
+  add: 1,
+  edit: 1,
+  'add-from-chainlist': 2,
+  'add-rpc': 2,
+  'edit-rpc': 2,
+  'add-explorer-url': 2,
+  'edit-explorer-url': 2,
+  'select-rpc': 2,
+};
 
 const NetworksPageFormHeader = ({
   title,
@@ -106,11 +129,12 @@ export const NetworksPage = () => {
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
+  const isChainlistEnabled = useSelector(getIsChainlistEnabled);
   const rawEditedNetwork = useSelector(getEditedNetwork);
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
 
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
-    if (view === 'add') {
+    if (view === 'add' || view === 'add-from-chainlist') {
       return undefined;
     }
 
@@ -128,21 +152,86 @@ export const NetworksPage = () => {
   }, [editingChainId, editCompleted, evmNetworks, view]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
+  const existingNetworkChainIds = useMemo(
+    () =>
+      new Set(
+        Object.values(evmNetworks).map((network) =>
+          network.chainId.toLowerCase(),
+        ),
+      ),
+    [evmNetworks],
+  );
 
   const setView = useCallback(
     (nextView?: string) => {
-      if (nextView) {
-        setSearchParams({ view: nextView });
-      } else {
-        setSearchParams({});
+      const updateView = () => {
+        if (nextView) {
+          setSearchParams({ view: nextView });
+        } else {
+          setSearchParams({});
+        }
+      };
+      const currentDepth = NETWORKS_PAGE_VIEW_DEPTH[view] ?? 0;
+      const nextDepth = NETWORKS_PAGE_VIEW_DEPTH[nextView ?? ''] ?? 0;
+
+      if (nextDepth > currentDepth) {
+        transitionForward(updateView);
+        return;
       }
+
+      transitionBack(updateView);
     },
-    [setSearchParams],
+    [setSearchParams, view],
   );
 
   const handleNewNetwork = useCallback(() => {
     setView('add');
   }, [setView]);
+
+  const handleAddFromChainlist = useCallback(() => {
+    setView('add-from-chainlist');
+  }, [setView]);
+
+  const handleChainlistNetworkSelect = useCallback(
+    (network: ChainlistNetwork) => {
+      const chainIdHex = getHexChainId(network.chainId);
+      const existingNetwork =
+        evmNetworks[chainIdHex as keyof typeof evmNetworks];
+
+      if (existingNetwork) {
+        dispatch(
+          setEditedNetwork({
+            chainId: chainIdHex,
+            nickname: existingNetwork.name,
+          }),
+        );
+        setView('edit');
+        return;
+      }
+
+      const rpcEndpoints = getUsableUrls(network.rpc).map((url) => ({
+        url,
+        type: RpcEndpointType.Custom,
+      }));
+      const blockExplorerUrls = getUsableUrls(
+        network.explorers?.map((explorer) => explorer.url ?? '') ?? [],
+      );
+
+      networkFormState.setName(network.name);
+      networkFormState.setChainId(String(network.chainId));
+      networkFormState.setTicker(network.nativeCurrency.symbol);
+      networkFormState.setRpcUrls({
+        rpcEndpoints,
+        defaultRpcEndpointIndex: rpcEndpoints.length ? 0 : undefined,
+      });
+      networkFormState.setBlockExplorers({
+        blockExplorerUrls,
+        defaultBlockExplorerUrlIndex: blockExplorerUrls.length ? 0 : undefined,
+      });
+      setView('add');
+    },
+    [dispatch, evmNetworks, networkFormState, setView],
+  );
 
   const handleAddRPC = useCallback(
     (url: string, name?: string) => {
@@ -225,6 +314,12 @@ export const NetworksPage = () => {
     dispatch(setEditedNetwork());
   }, [dispatch, rawEditedNetwork, view]);
 
+  useEffect(() => {
+    if (view === 'add-from-chainlist' && !isChainlistEnabled) {
+      setView('add');
+    }
+  }, [isChainlistEnabled, setView, view]);
+
   const handleSelectRpc = useCallback(
     (caipChainId: string, networkClientId: string) => {
       if (caipChainId === currentMultichainChainId) {
@@ -281,6 +376,7 @@ export const NetworksPage = () => {
           />
           <NetworksPageList
             searchQuery={searchValue}
+            onAddCustomNetwork={handleNewNetwork}
             footerContent={
               pageToast ? (
                 <Box
@@ -319,7 +415,25 @@ export const NetworksPage = () => {
           <AddNetwork
             networkFormState={networkFormState}
             network={editedNetwork as UpdateNetworkFields}
+            onAddFromChainlist={
+              isChainlistEnabled ? handleAddFromChainlist : undefined
+            }
           />
+        </>
+      ) : null}
+      {view === 'add-from-chainlist' && isChainlistEnabled ? (
+        <>
+          <NetworksPageFormHeader
+            title={t('addFromChainlist')}
+            onBack={handleNewNetwork}
+            onClose={handleClose}
+          />
+          <NetworksPageFormBody>
+            <ChainlistNetworkPicker
+              existingNetworkChainIds={existingNetworkChainIds}
+              onSelect={handleChainlistNetworkSelect}
+            />
+          </NetworksPageFormBody>
         </>
       ) : null}
       {view === 'add-rpc' ? (
