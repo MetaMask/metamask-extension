@@ -1,20 +1,20 @@
 import type { Compilation, Compiler, Stats } from 'webpack';
 import type { Configuration } from 'webpack-dev-server';
 import { logStats } from '../helpers';
-import { setupUiReload } from './ui-reload';
-import { setupBackgroundReload } from './background-reload';
+import { setupUiClient } from './setup-ui-client';
+import { setupBackgroundClient } from './setup-background-client';
 
 export const DEV_SERVER_OPTIONS: Configuration = {
+  // Keep WDS from injecting its HMR runtime into every extension entry.
+  // We manually wire React Refresh mode into the UI entrypoints.
   hot: false,
-  // We use our own logic to decide when to reload.
+  // We use our own logic to decide when to hot-update UI pages or reload the extension.
   liveReload: false,
   // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
   host: 'localhost',
   // pick a free port at startup.
   port: 'auto',
-  // client injection is disabled because the client is registered
-  // as a webpack entry by `setupMiddlewares` below
-  // and injected into UI pages by `HtmlBundlerPlugin`'s `beforeEmit` hook.
+  // client injection is disabled because clients are registered by `setupMiddlewares` below.
   client: false,
   devMiddleware: {
     // browsers need actual files on disk; extension pages are loaded via
@@ -24,7 +24,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   // we don't need/have a "static" directory, so disable it
   static: false,
   allowedHosts: 'all',
-  // Wire up the ui and background reload clients here so that we can read the resolved port from
+  // Wire up the UI and background clients here so that we can read the resolved port from
   // `devServer.options` — by this point `port: 'auto'` has been replaced with
   // the actual numeric port the server is listening on.
   setupMiddlewares: (middlewares, devServer) => {
@@ -32,10 +32,10 @@ export const DEV_SERVER_OPTIONS: Configuration = {
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
-    // Injects the dev-server client and the ui-reload client into UI pages.
-    setupUiReload(devServer, compilers);
-    // Injects the background-reload client into the background/service worker context.
-    setupBackgroundReload(devServer, compilers);
+    // Registers the UI client into UI pages.
+    setupUiClient(devServer, compilers);
+    // Registers the background client into the background/service worker context.
+    setupBackgroundClient(devServer, compilers);
     return middlewares;
   },
 };
@@ -61,7 +61,7 @@ export const injectEntryScripts = (
   }
   const tags = entrypoint
     .getFiles()
-    .filter((file) => file.endsWith('.js'))
+    .filter((file) => file.endsWith('.js') && !file.includes('.hot-update.'))
     .map((file) => `<script src="${file}" defer></script>`)
     .join('');
   return content.replace('</head>', `${tags}</head>`);
