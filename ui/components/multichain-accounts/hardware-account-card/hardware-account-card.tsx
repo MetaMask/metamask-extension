@@ -83,14 +83,16 @@ export const HardwareAccountCard = ({
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {account.name}
           </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextAlternative}
-            data-testid="hardware-account-card-total-balance"
-          >
-            {account.totalBalance}
-          </Text>
+          {account.totalBalance ? (
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextAlternative}
+              data-testid="hardware-account-card-total-balance"
+            >
+              {account.totalBalance}
+            </Text>
+          ) : null}
         </Box>
         <Checkbox
           id={`hardware-account-${account.id}`}

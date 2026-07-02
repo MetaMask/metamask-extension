@@ -74,13 +74,16 @@ export const HardwareAccountAddressRow = ({
           {truncatedAddress}
         </Text>
       </Box>
-      <Text
-        variant={TextVariant.BodyMd}
-        fontWeight={FontWeight.Medium}
-        className="shrink-0 text-right"
-      >
-        {address.balance}
-      </Text>
+      {address.balance ? (
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          className="shrink-0 text-right"
+          data-testid="hardware-account-address-row-balance"
+        >
+          {address.balance}
+        </Text>
+      ) : null}
     </Box>
   );
 };
