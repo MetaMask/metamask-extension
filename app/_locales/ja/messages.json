@@ -4401,9 +4401,6 @@
     "message": "インポートされました",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "込み"
-  },
   "includesXTransactions": {
     "message": "$1件のトランザクションを含む"
   },
