@@ -1,20 +1,9 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ToastContent, Toaster } from './toast';
+import { ToastContent } from './toast';
 
 jest.mock('../icon/status-icon', () => ({
   StatusIcon: () => null,
-}));
-
-const mockToasterBase = jest.fn(() => null);
-jest.mock('react-hot-toast', () => ({
-  toast: { dismiss: jest.fn() },
-  ToastBar: () => null,
-  Toaster: (props: Record<string, unknown>) => mockToasterBase(props),
-}));
-
-jest.mock('../../../../shared/lib/environment-type', () => ({
-  isInteractiveUI: () => true,
 }));
 
 describe('ToastContent', () => {
@@ -54,23 +43,5 @@ describe('ToastContent', () => {
       <ToastContent title="Transaction confirmed" actionText="test-action" />,
     );
     expect(screen.queryByText('test-action')).not.toBeInTheDocument();
-  });
-});
-
-describe('Toaster', () => {
-  beforeEach(() => {
-    mockToasterBase.mockClear();
-  });
-
-  // Regression test for #43926: the transaction details modal renders at
-  // z-index 9999 via a body portal and was overlaying the toast on a z-index
-  // tie. The toast must stay above full-screen modals.
-  it('renders above full-screen modals (z-index > 9999)', () => {
-    render(<Toaster />);
-
-    const { containerStyle } = mockToasterBase.mock.calls[0][0] as {
-      containerStyle: { zIndex: number };
-    };
-    expect(containerStyle.zIndex).toBeGreaterThan(9999);
   });
 });

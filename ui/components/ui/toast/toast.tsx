@@ -36,10 +36,6 @@ export function Toaster() {
         visibility:
           'var(--toast-visibility, visible)' as CSSProperties['visibility'],
         bottom: 'var(--toaster-bottom-offset, 16px)',
-        // Keep toasts above full-screen modals (e.g. the transaction details
-        // modal renders at z-index 9999 via a body portal), which would
-        // otherwise win the z-index tie and overlay the toast.
-        zIndex: 10000,
       }}
       toastOptions={{
         className: 'w-[360px] max-w-[360px] border border-border-muted',
