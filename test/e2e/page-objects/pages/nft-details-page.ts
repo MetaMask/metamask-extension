@@ -83,9 +83,7 @@ class NFTDetailsPage {
       'Check if NFT address is displayed on NFT details page',
       address,
     );
-    await this.driver.waitForSelector(
-      this.nftDetailsAddressByText(address),
-    );
+    await this.driver.waitForSelector(this.nftDetailsAddressByText(address));
   }
 
   async checkNftFullImageIsDisplayed() {
