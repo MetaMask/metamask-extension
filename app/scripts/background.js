@@ -2123,7 +2123,7 @@ export function setupController(
       REJECT_NOTIFICATION_CLOSE,
     );
 
-    controller.rejectAllPendingApprovals();
+    controller.legacyBackgroundApiService.rejectAllPendingApprovals();
   }
 }
 

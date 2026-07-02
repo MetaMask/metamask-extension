@@ -64,7 +64,7 @@ class SwapPage {
   };
 
   private readonly rateMessage = {
-    text: `Includes 0.875% MM fee.`,
+    text: `Includes 0.875% MetaMask fee`,
     tag: 'p',
   };
 
