@@ -11,7 +11,8 @@ permissions:
   contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
   statuses: read # Required by verify-ci-checks.sh to read commit statuses
   actions: read # Required to download artifacts from build jobs
-  id-token: write # Required for OIDC authentication in S3 uploads
+  id-token: write # Required for OIDC authentication in S3 uploads and build provenance attestation
+  attestations: write # Required for actions/attest-build-provenance (INFRA-2665)
 
 jobs:
   validate-branch:
@@ -314,6 +315,39 @@ jobs:
       - name: Publish Flask MV2 webpack release to Sentry
         run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-webpack/dist
 
+      # SLSA build provenance attestation (INFRA-2665). Webpack zips only — browserify assets are deprecated fallbacks.
+      - name: Attest webpack chrome artifact
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: build-dist-webpack/builds/metamask-chrome-*.zip
+
+      - name: Attest webpack firefox artifact
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: build-dist-mv2-webpack/builds/metamask-firefox-*.zip
+
+      - name: Attest webpack flask chrome artifact
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: build-flask-webpack/builds/metamask-chrome-*.zip
+
+      - name: Attest webpack flask firefox artifact
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: build-flask-mv2-webpack/builds/metamask-firefox-*.zip
+
+      - name: Generate SHA256SUMS
+        run: |
+          set -euo pipefail
+          sha256sum \
+            build-dist-webpack/builds/metamask-chrome-*.zip \
+            build-dist-mv2-webpack/builds/metamask-firefox-*.zip \
+            build-flask-webpack/builds/metamask-chrome-*.zip \
+            build-flask-mv2-webpack/builds/metamask-firefox-*.zip \
+            > SHA256SUMS
+          echo "=== SHA256SUMS ==="
+          cat SHA256SUMS
+
       - name: Create tags and GitHub release
         run: .github/scripts/release-create-gh-release.sh
 
@@ -344,6 +378,8 @@ jobs:
             echo "| Sentry (main MV2 webpack) | ✅ Published |"
             echo "| Sentry (Flask webpack) | ✅ Published |"
             echo "| Sentry (Flask MV2 webpack) | ✅ Published |"
+            echo "| Attestation (4 webpack artifacts) | ✅ Attested |"
+            echo "| SHA256SUMS | ✅ Generated |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"
             if [[ "${{ steps.amo-reviewer-s3.conclusion }}" == "success" ]]; then
