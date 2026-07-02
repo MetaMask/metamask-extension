@@ -11,8 +11,6 @@ import {
   parseApprovalTransactionData,
 } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
-import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { scanAddressAndAddToCache } from './security-alerts-api';
@@ -25,6 +23,7 @@ import {
   isConnected,
   connectScreenHasBeenPrompted,
   isEip7715AdvancedPermissionsRequest,
+  extractEip712AddressValues,
 } from './trust-signals-util';
 
 export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
@@ -205,42 +204,35 @@ function handleEthSignTypedData(
     );
   });
 
-  const { primaryType }: { primaryType: string } = typedDataMessage;
+  const {
+    primaryType,
+    types,
+    message,
+  }: {
+    primaryType?: string;
+    types?: Record<string, { name: string; type: string }[]>;
+    message?: Record<string, unknown>;
+  } = typedDataMessage;
+
   if (!primaryType) {
     return;
   }
 
-  // If this is a permit signature, also scan the spender address
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
-    const spenderAddress = typedDataMessage.message?.spender;
-    if (spenderAddress) {
+  if (types && message) {
+    const addressValues = extractEip712AddressValues(
+      types,
+      primaryType,
+      message,
+    );
+    for (const address of addressValues) {
       scanAddressAndAddToCache(
-        spenderAddress,
+        address,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
         supportedEVMChain,
       ).catch((error) => {
         console.error(
-          '[createTrustSignalsMiddleware] error scanning spender address for permit:',
-          error,
-        );
-      });
-    }
-  }
-
-  // If this is a delegation signature, scan the delegate address
-  if (primaryType === PRIMARY_TYPE_DELEGATION) {
-    const delegateAddress = typedDataMessage.message?.delegate;
-    if (delegateAddress) {
-      scanAddressAndAddToCache(
-        delegateAddress,
-        appStateController.getAddressSecurityAlertResponse,
-        appStateController.addAddressSecurityAlertResponse,
-        supportedEVMChain,
-      ).catch((error) => {
-        console.error(
-          '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',
+          '[createTrustSignalsMiddleware] error scanning address in typed data message:',
           error,
         );
       });

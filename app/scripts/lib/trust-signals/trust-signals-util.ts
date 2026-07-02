@@ -111,3 +111,85 @@ export function getChainId(
   }
   return mapChainIdToSupportedEVMChain(chainId);
 }
+
+// Private recursive helper — walks the EIP-712 types map from a given type name
+// collecting all field values whose declared type is 'address'.
+function walkEip712Type(
+  types: Record<string, { name: string; type: string }[]>,
+  typeName: string,
+  value: Record<string, unknown>,
+  visited: Set<string>,
+): string[] {
+  if (visited.has(typeName)) {
+    return [];
+  }
+  const fields = types[typeName];
+  if (!fields) {
+    return [];
+  }
+  const path = new Set(visited);
+  path.add(typeName);
+  const addresses: string[] = [];
+  for (const field of fields) {
+    const fieldValue = value[field.name];
+    const isArrayType = field.type.includes('[');
+    const baseType = isArrayType ? field.type.split('[')[0] : field.type;
+    if (baseType === 'address') {
+      if (isArrayType && Array.isArray(fieldValue)) {
+        for (const item of fieldValue) {
+          if (typeof item === 'string' && item) {
+            addresses.push(item);
+          }
+        }
+      } else if (!isArrayType && typeof fieldValue === 'string' && fieldValue) {
+        addresses.push(fieldValue);
+      }
+    } else if (baseType in types) {
+      if (isArrayType && Array.isArray(fieldValue)) {
+        for (const item of fieldValue) {
+          if (typeof item === 'object' && item !== null) {
+            addresses.push(
+              ...walkEip712Type(
+                types,
+                baseType,
+                item as Record<string, unknown>,
+                path,
+              ),
+            );
+          }
+        }
+      } else if (
+        !isArrayType &&
+        typeof fieldValue === 'object' &&
+        fieldValue !== null
+      ) {
+        addresses.push(
+          ...walkEip712Type(
+            types,
+            baseType,
+            fieldValue as Record<string, unknown>,
+            path,
+          ),
+        );
+      }
+    }
+  }
+  return addresses;
+}
+
+/**
+ * Traverses an EIP-712 typed-data message from its primaryType through all
+ * nested struct definitions in the types map, collecting every field value
+ * whose declared type is 'address' (including address[] arrays and address
+ * fields nested inside struct arrays).
+ * @param types
+ * @param primaryType
+ * @param message
+ */
+export function extractEip712AddressValues(
+  types: Record<string, { name: string; type: string }[]>,
+  primaryType: string,
+  message: Record<string, unknown>,
+): string[] {
+  return walkEip712Type(types, primaryType, message, new Set<string>());
+}
