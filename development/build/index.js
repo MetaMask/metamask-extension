@@ -149,6 +149,8 @@ async function defineAndRunBuildTasks() {
       'sentryHooks',
       'sentry',
       'logEncryptedVault',
+      'WebAssembly',
+      'Request',
       'history', // needed by Sentry and react-router-dom v6 HashRouter
       // Globals used by `react-dom`
       'getSelection',

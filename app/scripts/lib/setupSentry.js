@@ -1,6 +1,6 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { logger } from '@sentry/utils';
+import { logger } from '@sentry/core';
 import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
@@ -132,11 +132,11 @@ function getClientOptions() {
     // Must be a top-level init option.
     ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
       tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
-      // TODO(sentry-v10, #42867): Once the v10 upgrade ships, enable
-      // `propagateTraceparent: true` here so the SDK attaches `traceparent` to
-      // these targets natively. Then remove the manual traceparent injection
-      // from `consensysTracePropagationIntegration` (keep the RAPID baggage and
-      // the `consensys-request-id` correlation).
+      // Gated here so the kill switch also disables native `traceparent`
+      // injection; when enabled the SDK attaches it to the backend targets
+      // above. `consensysTracePropagationIntegration` appends the Consensys
+      // `baggage` segment (`consensys-request-id`).
+      propagateTraceparent: true,
     }),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
@@ -708,8 +708,12 @@ function integrateLogging() {
     return;
   }
 
+  // Sentry exposes a mutable logger singleton. In debug mode we intentionally
+  // override its methods so SDK-internal logs flow through our module logger.
+  const sentrySdkLogger = logger;
+
   for (const loggerType of ['log', 'error']) {
-    logger[loggerType] = (...args) => {
+    sentrySdkLogger[loggerType] = (...args) => {
       const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
       internalLog(message, ...args.slice(1));
     };

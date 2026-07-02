@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
+import { forEachEnvelopeItem, parseEnvelope } from '@sentry/core';
 import { tick } from '../../../test/lib/timer-helpers';
 import { makeTransport } from './sentry-make-transport';
 
@@ -133,7 +133,9 @@ describe('sentry-make-transport', () => {
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
-      expect(makeFetchTransportSpy).toHaveBeenCalled();
+      // In Sentry v10, this opted-out path can short-circuit before the
+      // default fetch transport is instantiated, so the behavior we care about
+      // here is the absence of any outbound network request.
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();
@@ -324,6 +326,9 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
+      // Sentry v10 no longer sends a session envelope eagerly here, so capture an
+      // explicit event to exercise the transport path under the opted-out state.
+      Sentry.captureMessage('opted-out transport test');
 
       await tick();
 
@@ -364,6 +369,9 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
+      // Sentry v10 no longer emits a session envelope eagerly during init, so
+      // capture an event to verify the transport path when opted in.
+      Sentry.captureMessage('opted-in transport test');
 
       await tick();
 
@@ -385,13 +393,15 @@ describe('sentry-make-transport', () => {
         })
         .filter((parsed): parsed is ParsedSentryEnvelope => parsed !== null);
 
-      const hasSessionItem = envelopes.some((parsedEnvelope) =>
+      const hasEventItem = envelopes.some((parsedEnvelope) =>
         forEachEnvelopeItem(
           parsedEnvelope,
-          (_item: unknown, type: string) => type === 'session',
+          // v10 captures an explicit event here instead of the eager session item
+          // the previous test version relied on.
+          (_item: unknown, type: string) => type === 'event',
         ),
       );
-      expect(hasSessionItem).toBe(true);
+      expect(hasEventItem).toBe(true);
 
       fetchSpy.mockRestore();
     });

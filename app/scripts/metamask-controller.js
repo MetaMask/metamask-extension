@@ -7414,10 +7414,15 @@ export default class MetamaskController extends EventEmitter {
             this.metaMetricsController,
           ),
           startTrace: (options) => {
-            // We intentionally strip out `_isStandaloneSpan` since it can be undefined
-            // eslint-disable-next-line no-unused-vars
-            const { _isStandaloneSpan, ...result } = trace(options);
-            return result;
+            // snap_startTrace must return a JSON-serializable TraceContext:
+            // spreading the raw Sentry Span leaks internal `undefined` fields
+            // (e.g. v10's `_endTime`) that fail the snap response's JSON
+            // validation. Return the spanContext() W3C ids instead.
+            const span = trace(options);
+            const spanContext = span?.spanContext?.();
+            return spanContext
+              ? { traceId: spanContext.traceId, spanId: spanContext.spanId }
+              : {};
           },
           endTrace,
           getAllowedKeyringMethods: keyringSnapPermissionsBuilder(

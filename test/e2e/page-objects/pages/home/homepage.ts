@@ -17,6 +17,14 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
+// The global non-EVM snap-discovery mocks are incomplete: the Solana snap calls
+// 15 discovery RPC methods but `setupDefaultNonEvmDiscoveryMocks` only mocks
+// `getSignaturesForAddress`, so the other 14 (incl. the `getGenesisHash`
+// network-identity check) fall through to the empty-200 catch-all and drive a
+// retry storm that delays the Solana icon past the default 10s wait. Widen the
+// wait until #43958 globalizes the Solana discovery mocks.
+const NON_EVM_ICON_TIMEOUT = 20_000;
+
 class HomePage {
   protected driver: Driver;
 
@@ -219,8 +227,14 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    await this.driver.waitForSelector(this.solanaAccountIcon);
-    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+    // See `NON_EVM_ICON_TIMEOUT` — interim wait for the Solana discovery storm
+    // pending #43958. Still polled: returns as soon as the icons render.
+    await this.driver.waitForSelector(this.solanaAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
+    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
