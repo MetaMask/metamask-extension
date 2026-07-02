@@ -10,6 +10,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { AccountOverviewTab } from '../../../../shared/constants/app-state';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
 import { setPerpsTabBadgeSeen } from '../../../store/actions';
@@ -78,117 +79,57 @@ describe('AccountOverviewTabs - event metrics', () => {
     jest.clearAllMocks();
   });
 
-  it('does not fire trackEvent when clicking the Activity tab (V3 mode)', () => {
+  const renderTabs = () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
         enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
-        remoteFeatureFlags: { extensionUxActivityListRedesign: true },
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={false}
-          showActivity={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-
-    fireEvent.click(getByText(messages.activity.message));
-
-    // ActivityScreenOpened is deferred to ActivityListV3; tab click must not
-    // fire any metric.
-    expect(mockTrackEvent).not.toHaveBeenCalled();
-  });
-
-  it('fires ActivityScreenOpened when clicking the Activity tab (V2 mode)', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
-        remoteFeatureFlags: { extensionUxActivityListRedesign: false },
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={false}
-          showActivity={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-
-    fireEvent.click(getByText(messages.activity.message));
-
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.ActivityScreenOpened,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          network_filter: ['eip155:1'],
-        }),
-      }),
-    );
-  });
-
-  it('includes network_filter property with both EVM and non-EVM networks in CAIP format', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.POLYGON]: true,
-          },
-          solana: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-          },
+        remoteFeatureFlags: {
+          perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
         },
       },
     });
 
-    const { getByText } = renderWithProvider(
+    return renderWithProvider(
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <AccountOverviewTabs
           showTokens={true}
-          showNfts={false}
+          showNfts={true}
           showActivity={true}
+          showDefi={true}
           setBasicFunctionalityModalOpen={jest.fn()}
           onSupportLinkClick={jest.fn()}
         />
       </MetaMetricsContext.Provider>,
       store,
-      '/?tab=activity',
     );
+  };
 
-    // Click a tab to trigger event
-    fireEvent.click(getByText(messages.tokens.message));
+  // @ts-expect-error it.each is missing from the Mocha type definitions
+  it.each([
+    ['nfts', 'account-overview__nfts-tab'],
+    ['defi', 'account-overview__defi-tab'],
+    ['activity', 'account-overview__activity-tab'],
+    ['perps', 'account-overview__perps-tab'],
+  ])(
+    'fires HomeSubtabClicked with name "%s" when that tab is clicked',
+    (tabName: AccountOverviewTab, testId: string) => {
+      const { getByTestId } = renderTabs();
 
-    // Verify network_filter property is included in correct format
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.TokenScreenOpened,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        network_filter: [
-          'eip155:1',
-          'eip155:137',
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        ],
-      },
-    });
-  });
+      fireEvent.click(getByTestId(testId));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Home,
+          event: MetaMetricsEventName.HomeSubtabClicked,
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            name: tabName,
+          }),
+        }),
+      );
+    },
+  );
 });
 
 describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {

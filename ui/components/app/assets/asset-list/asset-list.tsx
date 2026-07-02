@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -7,6 +13,7 @@ import {
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { selectEnabledNetworksAsCaipChainIds } from '../../../../selectors';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
@@ -18,6 +25,7 @@ import {
   useMusdConversionTokens,
 } from '../../../../hooks/musd';
 import { selectAccountGroupBalanceForEmptyState } from '../../../../selectors/assets';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import AssetListControlBar from './asset-list-control-bar';
 
 export type AssetListProps = {
@@ -39,7 +47,7 @@ const TokenListContainer = React.memo(
         trace({ name: TraceName.AssetDetails });
         onClickAsset(chainId, tokenAddress);
         trackEvent({
-          event: MetaMetricsEventName.TokenScreenOpened,
+          event: MetaMetricsEventName.TokenScreenViewed,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -71,6 +79,25 @@ const AssetList = ({
   const { hasMusdBalance } = useMusdBalance();
   const { selectedChainId } = useMusdNetworkFilter();
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
+
+  const hasTrackedTokenScreenViewedRef = useRef(false);
+  useEffect(() => {
+    if (hasTrackedTokenScreenViewedRef.current) {
+      return;
+    }
+    hasTrackedTokenScreenViewedRef.current = true;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenScreenViewed)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_filter: networkFilter,
+        })
+        .build(),
+    );
+  }, [trackEvent, createEventBuilder, networkFilter]);
 
   // Use the centralized token filter that includes min balance check
   // This is the source of truth for which tokens are eligible for mUSD conversion

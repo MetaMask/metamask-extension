@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
@@ -8,6 +8,7 @@ import {
   getIsMainnet,
   getUseNftDetection,
   getNftIsStillFetchingIndication,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
@@ -20,6 +21,11 @@ import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { NftEmptyState } from '../nft-empty-state';
 import { transitionForward } from '../../../../ui/transition';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -31,6 +37,8 @@ export default function NftsTab() {
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
 
   const { collections } = useNftsCollections();
 
@@ -43,6 +51,23 @@ export default function NftsTab() {
       endTrace({ name: TraceName.AccountOverviewNftsTab });
     }
   }, [nftsStillFetchingIndication]);
+
+  const hasTrackedRef = useRef(false);
+  useEffect(() => {
+    if (hasTrackedRef.current) {
+      return;
+    }
+    hasTrackedRef.current = true;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NftScreenViewed)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_filter: networkFilter,
+        })
+        .build(),
+    );
+  }, [trackEvent, createEventBuilder, networkFilter]);
 
   const handleNftClick = (nft: NFT) => {
     transitionForward(() =>
