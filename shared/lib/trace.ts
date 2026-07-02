@@ -200,6 +200,14 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * Force this trace to start a new root, ignoring any currently active span.
+   * Use for independent background operations (e.g. per-operation background
+   * RPC roots) that must not nest under a concurrently in-flight operation's
+   * span. Has no effect when an explicit `parentContext` is provided.
+   */
+  root?: boolean;
 };
 
 /**
@@ -555,16 +563,25 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    root,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
-  // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
-  // when no explicit parent is provided. Must capture before withIsolationScope
-  // severs the active span context chain.
-  // forceTransaction preserves transaction-level visibility for monitoring while
-  // linking to the auto-instrumentation hierarchy.
+  // Inherit the active span (e.g. the browserTracingIntegration pageload) when no
+  // parent is given; capture it before sentryWithIsolationScope severs the
+  // active-span chain. `root: true` skips this to force an independent root —
+  // needed in the SW so a background op peels off the long-lived pageload root
+  // (and any concurrent in-flight op's still-active span) instead of sharing its
+  // trace id and feeding the keepalive mega-trace. forceTransaction keeps
+  // transaction-level visibility.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!root && !parentSpan && !parentContext) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
