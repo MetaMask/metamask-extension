@@ -383,7 +383,7 @@ describe('TokenManagementPage', () => {
     await waitFor(() =>
       expect(trackEvent).toHaveBeenCalledWith({
         category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.TokenScreenOpened,
+        event: MetaMetricsEventName.TokenScreenViewed,
         properties: {
           screen: 'manage_tokens',
           [METRICS_PROPERTIES.viewState]: 'default',
@@ -407,7 +407,7 @@ describe('TokenManagementPage', () => {
     await waitFor(() =>
       expect(trackEvent).toHaveBeenCalledWith({
         category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.TokenScreenOpened,
+        event: MetaMetricsEventName.TokenScreenViewed,
         properties: {
           screen: 'manage_tokens',
           [METRICS_PROPERTIES.viewState]: 'no_results',
