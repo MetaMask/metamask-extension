@@ -60,6 +60,11 @@ BLOCKAID_PUBLIC_KEY=
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true
 
+; Designer Mode — a dev-only in-app visual inspector (Ctrl+Shift+D).
+; Disabled by default; set to true to enable locally and pair with the
+; `designer-mode` skill's relay server. See docs/designer-mode.md.
+DESIGNER_MODE=false
+
 ; SENTRY CONFIGURATION
 ; SENTRY_DSN             - For production builds only (do NOT use in development)
 ; SENTRY_DSN_DEV         - For local dev and one-off QA testing (sends to 'test-metamask' project)
