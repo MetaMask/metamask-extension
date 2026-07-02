@@ -73,6 +73,20 @@ describe('getBlockExplorerInfo utility functions', () => {
       });
     });
 
+    it('returns correct info for Tempo EVM network', () => {
+      // CHAIN_IDS.TEMPO_MAINNET = 0x1079 = 4217 decimal
+      const result = getBlockExplorerInfo(mockT, testAddress, {
+        networkName: 'Tempo',
+        chainId: 'eip155:4217',
+      });
+
+      expect(result).toEqual({
+        addressUrl: 'https://explore.tempo.xyz/address/0x1234567890abcdef',
+        name: 'Tempo Explorer',
+        buttonText: 'translated_viewAddressOnExplorer_Tempo Explorer',
+      });
+    });
+
     it('returns null for unknown network without chainId', () => {
       const result = getBlockExplorerInfo(mockT, testAddress, {
         networkName: 'Unknown Network',
