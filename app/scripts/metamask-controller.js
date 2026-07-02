@@ -232,8 +232,8 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
 import {
-  DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
+  getPartnerByOrigin,
 } from '../../shared/constants/defi-referrals';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
@@ -5682,7 +5682,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Runs when CAIP-25 permitted accounts are extended via the permission background API.
-   * If the origin is Hyperliquid and the globally selected account is EVM and included
+   * If the origin is a referral partner and the globally selected account is EVM and included
    * among the newly permitted accounts, it triggers the DeFi referral flow.
    *
    * @param {{ origin: string; newCaipAccountIds: import('@metamask/utils').CaipAccountId[] }} details - Added accounts payload.
@@ -5690,9 +5690,8 @@ export default class MetamaskController extends EventEmitter {
   _handleDefiReferralOnPermittedAccountsAdded(details) {
     const { origin, newCaipAccountIds } = details;
 
-    // Only run for Hyperliquid
-    const partner = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
-    if (origin !== partner.origin) {
+    const partner = getPartnerByOrigin(origin);
+    if (!partner) {
       return;
     }
 
