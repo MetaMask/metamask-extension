@@ -4397,9 +4397,6 @@
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "包括"
-  },
   "includesXTransactions": {
     "message": "包含 $1 笔交易"
   },
