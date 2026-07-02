@@ -4916,9 +4916,6 @@
   "metamaskFee": {
     "message": "Biaya MetaMask"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "Saat ini notifikasi dompet tidak aktif."
-  },
   "metamaskSwap": {
     "message": "MetaMask Swap"
   },
@@ -10325,9 +10322,6 @@
   },
   "totalVolume": {
     "message": "Volume total"
-  },
-  "transaction": {
-    "message": "transaksi"
   },
   "transactionConfirmed": {
     "message": "Transaksi dikonfirmasi"

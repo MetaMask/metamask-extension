@@ -4912,9 +4912,6 @@
   "metamaskFee": {
     "message": "Комиссия MetaMask"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "Уведомления кошелька в настоящее время неактивны."
-  },
   "metamaskSwap": {
     "message": "Своп MetaMask"
   },
@@ -10317,9 +10314,6 @@
   },
   "totalVolume": {
     "message": "Общий объем"
-  },
-  "transaction": {
-    "message": "транзакция"
   },
   "transactionConfirmed": {
     "message": "Транзакция подтверждена"

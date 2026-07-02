@@ -4916,9 +4916,6 @@
   "metamaskFee": {
     "message": "MetaMask 수수료"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "현재 지갑 알림이 꺼져 있습니다."
-  },
   "metamaskSwap": {
     "message": "MetaMask 스왑"
   },
@@ -5834,7 +5831,7 @@
     "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
-    "message": "지갑 사용"
+    "message": "알림"
   },
   "notificationsFeatureToggle": {
     "message": "지갑 알림 활성화",
@@ -5930,7 +5927,7 @@
     "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1의 내용을, Solana 계정에 대한 정보는 $2의 내용을 참고하세요."
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
-    "message": "여기를 클릭하세요"
+    "message": "여기를 클릭"
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "네트워크 선택"
@@ -6222,7 +6219,7 @@
     "message": "MetaMask 로그인 상태를 유지하려면 새 비밀번호를 입력하세요."
   },
   "passwordNotLongEnough": {
-    "message": "비밀번호가 짧습니다."
+    "message": "8자 이상이어야 합니다."
   },
   "passwordTermsWarning": {
     "message": "이 비밀번호를 분실하면 MetaMask가 재설정해 드릴 수 없습니다."
@@ -7831,7 +7828,7 @@
     "message": "재입금"
   },
   "refreshList": {
-    "message": "새로 고침 목록"
+    "message": "목록 새로 고침"
   },
   "reject": {
     "message": "거부"
@@ -10326,9 +10323,6 @@
   "totalVolume": {
     "message": "총 거래량"
   },
-  "transaction": {
-    "message": "트랜잭션"
-  },
   "transactionConfirmed": {
     "message": "트랜잭션 컨펌 완료"
   },
@@ -10518,7 +10512,7 @@
     "message": "알림 설정."
   },
   "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "이 기능을 사용하는 동안 개인정보가 어떻게 보호되는지 알아보세요."
+    "message": "이 기능을 사용하는 동안 사용자의 개인정보가 어떻게 보호되는지 알아보세요."
   },
   "turnOnMetamaskNotificationsMessageSecond": {
     "message": "지갑 알림 기능을 사용하려면 프로필을 사용해 기기 간에 일부 설정을 동기화해야 합니다. $1"

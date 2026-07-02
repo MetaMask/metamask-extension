@@ -4912,9 +4912,6 @@
   "metamaskFee": {
     "message": "MetaMask फीस"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "वॉलेट नोटिफिकेशंस वर्तमान में सक्रिय नहीं हैं।"
-  },
   "metamaskSwap": {
     "message": "MetaMask स्वैप"
   },
@@ -10317,9 +10314,6 @@
   },
   "totalVolume": {
     "message": "टोटल वॉल्यूम"
-  },
-  "transaction": {
-    "message": "ट्रांसेक्शन"
   },
   "transactionConfirmed": {
     "message": "ट्रांसेक्शन कन्फर्म हो गया"

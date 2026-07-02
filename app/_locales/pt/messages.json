@@ -4912,9 +4912,6 @@
   "metamaskFee": {
     "message": "Taxa da MetaMask"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "As notificações de carteiras estão inativas no momento."
-  },
   "metamaskSwap": {
     "message": "Swap da MetaMask"
   },
@@ -10317,9 +10314,6 @@
   },
   "totalVolume": {
     "message": "Volume total"
-  },
-  "transaction": {
-    "message": "transação"
   },
   "transactionConfirmed": {
     "message": "Transação confirmada"

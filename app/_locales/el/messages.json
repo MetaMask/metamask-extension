@@ -4912,9 +4912,6 @@
   "metamaskFee": {
     "message": "Χρεώσεις στο MetaMask"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "Οι ειδοποιήσεις του πορτοφολιού δεν είναι προς το παρόν ενεργές."
-  },
   "metamaskSwap": {
     "message": "MetaMask Swap"
   },
@@ -10317,9 +10314,6 @@
   },
   "totalVolume": {
     "message": "Συνολικός όγκος"
-  },
-  "transaction": {
-    "message": "συναλλαγή"
   },
   "transactionConfirmed": {
     "message": "Η συναλλαγή επιβεβαιώθηκε με επιτυχία"
