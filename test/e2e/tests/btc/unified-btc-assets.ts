@@ -1,17 +1,12 @@
 import { merge } from 'lodash';
-import {
-  AccountGroupType,
-  AccountWalletType,
-} from '@metamask/account-api';
+import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import {
   DEFAULT_BTC_ADDRESS,
   DEFAULT_BTC_BALANCE,
   DEFAULT_BTC_CONVERSION_RATE,
 } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import {
-  BITCOIN_WALLET_SNAP_ID,
-} from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { BTC_CHAIN_ID } from './mocks/bridge';
 
 /** Deterministic Bitcoin snap account id for the default E2E SRP (BIP84 /0). */

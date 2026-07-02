@@ -1,8 +1,5 @@
 import { merge } from 'lodash';
-import {
-  AccountGroupType,
-  AccountWalletType,
-} from '@metamask/account-api';
+import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TRON_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/tron-wallet-snap';
 import {
