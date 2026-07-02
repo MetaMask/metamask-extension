@@ -89,6 +89,7 @@ import {
 import { traceAsControllerCallback } from '../../shared/lib/trace';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
+import { augmentAssetControllersState } from '../components/app/assets/enablement/arc';
 import {
   calculateBalanceForAllWallets as calculateBalanceForAllWalletsFromUnified,
   calculateBalanceChangeForAccountGroup as calculateBalanceChangeForAccountGroupFromUnified,
@@ -900,7 +901,7 @@ export const selectBalanceForAllWallets = createSelector(
   ) => {
     if (isAssetsUnifyStateEnabled) {
       return calculateBalanceForAllWalletsFromUnified(
-        assetsControllerState,
+        augmentAssetControllersState(assetsControllerState),
         accountTreeState,
         accountsById,
         enabledNetworkMap,
@@ -969,7 +970,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       }
       if (isAssetsUnifyStateEnabled) {
         return calculateBalanceChangeForAccountGroupFromUnified(
-          assetsControllerState,
+          augmentAssetControllersState(assetsControllerState),
           accountTreeState,
           accountsById,
           enabledNetworkMap,

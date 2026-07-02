@@ -82,12 +82,6 @@
   "account": {
     "message": "Hesap"
   },
-  "accountActivity": {
-    "message": "Hesap aktivitesi"
-  },
-  "accountActivityText": {
-    "message": "Hakkında bildirim almak istediğiniz hesapları seçin:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Oturum aç"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "müşteri hizmetleri"
   },
-  "customizeYourNotifications": {
-    "message": "Bildirimlerinizi özelleştirin"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Almak istediğiniz bildirim türlerini açın:"
-  },
   "dappConnections": {
     "message": "Dapp Bağlantıları"
   },
@@ -5874,9 +5862,6 @@
   "notificationsSettingsBoxError": {
     "message": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Bildirimler ile cüzdanınızda neler olduğundan haberdar olun. Bildirimleri kullanmak için cihazlarınızdaki bazı ayarları senkronize etmek amacıyla bir profil kullanıyoruz. $1 bu özelliği kullanırken gizliliğinizi koruruz."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Nasıl olduğunu öğrenin"
   },
@@ -7542,9 +7527,6 @@
   },
   "proceedWithTransaction": {
     "message": "Yine de devam etmek istiyorum"
-  },
-  "productAnnouncements": {
-    "message": "Ürün duyuruları"
   },
   "provide": {
     "message": "Sun"

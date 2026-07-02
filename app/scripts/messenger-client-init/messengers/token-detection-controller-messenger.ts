@@ -9,6 +9,7 @@ import {
 } from '@metamask/assets-controllers';
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
+import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import { RootMessenger } from '../../lib/messenger';
 
 /**
@@ -59,6 +60,7 @@ export function getTokenDetectionControllerMessenger(
 type AllowedInitializationActions =
   | AssetsContractControllerGetBalancesInSingleCallAction
   | NetworkControllerGetStateAction
+  | OnboardingControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
 export type TokenDetectionControllerInitMessenger = ReturnType<
@@ -87,6 +89,7 @@ export function getTokenDetectionControllerInitMessenger(
     messenger: controllerInitMessenger,
     actions: [
       'AssetsContractController:getBalancesInSingleCall',
+      'OnboardingController:getState',
       'PreferencesController:getState',
     ],
   });
