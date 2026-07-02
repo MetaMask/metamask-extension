@@ -84,6 +84,7 @@ import {
   AccountActivityService,
   BackendWebSocketService,
 } from '@metamask/core-backend';
+import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
 import {
@@ -144,6 +145,7 @@ export type MessengerClient =
   | AppStateController
   | AssetsController
   | AuthenticationController
+  | AuthenticatedUserStorageService
   | BridgeController
   | BridgeStatusController
   | ClaimsController
