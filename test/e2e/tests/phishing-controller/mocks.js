@@ -77,12 +77,16 @@ async function setupPhishingDetectionMocks(
           },
         };
 
-  await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
-    return response;
-  });
+  await mockServer
+    .forGet(METAMASK_STALELIST_URL)
+    .always()
+    .thenCallback(() => {
+      return response;
+    });
 
   await mockServer
     .forGet(`${METAMASK_HOTLIST_DIFF_URL}/${lastUpdated}`)
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -90,13 +94,23 @@ async function setupPhishingDetectionMocks(
       };
     });
 
-  defaultC2DomainBlocklist.recentlyAdded.push(...c2DomainBlocklist);
-  await mockServer.forGet(C2_DOMAIN_BLOCKLIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: defaultC2DomainBlocklist,
-    };
-  });
+  const c2DomainBlocklistResponse = {
+    ...defaultC2DomainBlocklist,
+    recentlyAdded: [
+      ...defaultC2DomainBlocklist.recentlyAdded,
+      ...c2DomainBlocklist,
+    ],
+  };
+
+  await mockServer
+    .forGet(C2_DOMAIN_BLOCKLIST_URL)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: c2DomainBlocklistResponse,
+      };
+    });
 
   await mockServer
     .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
@@ -144,15 +158,19 @@ async function mockConfigLookupOnWarningPage(
  */
 
 async function mockEmptyStalelistAndHotlist(mockServer) {
-  await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: { ...defaultStalelist },
-    };
-  });
+  await mockServer
+    .forGet(METAMASK_STALELIST_URL)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { ...defaultStalelist },
+      };
+    });
 
   await mockServer
     .forGet(`${METAMASK_HOTLIST_DIFF_URL}/${lastUpdated}`)
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,

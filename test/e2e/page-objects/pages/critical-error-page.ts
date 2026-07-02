@@ -1,6 +1,5 @@
 import { until } from 'selenium-webdriver';
-import { Driver, PAGES } from '../../webdriver/driver';
-import { WINDOW_TITLES } from '../../constants';
+import { Driver } from '../../webdriver/driver';
 
 class CriticalErrorPage {
   protected readonly driver: Driver;
@@ -160,22 +159,11 @@ class CriticalErrorPage {
     waitForLoadingLogoToDisappear?: boolean;
   } = {}): Promise<void> {
     console.log('Wait for critical error page after extension reload');
-    await this.driver.waitUntil(
-      async () => {
-        await this.driver.navigate(PAGES.HOME, { waitForControllers: false });
-        const title = await this.driver.driver.getTitle();
-        // the browser will return an error message for our UI's HOME page until
-        // the extension has restarted
-        return title === WINDOW_TITLES.ExtensionInFullScreenView;
-      },
-      // reload and check title as quickly as possible
-      { interval: 100, timeout: timeoutMs },
-    );
-    if (waitForLoadingLogoToDisappear) {
-      await this.driver.assertElementNotPresent('.loading-logo', {
-        timeout: 10000,
-      });
-    }
+    await this.driver.waitForExtensionStart({
+      timeout: timeoutMs,
+      waitForControllers: false,
+      waitForLoadingLogoToDisappear,
+    });
   }
 }
 

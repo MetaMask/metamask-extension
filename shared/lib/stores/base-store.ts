@@ -39,6 +39,13 @@ export type MetaMaskStorageStructure = {
   meta?: MetaData;
 };
 
+export type StoreResetOptions = {
+  /**
+   * Whether fixture-backed stores should reinitialize themselves after reset.
+   */
+  initialize?: boolean;
+};
+
 /**
  * The BaseStore class is an abstract class designed to be extended by other
  * classes that implement the abstract methods `set` and `get`. This class
@@ -64,5 +71,5 @@ export type BaseStore = {
 
   get: () => Promise<MetaMaskStorageStructure | null>;
 
-  reset: () => Promise<void>;
+  reset: (options?: StoreResetOptions) => Promise<void>;
 };
