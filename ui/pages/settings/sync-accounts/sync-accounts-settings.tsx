@@ -6,7 +6,6 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
 import {
-  selectIsQrSyncTerminal,
   selectQrSyncPhase,
   selectShouldCreateQrSyncSession,
 } from '../../../selectors/qr-sync/qr-sync';
@@ -17,6 +16,7 @@ import {
   LoadingStep,
   QrCodeScan,
   Success,
+  SyncError,
 } from './components';
 import type { AddDeviceSyncRequest } from './types';
 
@@ -25,7 +25,6 @@ const SyncAccountsSettings = () => {
   const t = useI18nContext();
   const qrSyncPhase = useSelector(selectQrSyncPhase);
   const shouldCreateSession = useSelector(selectShouldCreateQrSyncSession);
-  const isQrSyncTerminal = useSelector(selectIsQrSyncTerminal);
   const [isExiting, setIsExiting] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
   const [syncSummary, setSyncSummary] = useState<Pick<
@@ -69,13 +68,9 @@ const SyncAccountsSettings = () => {
     navigate(DEFAULT_ROUTE);
   }, [navigate, resetQrSyncState]);
 
-  useEffect(() => {
-    if (!isQrSyncTerminal) {
-      return;
-    }
-
-    handleExit().catch(() => undefined);
-  }, [handleExit, isQrSyncTerminal]);
+  const handleRetry = useCallback(() => {
+    resetQrSyncState().catch(() => undefined);
+  }, [resetQrSyncState]);
 
   const handleAddWallets = useCallback(
     async ({
@@ -134,6 +129,12 @@ const SyncAccountsSettings = () => {
         ) : null;
       case QR_SYNC_PHASES.CANCELLED:
       case QR_SYNC_PHASES.FAILED:
+        return (
+          <SyncError
+            onRetry={handleRetry}
+            onCancel={() => handleExit().catch(() => undefined)}
+          />
+        );
       default:
         return null;
     }

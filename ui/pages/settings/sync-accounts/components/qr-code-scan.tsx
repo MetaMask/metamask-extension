@@ -11,27 +11,21 @@ import {
   TextButton,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
-import log from 'loglevel';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 import { QRCodeImage } from '../../../../components/app/deeplink-qr-code/deeplink-qr-code';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import {
-  selectQrSyncError,
-  selectQrSyncQrPayload,
-} from '../../../../selectors/qr-sync/qr-sync';
+import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
 
 const QrCodeScan = () => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
-  const qrSyncError = useSelector(selectQrSyncError);
   const [secondsLeft, setSecondsLeft] = useState(
     MWP_SESSION_REQUEST_EXPIRY_SECONDS,
   );
-  const hasError = Boolean(qrSyncError);
   const isExpired = secondsLeft <= 0;
-  const shouldDimQr = isExpired || Boolean(qrSyncError);
+  const shouldDimQr = isExpired;
 
   useEffect(() => {
     if (shouldDimQr) {
@@ -67,10 +61,7 @@ const QrCodeScan = () => {
   );
 
   let statusContent;
-  if (hasError) {
-    log.error('qrSyncError', qrSyncError);
-    statusContent = renderResetBlock(t('qrCodeScanError'));
-  } else if (isExpired) {
+  if (isExpired) {
     statusContent = renderResetBlock(t('qrCodeExpired'));
   } else {
     statusContent = (
