@@ -2011,6 +2011,12 @@
     "message": "Bridge details",
     "description": "Title for the modal showing details about a bridge transaction."
   },
+  "bridgeDiscountBadgeDao": {
+    "message": "DAO"
+  },
+  "bridgeDiscountBadgePromo": {
+    "message": "Promo"
+  },
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
@@ -2022,6 +2028,9 @@
   },
   "bridgeFee": {
     "message": "Bridge fee"
+  },
+  "bridgeFeeDisclaimer": {
+    "message": "Includes $1% MetaMask fee"
   },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 to $3",
@@ -4582,9 +4591,6 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Includes"
-  },
   "includesSmartAccountActivation": {
     "message": "Includes smart account activation"
   },
@@ -5157,7 +5163,7 @@
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
   },
   "mmFee": {
-    "message": "$1% MM fee."
+    "message": "$1% MetaMask fee"
   },
   "month": {
     "message": "month"
