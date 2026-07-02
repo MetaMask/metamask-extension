@@ -18,7 +18,6 @@ import {
   setTokenNetworkFilter,
   updateNetwork,
 } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworksForm } from './networks-form';
 
@@ -492,59 +491,33 @@ describe('NetworkForm Component', () => {
   });
 
   it('should track RPC update event when trackRpcUpdateFromBanner is true', async () => {
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
-    const store = configureMockStore([thunk])({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        useSafeChainsListValidation: true,
-        orderedNetworkList: {
-          networkId: '0x1',
-          networkRpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://monad-mainnet.infura.io/v3/',
-                  type: 'custom',
-                },
-              ],
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://monad-mainnet.infura.io/v3/',
+              type: 'custom',
             },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            rpcEndpoints: [
-              {
-                url: 'https://mainnet.infura.io/v3/',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+      trackRpcUpdateFromBanner: true,
+    });
 
     const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
@@ -566,47 +539,20 @@ describe('NetworkForm Component', () => {
   });
 
   it('should not track RPC update event when trackRpcUpdateFromBanner is not set', async () => {
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
-    const store = configureMockStore([thunk])({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        useSafeChainsListValidation: true,
-        orderedNetworkList: {
-          networkId: '0x1',
-          networkRpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
       },
     });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            rpcEndpoints: [
-              {
-                url: 'https://mainnet.infura.io/v3/',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          // trackRpcUpdateFromBanner not set
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
 
     const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
@@ -623,59 +569,33 @@ describe('NetworkForm Component', () => {
   });
 
   it('should track custom RPC URL when endpoint is not public', async () => {
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
-    const store = configureMockStore([thunk])({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        useSafeChainsListValidation: true,
-        orderedNetworkList: {
-          networkId: '0x1',
-          networkRpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://custom-rpc.example.com',
-                  type: 'custom',
-                },
-              ],
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://custom-rpc.example.com',
+              type: 'custom',
             },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            rpcEndpoints: [
-              {
-                url: 'https://custom-rpc.example.com',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://custom-rpc.example.com',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+      trackRpcUpdateFromBanner: true,
+    });
 
     const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
@@ -697,54 +617,28 @@ describe('NetworkForm Component', () => {
   });
 
   it('should handle corrupted state with missing rpcEndpoints gracefully', async () => {
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
-    const store = configureMockStore([thunk])({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        useSafeChainsListValidation: true,
-        orderedNetworkList: {
-          networkId: '0x1',
-          networkRpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://monad-mainnet.infura.io/v3/',
-                  type: 'custom',
-                },
-              ],
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://monad-mainnet.infura.io/v3/',
+              type: 'custom',
             },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            // rpcEndpoints is undefined (corrupted state)
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        // rpcEndpoints is undefined (corrupted state)
+      },
+      trackRpcUpdateFromBanner: true,
+    });
 
     const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
