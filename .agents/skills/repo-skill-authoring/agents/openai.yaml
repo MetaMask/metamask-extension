@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repo Skill Authoring"
+  short_description: "Create and validate repo-local skills."
+  default_prompt: "Use $repo-skill-authoring to create or update the canonical repo-local skill and any necessary harness shims."
