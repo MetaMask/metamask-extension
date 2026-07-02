@@ -23,6 +23,11 @@ import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
 
+const reactReduxProviderProps =
+  process.env.NODE_ENV === 'test'
+    ? { stabilityCheck: 'never', noopCheck: 'never' }
+    : {};
+
 function AppProviders() {
   return (
     <MetaMetricsProvider>
@@ -91,7 +96,7 @@ class Index extends PureComponent {
 
     if (error) {
       return (
-        <Provider store={store}>
+        <Provider store={store} {...reactReduxProviderProps}>
           <HashRouter>
             <ErrorPage error={error} />
           </HashRouter>
@@ -100,7 +105,7 @@ class Index extends PureComponent {
     }
 
     return (
-      <Provider store={store}>
+      <Provider store={store} {...reactReduxProviderProps}>
         <UIMessengerProvider value={uiMessenger}>
           <RouterProvider router={router} />
         </UIMessengerProvider>

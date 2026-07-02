@@ -319,8 +319,7 @@
     },
     "ui/components/app/snaps/snap-ui-renderer/components/account-selector.test.ts": {
       "MetaMask: Background connection not initialized": 4,
-      "React: DOM nesting violations": 1,
-      "Reselect: Identity function warnings": 2
+      "React: DOM nesting violations": 1
     },
     "ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts": {
       "MetaMask: Background connection not initialized": 8,
@@ -719,9 +718,8 @@
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 43,
-      "React: Act warnings (component updates not wrapped)": 17,
-      "Reselect: Identity function warnings": 4
+      "MetaMask: Background connection not initialized": 23,
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/confirm/info/nft-token-transfer/nft-token-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 40,
@@ -949,7 +947,7 @@
       "React: Missing key props in lists": 1
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 4,
+      "MetaMask: Background connection not initialized": 3,
       "React: DOM nesting violations": 3
     },
     "ui/pages/multichain-accounts/smart-account-page/smart-account-page.test.tsx": {
