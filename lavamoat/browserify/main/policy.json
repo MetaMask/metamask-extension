@@ -10,6 +10,11 @@
         "SuppressedError": true
       }
     },
+    "eciesjs>@ecies/ciphers": {
+      "packages": {
+        "@noble/ciphers": true
+      }
+    },
     "@emotion/react>@emotion/cache": {
       "globals": {
         "document": true
@@ -1916,6 +1921,31 @@
         "console.error": true
       }
     },
+    "@metamask/mobile-wallet-protocol-core": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "async-mutex": true,
+        "browserify>buffer": true,
+        "@metamask/mobile-wallet-protocol-core>centrifuge": true,
+        "@metamask/mobile-wallet-protocol-core>eventemitter3": true,
+        "browserify>timers-browserify": true,
+        "@metamask/mobile-wallet-protocol-core>uuid": true
+      }
+    },
+    "@metamask/mobile-wallet-protocol-dapp-client": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/mobile-wallet-protocol-core": true,
+        "@metamask/mobile-wallet-protocol-dapp-client>@metamask/utils": true,
+        "@metamask/mobile-wallet-protocol-dapp-client>uuid": true
+      }
+    },
     "@metamask/multichain-account-service": {
       "globals": {
         "clearTimeout": true,
@@ -2823,6 +2853,21 @@
       }
     },
     "@metamask/perps-controller>@metamask/abi-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/mobile-wallet-protocol-dapp-client>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -4333,6 +4378,31 @@
         "stream-browserify": true
       }
     },
+    "@metamask/mobile-wallet-protocol-core>centrifuge": {
+      "globals": {
+        "AbortController": false,
+        "Event": false,
+        "EventSource": false,
+        "EventTarget": false,
+        "MessageEvent": false,
+        "ReadableStream": false,
+        "SockJS": false,
+        "SuppressedError": false,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": false,
+        "WebSocket": true,
+        "WebTransport": false,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console": false,
+        "console.warn": true,
+        "document": false,
+        "fetch": false,
+        "localStorage": false,
+        "setTimeout": true
+      }
+    },
     "chalk": {
       "packages": {
         "chalk>ansi-styles": true,
@@ -4624,6 +4694,14 @@
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>gopd": true
+      }
+    },
+    "eciesjs": {
+      "packages": {
+        "eciesjs>@ecies/ciphers": true,
+        "@noble/ciphers": true,
+        "@noble/curves": true,
+        "@noble/hashes": true
       }
     },
     "@toruslabs/eccrypto>elliptic": {
@@ -5642,7 +5720,7 @@
         "eth-lattice-keyring>gridplus-sdk>ox>abitype": true,
         "viem>ox>abitype": true,
         "viem>abitype": true,
-        "viem>ox>eventemitter3": true
+        "@metamask/mobile-wallet-protocol-core>eventemitter3": true
       }
     },
     "viem>ox": {
@@ -6842,6 +6920,16 @@
       }
     },
     "@metamask/keyring-snap-client>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/mobile-wallet-protocol-core>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/mobile-wallet-protocol-dapp-client>uuid": {
       "globals": {
         "crypto": true
       }

@@ -1246,6 +1246,15 @@
     "previousMigrationVersion": "number",
     "productTour": "string",
     "proofBackfillEnqueued": "boolean",
+    "qrSyncConnectionStatus": "string",
+    "qrSyncCreatedAt": "null",
+    "qrSyncError": "null",
+    "qrSyncImportedAccountIds": [],
+    "qrSyncPhase": "string",
+    "qrSyncQrPayload": "null",
+    "qrSyncSelectedAccountIds": [],
+    "qrSyncSessionId": "null",
+    "qrSyncUpdatedAt": "null",
     "quoteFetchError": "null",
     "quoteRequest": [
       {
@@ -1336,6 +1345,7 @@
     "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
+    "syncOffer": "null",
     "syncQueue": {
       "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
         {
