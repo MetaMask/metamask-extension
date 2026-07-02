@@ -18,6 +18,13 @@ const mockSafeChains = [
     explorers: [{ url: 'https://gnosisscan.io' }],
   },
   {
+    name: 'Cronos Mainnet',
+    chainId: 25,
+    nativeCurrency: { symbol: 'CRO' },
+    rpc: ['https://evm.cronos.org'],
+    explorers: [{ url: 'https://cronoscan.com' }],
+  },
+  {
     name: 'HTTP Only Network',
     chainId: 200,
     nativeCurrency: { symbol: 'HTTP' },
@@ -106,7 +113,7 @@ const customNetworkConfiguration = {
 const gnosisNetworkConfiguration = {
   '0x64': {
     chainId: '0x64',
-    name: 'Gnosis',
+    name: 'Gnosis Custom',
     rpcEndpoints: [
       {
         url: 'https://rpc.gnosischain.com',
@@ -352,6 +359,28 @@ describe('NetworksPage', () => {
     expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
   });
 
+  it('prefills Chainlist network name from the canonical network name when available', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    const cronosButton = (
+      await screen.findByText('Cronos Mainnet')
+    ).closest('button');
+    expect(cronosButton).toBeInTheDocument();
+
+    fireEvent.click(cronosButton as HTMLButtonElement);
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Cronos',
+    );
+    expect(screen.queryByTestId('network-form-name-suggestion')).toBeNull();
+  });
+
   it('renders an empty state when the Chainlist search has no results', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
@@ -383,8 +412,8 @@ describe('NetworksPage', () => {
       remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
-    expect(await screen.findByText('Chainlist Network 99')).toBeInTheDocument();
-    expect(screen.queryByText('Chainlist Network 100')).not.toBeInTheDocument();
+    expect(await screen.findByText('Chainlist Network 98')).toBeInTheDocument();
+    expect(screen.queryByText('Chainlist Network 99')).not.toBeInTheDocument();
 
     const networkList = screen.getByTestId(
       'networks-page-chainlist-network-list',
@@ -405,7 +434,7 @@ describe('NetworksPage', () => {
     fireEvent.scroll(networkList);
 
     expect(
-      await screen.findByText('Chainlist Network 100'),
+      await screen.findByText('Chainlist Network 99'),
     ).toBeInTheDocument();
   });
 
@@ -419,12 +448,17 @@ describe('NetworksPage', () => {
       },
     });
 
-    expect(await screen.findByText('Gnosis')).toBeInTheDocument();
-    const gnosisButton = screen.getByText('Gnosis').closest('button');
-    expect(gnosisButton).toHaveClass('bg-muted');
+    expect(await screen.findByText('Gnosis Custom')).toBeInTheDocument();
+    expect(screen.queryByText('Gnosis')).not.toBeInTheDocument();
+    const gnosisButton = screen.getByText('Gnosis Custom').closest('button');
+    expect(gnosisButton).not.toHaveClass('bg-muted');
     expect(
       screen.getByTestId('networks-page-chainlist-added-pill'),
     ).toHaveTextContent(messages.added.message);
+    expect(screen.getByTestId('networks-page-chainlist-added-pill')).toHaveClass(
+      'bg-muted',
+      'rounded',
+    );
 
     fireEvent.click(gnosisButton as HTMLButtonElement);
 
