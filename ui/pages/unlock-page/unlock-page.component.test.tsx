@@ -19,7 +19,7 @@ jest.mock('../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
       createEventBuilder,
     }),
   };
@@ -52,6 +52,9 @@ describe('UnlockPage component (passkey UI)', () => {
   const selectedTestAccountId = 'test-unlock-account-id';
 
   const mockStore = configureMockStore([thunk])({
+    confirmTransaction: {
+      txData: {},
+    },
     metamask: {
       passkeyRecord: null,
       internalAccounts: {

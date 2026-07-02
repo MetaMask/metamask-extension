@@ -151,25 +151,24 @@ describe('Notifications List', () => {
       const notificationsInteractionsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category ===
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.properties?.category ===
               MetaMetricsEventCategory.NotificationInteraction,
         );
 
-      expect(notificationsInteractionsEvent?.[0]).toBe('trackMetaMetricsEvent');
+      expect(notificationsInteractionsEvent?.[0]).toBe('trackAnalyticsEvent');
       const [metricsEvent] = notificationsInteractionsEvent?.[1] as unknown as [
         {
-          event: string;
-          category: string;
+          name: string;
           properties: Record<string, unknown>;
         },
       ];
 
-      expect(metricsEvent?.event).toBe(
+      expect(metricsEvent?.name).toBe(
         MetaMetricsEventName.NotificationsMenuOpened,
       );
 
-      expect(metricsEvent?.category).toBe(
+      expect(metricsEvent?.properties?.category).toBe(
         MetaMetricsEventCategory.NotificationInteraction,
       );
 

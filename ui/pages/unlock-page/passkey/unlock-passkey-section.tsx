@@ -20,6 +20,7 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
@@ -66,7 +67,7 @@ export const UnlockPasskeySection = ({
 }: UnlockPasskeySectionProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);

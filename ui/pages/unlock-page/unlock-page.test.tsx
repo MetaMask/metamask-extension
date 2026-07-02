@@ -28,7 +28,7 @@ jest.mock('../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
       createEventBuilder,
     }),
   };
@@ -140,9 +140,22 @@ describe('Unlock Page', () => {
     },
   };
 
-  const mockState = {
+  /**
+   * Required by `useSegmentContext()` → `txDataSelector` in unlock analytics.
+   * @param state
+   */
+  const withConfirmTransaction = <TState extends Record<string, unknown>>(
+    state: TState,
+  ) => ({
+    confirmTransaction: {
+      txData: {},
+    },
+    ...state,
+  });
+
+  const mockState = withConfirmTransaction({
     metamask: { passkeyRecord: null },
-  };
+  });
   const mockStore = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
@@ -186,9 +199,9 @@ describe('Unlock Page', () => {
   });
 
   it('clicks imports seed button', async () => {
-    const mockStateNonUnlocked = {
+    const mockStateNonUnlocked = withConfirmTransaction({
       metamask: { completedOnboarding: true },
-    };
+    });
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
     const { getByText, findByTestId } = renderWithProvider(
       <UnlockPage />,
@@ -211,12 +224,12 @@ describe('Unlock Page', () => {
   });
 
   it('clicks use different login method button', async () => {
-    const mockStateWithUnlock = {
+    const mockStateWithUnlock = withConfirmTransaction({
       metamask: {
         firstTimeFlowType: FirstTimeFlowType.socialImport,
         completedOnboarding: false,
       },
-    };
+    });
     const store = configureMockStore([thunk])(mockStateWithUnlock);
 
     const mockLoginWithDifferentMethod = jest.fn();
@@ -249,9 +262,9 @@ describe('Unlock Page', () => {
   });
   it('should redirect to history location when unlocked (from state)', () => {
     const intendedPath = '/previous-route';
-    const mockStateWithUnlock = {
+    const mockStateWithUnlock = withConfirmTransaction({
       metamask: { isUnlocked: true },
-    };
+    });
     const store = configureMockStore([thunk])(mockStateWithUnlock);
 
     // Set up the router to have the location state that would come from a redirect
@@ -271,9 +284,9 @@ describe('Unlock Page', () => {
   it('changes password, submits, and redirects to the specified route (from location.state)', async () => {
     const intendedPath = '/intended-route';
     const intendedSearch = '?abc=123';
-    const mockStateNonUnlocked = {
+    const mockStateNonUnlocked = withConfirmTransaction({
       metamask: { isUnlocked: false },
-    };
+    });
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
 
     // Set up the router to have the location state that would come from a redirect
@@ -310,9 +323,9 @@ describe('Unlock Page', () => {
   });
 
   it('should show login error modal when authentication error is thrown', async () => {
-    const mockStateNonUnlocked = {
+    const mockStateNonUnlocked = withConfirmTransaction({
       metamask: { isUnlocked: false, completedOnboarding: true },
-    };
+    });
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
     (mockTryUnlockMetamask as jest.Mock).mockImplementationOnce(() => {
       return Promise.reject(
@@ -356,18 +369,20 @@ describe('Unlock Page', () => {
 
   it('starts passkey unlock on mount when a passkey is registered', async () => {
     const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
-    const store = configureMockStore([thunk])({
-      metamask: {
-        completedOnboarding: true,
-        internalAccounts: mockUnlockInternalAccounts,
-        passkeyRecord: {
-          credentialId: 'cred',
-          derivationMethod: 'prf',
-          wrappedEncryptionKey: 'e30',
-          iv: 'e30',
+    const store = configureMockStore([thunk])(
+      withConfirmTransaction({
+        metamask: {
+          completedOnboarding: true,
+          internalAccounts: mockUnlockInternalAccounts,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
         },
-      },
-    });
+      }),
+    );
 
     renderWithProvider(
       <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />,
@@ -383,19 +398,21 @@ describe('Unlock Page', () => {
 
   it('does not start passkey unlock on mount when passkeyAutoUnlockSuppressed is set', async () => {
     const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
-    const store = configureMockStore([thunk])({
-      metamask: {
-        completedOnboarding: true,
-        internalAccounts: mockUnlockInternalAccounts,
-        passkeyRecord: {
-          credentialId: 'cred',
-          derivationMethod: 'prf',
-          wrappedEncryptionKey: 'e30',
-          iv: 'e30',
+    const store = configureMockStore([thunk])(
+      withConfirmTransaction({
+        metamask: {
+          completedOnboarding: true,
+          internalAccounts: mockUnlockInternalAccounts,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
+          passkeyAutoUnlockSuppressed: true,
         },
-        passkeyAutoUnlockSuppressed: true,
-      },
-    });
+      }),
+    );
 
     renderWithProvider(
       <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />,
@@ -410,18 +427,20 @@ describe('Unlock Page', () => {
   });
 
   it('does not start passkey unlock during onboarding incomplete flow', async () => {
-    const store = configureMockStore([thunk])({
-      metamask: {
-        completedOnboarding: false,
-        internalAccounts: mockUnlockInternalAccounts,
-        passkeyRecord: {
-          credentialId: 'cred',
-          derivationMethod: 'prf',
-          wrappedEncryptionKey: 'e30',
-          iv: 'e30',
+    const store = configureMockStore([thunk])(
+      withConfirmTransaction({
+        metamask: {
+          completedOnboarding: false,
+          internalAccounts: mockUnlockInternalAccounts,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
         },
-      },
-    });
+      }),
+    );
 
     renderWithProvider(<UnlockPage />, store, '/onboarding/unlock');
 
