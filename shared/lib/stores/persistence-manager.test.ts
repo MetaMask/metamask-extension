@@ -74,8 +74,10 @@ describe('PersistenceManager', () => {
       const listener = jest.fn();
       expect(() => {
         manager.on('splitStateMigrationSucceeded', listener);
+        manager.on('writeRetryRecovered', listener);
         manager.off('splitStateMigrationSucceeded', listener);
         manager.off('vaultCorruptionDetected', listener);
+        manager.off('writeRetryRecovered', listener);
       }).not.toThrow();
     });
   });
@@ -116,6 +118,8 @@ describe('PersistenceManager', () => {
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
+      const writeRetryRecoveredListener = jest.fn();
+      manager.on('writeRetryRecovered', writeRetryRecoveredListener);
       mockStoreSet
         .mockRejectedValueOnce(error)
         .mockResolvedValueOnce(undefined);
@@ -133,7 +137,121 @@ describe('PersistenceManager', () => {
       expect(result).toBe(true);
       expect(persistError).toBeUndefined();
       expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+      expect(writeRetryRecoveredListener).toHaveBeenCalledWith({
+        event: 'set-retry-recovered',
+        firstErrorMessage: 'store.set error',
+        firstErrorName: 'Error',
+        retryDelayMs: WRITE_RETRY_DELAY_MS,
+      });
       expect(log.error).not.toHaveBeenCalled();
+    });
+
+    it('reports the original store.set error when a newer set supersedes the retry', async () => {
+      jest.useFakeTimers();
+      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      manager.setMetadata({ version: 10 });
+
+      const error = new Error('store.set error');
+      const writeRetryRecoveredListener = jest.fn();
+      manager.on('writeRetryRecovered', writeRetryRecoveredListener);
+      mockStoreSet
+        .mockRejectedValueOnce(error)
+        .mockResolvedValueOnce(undefined);
+
+      const firstSetPromise = manager.set({ appState: { stale: true } });
+
+      await jest.advanceTimersByTimeAsync(0);
+      expect(mockStoreSet).toHaveBeenCalledTimes(1);
+
+      const secondSetPromise = manager.set({ appState: { fresh: true } });
+
+      const [
+        [firstResult, firstPersistError],
+        [secondResult, secondPersistError],
+      ] = await Promise.all([firstSetPromise, secondSetPromise]);
+
+      expect(mockStoreSet).toHaveBeenCalledTimes(2);
+      expect(mockStoreSet).toHaveBeenNthCalledWith(2, {
+        data: { appState: { fresh: true } },
+        meta: { version: 10 },
+      });
+      expect(firstResult).toBe(false);
+      expect(firstPersistError).toBe(error);
+      expect(secondResult).toBe(true);
+      expect(secondPersistError).toBeUndefined();
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'set-failed' },
+        fingerprint: ['persistence-error', 'set-failed'],
+      });
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'set-recovered' },
+          fingerprint: ['persistence-event', 'set-recovered'],
+        },
+      );
+      expect(writeRetryRecoveredListener).not.toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith(
+        'error setting state in local store:',
+        error,
+      );
+    });
+
+    it('does not supersede a backup store.set retry with a newer set', async () => {
+      await manager.open();
+      jest.useFakeTimers();
+      manager.setMetadata({ version: 10 });
+
+      const backupError = new Error('backup store.set error');
+      const backupSetSpy = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValueOnce(backupError)
+        .mockResolvedValueOnce(undefined);
+      const writeRetryRecoveredListener = jest.fn();
+      manager.on('writeRetryRecovered', writeRetryRecoveredListener);
+      mockStoreSet.mockResolvedValue(undefined);
+
+      const firstSetPromise = manager.set({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+      } as unknown as MetaMaskStateType);
+
+      await jest.advanceTimersByTimeAsync(0);
+      expect(mockStoreSet).toHaveBeenCalledTimes(1);
+      expect(backupSetSpy).toHaveBeenCalledTimes(1);
+
+      const secondSetPromise = manager.set({ appState: { fresh: true } });
+
+      await jest.advanceTimersByTimeAsync(0);
+      expect(mockStoreSet).toHaveBeenCalledTimes(1);
+      expect(backupSetSpy).toHaveBeenCalledTimes(1);
+
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+
+      const [
+        [firstResult, firstPersistError],
+        [secondResult, secondPersistError],
+      ] = await Promise.all([firstSetPromise, secondSetPromise]);
+
+      expect(mockStoreSet).toHaveBeenCalledTimes(2);
+      expect(backupSetSpy).toHaveBeenCalledTimes(2);
+      expect(firstResult).toBe(true);
+      expect(firstPersistError).toBeUndefined();
+      expect(secondResult).toBe(true);
+      expect(secondPersistError).toBeUndefined();
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(writeRetryRecoveredListener).toHaveBeenCalledWith({
+        event: 'set-backup-retry-recovered',
+        firstErrorMessage: 'backup store.set error',
+        firstErrorName: 'Error',
+        retryDelayMs: WRITE_RETRY_DELAY_MS,
+      });
+      expect(log.error).not.toHaveBeenCalled();
+
+      backupSetSpy.mockRestore();
     });
 
     it('logs error and captures exception if store.set throws after retry', async () => {
@@ -446,6 +564,8 @@ describe('PersistenceManager', () => {
       manager.update('FooController', { foo: 'bar' });
 
       const error = new Error('store.setKeyValues error');
+      const writeRetryRecoveredListener = jest.fn();
+      manager.on('writeRetryRecovered', writeRetryRecoveredListener);
       mockStoreSetKeyValues
         .mockRejectedValueOnce(error)
         .mockResolvedValueOnce(undefined);
@@ -463,7 +583,137 @@ describe('PersistenceManager', () => {
       expect(result).toBe(true);
       expect(persistError).toBeUndefined();
       expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+      expect(writeRetryRecoveredListener).toHaveBeenCalledWith({
+        event: 'persist-retry-recovered',
+        firstErrorMessage: 'store.setKeyValues error',
+        firstErrorName: 'Error',
+        retryDelayMs: WRITE_RETRY_DELAY_MS,
+      });
       expect(log.error).not.toHaveBeenCalled();
+    });
+
+    it('reports the original store.setKeyValues error when a newer persist supersedes the retry', async () => {
+      jest.useFakeTimers();
+      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'old' });
+      manager.update('BazController', { baz: 'old' });
+
+      const error = new Error('store.setKeyValues error');
+      const writeRetryRecoveredListener = jest.fn();
+      manager.on('writeRetryRecovered', writeRetryRecoveredListener);
+      mockStoreSetKeyValues
+        .mockRejectedValueOnce(error)
+        .mockResolvedValueOnce(undefined);
+
+      const firstPersistPromise = manager.persist();
+
+      await jest.advanceTimersByTimeAsync(0);
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+
+      manager.update('FooController', { foo: 'new' });
+      manager.update('BarController', { bar: 'new' });
+      const secondPersistPromise = manager.persist();
+
+      const [
+        [firstResult, firstPersistError],
+        [secondResult, secondPersistError],
+      ] = await Promise.all([firstPersistPromise, secondPersistPromise]);
+
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(2);
+      const secondMap = mockStoreSetKeyValues.mock.calls[1][0] as Map<
+        string,
+        unknown
+      >;
+      /* eslint-disable jest/prefer-strict-equal -- persist() uses structuredClone for map values; toEqual matches deep shape (stricter than toMatchObject); toStrictEqual fails on prototype */
+      expect(secondMap.get('meta')).toEqual({ version: 10 });
+      expect(secondMap.get('FooController')).toEqual({ foo: 'new' });
+      expect(secondMap.get('BazController')).toEqual({ baz: 'old' });
+      expect(secondMap.get('BarController')).toEqual({ bar: 'new' });
+      /* eslint-enable jest/prefer-strict-equal */
+      expect(firstResult).toBe(false);
+      expect(firstPersistError).toBe(error);
+      expect(secondResult).toBe(true);
+      expect(secondPersistError).toBeUndefined();
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'persist-failed' },
+        fingerprint: ['persistence-error', 'persist-failed'],
+      });
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'persist-recovered' },
+          fingerprint: ['persistence-event', 'persist-recovered'],
+        },
+      );
+      expect(writeRetryRecoveredListener).not.toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith(
+        'error setting state in local store:',
+        error,
+      );
+    });
+
+    it('does not supersede a backup store.set retry with a newer persist', async () => {
+      await manager.open();
+      jest.useFakeTimers();
+      manager.setMetadata({ version: 10 });
+      manager.update('KeyringController', {
+        vault: 'encrypted-vault',
+      });
+
+      const backupError = new Error('backup store.set error');
+      const backupSetSpy = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValueOnce(backupError)
+        .mockResolvedValueOnce(undefined);
+      const writeRetryRecoveredListener = jest.fn();
+      manager.on('writeRetryRecovered', writeRetryRecoveredListener);
+      mockStoreSetKeyValues.mockResolvedValue(undefined);
+
+      const firstPersistPromise = manager.persist();
+
+      await jest.advanceTimersByTimeAsync(0);
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+      expect(backupSetSpy).toHaveBeenCalledTimes(1);
+
+      manager.update('FooController', { foo: 'new' });
+      const secondPersistPromise = manager.persist();
+
+      await jest.advanceTimersByTimeAsync(0);
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+      expect(backupSetSpy).toHaveBeenCalledTimes(1);
+
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+
+      const [
+        [firstResult, firstPersistError],
+        [secondResult, secondPersistError],
+      ] = await Promise.all([firstPersistPromise, secondPersistPromise]);
+
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(2);
+      expect(backupSetSpy).toHaveBeenCalledTimes(2);
+      const secondMap = mockStoreSetKeyValues.mock.calls[1][0] as Map<
+        string,
+        unknown
+      >;
+      /* eslint-disable-next-line jest/prefer-strict-equal -- persist() uses structuredClone for map values; toEqual matches deep shape (stricter than toMatchObject); toStrictEqual fails on prototype */
+      expect(secondMap.get('FooController')).toEqual({ foo: 'new' });
+      expect(firstResult).toBe(true);
+      expect(firstPersistError).toBeUndefined();
+      expect(secondResult).toBe(true);
+      expect(secondPersistError).toBeUndefined();
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(writeRetryRecoveredListener).toHaveBeenCalledWith({
+        event: 'persist-backup-retry-recovered',
+        firstErrorMessage: 'backup store.set error',
+        firstErrorName: 'Error',
+        retryDelayMs: WRITE_RETRY_DELAY_MS,
+      });
+      expect(log.error).not.toHaveBeenCalled();
+
+      backupSetSpy.mockRestore();
     });
 
     it('logs error and captures exception if store.setKeyValues throws after retry', async () => {

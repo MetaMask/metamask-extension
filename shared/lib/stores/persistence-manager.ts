@@ -51,14 +51,32 @@ export type SplitStateMigrationFailedEvent = {
   state: MetaMaskStateType;
 };
 
+export type WriteRetryRecoveredPersistenceEvent =
+  | 'set-retry-recovered'
+  | 'set-backup-retry-recovered'
+  | 'persist-retry-recovered'
+  | 'persist-backup-retry-recovered';
+
+export type WriteRetryRecoveredEvent = {
+  event: WriteRetryRecoveredPersistenceEvent;
+  firstErrorMessage: string;
+  firstErrorName: string;
+  retryDelayMs: number;
+};
+
 export type PersistenceManagerEventMap = {
   vaultCorruptionDetected: [VaultCorruptionDetectedEvent];
   splitStateMigrationSucceeded: [SplitStateMigrationSucceededEvent];
   splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
+  writeRetryRecovered: [WriteRetryRecoveredEvent];
 };
 
 export type PersistenceManagerOptions = {
   localStore: BaseStore;
+};
+
+type WriteRetryOptions = {
+  supersedable: boolean;
 };
 
 export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
@@ -66,8 +84,39 @@ export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => globalThis.setTimeout(resolve, ms));
+class SupersededWriteRetryError extends Error {
+  constructor() {
+    super('MetaMask - write retry superseded by newer write');
+    this.name = 'SupersededWriteRetryError';
+  }
+}
+
+function isSupersededWriteRetryError(
+  error: unknown,
+): error is SupersededWriteRetryError {
+  return error instanceof SupersededWriteRetryError;
+}
+
+function delay(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new SupersededWriteRetryError());
+      return;
+    }
+
+    const timeout = globalThis.setTimeout(() => {
+      signal?.removeEventListener('abort', handleAbort);
+      resolve();
+    }, ms);
+
+    function handleAbort() {
+      globalThis.clearTimeout(timeout);
+      signal?.removeEventListener('abort', handleAbort);
+      reject(new SupersededWriteRetryError());
+    }
+
+    signal?.addEventListener('abort', handleAbort, { once: true });
+  });
 }
 
 /**
@@ -224,6 +273,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #localStore: BaseStore;
 
+  #currentWriteRetryAbortController: AbortController | null = null;
+
   #backupDb: IndexedDBStore | null = null;
 
   #backup?: string;
@@ -305,12 +356,65 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return error instanceof Error ? error : new Error(String(error));
   }
 
-  async #retryWrite<Result>(write: () => Promise<Result>): Promise<Result> {
+  #emitWriteRetryRecovered(
+    event: WriteRetryRecoveredPersistenceEvent,
+    firstError: unknown,
+  ) {
+    const normalizedError = this.#normalizePersistError(firstError);
+    this.emit('writeRetryRecovered', {
+      event,
+      firstErrorMessage: normalizedError.message,
+      firstErrorName: normalizedError.name,
+      retryDelayMs: PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS,
+    });
+  }
+
+  #supersedeWriteRetry() {
+    this.#currentWriteRetryAbortController?.abort();
+    this.#currentWriteRetryAbortController = null;
+  }
+
+  async #waitForWriteRetryDelay({
+    supersedable,
+  }: WriteRetryOptions): Promise<void> {
+    if (!supersedable) {
+      await delay(PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS);
+      return;
+    }
+
+    const abortController = new AbortController();
+    this.#currentWriteRetryAbortController = abortController;
+    try {
+      await delay(
+        PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS,
+        abortController.signal,
+      );
+    } finally {
+      if (this.#currentWriteRetryAbortController === abortController) {
+        this.#currentWriteRetryAbortController = null;
+      }
+    }
+  }
+
+  async #retryWrite<Result>(
+    write: () => Promise<Result>,
+    retryRecoveredEvent: WriteRetryRecoveredPersistenceEvent,
+    options: WriteRetryOptions,
+  ): Promise<Result> {
     try {
       return await write();
-    } catch {
-      await delay(PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS);
-      return await write();
+    } catch (firstError) {
+      try {
+        await this.#waitForWriteRetryDelay(options);
+      } catch (retryDelayError) {
+        if (isSupersededWriteRetryError(retryDelayError)) {
+          throw firstError;
+        }
+        throw retryDelayError;
+      }
+      const result = await write();
+      this.#emitWriteRetryRecovered(retryRecoveredEvent, firstError);
+      return result;
     }
   }
 
@@ -485,6 +589,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
 
+    this.#supersedeWriteRetry();
     const abortController = new AbortController();
 
     // If we already have a write _pending_, abort it so the more up-to-date
@@ -507,11 +612,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         let backupFailed = false;
         try {
           // atomically set all the keys (includes test simulation check)
-          await this.#retryWrite(() =>
-            this.#setInLocalStore({
-              data: state,
-              meta,
-            }),
+          await this.#retryWrite(
+            () =>
+              this.#setInLocalStore({
+                data: state,
+                meta,
+              }),
+            'set-retry-recovered',
+            { supersedable: true },
           );
 
           const backup = makeBackup(state, meta);
@@ -525,7 +633,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               try {
                 const backupDb = this.#backupDb;
                 if (backupDb) {
-                  await this.#retryWrite(() => backupDb.set(backup));
+                  await this.#retryWrite(
+                    () => backupDb.set(backup),
+                    'set-backup-retry-recovered',
+                    { supersedable: false },
+                  );
                 }
                 this.#backup = stringifiedBackup;
               } catch (backupErr) {
@@ -608,6 +720,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
 
+    this.#supersedeWriteRetry();
     const abortController = new AbortController();
 
     // If we already have a write _pending_, abort it so the more up-to-date
@@ -634,7 +747,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           this.#pendingPairs.clear();
           try {
             // save the pairs (includes test simulation check)
-            await this.#retryWrite(() => this.#setKeyValuesInLocalStore(clone));
+            await this.#retryWrite(
+              () => this.#setKeyValuesInLocalStore(clone),
+              'persist-retry-recovered',
+              { supersedable: true },
+            );
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -661,7 +778,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             try {
               const backupDb = this.#backupDb;
               if (backupDb) {
-                await this.#retryWrite(() => backupDb.set(backup));
+                await this.#retryWrite(
+                  () => backupDb.set(backup),
+                  'persist-backup-retry-recovered',
+                  { supersedable: false },
+                );
               }
             } catch (backupErr) {
               backupFailed = true;
@@ -843,6 +964,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * its initial state.
    */
   async reset() {
+    this.#supersedeWriteRetry();
     await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive' },

@@ -37,6 +37,18 @@ function createLocalStore() {
 
 const localStore = createLocalStore();
 
+function getStateForEarlySegmentEvent(manager) {
+  if (globalThis.stateHooks.getSentryAppState) {
+    return globalThis.stateHooks.getSentryAppState();
+  }
+
+  const persistedState =
+    manager.mostRecentRetrievedState ||
+    globalThis.stateHooks.getMostRecentPersistedState?.();
+
+  return persistedState?.data ?? null;
+}
+
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({ localStore })
   .on('vaultCorruptionDetected', (payload) => {
@@ -58,6 +70,23 @@ export const persistenceManager = new PersistenceManager({ localStore })
       state: payload.state,
       event: MetaMetricsEventName.StateMigrationFailed,
       category: MetaMetricsEventCategory.StateMigration,
+    });
+  })
+  .on('writeRetryRecovered', (payload) => {
+    trackEarlySegmentEvent({
+      state: getStateForEarlySegmentEvent(persistenceManager),
+      event: MetaMetricsEventName.DataPersistenceWriteRetryRecovered,
+      category: MetaMetricsEventCategory.Error,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        persistence_event: payload.event,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        first_error_message: payload.firstErrorMessage,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        first_error_name: payload.firstErrorName,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        retry_delay_ms: payload.retryDelayMs,
+      },
     });
   });
 
