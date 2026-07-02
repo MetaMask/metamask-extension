@@ -1217,6 +1217,50 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('setAccountLabel', () => {
+    it('sets the account name for the account at the given address', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const setAccountNameHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue({ id: 'account-id' }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setAccountName',
+          setAccountNameHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:setAccountLabel',
+          '0x123',
+          'New Label',
+        );
+
+        expect(setAccountNameHandler).toHaveBeenCalledWith(
+          'account-id',
+          'New Label',
+        );
+      });
+    });
+
+    it('throws if no account is found for the given address', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue(undefined),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setAccountLabel',
+            '0x123',
+            'New Label',
+          ),
+        ).toThrow('No account found for address: 0x123');
+      });
+    });
+  });
+
   describe('exportAccount', () => {
     it('verifies the password and returns the private key', async () => {
       const address = '0xAddress';
@@ -2864,6 +2908,7 @@ function getMessenger(
       'KeyringController:removeAccount',
       'AccountsController:getAccount',
       'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',

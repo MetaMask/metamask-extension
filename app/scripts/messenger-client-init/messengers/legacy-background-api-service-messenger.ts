@@ -48,6 +48,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'KeyringController:removeAccount',
       'AccountsController:getAccount',
       'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:changePassword',
