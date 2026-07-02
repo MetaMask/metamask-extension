@@ -84,7 +84,6 @@ describe('Transaction Controller Hooks', () => {
         featureFlags: {
           extensionReturnTxHashAsap: false,
           extensionReturnTxHashAsapBatch: false,
-          extensionSkipTransactionStatusPage: false,
           mobileActive: false,
           extensionActive: false,
         },
@@ -301,7 +300,6 @@ describe('Transaction Controller Hooks', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -378,7 +376,6 @@ describe('Transaction Controller Hooks', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -460,7 +457,6 @@ describe('Transaction Controller Hooks', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -510,7 +506,6 @@ describe('Transaction Controller Hooks', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -558,7 +553,6 @@ describe('Transaction Controller Hooks', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -618,7 +612,6 @@ describe('Transaction Controller Hooks', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -671,7 +664,6 @@ describe('Transaction Controller Hooks', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },
@@ -716,7 +708,6 @@ describe('Transaction Controller Hooks', () => {
           featureFlags: {
             extensionReturnTxHashAsap: false,
             extensionReturnTxHashAsapBatch: false,
-            extensionSkipTransactionStatusPage: false,
             mobileActive: false,
             extensionActive: false,
           },

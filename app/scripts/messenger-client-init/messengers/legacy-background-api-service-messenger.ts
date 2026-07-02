@@ -28,6 +28,7 @@ export function getLegacyBackgroundApiServiceMessenger(
     actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:setSelectedCurrency',
@@ -50,6 +51,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:updateBackupMetadataState',
+      'PermissionController:rejectPermissionsRequest',
+      'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
@@ -59,6 +62,9 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
       'MetaMetricsController:trackEvent',
+      'MetaMetricsController:createEventFragment',
+      'MetaMetricsController:getEventFragmentById',
+      'MetaMetricsController:updateEventFragment',
       'KeyringController:verifyPassword',
       'KeyringController:exportAccount',
       'KeyringController:changePassword',
@@ -85,6 +91,11 @@ export function getLegacyBackgroundApiServiceMessenger(
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
+      'TransactionController:updateEditableParams',
+      'TransactionController:estimateGas',
+      'TransactionController:isAtomicBatchSupported',
+      'DelegationController:signDelegation',
+      'KeyringController:signEip7702Authorization',
     ],
   });
 

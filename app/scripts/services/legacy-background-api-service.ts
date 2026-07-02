@@ -2,10 +2,11 @@ import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
-import { add0x, Hex, hexToBytes, Json } from '@metamask/utils';
+import { add0x, Hex, hexToBytes, Json, NonEmptyArray } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import {
   AccountImportStrategy,
@@ -19,6 +20,7 @@ import {
   KeyringControllerRemoveAccountAction,
   KeyringControllerWithKeyringV2Action,
   KeyringControllerSetLockedAction,
+  KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSubmitEncryptionKeyAction,
   KeyringControllerSubmitPasswordAction,
   KeyringControllerVerifyPasswordAction,
@@ -31,8 +33,12 @@ import {
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import {
+  TransactionContainerType,
+  TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUpdateEditableParamsAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
 import { CurrencyRateControllerSetCurrentCurrencyAction } from '@metamask/assets-controllers';
@@ -65,7 +71,16 @@ import {
   SeedlessOnboardingControllerSyncLatestGlobalPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
 } from '@metamask/seedless-onboarding-controller';
-import { PermissionControllerUpdatePermissionsByCaveatAction } from '@metamask/permission-controller';
+import {
+  CaveatSpecificationConstraint,
+  ExtractPermission,
+  OriginString,
+  PermissionControllerRejectPermissionsRequestAction,
+  PermissionControllerRevokePermissionsAction,
+  PermissionControllerUpdatePermissionsByCaveatAction,
+  PermissionSpecificationConstraint,
+  PermissionsRequestNotFoundError,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -87,6 +102,8 @@ import {
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
 import { SubscriptionControllerStopAllPollingAction } from '@metamask/subscription-controller';
+import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { cloneDeep } from 'lodash';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -98,13 +115,22 @@ import {
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventFragment,
+} from '../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
+import { applyTransactionContainers } from '../lib/transaction/containers/util';
+import { TransactionControllerInitMessenger } from '../messenger-client-init/messengers/transaction-controller-messenger';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
+  MetaMetricsControllerCreateEventFragmentAction,
+  MetaMetricsControllerGetEventFragmentByIdAction,
   MetaMetricsControllerTrackEventAction,
+  MetaMetricsControllerUpdateEventFragmentAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
 } from '../controllers/metametrics-controller-method-action-types';
@@ -122,8 +148,10 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'applyTransactionContainersExisting',
   'changePassword',
   'checkIsSeedlessPasswordOutdated',
+  'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
   'getCode',
@@ -137,7 +165,9 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'rejectPermissionsRequest',
   'removeAccount',
+  'removePermissionsFor',
   'resetAccount',
   'setCurrentCurrency',
   'setLocked',
@@ -145,6 +175,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
   'unMarkPasswordForgotten',
+  'upsertTransactionUIMetricsFragment',
 ] as const;
 
 /**
@@ -168,6 +199,7 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | CurrencyRateControllerSetCurrentCurrencyAction
+  | DelegationControllerSignDelegationAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
   | KeyringControllerExportAccountAction
@@ -177,8 +209,12 @@ type AllowedActions =
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
   | KeyringControllerWithKeyringV2Action
+  | MetaMetricsControllerCreateEventFragmentAction
+  | MetaMetricsControllerGetEventFragmentByIdAction
   | MetaMetricsControllerTrackEventAction
+  | MetaMetricsControllerUpdateEventFragmentAction
   | KeyringControllerSetLockedAction
+  | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSubmitEncryptionKeyAction
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
@@ -189,10 +225,13 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PermissionControllerRejectPermissionsRequestAction
+  | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PreferencesControllerSetPasswordForgottenAction
   | RemoteFeatureFlagControllerGetStateAction
@@ -211,8 +250,11 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SubscriptionControllerStopAllPollingAction
+  | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
+  | TransactionControllerIsAtomicBatchSupportedAction
+  | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerWipeTransactionsAction;
 
 /**
@@ -407,6 +449,31 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Estimates the gas for a given transaction using the currently selected
+   * network client.
+   *
+   * @param estimateGasParams - The parameters of the transaction to estimate
+   * the gas for.
+   * @returns The estimated gas as a hexadecimal string.
+   */
+  async estimateGas(estimateGasParams: Json): Promise<string> {
+    const networkClient = this.#messenger.call(
+      'NetworkController:getSelectedNetworkClient',
+    );
+
+    if (!networkClient) {
+      throw new Error('No network client available for gas estimation');
+    }
+
+    const result = await networkClient.provider.request<Json[], number>({
+      method: 'eth_estimateGas',
+      params: [estimateGasParams],
+    });
+
+    return result.toString(16);
+  }
+
+  /**
    * Verifies the validity of the current vault's seed phrase.
    *
    * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -557,6 +624,52 @@ export class LegacyBackgroundApiService {
           address as Hex,
         ),
     );
+  }
+
+  /**
+   * Rejects a pending permissions request.
+   *
+   * Swallows `PermissionsRequestNotFoundError` so that rejecting an already
+   * resolved request does not throw.
+   *
+   * @param requestId - The ID of the permissions request to reject.
+   */
+  rejectPermissionsRequest(requestId: string): void {
+    try {
+      this.#messenger.call(
+        'PermissionController:rejectPermissionsRequest',
+        requestId,
+      );
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Removes the given permissions for the given subjects.
+   *
+   * @param subjects - The subjects and their permissions to remove.
+   */
+  removePermissionsFor(
+    subjects: Record<
+      OriginString,
+      NonEmptyArray<
+        ExtractPermission<
+          PermissionSpecificationConstraint,
+          CaveatSpecificationConstraint
+        >['parentCapability']
+      >
+    >,
+  ): void {
+    try {
+      this.#messenger.call('PermissionController:revokePermissions', subjects);
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
   }
 
   async importAccountWithStrategy(
@@ -1131,5 +1244,120 @@ export class LegacyBackgroundApiService {
       { password },
       address,
     );
+  }
+
+  /**
+   * Applies the given transaction container types to an existing transaction.
+   *
+   * @param transactionId - The ID of the transaction to update.
+   * @param containerTypes - The container types to apply to the transaction.
+   */
+  async applyTransactionContainersExisting(
+    transactionId: string,
+    containerTypes: TransactionContainerType[],
+  ): Promise<void> {
+    const { transactions } = await this.#messenger.call(
+      'TransactionController:getState',
+    );
+
+    const transactionMeta = transactions.find((tx) => tx.id === transactionId);
+
+    if (!transactionMeta) {
+      throw new Error(`Transaction with ID ${transactionId} not found.`);
+    }
+
+    const { updateTransaction } = await applyTransactionContainers({
+      isApproved: false,
+      messenger:
+        this.#messenger as unknown as TransactionControllerInitMessenger,
+      transactionMeta,
+      types: containerTypes,
+    });
+
+    const newTransactionMeta = cloneDeep(transactionMeta);
+
+    updateTransaction(newTransactionMeta);
+
+    this.#messenger.call(
+      'TransactionController:updateEditableParams',
+      transactionId,
+      {
+        containerTypes,
+        data: newTransactionMeta.txParams.data ?? '0x',
+        gas: newTransactionMeta.txParams.gas,
+        gasPrice: transactionMeta.txParams.gasPrice,
+        maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
+        maxPriorityFeePerGas: transactionMeta.txParams.maxPriorityFeePerGas,
+        to: newTransactionMeta.txParams.to,
+        updateType: false,
+        value: newTransactionMeta.txParams.value,
+      },
+    );
+  }
+
+  /**
+   * Builds the event fragment id used to store the UI metrics fragment for a
+   * given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @returns The event fragment id.
+   */
+  #getTransactionUIMetricsFragmentId(transactionId: string): string {
+    return `transaction-ui-${transactionId}`;
+  }
+
+  /**
+   * Retrieves the UI metrics fragment for a given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @returns The event fragment, or `undefined` if it does not exist.
+   */
+  #getTransactionUIMetricsFragment(
+    transactionId: string,
+  ): MetaMetricsEventFragment | undefined {
+    return this.#messenger.call(
+      'MetaMetricsController:getEventFragmentById',
+      this.#getTransactionUIMetricsFragmentId(transactionId),
+    );
+  }
+
+  /**
+   * Creates or updates the UI metrics fragment for a given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @param payload - The fragment settings and properties to store.
+   */
+  upsertTransactionUIMetricsFragment(
+    transactionId: string,
+    payload: Partial<MetaMetricsEventFragment>,
+  ): void {
+    if (!transactionId || !payload) {
+      return;
+    }
+
+    const fragmentId = this.#getTransactionUIMetricsFragmentId(transactionId);
+    const existingFragment =
+      this.#getTransactionUIMetricsFragment(transactionId);
+
+    if (existingFragment) {
+      this.#messenger.call(
+        'MetaMetricsController:updateEventFragment',
+        fragmentId,
+        payload,
+      );
+      return;
+    }
+
+    this.#messenger.call('MetaMetricsController:createEventFragment', {
+      // `createEventFragment` derives the fragment `id` from `uniqueIdentifier`.
+      uniqueIdentifier: fragmentId,
+      // Required by createEventFragment, but this fragment is storage-only.
+      // We never finalize this fragment and we do not set initialEvent.
+      successEvent: 'Transaction Fragment Created',
+      category: MetaMetricsEventCategory.Transactions,
+      canDeleteIfAbandoned: true,
+      properties: payload.properties ?? {},
+      sensitiveProperties: payload.sensitiveProperties ?? {},
+    });
   }
 }

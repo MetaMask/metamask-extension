@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -15,6 +15,7 @@ import {
   HardwareConnectionPermissionState,
   ConnectionStatus,
 } from './types';
+import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 
 const mockStore = configureStore([]);
 
@@ -47,6 +48,22 @@ const createWrapper =
       <HardwareWalletProvider>{children}</HardwareWalletProvider>
     </Provider>
   );
+
+const createMutableWrapper = (initialStore: ReturnType<typeof mockStore>) => {
+  let store = initialStore;
+
+  const setStore = (nextStore: ReturnType<typeof mockStore>) => {
+    store = nextStore;
+  };
+
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
+    <Provider store={store}>
+      <HardwareWalletProvider>{children}</HardwareWalletProvider>
+    </Provider>
+  );
+
+  return { Wrapper, setStore };
+};
 
 // Mock webConnectionUtils
 jest.mock('./webConnectionUtils', () => ({
@@ -229,6 +246,45 @@ describe('HardwareWalletContext', () => {
 
       expect(hdRender.result.current.isHardwareWalletAccount).toBe(false);
       expect(hdRender.result.current.walletType).toBe(null);
+    });
+
+    it('clears signing progress when switching to a non-hardware wallet account without an adapter', () => {
+      const mockUseHardwareWalletAutoConnect =
+        useHardwareWalletAutoConnect as jest.Mock;
+      const { Wrapper, setStore } = createMutableWrapper(
+        mockStore(createMockState(KeyringTypes.trezor)),
+      );
+
+      const { result, rerender } = renderHook(
+        () => useHardwareWalletActions(),
+        {
+          wrapper: Wrapper,
+        },
+      );
+
+      act(() => {
+        result.current.setSigningInProgress(true);
+      });
+
+      const initialAutoConnectCalls =
+        mockUseHardwareWalletAutoConnect.mock.calls;
+      const initialAutoConnectParams =
+        initialAutoConnectCalls[initialAutoConnectCalls.length - 1][0];
+      expect(initialAutoConnectParams.refs.adapterRef.current).toBe(null);
+      expect(initialAutoConnectParams.refs.isSigningInProgressRef.current).toBe(
+        true,
+      );
+
+      setStore(mockStore(createMockState(KeyringTypes.hd)));
+      rerender();
+
+      const latestAutoConnectCalls =
+        mockUseHardwareWalletAutoConnect.mock.calls;
+      const latestAutoConnectParams =
+        latestAutoConnectCalls[latestAutoConnectCalls.length - 1][0];
+      expect(latestAutoConnectParams.refs.isSigningInProgressRef.current).toBe(
+        false,
+      );
     });
 
     it('exposes API availability', () => {

@@ -49,7 +49,7 @@ class SelectNetwork {
 
   private readonly selectNetworkMessage = {
     text: 'Manage networks',
-    tag: 'h4',
+    tag: 'p',
   };
 
   private readonly selectRpcMessage = {
