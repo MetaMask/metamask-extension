@@ -97,6 +97,7 @@ import {
 import {
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
+  AccountTreeControllerSyncWithUserStorageAction,
 } from '@metamask/account-tree-controller';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import {
@@ -176,6 +177,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setCurrentCurrency',
   'setLocked',
   'submitPasswordOrEncryptionKey',
+  'syncAccountTreeWithUserStorage',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
   'unMarkPasswordForgotten',
@@ -191,6 +193,7 @@ export type LegacyBackgroundApiServiceActions =
 type AllowedActions =
   | AccountTreeControllerGetSelectedAccountGroupAction
   | AccountTreeControllerInitAction
+  | AccountTreeControllerSyncWithUserStorageAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerSetSelectedAccountAction
@@ -812,6 +815,13 @@ export class LegacyBackgroundApiService {
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
     return getAccountsBySnapId(this.#messenger, snapId);
+  }
+
+  /**
+   * Synchronizes the account tree with user storage between devices.
+   */
+  async syncAccountTreeWithUserStorage(): Promise<void> {
+    await this.#messenger.call('AccountTreeController:syncWithUserStorage');
   }
 
   /**
