@@ -232,8 +232,8 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
 import {
-  DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
+  getPartnerByOrigin,
 } from '../../shared/constants/defi-referrals';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
@@ -280,6 +280,7 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
+import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
 import {
   createDefiReferralMiddleware,
   ReferralTriggerType,
@@ -419,7 +420,6 @@ import { PermissionControllerInit } from './messenger-client-init/permission-con
 import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
-import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
 import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
@@ -550,6 +550,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
+      infuraProjectId: this.opts.infuraProjectId,
       showApprovalRequest: this.opts.showUserConfirmation,
       connectivityAdapter,
     });
@@ -639,7 +640,6 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       PasskeyController: PasskeyControllerInit,
-      NetworkController: NetworkControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -775,7 +775,7 @@ export default class MetamaskController extends EventEmitter {
     this.subjectMetadataController =
       messengerClientsByName.SubjectMetadataController;
     this.appStateController = messengerClientsByName.AppStateController;
-    this.networkController = messengerClientsByName.NetworkController;
+    this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
@@ -2994,14 +2994,6 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      setSelectedAddress: (address) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account) {
-          this.accountsController.setSelectedAccount(account.id);
-        } else {
-          throw new Error(`No account found for address: ${address}`);
-        }
-      },
       toggleExternalServices: this.toggleExternalServices.bind(this),
       addToken: async ({
         address,
@@ -3404,8 +3396,10 @@ export default class MetamaskController extends EventEmitter {
             waitForSubmit: true,
           }),
         ),
-      upsertTransactionUIMetricsFragment:
-        this.upsertTransactionUIMetricsFragment.bind(this),
+      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+      ),
       setTransactionActive:
         txController.setTransactionActive.bind(txController),
       // decryptMessageController
@@ -3448,9 +3442,18 @@ export default class MetamaskController extends EventEmitter {
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
 
       // permissions
-      removePermissionsFor: this.removePermissionsFor,
-      approvePermissionsRequest: this.acceptPermissionsRequest,
-      rejectPermissionsRequest: this.rejectPermissionsRequest,
+      removePermissionsFor: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermissionsFor',
+      ),
+      approvePermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:acceptPermissionsRequest',
+      ),
+      rejectPermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectPermissionsRequest',
+      ),
       ...getPermissionBackgroundApiMethods({
         permissionController,
         approvalController,
@@ -3620,7 +3623,10 @@ export default class MetamaskController extends EventEmitter {
 
       // ApprovalController
       rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
-      rejectPendingApproval: this.rejectPendingApproval,
+      rejectPendingApproval: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectPendingApproval',
+      ),
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
@@ -5674,7 +5680,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Runs when CAIP-25 permitted accounts are extended via the permission background API.
-   * If the origin is Hyperliquid and the globally selected account is EVM and included
+   * If the origin is a referral partner and the globally selected account is EVM and included
    * among the newly permitted accounts, it triggers the DeFi referral flow.
    *
    * @param {{ origin: string; newCaipAccountIds: import('@metamask/utils').CaipAccountId[] }} details - Added accounts payload.
@@ -5682,9 +5688,8 @@ export default class MetamaskController extends EventEmitter {
   _handleDefiReferralOnPermittedAccountsAdded(details) {
     const { origin, newCaipAccountIds } = details;
 
-    // Only run for Hyperliquid
-    const partner = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
-    if (origin !== partner.origin) {
+    const partner = getPartnerByOrigin(origin);
+    if (!partner) {
       return;
     }
 
@@ -5790,20 +5795,23 @@ export default class MetamaskController extends EventEmitter {
     // We should redirect to the referral url if the account is approved
     const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
 
-    if (
-      partner.id === DefiReferralPartner.GMX &&
-      (shouldShowApproval || shouldRedirect)
-    ) {
-      const hasExistingCode = await checkGmxHasReferralCode(
-        this.networkController,
-        activePermittedAccount,
-      );
-      if (hasExistingCode) {
-        this.preferencesController.addReferralPassedAccount(
-          partner.id,
-          activePermittedAccount,
-        );
-        return;
+    const checkExistingCodeMap = {
+      [DefiReferralPartner.GMX]: (account) =>
+        checkGmxHasReferralCode(this.networkController, account),
+      [DefiReferralPartner.Hyperliquid]: checkHyperliquidHasReferralCode,
+    };
+
+    if (shouldShowApproval || shouldRedirect) {
+      const checkExistingCode = checkExistingCodeMap[partner.id];
+      if (checkExistingCode) {
+        const hasExistingCode = await checkExistingCode(activePermittedAccount);
+        if (hasExistingCode) {
+          this.preferencesController.addReferralPassedAccount(
+            partner.id,
+            activePermittedAccount,
+          );
+          return;
+        }
       }
     }
 
@@ -8007,44 +8015,15 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  upsertTransactionUIMetricsFragment(transactionId, payload) {
-    if (!transactionId || !payload) {
-      return;
-    }
-
-    const fragmentId = this.getTransactionUIMetricsFragmentId(transactionId);
-    const existingFragment =
-      this.getTransactionUIMetricsFragment(transactionId);
-
-    if (existingFragment) {
-      this.controllerMessenger.call(
-        'MetaMetricsController:updateEventFragment',
-        fragmentId,
-        payload,
-      );
-      return;
-    }
-
-    this.controllerMessenger.call('MetaMetricsController:createEventFragment', {
-      id: fragmentId,
-      uniqueIdentifier: fragmentId,
-      // Required by createEventFragment, but this fragment is storage-only.
-      // We never finalize this fragment and we do not set initialEvent.
-      successEvent: 'Transaction Fragment Created',
-      category: MetaMetricsEventCategory.Transactions,
-      canDeleteIfAbandoned: true,
-      properties: payload.properties ?? {},
-      sensitiveProperties: payload.sensitiveProperties ?? {},
-    });
-  }
-
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Transaction metrics state
       getTransactionUIMetricsFragment:
         this.getTransactionUIMetricsFragment.bind(this),
-      upsertTransactionUIMetricsFragment:
-        this.upsertTransactionUIMetricsFragment.bind(this),
+      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+      ),
       // Metametrics Actions
       getParticipateInMetrics: () => {
         const { completedMetaMetricsOnboarding } =
@@ -8380,16 +8359,6 @@ export default class MetamaskController extends EventEmitter {
     await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
 
-  removePermissionsFor = (subjects) => {
-    try {
-      this.permissionController.revokePermissions(subjects);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
       this.controllerMessenger.call(
@@ -8469,26 +8438,6 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  rejectPermissionsRequest = (requestId) => {
-    try {
-      this.permissionController.rejectPermissionsRequest(requestId);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  acceptPermissionsRequest = (request) => {
-    try {
-      this.permissionController.acceptPermissionsRequest(request);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
   /**
    * Resolve a pending approval. For hardware wallet transactions and signatures,
    * this handles error parsing.
@@ -8521,19 +8470,6 @@ export default class MetamaskController extends EventEmitter {
       }
 
       throw error;
-    }
-  };
-
-  rejectPendingApproval = (id, error) => {
-    try {
-      this.approvalController.rejectRequest(
-        id,
-        new JsonRpcError(error.code, error.message, error.data),
-      );
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
-      }
     }
   };
 
