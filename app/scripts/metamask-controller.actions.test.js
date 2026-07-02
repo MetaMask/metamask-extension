@@ -10,7 +10,6 @@ import {
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
-import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
@@ -486,32 +485,6 @@ describe('MetaMaskController', function () {
           unifyController.assetsController.addCustomAsset,
         ).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('#acceptPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
     });
   });
 

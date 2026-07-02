@@ -3454,7 +3454,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:removePermissionsFor',
       ),
-      approvePermissionsRequest: this.acceptPermissionsRequest,
+      approvePermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:acceptPermissionsRequest',
+      ),
       rejectPermissionsRequest: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:rejectPermissionsRequest',
@@ -8438,16 +8441,6 @@ export default class MetamaskController extends EventEmitter {
     } catch (err) {
       log.error(err.message);
       throw err;
-    }
-  };
-
-  acceptPermissionsRequest = (request) => {
-    try {
-      this.permissionController.acceptPermissionsRequest(request);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
     }
   };
 
