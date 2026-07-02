@@ -46,7 +46,8 @@ describe('Onboarding Metametrics Component', () => {
   const mockState = {
     metamask: {
       firstTimeFlowType: FirstTimeFlowType.create,
-      participateInMetaMetrics: null,
+      completedMetaMetricsOnboarding: false,
+      optedIn: false,
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
@@ -139,7 +140,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(checkbox).toBeChecked();
     expect(checkbox).toBeInTheDocument();
 
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 
@@ -181,7 +182,7 @@ describe('Onboarding Metametrics Component', () => {
     ) as HTMLElement;
 
     // Opt out of MetaMetrics; this should clear marketing consent
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 
@@ -223,7 +224,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
-    await act(() => {
+    act(() => {
       fireEvent.click(marketingContainer);
     });
 
@@ -231,7 +232,7 @@ describe('Onboarding Metametrics Component', () => {
       expect(marketingCheckbox).toBeChecked();
     });
 
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 

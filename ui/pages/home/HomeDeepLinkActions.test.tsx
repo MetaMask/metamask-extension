@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
@@ -178,4 +178,89 @@ describe('HomeDeepLinkActions', () => {
       expectedAction();
     },
   );
+
+  it('notifies Home to show the predict QR code for a predict deeplink URL', async () => {
+    const deeplinkUrl =
+      'https://link.metamask.io/predict?marketId=30615&sig_params=marketId&sig=signature&utm_source=twitter';
+    const onQrCodeDeepLink = jest.fn();
+    const { Wrapper } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.PredictDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(onQrCodeDeepLink).toHaveBeenCalledWith({
+        deeplinkUrl,
+        descriptionKey: 'deepLinkQrPredictDescription',
+        titleKey: 'deepLinkQrPredictTitle',
+      });
+    });
+  });
+
+  it('notifies Home to show the batch sell QR code for a batch sell deeplink URL', async () => {
+    const deeplinkUrl = 'https://link.metamask.io/batch-sell';
+    const onQrCodeDeepLink = jest.fn();
+    const { Wrapper } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.BatchSellDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(onQrCodeDeepLink).toHaveBeenCalledWith({
+        deeplinkUrl,
+        descriptionKey: 'deepLinkQrBatchSellDescription',
+        titleKey: 'deepLinkQrBatchSellTitle',
+      });
+    });
+  });
+
+  it('ignores batch sell QR deeplink params that do not point to /batch-sell', () => {
+    const onQrCodeDeepLink = jest.fn();
+    const { Wrapper } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.BatchSellDeeplinkUrl]:
+          'https://link.metamask.io/rewards?referral=ABC123',
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
+      wrapper: Wrapper,
+    });
+
+    expect(onQrCodeDeepLink).not.toHaveBeenCalled();
+  });
+
+  it('ignores predict QR deeplink params that do not point to /predict', () => {
+    const onQrCodeDeepLink = jest.fn();
+    const { Wrapper } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.PredictDeeplinkUrl]:
+          'https://link.metamask.io/rewards?referral=ABC123',
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
+      wrapper: Wrapper,
+    });
+
+    expect(onQrCodeDeepLink).not.toHaveBeenCalled();
+  });
 });

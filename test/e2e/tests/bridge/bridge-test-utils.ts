@@ -3,6 +3,7 @@ import { strict as assert } from 'assert';
 import { Readable } from 'stream';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
+  QuoteStreamCompleteReason,
   TokenFeature,
   type FeatureFlagResponse,
 } from '@metamask/bridge-controller';
@@ -14,7 +15,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
@@ -500,6 +501,25 @@ const emitEvent = (
 };
 
 /**
+ * Mocks a quote stream that immediately completes with the given payload and no quotes.
+ *
+ * @param completePayload - The SSE `complete` event body.
+ * @returns The Readable stream.
+ */
+function mockSseQuoteStreamCompleteOnly(
+  completePayload: Record<string, unknown>,
+) {
+  return Readable.fromWeb(
+    new ReadableStreamWeb({
+      start(controller) {
+        emitEvent(controller, 'complete', 0, completePayload);
+        controller.close();
+      },
+    }),
+  );
+}
+
+/**
  * Mocks the bridge-api getQuoteStream endpoint's response body
  *
  * @param mockQuotes - The quotes to emit
@@ -547,9 +567,9 @@ async function mockFeatureFlags(
   featureFlags: Partial<FeatureFlagResponse>,
   additionalFlags: Record<string, unknown> = {},
 ) {
-  const extensionSkipTransactionStatusPage =
-    additionalFlags.extensionSkipTransactionStatusPage ??
-    getRegistryBooleanFlag('extensionSkipTransactionStatusPage');
+  const extensionUxActivityListRedesign =
+    additionalFlags.extensionUxActivityListRedesign ??
+    getRegistryBooleanFlag('extensionUxActivityListRedesign');
 
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
@@ -560,7 +580,7 @@ async function mockFeatureFlags(
         json: [
           {
             bridgeConfig: featureFlags,
-            extensionSkipTransactionStatusPage,
+            extensionUxActivityListRedesign,
             ...additionalFlags,
           },
         ],
@@ -1062,13 +1082,9 @@ export enum EventTypes {
   SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
   SwapBridgeQuotesRequested = 'Unified SwapBridge Quotes Requested',
   UnifiedSwapBridgeQuotesReceived = 'Unified SwapBridge Quotes Received',
-  TransactionAddedAnon = 'Transaction Added Anon',
   TransactionAdded = 'Transaction Added',
-  TransactionSubmittedAnon = 'Transaction Submitted Anon',
   TransactionSubmitted = 'Transaction Submitted',
-  TransactionApprovedAnon = 'Transaction Approved Anon',
   TransactionApproved = 'Transaction Approved',
-  TransactionFinalizedAnon = 'Transaction Finalized Anon',
   TransactionFinalized = 'Transaction Finalized',
   SwapBridgeCompleted = 'Unified SwapBridge Completed',
   UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
@@ -1086,13 +1102,7 @@ const STX_MAINNET_SENTINEL_URL =
 const STX_LINEA_SENTINEL_URL =
   'https://tx-sentinel-linea-mainnet.api.cx.metamask.io';
 
-const extensionSkipTransactionStatusPage = getRegistryBooleanFlag(
-  'extensionSkipTransactionStatusPage',
-  true,
-);
-
 const STX_MAINNET_NETWORK_CONFIG = {
-  extensionSkipTransactionStatusPage,
   smartTransactionsNetworks: {
     '0x1': {
       extensionActive: true,
@@ -1104,7 +1114,6 @@ const STX_MAINNET_NETWORK_CONFIG = {
 };
 
 const STX_LINEA_NETWORK_CONFIG = {
-  extensionSkipTransactionStatusPage,
   smartTransactionsNetworks: {
     '0xe708': {
       extensionActive: true,
@@ -1271,19 +1280,18 @@ async function mockSmartTransactionsForBridge(
 export const getBridgeFixtures = ({
   title,
   featureFlags = {},
-  withErc20 = true,
   tokenWarnings = [],
 }: {
   title?: string;
   featureFlags?: Partial<FeatureFlagResponse>;
-  withErc20?: boolean;
   tokenWarnings?: TokenFeature[];
 } = {}) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withMetaMetricsController({
-      metaMetricsId: MOCK_META_METRICS_ID,
-      participateInMetaMetrics: true,
+      analyticsId: MOCK_ANALYTICS_ID,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokensController({
@@ -1346,10 +1354,6 @@ export const getBridgeFixtures = ({
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
-  if (withErc20) {
-    fixtureBuilder.withTokensControllerERC20({ chainId: 1 });
-  }
-
   return {
     forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
@@ -1384,6 +1388,10 @@ export const getBridgeFixtures = ({
         await mockSwapTokensArbitrum(mockServer),
         await mockSwapAggregatorMetadataArbitrum(mockServer),
         await mockHistoricalPrices(mockServer),
+        await mockSwapUSDCtoGOOGLONGeoBlocked(
+          mockServer,
+          featureFlags.sse?.enabled,
+        ),
       ];
 
       standardMocks.push(...(await mockSearchTokens(mockServer)));
@@ -1398,13 +1406,9 @@ export const getBridgeFixtures = ({
           EventTypes.SwapBridgeInputChanged,
           EventTypes.SwapBridgeQuotesRequested,
           EventTypes.UnifiedSwapBridgeQuotesReceived,
-          EventTypes.TransactionAddedAnon,
           EventTypes.TransactionAdded,
-          EventTypes.TransactionSubmittedAnon,
           EventTypes.TransactionSubmitted,
-          EventTypes.TransactionApprovedAnon,
           EventTypes.TransactionApproved,
-          EventTypes.TransactionFinalizedAnon,
           EventTypes.TransactionFinalized,
           EventTypes.SwapBridgeCompleted,
           EventTypes.UnifiedSwapBridgeSubmitted,
@@ -1443,6 +1447,17 @@ export const getBridgeFixtures = ({
   };
 };
 
+/**
+ * Bridge fixtures for RWA swap geo-block E2E tests.
+ *
+ * @param title - The Mocha test title for manifest flag injection.
+ */
+export const getRwaSwapGeoBlockFixtures = (title?: string) =>
+  getBridgeFixtures({
+    title,
+    featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  });
+
 export const getQuoteNegativeCasesFixtures = (
   options: { statusCode: number; json: unknown },
   featureFlags: Partial<FeatureFlagResponse> = {},
@@ -1451,7 +1466,6 @@ export const getQuoteNegativeCasesFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1511,7 +1525,6 @@ export const getBridgeNegativeCasesFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1571,7 +1584,6 @@ export const getInsufficientFundsFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1846,7 +1858,6 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1937,6 +1948,49 @@ async function mockGasSponsoredSwapETHtoUSDC(mockServer: Mockttp) {
     );
 }
 
+/**
+ * Mocks USDC → GOOGLON quote stream completing with RWA geo-restriction (no quotes).
+ *
+ * @param mockServer - The Mockttp server instance.
+ * @param sseEnabled - Whether SSE quote streaming is enabled.
+ */
+async function mockSwapUSDCtoGOOGLONGeoBlocked(
+  mockServer: Mockttp,
+  sseEnabled?: boolean,
+) {
+  const completePayload = {
+    quoteCount: 0,
+    hasQuotes: false,
+    reason: QuoteStreamCompleteReason.RWA_GEO_RESTRICTED,
+  };
+
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .always()
+      .withQuery({
+        srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        destTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+      })
+      .thenStream(
+        200,
+        mockSseQuoteStreamCompleteOnly(completePayload),
+        SSE_RESPONSE_HEADER,
+      );
+  }
+
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      destTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+}
+
 async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
   return mockSentinelNetworks(mockServer, false);
 }
@@ -1945,7 +1999,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -2009,7 +2062,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
     },
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionSkipTransactionStatusPage,
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         smartTransactionsNetworks: {
           '0x1': {

@@ -6,9 +6,9 @@ import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
@@ -73,8 +73,8 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -128,8 +128,8 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });

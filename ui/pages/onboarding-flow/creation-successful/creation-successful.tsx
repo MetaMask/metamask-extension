@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -37,7 +37,7 @@ import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
-  getParticipateInMetaMetrics,
+  getOptedIn,
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
@@ -74,6 +74,7 @@ import {
   DeferredDeepLinkRouteType,
 } from '../../../../shared/lib/deep-links/types';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -82,7 +83,6 @@ export default function CreationSuccessful() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { search } = useLocation();
   const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -94,7 +94,7 @@ export default function CreationSuccessful() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink: DeferredDeepLink | null =
     useSelector(getDeferredDeepLink);
@@ -104,9 +104,8 @@ export default function CreationSuccessful() {
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+  const { isFromReminder, isFromSettingsSecurity } =
+    useOnboardingSearchParams();
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
@@ -301,25 +300,20 @@ export default function CreationSuccessful() {
     }
 
     // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
-    // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
+    // Since we will track the `Metrics Opt In/Out` event even when optedIn is false,
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
-      trackEvent(
-        {
-          category: MetaMetricsEventCategory.Onboarding,
-          event: participateInMetaMetrics
-            ? MetaMetricsEventName.MetricsOptIn
-            : MetaMetricsEventName.MetricsOptOut,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountTypeForMetrics,
-          },
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: isOptedIn
+          ? MetaMetricsEventName.MetricsOptIn
+          : MetaMetricsEventName.MetricsOptOut,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
         },
-        {
-          isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
-        },
-      );
+      });
     }
 
     // Side Panel - only if feature flag is enabled
@@ -379,7 +373,7 @@ export default function CreationSuccessful() {
     isFromSettingsSecurity,
     firstTimeFlowType,
     trackEvent,
-    participateInMetaMetrics,
+    isOptedIn,
     handleOnDoneNavigation,
     isResetWalletInProgress,
     accountTypeForMetrics,

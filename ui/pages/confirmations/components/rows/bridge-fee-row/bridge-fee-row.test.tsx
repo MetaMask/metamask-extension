@@ -18,11 +18,13 @@ import {
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { BridgeFeeRow, BridgeFeeRowProps } from './bridge-fee-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
 
 const mockStore = configureMockStore([]);
 
@@ -52,6 +54,8 @@ describe('BridgeFeeRow', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
+  const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
+
   beforeEach(() => {
     jest.resetAllMocks();
 
@@ -64,6 +68,7 @@ describe('BridgeFeeRow', () => {
     } as TransactionPayTotals);
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useIsPaidByMetaMaskMock.mockReturnValue(false);
 
     useTransactionPayQuotesMock.mockReturnValue([
       {} as TransactionPayQuote<Json>,
@@ -248,6 +253,41 @@ describe('BridgeFeeRow', () => {
     );
     expect(tooltip.textContent).toContain(`${messages.providerFee.message}:`);
     expect(tooltip.textContent).not.toContain(`${messages.bridgeFee.message}:`);
+  });
+
+  describe('Paid by MetaMask (sponsored)', () => {
+    beforeEach(() => {
+      useIsPaidByMetaMaskMock.mockReturnValue(true);
+    });
+
+    it('renders SuccessPill with "Paid by MetaMask" label', () => {
+      const { getByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      expect(getByTestId('paid-by-metamask')).toBeInTheDocument();
+      expect(getByTestId('paid-by-metamask')).toHaveTextContent(
+        messages.paidByMetaMask.message,
+      );
+    });
+
+    it('does not render fee value when sponsored', () => {
+      const { queryByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      expect(queryByTestId('transaction-fee-value')).not.toBeInTheDocument();
+    });
+
+    it('does not render tooltip when sponsored', () => {
+      const { queryByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover-button'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('MetaMask fee value', () => {

@@ -8,7 +8,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   mockCurrencyExchangeRates,
@@ -50,6 +50,11 @@ describe('Token List via StorageService', function () {
         localNodeOptions: {
           chainId: parseInt(chainId, 16),
         },
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
           // Price API
@@ -57,6 +62,44 @@ describe('Token List via StorageService', function () {
           await mockFiatExchangeRates(mockServer),
           await mockSupportedVsCurrencies(mockServer),
           await mockPriceApiSupportedNetworks(mockServer),
+          // Token Search API – /tokens/search
+          await mockServer
+            .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
+            .always()
+            .thenCallback((request) => {
+              const url = new URL(request.url);
+              const query = (url.searchParams.get('query') ?? '')
+                .trim()
+                .toLowerCase();
+
+              const matches =
+                query.length > 0 &&
+                (tokenName.toLowerCase().includes(query) ||
+                  tokenSymbol.toLowerCase().includes(query) ||
+                  tokenAddress.toLowerCase().includes(query));
+
+              const data = matches
+                ? [
+                    {
+                      assetId: `eip155:1/erc20:${tokenAddress}`,
+                      symbol: tokenSymbol,
+                      decimals: 18,
+                      name: tokenName,
+                      iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${tokenAddress}.png`,
+                    },
+                  ]
+                : [];
+
+              return {
+                statusCode: 200,
+                json: {
+                  data,
+                  count: data.length,
+                  totalCount: data.length,
+                  pageInfo: { hasNextPage: false, endCursor: '' },
+                },
+              };
+            }),
           // Price API – /v3/spot-prices
           await mockServer
             .forGet(/https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
@@ -176,13 +219,13 @@ describe('Token List via StorageService', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
-        await assetListPage.importTokenBySearch({
+        await tokensTab.importTokenBySearch({
           tokenName,
           networkName: MAINNET_DISPLAY_NAME,
         });
-        await assetListPage.checkTokenExistsInList(tokenName);
+        await tokensTab.checkTokenExistsInList(tokenName);
       },
     );
   });

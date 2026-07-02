@@ -178,9 +178,10 @@ describe('Contract Interaction Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
+          analyticsId: 'test-metametrics-id',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           dataCollectionForMarketing: false,
-          metaMetricsId: 'test-metametrics-id',
         },
         backgroundConnection: backgroundConnectionMocked,
       });

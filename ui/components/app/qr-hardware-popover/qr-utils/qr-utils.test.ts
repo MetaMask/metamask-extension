@@ -1,6 +1,12 @@
+import {
+  PAIRING_EXPECTED_UR_TYPES,
+  SIGNING_EXPECTED_UR_TYPES,
+} from '../base-qr-reader';
 import { QrErrorType } from '../qr-error-content';
 import {
   classifyScanResult,
+  isQrMismatchedTransactionError,
+  QrMismatchedTransactionError,
   scanCategoryToQrErrorType,
   ScanErrorCategory,
   type ScanClassificationInput,
@@ -8,15 +14,12 @@ import {
 } from './qr-utils';
 
 describe('classifyScanResult', () => {
-  const PAIRING_EXPECTED_TYPES = ['crypto-hdkey', 'crypto-account'] as const;
-  const SIGNING_EXPECTED_TYPES = ['eth-signature'] as const;
-
   describe('non_ur_qr_scanned - text is not UR-encoded', () => {
     it('classifies a URL as non-UR', () => {
       expect(
         classifyScanResult({
           text: 'https://metamask.io',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toStrictEqual({
         category: ScanErrorCategory.NonUrQrScanned,
@@ -28,7 +31,7 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           text: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD28',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toStrictEqual({
         category: ScanErrorCategory.NonUrQrScanned,
@@ -40,7 +43,7 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           text: 'Hello World!',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toStrictEqual({
         category: ScanErrorCategory.NonUrQrScanned,
@@ -52,7 +55,7 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           text: '1234567890',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toStrictEqual({
         category: ScanErrorCategory.NonUrQrScanned,
@@ -64,7 +67,7 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           text: '',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toBeNull();
     });
@@ -74,7 +77,7 @@ describe('classifyScanResult', () => {
     it('detects crypto-hdkey during a signing flow', () => {
       const result = classifyScanResult({
         decodedType: 'crypto-hdkey',
-        expectedTypes: SIGNING_EXPECTED_TYPES,
+        expectedTypes: SIGNING_EXPECTED_UR_TYPES,
       });
 
       expect(result).toStrictEqual({
@@ -87,7 +90,7 @@ describe('classifyScanResult', () => {
     it('detects eth-signature during a pairing flow', () => {
       const result = classifyScanResult({
         decodedType: 'eth-signature',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result).toStrictEqual({
@@ -100,7 +103,10 @@ describe('classifyScanResult', () => {
     it('treats any type not in expectedTypes as wrong', () => {
       const result = classifyScanResult({
         decodedType: 'crypto-psbt',
-        expectedTypes: [...PAIRING_EXPECTED_TYPES, ...SIGNING_EXPECTED_TYPES],
+        expectedTypes: [
+          ...PAIRING_EXPECTED_UR_TYPES,
+          ...SIGNING_EXPECTED_UR_TYPES,
+        ],
       });
 
       expect(result).toStrictEqual({
@@ -129,7 +135,7 @@ describe('classifyScanResult', () => {
     it('preserves original casing in receivedUrType', () => {
       const result = classifyScanResult({
         decodedType: 'Eth-Signature',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result).toStrictEqual(
@@ -155,7 +161,7 @@ describe('classifyScanResult', () => {
     it('classifies when decoderError is true', () => {
       const result = classifyScanResult({
         decoderError: true,
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result).toStrictEqual({
@@ -168,7 +174,7 @@ describe('classifyScanResult', () => {
       const result = classifyScanResult({
         text: 'ur:crypto-hdkey/1-3/partial-data',
         decoderError: true,
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result).toStrictEqual({
@@ -181,7 +187,7 @@ describe('classifyScanResult', () => {
       const result = classifyScanResult({
         text: 'ur:crypto-hdkey/1-3/some-data',
         decoderError: false,
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result).toBeNull();
@@ -191,7 +197,7 @@ describe('classifyScanResult', () => {
   describe('scan_exception - runtime exception caught', () => {
     it('extracts message from an Error instance', () => {
       const result = classifyScanResult({
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: new Error('CBOR decode failed'),
       });
 
@@ -204,7 +210,7 @@ describe('classifyScanResult', () => {
 
     it('uses string exceptions directly as rawMessage', () => {
       const result = classifyScanResult({
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: 'something went wrong',
       });
 
@@ -217,7 +223,7 @@ describe('classifyScanResult', () => {
 
     it('stringifies non-Error non-string exceptions', () => {
       const result = classifyScanResult({
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: 42,
       });
 
@@ -231,7 +237,7 @@ describe('classifyScanResult', () => {
     it('treats null exception as absent and falls through to other checks', () => {
       const result = classifyScanResult({
         text: 'ur:crypto-hdkey/data',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: null,
       });
 
@@ -241,7 +247,7 @@ describe('classifyScanResult', () => {
     it('returns ScanException with isUrFormat true when text is UR-formatted', () => {
       const result = classifyScanResult({
         text: 'ur:crypto-hdkey/1-2/bad-payload',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: new Error('fail'),
       });
       expect(result).toStrictEqual({
@@ -254,7 +260,7 @@ describe('classifyScanResult', () => {
     it('returns NonUrQrScanned when text is non-UR and exception is present', () => {
       const result = classifyScanResult({
         text: 'https://example.com',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: new Error('fail'),
       });
       expect(result).toStrictEqual({
@@ -265,7 +271,7 @@ describe('classifyScanResult', () => {
 
     it('defaults isUrFormat to false when text is absent', () => {
       const result = classifyScanResult({
-        expectedTypes: SIGNING_EXPECTED_TYPES,
+        expectedTypes: SIGNING_EXPECTED_UR_TYPES,
         exception: new Error('timeout'),
       });
 
@@ -276,7 +282,7 @@ describe('classifyScanResult', () => {
 
     it('handles an Error with empty message', () => {
       const result = classifyScanResult({
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: new Error(''),
       });
 
@@ -289,7 +295,7 @@ describe('classifyScanResult', () => {
       const result = classifyScanResult({
         text: 'ur:crypto-hdkey/1-2/data',
         decoderError: true,
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: new Error('runtime crash'),
       });
 
@@ -299,7 +305,7 @@ describe('classifyScanResult', () => {
     it('exception > wrong UR type', () => {
       const result = classifyScanResult({
         decodedType: 'crypto-psbt',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: new Error('processing error'),
       });
 
@@ -310,7 +316,7 @@ describe('classifyScanResult', () => {
       const result = classifyScanResult({
         decodedType: 'crypto-psbt',
         decoderError: true,
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result?.category).toBe(ScanErrorCategory.UrDecodeError);
@@ -320,7 +326,7 @@ describe('classifyScanResult', () => {
       const result = classifyScanResult({
         text: 'https://example.com',
         decoderError: true,
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result?.category).toBe(ScanErrorCategory.UrDecodeError);
@@ -330,7 +336,7 @@ describe('classifyScanResult', () => {
       const result = classifyScanResult({
         text: 'https://example.com',
         decodedType: 'crypto-psbt',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result?.category).toBe(ScanErrorCategory.WrongUrType);
@@ -342,7 +348,7 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           decodedType: 'crypto-hdkey',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toBeNull();
     });
@@ -351,14 +357,14 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           text: 'ur:crypto-hdkey/1-5/some-encoded-data',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toBeNull();
     });
 
     it('when only expectedTypes is provided (scanner idle)', () => {
       expect(
-        classifyScanResult({ expectedTypes: PAIRING_EXPECTED_TYPES }),
+        classifyScanResult({ expectedTypes: PAIRING_EXPECTED_UR_TYPES }),
       ).toBeNull();
     });
 
@@ -366,14 +372,14 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           text: 'UR:CRYPTO-HDKEY/1-2/DATA',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toBeNull();
 
       expect(
         classifyScanResult({
           text: 'Ur:Crypto-Hdkey/1-2/data',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toBeNull();
     });
@@ -382,7 +388,7 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           text: 'ur:',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toBeNull();
     });
@@ -390,7 +396,7 @@ describe('classifyScanResult', () => {
     it('when exception is explicitly undefined', () => {
       const input: ScanClassificationInput = {
         text: 'ur:crypto-hdkey/1-2/data',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         exception: undefined,
       };
 
@@ -402,7 +408,7 @@ describe('classifyScanResult', () => {
     it('A4: AirGap V3 format scanned during pairing results in WrongUrType', () => {
       const result = classifyScanResult({
         decodedType: 'crypto-multi-accounts',
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result).toStrictEqual({
@@ -416,7 +422,7 @@ describe('classifyScanResult', () => {
       const result = classifyScanResult({
         text: 'ur:crypto-hdkey/1-5/partial',
         decoderError: true,
-        expectedTypes: PAIRING_EXPECTED_TYPES,
+        expectedTypes: PAIRING_EXPECTED_UR_TYPES,
       });
 
       expect(result).toStrictEqual({
@@ -429,14 +435,14 @@ describe('classifyScanResult', () => {
       expect(
         classifyScanResult({
           decodedType: 'crypto-hdkey',
-          expectedTypes: PAIRING_EXPECTED_TYPES,
+          expectedTypes: PAIRING_EXPECTED_UR_TYPES,
         }),
       ).toBeNull();
 
       expect(
         classifyScanResult({
           decodedType: 'eth-signature',
-          expectedTypes: SIGNING_EXPECTED_TYPES,
+          expectedTypes: SIGNING_EXPECTED_UR_TYPES,
         }),
       ).toBeNull();
     });
@@ -465,6 +471,12 @@ describe('scanCategoryToQrErrorType', () => {
   it('maps ScanException to UrDecodeError', () => {
     expect(scanCategoryToQrErrorType(ScanErrorCategory.ScanException)).toBe(
       QrErrorType.UrDecodeError,
+    );
+  });
+
+  it('maps MismatchedSignId to MismatchedTransaction', () => {
+    expect(scanCategoryToQrErrorType(ScanErrorCategory.MismatchedSignId)).toBe(
+      QrErrorType.MismatchedTransaction,
     );
   });
 
@@ -511,5 +523,32 @@ describe('ScanErrorClassification type discrimination', () => {
       expect(result.rawMessage).toBe('crash');
       expect(typeof result.isUrFormat).toBe('boolean');
     }
+  });
+});
+
+describe('QrMismatchedTransactionError', () => {
+  it('extends Error so it can flow through generic error handling', () => {
+    expect(new QrMismatchedTransactionError()).toBeInstanceOf(Error);
+  });
+
+  it('is detected by isQrMismatchedTransactionError', () => {
+    expect(
+      isQrMismatchedTransactionError(new QrMismatchedTransactionError()),
+    ).toBe(true);
+  });
+
+  it('does not detect a plain Error sharing the same message', () => {
+    // Guard must rely on the instance, not the message string, so a
+    // look-alike error is still routed through the generic error path.
+    expect(
+      isQrMismatchedTransactionError(new Error('QrMismatchedTransactionError')),
+    ).toBe(false);
+  });
+
+  it('does not detect unrelated errors or non-error values', () => {
+    expect(isQrMismatchedTransactionError(new Error('other'))).toBe(false);
+    expect(isQrMismatchedTransactionError('not-an-error')).toBe(false);
+    expect(isQrMismatchedTransactionError(null)).toBe(false);
+    expect(isQrMismatchedTransactionError(undefined)).toBe(false);
   });
 });

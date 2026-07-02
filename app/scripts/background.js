@@ -42,6 +42,10 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
+import {
+  getActiveTabDomainAllowlist,
+  getActiveTabDomainForMetrics,
+} from '../../shared/lib/active-tab-domain-metrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { maskObject } from '../../shared/lib/object.utils';
@@ -79,6 +83,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
+import { createEventBuilder, trackEvent } from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -113,7 +118,7 @@ import {
 import { requestRepair } from './lib/repair';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
 import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
@@ -638,8 +643,11 @@ const handleOnConnect = async (port) => {
     // Notify UI that background initialization is complete, before sending state.
     // This is sent on the raw port (like ALIVE) so the UI can distinguish between
     // "background still initializing" vs "background initialized but state sync failed".
-    if (!tryPostMessage(port, BACKGROUND_INITIALIZED_METHOD)) {
-      return;
+    // Only MetaMask UI ports listen for this message (contentscripts do not).
+    if (isMetaMaskUIPort) {
+      if (!tryPostMessage(port, BACKGROUND_INITIALIZED_METHOD)) {
+        return;
+      }
     }
 
     // For testing: skip connectWindowPostMessage to simulate state sync hang.
@@ -811,12 +819,9 @@ async function initialize(backup) {
 
   if (isManifestV3) {
     addOffscreenConnectivityListener((isOnline) => {
-      if (
-        connectivityReady &&
-        controller.messengerClientApi.setConnectivityStatus
-      ) {
+      if (connectivityReady && controller.connectivityAdapter) {
         const status = isOnline ? 'online' : 'offline';
-        controller.messengerClientApi.setConnectivityStatus(status);
+        controller.connectivityAdapter.setStatus(status);
       } else {
         // Queue until controller is ready
         pendingConnectivityStatus = isOnline;
@@ -889,13 +894,13 @@ async function initialize(backup) {
     connectivityReady = true;
     if (pendingConnectivityStatus !== null) {
       const status = pendingConnectivityStatus ? 'online' : 'offline';
-      controller.messengerClientApi.setConnectivityStatus(status);
+      controller.connectivityAdapter.setStatus(status);
     }
   } else {
     // MV2: Background page has access to window events
     const updateConnectivity = (isOnline) => {
       const status = isOnline ? 'online' : 'offline';
-      controller.messengerClientApi.setConnectivityStatus(status);
+      controller.connectivityAdapter.setStatus(status);
     };
     updateConnectivity(globalThis.navigator.onLine);
     globalThis.addEventListener('online', () => updateConnectivity(true));
@@ -1276,8 +1281,8 @@ export async function loadStateFromPersistence(backup) {
  * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
 function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
-  const { metaMetricsId } = controller.metaMetricsController.state;
-  if (!shouldEmitDappViewedEvent(metaMetricsId)) {
+  const { analyticsId } = controller.getState();
+  if (!shouldEmitDappViewedEvent(analyticsId)) {
     return;
   }
 
@@ -1370,28 +1375,40 @@ function trackDappView(remotePort) {
  * @param {string} environmentType - The environment type where the app is opening
  */
 function emitAppOpenedMetricEvent(environmentType) {
-  const { metaMetricsId, participateInMetaMetrics } =
-    controller.metaMetricsController.state;
+  const { completedMetaMetricsOnboarding, optedIn } = controller.getState();
 
   // Skip if user hasn't opted into metrics
-  if (metaMetricsId === null && !participateInMetaMetrics) {
+  if (!completedMetaMetricsOnboarding || !optedIn) {
     return;
   }
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.AppOpened,
-    category: MetaMetricsEventCategory.App,
-    environmentType,
-  });
+  const activeTabOrigin =
+    controller.appStateController.state.appActiveTab?.origin;
+  const allowlist = getActiveTabDomainAllowlist(
+    controller.remoteFeatureFlagController.state,
+  );
+  const activeTabDomain = getActiveTabDomainForMetrics(
+    activeTabOrigin,
+    allowlist,
+  );
+
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.AppOpened)
+      .addCategory(MetaMetricsEventCategory.App)
+      .addProperties(
+        activeTabDomain ? { active_tab_domain: activeTabDomain } : {},
+      )
+      .build({ environmentType }),
+  );
 }
 
 /**
- * This function checks if the app is being opened
- * and emits an event only if no other UI instances are currently open.
+ * Returns true if the App Opened metric event should fire for the given env.
  *
  * @param {string} environment - The environment type where the app is opening
+ * @returns {boolean}
  */
-function trackAppOpened(environment) {
+function shouldEmitAppOpened(environment) {
   // List of valid environment types to track
   const environmentTypeList = [
     ENVIRONMENT_TYPE_POPUP,
@@ -1409,7 +1426,17 @@ function trackAppOpened(environment) {
     openSidePanelCount > 0;
 
   // Only emit event if no UI is open and environment is valid
-  if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
+  return !isAlreadyOpen && environmentTypeList.includes(environment);
+}
+
+/**
+ * This function checks if the app is being opened
+ * and emits an event only if no other UI instances are currently open.
+ *
+ * @param {string} environment - The environment type where the app is opening
+ */
+function trackAppOpened(environment) {
+  if (shouldEmitAppOpened(environment)) {
     emitAppOpenedMetricEvent(environment);
   }
 }
@@ -1745,7 +1772,16 @@ export function setupController(
         .finally(() => {
           removeCriticalErrorListeners?.();
         });
-      trackAppOpened(processName);
+      // Snapshot the "track App Opened" decision synchronously here, before any
+      // open-count is incremented below. The sidepanel path defers the actual
+      // emission until refreshAppActiveTab() resolves.
+      const sidepanelShouldTrackAppOpened =
+        processName === ENVIRONMENT_TYPE_SIDEPANEL &&
+        shouldEmitAppOpened(ENVIRONMENT_TYPE_SIDEPANEL);
+
+      if (processName !== ENVIRONMENT_TYPE_SIDEPANEL) {
+        trackAppOpened(processName);
+      }
 
       // lazily update the remote feature flags every time the UI is opened.
       updateRemoteFeatureFlags(controller);
@@ -1764,9 +1800,15 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         clearFailedTxBadge();
         openSidePanelCount += 1;
-        // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
-        // This handles the case where user connected to dapp while sidepanel was closed
-        refreshAppActiveTab();
+        // Refresh appActiveTab when sidepanel opens to ensure it has the current
+        // tab info. This handles the case where the user connected to a dapp while
+        // the sidepanel was closed. The App Opened event is emitted only after the
+        // refresh so that active_tab_domain reflects the current tab, not stale state.
+        refreshAppActiveTab().then(() => {
+          if (sidepanelShouldTrackAppOpened) {
+            emitAppOpenedMetricEvent(ENVIRONMENT_TYPE_SIDEPANEL);
+          }
+        });
         finished(portStream, () => {
           openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
           const isClientOpen = isClientOpenStatus();
@@ -2157,25 +2199,25 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     properties: eventProperties,
   };
 
-  const { participateInMetaMetrics, metaMetricsId } =
-    controller.metaMetricsController.state;
+  const { completedMetaMetricsOnboarding, optedIn, analyticsId } =
+    controller.getState();
 
-  if (participateInMetaMetrics === false) {
+  if (completedMetaMetricsOnboarding === true && optedIn === false) {
     // We can skip tracking completely if they've already explicitly opted out
     return;
   }
 
-  // Track immediately only once consent is active and the controller has a
-  // persisted MetaMetrics ID. Otherwise keep the event buffered for the opt-in
-  // flush path so it is not dropped.
-  // No need to call getMetaMetricsId() first: setParticipateInMetaMetrics()
-  // generates and persists the ID before setting participation to true, and this
-  // install handler should not create a metrics ID outside that consent path.
-  if (participateInMetaMetrics === true && metaMetricsId) {
+  // Track immediately only once consent is active and the analytics ID is
+  // available. Otherwise keep the event buffered for the opt-in flush path so
+  // it is not dropped.
+  if (
+    completedMetaMetricsOnboarding === true &&
+    optedIn === true &&
+    analyticsId
+  ) {
     controller.metaMetricsController.trackEvent(appInstalledEvent);
   } else {
-    // participateInMetaMetrics is either `null` (not opted in or out yet) or
-    // `true` (opted in, but for some reason we don't have a MetaMetrics ID yet),
+    // Onboarding is incomplete, or the user opted in without an analytics ID yet,
     // so we queue the metrics event for possible submission later.
     controller.metaMetricsController.addEventBeforeMetricsOptIn(
       appInstalledEvent,

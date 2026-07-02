@@ -12,14 +12,8 @@ import {
   normalizeTestPath,
   XML,
 } from './shared/utils.mts';
-import type { Endpoints } from '@octokit/types';
-
-type Job =
-  Endpoints['GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs']['response']['data']['jobs'][number];
 
 async function main() {
-  const { Octokit } = await import('octokit');
-
   const env = {
     OWNER: process.env.OWNER || 'metamask',
     REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
@@ -29,43 +23,8 @@ async function main() {
     TEST_RESULTS_PATH: process.env.TEST_RESULTS_PATH || 'test/test-results/e2e',
     TEST_RUNS_PATH:
       process.env.TEST_RUNS_PATH || 'test/test-results/test-runs.json',
-    GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
     GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
   };
-
-  const github = new Octokit({ auth: env.GITHUB_TOKEN });
-
-  const jobsCache: { [runId: number]: Job[] } = {};
-
-  async function getJobs(runId: number) {
-    if (!runId) {
-      return [];
-    } else if (jobsCache[runId]) {
-      return jobsCache[runId];
-    } else {
-      try {
-        const jobs = await github.paginate(
-          github.rest.actions.listJobsForWorkflowRun,
-          {
-            owner: env.OWNER,
-            repo: env.REPOSITORY,
-            run_id: runId,
-            per_page: 100,
-          },
-        );
-        jobsCache[runId] = jobs;
-        return jobsCache[runId];
-      } catch (error) {
-        return [];
-      }
-    }
-  }
-
-  async function getJobId(runId: number, jobName: string) {
-    const jobs = await getJobs(runId);
-    const job = jobs.find((job) => job.name.endsWith(jobName));
-    return job?.id;
-  }
 
   let summary = '';
   const core = env.GITHUB_ACTIONS
@@ -104,12 +63,14 @@ async function main() {
         const jobName = suite.properties?.[0].property?.[0]?.$.value
           ? `${suite.properties?.[0].property?.[0]?.$.value}`
           : '';
-        const runId = suite.properties?.[0].property?.[1]?.$.value
+        const jobId = suite.properties?.[0].property?.[1]?.$.value
           ? +suite.properties?.[0].property?.[1]?.$.value
           : 0;
-        const jobId = (await getJobId(runId, jobName)) ?? 0;
-        const prNumber = suite.properties?.[0].property?.[2]?.$.value
+        const runId = suite.properties?.[0].property?.[2]?.$.value
           ? +suite.properties?.[0].property?.[2]?.$.value
+          : 0;
+        const prNumber = suite.properties?.[0].property?.[3]?.$.value
+          ? +suite.properties?.[0].property?.[3]?.$.value
           : 0;
 
         const testSuite: TestSuite = {

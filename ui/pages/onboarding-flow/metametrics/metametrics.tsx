@@ -25,8 +25,8 @@ import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
-  getIsParticipateInMetaMetricsSet,
-  getParticipateInMetaMetrics,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 
@@ -35,7 +35,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -43,7 +42,7 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -57,8 +56,6 @@ type MetametricsCheckboxOptionProps = Readonly<{
   containerClassName: string;
   isInteractive?: boolean;
 }>;
-
-const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const stopClickPropagation = (e: React.MouseEvent) => {
   e.stopPropagation();
@@ -123,13 +120,14 @@ export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isFirefox = useIsFirefox();
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const participateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const [
     isParticipateInMetaMetricsChecked,
@@ -144,17 +142,13 @@ export default function OnboardingMetametrics() {
   const marketingCheckboxRef = useRef<{ toggle: () => void } | null>(null);
 
   useEffect(() => {
-    if (participateInMetaMetricsSet) {
-      setIsParticipateInMetaMetricsChecked(participateInMetaMetrics);
+    if (completedMetaMetricsOnboarding) {
+      setIsParticipateInMetaMetricsChecked(isOptedIn);
     }
     if (dataCollectionForMarketing) {
       setIsDataCollectionForMarketingChecked(dataCollectionForMarketing);
     }
-  }, [
-    participateInMetaMetricsSet,
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
-  ]);
+  }, [completedMetaMetricsOnboarding, isOptedIn, dataCollectionForMarketing]);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 

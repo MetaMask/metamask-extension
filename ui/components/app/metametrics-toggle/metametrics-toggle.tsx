@@ -1,5 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -12,19 +17,13 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { Box, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  getParticipateInMetaMetrics,
-  getUseExternalServices,
-} from '../../../selectors';
+import { getOptedIn, getUseExternalServices } from '../../../selectors';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,
@@ -47,7 +46,7 @@ const MetametricsToggle = ({
   const error = enableMetametricsError || disableMetametricsError;
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
   const useExternalServices = useSelector(getUseExternalServices);
 
   const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
@@ -58,7 +57,7 @@ const MetametricsToggle = ({
         event: MetaMetricsEventName.TurnOnMetaMetrics,
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
+          participateInMetaMetrics: isOptedIn,
           location: fromDefaultSettings ? 'Default Settings' : 'Settings',
         },
       });
@@ -73,7 +72,7 @@ const MetametricsToggle = ({
         event: MetaMetricsEventName.TurnOffMetaMetrics,
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
+          participateInMetaMetrics: isOptedIn,
         },
       });
 
@@ -94,10 +93,9 @@ const MetametricsToggle = ({
   return (
     <Box>
       <Box
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        className="flex settings-page__content-row"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
         gap={4}
         data-testid="participate-in-meta-metrics-container"
       >
@@ -113,7 +111,7 @@ const MetametricsToggle = ({
           data-testid="participate-in-meta-metrics-toggle"
         >
           <ToggleButton
-            value={participateInMetaMetrics}
+            value={isOptedIn}
             disabled={!useExternalServices}
             onToggle={(value) => handleUseParticipateInMetaMetrics(!value)}
             offLabel={t('off')}

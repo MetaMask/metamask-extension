@@ -50,7 +50,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -151,13 +151,19 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:1"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -214,13 +220,19 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:59144"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -277,13 +289,19 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:56"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -340,13 +358,19 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:143"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -408,13 +432,19 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:5"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -520,6 +550,53 @@ exports[`NetworkListMenu renders properly 1`] = `
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
                           Arbitrum
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box"
+                      data-testid="test-add-button"
+                    >
+                      <button
+                        aria-label="Add"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      >
+                        <svg
+                          class="inline-block w-6 h-6 text-inherit"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x13b2"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Arc logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/arc-network-logo.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          Arc
                         </p>
                       </div>
                     </div>
@@ -1059,7 +1136,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/arrow-left.svg');"
                 />
               </button>
@@ -1082,7 +1159,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -1145,7 +1222,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                     data-testid="test-add-rpc-drop-down"
                   >
                     <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/arrow-down.svg');"
                     />
                   </button>
@@ -1227,7 +1304,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                     data-testid="test-explorer-drop-down"
                   >
                     <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/arrow-down.svg');"
                     />
                   </button>
@@ -1335,7 +1412,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -1436,13 +1513,19 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:1"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -1499,13 +1582,19 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:59144"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -1562,13 +1651,19 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:56"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -1625,13 +1720,19 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:143"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -1693,13 +1794,19 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     </div>
                     <button
                       aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       data-testid="network-list-item-options-button-eip155:5"
                     >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
+                      <svg
+                        class="inline-block w-6 h-6 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -1805,6 +1912,53 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
                           Arbitrum
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box"
+                      data-testid="test-add-button"
+                    >
+                      <button
+                        aria-label="Add"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      >
+                        <svg
+                          class="inline-block w-6 h-6 text-inherit"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x13b2"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Arc logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/arc-network-logo.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          Arc
                         </p>
                       </div>
                     </div>

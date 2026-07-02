@@ -45,6 +45,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
@@ -74,6 +75,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
@@ -136,11 +138,13 @@ import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import BatchSell from '../batch-sell/batch-sell-page';
 import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
+import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -211,7 +215,7 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.js'));
+const Home = mmLazy(() => import('../home/index.ts'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
@@ -242,6 +246,9 @@ const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 const HardwareWalletRepair = mmLazy(
   () => import('../hardware-wallet-repair/index.ts'),
+);
+const TransactionDetailsRoute = mmLazy(
+  () => import('../details/transaction-details-route.tsx'),
 );
 // End Lazy Routes
 
@@ -331,7 +338,11 @@ export const routeConfig = [
       },
       {
         path: NETWORKS_ROUTE,
-        element: <NetworksPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <NetworksPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: TOKEN_MANAGEMENT_ROUTE,
@@ -343,7 +354,11 @@ export const routeConfig = [
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
-        element: <Settings />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Settings />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
@@ -395,11 +410,19 @@ export const routeConfig = [
       },
       {
         path: PERMISSIONS,
-        element: <PermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <PermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: GATOR_PERMISSIONS,
-        element: <GatorPermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <GatorPermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
@@ -447,11 +470,20 @@ export const routeConfig = [
       },
       {
         path: CONTACTS_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Outlet />
+          </GlobalMenuRouteTransition>
+        ),
         children: contactsRoutes,
       },
       {
         path: DEFAULT_ROUTE,
         element: <Home />,
+      },
+      {
+        path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
+        element: <TransactionDetailsRoute />,
       },
       {
         element: <RequireBasicFunctionality />,
@@ -466,17 +498,29 @@ export const routeConfig = [
           },
           {
             path: NOTIFICATIONS_ROUTE,
-            element: <Notifications />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <Notifications />
+              </GlobalMenuRouteTransition>
+            ),
           },
           {
             path: SNAPS_ROUTE,
-            element: <SnapList />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <SnapList />
+              </GlobalMenuRouteTransition>
+            ),
           },
           createRouteWithMessenger({
             path: SNAPS_VIEW_ROUTE,
             capabilities: SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES,
             element: <SnapView />,
           }),
+          {
+            path: `${BATCH_SELL_ROOT_ROUTE}/*`,
+            element: <BatchSell />,
+          },
           {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
             element: <CrossChainSwapTxDetails />,

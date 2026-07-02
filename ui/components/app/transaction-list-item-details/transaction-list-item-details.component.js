@@ -24,16 +24,15 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { I18nContext } from '../../../contexts/i18n';
 
 export default class TransactionListItemDetails extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   static defaultProps = {};
 
   static propTypes = {
+    trackEvent: PropTypes.func.isRequired,
     onCancel: PropTypes.func,
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
@@ -94,7 +93,7 @@ export default class TransactionListItemDetails extends PureComponent {
       onClose();
       navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
-      this.context.trackEvent({
+      this.props.trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Clicked Block Explorer Link',
         properties: {
@@ -127,7 +126,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { primaryTransaction: transaction } = transactionGroup;
     const { hash } = transaction;
 
-    this.context.trackEvent({
+    this.props.trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: 'Copied Transaction ID',
       properties: {
@@ -151,7 +150,7 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
     const { justCopied } = this.state;
     const {
       transactionGroup,
@@ -205,9 +204,7 @@ export default class TransactionListItemDetails extends PureComponent {
               {showCancel && (
                 <CancelButton
                   size={ButtonSize.Sm}
-                  transaction={transaction}
                   cancelTransaction={this.handleCancel}
-                  detailsModal
                 />
               )}
               {/* {showRetry && (

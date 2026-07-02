@@ -99,6 +99,7 @@ export enum TraceName {
   MusdConversionNavigation = 'mUSD Conversion Navigation',
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
+  BatchSellModal = 'Batch Sell Modal',
 }
 
 /**

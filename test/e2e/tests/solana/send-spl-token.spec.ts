@@ -8,7 +8,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import {
@@ -311,7 +311,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
@@ -326,8 +326,8 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.clickFooterConfirmButton();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAction({ action: 'Sent USDC' });
 
         if (isUnifiedAssetsEnabled) {
           await driver.waitForSelector({
@@ -335,10 +335,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
             text: '0.1',
           });
         } else {
-          await activityList.checkTxAmountInActivity('-0.1 USDC', 1);
+          await activityTab.checkTxAmountInActivity('-0.1 USDC', 1);
         }
 
-        await activityList.checkNoFailedTransactions();
+        await activityTab.checkNoFailedTransactions();
       },
     );
   });
@@ -395,7 +395,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
@@ -410,10 +410,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.clickFooterConfirmButton();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkFailedTxNumberDisplayedInActivity();
-        await activityList.checkTxAction({
-          action: 'Interaction',
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAction({
+          action: 'Interaction failed',
           confirmedTx: 0,
         });
       },

@@ -3,8 +3,13 @@ import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Icon,
   IconColor,
   IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -26,6 +31,7 @@ import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useConfirmContext } from '../../../context/confirm';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -47,6 +53,7 @@ export function BridgeFeeRow({
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isPaidByMetaMask = useIsPaidByMetaMask();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
@@ -57,10 +64,10 @@ export function BridgeFeeRow({
       return '';
     }
 
-    const totalFee = new BigNumber(totals.fees.provider.usd)
+    const totalFee = new BigNumber(totals.fees.provider?.usd ?? '0')
       .plus(totals.fees.metaMask?.usd ?? '0')
-      .plus(totals.fees.sourceNetwork.estimate.usd)
-      .plus(totals.fees.targetNetwork.usd);
+      .plus(totals.fees.sourceNetwork?.estimate?.usd ?? '0')
+      .plus(totals.fees.targetNetwork?.usd ?? '0');
 
     return formatFiat(totalFee.toNumber());
   }, [totals, formatFiat]);
@@ -80,7 +87,7 @@ export function BridgeFeeRow({
   const hasQuotes = Boolean(quotes?.length);
 
   const tooltipLines = useMemo(() => {
-    if (!hasQuotes || !totals) {
+    if (isPaidByMetaMask || !hasQuotes || !totals) {
       return undefined;
     }
     return buildTooltipLines({
@@ -93,6 +100,7 @@ export function BridgeFeeRow({
       useProviderFeeLabel: isPerpsWithdraw,
     });
   }, [
+    isPaidByMetaMask,
     hasQuotes,
     totals,
     tooltipDescription,
@@ -142,21 +150,64 @@ export function BridgeFeeRow({
         ) : undefined
       }
     >
-      {isSmall ? (
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          data-testid="transaction-fee-value"
-        >
-          {feeTotalUsd}
-        </Text>
-      ) : (
-        <ConfirmInfoRowText
-          text={feeTotalUsd}
-          data-testid="transaction-fee-value"
-        />
-      )}
+      <FeeValue
+        isPaidByMetaMask={isPaidByMetaMask}
+        isSmall={isSmall}
+        feeTotalUsd={feeTotalUsd}
+      />
     </ConfirmInfoRow>
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function FeeValue({
+  isPaidByMetaMask,
+  isSmall,
+  feeTotalUsd,
+}: {
+  isPaidByMetaMask: boolean;
+  isSmall: boolean;
+  feeTotalUsd: string;
+}) {
+  const t = useI18nContext();
+
+  if (isPaidByMetaMask) {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+        data-testid="paid-by-metamask"
+      >
+        <Icon
+          name={IconName.Check}
+          size={IconSize.Sm}
+          color={IconColor.SuccessDefault}
+        />
+        <Text variant={TextVariant.BodyMd} color={TextColor.SuccessDefault}>
+          {t('paidByMetaMask')}
+        </Text>
+      </Box>
+    );
+  }
+
+  if (isSmall) {
+    return (
+      <Text
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+        data-testid="transaction-fee-value"
+      >
+        {feeTotalUsd}
+      </Text>
+    );
+  }
+
+  return (
+    <ConfirmInfoRowText
+      text={feeTotalUsd}
+      data-testid="transaction-fee-value"
+    />
   );
 }
 
@@ -179,11 +230,11 @@ function buildTooltipLines({
   includeMetamaskFee,
   useProviderFeeLabel,
 }: BuildTooltipLinesArgs): string[] {
-  const networkFee = new BigNumber(totals.fees.sourceNetwork.estimate.usd).plus(
-    totals.fees.targetNetwork.usd,
-  );
+  const networkFee = new BigNumber(
+    totals.fees.sourceNetwork?.estimate?.usd ?? '0',
+  ).plus(totals.fees.targetNetwork?.usd ?? '0');
 
-  const providerFeeUsd = new BigNumber(totals.fees.provider.usd);
+  const providerFeeUsd = new BigNumber(totals.fees.provider?.usd ?? '0');
 
   const lines: string[] = [];
 

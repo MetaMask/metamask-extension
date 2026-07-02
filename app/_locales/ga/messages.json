@@ -7,12 +7,6 @@
     "message": "Tá an luchtú ag glacadh níos faide ná mar is gnách.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Earráid"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Sonraí idirbhirt neamhréireach. Seiceáil sonraí an idirbhirt le do thoil."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Níl aon chuntais eile ann. Más mian leat rochtain a fháil ar chuntas eile nach bhfuil liostaithe thíos, athcheangail do sparán crua-earraí agus roghnaigh é."
   },
@@ -69,12 +63,6 @@
   },
   "account": {
     "message": "Cuntas"
-  },
-  "accountActivity": {
-    "message": "Gníomhaíocht chuntais"
-  },
-  "accountActivityText": {
-    "message": "Roghnaigh na cuntais ar mhaith leat fógra a fháil fúthu:"
   },
   "accountAlreadyExistsLogin": {
     "message": "Logáil isteach"
@@ -1024,9 +1012,6 @@
     "message": "Dún $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Is féidir leat an fhuinneog seo a dhúnadh am ar bith."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -1472,12 +1457,6 @@
   "customerSupport": {
     "message": "tacaíocht do chustaiméirí"
   },
-  "customizeYourNotifications": {
-    "message": "Saincheap do fhógraí"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Cas air na cineálacha fógraí is mian leat a fháil:"
-  },
   "dappSuggested": {
     "message": "Suíomh molta"
   },
@@ -1909,9 +1888,6 @@
   },
   "enabled": {
     "message": "Cumasaithe"
-  },
-  "enabledNetworks": {
-    "message": "Líonraí cumasaithe"
   },
   "encryptionPublicKeyNotice": {
     "message": "Ba mhaith le $1 d’eochair chriptithe phoiblí. Trí thoiliú a thabhairt, beidh an suíomh seo in ann teachtaireachtaí criptithe a scríobh chugat.",
@@ -3309,9 +3285,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Tá ár mbeartas príobháideachais nuashonraithe againn"
   },
-  "newRpcUrl": {
-    "message": "URL RPC nua"
-  },
   "newTokensImportedMessage": {
     "message": "D'éirigh leat $1 a allmhairiú.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -3417,9 +3390,6 @@
   },
   "notCurrentAccount": {
     "message": "An é seo an cuntas ceart? Tá sé difriúil ón gcuntas atá roghnaithe i do sparán faoi láthair."
-  },
-  "notEnoughGas": {
-    "message": "Gan dóthain gáis"
   },
   "notificationDetail": {
     "message": "Sonraí"
@@ -3574,9 +3544,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Chuaigh rud éigin mícheart. Déan iarracht arís."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fan ar an eolas faoi na rudaí atá ag tarlú i do sparán le fógraí. Chun fógraí a úsáid, úsáidimid próifíl chun roinnt socruithe a shioncronú ar fud do ghléasanna. $1"
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Foghlaim conas a chosnaímid do phríobháideacht agus an ghné seo in úsáid agat."
@@ -4184,9 +4151,6 @@
   },
   "proceedWithTransaction": {
     "message": "Ba mhaith liom dul ar aghaidh ar aon nós"
-  },
-  "productAnnouncements": {
-    "message": "Fógraí táirgí"
   },
   "provide": {
     "message": "Cuir ar fáil"
@@ -5126,24 +5090,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Níl Smart Swaps ar fáil go sealadach."
   },
-  "smartTransactionCancelled": {
-    "message": "Cuireadh do idirbheart ar ceal"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Níorbh fhéidir d’idirbheart a chríochnú, mar sin cuireadh ar ceal é chun tú a shábháil ó tháillí gáis neamhriachtanacha a íoc."
-  },
-  "smartTransactionError": {
-    "message": "Theip ar do idirbheart"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Is féidir le hathruithe tobann sa mhargadh teipeanna a chur faoi deara. Má leanann an fhadhb, déan teagmháil le tacaíocht do chustaiméirí MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Cuireadh isteach d’idirbheart"
-  },
-  "smartTransactionSuccess": {
-    "message": "Tá d’idirbheart críochnaithe"
-  },
   "smartTransactions": {
     "message": "Idirbhearta Cliste"
   },
@@ -5986,9 +5932,6 @@
   "termsOfUseTitle": {
     "message": "Athbhreithnigh ár dTéarmaí Úsáide"
   },
-  "testNetworks": {
-    "message": "Líonraí tástála"
-  },
   "testnets": {
     "message": "Líonta tástála"
   },
@@ -6019,9 +5962,6 @@
   },
   "tokenContractAddress": {
     "message": "Seoladh conartha comhartha"
-  },
-  "tokenContractError": {
-    "message": "Is seoladh conartha comharthaí é an seoladh seo. Má sheolann tú comharthaí chuig an seoladh seo, caillfidh tú iad."
   },
   "tokenDecimal": {
     "message": "Deicheamhach comhartha"
@@ -6376,9 +6316,6 @@
   "view": {
     "message": "Amharc"
   },
-  "viewActivity": {
-    "message": "Féach ar ghníomhaíocht"
-  },
   "viewAddressOnExplorer": {
     "message": "Féach ar $1",
     "description": "$1 is the block explorer name"
@@ -6402,9 +6339,6 @@
   },
   "viewOnOpensea": {
     "message": "Féach ar Opensea"
-  },
-  "viewTransaction": {
-    "message": "Féach ar an idirbheart"
   },
   "viewinExplorer": {
     "message": "Féach ar $1 in iniúchóir",

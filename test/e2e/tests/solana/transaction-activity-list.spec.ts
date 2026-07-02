@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
@@ -30,15 +30,13 @@ describe('Transaction activity list', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
-        await activityList.checkNoFailedTransactions();
-        await activityList.clickOnActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAction({ action: 'Sent SOL' });
+        await activityTab.checkTxAmountInActivity('-0.007079 SOL', 1);
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
-        await transactionDetails.checkTransactionStatus(
-          commonSolanaTxConfirmedDetailsFixture.status,
-        );
+        await transactionDetails.checkTransactionStatus('success');
         await transactionDetails.checkTransactionAmount(
           commonSolanaTxConfirmedDetailsFixture.amount,
         );
@@ -72,13 +70,13 @@ describe('Transaction activity list', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkFailedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({
-          action: 'Interaction',
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAction({
+          action: 'Interaction failed',
           confirmedTx: 0,
         });
-        await activityList.clickOnActivity(1);
+        await activityTab.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
 
         await transactionDetails.checkTransactionStatus(
@@ -89,7 +87,7 @@ describe('Transaction activity list', function (this: Suite) {
         );
         await transactionDetails.checkTransactionViewDetailsLink();
         await transactionDetails.checkTransactionBaseFee(
-          commonSolanaTxFailedDetailsFixture.networkFee,
+          commonSolanaTxFailedDetailsFixture.networkFeeFiat,
         );
       },
     );

@@ -108,6 +108,10 @@ export function useSimulationMetrics({
   const properties = {
     simulation_response: simulationResponse,
     simulation_latency: simulationLatency,
+    simulation_receiving_assets_contract_address:
+      getContractAddresses(receivingAssets),
+    simulation_sending_assets_contract_address:
+      getContractAddresses(sendingAssets),
     ...getProperties(
       receivingAssets,
       'simulation_receiving_assets_',
@@ -120,14 +124,7 @@ export function useSimulationMetrics({
     ),
   };
 
-  const sensitiveProperties = {
-    simulation_receiving_assets_contract_address:
-      getContractAddresses(receivingAssets),
-    simulation_sending_assets_contract_address:
-      getContractAddresses(sendingAssets),
-  };
-
-  const params = { properties, sensitiveProperties };
+  const params = { properties };
 
   const shouldSkipMetrics =
     !enableMetrics ||

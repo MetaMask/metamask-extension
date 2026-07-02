@@ -1,26 +1,32 @@
 import React from 'react';
 import classnames from 'clsx';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
-import type {
-  ActivityListItemAvatarConfig,
-  ResolvedActivityToken,
-} from './activity-list-item-avatar.types';
+import {
+  AvatarBase,
+  AvatarBaseSize,
+  AvatarToken,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
+import type { CaipAssetType } from '@metamask/utils';
+import { getCaipAssetImageUrl } from '../../../../shared/lib/asset-utils';
 
-type ActivityListItemAvatarProps = {
-  config: ActivityListItemAvatarConfig;
-};
+export type ActivityListItemAvatarTokens = readonly (string | undefined)[];
+
+const fallbackText = '?';
+
+const sanitizeTokens = (tokens: ActivityListItemAvatarTokens): string[] =>
+  tokens.filter((token): token is string => Boolean(token));
 
 const ActivityTokenAvatar = ({
-  token,
+  assetId,
   className,
-}: Readonly<{ token: ResolvedActivityToken; className?: string }>) => {
+}: Readonly<{ assetId: string; className?: string }>) => {
   return (
     <AvatarToken
       size={AvatarTokenSize.Md}
-      name={token.symbol}
-      fallbackText={token.fallbackName.charAt(0)}
-      src={token.imageUrl}
+      name={fallbackText}
+      src={getCaipAssetImageUrl(assetId as CaipAssetType)}
       className={classnames(className)}
+      imageProps={{ className: 'bg-alternative' }}
       data-testid="activity-list-item-avatar-token"
     />
   );
@@ -29,7 +35,7 @@ const ActivityTokenAvatar = ({
 const ActivityDualTokenAvatar = ({
   from,
   to,
-}: Readonly<{ from: ResolvedActivityToken; to: ResolvedActivityToken }>) => {
+}: Readonly<{ from: string; to: string }>) => {
   return (
     <div
       className="activity-list-item-avatar-dual"
@@ -37,26 +43,39 @@ const ActivityDualTokenAvatar = ({
     >
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--left">
         <ActivityTokenAvatar
-          token={from}
-          className="activity-list-item-avatar-dual__token bg-transparent"
+          assetId={from}
+          className="activity-list-item-avatar-dual__token"
         />
       </div>
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--right">
         <ActivityTokenAvatar
-          token={to}
-          className="activity-list-item-avatar-dual__token bg-transparent"
+          assetId={to}
+          className="activity-list-item-avatar-dual__token"
         />
       </div>
     </div>
   );
 };
 
-export const ActivityListItemAvatar = ({
-  config,
-}: Readonly<ActivityListItemAvatarProps>) => {
-  if (config.variant === 'dual') {
-    return <ActivityDualTokenAvatar from={config.from} to={config.to} />;
+export const ActivityListItemAvatar = (
+  props: Readonly<{ tokens: ActivityListItemAvatarTokens }>,
+) => {
+  const tokens = sanitizeTokens(props.tokens);
+
+  if (tokens.length === 0) {
+    return (
+      <AvatarBase
+        size={AvatarBaseSize.Md}
+        fallbackText={fallbackText}
+        data-testid="activity-list-item-avatar-fallback"
+      />
+    );
   }
 
-  return <ActivityTokenAvatar token={config.token} />;
+  if (tokens.length > 1) {
+    const [from, to] = tokens;
+    return <ActivityDualTokenAvatar from={from} to={to} />;
+  }
+
+  return <ActivityTokenAvatar assetId={tokens[0]} />;
 };

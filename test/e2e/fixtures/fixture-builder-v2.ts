@@ -1,11 +1,12 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
-import type { Hex, Json } from '@metamask/utils';
+import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
+  AccountTrackerControllerState,
   CurrencyRateState,
   MultichainAssetsRatesControllerState,
   NftControllerState,
@@ -56,6 +57,7 @@ import {
   DAPP_TWO_URL,
   DAPP_URL,
   DAPP_URL_LOCALHOST,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
   IMPORTED_ACCOUNT_FIXTURE_VAULT,
@@ -125,6 +127,13 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
+type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  analyticsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  optedIn?: boolean;
+};
+
 type StorageServiceNamespaceMap = {
   [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
     key: string;
@@ -187,6 +196,15 @@ class FixtureBuilderV2 {
 
   withAccountTreeController(data: Partial<AccountTreeControllerState>): this {
     merge(this.fixture.data.AccountTreeController, data);
+    return this;
+  }
+
+  withAccountTracker(data: Partial<AccountTrackerControllerState>): this {
+    const fixtureData = this.fixture.data as Record<string, unknown>;
+    if (!fixtureData.AccountTracker) {
+      fixtureData.AccountTracker = { accountsByChainId: {} };
+    }
+    merge(fixtureData.AccountTracker as AccountTrackerControllerState, data);
     return this;
   }
 
@@ -277,8 +295,30 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
-    merge(this.fixture.data.MetaMetricsController, data);
+  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+    const { analyticsId, optedIn, ...metaMetricsControllerPatch } = data;
+
+    merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
+
+    if (analyticsId !== undefined || optedIn !== undefined) {
+      const fixtureData = this.fixture.data as Record<string, unknown>;
+      if (!fixtureData.AnalyticsController) {
+        fixtureData.AnalyticsController = {};
+      }
+      const analyticsController = fixtureData.AnalyticsController as Record<
+        string,
+        unknown
+      >;
+      const analyticsPatch: Record<string, unknown> = {};
+      if (analyticsId !== undefined) {
+        analyticsPatch.analyticsId = analyticsId;
+      }
+      if (optedIn !== undefined) {
+        analyticsPatch.optedIn = optedIn;
+      }
+      merge(analyticsController, analyticsPatch);
+    }
+
     return this;
   }
 
@@ -1280,24 +1320,32 @@ class FixtureBuilderV2 {
   }
 
   withTokensControllerERC20({ chainId = 1337 } = {}): this {
-    return this.withTokensController({
-      allTokens: {
-        [toHex(chainId)]: {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
-              symbol: 'TST',
-              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
-              isERC721: false,
-              decimals: 4,
-              aggregators: ['Metamask', 'Aave'],
-              name: 'test',
+    const tokenAddress: Hex = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
+    const assetId: CaipAssetType = `eip155:${chainId}/erc20:${tokenAddress}`;
+    return (
+      this
+        // When `assetsUnifyState` is enabled the asset list is derived from the
+        // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
+        // not from TokensController/TokenBalancesController.
+        .withAssetsController({
+          customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              [assetId]: { amount: '10' },
             },
-          ],
-        },
-      },
-      allIgnoredTokens: {},
-    });
+          },
+          assetsInfo: {
+            [assetId]: {
+              aggregators: ['Metamask', 'Aave'],
+              decimals: 4,
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
+              name: 'TST',
+              symbol: 'TST',
+              type: 'erc20',
+            },
+          },
+        })
+    );
   }
 
   withTrezorAccount(): this {

@@ -28,6 +28,7 @@ import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-n
 import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
+import { getBatchSellQuotes } from '../batch-sell/selectors';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -72,11 +73,22 @@ import {
   getIsStockMarketClosed,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
-  getBatchSellQuotes,
+  resolveMinimumBalanceToKeep,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
 describe('Bridge selectors', () => {
+  const getErc20QuoteAssetExchangeRates = (usdExchangeRate: string) =>
+    Object.fromEntries(
+      mockErc20Erc20Quotes.map(({ quote }) => [
+        quote.srcAsset.assetId.toLowerCase(),
+        {
+          exchangeRate: '1',
+          usdExchangeRate,
+        },
+      ]),
+    );
+
   beforeAll(() => {
     setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
   });
@@ -517,7 +529,7 @@ describe('Bridge selectors', () => {
       });
       const result = getToChains(state as never);
 
-      expect(result).toHaveLength(16);
+      expect(result).toHaveLength(17);
       expect(result.map(({ name, chainId }) => ({ name, chainId })))
         .toMatchInlineSnapshot(`
         [
@@ -580,6 +592,10 @@ describe('Bridge selectors', () => {
           {
             "chainId": "eip155:4326",
             "name": "MegaETH",
+          },
+          {
+            "chainId": "eip155:5042",
+            "name": "Arc",
           },
           {
             "chainId": "eip155:324",
@@ -894,6 +910,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getErc20QuoteAssetExchangeRates('1'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
@@ -973,6 +990,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
@@ -1068,6 +1086,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
@@ -1218,7 +1237,7 @@ describe('Bridge selectors', () => {
                   .quote as unknown as QuoteResponse['quote']),
                 requestId: 'fastestQuote',
               },
-            },
+            } as unknown as QuoteResponse,
           ],
         },
       });
@@ -1265,6 +1284,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getErc20QuoteAssetExchangeRates('1'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
@@ -1321,11 +1341,6 @@ describe('Bridge selectors', () => {
           "quotesInitialLoadTimeMs": 11000,
           "quotesLastFetchedMs": 100,
           "quotesRefreshCount": 5,
-          "totalNetworkFee": {
-            "amount": "0.00100006442841952",
-            "usd": "0.00100006442841952",
-            "valueInCurrency": "0.00100006442841952",
-          },
           "totalReceived": {
             "amount": "13.98428",
             "usd": "13.8444372",
@@ -1359,6 +1374,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
@@ -1429,11 +1445,6 @@ describe('Bridge selectors', () => {
           "quotesInitialLoadTimeMs": 11000,
           "quotesLastFetchedMs": 100,
           "quotesRefreshCount": 2,
-          "totalNetworkFee": {
-            "amount": "0.00100006442841952",
-            "usd": "0.0200012885683904",
-            "valueInCurrency": "0.00100006442841952",
-          },
           "totalReceived": {
             "amount": "13.98428",
             "usd": "39.100516560144370997564",
@@ -1467,6 +1478,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
@@ -1538,11 +1550,6 @@ describe('Bridge selectors', () => {
           "quotesInitialLoadTimeMs": 11000,
           "quotesLastFetchedMs": 100,
           "quotesRefreshCount": 1,
-          "totalNetworkFee": {
-            "amount": "0.00100006442841952",
-            "usd": "0.0200012885683904",
-            "valueInCurrency": "0.00100006442841952",
-          },
           "totalReceived": {
             "amount": "13.98428",
             "usd": "13.8444372",
@@ -1575,11 +1582,6 @@ describe('Bridge selectors', () => {
           "recommendedQuotes": [
             null,
           ],
-          "totalNetworkFee": {
-            "amount": "0",
-            "usd": "0",
-            "valueInCurrency": "0",
-          },
           "totalReceived": {
             "amount": "0",
             "usd": "0",
@@ -1613,6 +1615,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
@@ -1683,11 +1686,6 @@ describe('Bridge selectors', () => {
           "quotesInitialLoadTimeMs": 11000,
           "quotesLastFetchedMs": 100,
           "quotesRefreshCount": 2,
-          "totalNetworkFee": {
-            "amount": "0.00100006442841952",
-            "usd": "0.0200012885683904",
-            "valueInCurrency": "0.00100006442841952",
-          },
           "totalReceived": {
             "amount": "13.98428",
             "usd": "39.100516560144370997564",
@@ -4078,10 +4076,7 @@ describe('Bridge selectors', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: {
-                ...quote.quote.priceData,
-                priceImpact: undefined,
-              },
+              priceData: { ...quote.quote.priceData, priceImpact: undefined },
             },
           })) as unknown as QuoteResponse[],
         },
@@ -4327,10 +4322,7 @@ describe('Bridge selectors', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: {
-                ...quote.quote.priceData,
-                priceImpact: '0.07',
-              },
+              priceData: { ...quote.quote.priceData, priceImpact: '0.07' },
             },
           })) as unknown as QuoteResponse[],
           quoteRequest: {
@@ -4451,6 +4443,32 @@ describe('Bridge selectors', () => {
       });
       const result = getBridgeUnavailableQuoteReason(state as never);
       expect(result).toBe('noOptionsAvailableMessage');
+    });
+  });
+
+  describe('resolveMinimumBalanceToKeep', () => {
+    const SOL_RESERVE = '890880';
+
+    it('returns the SOL rent-exemption reserve for a Solana chain id', () => {
+      expect(resolveMinimumBalanceToKeep(SolScope.Mainnet, SOL_RESERVE)).toBe(
+        SOL_RESERVE,
+      );
+    });
+
+    it("returns '0' for a non-Solana EVM chain id", () => {
+      expect(resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, SOL_RESERVE)).toBe(
+        '0',
+      );
+    });
+
+    it("returns '0' for a non-Solana non-EVM (Bitcoin) chain id", () => {
+      expect(
+        resolveMinimumBalanceToKeep(MultichainNetworks.BITCOIN, SOL_RESERVE),
+      ).toBe('0');
+    });
+
+    it("returns '0' when the chain id is undefined", () => {
+      expect(resolveMinimumBalanceToKeep(undefined, SOL_RESERVE)).toBe('0');
     });
   });
 });

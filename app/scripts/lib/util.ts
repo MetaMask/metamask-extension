@@ -1,4 +1,3 @@
-import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
 import {
   TransactionEnvelopeType,
@@ -42,6 +41,7 @@ import {
   getIsQuicknodeEndpointUrl,
   KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
+import { isLocalhostOrIPAddress } from '../../../shared/lib/url-utils';
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
 export { getInstallType, initInstallType } from './install-type';
@@ -411,23 +411,21 @@ export function previousValueComparator<A>(
 }
 
 /**
- * Determines whether to emit a MetaMetrics event for a given metaMetricsId.
- * Relies on the last 4 characters of the metametricsId. Assumes the IDs are evenly distributed.
- * If metaMetricsIds are distributed evenly, this should be a 1% sample rate
+ * Determines whether to emit a MetaMetrics event for a given analytics ID.
+ * Relies on the last 4 characters of the analytics ID. Assumes the IDs are evenly distributed.
+ * If analytics IDs are distributed evenly, this should be a 1% sample rate
  *
- * @param metaMetricsId - The metametricsId to use for the event.
+ * @param analyticsId - The analytics ID to use for the event.
  * @returns Whether to emit the event or not.
  */
-export function shouldEmitDappViewedEvent(
-  metaMetricsId: string | null,
-): boolean {
+export function shouldEmitDappViewedEvent(analyticsId: string | null): boolean {
   const isFireFox = getPlatform() === PLATFORM_FIREFOX;
 
-  if (metaMetricsId === null || isFireFox) {
+  if (analyticsId === null || isFireFox) {
     return false;
   }
 
-  const lastFourCharacters = metaMetricsId.slice(-4);
+  const lastFourCharacters = analyticsId.slice(-4);
   const lastFourCharactersAsNumber = parseInt(lastFourCharacters, 16);
 
   return lastFourCharactersAsNumber % 100 === 0;
@@ -581,33 +579,6 @@ function extractHostname(url: string): string | null {
   } catch {
     return null;
   }
-}
-
-/**
- * Check if a hostname is localhost or an IP address.
- * Public RPC providers use domain names, not raw IP addresses.
- * These should never be considered "public" endpoints even if they appear in chainlist.
- *
- * @param hostname - The hostname to check.
- * @returns True if the hostname is localhost or an IP address (v4 or v6).
- */
-function isLocalhostOrIPAddress(hostname: string): boolean {
-  const lowerHostname = hostname.toLowerCase();
-
-  // Check for localhost
-  if (lowerHostname === 'localhost') {
-    return true;
-  }
-
-  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
-  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
-
-  // Check for IP address (v4 or v6)
-  if (ipRegex({ exact: true }).test(hostnameWithoutBrackets)) {
-    return true;
-  }
-
-  return false;
 }
 
 // RFC 6761 special-use TLDs that should never be used by real public RPC providers

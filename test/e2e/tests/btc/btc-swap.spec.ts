@@ -5,8 +5,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
@@ -67,9 +67,9 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
@@ -94,9 +94,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
@@ -134,9 +136,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
@@ -170,9 +174,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
@@ -207,9 +213,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
@@ -238,11 +246,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         // Navigate to activity list and verify the bridge transaction
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkPendingBridgeTransactionActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPendingBridgeTransactionActivity(1);
 
         // Verify the transaction shows as "Bridge to Ethereum"
-        await activityListPage.checkTxAction({
+        await activityTab.checkTxAction({
           action: 'Bridge to Ethereum',
           confirmedTx: 1,
         });
