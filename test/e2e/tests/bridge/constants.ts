@@ -100,6 +100,27 @@ export const getMockAssetsPrice = (
   'eip155:42161/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
 });
 
+const ETH_ASSETS_INFO_ENTRY = (name: string = 'Ethereum') => ({
+  aggregators: [],
+  decimals: 18,
+  image: `https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png`,
+  name,
+  symbol: 'ETH',
+  type: 'native' as const,
+});
+
+/**
+ * Returns a mock assetsInfo map for native ETH across chains used in bridge tests.
+ * Required alongside assetsPrice so the AssetsController state is complete —
+ * formatExchangeRatesForBridge uses `type === 'native'` to build currencyRates.
+ */
+export const getMockAssetsInfo = () => ({
+  'eip155:1/slip44:60': ETH_ASSETS_INFO_ENTRY('Ethereum'),
+  'eip155:59144/slip44:60': ETH_ASSETS_INFO_ENTRY('Ether'),
+  'eip155:8453/slip44:60': ETH_ASSETS_INFO_ENTRY('Ether'),
+  'eip155:42161/slip44:60': ETH_ASSETS_INFO_ENTRY('Ether'),
+});
+
 export const MOCK_ASSETS_PRICE = getMockAssetsPrice();
 
 export const TOP_ASSETS_API_LINEA_MOCK_RESULT = [

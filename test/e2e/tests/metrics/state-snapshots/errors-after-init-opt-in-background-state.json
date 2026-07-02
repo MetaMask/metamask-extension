@@ -135,13 +135,7 @@
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
-    "currencyRates": {
-      "ETH": {
-        "conversionDate": "object",
-        "conversionRate": 1700,
-        "usdConversionRate": null
-      }
-    },
+    "currencyRates": {},
     "currentCurrency": "usd"
   },
   "DeFiPositionsController": "object",

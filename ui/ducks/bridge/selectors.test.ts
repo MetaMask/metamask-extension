@@ -1243,6 +1243,7 @@ describe('Bridge selectors', () => {
         mockBridgeQuotesNativeErc20[0]?.quote.requestId,
       );
     });
+
   });
 
   describe('getBatchSellQuotes', () => {

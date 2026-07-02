@@ -42,6 +42,7 @@ import {
   BRIDGE_REFRESH_RATE,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
   getMockAssetsPrice,
+  getMockAssetsInfo,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
@@ -1352,6 +1353,7 @@ export const getBridgeFixtures = ({
         },
       },
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsInfo: getMockAssetsInfo(),
     });
 
   return {
@@ -1470,6 +1472,10 @@ export const getQuoteNegativeCasesFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsInfo: getMockAssetsInfo(),
     });
 
   return {
@@ -1529,6 +1535,10 @@ export const getBridgeNegativeCasesFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsInfo: getMockAssetsInfo(),
     });
 
   return {
@@ -1588,6 +1598,10 @@ export const getInsufficientFundsFixtures = (
       eip155: {
         '0x1': true,
       },
+    })
+    .withAssetsController({
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsInfo: getMockAssetsInfo(),
     });
 
   return {
@@ -1694,6 +1708,7 @@ export const getBridgeL2Fixtures = (
         },
       },
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsInfo: getMockAssetsInfo(),
     });
 
   return {
@@ -1874,6 +1889,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         },
       },
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsInfo: getMockAssetsInfo(),
     });
 
   return {
@@ -2015,6 +2031,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         },
       },
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+      assetsInfo: getMockAssetsInfo(),
     });
 
   return {
