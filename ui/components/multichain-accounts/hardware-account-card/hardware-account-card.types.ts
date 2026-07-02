@@ -4,7 +4,7 @@ import type { HardwareWalletAccountAddress } from '../hardware-account-address-r
 export type HardwareWalletAccount = {
   id: string;
   name: string;
-  totalBalance: string;
+  totalBalance?: string;
   addresses: HardwareWalletAccountAddress[];
   isAlreadyConnected?: boolean;
 };

@@ -47,6 +47,7 @@ import {
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getIsNewHardwareWalletOnboardingEnabled } from '../../../../shared/lib/environment';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   MetaMetricsEventAccountType,
@@ -62,6 +63,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
+import { SelectHardwareAccountsContainer } from './select-hardware-accounts-container';
+import type { HardwareConnectAccount, HardwareHdPathOptionData } from './types';
 
 export const LEDGER_HD_PATHS = [
   { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
@@ -87,17 +90,11 @@ export const TREZOR_HD_PATHS = [
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
 
-const HD_PATHS: Record<string, { name: string; value: string }[]> = {
+const HD_PATHS: Record<string, HardwareHdPathOptionData[]> = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
   oneKey: TREZOR_HD_PATHS,
-};
-
-type HardwareAccount = {
-  address: string;
-  balance: string;
-  index: number;
 };
 
 type ActiveQrCodeScanRequest = {
@@ -116,11 +113,15 @@ const getErrorMessage = (
   return errorCode;
 };
 
+const ACCOUNTS_PER_PAGE = 5;
+
 const ConnectHardwareForm = () => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch: MetaMaskReduxDispatch = useDispatch();
   const navigate = useNavigate();
+  const isNewHardwareWalletOnboardingEnabled =
+    getIsNewHardwareWalletOnboardingEnabled();
 
   // Selectors
   const chainId = useSelector(getCurrentChainId);
@@ -148,13 +149,15 @@ const ConnectHardwareForm = () => {
   // Local state
   const [error, setError] = useState<string | null>(null);
   const [selectedAccounts, setSelectedAccounts] = useState<number[]>([]);
-  const [hardwareAccounts, setHardwareAccounts] = useState<HardwareAccount[]>(
-    [],
-  );
+  const [hardwareAccounts, setHardwareAccounts] = useState<
+    HardwareConnectAccount[]
+  >([]);
   const [browserSupported, setBrowserSupported] = useState(true);
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
   const [isFirefox, setIsFirefox] = useState(false);
+  const [lastFetchedBatchSize, setLastFetchedBatchSize] = useState(0);
+  const [isLoadingMoreAccounts, setIsLoadingMoreAccounts] = useState(false);
   const previousActiveQrCodeScanRequest = useRef<ActiveQrCodeScanRequest>(
     activeQrCodeScanRequest,
   );
@@ -224,6 +227,7 @@ const ConnectHardwareForm = () => {
       hdPath: string,
       loadHid?: boolean,
       shouldShowConnectedAlert = true,
+      options?: { append?: boolean },
     ) => {
       // The actions.ts type declares `page` as string, but the background
       // handler expects a number (0 = first, 1 = next, -1 = previous).
@@ -257,7 +261,7 @@ const ConnectHardwareForm = () => {
             showTemporaryAlert();
           }
 
-          const newAccounts: HardwareAccount[] = nextAccounts.map(
+          const newAccounts: HardwareConnectAccount[] = nextAccounts.map(
             (account, idx) => {
               const normalizedAddress = account.address.toLowerCase();
               const balanceValue = accounts[normalizedAddress]?.balance || null;
@@ -269,10 +273,28 @@ const ConnectHardwareForm = () => {
             },
           );
 
-          setHardwareAccounts(newAccounts);
+          setLastFetchedBatchSize(newAccounts.length);
+
+          if (options?.append) {
+            setHardwareAccounts((previousAccounts) => {
+              const existingIndices = new Set(
+                previousAccounts.map((account) => account.index),
+              );
+              const uniqueNewAccounts = newAccounts.filter(
+                (account) => !existingIndices.has(account.index),
+              );
+
+              return [...previousAccounts, ...uniqueNewAccounts];
+            });
+          } else {
+            setHardwareAccounts(newAccounts);
+          }
+
           setUnlocked(true);
           setCurrentDevice(deviceName);
           setError(null);
+        } else if (options?.append) {
+          setLastFetchedBatchSize(0);
         }
       } catch (e: unknown) {
         if (requestId !== latestGetPageRequestId.current) {
@@ -434,6 +456,8 @@ const ConnectHardwareForm = () => {
         }),
       );
       setSelectedAccounts([]);
+      setLastFetchedBatchSize(0);
+      setIsLoadingMoreAccounts(false);
       getPage(device, 0, path);
     },
     [device, dispatch, getPage],
@@ -452,6 +476,19 @@ const ConnectHardwareForm = () => {
     setError(t('ledgerAccountRestriction') as string);
   }, [t]);
 
+  const resetHardwareConnectionState = useCallback(() => {
+    setError(null);
+    setSelectedAccounts([]);
+    latestGetPageRequestId.current += 1;
+    latestPendingDevice.current = null;
+    latestHardwareAccounts.current = [];
+    setHardwareAccounts([]);
+    setCurrentDevice(null);
+    setUnlocked(false);
+    setLastFetchedBatchSize(0);
+    setIsLoadingMoreAccounts(false);
+  }, [setCurrentDevice]);
+
   const onForgetDevice = useCallback(
     async (deviceName: string, hdPath: string) => {
       try {
@@ -464,14 +501,7 @@ const ConnectHardwareForm = () => {
           },
         });
 
-        setError(null);
-        setSelectedAccounts([]);
-        latestGetPageRequestId.current += 1;
-        latestPendingDevice.current = null;
-        latestHardwareAccounts.current = [];
-        setHardwareAccounts([]);
-        setCurrentDevice(null);
-        setUnlocked(false);
+        resetHardwareConnectionState();
       } catch (e) {
         const errorMessage = toErrorMessage(e);
 
@@ -487,7 +517,7 @@ const ConnectHardwareForm = () => {
         setError(errorMessage);
       }
     },
-    [dispatch, setCurrentDevice, trackEvent],
+    [dispatch, resetHardwareConnectionState, trackEvent],
   );
 
   const onUnlockAccounts = useCallback(
@@ -596,15 +626,60 @@ const ConnectHardwareForm = () => {
   // route change would be a no-op. The request ID is incremented to discard
   // any in-flight getPage responses.
   const onCancel = useCallback(() => {
-    setError(null);
-    setSelectedAccounts([]);
-    latestGetPageRequestId.current += 1;
-    latestPendingDevice.current = null;
-    latestHardwareAccounts.current = [];
-    setHardwareAccounts([]);
-    setCurrentDevice(null);
-    setUnlocked(false);
-  }, [setCurrentDevice]);
+    resetHardwareConnectionState();
+  }, [resetHardwareConnectionState]);
+
+  const loadMoreAccounts = useCallback(async () => {
+    if (!device || isLoadingMoreAccounts) {
+      return;
+    }
+
+    if (lastFetchedBatchSize < ACCOUNTS_PER_PAGE) {
+      onAccountRestriction();
+      return;
+    }
+
+    setIsLoadingMoreAccounts(true);
+    try {
+      await getPage(device, 1, defaultHdPaths[device], false, false, {
+        append: true,
+      });
+    } finally {
+      setIsLoadingMoreAccounts(false);
+    }
+  }, [
+    defaultHdPaths,
+    device,
+    getPage,
+    isLoadingMoreAccounts,
+    lastFetchedBatchSize,
+    onAccountRestriction,
+  ]);
+
+  const shouldShowHdPathSettings = useCallback(
+    (deviceName: string) =>
+      [
+        HardwareDeviceNames.ledger,
+        HardwareDeviceNames.lattice,
+        HardwareDeviceNames.trezor,
+        HardwareDeviceNames.oneKey,
+      ].includes(deviceName as HardwareDeviceNames),
+    [],
+  );
+
+  const handleUnlockSelectedAccounts = useCallback(() => {
+    if (!device) {
+      return;
+    }
+    return onUnlockAccounts(device, defaultHdPaths[device]);
+  }, [device, defaultHdPaths, onUnlockAccounts]);
+
+  const handleForgetCurrentDevice = useCallback(() => {
+    if (!device) {
+      return;
+    }
+    return onForgetDevice(device, defaultHdPaths[device]);
+  }, [device, defaultHdPaths, onForgetDevice]);
 
   const renderError = () => {
     if (error === U2F_ERROR) {
@@ -685,6 +760,28 @@ const ConnectHardwareForm = () => {
 
     if (!device) {
       return null;
+    }
+
+    if (isNewHardwareWalletOnboardingEnabled) {
+      return (
+        <SelectHardwareAccountsContainer
+          device={device}
+          accounts={hardwareAccounts}
+          connectedAccounts={connectedAccounts}
+          selectedAccountIndices={selectedAccounts}
+          onSelectedAccountIndicesChange={setSelectedAccounts}
+          selectedPath={defaultHdPaths[device]}
+          hdPaths={HD_PATHS[device] ?? []}
+          showHdPathSettings={shouldShowHdPathSettings(device)}
+          onPathChange={onPathChange}
+          onBack={onCancel}
+          onShowMore={loadMoreAccounts}
+          onContinue={handleUnlockSelectedAccounts}
+          onForgetDevice={handleForgetCurrentDevice}
+          hasMoreAccounts={lastFetchedBatchSize === ACCOUNTS_PER_PAGE}
+          isLoadingMore={isLoadingMoreAccounts}
+        />
+      );
     }
 
     return (

@@ -3,7 +3,7 @@ export type HardwareWalletAccountAddress = {
   id: string;
   networkName: string;
   address: string;
-  balance: string;
+  balance?: string;
   iconUrl: string;
   addressType?: string;
 };
