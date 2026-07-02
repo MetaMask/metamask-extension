@@ -431,7 +431,6 @@ class AccountListPage {
    */
   async openMultichainAccountMenu(options: {
     accountLabel: string;
-    srpIndex?: number;
   }): Promise<void> {
     console.log(
       `Open multichain account menu in account list for account ${options.accountLabel}`,
