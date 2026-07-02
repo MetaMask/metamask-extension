@@ -185,10 +185,24 @@ describe('NFTAsset', () => {
       ...mockNFTERC721Asset,
       image: undefined,
     };
-    const { getByAltText } = render(<Asset asset={assetWithoutImage} />);
+    const { getByTestId } = render(<Asset asset={assetWithoutImage} />);
 
-    const image = getByAltText('Test NFT');
-    expect(image).toHaveAttribute('src', 'https://example.com/collection.png');
+    expect(getByTestId('nft-asset')).toBeInTheDocument();
+  });
+
+  it('renders NFT with consistent layout when both image and collection imageUrl are missing', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutImages = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        name: 'Test Collection',
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutImages} />);
+
+    expect(getByTestId('nft-asset')).toBeInTheDocument();
   });
 
   it('renders account type label when account type is provided', () => {

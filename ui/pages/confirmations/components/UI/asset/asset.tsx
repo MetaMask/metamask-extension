@@ -78,19 +78,12 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
             ) : null
           }
         >
-          {image || collection?.imageUrl ? (
-            <Box
-              as="img"
-              src={nftItemSrc || (collection?.imageUrl as string)}
-              alt={name}
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                objectFit: 'cover',
-              }}
-            />
-          ) : null}
+          <AvatarToken
+            size={AvatarTokenSize.Md}
+            src={nftItemSrc || (collection?.imageUrl as string)}
+            name={collection?.name || name}
+            showHalo={false}
+          />
         </BadgeWrapper>
       </Box>
       <Box
