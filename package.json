@@ -349,7 +349,7 @@
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.14.0",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
-    "@metamask/bridge-controller": "^77.0.0",
+    "@metamask/bridge-controller": "^77.3.2",
     "@metamask/bridge-status-controller": "^73.0.0",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
