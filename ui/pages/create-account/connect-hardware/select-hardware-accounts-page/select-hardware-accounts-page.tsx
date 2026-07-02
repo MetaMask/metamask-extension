@@ -439,6 +439,19 @@ export const SelectHardwareAccountsPage = ({
   const isContinueDisabled = selectedAccountIds.length === 0 || isContinuing;
   const hasMoreAccounts = lastFetchedBatchSize === ACCOUNTS_PER_PAGE;
 
+  const accountCards = useMemo(
+    () =>
+      walletAccounts.map((account) => (
+        <HardwareAccountCard
+          key={account.id}
+          account={account}
+          isSelected={selectedAccountIds.includes(account.id)}
+          onToggleSelection={handleToggleSelection}
+        />
+      )),
+    [handleToggleSelection, selectedAccountIds, walletAccounts],
+  );
+
   if (view === 'hd-path' && showHdPathSettings) {
     return (
       <SelectHdPathPage
@@ -494,14 +507,7 @@ export const SelectHardwareAccountsPage = ({
           className="min-h-0 w-full flex-1 overflow-y-auto"
           data-testid="select-hardware-accounts-page-accounts-scroll"
         >
-          {walletAccounts.map((account) => (
-            <HardwareAccountCard
-              key={account.id}
-              account={account}
-              isSelected={selectedAccountIds.includes(account.id)}
-              onToggleSelection={handleToggleSelection}
-            />
-          ))}
+          {accountCards}
           {hasMoreAccounts ? (
             <Button
               variant={ButtonVariant.Secondary}

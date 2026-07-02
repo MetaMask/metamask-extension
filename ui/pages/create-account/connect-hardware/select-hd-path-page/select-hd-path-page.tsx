@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -52,6 +52,19 @@ export const SelectHdPathPage = ({
     onPathChange(pendingPath);
   }, [onPathChange, pendingPath]);
 
+  const hdPathOptions = useMemo(
+    () =>
+      hdPaths.map((hdPath) => (
+        <HardwareHdPathOption
+          key={hdPath.value}
+          label={hdPath.name}
+          isSelected={hdPath.value === pendingPath}
+          onSelect={() => handlePathSelect(hdPath.value)}
+        />
+      )),
+    [handlePathSelect, hdPaths, pendingPath],
+  );
+
   return (
     <Page className="mx-auto h-full min-h-0 w-full max-w-[460px] overflow-hidden sm:max-w-[520px]">
       <Box
@@ -81,14 +94,7 @@ export const SelectHdPathPage = ({
           gap={3}
           className="min-h-0 w-full flex-1 overflow-y-auto"
         >
-          {hdPaths.map((hdPath) => (
-            <HardwareHdPathOption
-              key={hdPath.value}
-              label={hdPath.name}
-              isSelected={hdPath.value === pendingPath}
-              onSelect={() => handlePathSelect(hdPath.value)}
-            />
-          ))}
+          {hdPathOptions}
         </Box>
       </Content>
       <Footer className="shrink-0">
