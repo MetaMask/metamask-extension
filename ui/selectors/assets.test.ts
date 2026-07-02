@@ -1,4 +1,5 @@
 import { EthScope, SolScope } from '@metamask/keyring-api';
+import { CaipAssetType } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
@@ -1622,9 +1623,11 @@ describe('getAssetsBySelectedAccountGroupWithTronSpecialAssets', () => {
 describe('getFungibleAssetForRoute', () => {
   beforeEach(() => {
     getAssetsBySelectedAccountGroup.memoizedResultFunc.clearCache();
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReset();
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValue({});
   });
 
-  const mockState = {
+  const createMockState = (testId: string) => ({
     metamask: {
       accountTree: 'mockAccountTree',
       internalAccounts: 'mockInternalAccounts',
@@ -1641,8 +1644,9 @@ describe('getFungibleAssetForRoute', () => {
       allIgnoredAssets: 'mockAllIgnoredAssets',
       balances: 'mockBalances',
       conversionRates: 'mockConversionRates',
+      testId,
     },
-  };
+  });
 
   it('resolves native EVM assets from a CAIP-19 route asset id', () => {
     const nativeEth = {
@@ -1663,12 +1667,40 @@ describe('getFungibleAssetForRoute', () => {
       '0x1': [nativeEth],
     } as AccountGroupAssets);
 
-    const result = getFungibleAssetForRoute(mockState, {
+    const result = getFungibleAssetForRoute(createMockState('native-evm'), {
       assetId: 'eip155:1/slip44:60',
       chainId: 'eip155:1',
     });
 
     expect(result).toStrictEqual(nativeEth);
+  });
+
+  it('resolves ERC-20 assets from a CAIP-19 route by token address', () => {
+    const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
+    const customToken = {
+      accountType: 'eip155:eoa',
+      accountId: 'd7f11451-9d79-4df4-a012-afd253443639',
+      chainId: '0x1',
+      address: tokenAddress,
+      image: '',
+      name: 'foo',
+      symbol: 'foo',
+      isNative: false,
+      decimals: 18,
+      balance: '1',
+    };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
+      '0x1': [customToken],
+    } as AccountGroupAssets);
+
+    const result = getFungibleAssetForRoute(createMockState('erc20-route'), {
+      assetId: `eip155:1/erc20:${tokenAddress}` as CaipAssetType,
+      chainId: 'eip155:1',
+      decodedAsset: tokenAddress,
+    });
+
+    expect(result).toStrictEqual(customToken);
   });
 });
 

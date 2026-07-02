@@ -22,6 +22,11 @@ describe('asset-route', () => {
         '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       );
     });
+    it('throws for an invalid CAIP asset type', () => {
+      expect(() =>
+        buildAssetRoutePath('not-a-caip-asset-id' as CaipAssetType),
+      ).toThrow('Invalid CAIP asset type');
+    });
   });
 
   describe('buildAssetRoutePathFromParts', () => {
@@ -60,6 +65,41 @@ describe('asset-route', () => {
           isNative: true,
         }),
       ).toBe('/asset/eip155:1/eip155%3A1%2Fslip44%3A60');
+    });
+
+    it('builds a native Solana asset path from CAIP chain id', () => {
+      expect(
+        buildAssetRoutePathFromParts(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          '',
+          { isNative: true },
+        ),
+      ).toBe(
+        '/asset/solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501',
+      );
+    });
+
+    it('builds a native Bitcoin asset path from CAIP chain id', () => {
+      expect(
+        buildAssetRoutePathFromParts(
+          'bip122:000000000019d6689c085ae165831e93',
+          '',
+          { isNative: true },
+        ),
+      ).toBe(
+        '/asset/bip122:000000000019d6689c085ae165831e93/bip122%3A000000000019d6689c085ae165831e93%2Fslip44%3A0',
+      );
+    });
+
+    it('builds a Tron TRC-20 asset path from CAIP chain id and address', () => {
+      expect(
+        buildAssetRoutePathFromParts(
+          'tron:728126428',
+          'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        ),
+      ).toBe(
+        '/asset/tron:728126428/tron%3A728126428%2Ftrc20%3ATR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      );
     });
   });
 
@@ -142,6 +182,34 @@ describe('asset-route', () => {
         chainId: CHAIN_IDS.MAINNET,
         decodedAsset: '0xabc',
         id: '123',
+      });
+    });
+
+    it('normalizes a Solana SPL route to a CAIP-19 asset id', () => {
+      const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as const;
+      const assetId =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' as const;
+
+      expect(
+        resolveAssetRouteLookup({
+          chainId: solanaChainId,
+          asset: assetId,
+        }),
+      ).toMatchObject({
+        chainId: solanaChainId,
+        assetId,
+      });
+    });
+
+    it('returns the original params when CAIP asset parsing fails', () => {
+      expect(
+        resolveAssetRouteLookup({
+          chainId: CHAIN_IDS.MAINNET,
+          asset: 'not-a-caip-asset-id',
+        }),
+      ).toMatchObject({
+        chainId: CHAIN_IDS.MAINNET,
+        decodedAsset: 'not-a-caip-asset-id',
       });
     });
   });

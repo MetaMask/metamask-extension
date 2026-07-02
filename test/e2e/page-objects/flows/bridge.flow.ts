@@ -197,12 +197,13 @@ export const goToAssetPage = async ({
   if (!assetId) {
     throw new Error('Unable to resolve asset id for bridge flow');
   }
-  const expectedAssetId = assetId.toLowerCase();
-  const expectedUrl = buildAssetRoutePath(assetId);
+  // Bridge token lists use lowercase erc20 addresses in CAIP-19 ids.
+  const normalizedAssetId = assetId.toLowerCase() as typeof assetId;
+  const expectedUrl = buildAssetRoutePath(normalizedAssetId);
 
   await bridgePage.searchAndClickAssetInfo({
     token,
-    assetId: expectedAssetId ?? '',
+    assetId: normalizedAssetId,
     assetPicker: picker,
   });
 
