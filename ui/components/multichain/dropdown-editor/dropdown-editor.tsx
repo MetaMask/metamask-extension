@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
+import { Input } from '@metamask/design-system-react';
 import {
   Box,
   ButtonIcon,
@@ -7,7 +8,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  Input,
   Label,
   Popover,
   PopoverPosition,
@@ -203,12 +203,10 @@ export const DropdownEditor = <Item,>({
         renderItem(selectedItem, false)
       ) : (
         <Input
-          className="dropdown-editor__item-placeholder"
+          className="dropdown-editor__item-placeholder py-3"
           placeholder={placeholder}
-          readOnly
+          isReadonly
           tabIndex={-1}
-          paddingTop={3}
-          paddingBottom={3}
         />
       )}
       <ButtonIcon
