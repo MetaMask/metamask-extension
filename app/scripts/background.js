@@ -52,6 +52,7 @@ import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
+  LedgerHandlerMode,
 } from '../../shared/constants/offscreen-communication';
 import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
@@ -67,12 +68,14 @@ import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
-import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
-import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
-import { useSplitStateStorage } from './lib/use-split-state-storage';
-import migrations from './migrations';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { ENABLE_DMK_FEATURE_FLAG } from '../../shared/lib/hardware-wallets/feature-flags';
 import Migrator from './lib/migrator';
+import migrations from './migrations';
+import { useSplitStateStorage } from './lib/use-split-state-storage';
+import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
+import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
@@ -880,6 +883,50 @@ async function initialize(backup) {
     preinstalledSnaps,
     cronjobControllerStorageManager,
   );
+
+  // Push the initial Ledger handler mode to the offscreen document.
+  // The offscreen boots as Legacy by default; if DMK is enabled via the
+  // remote feature flag we send a switchLedgerMode event to hot-swap.
+  if (isManifestV3) {
+    try {
+      const initialMode = controller.getLedgerMode();
+      browser.runtime.sendMessage({
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.switchLedgerMode,
+        mode: initialMode,
+      });
+    } catch {
+      // noop
+    }
+  }
+
+  // Subscribe to remote feature flag changes for the Ledger DMK bridge.
+  // When the `ledgerDmk` flag toggles, push a `switchLedgerMode` event to
+  // the offscreen document so it can hot-swap the active Ledger handler.
+  if (isManifestV3) {
+    controller.controllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (isDmkEnabled) => {
+        const mode = isDmkEnabled
+          ? LedgerHandlerMode.DMK
+          : LedgerHandlerMode.Legacy;
+        try {
+          browser.runtime.sendMessage({
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.switchLedgerMode,
+            mode,
+          });
+        } catch {
+          // noop
+        }
+      },
+      (state) =>
+        getBooleanFeatureFlag(
+          state.remoteFeatureFlags[ENABLE_DMK_FEATURE_FLAG],
+          false,
+        ),
+    );
+  }
 
   controller.metaMetricsController.updateTraits({
     [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
