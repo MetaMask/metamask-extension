@@ -1,8 +1,20 @@
-import { captureException, captureMessage } from './sentry';
+import type * as Sentry from '@sentry/browser';
+import { captureException, captureMessage, TRACE_ID_TAG } from './sentry';
 
 describe('Sentry', () => {
+  const originalSentry = globalThis.sentry;
+
   beforeEach(() => {
     jest.resetAllMocks();
+
+    globalThis.sentry = {
+      ...globalThis.sentry,
+      getActiveSpan: jest.fn().mockReturnValue(undefined),
+    };
+  });
+
+  afterEach(() => {
+    globalThis.sentry = originalSentry;
   });
 
   describe('captureException', () => {
@@ -47,6 +59,53 @@ describe('Sentry', () => {
 
       expect(captureExceptionSpy).toHaveBeenCalledWith(testError, {
         extra: { foo: 'bar' },
+      });
+    });
+
+    it('adds the active trace_id tag to captureException', () => {
+      jest.spyOn(console, 'error').mockImplementation(jest.fn());
+      const captureExceptionSpy = jest.spyOn(
+        globalThis.sentry,
+        'captureException',
+      );
+      jest.mocked(globalThis.sentry.getActiveSpan).mockReturnValue({
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'trace-123',
+        }),
+      } as unknown as Sentry.Span);
+
+      const testError = new Error('Test error');
+
+      captureException(testError, { extra: { foo: 'bar' } });
+
+      expect(captureExceptionSpy).toHaveBeenCalledWith(testError, {
+        extra: { foo: 'bar' },
+        tags: { [TRACE_ID_TAG]: 'trace-123' },
+      });
+    });
+
+    it('does not override an existing trace_id tag on captureException', () => {
+      jest.spyOn(console, 'error').mockImplementation(jest.fn());
+      const captureExceptionSpy = jest.spyOn(
+        globalThis.sentry,
+        'captureException',
+      );
+      jest.mocked(globalThis.sentry.getActiveSpan).mockReturnValue({
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'trace-123',
+        }),
+      } as unknown as Sentry.Span);
+
+      const testError = new Error('Test error');
+
+      captureException(testError, {
+        extra: { foo: 'bar' },
+        tags: { [TRACE_ID_TAG]: 'existing-trace-id', foo: 'bar' },
+      });
+
+      expect(captureExceptionSpy).toHaveBeenCalledWith(testError, {
+        extra: { foo: 'bar' },
+        tags: { [TRACE_ID_TAG]: 'existing-trace-id', foo: 'bar' },
       });
     });
   });
