@@ -54,6 +54,9 @@ jobs:
     needs: is-cross-repo-pr
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
+    permissions:
+      contents: read
+      actions: write
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
       BRANCH: ${{ steps.branch.outputs.BRANCH }}
@@ -138,6 +141,11 @@ jobs:
     timeout-minutes: 30
     needs:
       - prepare
+    # actions: write gives the job token a writable scope so actions/cache/save
+    # can write the updated-fixtures cache (see the prepare job for details).
+    permissions:
+      contents: read
+      actions: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
