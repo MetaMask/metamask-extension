@@ -8,8 +8,16 @@ import {
   getAlertState,
   getNetworkName,
 } from '../../../../ducks/alerts/invalid-custom-network';
-import Popover from '../../../ui/popover';
-import { Button, ButtonVariant } from '../../../component-library';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
@@ -23,61 +31,60 @@ const InvalidCustomNetworkAlert = ({ navigate }) => {
 
   const onClose = () => dispatch(dismissAlert());
 
-  const footer = (
-    <>
-      {alertState === ERROR ? (
-        <div className="invalid-custom-network-alert__error">
-          {t('failureMessage')}
-        </div>
-      ) : null}
-      <div className="invalid-custom-network-alert__footer-row">
-        <Button
-          disabled={alertState === LOADING}
-          onClick={onClose}
-          variant={ButtonVariant.Secondary}
-          className="invalid-custom-network-alert__footer-row-button"
-        >
-          {t('dismiss')}
-        </Button>
-        <Button
-          disabled={alertState === LOADING}
-          onClick={async () => {
-            await onClose();
-            navigate(NETWORKS_ROUTE);
-          }}
-          variant={ButtonVariant.Primary}
-          className="invalid-custom-network-alert__footer-row-button"
-        >
-          {t('settings')}
-        </Button>
-      </div>
-    </>
-  );
-
   return (
-    <Popover
-      title={t('invalidCustomNetworkAlertTitle')}
-      onClose={onClose}
-      contentClassName="invalid-custom-network-alert__content"
-      footerClassName="invalid-custom-network-alert__footer"
-      footer={footer}
-    >
-      <p>{t('invalidCustomNetworkAlertContent1', [networkName])}</p>
-      <p>{t('invalidCustomNetworkAlertContent2')}</p>
-      <p>
-        {t('invalidCustomNetworkAlertContent3', [
-          <span
-            key="invalidCustomNetworkAlertContentLink"
-            className="invalid-custom-network-alert__content-link"
-            onClick={() =>
-              global.platform.openTab({ url: 'https://chainid.network' })
-            }
-          >
-            chainId.network
-          </span>,
-        ])}
-      </p>
-    </Popover>
+    <Modal isOpen onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader onClose={onClose}>
+          {t('invalidCustomNetworkAlertTitle')}
+        </ModalHeader>
+        <ModalBody>
+          <p>{t('invalidCustomNetworkAlertContent1', [networkName])}</p>
+          <p>{t('invalidCustomNetworkAlertContent2')}</p>
+          <p>
+            {t('invalidCustomNetworkAlertContent3', [
+              <span
+                key="invalidCustomNetworkAlertContentLink"
+                className="invalid-custom-network-alert__content-link"
+                onClick={() =>
+                  global.platform.openTab({ url: 'https://chainid.network' })
+                }
+              >
+                chainId.network
+              </span>,
+            ])}
+          </p>
+        </ModalBody>
+        <ModalFooter>
+          {alertState === ERROR ? (
+            <div className="invalid-custom-network-alert__error">
+              {t('failureMessage')}
+            </div>
+          ) : null}
+          <div className="invalid-custom-network-alert__footer-row">
+            <Button
+              disabled={alertState === LOADING}
+              onClick={onClose}
+              variant={ButtonVariant.Secondary}
+              className="invalid-custom-network-alert__footer-row-button"
+            >
+              {t('dismiss')}
+            </Button>
+            <Button
+              disabled={alertState === LOADING}
+              onClick={async () => {
+                await onClose();
+                navigate(NETWORKS_ROUTE);
+              }}
+              variant={ButtonVariant.Primary}
+              className="invalid-custom-network-alert__footer-row-button"
+            >
+              {t('settings')}
+            </Button>
+          </div>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
