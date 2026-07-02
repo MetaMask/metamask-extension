@@ -427,7 +427,6 @@ class AccountListPage {
    *
    * @param options - Options for opening the multichain account menu
    * @param options.accountLabel - The label of the account to open the menu for
-   * @param options.srpIndex - Optional SRP index if there are multiple SRPs
    */
   async openMultichainAccountMenu(options: {
     accountLabel: string;
