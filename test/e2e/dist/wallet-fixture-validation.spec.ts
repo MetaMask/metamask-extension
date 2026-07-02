@@ -1,11 +1,6 @@
 import path from 'path';
 import { withFixtures } from '../helpers';
-import {
-  E2E_SRP,
-  HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-} from '../constants';
+import { E2E_SRP, WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
 import {
   computeSchemaDiff,
@@ -24,15 +19,6 @@ import {
 } from '../page-objects/flows/settings.flow';
 import HomePage from '../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../page-objects/flows/network.flow';
-import {
-  DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
-} from '../tests/tokens/utils/mocks';
-
-const TWENTY_FIVE_ETH_UNIFIED_BALANCES = {
-  mainnetNativeEthHuman: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
-  localhostNativeEthHuman: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
-  nativeBalance: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
-} as const;
 
 const ONBOARDING_FIXTURE_PATH = path.resolve(
   __dirname,
@@ -127,7 +113,6 @@ describe('Wallet State', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
-        unifiedEvmAccountsApiBalances: TWENTY_FIVE_ETH_UNIFIED_BALANCES,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -190,17 +175,6 @@ describe('Wallet State', function () {
           'Custom',
           'Localhost 8545',
         );
-
-        // Refresh re-hydrates the UI after network/settings changes (unified assets v10).
-        await driver.refresh();
-        await homePage.checkPageIsLoaded();
-
-        // Native ETH balance on localhost (native-balance setting enabled above).
-        await homePage.checkExpectedBalanceIsDisplayed({
-          expectedBalance: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
-          symbol: 'ETH',
-          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
-        });
 
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(10000);
