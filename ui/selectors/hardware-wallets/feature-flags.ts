@@ -28,8 +28,5 @@ import { ENABLE_DMK_FEATURE_FLAG } from '../../../shared/lib/hardware-wallets/fe
 export const getIsDmkEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags): boolean =>
-    getBooleanFeatureFlag(
-      remoteFeatureFlags[ENABLE_DMK_FEATURE_FLAG],
-      false,
-    ),
+    getBooleanFeatureFlag(remoteFeatureFlags[ENABLE_DMK_FEATURE_FLAG], false),
 );
