@@ -16,7 +16,9 @@ jobs:
           skip-allow-scripts: true
 
       - name: Install Playwright browsers
-        run: yarn exec playwright install chromium
+        uses: ./.github/actions/install-playwright-browsers
+        with:
+          browsers: chromium
 
       - name: Test Storybook
         run: yarn test-storybook:ci

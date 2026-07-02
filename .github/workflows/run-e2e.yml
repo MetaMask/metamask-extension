@@ -19,6 +19,14 @@ on:
         required: true
         type: string
         description: The test command to run
+      playwright-browsers:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          If set, installs the given space-separated Playwright browsers
+          (e.g. `chromium` or `firefox`) via the cached
+          `install-playwright-browsers` composite action before tests run.
       builds-from-run:
         required: true
         type: string
@@ -129,6 +137,12 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
+
+      - name: Install Playwright browsers
+        if: ${{ inputs.playwright-browsers != '' }}
+        uses: ./.github/actions/install-playwright-browsers
+        with:
+          browsers: ${{ inputs.playwright-browsers }}
 
       # geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
       # We pin the version as a temporary patch until migration to Playwright (in progress)

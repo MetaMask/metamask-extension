@@ -11,11 +11,14 @@ const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
+const {
+  buildPlaywrightDriver,
+} = require('./webdriver/build-playwright-driver');
 const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
+const { DAPP_PATHS, ERC_4337_ACCOUNT, E2E_DRIVER } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
@@ -154,6 +157,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     localNodeOptions = 'anvil',
     smartContract,
+    driverType = E2E_DRIVER.SELENIUM,
     driverOptions,
     dappOptions,
     staticServerOptions,
@@ -208,6 +212,10 @@ async function withFixtures(options, testSuite) {
   let driver;
   let extensionId;
   let failed = false;
+  // Hoisted so the `finally` block can run Playwright-specific cleanup
+  // (user-data-dir removal) regardless of whether the try body returned
+  // early.
+  let playwrightCleanup;
 
   let localNode;
   const localNodes = [];
@@ -398,23 +406,48 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    const wd = await buildWebDriver({
-      ...driverOptions,
-      disableServerMochaToBackground,
-      isBenchmark,
-    });
+    if (driverType === E2E_DRIVER.PLAYWRIGHT) {
+      if (virtualAuthenticator) {
+        throw new Error(
+          'withFixtures: virtualAuthenticator is not supported on the Playwright path yet.',
+        );
+      }
+      const pwBrowser =
+        process.env.SELENIUM_BROWSER === 'firefox' ||
+        process.env.PLAYWRIGHT_BROWSER === 'firefox'
+          ? 'firefox'
+          : 'chrome';
+      const pwHarness = await buildPlaywrightDriver({
+        browser: pwBrowser,
+        ...driverOptions,
+      });
+      driver = pwHarness.driver;
+      driver.timeout =
+        extendedTimeoutMultiplier > 1
+          ? driver.timeout * extendedTimeoutMultiplier
+          : driver.timeout;
+      extensionId = driver.extensionId;
+      webDriver = driver.driver;
+      playwrightCleanup = pwHarness.cleanup;
+    } else {
+      const wd = await buildWebDriver({
+        ...driverOptions,
+        disableServerMochaToBackground,
+        isBenchmark,
+      });
 
-    driver = wd.driver;
-    driver.timeout =
-      extendedTimeoutMultiplier > 1
-        ? driver.timeout * extendedTimeoutMultiplier
-        : driver.timeout;
-    extensionId = wd.extensionId;
-    webDriver = driver.driver;
+      driver = wd.driver;
+      driver.timeout =
+        extendedTimeoutMultiplier > 1
+          ? driver.timeout * extendedTimeoutMultiplier
+          : driver.timeout;
+      extensionId = wd.extensionId;
+      webDriver = driver.driver;
 
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(ignoredConsoleErrors);
-      await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
+        await driver.checkBrowserForExceptions(ignoredConsoleErrors);
+        await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
+      }
     }
 
     let driverProxy;
@@ -549,6 +582,12 @@ async function withFixtures(options, testSuite) {
 
       if (webDriver) {
         shutdownTasks.push(driver.quit());
+      }
+      if (playwrightCleanup) {
+        // Removes the temporary user-data-dir created by the Playwright
+        // harness. Calling after driver.quit() is safe since context.close()
+        // is idempotent.
+        shutdownTasks.push(playwrightCleanup());
       }
       if (numberOfDapps > 0) {
         for (let i = 0; i < numberOfDapps; i++) {

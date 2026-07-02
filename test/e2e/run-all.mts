@@ -60,7 +60,11 @@ const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
     if (itemInDirectory.isDirectory()) {
       const subDirPaths = await getTestPathsForTestDir(fullPath);
       testPaths.push(...subDirPaths);
-    } else if (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) {
+    } else if (
+      (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) &&
+      // Playwright specs are handled by their own runner, `run-all-pw.mts`.
+      !fullPath.endsWith('.pw.spec.ts')
+    ) {
       testPaths.push(normalizeTestPath(fullPath));
     }
   }
