@@ -1,9 +1,19 @@
 import type { PersistenceManager as PersistenceManagerType } from '../../../shared/lib/stores/persistence-manager';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { VaultCorruptionType } from '../../../shared/constants/state-corruption';
+import { SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG } from '../../../shared/lib/stores/persistence-diagnostics';
 
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
 const mockPersistenceOn = jest.fn();
+const mockTrackVaultCorruptionEvent = jest.fn();
+const mockTrackEarlySegmentEvent = jest.fn();
+const mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot = jest.fn();
+const mockSetSplitStatePersistenceDiagnosticsConfig = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -37,6 +47,10 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
     const instance = {
       get: mockGet,
       getBackup: mockGetBackup,
+      getWeeklySplitStatePersistenceDiagnosticsSnapshot:
+        mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
+      setSplitStatePersistenceDiagnosticsConfig:
+        mockSetSplitStatePersistenceDiagnosticsConfig,
       cleanUpMostRecentRetrievedState: mockCleanUpMostRecentRetrievedState,
       on: (...args: unknown[]) => {
         mockPersistenceOn(...args);
@@ -49,6 +63,14 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
     };
     return instance;
   }),
+}));
+
+jest.mock('./state-corruption/track-vault-corruption', () => ({
+  trackVaultCorruptionEvent: mockTrackVaultCorruptionEvent,
+}));
+
+jest.mock('./segment/custom-segment-tracking', () => ({
+  trackEarlySegmentEvent: mockTrackEarlySegmentEvent,
 }));
 
 /**
@@ -79,6 +101,10 @@ describe('setup-initial-state-hooks', () => {
     mockMostRecentRetrievedState = null;
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
+    mockTrackVaultCorruptionEvent.mockClear();
+    mockTrackEarlySegmentEvent.mockClear();
+    mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot.mockClear();
+    mockSetSplitStatePersistenceDiagnosticsConfig.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -204,6 +230,37 @@ describe('setup-initial-state-hooks', () => {
         expect.any(Function),
       );
     });
+
+    it('passes split-state diagnostics to the vault corruption tracker', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      const vaultCorruptionListener = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'vaultCorruptionDetected',
+      )?.[1] as (payload: unknown) => void;
+      const backup = { KeyringController: { vault: 'vault' } };
+      const diagnostics = {
+        schemaVersion: 1,
+        updatedAt: 1000,
+        totalQueuedUpdates: 1,
+        totalPersistedBatches: 1,
+        topWrittenKeys: [],
+        recentWideBatches: [],
+      };
+
+      vaultCorruptionListener({
+        backup,
+        corruptionType: VaultCorruptionType.InaccessibleDatabase,
+        diagnostics,
+      });
+
+      expect(mockTrackVaultCorruptionEvent).toHaveBeenCalledWith(
+        backup,
+        MetaMetricsEventName.VaultCorruptionDetected,
+        VaultCorruptionType.InaccessibleDatabase,
+        diagnostics,
+      );
+    });
   });
 
   describe('stateHooks', () => {
@@ -222,6 +279,120 @@ describe('setup-initial-state-hooks', () => {
       await globalThis.stateHooks.getPersistedState();
 
       expect(mockGet).toHaveBeenCalledWith({ validateVault: false });
+    });
+
+    it('tracks a weekly split-state persistence baseline in background context', async () => {
+      const persistedState = {
+        data: {
+          AnalyticsController: {
+            optedIn: true,
+            analyticsId: 'test-metrics-id',
+          },
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: {
+              [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+                enabled: true,
+              },
+            },
+          },
+          PreferencesController: {},
+        },
+        meta: {
+          storageKind: 'split',
+          version: 1,
+        },
+      };
+      const diagnostics = {
+        schemaVersion: 1,
+        updatedAt: 1000,
+        totalQueuedUpdates: 1,
+        totalPersistedBatches: 1,
+        topWrittenKeys: [],
+        recentWideBatches: [],
+      };
+      mockGet.mockResolvedValueOnce(persistedState);
+      mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot.mockResolvedValueOnce(
+        diagnostics,
+      );
+      setSelfHref('chrome-extension://abc123/scripts/app-init.js');
+      await importFresh();
+
+      await globalThis.stateHooks.getPersistedState();
+
+      expect(
+        mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockSetSplitStatePersistenceDiagnosticsConfig,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          enabled: true,
+          baselineEnabled: true,
+          corruptionEnabled: true,
+          wideBatchKeyThreshold: 4,
+        }),
+      );
+      expect(mockTrackEarlySegmentEvent).toHaveBeenCalledWith({
+        state: persistedState.data,
+        event: MetaMetricsEventName.SplitStatePersistenceBaseline,
+        category: MetaMetricsEventCategory.Background,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          split_state_persistence_diagnostics: diagnostics,
+        },
+      });
+    });
+
+    it('does not track a weekly split-state persistence baseline in UI context', async () => {
+      mockGet.mockResolvedValueOnce({
+        data: {
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: {
+              [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+                enabled: true,
+              },
+            },
+          },
+          PreferencesController: {},
+        },
+        meta: {
+          storageKind: 'split',
+          version: 1,
+        },
+      });
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      await globalThis.stateHooks.getPersistedState();
+
+      expect(
+        mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
+      ).not.toHaveBeenCalled();
+      expect(mockTrackEarlySegmentEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not collect or track split-state persistence diagnostics when the remote flag is missing', async () => {
+      mockGet.mockResolvedValueOnce({
+        data: {
+          PreferencesController: {},
+        },
+        meta: {
+          storageKind: 'split',
+          version: 1,
+        },
+      });
+      setSelfHref('chrome-extension://abc123/scripts/app-init.js');
+      await importFresh();
+
+      await globalThis.stateHooks.getPersistedState();
+
+      expect(
+        mockSetSplitStatePersistenceDiagnosticsConfig,
+      ).toHaveBeenCalledWith(undefined);
+      expect(
+        mockGetWeeklySplitStatePersistenceDiagnosticsSnapshot,
+      ).not.toHaveBeenCalled();
+      expect(mockTrackEarlySegmentEvent).not.toHaveBeenCalled();
     });
 
     it('registers getBackupState on globalThis.stateHooks', async () => {

@@ -1,0 +1,348 @@
+import 'fake-indexeddb/auto';
+
+import {
+  SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_DB_NAME,
+  SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG,
+  SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE,
+  SplitStatePersistenceDiagnostics,
+  getSplitStatePersistenceDiagnosticsConfig,
+  getSplitStateDiagnosticError,
+  getSplitStateSizeBucket,
+  type SplitStatePersistenceDiagnosticsConfig,
+  type SplitStatePersistenceDiagnosticsSnapshot,
+  type SplitStateReadDiagnostics,
+} from './persistence-diagnostics';
+
+async function deleteDiagnosticsDatabase(): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    const request = indexedDB.deleteDatabase(
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_DB_NAME,
+    );
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+    request.onblocked = () => reject(new Error('Database deletion blocked'));
+  });
+}
+
+function getEnabledConfig(
+  overrides: Record<string, unknown> = {},
+): SplitStatePersistenceDiagnosticsConfig {
+  const config = getSplitStatePersistenceDiagnosticsConfig({
+    [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+      enabled: true,
+      ...overrides,
+    },
+  });
+
+  if (!config) {
+    throw new Error('Expected diagnostics config to be enabled');
+  }
+
+  return config;
+}
+
+describe('SplitStatePersistenceDiagnostics', () => {
+  let diagnostics: SplitStatePersistenceDiagnostics;
+  let config: SplitStatePersistenceDiagnosticsConfig;
+
+  function recordUnsampledPersistedBatches(count: number) {
+    for (let index = 0; index < count; index++) {
+      diagnostics.recordPersistedBatch(
+        new Map<string, unknown>([['UnsampledController', { value: index }]]),
+      );
+    }
+  }
+
+  beforeEach(async () => {
+    await deleteDiagnosticsDatabase();
+    config = getEnabledConfig();
+    diagnostics = new SplitStatePersistenceDiagnostics();
+    diagnostics.setConfig(config);
+  });
+
+  afterEach(() => {
+    diagnostics.close();
+  });
+
+  it('records controller write counts and size buckets without retaining values', () => {
+    diagnostics.recordQueuedUpdate('KeyringController');
+    diagnostics.recordQueuedUpdate('AccountTreeController');
+    diagnostics.recordQueuedUpdate('meta');
+
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([
+        ['KeyringController', { vault: 'secret-vault' }],
+        ['AccountTreeController', { accounts: ['0x123'] }],
+        ['meta', { version: 1 }],
+      ]),
+    );
+
+    const snapshot = diagnostics.getSnapshot(undefined, 1000);
+
+    expect(snapshot).toStrictEqual({
+      schemaVersion: 1,
+      config,
+      updatedAt: 1000,
+      totalQueuedUpdates: 2,
+      totalPersistedBatches: 1,
+      topWrittenKeys: [
+        {
+          key: 'AccountTreeController',
+          queuedUpdates: 1,
+          persistedWrites: 1,
+        },
+        {
+          key: 'KeyringController',
+          queuedUpdates: 1,
+          persistedWrites: 1,
+        },
+      ],
+      recentWideBatches: [],
+    });
+    expect(JSON.stringify(snapshot)).not.toContain('secret-vault');
+    expect(JSON.stringify(snapshot)).not.toContain('0x123');
+  });
+
+  it('does not collect diagnostics without the remote feature flag config', () => {
+    diagnostics.setConfig(undefined);
+
+    diagnostics.recordQueuedUpdate('KeyringController');
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([['KeyringController', { vault: 'secret' }]]),
+    );
+
+    expect(diagnostics.getSnapshot(undefined, 1000)).toBeUndefined();
+  });
+
+  it('normalizes and clamps remote feature flag config', () => {
+    expect(
+      getSplitStatePersistenceDiagnosticsConfig({
+        [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+          enabled: true,
+          baselineEnabled: false,
+          corruptionEnabled: true,
+          sizeSampleRate: 0,
+          baselineIntervalMs: Number.POSITIVE_INFINITY,
+          snapshotPersistIntervalMs: 1,
+          wideBatchKeyThreshold: 200,
+          topWrittenKeysLimit: 100,
+          recentWideBatchesLimit: 0,
+          largestKeysPerBatchLimit: 100,
+        },
+      }),
+    ).toStrictEqual({
+      enabled: true,
+      baselineEnabled: false,
+      corruptionEnabled: true,
+      sizeSampleRate: 1,
+      baselineIntervalMs: config.baselineIntervalMs,
+      snapshotPersistIntervalMs: 60 * 1000,
+      wideBatchKeyThreshold: 100,
+      topWrittenKeysLimit: 50,
+      recentWideBatchesLimit: 1,
+      largestKeysPerBatchLimit: 20,
+    });
+
+    expect(getSplitStatePersistenceDiagnosticsConfig({})).toBeUndefined();
+  });
+
+  it('samples persisted value sizes once every 20 batches', () => {
+    const stringifySpy = jest.spyOn(JSON, 'stringify');
+
+    try {
+      recordUnsampledPersistedBatches(
+        SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE - 1,
+      );
+
+      expect(stringifySpy).not.toHaveBeenCalled();
+
+      diagnostics.recordPersistedBatch(
+        new Map<string, unknown>([
+          ['KeyringController', { vault: 'secret-vault' }],
+          ['PreferencesController', { preferences: true }],
+        ]),
+      );
+      const snapshot = diagnostics.getSnapshot(
+        undefined,
+        1000,
+      ) as SplitStatePersistenceDiagnosticsSnapshot;
+
+      expect(stringifySpy).toHaveBeenCalledTimes(2);
+      expect(snapshot).toMatchObject({
+        totalPersistedBatches:
+          SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE,
+        topWrittenKeys: expect.arrayContaining([
+          expect.objectContaining({
+            key: 'KeyringController',
+            lastSizeBucket: 'lt_4kb',
+            maxSizeBucket: 'lt_4kb',
+          }),
+          expect.objectContaining({
+            key: 'PreferencesController',
+            lastSizeBucket: 'lt_4kb',
+            maxSizeBucket: 'lt_4kb',
+          }),
+        ]),
+      });
+    } finally {
+      stringifySpy.mockRestore();
+    }
+  });
+
+  it('records recent wide batches with largest key size buckets', () => {
+    recordUnsampledPersistedBatches(
+      SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_SIZE_SAMPLE_RATE - 1,
+    );
+
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([
+        ['SmallController', { value: true }],
+        ['LargeController', { value: 'x'.repeat(5000) }],
+        ['DeletedController', undefined],
+        ['OtherController', { nested: { value: 'test' } }],
+      ]),
+    );
+
+    expect(
+      (
+        diagnostics.getSnapshot(
+          undefined,
+          1000,
+        ) as SplitStatePersistenceDiagnosticsSnapshot
+      ).recentWideBatches,
+    ).toStrictEqual([
+      {
+        keys: [
+          'SmallController',
+          'LargeController',
+          'DeletedController',
+          'OtherController',
+        ],
+        keyCount: 4,
+        totalSizeBucket: '4kb_16kb',
+        largestKeys: [
+          {
+            key: 'LargeController',
+            sizeBucket: '4kb_16kb',
+          },
+          {
+            key: 'OtherController',
+            sizeBucket: 'lt_4kb',
+          },
+          {
+            key: 'SmallController',
+            sizeBucket: 'lt_4kb',
+          },
+          {
+            key: 'DeletedController',
+            sizeBucket: 'undefined',
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('persists and hydrates diagnostics snapshots from IndexedDB', async () => {
+    diagnostics.recordQueuedUpdate('KeyringController');
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([['KeyringController', { vault: 'secret' }]]),
+    );
+    await diagnostics.persistSnapshot(1000);
+    diagnostics.close();
+
+    const nextDiagnostics = new SplitStatePersistenceDiagnostics();
+    const snapshot = await nextDiagnostics.getSnapshotForReport();
+    nextDiagnostics.close();
+
+    expect(snapshot).toMatchObject({
+      totalQueuedUpdates: 1,
+      totalPersistedBatches: 1,
+      topWrittenKeys: [
+        {
+          key: 'KeyringController',
+          queuedUpdates: 1,
+          persistedWrites: 1,
+        },
+      ],
+    });
+  });
+
+  it('returns a baseline snapshot at most once per week', async () => {
+    diagnostics.recordQueuedUpdate('KeyringController');
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([['KeyringController', { vault: 'secret' }]]),
+    );
+
+    const firstSnapshot = await diagnostics.getWeeklyBaselineSnapshot(1000);
+    const secondSnapshot = await diagnostics.getWeeklyBaselineSnapshot(
+      1000 + 6 * 24 * 60 * 60 * 1000,
+    );
+    const thirdSnapshot = await diagnostics.getWeeklyBaselineSnapshot(
+      1000 + 7 * 24 * 60 * 60 * 1000,
+    );
+
+    expect(firstSnapshot).toMatchObject({
+      totalQueuedUpdates: 1,
+      totalPersistedBatches: 1,
+    });
+    expect(secondSnapshot).toBeUndefined();
+    expect(thirdSnapshot).toMatchObject({
+      totalQueuedUpdates: 1,
+      totalPersistedBatches: 1,
+    });
+  });
+
+  it('persists the weekly baseline gate across diagnostics instances', async () => {
+    diagnostics.recordQueuedUpdate('KeyringController');
+    diagnostics.recordPersistedBatch(
+      new Map<string, unknown>([['KeyringController', { vault: 'secret' }]]),
+    );
+    await diagnostics.getWeeklyBaselineSnapshot(1000);
+    diagnostics.close();
+
+    const nextDiagnostics = new SplitStatePersistenceDiagnostics();
+    const snapshot = await nextDiagnostics.getWeeklyBaselineSnapshot(
+      1000 + 6 * 24 * 60 * 60 * 1000,
+    );
+    nextDiagnostics.close();
+
+    expect(snapshot).toBeUndefined();
+  });
+
+  it('can report read diagnostics even when there are no write stats', async () => {
+    const readDiagnostics: SplitStateReadDiagnostics = {
+      manifestStatus: 'readable',
+      manifestKeyCount: 2,
+      readableKeys: ['KeyringController'],
+      missingKeys: [],
+      failedKeys: [
+        {
+          key: 'PreferencesController',
+          errorName: 'Error',
+          errorMessage: 'block checksum mismatch',
+        },
+      ],
+    };
+
+    const snapshot = await diagnostics.getSnapshotForReport(readDiagnostics);
+
+    expect(snapshot).toMatchObject({
+      totalQueuedUpdates: 0,
+      totalPersistedBatches: 0,
+      topWrittenKeys: [],
+      recentWideBatches: [],
+      readDiagnostics,
+    });
+  });
+
+  it('returns coarse size buckets and diagnostic-safe errors', () => {
+    expect(getSplitStateSizeBucket({ value: 'x'.repeat(4096) })).toBe(
+      '4kb_16kb',
+    );
+
+    const error = getSplitStateDiagnosticError(new Error('a'.repeat(300)));
+
+    expect(error.errorName).toBe('Error');
+    expect(error.errorMessage).toHaveLength(200);
+  });
+});
