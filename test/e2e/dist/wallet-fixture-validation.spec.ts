@@ -19,6 +19,15 @@ import {
 } from '../page-objects/flows/settings.flow';
 import HomePage from '../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../page-objects/flows/network.flow';
+import {
+  DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
+} from '../tests/tokens/utils/mocks';
+
+const TWENTY_FIVE_ETH_UNIFIED_BALANCES = {
+  mainnetNativeEthHuman: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
+  localhostNativeEthHuman: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
+  nativeBalance: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
+} as const;
 
 const ONBOARDING_FIXTURE_PATH = path.resolve(
   __dirname,
@@ -113,6 +122,7 @@ describe('Wallet State', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        unifiedEvmAccountsApiBalances: TWENTY_FIVE_ETH_UNIFIED_BALANCES,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -174,6 +184,12 @@ describe('Wallet State', function () {
           driver,
           'Custom',
           'Localhost 8545',
+        );
+
+        // Fiat value should be displayed as we mock the price and that is not a 'test network'
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
+          'ETH',
         );
 
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded

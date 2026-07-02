@@ -1,5 +1,6 @@
 import { merge } from 'lodash';
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
@@ -240,7 +241,7 @@ async function mockSwapUSDCtoSOLUnified(
 
   return [
     await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolanaNativeOnly(mockServer),
+    await mockAccountsApiV5WithSolana(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),
@@ -526,6 +527,16 @@ const SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE = {
 };
 
 const SOLANA_USDC_SWAP_ASSETS_FIXTURE = {
+  assetsBalance: {
+    [SOL_ACCOUNT_ID]: {
+      [SOL_CAIP_ASSET]: {
+        amount: '50',
+      },
+      [USDC_CAIP_ASSET]: {
+        amount: '8.908267',
+      },
+    },
+  },
   assetsInfo: {
     [SOL_CAIP_ASSET]: {
       decimals: 9,
@@ -564,6 +575,9 @@ const SOLANA_USDC_SWAP_ASSETS_FIXTURE = {
 
 const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
   MultichainAssetsController: {
+    accountsAssets: {
+      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
+    },
     assetsMetadata: {
       [USDC_CAIP_ASSET]: {
         fungible: true,

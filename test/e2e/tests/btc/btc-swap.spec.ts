@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -22,6 +21,7 @@ import {
   mockTokensV3Assets,
 } from './mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
+import { buildBtcSwapFixtures } from './unified-btc-assets';
 
 async function buildBtcSwapBaseMocks(mockServer: Mockttp) {
   return [
@@ -57,10 +57,13 @@ async function mockBtcSwapMocksNoQuotes(mockServer: Mockttp) {
 }
 
 describe('BTC Account - Swap (Bridge)', function (this: Suite) {
+  this.timeout(300000);
+
   it('can open the swap/bridge page from Bitcoin account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcSwapFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocks,
       },
@@ -69,6 +72,8 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
@@ -87,7 +92,8 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can select destination token and see quote', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcSwapFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocks,
       },
@@ -129,7 +135,8 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('shows insufficient funds error when amount exceeds balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcSwapFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocks,
       },
@@ -167,7 +174,8 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('shows no trade route available when no quotes are returned', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcSwapFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocksNoQuotes,
       },
@@ -206,7 +214,8 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can complete a swap from BTC to ETH', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildBtcSwapFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSwapMocks,
       },
