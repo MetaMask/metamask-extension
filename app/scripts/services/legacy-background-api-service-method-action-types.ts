@@ -318,6 +318,20 @@ export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
   };
 
 /**
+ * Rejects a pending approval request.
+ *
+ * @param id - The ID of the approval request to reject.
+ * @param error - The error to reject the approval request with.
+ * @param error.code - The error code.
+ * @param error.message - The error message.
+ * @param error.data - The error data.
+ */
+export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
+  type: `LegacyBackgroundApiService:rejectPendingApproval`;
+  handler: LegacyBackgroundApiService['rejectPendingApproval'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -348,4 +362,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
   | LegacyBackgroundApiServiceExportAccountAction
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
-  | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction;
+  | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
+  | LegacyBackgroundApiServiceRejectPendingApprovalAction;

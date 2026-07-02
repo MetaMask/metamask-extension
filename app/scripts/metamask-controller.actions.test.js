@@ -656,40 +656,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#rejectPendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', function () {
-      const error = new ApprovalRequestNotFoundError('123');
-      metamaskController.approvalController = {
-        rejectRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.approvalController = {
-        rejectRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).toThrow(error);
-    });
-  });
-
   describe('passkey methods', function () {
     const registrationResponse = { id: 'credential-id' };
     const authenticationResponse = { id: 'assertion-id' };

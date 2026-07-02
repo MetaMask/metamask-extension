@@ -21,6 +21,7 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
+import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
@@ -2580,6 +2581,77 @@ describe('LegacyBackgroundApiService', () => {
             gas: ESTIMATE_GAS_MOCK,
           }),
         );
+      });
+    });
+  });
+
+  describe('rejectPendingApproval', () => {
+    it('rejects the approval request with a JSON-RPC error', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectPendingApproval',
+          'DUMMY_ID',
+          { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:rejectRequest',
+          'DUMMY_ID',
+          expect.objectContaining({
+            code: 1,
+            message: 'DUMMY_MESSAGE',
+            data: 'DUMMY_DATA',
+          }),
+        );
+      });
+    });
+
+    it('does not propagate ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new ApprovalRequestNotFoundError('123');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:rejectPendingApproval',
+            'DUMMY_ID',
+            { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+          ),
+        ).not.toThrow(error);
+      });
+    });
+
+    it('propagates errors other than ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('boom');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:rejectPendingApproval',
+            'DUMMY_ID',
+            { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+          ),
+        ).toThrow(error);
       });
     });
   });
