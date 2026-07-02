@@ -1609,6 +1609,7 @@ const PerpsMarketDetailPage = () => {
                   order={order}
                   variant="muted"
                   onClick={handleOrderClick}
+                  assetName={market.name}
                 />
               ))}
             </Box>

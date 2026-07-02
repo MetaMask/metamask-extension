@@ -67,19 +67,19 @@ export function SwapAgainButton({
       }),
     );
 
-    transitionForward(() =>
+    transitionForward(() => {
       navigateToBridgePage({
         token: null,
         search: searchParams,
         isEntrypoint: true,
-      }),
-    );
+      });
+    });
   }, [
-    destinationToken?.symbol,
     dispatch,
     navigateToBridgePage,
     searchParams,
     sourceToken?.symbol,
+    destinationToken?.symbol,
   ]);
 
   if (!searchParams) {

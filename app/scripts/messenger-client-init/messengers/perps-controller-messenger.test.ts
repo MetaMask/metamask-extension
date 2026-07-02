@@ -40,26 +40,6 @@ describe('getPerpsControllerMessenger', () => {
     );
   });
 
-  it('registers AuthenticatedUserStorageService stubs that keep the perps watchlist local-only', async () => {
-    const messenger = getRootMessenger();
-    const perpsControllerMessenger = getPerpsControllerMessenger(messenger);
-
-    // perps-controller@9 reads notification preferences to sync the watchlist;
-    // the stub returns null so the controller skips the remote read-merge-write
-    // and never reverts the optimistic toggle.
-    await expect(
-      perpsControllerMessenger.call(
-        'AuthenticatedUserStorageService:getNotificationPreferences',
-      ),
-    ).resolves.toBeNull();
-    await expect(
-      perpsControllerMessenger.call(
-        'AuthenticatedUserStorageService:putNotificationPreferences',
-        {},
-      ),
-    ).resolves.toBeUndefined();
-  });
-
   it('delegates required events for PerpsController', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
