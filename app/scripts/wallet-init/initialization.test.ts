@@ -10,7 +10,7 @@ import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-option
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
 import { createMockMessenger } from './test-utils';
 
-jest.mock('@metamask/wallet', () => ({ Wallet: jest.fn() }));
+jest.mock('@metamask/wallet');
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
 }));
@@ -38,13 +38,19 @@ const connectivityAdapter = {} as unknown as ConnectivityAdapter;
 describe('initializeWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    MockWallet.prototype.init.mockResolvedValue([]);
   });
 
   it('constructs a Wallet, wiring each builder output to its instanceOptions slot', () => {
     const messenger = createMockMessenger();
     const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
 
-    initializeWallet({ messenger, state, connectivityAdapter });
+    initializeWallet({
+      messenger,
+      state,
+      connectivityAdapter,
+      infuraProjectId: 'fake-infura-project-id',
+    });
 
     expect(MockWallet).toHaveBeenCalledWith({
       messenger,
@@ -53,6 +59,22 @@ describe('initializeWallet', () => {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
         keyringController: 'keyring-options',
+        networkController: {
+          infuraProjectId: 'fake-infura-project-id',
+          failoverUrls: {
+            '0x1': [],
+            '0x13b2': [],
+            '0x2105': [],
+            '0x3e7': [],
+            '0x531': [],
+            '0x89': [],
+            '0x8f': [],
+            '0xa': [],
+            '0xa4b1': [],
+            '0xa86a': [],
+            '0xe708': [],
+          },
+        },
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
       },
@@ -71,6 +93,7 @@ describe('initializeWallet', () => {
       encryptor,
       showApprovalRequest,
       connectivityAdapter,
+      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
@@ -96,6 +119,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    MockWallet.prototype.init.mockResolvedValue([]);
   });
 
   it('wires the enable/disable toggle over the messenger with a default-preserving baseline', () => {
@@ -105,6 +129,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       messenger,
       state: { OnboardingController: { completedOnboarding: true } },
       connectivityAdapter,
+      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(mockSetupToggle).toHaveBeenCalledWith({
@@ -121,6 +146,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       messenger: createMockMessenger(),
       state: { PreferencesController: { useExternalServices: false } },
       connectivityAdapter,
+      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(mockSetupToggle).toHaveBeenCalledWith(
