@@ -445,7 +445,9 @@ class AccountListPage {
       `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
     );
 
-    await multichainAccountMenuIcons[options.srpIndex ?? 0].click();
+    const icon = multichainAccountMenuIcons[options.srpIndex ?? 0];
+    await this.driver.scrollToElement(icon);
+    await icon.click();
   }
 
   /**
