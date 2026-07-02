@@ -216,6 +216,7 @@ describe('Bridge selectors', () => {
               steps: [],
             },
             trade: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               raw_data_hex: 'deadbeef',
             },
             estimatedProcessingTimeInSeconds: 120,
