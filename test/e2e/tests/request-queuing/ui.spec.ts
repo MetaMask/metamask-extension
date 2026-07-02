@@ -25,11 +25,9 @@ import {
   openDappAndSwitchChain,
   openPopupWithActiveTabOrigin,
   selectDappClickSend,
+  switchToDialogPopoverValidateDetailsRedesign,
 } from '../../page-objects/flows/test-dapp.flow';
-import {
-  validateBalanceAndActivity,
-  confirmTransaction,
-} from '../../page-objects/flows/send-transaction.flow';
+import { validateBalanceAndActivity } from '../../page-objects/flows/send-transaction.flow';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -113,25 +111,21 @@ describe('Request-queue UI changes', function () {
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
-        await new TestDapp(driver).switchToDialogPopoverValidateDetailsRedesign(
-          {
-            chainId: '0x539',
-            networkText: 'Localhost 8545',
-            originText: DAPP_URL,
-          },
-        );
+        await switchToDialogPopoverValidateDetailsRedesign(driver, {
+          chainId: '0x539',
+          networkText: 'Localhost 8545',
+          originText: DAPP_URL,
+        });
         const confirmation = new Confirmation(driver);
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         // Go to the second dapp, ensure it uses Ethereum
         await selectDappClickSend(driver, DAPP_ONE_URL);
-        await new TestDapp(driver).switchToDialogPopoverValidateDetailsRedesign(
-          {
-            chainId: '0x53a',
-            networkText: 'Localhost 8546',
-            originText: DAPP_ONE_URL,
-          },
-        );
+        await switchToDialogPopoverValidateDetailsRedesign(driver, {
+          chainId: '0x53a',
+          networkText: 'Localhost 8546',
+          originText: DAPP_ONE_URL,
+        });
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
       },
     );
@@ -204,26 +198,22 @@ describe('Request-queue UI changes', function () {
         }
 
         // Switch to the Notification window, ensure first transaction still showing
-        await new TestDapp(driver).switchToDialogPopoverValidateDetailsRedesign(
-          {
-            chainId: '0x539',
-            networkText: 'Localhost 8545',
-            originText: DAPP_URL,
-          },
-        );
+        await switchToDialogPopoverValidateDetailsRedesign(driver, {
+          chainId: '0x539',
+          networkText: 'Localhost 8545',
+          originText: DAPP_URL,
+        });
 
         // Confirm transaction, wait for first confirmation window to close, second to display
-        await confirmTransaction({ driver });
+        await transactionConfirmation.clickFooterConfirmButton();
         await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // Switch to the new Notification window, ensure second transaction showing
-        await new TestDapp(driver).switchToDialogPopoverValidateDetailsRedesign(
-          {
-            chainId: '0x53a',
-            networkText: 'Localhost 8546',
-            originText: DAPP_ONE_URL,
-          },
-        );
+        await switchToDialogPopoverValidateDetailsRedesign(driver, {
+          chainId: '0x53a',
+          networkText: 'Localhost 8546',
+          originText: DAPP_ONE_URL,
+        });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
         const confirmation = new Confirmation(driver);
@@ -231,16 +221,14 @@ describe('Request-queue UI changes', function () {
 
         if (!IS_FIREFOX) {
           // Switch to the new Notification window, ensure third transaction showing
-          await new TestDapp(
-            driver,
-          ).switchToDialogPopoverValidateDetailsRedesign({
+          await switchToDialogPopoverValidateDetailsRedesign(driver, {
             chainId: '0x3e8',
             networkText: 'Localhost 7777',
             originText: DAPP_TWO_URL,
           });
 
           // Confirm transaction
-          await confirmTransaction({ driver });
+          await transactionConfirmation.clickFooterConfirmButton();
         }
 
         // With first and last confirmations confirmed, and second rejected,
@@ -341,13 +329,11 @@ describe('Request-queue UI changes', function () {
         // The current globally selected network, Ethereum, should be used
         await selectDappClickSend(driver, DAPP_URL);
         await driver.delay(veryLargeDelayMs);
-        await new TestDapp(driver).switchToDialogPopoverValidateDetailsRedesign(
-          {
-            chainId: '0x1',
-            networkText: 'Ethereum',
-            originText: DAPP_URL,
-          },
-        );
+        await switchToDialogPopoverValidateDetailsRedesign(driver, {
+          chainId: '0x1',
+          networkText: 'Ethereum',
+          originText: DAPP_URL,
+        });
       },
     );
   });
@@ -460,7 +446,7 @@ describe('Request-queue UI changes', function () {
         // popup to take a few seconds to open in MV3 (issue #25690)
         await driver.waitUntilXWindowHandles(4, 1000, 15000);
 
-        await testDapp.switchToDialogPopoverValidateDetailsRedesign({
+        await switchToDialogPopoverValidateDetailsRedesign(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
@@ -537,13 +523,11 @@ describe('Request-queue UI changes', function () {
         // popup to take a few seconds to open in MV3 (issue #25690)
         await driver.waitUntilXWindowHandles(4, 1000, 15000);
 
-        await new TestDapp(driver).switchToDialogPopoverValidateDetailsRedesign(
-          {
-            chainId: '0x539',
-            networkText: 'Localhost 8545',
-            originText: DAPP_URL,
-          },
-        );
+        await switchToDialogPopoverValidateDetailsRedesign(driver, {
+          chainId: '0x539',
+          networkText: 'Localhost 8545',
+          originText: DAPP_URL,
+        });
       },
     );
   });

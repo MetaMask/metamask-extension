@@ -1,13 +1,6 @@
 import { strict as assert } from 'assert';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import TokenTransferTransactionConfirmation from './confirmations/token-transfer-confirmation';
-
-export type ConfirmationExpectedDetails = {
-  chainId: string;
-  networkText: string;
-  originText: string;
-};
 
 /**
  * Signature types for TestDapp.triggerSignature and openTestDappAndTriggerSignature.
@@ -1250,23 +1243,6 @@ class TestDapp {
     );
     await this.checkConnectedAccounts(publicAddress);
     await this.driver.waitForSelector(this.connectedNetwork(chainId));
-  }
-
-  /**
-   * Switches to the MetaMask Dialog window and validates confirmation network details.
-   *
-   * @param expectedDetails - Expected chain ID, network label, and origin for the confirmation.
-   */
-  async switchToDialogPopoverValidateDetailsRedesign(
-    expectedDetails: ConfirmationExpectedDetails,
-  ): Promise<void> {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    const tokenTransferTransactionConfirmation =
-      new TokenTransferTransactionConfirmation(this.driver);
-    await tokenTransferTransactionConfirmation.checkNetwork(
-      expectedDetails.networkText,
-    );
   }
 }
 

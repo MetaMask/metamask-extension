@@ -8,8 +8,15 @@ import TestDapp from '../pages/test-dapp';
 import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
 import ReviewPermissionsConfirmation from '../pages/confirmations/review-permissions-confirmation';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
+import TokenTransferTransactionConfirmation from '../pages/confirmations/token-transfer-confirmation';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+
+export type ConfirmationExpectedDetails = {
+  chainId: string;
+  networkText: string;
+  originText: string;
+};
 
 /**
  * Connects account to test dapp with Dialog handling and optional verification.
@@ -127,6 +134,19 @@ export async function selectDappClickSend(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await transactionConfirmation.checkDappInitiatedHeadingTitle();
+}
+
+export async function switchToDialogPopoverValidateDetailsRedesign(
+  driver: Driver,
+  expectedDetails: ConfirmationExpectedDetails,
+): Promise<void> {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  const tokenTransferTransactionConfirmation =
+    new TokenTransferTransactionConfirmation(driver);
+  await tokenTransferTransactionConfirmation.checkNetwork(
+    expectedDetails.networkText,
+  );
 }
 
 export async function openPopupWithActiveTabOrigin(

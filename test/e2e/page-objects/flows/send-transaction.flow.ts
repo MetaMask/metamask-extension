@@ -6,21 +6,6 @@ import ActivityTab from '../pages/home/activity-tab';
 import { createInternalTransaction } from './transaction.flow';
 
 /**
- * Confirms a transaction on the confirmation screen.
- *
- * @param params - An object containing the parameters.
- * @param params.driver - The webdriver instance.
- */
-export const confirmTransaction = async ({
-  driver,
-}: {
-  driver: Driver;
-}): Promise<void> => {
-  const transactionConfirmation = new TransactionConfirmation(driver);
-  await transactionConfirmation.clickFooterConfirmButton();
-};
-
-/**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
  *
  * @param params - An object containing the parameters.
@@ -48,7 +33,8 @@ export const sendRedesignedTransactionToAddress = async ({
   });
 
   // confirm transaction when user lands on confirm transaction screen
-  await confirmTransaction({ driver });
+  const transactionConfirmation = new TransactionConfirmation(driver);
+  await transactionConfirmation.clickFooterConfirmButton();
 };
 
 /**
@@ -78,7 +64,8 @@ export const sendRedesignedTransactionToAccount = async ({
   });
 
   // confirm transaction when user lands on confirm transaction screen
-  await confirmTransaction({ driver });
+  const transactionConfirmation = new TransactionConfirmation(driver);
+  await transactionConfirmation.clickFooterConfirmButton();
 };
 
 /**
@@ -134,14 +121,13 @@ export const validateBalanceAndActivity = async (
 ): Promise<void> => {
   await new HomePage(driver).checkExpectedBalanceIsDisplayed(expectedBalance);
 
-  if (!expectedActivityEntries) {
-    return;
-  }
-
   const activityTab = new ActivityTab(driver);
   await activityTab.goToActivityList();
   await activityTab.checkConfirmedTxNumberDisplayedInActivity(
     expectedActivityEntries,
   );
-  await activityTab.checkTxAction({ action: 'Sent ETH' });
+
+  if (expectedActivityEntries) {
+    await activityTab.checkTxAction({ action: 'Sent ETH' });
+  }
 };
