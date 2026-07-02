@@ -2484,9 +2484,6 @@
   "confirmFieldNeverExpires": {
     "message": "Không bao giờ hết hạn"
   },
-  "confirmFieldPaymaster": {
-    "message": "Phí được thanh toán bởi"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Hai tuần một lần"
   },
@@ -2511,9 +2508,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Lý do chính đáng cho yêu cầu được trang web cung cấp"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Phí cho giao dịch này sẽ được thanh toán bởi hợp đồng thông minh Paymaster."
   },
   "confirmFieldTotalExposure": {
     "message": "Tổng mức tiếp xúc"

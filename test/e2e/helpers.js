@@ -12,10 +12,8 @@ const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const { Bundler } = require('./bundler');
-const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
+const { DAPP_PATHS } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
@@ -100,10 +98,10 @@ function normalizeLocalNodeOptions(localNodeOptions) {
 /**
  * Normalizes the smartContract option into a consistent format to handle different data structures.
  * Examples:
- * // Case 1: Single string: SMART_CONTRACTS.HST
- * // Case 2: Array of strings: [SMART_CONTRACTS.HST, SMART_CONTRACTS.NFTS]
- * // Case 3: Object with deployer options: { name: SMART_CONTRACTS.HST, deployerOptions: { fromAddress: '0x...' } }
- * // Case 4: Mixed array: [SMART_CONTRACTS.HST, { name: SMART_CONTRACTS.NFTS, deployerOptions: { fromPrivateKey: '0x...' } }]
+ * // Case 1: Single string: 'hst'
+ * // Case 2: Array of strings: ['hst', 'nfts']
+ * // Case 3: Object with deployer options: { name: 'hst', deployerOptions: { fromAddress: '0x...' } }
+ * // Case 4: Mixed array: ['hst', { name: 'nfts', deployerOptions: { fromPrivateKey: '0x...' } }]
  *
  * @param {string | {name: string, deployerOptions?: object} | Array<string | {name: string, deployerOptions?: object}>} smartContract
  * @returns {{ name: string, deployerOptions?: object }[]}
@@ -132,7 +130,6 @@ function normalizeSmartContracts(smartContract) {
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
  * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('anvil', 'none').
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
- * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
  * @property {string} extensionId - The extension ID (useful for connecting via `externally_connectable`).
@@ -164,8 +161,6 @@ async function withFixtures(options, testSuite) {
       // do nothing.
     },
     useMockingPassThrough,
-    useBundler,
-    usePaymaster,
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
@@ -183,7 +178,6 @@ async function withFixtures(options, testSuite) {
 
   const fixtureServer = new FixtureServer();
 
-  const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   const dappOpts = dappOptions || {};
@@ -272,10 +266,6 @@ async function withFixtures(options, testSuite) {
 
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
-
-    if (localNodes[0] && useBundler) {
-      await initBundler(bundlerServer, localNodes[0], usePaymaster);
-    }
 
     await phishingPageServer.start();
     if (numberOfDapps > 0) {
@@ -447,7 +437,6 @@ async function withFixtures(options, testSuite) {
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
-      bundlerServer,
       contractRegistry,
       driver: effectiveDriver,
       localNodes,
@@ -541,10 +530,6 @@ async function withFixtures(options, testSuite) {
         if (server) {
           shutdownTasks.push(server.quit());
         }
-      }
-
-      if (useBundler) {
-        shutdownTasks.push(bundlerServer.stop());
       }
 
       if (webDriver) {
@@ -744,31 +729,6 @@ async function getCleanAppState(driver) {
       window.stateHooks?.getCleanAppState &&
       window.stateHooks.getCleanAppState(),
   );
-}
-
-async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
-  try {
-    // eslint-disable-next-line n/global-require -- load this module conditionally
-    const AnvilSeeder = require('./seeder/anvil-seeder');
-    const seeder = new AnvilSeeder(localNodeServer.getProvider());
-
-    await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
-
-    await seeder.deploySmartContract(SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY);
-
-    if (usePaymaster) {
-      await seeder.deploySmartContract(SMART_CONTRACTS.VERIFYING_PAYMASTER);
-
-      await seeder.paymasterDeposit(convertETHToHexGwei(1));
-    }
-
-    await seeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
-
-    await bundlerServer.start();
-  } catch (error) {
-    console.log('Failed to initialize bundler', error);
-    throw error;
-  }
 }
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;

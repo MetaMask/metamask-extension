@@ -1,32 +1,19 @@
 import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import {
-  PAYMASTER_AND_DATA,
-  genUnapprovedContractInteractionConfirmation,
-} from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { TransactionDetails } from './transaction-details';
 
 function getStore() {
-  const confirmation = {
-    ...genUnapprovedContractInteractionConfirmation(),
-    isUserOperation: true,
-  };
+  const confirmation = genUnapprovedContractInteractionConfirmation();
 
   return configureStore(
     getMockConfirmStateForTransaction(confirmation, {
       metamask: {
         preferences: {},
-        userOperations: {
-          [confirmation.id]: {
-            userOperation: {
-              paymasterAndData: PAYMASTER_AND_DATA,
-            },
-          },
-        },
       },
     }),
   );
