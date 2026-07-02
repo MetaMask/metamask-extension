@@ -4,7 +4,7 @@ import { renderWithLocalization } from '../../../../../test/lib/render-helpers-n
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import { verifyPassword } from '../../../../store/actions';
-import { AddDeviceSettingsStep } from '../constant';
+import { SyncAccountsStep } from '../constant';
 import EnterPassword from './enter-password';
 
 jest.mock('../../../../store/actions', () => ({
