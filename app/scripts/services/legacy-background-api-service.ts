@@ -75,10 +75,12 @@ import {
   CaveatSpecificationConstraint,
   ExtractPermission,
   OriginString,
+  PermissionControllerAcceptPermissionsRequestAction,
   PermissionControllerRejectPermissionsRequestAction,
   PermissionControllerRevokePermissionsAction,
   PermissionControllerUpdatePermissionsByCaveatAction,
   PermissionSpecificationConstraint,
+  PermissionsRequest,
   PermissionsRequestNotFoundError,
 } from '@metamask/permission-controller';
 import {
@@ -148,6 +150,7 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'acceptPermissionsRequest',
   'applyTransactionContainersExisting',
   'changePassword',
   'checkIsSeedlessPasswordOutdated',
@@ -231,6 +234,7 @@ type AllowedActions =
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerRejectPermissionsRequestAction
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
@@ -1384,6 +1388,25 @@ export class LegacyBackgroundApiService {
     } catch (err) {
       if (!(err instanceof ApprovalRequestNotFoundError)) {
         throw err;
+      }
+    }
+  }
+
+  /**
+   * Accepts a permissions request. Silently ignores the request if it can no
+   * longer be found.
+   *
+   * @param request - The permissions request to accept.
+   */
+  acceptPermissionsRequest(request: PermissionsRequest): void {
+    try {
+      this.#messenger.call(
+        'PermissionController:acceptPermissionsRequest',
+        request,
+      );
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
       }
     }
   }

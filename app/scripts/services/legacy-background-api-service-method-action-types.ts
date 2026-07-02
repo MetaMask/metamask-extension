@@ -332,6 +332,17 @@ export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
 };
 
 /**
+ * Accepts a permissions request. Silently ignores the request if it can no
+ * longer be found.
+ *
+ * @param request - The permissions request to accept.
+ */
+export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
+  type: `LegacyBackgroundApiService:acceptPermissionsRequest`;
+  handler: LegacyBackgroundApiService['acceptPermissionsRequest'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -363,4 +374,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceExportAccountAction
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
-  | LegacyBackgroundApiServiceRejectPendingApprovalAction;
+  | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceAcceptPermissionsRequestAction;
