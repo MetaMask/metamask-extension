@@ -280,6 +280,7 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
+import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
 import {
   createDefiReferralMiddleware,
   ReferralTriggerType,
@@ -5803,20 +5804,23 @@ export default class MetamaskController extends EventEmitter {
     // We should redirect to the referral url if the account is approved
     const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
 
-    if (
-      partner.id === DefiReferralPartner.GMX &&
-      (shouldShowApproval || shouldRedirect)
-    ) {
-      const hasExistingCode = await checkGmxHasReferralCode(
-        this.networkController,
-        activePermittedAccount,
-      );
-      if (hasExistingCode) {
-        this.preferencesController.addReferralPassedAccount(
-          partner.id,
-          activePermittedAccount,
-        );
-        return;
+    const checkExistingCodeMap = {
+      [DefiReferralPartner.GMX]: (account) =>
+        checkGmxHasReferralCode(this.networkController, account),
+      [DefiReferralPartner.Hyperliquid]: checkHyperliquidHasReferralCode,
+    };
+
+    if (shouldShowApproval || shouldRedirect) {
+      const checkExistingCode = checkExistingCodeMap[partner.id];
+      if (checkExistingCode) {
+        const hasExistingCode = await checkExistingCode(activePermittedAccount);
+        if (hasExistingCode) {
+          this.preferencesController.addReferralPassedAccount(
+            partner.id,
+            activePermittedAccount,
+          );
+          return;
+        }
       }
     }
 
