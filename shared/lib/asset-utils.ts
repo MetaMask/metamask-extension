@@ -69,9 +69,7 @@ export const toAssetId = (
   }
   // Stellar classic: `CODE-ISSUER` (issuer StrKey starts with G).
   // SEP-41 (Soroban) tokens: contract StrKey is `C` + 55 Base32 chars ([A-Z2-7]), 56 chars total.
-  if (
-    chainIdToUse === MultichainNetworks.STELLAR
-  ) {
+  if (chainIdToUse === MultichainNetworks.STELLAR) {
     const ref = String(addressToUse);
     if (/^[A-Za-z0-9]{1,12}-G[A-Z2-7]{55}$/u.test(ref)) {
       return CaipAssetTypeStruct.create(`${chainIdToUse}/asset:${ref}`);
@@ -305,3 +303,17 @@ export const isTronSpecialAsset = (
     `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
   );
 };
+
+/**
+ * Returns the chain ID from a CAIP asset ID
+ *
+ * @param assetId - The CAIP asset ID to get the chain ID from.
+ * @returns The chain ID from the CAIP asset ID.
+ */
+export function getChainIdFromAssetId(
+  assetId: CaipAssetType,
+): CaipChainId | undefined {
+  return CaipAssetTypeStruct.is(assetId)
+    ? parseCaipAssetType(assetId).chainId
+    : undefined;
+}

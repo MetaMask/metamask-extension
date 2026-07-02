@@ -1,13 +1,14 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React from 'react';
 import { TokenFiatDisplayInfo } from '../../types';
+import { isAssetRequireActivate } from '../../../../../../shared/lib/multichain/trustline';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
+import { StellarTrustlineInactiveBadge } from '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';
-import { StellarTrustlineInactiveBadge } from '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
@@ -21,11 +22,16 @@ export const TokenCellTitle = React.memo(
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(token);
 
+    const tokenRequireActivate = isAssetRequireActivate({
+      assetId: token.assetId,
+      accountAssetInfo: token.accountAssetInfo,
+    });
+
     return (
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
-        {token.isStellarTrustlineInactive && <StellarTrustlineInactiveBadge />}
+        {tokenRequireActivate && <StellarTrustlineInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}
@@ -49,7 +55,9 @@ export const TokenCellTitle = React.memo(
       nextProps.token.rwaData?.nextPause?.end &&
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.chainId === nextProps.token.chainId &&
+    prevProps.token.assetId === nextProps.token.assetId &&
     prevProps.token.symbol === nextProps.token.symbol &&
-    prevProps.token.isStellarTrustlineInactive ===
-      nextProps.token.isStellarTrustlineInactive,
+    prevProps.token.balance === nextProps.token.balance &&
+    prevProps.token.accountAssetInfo?.limit ===
+      nextProps.token.accountAssetInfo?.limit,
 );

@@ -56,21 +56,6 @@ describe('StellarNativeBalanceSection', () => {
     );
   });
 
-  it('hides fiat value row when showFiat is false', () => {
-    renderWithProviders(
-      <StellarNativeBalanceSection
-        totalBalance="250"
-        symbol="XLM"
-        baseReserve="2.5"
-        fiatValue={105}
-      />,
-    );
-
-    expect(
-      screen.queryByText(messages.stellarNativeValue.message),
-    ).not.toBeInTheDocument();
-  });
-
   it('clamps spendable balance at zero when reserve exceeds total', () => {
     renderWithProviders(
       <StellarNativeBalanceSection

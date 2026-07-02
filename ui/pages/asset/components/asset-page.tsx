@@ -23,7 +23,6 @@ import {
   EthMethod,
   SolMethod,
   TrxAccountType,
-  XlmScope,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -36,8 +35,8 @@ import {
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getBaseReserveFromExtra } from '../../../helpers/stellar/base-reserve-from-extra';
-import { isStellarClassicTrustlineInactiveForDisplay } from '../../../helpers/stellar/trustline-from-extra';
+import { isAssetRequireActivate } from '../../../../shared/lib/multichain/trustline';
+import { computeBaseReserve } from '../../../../shared/lib/multichain/reserve-balance';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -53,7 +52,6 @@ import {
 import { ActivityList as ActivityListV2 } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
-import { StellarTrustlineInactiveBadge } from '../../../components/app/assets/stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 import { AddressCopyButton } from '../../../components/multichain';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { ActivityList as ActivityListV3 } from '../../activity/activity-list';
@@ -102,6 +100,7 @@ import {
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
+import { StellarTrustlineInactiveBadge } from '../../../components/app/assets/stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -275,43 +274,20 @@ const AssetPage = ({
     accountType: bip44Asset?.accountType,
     assetId: bip44Asset?.assetId ?? assetId,
     rwaData,
-    extra: assetWithBalance?.extra,
+    accountAssetInfo: assetWithBalance?.accountAssetInfo,
   };
 
-  const isStellarChainId = (chainId as string) === XlmScope.Pubnet;
-  let isSep41StellarAsset = false;
-  if (assetId && isStellarChainId) {
-    try {
-      isSep41StellarAsset =
-        parseCaipAssetType(assetId as CaipAssetType).assetNamespace === 'sep41';
-    } catch {
-      isSep41StellarAsset = false;
-    }
-  }
-  const isStellarClassicTrustlineTrackedToken =
-    isStellarChainId &&
-    type === AssetType.token &&
-    Boolean(assetId) &&
-    !isSep41StellarAsset;
-  const isStellarTrustlineInactive =
-    isStellarClassicTrustlineInactiveForDisplay({
-      chainId,
-      assetId,
-      isNative: type === AssetType.native,
-      extra: assetWithBalance?.extra,
-    });
-  const showStellarClassicTrustlineActivate =
-    isStellarClassicTrustlineTrackedToken && isStellarTrustlineInactive;
-  const showStellarInactiveAssetHeader =
-    isStellarClassicTrustlineTrackedToken && isStellarTrustlineInactive;
-  const hasStellarClassicTrustlineToRemove =
-    assetWithBalance !== undefined &&
-    !isStellarClassicTrustlineInactiveForDisplay({
-      chainId,
-      assetId,
-      isNative: type === AssetType.native,
-      extra: assetWithBalance.extra,
-    });
+  // Derive trustline and native reserve page state via focused helpers.
+  const isTrustlineInactive = isAssetRequireActivate({
+    assetId: bip44Asset?.assetId ?? assetId,
+    accountAssetInfo: assetWithBalance?.accountAssetInfo,
+  });
+
+  const baseReserve = computeBaseReserve({
+    assetId: bip44Asset?.assetId ?? assetId,
+    accountAssetInfo: assetWithBalance?.accountAssetInfo,
+  });
+
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
@@ -335,17 +311,6 @@ const AssetPage = ({
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
   const showTronResources = isTron && type === AssetType.native;
 
-  const stellarNativeBaseReserve =
-    isStellarChainId && type === AssetType.native
-      ? getBaseReserveFromExtra(
-          assetWithBalance?.extra as { baseReserve?: string } | undefined,
-        ) ?? '0' // Default to '0' instead of undefined
-      : undefined;
-
-  const showStellarNativeBalanceSection =
-    isStellarChainId &&
-    type === AssetType.native; // Always show for Stellar native
-
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
   const isMusdAssetPage =
@@ -365,7 +330,7 @@ const AssetPage = ({
   };
 
   const renderAssetTitleSection = () => {
-    if (showStellarInactiveAssetHeader) {
+    if (isTrustlineInactive) {
       return (
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -433,12 +398,12 @@ const AssetPage = ({
       );
     }
 
-    if (showStellarNativeBalanceSection) {
+    if (baseReserve !== undefined) {
       return (
         <StellarNativeBalanceSection
           totalBalance={String(balance)}
           symbol={symbol}
-          baseReserve={stellarNativeBaseReserve ?? '0'}
+          baseReserve={baseReserve}
           fiatValue={tokenFiatAmount}
         />
       );
@@ -486,13 +451,13 @@ const AssetPage = ({
         </Box>
         {optionsButton}
       </Box>
-      <StellarClassicTrustlineActivateCard
-        visible={showStellarClassicTrustlineActivate}
-        account={selectedAccount}
-        chainId={chainId as CaipChainId}
-        assetId={assetId as CaipAssetType}
-        symbol={symbol}
-      />
+      {
+        isTrustlineInactive && (
+          <StellarClassicTrustlineActivateCard
+             asset={tokenAsset as Asset}
+          />
+        )
+      }
       <Box paddingLeft={4}>{renderAssetTitleSection()}</Box>
       <AssetChart
         chainId={chainId}
@@ -521,16 +486,6 @@ const AssetPage = ({
             token={tokenAsset}
             disableSendForNonEvm
             isMarketClosed={isMarketClosed}
-            stellarClassicTrustlineRemove={
-              isStellarClassicTrustlineTrackedToken
-                ? {
-                    hasTrustline: hasStellarClassicTrustlineToRemove,
-                    accountId: selectedAccount.id,
-                    assetId: assetId as CaipAssetType,
-                    scope: chainId as CaipChainId,
-                  }
-                : undefined
-            }
           />
         ) : null}
         {isMarketClosed && tokenAsset ? (

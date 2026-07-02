@@ -1,3 +1,4 @@
+import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { XlmScope } from '@metamask/keyring-api';
 import type { CaipAssetType } from '@metamask/utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
@@ -6,6 +7,7 @@ import thunk from 'redux-thunk';
 import React from 'react';
 
 import { AssetType } from '../../../../shared/constants/transaction';
+import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as storeActions from '../../../store/actions';
@@ -25,8 +27,55 @@ const STELLAR_TOKEN = {
   image: '',
 } as Asset & { type: typeof AssetType.token };
 
+const STELLAR_WALLET_ID = 'entropy:stellar-test';
+const STELLAR_GROUP_ID = 'entropy:stellar-test/0';
+
+const stellarMockState = {
+  ...initializedMockState,
+  metamask: {
+    ...initializedMockState.metamask,
+    internalAccounts: {
+      ...initializedMockState.metamask.internalAccounts,
+      accounts: {
+        ...initializedMockState.metamask.internalAccounts.accounts,
+        [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+      },
+    },
+    accountTree: {
+      ...initializedMockState.metamask.accountTree,
+      wallets: {
+        ...initializedMockState.metamask.accountTree.wallets,
+        [STELLAR_WALLET_ID]: {
+          id: STELLAR_WALLET_ID,
+          type: AccountWalletType.Entropy,
+          status: 'ready',
+          groups: {
+            [STELLAR_GROUP_ID]: {
+              id: STELLAR_GROUP_ID,
+              type: AccountGroupType.MultichainAccount,
+              accounts: [MOCK_ACCOUNT_STELLAR_PUBNET.id],
+              metadata: {
+                name: 'Stellar',
+                entropy: { groupIndex: 0 },
+                pinned: false,
+                hidden: false,
+                lastSelected: 0,
+              },
+            },
+          },
+          metadata: {
+            name: 'Stellar Wallet',
+            entropy: { id: 'stellar-test' },
+          },
+        },
+      },
+    },
+    selectedAccountGroup: STELLAR_GROUP_ID,
+  },
+};
+
 describe('TokenButtons', () => {
-  const mockStore = configureMockStore([thunk])(initializedMockState);
+  const mockStore = configureMockStore([thunk])(stellarMockState);
 
   beforeEach(() => {
     jest
@@ -41,9 +90,16 @@ describe('TokenButtons', () => {
     jest.restoreAllMocks();
   });
 
-  it('omits remove trustline when stellarClassicTrustlineRemove is unset', () => {
+  it('omits remove trustline when the token is not a trustline asset', () => {
     renderWithProvider(
-      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
+      <TokenButtons
+        token={{
+          ...STELLAR_TOKEN,
+          address:
+            'stellar:pubnet/sep41:CBIJBDNZNF4X35BJ4FFZWCDBSCKOP5NB4PLG4SNENRMLAPYG4P5FM6VN' as CaipAssetType,
+        }}
+        disableSendForNonEvm
+      />,
       mockStore,
     );
 
@@ -52,38 +108,20 @@ describe('TokenButtons', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders disabled remove trustline when hasTrustline is false', () => {
+  it('renders remove trustline for a trustline asset', () => {
     renderWithProvider(
-      <TokenButtons
-        token={STELLAR_TOKEN}
-        disableSendForNonEvm
-        stellarClassicTrustlineRemove={{
-          hasTrustline: false,
-          accountId: 'acc-1',
-          assetId: PUBNET_USDC_ASSET,
-          scope: XlmScope.Pubnet,
-        }}
-      />,
+      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
       mockStore,
     );
 
     expect(
       screen.getByTestId('token-overview-stellar-remove-trustline'),
-    ).toBeDisabled();
+    ).toBeInTheDocument();
   });
 
-  it('submits remove trustline when enabled and tapped', async () => {
+  it('submits remove trustline when tapped', async () => {
     renderWithProvider(
-      <TokenButtons
-        token={STELLAR_TOKEN}
-        disableSendForNonEvm
-        stellarClassicTrustlineRemove={{
-          hasTrustline: true,
-          accountId: 'acc-1',
-          assetId: PUBNET_USDC_ASSET,
-          scope: XlmScope.Pubnet,
-        }}
-      />,
+      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
       mockStore,
     );
 
@@ -95,7 +133,7 @@ describe('TokenButtons', () => {
       expect(
         stellarSnapRequests.requestStellarChangeTrustOptDelete,
       ).toHaveBeenCalledWith({
-        accountId: 'acc-1',
+        accountId: MOCK_ACCOUNT_STELLAR_PUBNET.id,
         assetId: PUBNET_USDC_ASSET,
         scope: XlmScope.Pubnet,
       });
@@ -113,16 +151,7 @@ describe('TokenButtons', () => {
       .mockRejectedValue(new Error('network failure'));
 
     renderWithProvider(
-      <TokenButtons
-        token={STELLAR_TOKEN}
-        disableSendForNonEvm
-        stellarClassicTrustlineRemove={{
-          hasTrustline: true,
-          accountId: 'acc-1',
-          assetId: PUBNET_USDC_ASSET,
-          scope: XlmScope.Pubnet,
-        }}
-      />,
+      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
       mockStore,
     );
 
@@ -155,12 +184,6 @@ describe('TokenButtons', () => {
           },
         }}
         disableSendForNonEvm
-        stellarClassicTrustlineRemove={{
-          hasTrustline: true,
-          accountId: 'acc-1',
-          assetId: PUBNET_USDC_ASSET,
-          scope: XlmScope.Pubnet,
-        }}
       />,
       mockStore,
     );

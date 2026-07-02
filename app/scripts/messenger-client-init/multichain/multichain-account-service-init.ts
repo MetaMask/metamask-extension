@@ -63,17 +63,14 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
   ///: BEGIN:ONLY_INCLUDE_IF(stellar)
   const xlmProvider = new AccountProviderWrapper(
     controllerMessenger,
-    new XlmAccountProvider(
-      controllerMessenger,
-      {
-        ...snapAccountProviderConfig,
-        createAccounts: {
-          ...snapAccountProviderConfig.createAccounts,
-          batched: true,
-          timeoutMs: 10000,
-        },
+    new XlmAccountProvider(controllerMessenger, {
+      ...snapAccountProviderConfig,
+      createAccounts: {
+        ...snapAccountProviderConfig.createAccounts,
+        batched: true,
+        timeoutMs: 10000,
       },
-    ),
+    }),
   );
   customProviders.push(xlmProvider);
   ///: END:ONLY_INCLUDE_IF
