@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -14,6 +15,7 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import MenuItem from '../../components/ui/menu/menu-item';
+import { transitionForward } from '../../components/ui/transition';
 
 type TabItem = {
   key: string;
@@ -45,6 +47,8 @@ const TabBar = ({
   removeFullscreenStyles = false,
   onTabClick,
 }: TabBarProps) => {
+  const navigate = useNavigate();
+
   const renderItems = (items: TabItem[]) =>
     items.map(({ key, content, iconName, dataTestId }) => {
       const active = isActive(key, content);
@@ -67,13 +71,20 @@ const TabBar = ({
           className={`!rounded-none hover:bg-hover focus:outline-none focus:[outline:none] focus-visible:outline-none focus-visible:[outline:none] focus:shadow-none ${activeClass}`}
           data-testid={dataTestId}
           onClick={
-            onTabClick
-              ? (e?: React.MouseEvent) => {
-                  if (onTabClick(key) === true) {
-                    e?.preventDefault();
-                  }
-                }
-              : undefined
+            (e?: React.MouseEvent) => {
+              if (active) {
+                e?.preventDefault();
+                return;
+              }
+
+              if (onTabClick?.(key) === true) {
+                e?.preventDefault();
+                return;
+              }
+
+              e?.preventDefault();
+              transitionForward(() => navigate(key));
+            }
           }
         >
           <Box

@@ -24,6 +24,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { transitionBack } from '../../../components/ui/transition';
 import { AUTO_LOCK_OPTIONS } from './auto-lock-utils';
 
 const AutoLockSubPage = () => {
@@ -46,7 +47,7 @@ const AutoLockSubPage = () => {
       },
     });
     dispatch(setAutoLockTimeLimit(value));
-    navigate(SECURITY_AND_PASSWORD_ROUTE);
+    transitionBack(() => navigate(SECURITY_AND_PASSWORD_ROUTE));
   };
 
   return (
