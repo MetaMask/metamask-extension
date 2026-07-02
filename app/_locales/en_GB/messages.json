@@ -7018,6 +7018,9 @@
     "message": "Est. P&L at take profit",
     "description": "Label for estimated profit or loss when take profit is hit"
   },
+  "perpsExpandView": {
+    "message": "Open expanded view"
+  },
   "perpsExploreMarkets": {
     "message": "Explore markets"
   },
@@ -7162,6 +7165,9 @@
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
+  "perpsNoOpenPositions": {
+    "message": "No open positions or orders"
+  },
   "perpsNoTransactions": {
     "message": "No transactions yet"
   },
@@ -7187,6 +7193,12 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
+  },
+  "perpsOrderBook": {
+    "message": "Order book"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
   },
   "perpsOrderDate": {
     "message": "Date"

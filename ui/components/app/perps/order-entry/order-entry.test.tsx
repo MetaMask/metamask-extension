@@ -617,6 +617,15 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
+      // A limit order needs a price before submit is enabled, mirroring the
+      // order-entry page's isLimitPriceInvalid guard.
+      const limitInput = screen
+        .getByTestId('limit-price-input')
+        .querySelector('input');
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '45000' },
+      });
+
       const submitButton = screen.getByTestId('order-entry-submit-button');
       fireEvent.click(submitButton);
 
@@ -625,6 +634,87 @@ describe('OrderEntry', () => {
           type: 'limit',
         }),
       );
+    });
+  });
+
+  describe('submit guards (parity with order-entry page)', () => {
+    const setAmount = (value: string) => {
+      const input = screen
+        .getByTestId('amount-input-field')
+        .querySelector('input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value } });
+    };
+
+    it('disables submit and advertises the minimum for a below-min amount like "09"', () => {
+      const onSubmit = jest.fn();
+      renderWithProvider(
+        <OrderEntry {...defaultProps} onSubmit={onSubmit} />,
+        mockStore,
+      );
+
+      setAmount('09');
+
+      const submitButton = screen.getByTestId('order-entry-submit-button');
+      expect(submitButton).toBeDisabled();
+      // perpsMinOrderSize: "Order size must be at least $1" → "$10" substituted.
+      expect(submitButton).toHaveTextContent(/at least \$10/u);
+
+      fireEvent.click(submitButton);
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('disables submit when the amount is zero', () => {
+      const onSubmit = jest.fn();
+      renderWithProvider(
+        <OrderEntry {...defaultProps} onSubmit={onSubmit} />,
+        mockStore,
+      );
+
+      setAmount('0');
+
+      const submitButton = screen.getByTestId('order-entry-submit-button');
+      expect(submitButton).toBeDisabled();
+      fireEvent.click(submitButton);
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('disables submit and shows insufficient funds when margin exceeds balance', () => {
+      const onSubmit = jest.fn();
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          availableBalance={5}
+          onSubmit={onSubmit}
+        />,
+        mockStore,
+      );
+
+      // $100 at the default 3x leverage requires ~$33 margin > $5 balance.
+      setAmount('100');
+
+      const submitButton = screen.getByTestId('order-entry-submit-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        messages.insufficientFundsSend.message,
+      );
+      fireEvent.click(submitButton);
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('enables submit for a valid amount at or above the minimum', () => {
+      const onSubmit = jest.fn();
+      renderWithProvider(
+        <OrderEntry {...defaultProps} onSubmit={onSubmit} />,
+        mockStore,
+      );
+
+      setAmount('100');
+
+      const submitButton = screen.getByTestId('order-entry-submit-button');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent('Open long BTC');
+      fireEvent.click(submitButton);
+      expect(onSubmit).toHaveBeenCalledTimes(1);
     });
   });
 });

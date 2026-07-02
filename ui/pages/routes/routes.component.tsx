@@ -70,6 +70,7 @@ import {
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_MARKET_EXPANDED_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
@@ -130,6 +131,7 @@ import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import { RequireAuthenticatedFullWidth } from '../../layouts/require-authenticated-full-width';
 import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
@@ -241,6 +243,9 @@ const PerpsWithdrawPage = mmLazy(
 );
 const PerpsOrderEntryPage = mmLazy(
   () => import('../perps/perps-order-entry-page.tsx'),
+);
+const PerpsMarketExpandedPage = mmLazy(
+  () => import('../perps/perps-market-expanded-page.tsx'),
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
@@ -569,6 +574,22 @@ export const routeConfig = [
                 element: <PerpsWithdrawPage />,
               },
             ],
+          },
+        ],
+      },
+    ],
+  },
+  // Full-width route block: bypasses RootLayout's popup max-width so the perps
+  // expanded trading view can span the entire browser tab.
+  {
+    element: <RequireAuthenticatedFullWidth />,
+    children: [
+      {
+        element: <PerpsLayout />,
+        children: [
+          {
+            path: `${PERPS_MARKET_EXPANDED_ROUTE}/:symbol`,
+            element: <PerpsMarketExpandedPage />,
           },
         ],
       },
