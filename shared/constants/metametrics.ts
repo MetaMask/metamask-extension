@@ -869,6 +869,7 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BannerDisplay = 'Banner Display',
+  BannerDismissed = 'Banner Dismissed',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
   BridgeLinkClicked = 'Bridge Link Clicked',
@@ -1072,6 +1073,8 @@ export enum MetaMetricsEventName {
   AccountRemoveFailed = 'Account Remove Failed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
+  ChainlistAddClicked = 'Chainlist Add Clicked',
+  ChainlistNetworkSelected = 'Chainlist Network Selected',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
   NftDetailsOpened = 'NFT Details Opened',
@@ -1363,6 +1366,7 @@ export enum MetaMetricsSwapsEventSource {
   ActivityTabEmptyState = 'Activity Tab Empty State',
   ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
+  TransactionDetails = 'Transaction Details',
 }
 
 export enum MetaMetricsTokenEventSource {

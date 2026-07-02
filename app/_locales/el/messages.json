@@ -82,12 +82,6 @@
   "account": {
     "message": "Λογαριασμός"
   },
-  "accountActivity": {
-    "message": "Δραστηριότητα λογαριασμού"
-  },
-  "accountActivityText": {
-    "message": "Επιλέξτε τους λογαριασμούς για τους οποίους θέλετε να λαμβάνετε ειδοποιήσεις:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Σύνδεση"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "υποστήριξη πελατών"
   },
-  "customizeYourNotifications": {
-    "message": "Προσαρμογή των ειδοποιήσεών σας"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Ενεργοποιήστε τους τύπους ειδοποιήσεων που θέλετε να λαμβάνετε:"
-  },
   "dappConnections": {
     "message": "Συνδέσεις με Αποκεντρωμένες Εφαρμογές (Dapps)"
   },
@@ -4408,9 +4396,6 @@
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Περιλαμβάνει"
   },
   "includesXTransactions": {
     "message": "Περιλαμβάνει $1 συναλλαγές"
@@ -5869,9 +5854,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Μείνετε ενημερωμένοι για ό,τι συμβαίνει στο πορτοφόλι σας με ειδοποιήσεις. Για να χρησιμοποιήσετε τις ειδοποιήσεις, χρησιμοποιούμε ένα προφίλ ώστε να συγχρονίζουμε ορισμένες ρυθμίσεις στις συσκευές σας. $1, προστατεύουμε τα προσωπικά σας δεδομένα κατά τη χρήση αυτής της λειτουργίας."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Μάθετε πως"
@@ -7534,9 +7516,6 @@
   },
   "proceedWithTransaction": {
     "message": "Θέλω να προχωρήσω έτσι κι αλλιώς"
-  },
-  "productAnnouncements": {
-    "message": "Ανακοινώσεις προϊόντων"
   },
   "provide": {
     "message": "Παροχή"
