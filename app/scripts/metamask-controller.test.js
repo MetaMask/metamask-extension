@@ -79,6 +79,7 @@ import {
 } from '../../shared/constants/defi-referrals';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
+import { trace, endTrace, TraceName } from '../../shared/lib/trace';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
 import * as utils from './lib/util';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -89,7 +90,8 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
+import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -345,6 +347,10 @@ jest.mock('../../shared/lib/selectors/smart-transactions', () => {
 
 jest.mock('./lib/forwardRequestToSnap', () => ({
   forwardRequestToSnap: jest.fn().mockResolvedValue({}),
+}));
+
+jest.mock('./lib/defi-referrals/referral-onchain-check', () => ({
+  checkGmxHasReferralCode: jest.fn().mockResolvedValue(false),
 }));
 
 const TEST_SEED =
@@ -5540,6 +5546,110 @@ describe('MetaMaskController', () => {
         ).not.toHaveBeenCalled();
       });
 
+      describe('GMX on-chain referral code check', () => {
+        const GMX_ORIGIN =
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin;
+        const GMX_APPROVAL_TYPE =
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].approvalType;
+
+        beforeEach(() => {
+          jest
+            .spyOn(
+              metamaskController.remoteFeatureFlagController,
+              'state',
+              'get',
+            )
+            .mockReturnValue({
+              remoteFeatureFlags: {
+                extensionUxDefiReferralPartners: {
+                  [DefiReferralPartner.GMX]: true,
+                },
+              },
+            });
+          jest
+            .spyOn(metamaskController, 'getPermittedAccounts')
+            .mockReturnValue(mockPermittedAccounts);
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'addReferralPassedAccount',
+          );
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.GMX] = {};
+          });
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is undefined', async () => {
+          checkGmxHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(DefiReferralPartner.GMX, mockPermittedAccount);
+          expect(
+            metamaskController.approvalController.add,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('marks account as Passed and returns early when wallet has an existing code and status is Approved', async () => {
+          metamaskController.preferencesController.update((state) => {
+            state.referrals[DefiReferralPartner.GMX] = {
+              [mockPermittedAccount]: ReferralStatus.Approved,
+            };
+          });
+          checkGmxHasReferralCode.mockResolvedValueOnce(true);
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(DefiReferralPartner.GMX, mockPermittedAccount);
+          expect(
+            metamaskController._handleDefiReferralRedirect,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('proceeds to show the prompt when wallet has no GMX referral code', async () => {
+          checkGmxHasReferralCode.mockResolvedValueOnce(false);
+          jest
+            .spyOn(metamaskController.approvalController, 'add')
+            .mockResolvedValueOnce({});
+
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(
+            metamaskController.approvalController.add,
+          ).toHaveBeenCalledWith(
+            expect.objectContaining({
+              origin: GMX_ORIGIN,
+              type: GMX_APPROVAL_TYPE,
+            }),
+          );
+        });
+
+        it('does not call checkGmxHasReferralCode for non-GMX partners', async () => {
+          await metamaskController.handleDefiReferral(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+            mockTabId,
+            mockNewConnectionTriggerType,
+          );
+
+          expect(checkGmxHasReferralCode).not.toHaveBeenCalled();
+        });
+      });
+
       describe('_handleDefiReferralApprovedAccount', () => {
         beforeEach(() => {
           jest.spyOn(
@@ -6067,6 +6177,59 @@ describe('MetaMaskController', () => {
       );
 
       warnSpy.mockRestore();
+    });
+
+    it('emits a backdated Discover Accounts span when accounts were discovered', async () => {
+      trace.mockClear();
+      endTrace.mockClear();
+
+      const wallet = {
+        discoverAccounts: jest
+          .fn()
+          .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
+      };
+
+      jest
+        .spyOn(
+          metamaskController.multichainAccountService,
+          'getMultichainAccountWallet',
+        )
+        .mockReturnValue(wallet);
+
+      await metamaskController.discoverAndCreateAccounts('test-keyring-id');
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.DiscoverAccounts,
+          startTime: expect.any(Number),
+        }),
+      );
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+      });
+    });
+
+    it('does not emit a Discover Accounts span when nothing was discovered', async () => {
+      trace.mockClear();
+      endTrace.mockClear();
+
+      const wallet = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+
+      jest
+        .spyOn(
+          metamaskController.multichainAccountService,
+          'getMultichainAccountWallet',
+        )
+        .mockReturnValue(wallet);
+
+      const result =
+        await metamaskController.discoverAndCreateAccounts('test-keyring-id');
+
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
+      expect(trace).not.toHaveBeenCalled();
+      expect(endTrace).not.toHaveBeenCalled();
     });
   });
 

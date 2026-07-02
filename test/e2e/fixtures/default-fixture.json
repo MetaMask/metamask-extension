@@ -170,6 +170,10 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false
+    },
     "AnnouncementController": {
       "announcements": {}
     },
@@ -340,6 +344,9 @@
       "selectedCurrency": "usd"
     },
     "AuthenticationController": {},
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -350,6 +357,18 @@
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -425,16 +444,12 @@
     "LoggingController": {
       "logs": {}
     },
-    "AnalyticsController": {
-      "analyticsId": null,
-      "optedIn": false
-    },
     "MetaMetricsController": {
+      "completedMetaMetricsOnboarding": true,
       "dataCollectionForMarketing": false,
       "eventsBeforeMetricsOptIn": [],
       "fragments": {},
       "marketingCampaignCookieId": null,
-      "completedMetaMetricsOnboarding": true,
       "tracesBeforeMetricsOptIn": [],
       "traits": {}
     },
@@ -959,10 +974,6 @@
       "fcmToken": "",
       "isPushEnabled": true
     },
-    "ComplianceController": {
-      "lastCheckedAt": null,
-      "walletComplianceStatusMap": {}
-    },
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
@@ -1060,6 +1071,7 @@
         "tokenNetworkFilter": {
           "0x539": true
         },
+        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",

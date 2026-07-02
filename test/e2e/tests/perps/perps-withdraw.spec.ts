@@ -153,10 +153,7 @@ describe('Perps Withdraw', function (this: Suite) {
     );
   });
 
-  // The fill form takes very long to be enabled in the new withdraw page causing the test to fail
-  // To re-enable back once the issue is fixed
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('submits a valid withdrawal from the confirmation flow', async function () {
+  it('submits a valid withdrawal from the confirmation flow', async function () {
     await withFixtures(
       {
         ...withdrawConfirmationFixtures(this.test?.fullTitle()),
@@ -166,8 +163,8 @@ describe('Perps Withdraw', function (this: Suite) {
           await openPerpsWithdrawConfirmation(driver);
 
         await withdrawConfirmation.checkAvailableBalance('$10,000.00');
-        await withdrawConfirmation.checkDestinationToken('USDC');
         await withdrawConfirmation.fillAmount('50');
+        await withdrawConfirmation.checkDestinationToken('USDC');
         await withdrawConfirmation.checkWithdrawButtonEnabled();
         await withdrawConfirmation.clickWithdraw();
         await withdrawConfirmation.waitForSuccessToast();
@@ -175,10 +172,7 @@ describe('Perps Withdraw', function (this: Suite) {
     );
   });
 
-  // The fill form takes very long to be enabled in the new withdraw page causing the test to fail
-  // To re-enable back once the issue is fixed
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('blocks withdrawal amounts above the Perps available balance', async function () {
+  it('blocks withdrawal amounts above the Perps available balance', async function () {
     await withFixtures(
       {
         ...withdrawConfirmationFixtures(this.test?.fullTitle()),

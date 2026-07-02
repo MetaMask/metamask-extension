@@ -153,6 +153,12 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     walletComplianceStatusMap: false,
     lastCheckedAt: false,
   },
+  ConfigRegistryController: {
+    configs: false,
+    etag: true,
+    lastFetched: true,
+    version: true,
+  },
   CronjobController: {
     events: false,
   },

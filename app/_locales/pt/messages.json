@@ -82,12 +82,6 @@
   "account": {
     "message": "Conta"
   },
-  "accountActivity": {
-    "message": "Atividade da conta"
-  },
-  "accountActivityText": {
-    "message": "Selecione as contas das quais deseja receber notificações:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Fazer login"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "Voltar"
   },
-  "backToHome": {
-    "message": "Volta à página inicial"
-  },
   "backUpIncomplete": {
     "message": "Backup incompleto"
   },
@@ -2422,9 +2413,6 @@
     "message": "Encerrar $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Você pode fechar esta janela a qualquer momento."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "suporte ao cliente"
-  },
-  "customizeYourNotifications": {
-    "message": "Personalize suas notificações"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Ative os tipos de notificações que você deseja receber:"
   },
   "dappConnections": {
     "message": "Conexões do dapp"
@@ -5876,9 +5858,6 @@
   "notificationsSettingsBoxError": {
     "message": "Algo deu errado. Tente novamente."
   },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fique por dentro de tudo o que acontece em sua carteira com as notificações. Para usar as notificações, usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1 protegemos sua privacidade durante o uso deste recurso."
-  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Saiba como"
   },
@@ -7540,9 +7519,6 @@
   },
   "proceedWithTransaction": {
     "message": "Quero prosseguir mesmo assim"
-  },
-  "productAnnouncements": {
-    "message": "Comunicados sobre produtos"
   },
   "provide": {
     "message": "Fornecer"
@@ -9297,24 +9273,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "As trocas inteligentes estão temporariamente indisponíveis."
   },
-  "smartTransactionCancelled": {
-    "message": "Sua transação foi cancelada"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Não foi possível concluir sua transação. Ela foi cancelada para evitar que você pague taxas de gás desnecessárias."
-  },
-  "smartTransactionError": {
-    "message": "Falha na transação"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Mudanças repentinas no mercado podem provocar falhas. Se o problema continuar, fale com o suporte ao cliente da MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Sua transação foi enviada"
-  },
-  "smartTransactionSuccess": {
-    "message": "Sua transação foi concluída"
-  },
   "smartTransactions": {
     "message": "Transações inteligentes"
   },
@@ -10281,9 +10239,6 @@
   "tokenContractAddress": {
     "message": "Endereço de contrato do token"
   },
-  "tokenContractError": {
-    "message": "Este endereço é um endereço de contrato de token. Se você enviar tokens para este endereço, você os perderá."
-  },
   "tokenContractWarning": {
     "message": "Aviso sobre contrato de token"
   },
@@ -10773,9 +10728,6 @@
   "view": {
     "message": "Ver"
   },
-  "viewActivity": {
-    "message": "Ver atividade"
-  },
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
@@ -10802,9 +10754,6 @@
   },
   "viewTokenDetails": {
     "message": "Ver detalhes do token"
-  },
-  "viewTransaction": {
-    "message": "Ver transação"
   },
   "viewinExplorer": {
     "message": "Ver $1 no explorador",
