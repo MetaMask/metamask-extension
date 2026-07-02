@@ -1245,6 +1245,7 @@
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
+        "@metamask/remote-feature-flag-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/utils": true,
@@ -1364,6 +1365,15 @@
       "packages": {
         "@metamask/utils": true,
         "@metamask/react-data-query>@tanstack/query-core": true
+      }
+    },
+    "@metamask/remote-feature-flag-controller": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "uuid": true
       }
     },
     "@metamask/rpc-errors": {

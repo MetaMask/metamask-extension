@@ -3,15 +3,12 @@ import {
   NetworkControllerMessenger,
 } from '@metamask/network-controller';
 import {
-  onRpcEndpointDegraded,
-  onRpcEndpointUnavailable,
-} from '../lib/network-controller/messenger-action-handlers';
-import {
   CHAIN_IDS,
   getFailoverUrlsForInfuraNetwork,
 } from '../../../shared/constants/network';
+import { isPublicEndpointUrl } from '../lib/util';
+import { getRpcServiceEventsSampleRate } from '../lib/network-controller/utils';
 import { MessengerClientInitFunction } from './types';
-import { NetworkControllerInitMessenger } from './messengers';
 
 /**
  * Initialize the network controller.
@@ -20,19 +17,12 @@ import { NetworkControllerInitMessenger } from './messengers';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.infuraProjectId - The Infura project ID to use.
- * @param request.initMessenger
  * @returns The initialized controller.
  */
 export const NetworkControllerInit: MessengerClientInitFunction<
   NetworkController,
-  NetworkControllerMessenger,
-  NetworkControllerInitMessenger
-> = ({
-  controllerMessenger,
-  infuraProjectId,
-  initMessenger,
-  persistedState,
-}) => {
+  NetworkControllerMessenger
+> = ({ controllerMessenger, infuraProjectId, persistedState }) => {
   const messengerClient = new NetworkController({
     messenger: controllerMessenger,
     state: persistedState.NetworkController,
@@ -52,57 +42,12 @@ export const NetworkControllerInit: MessengerClientInitFunction<
       [CHAIN_IDS.HYPE]: getFailoverUrlsForInfuraNetwork('hyperevm-mainnet'),
       [CHAIN_IDS.ARC]: getFailoverUrlsForInfuraNetwork('arc-mainnet'),
     },
+    analytics: {
+      isRpcEndpointUrlPublic: (endpointUrl) =>
+        isPublicEndpointUrl(endpointUrl, infuraProjectId),
+      rpcServiceEventsSampleRate: getRpcServiceEventsSampleRate(),
+    },
   });
-
-  initMessenger.subscribe(
-    'NetworkController:rpcEndpointUnavailable',
-    async ({ chainId, endpointUrl, error }) => {
-      onRpcEndpointUnavailable({
-        chainId,
-        endpointUrl,
-        error,
-        infuraProjectId,
-        trackEvent: initMessenger.call.bind(
-          initMessenger,
-          'MetaMetricsController:trackEvent',
-        ),
-        analyticsId: initMessenger.call('AnalyticsController:getState')
-          .analyticsId,
-      });
-    },
-  );
-
-  initMessenger.subscribe(
-    'NetworkController:rpcEndpointDegraded',
-    async ({
-      chainId,
-      duration,
-      endpointUrl,
-      error,
-      rpcMethodName,
-      traceId,
-      type,
-      retryReason,
-    }) => {
-      onRpcEndpointDegraded({
-        chainId,
-        duration,
-        endpointUrl,
-        error,
-        infuraProjectId,
-        retryReason,
-        rpcMethodName,
-        traceId,
-        trackEvent: initMessenger.call.bind(
-          initMessenger,
-          'MetaMetricsController:trackEvent',
-        ),
-        analyticsId: initMessenger.call('AnalyticsController:getState')
-          .analyticsId,
-        type,
-      });
-    },
-  );
 
   messengerClient.init();
 

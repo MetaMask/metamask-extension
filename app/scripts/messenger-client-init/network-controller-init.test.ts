@@ -1,4 +1,3 @@
-import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import {
   ActionConstraint,
   MOCK_ANY_NAMESPACE,
@@ -11,11 +10,7 @@ import {
 } from '@metamask/network-controller';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import {
-  NetworkControllerInitMessenger,
-  getNetworkControllerMessenger,
-  getNetworkControllerInitMessenger,
-} from './messengers';
+import { getNetworkControllerMessenger } from './messengers';
 import { NetworkControllerInit } from './network-controller-init';
 
 jest.mock('@metamask/network-controller', () => {
@@ -38,16 +33,11 @@ function getInitRequestMock(
   messenger = new Messenger<MockAnyNamespace, ActionConstraint>({
     namespace: MOCK_ANY_NAMESPACE,
   }),
-): jest.Mocked<
-  MessengerClientInitRequest<
-    NetworkControllerMessenger,
-    NetworkControllerInitMessenger
-  >
-> {
+): jest.Mocked<MessengerClientInitRequest<NetworkControllerMessenger>> {
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getNetworkControllerMessenger(messenger),
-    initMessenger: getNetworkControllerInitMessenger(messenger),
+    initMessenger: undefined,
   };
 
   return requestMock;
@@ -87,6 +77,10 @@ describe('NetworkControllerInit', () => {
         '0x8f': [],
         '0x3e7': [],
         '0x13b2': [],
+      },
+      analytics: {
+        isRpcEndpointUrlPublic: expect.any(Function),
+        rpcServiceEventsSampleRate: expect.any(Number),
       },
     });
   });
