@@ -1,5 +1,9 @@
 export { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
-export type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';
+export type {
+  HardwareAccountsPageView,
+  SelectHardwareAccountsPageProps,
+} from './select-hardware-accounts-page.types';
+export { HARDWARE_ACCOUNTS_PAGE_VIEWS } from './select-hardware-accounts-page.types';
 export { HardwareAccountCard } from '../../../../components/multichain-accounts/hardware-account-card';
 export { HardwareAccountAddressRow } from '../../../../components/multichain-accounts/hardware-account-address-row';
 export type {

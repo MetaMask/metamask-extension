@@ -1,70 +1,60 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import type { Meta, StoryFn } from '@storybook/react';
-import { createMockHardwareAccounts } from '../../../../../test/data/hardware-wallet-accounts';
+import configureMockStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
+import { LEDGER_HD_PATHS } from '../utils/hardware-hd-paths';
+import {
+  createMockRawHardwareAccounts,
+  MOCK_RAW_HARDWARE_ACCOUNTS,
+} from '../../../../../test/unit/hardware-wallets/connect-hardware/raw-hardware-accounts';
 import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
 import type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';
 
-const FIGMA_DEFAULT_ACCOUNTS = createMockHardwareAccounts(2, {
-  includeMultichainAddresses: true,
+const mockMetaMetricsContext = {
+  trackEvent: () => Promise.resolve(),
+  bufferedTrace: () => Promise.resolve(undefined),
+  bufferedEndTrace: () => undefined,
+  onboardingParentContext: { current: null },
+};
+
+const mockStore = configureMockStore([])({
+  appState: {
+    defaultHdPaths: {
+      [HardwareDeviceNames.ledger]: LEDGER_HD_PATHS[0].value,
+    },
+  },
+  metamask: {
+    keyrings: [],
+    internalAccounts: {
+      accounts: {},
+      selectedAccount: 'accountId',
+    },
+  },
 });
 
-const SelectHardwareAccountsPageStory = (
-  args: SelectHardwareAccountsPageProps,
-) => {
-  const [selectedAccountIds, setSelectedAccountIds] = useState(
-    args.selectedAccountIds,
-  );
+type StoryArgs = Omit<SelectHardwareAccountsPageProps, 'onBack' | 'onError'>;
 
-  return (
-    <SelectHardwareAccountsPage
-      {...args}
-      selectedAccountIds={selectedAccountIds}
-      onAccountSelectionChange={setSelectedAccountIds}
-    />
-  );
-};
+const toConnectAccounts = (
+  accounts: typeof MOCK_RAW_HARDWARE_ACCOUNTS,
+): SelectHardwareAccountsPageProps['accounts'] =>
+  accounts.map((account) => ({
+    ...account,
+    balance: '...',
+  }));
 
-const SelectHardwareAccountsPageWithPaginationStory = (
-  args: Omit<SelectHardwareAccountsPageProps, 'accounts' | 'hasMoreAccounts'>,
-) => {
-  const allAccounts = useMemo(
-    () =>
-      createMockHardwareAccounts(10, {
-        includeMultichainAddresses: true,
-      }),
-    [],
-  );
-  const [visibleAccountCount, setVisibleAccountCount] = useState(2);
-  const [selectedAccountIds, setSelectedAccountIds] = useState(
-    args.selectedAccountIds,
-  );
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-
-  const accounts = allAccounts.slice(0, visibleAccountCount);
-  const hasMoreAccounts = visibleAccountCount < allAccounts.length;
-
-  const handleShowMore = () => {
-    setIsLoadingMore(true);
-    window.setTimeout(() => {
-      setVisibleAccountCount((currentCount) =>
-        Math.min(currentCount + 5, allAccounts.length),
-      );
-      setIsLoadingMore(false);
-    }, 600);
-  };
-
-  return (
-    <SelectHardwareAccountsPage
-      {...args}
-      accounts={accounts}
-      selectedAccountIds={selectedAccountIds}
-      onAccountSelectionChange={setSelectedAccountIds}
-      hasMoreAccounts={hasMoreAccounts}
-      isLoadingMore={isLoadingMore}
-      onShowMore={handleShowMore}
-    />
-  );
-};
+const SelectHardwareAccountsPageStory = (args: StoryArgs) => (
+  <Provider store={mockStore}>
+    <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <SelectHardwareAccountsPage
+        {...args}
+        onBack={() => undefined}
+        onError={() => undefined}
+      />
+    </MetaMetricsContext.Provider>
+  </Provider>
+);
 
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/SelectHardwareAccountsPage',
@@ -78,18 +68,12 @@ export default {
   ],
   argTypes: {
     onBack: { action: 'onBack' },
-    onShowMore: { action: 'onShowMore' },
-    onContinue: { action: 'onContinue' },
-    onForgetDevice: { action: 'onForgetDevice' },
-    onSettingsClick: { action: 'onSettingsClick' },
-    onAccountSelectionChange: { action: 'onAccountSelectionChange' },
+    onError: { action: 'onError' },
   },
   args: {
-    accounts: FIGMA_DEFAULT_ACCOUNTS,
-    selectedAccountIds: ['account-0'],
-    hasMoreAccounts: true,
-    isLoadingMore: false,
-    showSettingsButton: true,
+    device: HardwareDeviceNames.ledger,
+    accounts: toConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 2)),
+    connectedAccounts: [],
   },
 } as Meta<typeof SelectHardwareAccountsPage>;
 
@@ -101,63 +85,22 @@ DefaultStory.storyName = 'Default';
 
 export const WithShowMore: StoryFn<typeof SelectHardwareAccountsPage> = (
   args,
-) => <SelectHardwareAccountsPageWithPaginationStory {...args} />;
+) => (
+  <SelectHardwareAccountsPageStory
+    {...args}
+    accounts={toConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS)}
+  />
+);
 
 WithShowMore.storyName = 'With Show More Pagination';
 
-export const EthereumOnlyAccounts: StoryFn<
+export const WithAlreadyConnectedAccount: StoryFn<
   typeof SelectHardwareAccountsPage
 > = (args) => (
   <SelectHardwareAccountsPageStory
     {...args}
-    accounts={createMockHardwareAccounts(2, {
-      includeMultichainAddresses: false,
-    })}
-    selectedAccountIds={[]}
-    hasMoreAccounts={true}
-  />
-);
-
-export const MultichainAccounts: StoryFn<typeof SelectHardwareAccountsPage> = (
-  args,
-) => (
-  <SelectHardwareAccountsPageStory
-    {...args}
-    accounts={createMockHardwareAccounts(3, {
-      includeMultichainAddresses: true,
-    })}
-    selectedAccountIds={['account-0', 'account-1']}
-    hasMoreAccounts={true}
-  />
-);
-
-export const WithAlreadyConnectedAccount: StoryFn<
-  typeof SelectHardwareAccountsPage
-> = (args) => {
-  const accounts = createMockHardwareAccounts(2, {
-    includeMultichainAddresses: true,
-  }).map((account, index) =>
-    index === 1 ? { ...account, isAlreadyConnected: true } : account,
-  );
-
-  return (
-    <SelectHardwareAccountsPageStory
-      {...args}
-      accounts={accounts}
-      selectedAccountIds={['account-0']}
-      hasMoreAccounts={true}
-    />
-  );
-};
-
-export const LoadingMoreAccounts: StoryFn<typeof SelectHardwareAccountsPage> = (
-  args,
-) => (
-  <SelectHardwareAccountsPageStory
-    {...args}
-    accounts={FIGMA_DEFAULT_ACCOUNTS}
-    hasMoreAccounts={true}
-    isLoadingMore={true}
+    accounts={toConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 2))}
+    connectedAccounts={[MOCK_RAW_HARDWARE_ACCOUNTS[1].address.toLowerCase()]}
   />
 );
 
@@ -166,8 +109,8 @@ export const WithoutSettingsButton: StoryFn<
 > = (args) => (
   <SelectHardwareAccountsPageStory
     {...args}
-    showSettingsButton={false}
-    onSettingsClick={undefined}
+    device={HardwareDeviceNames.qr}
+    accounts={toConnectAccounts(createMockRawHardwareAccounts(2))}
   />
 );
 

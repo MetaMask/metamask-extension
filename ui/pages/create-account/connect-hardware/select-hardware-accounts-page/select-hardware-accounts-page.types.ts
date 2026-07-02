@@ -1,18 +1,17 @@
-import type { HardwareWalletAccount } from '../../../../components/multichain-accounts/hardware-account-card';
-import type { AsyncVoidCallback } from '../types';
+import type { HardwareConnectAccount } from '../types';
 
-/** Props for SelectHardwareAccountsPage. */
+/** Available views in the hardware account selection page. */
+export const HARDWARE_ACCOUNTS_PAGE_VIEWS = ['accounts', 'hd-path'] as const;
+
+/** View state for the hardware account selection page. */
+export type HardwareAccountsPageView =
+  (typeof HARDWARE_ACCOUNTS_PAGE_VIEWS)[number];
+
+/** Props for the hardware account selection page. */
 export type SelectHardwareAccountsPageProps = {
-  accounts: HardwareWalletAccount[];
-  selectedAccountIds: string[];
-  onAccountSelectionChange: (selectedAccountIds: string[]) => void;
+  device: string;
+  accounts: HardwareConnectAccount[];
+  connectedAccounts: string[];
   onBack: () => void;
-  onShowMore: () => void;
-  onContinue: AsyncVoidCallback;
-  onForgetDevice: AsyncVoidCallback;
-  hasMoreAccounts?: boolean;
-  isLoadingMore?: boolean;
-  isContinuing?: boolean;
-  onSettingsClick?: () => void;
-  showSettingsButton?: boolean;
+  onError: (error: string | null) => void;
 };

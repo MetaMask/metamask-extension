@@ -14,13 +14,6 @@ import { tEn } from '../../../../test/lib/i18n-helpers';
 import {
   LedgerTransportTypes,
   HardwareDeviceNames,
-  LEDGER_LIVE_PATH,
-  MEW_PATH,
-  BIP44_PATH,
-  LATTICE_STANDARD_BIP44_PATH,
-  LATTICE_LEDGER_LIVE_PATH,
-  LATTICE_MEW_PATH,
-  TREZOR_TESTNET_PATH,
 } from '../../../../shared/constants/hardware-wallets';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -30,11 +23,7 @@ import {
   MOCK_RAW_HARDWARE_ACCOUNTS,
 } from '../../../../test/unit/hardware-wallets/connect-hardware/raw-hardware-accounts';
 import type { RawHardwareAccount } from './types';
-import ConnectHardwareForm, {
-  LEDGER_HD_PATHS,
-  LATTICE_HD_PATHS,
-  TREZOR_HD_PATHS,
-} from '.';
+import ConnectHardwareForm, { LEDGER_HD_PATHS } from '.';
 
 jest.mock('../../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../../shared/lib/environment'),
@@ -178,47 +167,6 @@ describe('ConnectHardwareForm', () => {
     jest.clearAllMocks();
     mockLocationKey = 'default';
     mockGetIsNewHardwareWalletOnboardingEnabled.mockReturnValue(false);
-  });
-
-  describe('exported HD path constants', () => {
-    it('exports LEDGER_HD_PATHS with correct entries', () => {
-      expect(LEDGER_HD_PATHS).toStrictEqual([
-        { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
-        { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
-        {
-          name: `BIP44 Standard (e.g. MetaMask, Trezor)`,
-          value: BIP44_PATH,
-        },
-      ]);
-    });
-
-    it('exports LATTICE_HD_PATHS with correct entries', () => {
-      expect(LATTICE_HD_PATHS).toStrictEqual([
-        {
-          name: `Standard (${LATTICE_STANDARD_BIP44_PATH})`,
-          value: LATTICE_STANDARD_BIP44_PATH,
-        },
-        {
-          name: `Ledger Live (${LATTICE_LEDGER_LIVE_PATH})`,
-          value: LATTICE_LEDGER_LIVE_PATH,
-        },
-        {
-          name: `Ledger Legacy (${LATTICE_MEW_PATH})`,
-          value: LATTICE_MEW_PATH,
-        },
-      ]);
-    });
-
-    it('exports TREZOR_HD_PATHS with correct entries', () => {
-      expect(TREZOR_HD_PATHS).toStrictEqual([
-        {
-          name: `BIP44 Standard (e.g. MetaMask, Trezor)`,
-          value: BIP44_PATH,
-        },
-        { name: `Legacy (Ledger / MEW / MyCrypto)`, value: MEW_PATH },
-        { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
-      ]);
-    });
   });
 
   describe('initial render', () => {
