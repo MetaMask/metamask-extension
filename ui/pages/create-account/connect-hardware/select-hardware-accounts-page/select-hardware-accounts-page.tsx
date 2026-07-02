@@ -148,11 +148,7 @@ export const SelectHardwareAccountsPage = ({
   }, [trackEvent]);
 
   const fetchAccounts = useCallback(
-    async (
-      page: number,
-      hdPath: string,
-      options?: { append?: boolean },
-    ) => {
+    async (page: number, hdPath: string, options?: { append?: boolean }) => {
       const requestId = latestFetchRequestId.current + 1;
       latestFetchRequestId.current = requestId;
 
