@@ -1,10 +1,6 @@
-import {
-  isCaipAssetType,
-  KnownCaipNamespace,
-  parseCaipAssetType,
-} from '@metamask/utils';
-import { decimalToPrefixedHex } from '../../conversion.utils';
-import { ASSET_ROUTE, Route } from './route';
+import { isCaipAssetType } from '@metamask/utils';
+import { buildAssetRoutePath } from '../../asset-route';
+import { Route } from './route';
 
 export enum AssetQueryParams {
   AssetId = 'assetId',
@@ -12,6 +8,7 @@ export enum AssetQueryParams {
 
 export const asset = new Route({
   pathname: '/asset',
+  skipInterstitial: true,
   getTitle: (_: URLSearchParams) => 'deepLink_theAssetPage',
   handler: function handler(params: URLSearchParams) {
     const assetId = params.get(AssetQueryParams.AssetId);
@@ -23,29 +20,6 @@ export const asset = new Route({
       throw new Error('Invalid assetId parameter');
     }
 
-    const selectedAsset = parseCaipAssetType(assetId);
-
-    const { chain, chainId: caipChainId, assetReference } = selectedAsset;
-
-    const isEvmNamespace = chain.namespace === KnownCaipNamespace.Eip155;
-    const isNative = selectedAsset.assetNamespace === 'slip44';
-
-    const assetPath = () => {
-      // Asset Path Format: /asset/{hex-chainId}
-      if (isEvmNamespace && isNative) {
-        return `${ASSET_ROUTE}/${decimalToPrefixedHex(chain.reference)}`;
-      }
-
-      // Asset Path Format: /asset/{hex-chainId}/{hex-address}
-      if (isEvmNamespace && !isNative) {
-        return `${ASSET_ROUTE}/${decimalToPrefixedHex(chain.reference)}/${assetReference}`;
-      }
-
-      // Non-EVM Asset Asset Path Format: /asset/{caip-chainId}/{caip-asset-type}
-      // Example: /asset/solana:XXX/encoded(solana:XXX/token:XXX)
-      return `${ASSET_ROUTE}/${caipChainId}/${encodeURIComponent(assetId)}`;
-    };
-
-    return { path: assetPath(), query: new URLSearchParams() };
+    return { path: buildAssetRoutePath(assetId), query: new URLSearchParams() };
   },
 });

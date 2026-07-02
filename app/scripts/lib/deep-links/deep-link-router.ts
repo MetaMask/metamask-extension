@@ -184,7 +184,13 @@ export class DeepLinkRouter extends EventEmitter<{
 
         if ('redirectTo' in parsed.destination) {
           link = parsed.destination.redirectTo.toString();
-        } else if (this.canSkipInterstitial(parsed.signature, requestOrigin)) {
+        } else if (
+          this.canSkipInterstitial(
+            parsed.signature,
+            requestOrigin,
+            parsed.route?.skipInterstitial,
+          )
+        ) {
           link = this.getExtensionURL(
             parsed.destination.path,
             parsed.destination.query.toString(),
@@ -264,11 +270,17 @@ export class DeepLinkRouter extends EventEmitter<{
    *
    * @param signatureStatus - The signature status of the deep link.
    * @param requestOrigin - The origin of the page that initiated the navigation.
+   * @param skipInterstitial - Whether the route is whitelisted to skip the interstitial.
    */
   canSkipInterstitial(
     signatureStatus: SignatureStatus,
     requestOrigin?: string,
+    skipInterstitial = false,
   ): boolean {
+    if (skipInterstitial) {
+      return true;
+    }
+
     if (requestOrigin && TRUSTED_ORIGINS.has(requestOrigin)) {
       return true;
     }

@@ -1,7 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { ASSET_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
-import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
+import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../pages/account-list-page';
 import ActivityTab from '../pages/home/activity-tab';
@@ -194,8 +193,12 @@ export const goToAssetPage = async ({
 }) => {
   const bridgePage = new BridgeQuotePage(driver);
   const picker = assetPicker ?? bridgePage.sourceAssetPickerButton;
-  const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
-  const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
+  const assetId = toAssetId(address, chainId);
+  if (!assetId) {
+    throw new Error('Unable to resolve asset id for bridge flow');
+  }
+  const expectedAssetId = assetId.toLowerCase();
+  const expectedUrl = buildAssetRoutePath(assetId);
 
   await bridgePage.searchAndClickAssetInfo({
     token,

@@ -36,6 +36,7 @@ import {
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
   getAsset,
+  getFungibleAssetForRoute,
   getAssetsBySelectedAccountGroupWithTronSpecialAssets,
 } from './assets';
 
@@ -1615,6 +1616,59 @@ describe('getAssetsBySelectedAccountGroupWithTronSpecialAssets', () => {
       filterTronStakedTokens: false,
     });
     expect(result).toStrictEqual({});
+  });
+});
+
+describe('getFungibleAssetForRoute', () => {
+  beforeEach(() => {
+    getAssetsBySelectedAccountGroup.memoizedResultFunc.clearCache();
+  });
+
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('resolves native EVM assets from a CAIP-19 route asset id', () => {
+    const nativeEth = {
+      accountType: 'eip155:eoa',
+      accountId: 'd7f11451-9d79-4df4-a012-afd253443639',
+      chainId: '0x1',
+      assetId: '0x0000000000000000000000000000000000000000',
+      address: '0x0000000000000000000000000000000000000000',
+      image: '',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      isNative: true,
+      decimals: 18,
+      balance: '10',
+    };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
+      '0x1': [nativeEth],
+    } as AccountGroupAssets);
+
+    const result = getFungibleAssetForRoute(mockState, {
+      assetId: 'eip155:1/slip44:60',
+      chainId: 'eip155:1',
+    });
+
+    expect(result).toStrictEqual(nativeEth);
   });
 });
 

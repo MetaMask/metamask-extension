@@ -20,10 +20,11 @@ import {
   CaipChainId,
   Hex,
   KnownCaipNamespace,
+  hasProperty,
+  isCaipAssetType,
+  isObject,
   parseCaipAssetType,
   parseCaipChainId,
-  hasProperty,
-  isObject,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
@@ -64,6 +65,7 @@ import {
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
+import type { ResolvedAssetRoute } from '../../shared/lib/asset-route';
 import { isEmptyHexString } from '../../shared/lib/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
 import {
@@ -1414,6 +1416,105 @@ export const getAsset = createSelector(
     return chainAssets?.find((item) => item.assetId === assetId);
   },
 );
+
+const getChainIdsForAssetRouteLookup = (
+  chainId: Hex | CaipChainId | undefined,
+  assetId: CaipAssetType,
+): (Hex | CaipChainId)[] => {
+  if (!isCaipAssetType(assetId)) {
+    return chainId ? [chainId] : [];
+  }
+
+  try {
+    const { chainId: caipChainId, chain } = parseCaipAssetType(assetId);
+    const hexChainId = toHex(chain.reference) as Hex;
+
+    return [...new Set([chainId, caipChainId, hexChainId].filter(Boolean))];
+  } catch {
+    return chainId ? [chainId] : [];
+  }
+};
+
+/**
+ * Resolves a fungible asset from a CAIP-19 asset route for the asset details page.
+ * @param state
+ * @param options0
+ * @param options0.assetId
+ * @param options0.chainId
+ * @param options0.decodedAsset
+ */
+export const getFungibleAssetForRoute = (
+  state: Parameters<typeof getAssetsBySelectedAccountGroup>[0],
+  {
+    assetId,
+    chainId,
+    decodedAsset,
+  }: Pick<ResolvedAssetRoute, 'assetId' | 'chainId' | 'decodedAsset'>,
+): TokenWithFiatAmount | Token | null | undefined => {
+  if (assetId && isCaipAssetType(assetId)) {
+    try {
+      const assetsByGroup = getAssetsBySelectedAccountGroup(state);
+      const chainIdsToTry = getChainIdsForAssetRouteLookup(chainId, assetId);
+      const { assetNamespace } = parseCaipAssetType(assetId);
+
+      for (const id of chainIdsToTry) {
+        const match = assetsByGroup[id as string]?.find(
+          (item) => item.assetId === assetId,
+        );
+        if (match) {
+          return match as TokenWithFiatAmount;
+        }
+      }
+
+      if (assetNamespace === 'slip44') {
+        for (const id of chainIdsToTry) {
+          const nativeAsset = assetsByGroup[id as string]?.find(
+            (item) => item.isNative,
+          );
+          if (nativeAsset) {
+            return nativeAsset as TokenWithFiatAmount;
+          }
+        }
+      }
+
+      const flatMatch = Object.values(assetsByGroup)
+        .flat()
+        .find((item) => item.assetId === assetId);
+
+      if (flatMatch) {
+        return flatMatch as TokenWithFiatAmount;
+      }
+
+      // Native assets may be keyed by zero address while the route uses slip44.
+      if (assetNamespace === 'slip44') {
+        const nativeFlatMatch = Object.values(assetsByGroup)
+          .flat()
+          .find(
+            (item) =>
+              item.isNative &&
+              chainIdsToTry.includes(item.chainId as Hex | CaipChainId),
+          );
+
+        if (nativeFlatMatch) {
+          return nativeFlatMatch as TokenWithFiatAmount;
+        }
+      }
+    } catch {
+      // Fall through to legacy lookup below.
+    }
+  }
+
+  if (!chainId) {
+    return null;
+  }
+
+  return getTokenByAccountAndAddressAndChainId(
+    state,
+    undefined,
+    decodedAsset,
+    chainId,
+  );
+};
 
 export const selectSingleTokenByAddressAndChainId = createSelector(
   getAllTokens,

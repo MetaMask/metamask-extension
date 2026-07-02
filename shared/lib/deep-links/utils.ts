@@ -72,16 +72,15 @@ export async function getDeferredDeepLinkRoute(
       };
     }
 
-    // For internal routes, check the signature
-    // If signature is not valid (missing or invalid), route to the interstitial page
-    if (signature !== VALID) {
+    // For internal routes, check the signature unless the route skips interstitial
+    if (signature !== VALID && !parsed.route?.skipInterstitial) {
       return {
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery: url.pathname + url.search,
       };
     }
 
-    // Signature is valid - construct the internal route from path and query parameters
+    // Construct the internal route from path and query parameters
     const { path, query } = destination;
     const queryString = query.toString();
 
