@@ -294,6 +294,16 @@ export type LegacyBackgroundApiServiceExportAccountAction = {
 };
 
 /**
+ * Creates the next multichain account group for the given wallet.
+ *
+ * @param walletId - The wallet's entropy source.
+ */
+export type LegacyBackgroundApiServiceCreateNextMultichainAccountGroupAction = {
+  type: `LegacyBackgroundApiService:createNextMultichainAccountGroup`;
+  handler: LegacyBackgroundApiService['createNextMultichainAccountGroup'];
+};
+
+/**
  * Applies the given transaction container types to an existing transaction.
  *
  * @param transactionId - The ID of the transaction to update.
@@ -372,6 +382,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
   | LegacyBackgroundApiServiceExportAccountAction
+  | LegacyBackgroundApiServiceCreateNextMultichainAccountGroupAction
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction

@@ -90,6 +90,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
 import {
+  MultichainAccountServiceCreateNextMultichainAccountGroupAction,
   MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
   MultichainAccountServiceInitAction,
@@ -154,6 +155,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'applyTransactionContainersExisting',
   'changePassword',
   'checkIsSeedlessPasswordOutdated',
+  'createNextMultichainAccountGroup',
   'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
@@ -226,6 +228,7 @@ type AllowedActions =
   | MetaMetricsControllerBufferedTraceAction
   | MetaMetricsControllerBufferedEndTraceAction
   | MultichainAccountServiceAlignWalletsAction
+  | MultichainAccountServiceCreateNextMultichainAccountGroupAction
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerGetNetworkClientByIdAction
@@ -1248,6 +1251,20 @@ export class LegacyBackgroundApiService {
       'KeyringController:exportAccount',
       { password },
       address,
+    );
+  }
+
+  /**
+   * Creates the next multichain account group for the given wallet.
+   *
+   * @param walletId - The wallet's entropy source.
+   */
+  async createNextMultichainAccountGroup(walletId: string): Promise<void> {
+    await this.#messenger.call(
+      'MultichainAccountService:createNextMultichainAccountGroup',
+      {
+        entropySource: walletId,
+      },
     );
   }
 
