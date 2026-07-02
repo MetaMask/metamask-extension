@@ -11,6 +11,10 @@
   overflow-x: hidden;
   position: relative;
   align-items: center;
+
+  html[data-theme='dark'] & {
+    background-color: var(--brand-colors-black);
+  }
 }
 
 // Fix for UI lag on external monitor: https://github.com/MetaMask/metamask-extension/issues/10173
