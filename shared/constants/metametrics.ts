@@ -1072,6 +1072,8 @@ export enum MetaMetricsEventName {
   AccountRemoveFailed = 'Account Remove Failed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
+  ChainlistAddClicked = 'Chainlist Add Clicked',
+  ChainlistNetworkSelected = 'Chainlist Network Selected',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
   NftDetailsOpened = 'NFT Details Opened',
