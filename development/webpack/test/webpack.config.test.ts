@@ -347,11 +347,14 @@ ${Object.entries(env)
       reactRefreshRules.map((rule) => rule.test?.toString()),
       [/\.(?:ts|mts|tsx)$/u.toString(), /\.(?:js|mjs|jsx)$/u.toString()],
     );
+    assert.deepStrictEqual(
+      reactRefreshRules.map((rule) => rule.exclude),
+      [undefined, undefined],
+    );
     assert.ok(
       reactRefreshRules.every(
         (rule) =>
           rule.include instanceof RegExp &&
-          rule.exclude instanceof RegExp &&
           rule.use.options.jsc.transform.react.development,
       ),
       'React Refresh rules should be scoped to UI source with development React transforms',

@@ -2,7 +2,7 @@ import { describe, it, afterEach, mock } from 'node:test';
 import assert from 'node:assert';
 import type { Stats, Compilation, Compiler } from 'webpack';
 import {
-  DEV_SERVER_OPTIONS,
+  getDevServerOptions,
   injectEntryScripts,
   logWatchBuildStats,
   suppressDevServerInfoLogs,
@@ -34,7 +34,7 @@ type EntryPluginCall = {
 type DoneCallback = Parameters<Compiler['hooks']['done']['tap']>[1];
 type ReactRefreshRule = {
   test?: RegExp;
-  include: string;
+  include?: unknown;
   enforce: string;
   use: {
     loader: string;
@@ -293,14 +293,21 @@ function withFakeWebSocket(
 describe('./utils/dev-server', () => {
   afterEach(() => mock.restoreAll());
 
-  describe('DEV_SERVER_OPTIONS', () => {
+  describe('getDevServerOptions', () => {
     it('disables built-in live reload and client injection', () => {
-      assert.strictEqual(DEV_SERVER_OPTIONS.hot, false);
-      assert.strictEqual(DEV_SERVER_OPTIONS.liveReload, false);
-      assert.strictEqual(DEV_SERVER_OPTIONS.client, false);
+      const devServerOptions = getDevServerOptions({
+        uiClientRule: { include: '/test/context/scripts/load/ui.ts' },
+      });
+
+      assert.strictEqual(devServerOptions.hot, false);
+      assert.strictEqual(devServerOptions.liveReload, false);
+      assert.strictEqual(devServerOptions.client, false);
     });
 
     it('registers dev-server clients from the static middleware config', () => {
+      const devServerOptions = getDevServerOptions({
+        uiClientRule: { include: '/test/context/scripts/load/ui.ts' },
+      });
       const manifestPlugin = createManifestPlugin({
         serviceWorkerEntryName: 'service-worker',
       });
@@ -308,10 +315,10 @@ describe('./utils/dev-server', () => {
         plugins: [manifestPlugin],
       });
       const { devServer } = createDevServer();
-      const { setupMiddlewares } = DEV_SERVER_OPTIONS;
+      const { setupMiddlewares } = devServerOptions;
       assert(setupMiddlewares, 'setupMiddlewares should be set');
       const middlewares: Parameters<
-        NonNullable<typeof DEV_SERVER_OPTIONS.setupMiddlewares>
+        NonNullable<typeof devServerOptions.setupMiddlewares>
       >[0] = [];
 
       const result = setupMiddlewares(middlewares, {
@@ -419,11 +426,13 @@ describe('./utils/dev-server', () => {
       const { compiler, entryPluginCalls } = createCompiler();
       const { devServer } = createDevServer({ host: 'localhost', port: 24680 });
 
-      setupUiClient(devServer as never, [compiler]);
+      setupUiClient(devServer as never, [compiler], {
+        rule: { include: '/test/context/scripts/load/ui.ts' },
+      });
 
       assert.strictEqual(entryPluginCalls.length, 0);
       const rule = getOnlyModuleRule(compiler);
-      assert.strictEqual(rule.test?.toString(), /\.ts$/u.toString());
+      assert.strictEqual(rule.test, undefined);
       assert.strictEqual(rule.include, '/test/context/scripts/load/ui.ts');
       assert.strictEqual(rule.enforce, 'pre');
       assert.match(

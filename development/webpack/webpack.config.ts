@@ -23,7 +23,9 @@ import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
+  JAVASCRIPT_FILE_RE,
   NODE_MODULES_RE,
+  TYPESCRIPT_FILE_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
@@ -38,7 +40,7 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
-import { DEV_SERVER_OPTIONS, injectEntryScripts } from './utils/dev-server';
+import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
 import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
@@ -455,20 +457,19 @@ const config = {
       ...(isDevelopmentWatchMode
         ? [
             {
-              test: /\.(?:ts|mts|tsx)$/u,
+              test: TYPESCRIPT_FILE_RE,
               include: UI_DIR_RE,
-              exclude: NODE_MODULES_RE,
               use: reactRefreshTsxLoader,
             },
             {
-              test: /\.(?:ts|mts|tsx)$/u,
+              test: TYPESCRIPT_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
               use: tsxLoader,
             },
           ]
         : [
             {
-              test: /\.(?:ts|mts|tsx)$/u,
+              test: TYPESCRIPT_FILE_RE,
               exclude: NODE_MODULES_RE,
               use: tsxLoader,
             },
@@ -477,20 +478,19 @@ const config = {
       ...(isDevelopmentWatchMode
         ? [
             {
-              test: /\.(?:js|mjs|jsx)$/u,
+              test: JAVASCRIPT_FILE_RE,
               include: UI_DIR_RE,
-              exclude: NODE_MODULES_RE,
               use: reactRefreshJsxLoader,
             },
             {
-              test: /\.(?:js|mjs|jsx)$/u,
+              test: JAVASCRIPT_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
               use: jsxLoader,
             },
           ]
         : [
             {
-              test: /\.(?:js|mjs|jsx)$/u,
+              test: JAVASCRIPT_FILE_RE,
               exclude: NODE_MODULES_RE,
               use: jsxLoader,
             },
@@ -655,7 +655,11 @@ const config = {
   // don't warn about large JS assets, unless they are going to be too big for Firefox
   performance: { maxAssetSize: 1 << 22 },
   watch: args.watch,
-  devServer: DEV_SERVER_OPTIONS,
+  devServer: getDevServerOptions({
+    uiClientRule: {
+      include: join(context, 'scripts/load/ui.ts'),
+    },
+  }),
   watchOptions: {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues

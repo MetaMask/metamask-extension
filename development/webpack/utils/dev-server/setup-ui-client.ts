@@ -1,7 +1,8 @@
-import { join } from 'node:path';
-import type { Compiler } from 'webpack';
+import type { Compiler, RuleSetRule } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
 import { getClientRequest } from './websocket';
+
+export type UiClientRule = Pick<RuleSetRule, 'include' | 'test'>;
 
 /**
  * Prepends the React Refresh runtime and UI client to the UI entry on
@@ -14,15 +15,17 @@ import { getClientRequest } from './websocket';
  *
  * @param devServer - The running webpack dev server.
  * @param compilers - The compilers attached to the dev server.
+ * @param options - UI client setup options.
+ * @param options.rule - Rule condition identifying the UI entry.
  */
 export function setupUiClient(
   devServer: WebpackDevServer,
   compilers: Compiler[],
+  { rule }: { rule: UiClientRule },
 ): void {
   for (const compiler of compilers) {
     compiler.options.module.rules.push({
-      test: /\.ts$/u,
-      include: join(compiler.context, 'scripts/load/ui.ts'),
+      ...rule,
       enforce: 'pre',
       use: {
         loader: require.resolve('../loaders/reactRefreshLoader'),

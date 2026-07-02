@@ -11,60 +11,32 @@ declare const __resourceQuery: string;
 
 const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 
-// Storage key holding the UI build hash this page's code was loaded under.
-// `globalThis.sessionStorage` (not `browser.storage.session`) on purpose: it is
-// scoped to the tab, so concurrently open pages each keep their own record.
-const HASH_KEY = 'MM_UI_HASH';
+// webpack rewrites this runtime global to the hash of the currently loaded UI compilation.
+// eslint-disable-next-line camelcase
+declare const __webpack_hash__: string | undefined;
+
+let requestedHash: string | null = null;
 
 /**
- * @returns The UI build hash this page's code was loaded under, or `null` if
- * none has been recorded yet in this tab.
+ * @returns The webpack hash this UI page is currently running, if available.
  */
-function getStoredHash(): string | null {
-  try {
-    return globalThis.sessionStorage.getItem(HASH_KEY);
-  } catch {
-    // Unreadable storage reads as "nothing recorded": the announcement gets
-    // treated as a baseline rather than triggering a hot update.
-    return null;
-  }
+function getWebpackHash(): string | null {
+  // eslint-disable-next-line camelcase
+  return typeof __webpack_hash__ === 'string' ? __webpack_hash__ : null;
 }
 
 /**
- * Records the given UI build hash as the one this page is running.
- *
- * @param hash - The hash to record.
- */
-function setStoredHash(hash: string): void {
-  try {
-    globalThis.sessionStorage.setItem(HASH_KEY, hash);
-  } catch {
-    // Without storage every announcement looks like a baseline, so the page
-    // degrades to never hot-updating rather than hot-updating in a loop.
-  }
-}
-
-/**
- * Handles a UI build-hash announcement from the dev server: asks the UI webpack
- * runtime to check for hot updates when the announced hash differs from the one
- * this page's code was loaded under. Announcements are state, not events — the
- * server re-sends the current hash to every (re)connecting client — so a build
- * that completes while this page is disconnected still takes effect once the
- * page reconnects, instead of being missed.
+ * Handles a UI build-hash announcement from the dev server. Announcements are
+ * current state, not one-shot events, so compare them with the currently loaded
+ * webpack runtime hash.
  *
  * @param hash - The announced hash of the server's latest UI build.
  */
 function onHash(hash: string): void {
-  const stored = getStoredHash();
-  if (stored === hash) {
+  if (getWebpackHash() === hash || requestedHash === hash) {
     return;
   }
-  setStoredHash(hash);
-  if (stored === null) {
-    // First announcement this tab has seen: the page was just loaded from the
-    // dev server's own output, so only record the baseline.
-    return;
-  }
+  requestedHash = hash;
   console.info('[webpack-dev-server] UI hot update...');
   webpackHotEmitter.emit('webpackHotUpdate', hash);
 }
