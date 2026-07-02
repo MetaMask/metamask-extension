@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
-import { LEDGER_HD_PATHS } from '..';
+import { LEDGER_HD_PATHS } from '../utils/hardware-hd-paths';
 import type { SelectHdPathPageProps } from './select-hd-path-page.types';
 import { SelectHdPathPage } from '.';
 

@@ -23,7 +23,8 @@ import {
   MOCK_RAW_HARDWARE_ACCOUNTS,
 } from '../../../../test/unit/hardware-wallets/connect-hardware/raw-hardware-accounts';
 import type { RawHardwareAccount } from './types';
-import ConnectHardwareForm, { LEDGER_HD_PATHS } from '.';
+import { LEDGER_HD_PATHS } from './utils/hardware-hd-paths';
+import ConnectHardwareForm from '.';
 
 jest.mock('../../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../../shared/lib/environment'),

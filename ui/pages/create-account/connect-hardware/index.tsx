@@ -58,14 +58,7 @@ import type { MetaMaskReduxDispatch } from '../../../store/store';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
-import {
-  DEVICE_HD_PATHS,
-  LEDGER_HD_PATHS,
-  LATTICE_HD_PATHS,
-  TREZOR_HD_PATHS,
-} from './utils/hardware-hd-paths';
-
-export { LEDGER_HD_PATHS, LATTICE_HD_PATHS, TREZOR_HD_PATHS };
+import { DEVICE_HD_PATHS } from './utils/hardware-hd-paths';
 
 type HardwareAccount = {
   address: string;

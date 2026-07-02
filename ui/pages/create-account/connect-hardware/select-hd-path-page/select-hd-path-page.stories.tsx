@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryFn } from '@storybook/react';
-import { LEDGER_HD_PATHS } from '../index';
+import { LEDGER_HD_PATHS } from '../utils/hardware-hd-paths';
 import { SelectHdPathPage } from './index';
 import type { SelectHdPathPageProps } from './select-hd-path-page.types';
 
