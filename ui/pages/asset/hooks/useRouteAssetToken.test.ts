@@ -2,10 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { CaipAssetType } from '@metamask/utils';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { buildTokenFromCaipAssetId } from '../build-token-from-caip-asset-id';
-import {
-  getRouteAssetChainId,
-  useRouteAssetToken,
-} from './useRouteAssetToken';
+import { getRouteAssetChainId, useRouteAssetToken } from './useRouteAssetToken';
 
 jest.mock('../../../hooks/useAsync');
 jest.mock('../build-token-from-caip-asset-id');
@@ -66,10 +63,10 @@ describe('useRouteAssetToken', () => {
     expect(result.current.token).toBe(ownedToken);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(false);
-    expect(mockUseAsyncResult).toHaveBeenCalledWith(
-      expect.any(Function),
-      [false, daiAssetId],
-    );
+    expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
+      false,
+      daiAssetId,
+    ]);
   });
 
   it('returns the location state token when no owned token is available', () => {
@@ -83,10 +80,10 @@ describe('useRouteAssetToken', () => {
     expect(result.current.token).toBe(locationStateToken);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(false);
-    expect(mockUseAsyncResult).toHaveBeenCalledWith(
-      expect.any(Function),
-      [false, daiAssetId],
-    );
+    expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
+      false,
+      daiAssetId,
+    ]);
   });
 
   it('returns the fetched token when metadata is resolved', () => {
@@ -107,10 +104,10 @@ describe('useRouteAssetToken', () => {
     expect(result.current.token).toEqual(fetchedToken);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(false);
-    expect(mockUseAsyncResult).toHaveBeenCalledWith(
-      expect.any(Function),
-      [true, daiAssetId],
-    );
+    expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
+      true,
+      daiAssetId,
+    ]);
   });
 
   it('reports loading while metadata fetch is pending', () => {
@@ -163,10 +160,10 @@ describe('useRouteAssetToken', () => {
     expect(result.current.token).toBeUndefined();
     expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(false);
-    expect(mockUseAsyncResult).toHaveBeenCalledWith(
-      expect.any(Function),
-      [false, 'not-a-caip-asset-id'],
-    );
+    expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
+      false,
+      'not-a-caip-asset-id',
+    ]);
   });
 
   it('builds token metadata from assetId via buildTokenFromCaipAssetId', async () => {

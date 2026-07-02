@@ -88,11 +88,7 @@ const renderUseBridgeNavigation = (
   mockStoreState: object = createBridgeMockStore(),
   pathname = '/cross-chain/swaps/prepare-bridge-page',
 ) =>
-  renderHookWithProvider(
-    () => useBridgeNavigation(),
-    mockStoreState,
-    pathname,
-  );
+  renderHookWithProvider(() => useBridgeNavigation(), mockStoreState, pathname);
 
 describe('useBridgeNavigation', () => {
   beforeEach(() => {
@@ -346,14 +342,17 @@ describe('useBridgeNavigation', () => {
         result.current.navigateToActivityPage();
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=activity`, {
-        state: {
-          bridgeState: null,
-          token: null,
-          stayOnHomePage: true,
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          state: {
+            bridgeState: null,
+            token: null,
+            stayOnHomePage: true,
+          },
+          replace: true,
         },
-        replace: true,
-      });
+      );
     });
   });
 

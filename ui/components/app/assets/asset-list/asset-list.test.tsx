@@ -308,7 +308,9 @@ describe('AssetList', () => {
     });
 
     it('passes hasConvertibleTokens false when the wallet has no balance', async () => {
-      jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(false);
+      jest
+        .mocked(selectAccountGroupBalanceForEmptyState)
+        .mockReturnValue(false);
 
       await act(async () => {
         renderAssetList({ balance: '0x0' });
