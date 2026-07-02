@@ -25,7 +25,7 @@ jest.mock('../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: (...args) => mockTrackEvent(...args),
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
       createEventBuilder,
     }),
   };
