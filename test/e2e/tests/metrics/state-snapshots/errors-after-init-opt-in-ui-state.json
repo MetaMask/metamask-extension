@@ -148,6 +148,7 @@
       "bip122": "object",
       "eip155": "object",
       "solana": "object",
+      "stellar": "object",
       "tron": "object"
     },
     "ensEntries": "object",
@@ -322,6 +323,7 @@
     "quoteFetchError": null,
     "quoteRequest": "object",
     "quoteStreamComplete": null,
+    "quoteUpdateStatusStore": "object",
     "quotes": "object",
     "quotesInitialLoadTime": null,
     "quotesLastFetched": null,
