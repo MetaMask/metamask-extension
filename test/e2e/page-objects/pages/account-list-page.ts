@@ -441,13 +441,9 @@ class AccountListPage {
       waitAtLeastGuard: largeDelayMs,
     });
 
-    const multichainAccountMenuIcons = await this.driver.findElements(
+    await this.driver.clickElement(
       `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
     );
-
-    const icon = multichainAccountMenuIcons[options.srpIndex ?? 0];
-    await this.driver.scrollToElement(icon);
-    await icon.click();
   }
 
   /**
