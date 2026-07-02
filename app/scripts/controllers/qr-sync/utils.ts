@@ -6,13 +6,15 @@ import {
   QR_SYNC_PHASES,
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
+import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
 import {
   QrSyncActionTypes,
+  QrSyncConnectionStatus,
   QrSyncErrorMessages,
   QrSyncMessageVersion,
 } from './constants';
 import type {
-  QrSyncConnectionStatus,
+  QrSyncConnectionStatusType,
   QrSyncError,
   QrSyncMessage,
   QrSyncOffer,
@@ -27,7 +29,7 @@ export function createInitSyncSessionMessage(): QrSyncMessage {
 
 export function generateQrCode(request: SessionRequest): string {
   const base64QRpayload = bytesToBase64(stringToBytes(JSON.stringify(request)));
-  return `metamask://connect/mwp?p=${base64QRpayload}`;
+  return `metamask://connect/mwp?p=${encodeURIComponent(base64QRpayload)}`;
 }
 
 export function parseJsonMessage(message: unknown): unknown {
@@ -78,12 +80,12 @@ export function canAcceptSyncOffer({
   phase,
 }: {
   hasDappClient: boolean;
-  connectionStatus: QrSyncConnectionStatus;
+  connectionStatus: QrSyncConnectionStatusType;
   phase: QrSyncPhase;
 }): boolean {
   return (
     hasDappClient &&
-    connectionStatus === 'connected' &&
+    connectionStatus === QrSyncConnectionStatus.CONNECTED &&
     phase === QR_SYNC_PHASES.AWAITING_SYNC_OFFER
   );
 }
@@ -117,8 +119,8 @@ export function getSyncOfferFailureError(error: unknown): QrSyncError {
   return {
     code:
       message === QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT
-        ? 'SESSION_EXPIRED'
-        : 'SYNC_FAILED',
+        ? QrSyncErrorCodes.SESSION_EXPIRED
+        : QrSyncErrorCodes.SYNC_FAILED,
     message,
   };
 }
@@ -132,8 +134,8 @@ export function getSyncCompletionFailureError(error: unknown): QrSyncError {
   return {
     code:
       message === QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT
-        ? 'SESSION_EXPIRED'
-        : 'SYNC_FAILED',
+        ? QrSyncErrorCodes.SESSION_EXPIRED
+        : QrSyncErrorCodes.SYNC_FAILED,
     message,
   };
 }

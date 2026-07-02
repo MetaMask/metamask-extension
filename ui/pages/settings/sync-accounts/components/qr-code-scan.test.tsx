@@ -6,7 +6,10 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
+import {
+  MWP_SESSION_REQUEST_EXPIRY_SECONDS,
+  QrSyncErrorCodes,
+} from '../../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import QrCodeScan from './qr-code-scan';
 
@@ -83,7 +86,7 @@ describe('QrCodeScan', () => {
   it('shows the scan error message when the controller reports an error', () => {
     const mockStore = createMockStore({
       qrSyncError: {
-        code: 'CHANNEL_DISCONNECTED',
+        code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
         message: 'The sync channel disconnected.',
       },
     });

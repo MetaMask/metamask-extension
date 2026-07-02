@@ -1,5 +1,8 @@
 import { SessionRequest } from '@metamask/mobile-wallet-protocol-core';
-import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_PHASES,
+  QrSyncErrorCodes,
+} from '../../../../shared/constants/qr-sync';
 import { QrSyncActionTypes, QrSyncErrorMessages } from './constants';
 import {
   assertQrSyncPhase,
@@ -38,13 +41,35 @@ describe('qr-sync utils', () => {
       const qrPayload = generateQrCode(TEST_SESSION_REQUEST);
 
       expect(qrPayload).toMatch(
-        /^metamask:\/\/connect\/mwp\?p=[A-Za-z0-9+/]+=*$/u,
+        /^metamask:\/\/connect\/mwp\?p=[A-Za-z0-9%+/=_-]*$/u,
       );
 
+      const base64Payload = new URL(qrPayload).searchParams.get('p');
       const decoded = JSON.parse(
-        Buffer.from(qrPayload.split('p=')[1] ?? '', 'base64').toString('utf8'),
+        Buffer.from(base64Payload ?? '', 'base64').toString('utf8'),
       );
       expect(decoded).toStrictEqual(TEST_SESSION_REQUEST);
+    });
+
+    it('percent-encodes base64 characters that are unsafe in query parameters', () => {
+      const sessionRequest: SessionRequest = {
+        id: '>sess',
+        expiresAt: 1,
+        mode: 'untrusted',
+        channel: 'websocket',
+        publicKeyB64: 'pk',
+      };
+      const qrPayload = generateQrCode(sessionRequest);
+
+      expect(qrPayload).toContain('%3D');
+
+      const decoded = JSON.parse(
+        Buffer.from(
+          new URL(qrPayload).searchParams.get('p') ?? '',
+          'base64',
+        ).toString('utf8'),
+      );
+      expect(decoded).toStrictEqual(sessionRequest);
     });
   });
 
@@ -218,14 +243,14 @@ describe('qr-sync utils', () => {
           new Error(QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT),
         ),
       ).toStrictEqual({
-        code: 'SESSION_EXPIRED',
+        code: QrSyncErrorCodes.SESSION_EXPIRED,
         message: QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT,
       });
     });
 
     it('maps other failures to SYNC_FAILED', () => {
       expect(getSyncOfferFailureError(new Error('Relay error'))).toStrictEqual({
-        code: 'SYNC_FAILED',
+        code: QrSyncErrorCodes.SYNC_FAILED,
         message: 'Relay error',
       });
     });
@@ -238,7 +263,7 @@ describe('qr-sync utils', () => {
           new Error(QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT),
         ),
       ).toStrictEqual({
-        code: 'SESSION_EXPIRED',
+        code: QrSyncErrorCodes.SESSION_EXPIRED,
         message: QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT,
       });
     });
@@ -247,7 +272,7 @@ describe('qr-sync utils', () => {
       expect(
         getSyncCompletionFailureError(new Error('Mobile error')),
       ).toStrictEqual({
-        code: 'SYNC_FAILED',
+        code: QrSyncErrorCodes.SYNC_FAILED,
         message: 'Mobile error',
       });
     });
