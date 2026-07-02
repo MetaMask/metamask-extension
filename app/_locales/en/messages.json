@@ -3200,6 +3200,12 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLinkQrBatchSellDescription": {
+    "message": "Batch sell is available on MetaMask mobile. Scan this code with your mobile device to use it."
+  },
+  "deepLinkQrBatchSellTitle": {
+    "message": "Open batch sell on mobile"
+  },
   "deepLinkQrPredictDescription": {
     "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
   },
@@ -3254,6 +3260,9 @@
   },
   "deepLink_theAssetPage": {
     "message": "the asset page"
+  },
+  "deepLink_theBatchSellPage": {
+    "message": "the batch sell page"
   },
   "deepLink_theBuyPage": {
     "message": "the buy page"
