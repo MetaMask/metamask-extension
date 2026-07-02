@@ -15,7 +15,6 @@ export const PerpsDepositInfo = () => {
     <CustomAmountInfo
       autoFocusAmount
       currency={PERPS_CURRENCY}
-      hasMax
       hidePayTokenAmount
     />
   );

@@ -16,6 +16,10 @@ import {
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
@@ -34,7 +38,10 @@ import {
   SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { getIsAddDeviceSyncEnabled } from '../../../shared/lib/environment';
+import {
+  getIsAddDeviceSyncEnabled,
+  getIsPerpsIncludedInBuild,
+} from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
 
@@ -144,6 +151,38 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(() => import('./notifications-tab/index.ts')),
     isTab: true,
     iconName: IconName.Notification,
+  },
+  [NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE]: {
+    labelKey: 'notificationsSettingsWalletActivityTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/wallet-activity-sub-page.tsx'),
+    ),
+  },
+  ...(getIsPerpsIncludedInBuild()
+    ? {
+        [NOTIFICATIONS_SETTINGS_PERPS_ROUTE]: {
+          labelKey: 'notificationsSettingsPerpsTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+          component: mmLazy(
+            () => import('./notifications-tab/perps-sub-page.tsx'),
+          ),
+        },
+      }
+    : {}),
+  [NOTIFICATIONS_SETTINGS_MARKETING_ROUTE]: {
+    labelKey: 'notificationsSettingsMarketingTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/marketing-sub-page.tsx'),
+    ),
+  },
+  [NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE]: {
+    labelKey: 'notificationsSettingsAgenticCliTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/agentic-cli-sub-page.tsx'),
+    ),
   },
 
   // --- Security and Password tab ---
