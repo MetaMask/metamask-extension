@@ -32,9 +32,15 @@ export const useRouteAssetToken = ({
   assetId,
 }: UseRouteAssetTokenParams) => {
   const shouldFetchMetadata =
-    !ownedToken && !locationStateToken && Boolean(assetId && isCaipAssetType(assetId));
+    !ownedToken &&
+    !locationStateToken &&
+    Boolean(assetId && isCaipAssetType(assetId));
 
-  const { value: fetchedToken, pending, error } = useAsyncResult(async () => {
+  const {
+    value: fetchedToken,
+    pending,
+    error,
+  } = useAsyncResult(async () => {
     if (!shouldFetchMetadata || !assetId) {
       return undefined;
     }
@@ -56,7 +62,5 @@ export type RouteAssetToken = Token | LocationStateToken | TokenWithFiatAmount;
 export const getRouteAssetChainId = (
   token: RouteAssetToken | undefined,
   chainId?: Hex | CaipChainId,
-): Hex | CaipChainId | undefined => (token?.chainId ?? chainId) as
-  | Hex
-  | CaipChainId
-  | undefined;
+): Hex | CaipChainId | undefined =>
+  (token?.chainId ?? chainId) as Hex | CaipChainId | undefined;

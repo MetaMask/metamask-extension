@@ -38,7 +38,8 @@ const Asset = () => {
   const location = useLocation();
   const locationState = location.state as LocationState | undefined;
 
-  const { chainId, id, decodedAsset, assetId } = resolveAssetRouteLookup(params);
+  const { chainId, id, decodedAsset, assetId } =
+    resolveAssetRouteLookup(params);
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 

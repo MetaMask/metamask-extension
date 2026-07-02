@@ -27,7 +27,9 @@ describe('asset-route', () => {
   describe('buildAssetRoutePathFromParts', () => {
     it('builds a native EVM asset path from hex chain id', () => {
       expect(
-        buildAssetRoutePathFromParts(CHAIN_IDS.ARBITRUM, '', { isNative: true }),
+        buildAssetRoutePathFromParts(CHAIN_IDS.ARBITRUM, '', {
+          isNative: true,
+        }),
       ).toBe('/asset/eip155:42161/eip155%3A42161%2Fslip44%3A60');
     });
 
@@ -120,14 +122,12 @@ describe('asset-route', () => {
       expect(
         resolveAssetRouteLookup({
           chainId: 'eip155:1',
-          asset:
-            'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          asset: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         }),
       ).toMatchObject({
         chainId: 'eip155:1',
         decodedAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        assetId:
-          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       });
     });
 

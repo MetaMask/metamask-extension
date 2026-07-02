@@ -6,7 +6,11 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { type CaipAssetType, type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import {
   Box,

@@ -18,9 +18,7 @@ import {
 } from '@metamask/bridge-controller';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import {
-  DEFAULT_ROUTE,
-} from '../../../shared/lib/deep-links/routes/route';
+import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,

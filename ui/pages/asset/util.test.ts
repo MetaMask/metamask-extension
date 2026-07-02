@@ -218,8 +218,7 @@ describe('utils', () => {
       const tokenAddress =
         '0xacA92E438df0B2401fF60dA7E4337B687a2435DA' as const;
       const chainId = 'eip155:1' as const;
-      const erc20AssetId =
-        `eip155:1/erc20:${tokenAddress}` as const;
+      const erc20AssetId = `eip155:1/erc20:${tokenAddress}` as const;
       const nativeAssetId = 'eip155:1/slip44:60' as const;
 
       const testCases = [
@@ -241,7 +240,11 @@ describe('utils', () => {
         },
         {
           name: 'does not rejoin NFT routes that use a contract address and tokenId',
-          params: { chainId: CHAIN_IDS.MAINNET, asset: tokenAddress, id: '123' },
+          params: {
+            chainId: CHAIN_IDS.MAINNET,
+            asset: tokenAddress,
+            id: '123',
+          },
           expected: { decodedAsset: tokenAddress, id: '123' },
         },
       ];

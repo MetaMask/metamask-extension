@@ -142,7 +142,9 @@ export type ResolvedAssetRoute = {
  * - Firefox will therefore leave the `id` param as token:XXX
  * @param params
  */
-export const processAssetParams = (params: AssetRouteParams): ResolvedAssetRoute => {
+export const processAssetParams = (
+  params: AssetRouteParams,
+): ResolvedAssetRoute => {
   const { chainId, asset, id } = params;
   const isCaipChain = chainId ? isCaipChainId(chainId) : false;
   const rawAsset = isCaipChain && asset && id ? `${asset}/${id}` : asset;
