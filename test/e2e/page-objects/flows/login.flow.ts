@@ -3,6 +3,7 @@ import HomePage from '../pages/home/homepage';
 import HeaderNavbar from '../pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 
 /**
  * Unlocks the wallet and lands the user on the homepage.
@@ -16,6 +17,7 @@ import { Anvil } from '../../seeder/anvil';
  * @param options.password - The password used to unlock the wallet.
  * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
  * @param options.waitForNonEvmAccounts - Whether to wait for non-EVM accounts to load on the homepage. Defaults to true; set to false to skip.
+ * @param options.expectFundYourWalletBanner - When {@link expectedBalance} is `'0'`, whether to wait for the fund-your-wallet banner instead of a zero balance string. Defaults to true.
  * @param options.ignorePasskeyUnlock - Whether to ignore the passkey unlock and use password instead. Defaults to false.
  */
 export const login = async (
@@ -26,6 +28,7 @@ export const login = async (
     password?: string;
     validateBalance?: boolean;
     waitForNonEvmAccounts?: boolean;
+    expectFundYourWalletBanner?: boolean;
     ignorePasskeyUnlock?: boolean;
   },
 ) => {
@@ -48,7 +51,11 @@ export const login = async (
   if (options?.localNode) {
     await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);
   } else if (options?.expectedBalance !== undefined) {
-    await homePage.checkExpectedBalanceIsDisplayed(options.expectedBalance);
+    await homePage.checkExpectedBalanceIsDisplayed({
+      expectedBalance: options.expectedBalance,
+      timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+      expectFundYourWalletBanner: options.expectFundYourWalletBanner,
+    });
   } else if (options?.validateBalance !== false) {
     // defaults to 25 ETH
     await homePage.checkExpectedBalanceIsDisplayed();

@@ -15,7 +15,12 @@ const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
+const {
+  DAPP_PATHS,
+  ERC_4337_ACCOUNT,
+  HARDWARE_WALLET_ACCOUNT_ID,
+  HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+} = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
@@ -140,8 +145,8 @@ function normalizeSmartContracts(smartContract) {
 
 /**
  * @typedef {object} UnifiedEvmAccountsApiBalances
- * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5).
- * @property {string} [localhostNativeEthHuman] - Localhost (eip155:1337) native balance string. Auto-populated from the local node when omitted, so smart-contract deployment gas is reflected.
+ * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5). Auto-populated from the local node when chainId is 1 and omitted.
+ * @property {string} [localhostNativeEthHuman] - Localhost (eip155:1337) native balance string. Auto-populated from the local node when chainId is 1337 and omitted, so smart-contract deployment gas is reflected.
  * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
  */
 
@@ -326,19 +331,45 @@ async function withFixtures(options, testSuite) {
       [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
     });
 
-    // Sync the localhost native balance to what's actually on the node.
-    // This ensures the Accounts API v5 mock returns the correct balance
-    // even after smart-contract deployment has consumed gas.
+    // Sync native balances to what's actually on the node so Accounts API v5
+    // matches post-deploy gas usage (e.g. HST deploy on mainnet).
     let effectiveUnifiedEvmAccountsApiBalances =
       unifiedEvmAccountsApiBalances ?? {};
+    const localChainId = localNodeOptsNormalized[0]?.options.chainId ?? 1337;
+    if (localNodes[0]) {
+      const nodeBalance = Number(
+        (await localNodes[0].getBalance()).toFixed(3),
+      ).toString();
+      if (
+        localChainId === 1 &&
+        !effectiveUnifiedEvmAccountsApiBalances.mainnetNativeEthHuman
+      ) {
+        effectiveUnifiedEvmAccountsApiBalances = {
+          ...effectiveUnifiedEvmAccountsApiBalances,
+          mainnetNativeEthHuman: nodeBalance,
+        };
+      }
+      if (
+        localChainId === 1337 &&
+        !effectiveUnifiedEvmAccountsApiBalances.localhostNativeEthHuman
+      ) {
+        effectiveUnifiedEvmAccountsApiBalances = {
+          ...effectiveUnifiedEvmAccountsApiBalances,
+          localhostNativeEthHuman: nodeBalance,
+        };
+      }
+    }
+
+    const selectedAccountId =
+      fixtures?.data?.AccountsController?.internalAccounts?.selectedAccount;
     if (
-      localNodes[0] &&
-      !effectiveUnifiedEvmAccountsApiBalances.localhostNativeEthHuman
+      selectedAccountId === HARDWARE_WALLET_ACCOUNT_ID &&
+      localChainId === 1337 &&
+      !unifiedEvmAccountsApiBalances?.localhostNativeEthHuman
     ) {
-      const nodeBalance = await localNodes[0].getBalance();
       effectiveUnifiedEvmAccountsApiBalances = {
         ...effectiveUnifiedEvmAccountsApiBalances,
-        localhostNativeEthHuman: Number(nodeBalance.toFixed(3)).toString(),
+        localhostNativeEthHuman: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
       };
     }
 

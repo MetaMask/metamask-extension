@@ -11,13 +11,34 @@ import { Driver } from '../../webdriver/driver';
 import {
   DAPP_PATH,
   DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
+  TREZOR_ADDRESS,
   WINDOW_TITLES,
 } from '../../constants';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+
+/** Mainnet zero balances for HD + Ledger (unified assets; mainnet is the enabled network). */
+const ZERO_MAINNET_ASSETS_BALANCE = {
+  [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+    'eip155:1/slip44:60': { amount: '0' },
+  },
+  [HARDWARE_WALLET_ACCOUNT_ID]: {
+    'eip155:1/slip44:60': { amount: '0' },
+  },
+};
+
+const ZERO_MAINNET_UNIFIED_BALANCES = {
+  mainnetNativeEthHuman: '0',
+  hardwareWalletNativeEthHuman: '0',
+};
 
 async function mockEthMainnetAndMusd(mockServer: Mockttp) {
   return [
@@ -72,29 +93,43 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
           .withLedgerAccount()
           .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
           .withAssetsController(
             {
-              assetsBalance: {
-                [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-                  'eip155:1337/slip44:1': {
-                    amount: '0',
-                  },
-                },
-                [HARDWARE_WALLET_ACCOUNT_ID]: {
-                  'eip155:1337/slip44:1': {
-                    amount: '0',
-                  },
-                },
-              },
+              assetsBalance: ZERO_MAINNET_ASSETS_BALANCE,
             },
             { overwrite: true },
           )
+          .withAccountTracker({
+            accountsByChainId: {
+              '0x1': {
+                [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+                  balance: '0x0',
+                  stakedBalance: '0x0',
+                },
+                [TREZOR_ADDRESS]: {
+                  balance: '0x0',
+                  stakedBalance: '0x0',
+                },
+              },
+            },
+          })
           .build(),
+        unifiedEvmAccountsApiBalances: ZERO_MAINNET_UNIFIED_BALANCES,
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEthMainnetAndMusd,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
-          expectedBalance: '0',
+          expectedBalance: '$0.00',
           waitForNonEvmAccounts: false,
         });
         const headerNavbar = new HeaderNavbar(driver);
@@ -141,6 +176,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
               },
             },
           })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: {

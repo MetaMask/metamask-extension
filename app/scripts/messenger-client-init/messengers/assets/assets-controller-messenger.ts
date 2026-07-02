@@ -54,6 +54,8 @@ export function getAssetsControllerMessenger(
       'BackendWebSocketService:subscribe',
       'BackendWebSocketService:getConnectionInfo',
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+      'BackendWebSocketService:addChannelCallback',
+      'BackendWebSocketService:removeChannelCallback',
       'SnapController:handleRequest',
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
@@ -62,6 +64,8 @@ export function getAssetsControllerMessenger(
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- runtime event is stateChange
+      // @ts-expect-error Package types expect ClientController:stateChanged
       'ClientController:stateChange',
       'NetworkEnablementController:stateChange',
       'KeyringController:lock',
@@ -74,6 +78,8 @@ export function getAssetsControllerMessenger(
       'PermissionController:stateChange',
       'SnapController:snapInstalled',
       'PreferencesController:stateChange',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- runtime event is stateChange
+      // @ts-expect-error Package types expect AccountTreeController:stateChanged
       'AccountTreeController:stateChange',
       'TransactionController:transactionConfirmed',
       'TransactionController:unapprovedTransactionAdded',

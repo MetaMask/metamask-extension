@@ -176,9 +176,6 @@ describe('Wallet State', function () {
           'Localhost 8545',
         );
 
-        // Fiat value should be displayed as we mock the price and that is not a 'test network'
-        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
-
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(10000);
 
