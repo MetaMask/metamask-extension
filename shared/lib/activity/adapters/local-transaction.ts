@@ -388,7 +388,7 @@ export function mapLocalTransaction(
     case TransactionType.bridgeApproval:
     case TransactionType.shieldSubscriptionApprove:
     case TransactionType.swapApproval:
-    case TransactionType.tokenMethodSetApprovalForAll:
+    case TransactionType.tokenMethodApprove:
       return {
         type: 'approveSpendingCap',
         chainId,
@@ -401,16 +401,20 @@ export function mapLocalTransaction(
         },
       };
 
-    case TransactionType.tokenMethodApprove: {
-      const approveData = initialTransaction.txParams.data
+    case TransactionType.tokenMethodSetApprovalForAll: {
+      // setApprovalForAll(address,bool) carries grant vs revoke directly in
+      // calldata via the boolean param, so the title is decided by parsing the
+      // call itself (not a heuristic on amount).
+      const approvalData = initialTransaction.txParams.data
         ? parseApprovalTransactionData(
             initialTransaction.txParams.data as `0x${string}`,
           )
         : undefined;
-      const approveAmount = approveData?.amountOrTokenId?.toFixed(0);
+
       return {
-        type:
-          approveAmount === '0' ? 'revokeSpendingCap' : 'approveSpendingCap',
+        type: approvalData?.isRevokeAll
+          ? 'revokeSpendingCap'
+          : 'approveSpendingCap',
         chainId,
         status,
         timestamp,

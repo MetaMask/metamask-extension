@@ -157,6 +157,91 @@ const perpsDepositTransaction = {
   verifiedOnBlockchain: false,
 };
 
+// Real captured transaction state from a setApprovalForAll on Base
+// (NFT collection 0xaddaf53a54c0b1e89a1ccb5a8b1499e04fcafe2f,
+// operator 0x9bc5baf874d2da8d216ae9f137804184ee5afef4), trimmed to the
+// fields the mapper reads. The grant variant uses approved=true (`...0001`);
+// the revoke variant uses approved=false (`...0000`).
+const setApprovalForAllSender = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
+const setApprovalForAllCollection =
+  '0xaddaf53a54c0b1e89a1ccb5a8b1499e04fcafe2f';
+const setApprovalForAllHash =
+  '0x2bc52d888e535057e3244d26c62dc929de5924f7c3b3b42724a8731e3d5cac7b';
+const setApprovalForAllGrantData =
+  '0xa22cb4650000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000000001';
+const setApprovalForAllRevokeData =
+  '0xa22cb4650000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000000000';
+
+const buildSetApprovalForAllTransaction = (
+  data: string,
+  status: TransactionStatus,
+) => ({
+  actionId: '238072823',
+  chainId: CHAIN_IDS.BASE,
+  id: '1bf4c430-6e9e-11f1-bad9-45c68f3ed2fd',
+  hash: setApprovalForAllHash,
+  networkClientId: 'base-mainnet',
+  origin: 'https://metamask.github.io',
+  status,
+  time: 1782176077811,
+  type: TransactionType.tokenMethodSetApprovalForAll,
+  txParams: {
+    from: setApprovalForAllSender,
+    to: setApprovalForAllCollection,
+    data,
+    value: '0x0',
+    nonce: '0x223',
+  },
+  verifiedOnBlockchain: status === TransactionStatus.confirmed,
+});
+
+const buildSetApprovalForAllGroup = (
+  transaction: ReturnType<typeof buildSetApprovalForAllTransaction>,
+) => ({
+  nonce: '0x223',
+  hasCancelled: false,
+  hasRetried: false,
+  initialTransaction: transaction,
+  primaryTransaction: transaction,
+  transactions: [transaction],
+});
+
+const setApprovalForAllGrantConfirmed = buildSetApprovalForAllTransaction(
+  setApprovalForAllGrantData,
+  TransactionStatus.confirmed,
+);
+const setApprovalForAllGrantPending = buildSetApprovalForAllTransaction(
+  setApprovalForAllGrantData,
+  TransactionStatus.submitted,
+);
+const setApprovalForAllRevokeConfirmed = buildSetApprovalForAllTransaction(
+  setApprovalForAllRevokeData,
+  TransactionStatus.confirmed,
+);
+const setApprovalForAllRevokePending = buildSetApprovalForAllTransaction(
+  setApprovalForAllRevokeData,
+  TransactionStatus.submitted,
+);
+
+const setApprovalForAllNoDataTransaction = {
+  chainId: CHAIN_IDS.BASE,
+  id: '1bf4c430-6e9e-11f1-bad9-45c68f3ed2fd',
+  hash: setApprovalForAllHash,
+  status: TransactionStatus.submitted,
+  time: 1782176077811,
+  type: TransactionType.tokenMethodSetApprovalForAll,
+  txParams: {
+    from: setApprovalForAllSender,
+    to: setApprovalForAllCollection,
+  },
+};
+
+export const setApprovalForAllAddresses = {
+  sender: setApprovalForAllSender,
+  collection: setApprovalForAllCollection,
+  hash: setApprovalForAllHash,
+};
+
 export const localStateFixtures = {
   // ERC-1155 purchase local state before API metadata is available.
   nftPurchaseErc1155: {
@@ -183,6 +268,36 @@ export const localStateFixtures = {
       initialTransaction: perpsDepositTransaction,
       primaryTransaction: perpsDepositTransaction,
       transactions: [perpsDepositTransaction],
+    },
+  },
+  setApprovalForAllGrantConfirmed: {
+    transactionGroup: buildSetApprovalForAllGroup(
+      setApprovalForAllGrantConfirmed,
+    ),
+  },
+  setApprovalForAllGrantPending: {
+    transactionGroup: buildSetApprovalForAllGroup(
+      setApprovalForAllGrantPending,
+    ),
+  },
+  setApprovalForAllRevokeConfirmed: {
+    transactionGroup: buildSetApprovalForAllGroup(
+      setApprovalForAllRevokeConfirmed,
+    ),
+  },
+  setApprovalForAllRevokePending: {
+    transactionGroup: buildSetApprovalForAllGroup(
+      setApprovalForAllRevokePending,
+    ),
+  },
+  setApprovalForAllMissingData: {
+    transactionGroup: {
+      nonce: '0x223',
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: setApprovalForAllNoDataTransaction,
+      primaryTransaction: setApprovalForAllNoDataTransaction,
+      transactions: [setApprovalForAllNoDataTransaction],
     },
   },
 };
