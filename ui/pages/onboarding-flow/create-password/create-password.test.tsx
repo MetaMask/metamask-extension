@@ -61,6 +61,9 @@ const backgroundConnectionMock = new Proxy(
 
 describe('Onboarding Create Password', () => {
   const mockState = {
+    confirmTransaction: {
+      txData: {},
+    },
     metamask: {
       internalAccounts: {
         accounts: {},
