@@ -179,11 +179,10 @@ describe('HomeDeepLinkActions', () => {
     },
   );
 
-  it('notifies Home to show the predict QR code for a predict deeplink URL', async () => {
+  it('dispatches setHomeDeepLinkQrCode for a valid predict deeplink URL', async () => {
     const deeplinkUrl =
       'https://link.metamask.io/predict?marketId=30615&sig_params=marketId&sig=signature&utm_source=twitter';
-    const onQrCodeDeepLink = jest.fn();
-    const { Wrapper } = createWrapper({
+    const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.PredictDeeplinkUrl]: deeplinkUrl,
@@ -191,12 +190,13 @@ describe('HomeDeepLinkActions', () => {
       isNetworkMenuOpen: false,
     });
 
-    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
-      wrapper: Wrapper,
-    });
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
 
     await waitFor(() => {
-      expect(onQrCodeDeepLink).toHaveBeenCalledWith({
+      const qrCode = (
+        store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+      ).appState.homeDeepLinkQrCode;
+      expect(qrCode).toEqual({
         deeplinkUrl,
         descriptionKey: 'deepLinkQrPredictDescription',
         titleKey: 'deepLinkQrPredictTitle',
@@ -205,8 +205,7 @@ describe('HomeDeepLinkActions', () => {
   });
 
   it('ignores predict QR deeplink params that do not point to /predict', () => {
-    const onQrCodeDeepLink = jest.fn();
-    const { Wrapper } = createWrapper({
+    const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.PredictDeeplinkUrl]:
@@ -215,10 +214,11 @@ describe('HomeDeepLinkActions', () => {
       isNetworkMenuOpen: false,
     });
 
-    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
-      wrapper: Wrapper,
-    });
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
 
-    expect(onQrCodeDeepLink).not.toHaveBeenCalled();
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
   });
 });
