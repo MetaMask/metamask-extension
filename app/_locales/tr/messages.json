@@ -4916,9 +4916,6 @@
   "metamaskFee": {
     "message": "MetaMask ücreti"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "Cüzdan bildirimleri şu anda aktif değil."
-  },
   "metamaskSwap": {
     "message": "MetaMask Takas"
   },
@@ -10325,9 +10322,6 @@
   },
   "totalVolume": {
     "message": "Toplam hacim"
-  },
-  "transaction": {
-    "message": "i̇şlem"
   },
   "transactionConfirmed": {
     "message": "İşlem onaylandı"

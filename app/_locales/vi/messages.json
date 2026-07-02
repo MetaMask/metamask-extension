@@ -4916,9 +4916,6 @@
   "metamaskFee": {
     "message": "Phí MetaMask"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "Thông báo ví hiện không hoạt động."
-  },
   "metamaskSwap": {
     "message": "MetaMask Hoán đổi"
   },
@@ -10325,9 +10322,6 @@
   },
   "totalVolume": {
     "message": "Tổng khối lượng giao dịch"
-  },
-  "transaction": {
-    "message": "giao dịch"
   },
   "transactionConfirmed": {
     "message": "Giao dịch đã được xác nhận"

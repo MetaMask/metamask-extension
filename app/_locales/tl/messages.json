@@ -4912,9 +4912,6 @@
   "metamaskFee": {
     "message": "Bayad sa MetaMask"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "Hindi active sa kasalukuyan ang mga notipikasyon sa wallet."
-  },
   "metamaskSwap": {
     "message": "Pag-swap sa MetaMask"
   },
@@ -10317,9 +10314,6 @@
   },
   "totalVolume": {
     "message": "Kabuuang volume"
-  },
-  "transaction": {
-    "message": "transaksyong"
   },
   "transactionConfirmed": {
     "message": "Nakumpirma ang transaksyon"

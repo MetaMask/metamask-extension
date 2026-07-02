@@ -4912,9 +4912,6 @@
   "metamaskFee": {
     "message": "MetaMask 费用"
   },
-  "metamaskNotificationsAreOff": {
-    "message": "钱包通知目前未开启。"
-  },
   "metamaskSwap": {
     "message": "MetaMask Swap"
   },
@@ -6803,6 +6800,9 @@
   "perpsFilterStocks": {
     "message": "股票"
   },
+  "perpsFundAgain": {
+    "message": "再次入金"
+  },
   "perpsFunding": {
     "message": "资金"
   },
@@ -7038,11 +7038,30 @@
   "perpsSlippageCustom": {
     "message": "自定义"
   },
+  "perpsSlippageEditAriaLabel": {
+    "message": "编辑最大滑移"
+  },
   "perpsSlippageExceeded": {
     "message": "滑移超出限制。请调整您的滑移容差，然后重试。"
   },
+  "perpsSlippageExceedsMax": {
+    "message": "预估滑移（$1%）超过您的最大滑移（$2%）。请提高上限或缩小订单规模。",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
   "perpsSlippageInputLabel": {
     "message": "最大滑移百分比"
+  },
+  "perpsSlippageOutOfRange": {
+    "message": "输入 $1% 至 $2% 之间的值",
+    "description": "$1 is min percent, $2 is max percent"
+  },
+  "perpsSlippageRowFormat": {
+    "message": "预估：$1% / 最大：$2%",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageRowFormatPending": {
+    "message": "预估：-- / 最大：$1%",
+    "description": "$1 is max slippage percent"
   },
   "perpsSlippageSet": {
     "message": "设置"
@@ -7708,6 +7727,10 @@
   "qrCameraAccessNeededTitle": {
     "message": "需要访问相机",
     "description": "Title when the camera permission dialog was dismissed without a choice."
+  },
+  "qrErrorMismatchedTransactionBody": {
+    "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",
+    "description": "Body text when a signature QR belongs to a previous transaction."
   },
   "qrErrorMismatchedTransactionTitle": {
     "message": "二维码错误",
@@ -10318,9 +10341,6 @@
   "totalVolume": {
     "message": "总交易额"
   },
-  "transaction": {
-    "message": "交易"
-  },
   "transactionConfirmed": {
     "message": "交易已确认"
   },
@@ -10411,6 +10431,10 @@
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
+  },
+  "trezorDesktopAppRequiredError": {
+    "message": "使用 Trezor 需要 Trezor Suite 桌面版。请安装并打开 Trezor Suite（suite.trezor.io）后重试。",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
     "message": "带宽"
