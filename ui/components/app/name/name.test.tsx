@@ -217,8 +217,6 @@ describe('Name', () => {
     ])(
       'sends displayed event with %s name',
       async (_: string, value: string, hasPetname: boolean) => {
-        mockTrackEvent.mockClear();
-
         useDisplayNameMock.mockReturnValue({
           name: hasPetname ? SAVED_NAME_MOCK : null,
           hasPetname,
