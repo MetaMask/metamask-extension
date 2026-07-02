@@ -24,6 +24,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -65,7 +66,7 @@ function RevealSeedPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { keyringId } = useParams<Record<string, string | undefined>>();
   const locationState = useLocation().state as RevealSeedLocationState | null;

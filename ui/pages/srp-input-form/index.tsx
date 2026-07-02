@@ -18,6 +18,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
 type SrpInputFormProps = {
@@ -47,7 +48,7 @@ const SrpInputForm = ({
   onSrpDetailsModalClose,
 }: SrpInputFormProps) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
 
   useEffect(() => {
