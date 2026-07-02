@@ -1,6 +1,11 @@
 import path from 'path';
 import { withFixtures } from '../helpers';
-import { E2E_SRP, WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
+import {
+  E2E_SRP,
+  HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+  WALLET_PASSWORD,
+  WINDOW_TITLES,
+} from '../constants';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
 import {
   computeSchemaDiff,
@@ -186,11 +191,16 @@ describe('Wallet State', function () {
           'Localhost 8545',
         );
 
-        // Fiat value should be displayed as we mock the price and that is not a 'test network'
-        await homePage.checkExpectedBalanceIsDisplayed(
-          DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
-          'ETH',
-        );
+        // Refresh re-hydrates the UI after network/settings changes (unified assets v10).
+        await driver.refresh();
+        await homePage.checkPageIsLoaded();
+
+        // Native ETH balance on localhost (native-balance setting enabled above).
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
+          symbol: 'ETH',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
 
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(10000);
