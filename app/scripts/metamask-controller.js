@@ -2994,14 +2994,6 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      setSelectedAddress: (address) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account) {
-          this.accountsController.setSelectedAccount(account.id);
-        } else {
-          throw new Error(`No account found for address: ${address}`);
-        }
-      },
       toggleExternalServices: this.toggleExternalServices.bind(this),
       addToken: async ({
         address,
@@ -5806,7 +5798,10 @@ export default class MetamaskController extends EventEmitter {
     const checkExistingCodeMap = {
       [DefiReferralPartner.GMX]: (account) =>
         checkGmxHasReferralCode(this.networkController, account),
-      [DefiReferralPartner.Hyperliquid]: checkHyperliquidHasReferralCode,
+      [DefiReferralPartner.Hyperliquid]: this.preferencesController.state
+        .useExternalServices
+        ? checkHyperliquidHasReferralCode
+        : undefined,
     };
 
     if (shouldShowApproval || shouldRedirect) {
