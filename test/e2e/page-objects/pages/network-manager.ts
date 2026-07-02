@@ -28,10 +28,8 @@ class NetworkManager {
   private readonly deselectedNetworkListItem = (selector: string) =>
     `:is(${selector}.multichain-network-list-item--deselected, ${selector} .multichain-network-list-item--deselected)`;
 
-  private readonly multichainNetworkListItemByName = (networkName: string) => ({
-    css: '.multichain-network-list-item',
-    text: networkName,
-  });
+  private readonly multichainNetworkListItemByName = (networkName: string) =>
+    `.multichain-network-list-item [data-testid="${networkName}"]`;
 
   private readonly networkItemDeleteOption = `[data-testid="network-list-item-options-delete"]`;
 
@@ -187,6 +185,14 @@ class NetworkManager {
     } catch (error) {
       throw new Error(`Network ${networkName} is selected`);
     }
+  }
+
+  async checkNetworkIsListed(networkName: string): Promise<void> {
+    console.log(`Checking if network is listed: ${networkName}`);
+    await this.driver.waitForSelector(
+      this.multichainNetworkListItemByName(networkName),
+    );
+    console.log(`Network ${networkName} is listed`);
   }
 
   async waitForCategoryContent(networkCategory: string): Promise<void> {
