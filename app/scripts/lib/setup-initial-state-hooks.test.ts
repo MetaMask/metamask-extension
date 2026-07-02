@@ -4,6 +4,8 @@ const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
 const mockPersistenceOn = jest.fn();
+const mockCaptureException = jest.fn();
+const mockCaptureMessage = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -22,6 +24,11 @@ jest.mock('../constants/sentry-state', () => ({
 
 jest.mock('../../../shared/lib/object.utils', () => ({
   maskObject: jest.fn((obj) => obj),
+}));
+
+jest.mock('../../../shared/lib/sentry', () => ({
+  captureException: mockCaptureException,
+  captureMessage: mockCaptureMessage,
 }));
 
 jest.mock('../../../shared/lib/stores/extension-store', () => {
@@ -71,6 +78,20 @@ function setSelfHref(href: string): void {
   });
 }
 
+function getPersistenceListener<TPayload>(
+  eventName: string,
+): (payload: TPayload) => void {
+  const listener = mockPersistenceOn.mock.calls.find(
+    ([registeredEventName]) => registeredEventName === eventName,
+  )?.[1];
+
+  if (typeof listener !== 'function') {
+    throw new Error(`No listener registered for ${eventName}`);
+  }
+
+  return listener as (payload: TPayload) => void;
+}
+
 describe('setup-initial-state-hooks', () => {
   const originalSelf = globalThis.self;
 
@@ -79,6 +100,8 @@ describe('setup-initial-state-hooks', () => {
     mockMostRecentRetrievedState = null;
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
+    mockCaptureException.mockClear();
+    mockCaptureMessage.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -190,7 +213,15 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      expect(mockPersistenceOn).toHaveBeenCalledTimes(3);
+      expect(mockPersistenceOn).toHaveBeenCalledTimes(5);
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'persistenceError',
+        expect.any(Function),
+      );
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'persistenceRecovered',
+        expect.any(Function),
+      );
       expect(mockPersistenceOn).toHaveBeenCalledWith(
         'vaultCorruptionDetected',
         expect.any(Function),
@@ -202,6 +233,44 @@ describe('setup-initial-state-hooks', () => {
       expect(mockPersistenceOn).toHaveBeenCalledWith(
         'splitStateMigrationFailed',
         expect.any(Function),
+      );
+    });
+
+    it('reports persistence errors to Sentry', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      const error = new Error('storage failed');
+      const listener = getPersistenceListener<{
+        error: Error;
+        type: 'get-failed';
+      }>('persistenceError');
+
+      listener({ error, type: 'get-failed' });
+
+      expect(mockCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'get-failed' },
+        fingerprint: ['persistence-error', 'get-failed'],
+      });
+    });
+
+    it('reports persistence recovery to Sentry', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      const listener = getPersistenceListener<{
+        type: 'persist-recovered';
+      }>('persistenceRecovered');
+
+      listener({ type: 'persist-recovered' });
+
+      expect(mockCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'persist-recovered' },
+          fingerprint: ['persistence-event', 'persist-recovered'],
+        },
       );
     });
   });
@@ -221,7 +290,22 @@ describe('setup-initial-state-hooks', () => {
 
       await globalThis.stateHooks.getPersistedState();
 
-      expect(mockGet).toHaveBeenCalledWith({ validateVault: false });
+      expect(mockGet).toHaveBeenCalledWith({
+        validateVault: false,
+        reportErrors: true,
+      });
+    });
+
+    it('getPersistedState can disable error reporting', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      await globalThis.stateHooks.getPersistedState({ reportErrors: false });
+
+      expect(mockGet).toHaveBeenCalledWith({
+        validateVault: false,
+        reportErrors: false,
+      });
     });
 
     it('registers getBackupState on globalThis.stateHooks', async () => {

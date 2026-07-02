@@ -3,7 +3,6 @@
 import 'navigator.locks';
 import log from 'loglevel';
 
-import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { PersistenceManager } from './persistence-manager';
 import { IndexedDBStore } from './indexeddb-store';
@@ -31,17 +30,11 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
   info: jest.fn(),
 }));
-jest.mock('../sentry', () => ({
-  captureException: jest.fn(),
-  captureMessage: jest.fn(),
-}));
 jest.mock('../trace', () => ({
   trace: jest.fn(),
   endTrace: jest.fn(),
   TraceName: {},
 }));
-const mockedCaptureException = jest.mocked(captureException);
-const mockedCaptureMessage = jest.mocked(captureMessage);
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
@@ -50,6 +43,14 @@ describe('PersistenceManager', () => {
     jest.clearAllMocks();
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
   });
+
+  function listenForDiagnostics(instance = manager) {
+    const persistenceError = jest.fn();
+    const persistenceRecovered = jest.fn();
+    instance.on('persistenceError', persistenceError);
+    instance.on('persistenceRecovered', persistenceRecovered);
+    return { persistenceError, persistenceRecovered };
+  }
 
   describe('open', () => {
     it('serializes concurrent open calls so the backup IndexedDB open runs once', async () => {
@@ -101,7 +102,8 @@ describe('PersistenceManager', () => {
       expect(error).toBeUndefined();
     });
 
-    it('logs error and captures exception if store.set throws', async () => {
+    it('logs error and emits a persistence error if store.set throws', async () => {
+      const { persistenceError } = listenForDiagnostics();
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
@@ -110,9 +112,9 @@ describe('PersistenceManager', () => {
       const [result, persistError] = await manager.set({
         appState: { broken: true },
       });
-      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
-        tags: { 'persistence.error': 'set-failed' },
-        fingerprint: ['persistence-error', 'set-failed'],
+      expect(persistenceError).toHaveBeenCalledWith({
+        error,
+        type: 'set-failed',
       });
       expect(result).toBe(false);
       expect(persistError).toBe(error);
@@ -122,7 +124,8 @@ describe('PersistenceManager', () => {
       );
     });
 
-    it('captures exception only once if store.set is called and throws multiple times', async () => {
+    it('emits a persistence error only once if store.set is called and throws multiple times', async () => {
+      const { persistenceError } = listenForDiagnostics();
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
@@ -131,10 +134,11 @@ describe('PersistenceManager', () => {
       await manager.set({ appState: { broken: true } });
       await manager.set({ appState: { broken: true } });
 
-      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+      expect(persistenceError).toHaveBeenCalledTimes(1);
     });
 
-    it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
+    it('emits a persistence error twice if store.set fails, then succeeds and then fails again', async () => {
+      const { persistenceError } = listenForDiagnostics();
       manager.setMetadata({ version: 17 });
 
       const error = new Error('store.set error');
@@ -151,10 +155,11 @@ describe('PersistenceManager', () => {
 
       await manager.set({ appState: { broken: true } });
 
-      expect(mockedCaptureException).toHaveBeenCalledTimes(2);
+      expect(persistenceError).toHaveBeenCalledTimes(2);
     });
 
-    it('tracks recovery with captureMessage when store.set fails then succeeds', async () => {
+    it('emits a recovery event when store.set fails then succeeds', async () => {
+      const { persistenceError, persistenceRecovered } = listenForDiagnostics();
       manager.setMetadata({ version: 17 });
 
       const error = new Error('store.set error');
@@ -163,32 +168,28 @@ describe('PersistenceManager', () => {
       // First set fails
       await manager.set({ appState: { broken: true } });
 
-      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
-      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+      expect(persistenceError).toHaveBeenCalledTimes(1);
+      expect(persistenceRecovered).not.toHaveBeenCalled();
 
       // Second set succeeds - should trigger recovery tracking
       mockStoreSet.mockResolvedValueOnce(undefined);
       await manager.set({ appState: { fixed: true } });
 
-      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
-      expect(mockedCaptureMessage).toHaveBeenCalledWith(
-        'Data persistence recovered after temporary failure',
-        {
-          level: 'info',
-          tags: { 'persistence.event': 'set-recovered' },
-          fingerprint: ['persistence-event', 'set-recovered'],
-        },
-      );
+      expect(persistenceRecovered).toHaveBeenCalledTimes(1);
+      expect(persistenceRecovered).toHaveBeenCalledWith({
+        type: 'set-recovered',
+      });
     });
 
     it('does not track recovery if set never failed', async () => {
+      const { persistenceRecovered } = listenForDiagnostics();
       manager.setMetadata({ version: 17 });
 
       // Set succeeds without prior failure
       mockStoreSet.mockResolvedValueOnce(undefined);
       await manager.set({ appState: { working: true } });
 
-      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+      expect(persistenceRecovered).not.toHaveBeenCalled();
     });
   });
 
@@ -215,6 +216,41 @@ describe('PersistenceManager', () => {
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: MOCK_DATA,
       });
+    });
+
+    it('emits a persistence error if store.get throws', async () => {
+      const { persistenceError } = listenForDiagnostics();
+      const error = new Error('store.get error');
+      mockStoreGet.mockRejectedValueOnce(error);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        error,
+      );
+
+      expect(persistenceError).toHaveBeenCalledWith({
+        error,
+        type: 'get-failed',
+      });
+      expect(log.error).toHaveBeenCalledWith(
+        'Error retrieving the current state of the local store:',
+        error,
+      );
+    });
+
+    it('does not emit a persistence error if reporting is disabled and store.get throws', async () => {
+      const { persistenceError } = listenForDiagnostics();
+      const error = new Error('store.get error');
+      mockStoreGet.mockRejectedValueOnce(error);
+
+      await expect(
+        manager.get({ validateVault: false, reportErrors: false }),
+      ).rejects.toThrow(error);
+
+      expect(persistenceError).not.toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith(
+        'Error retrieving the current state of the local store:',
+        error,
+      );
     });
 
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
@@ -383,7 +419,8 @@ describe('PersistenceManager', () => {
       expect(passedMap.get('BarController')).toBeUndefined();
     });
 
-    it('logs error and captures exception if store.setKeyValues throws', async () => {
+    it('logs error and emits a persistence error if store.setKeyValues throws', async () => {
+      const { persistenceError } = listenForDiagnostics();
       manager.setMetadata({ version: 10 });
       manager.update('FooController', { foo: 'bar' });
 
@@ -392,9 +429,9 @@ describe('PersistenceManager', () => {
 
       const [result, persistError] = await manager.persist();
 
-      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
-        tags: { 'persistence.error': 'persist-failed' },
-        fingerprint: ['persistence-error', 'persist-failed'],
+      expect(persistenceError).toHaveBeenCalledWith({
+        error,
+        type: 'persist-failed',
       });
       expect(result).toBe(false);
       expect(persistError).toBe(error);
@@ -433,7 +470,8 @@ describe('PersistenceManager', () => {
       /* eslint-enable jest/prefer-strict-equal */
     });
 
-    it('captures exception only once if store.setKeyValues throws multiple times', async () => {
+    it('emits a persistence error only once if store.setKeyValues throws multiple times', async () => {
+      const { persistenceError } = listenForDiagnostics();
       manager.setMetadata({ version: 10 });
       manager.update('FooController', { foo: 'bar' });
 
@@ -443,10 +481,11 @@ describe('PersistenceManager', () => {
       await manager.persist();
       await manager.persist();
 
-      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+      expect(persistenceError).toHaveBeenCalledTimes(1);
     });
 
-    it('captures exception twice if store.setKeyValues fails, then succeeds and then fails again', async () => {
+    it('emits a persistence error twice if store.setKeyValues fails, then succeeds and then fails again', async () => {
+      const { persistenceError } = listenForDiagnostics();
       manager.setMetadata({ version: 17 });
       manager.update('FooController', { foo: 'bar' });
 
@@ -461,7 +500,7 @@ describe('PersistenceManager', () => {
       mockStoreSetKeyValues.mockRejectedValueOnce(error);
       await manager.persist();
 
-      expect(mockedCaptureException).toHaveBeenCalledTimes(2);
+      expect(persistenceError).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -558,15 +597,16 @@ describe('PersistenceManager', () => {
       brokenManager = new PersistenceManager({
         localStore: new ExtensionStore(),
       });
+      const { persistenceError } = listenForDiagnostics(brokenManager);
       await brokenManager.open();
 
       // We don't have a valid indexedDB database to use, so `getBackup` now
       // returns `undefined`
       expect(await brokenManager.getBackup()).toBeUndefined();
 
-      expect(mockedCaptureException).toHaveBeenCalledWith(domException, {
-        tags: { 'persistence.error': 'backup-db-open-failed' },
-        fingerprint: ['persistence-error', 'backup-db-open-failed'],
+      expect(persistenceError).toHaveBeenCalledWith({
+        error: domException,
+        type: 'backup-db-open-failed',
       });
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Could not open backup database; automatic vault recovery will not be available.',
@@ -586,7 +626,6 @@ describe('PersistenceManager', () => {
       await expect(brokenManager.open()).rejects.toThrow(randomError);
       // in the application any other start up errors would be handled
       // further up the stack. Logging them here would be redundant.
-      expect(mockedCaptureException).not.toHaveBeenCalled();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
       expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
