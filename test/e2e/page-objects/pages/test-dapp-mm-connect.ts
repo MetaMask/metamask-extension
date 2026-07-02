@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 
 /**
  * Page object for MM Connect Test Dapp
- * Package: @metamask/browser-playground | Repo: metamask/connect-monorepo
+ * Package: @metamask/browser-playground | Repo: metamask/metamask-connect
  *
  * The dapp is served at DAPP_URL (port 8080 when no default test-dapps
  * are running alongside it).
