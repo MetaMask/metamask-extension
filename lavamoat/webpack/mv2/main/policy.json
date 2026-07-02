@@ -2567,6 +2567,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
+        "@metamask/network-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/storage-service": true,
         "@metamask/utils": true
