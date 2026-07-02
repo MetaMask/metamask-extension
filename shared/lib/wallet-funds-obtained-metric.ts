@@ -8,8 +8,6 @@ import {
   hexToNumber,
 } from '@metamask/utils';
 import { MetaMetricsEventName } from '../constants/metametrics';
-import { createEventBuilder } from './analytics/create-event-builder';
-import type { AnalyticsEvent } from './analytics/create-event-builder';
 
 /**
  * Predefined buckets for categorizing USD amounts in analytics
@@ -92,39 +90,12 @@ export const hasNonZeroMultichainBalance = (
 };
 
 /**
- * Creates the analytics event for the WalletFundsObtained metric event
+ * Creates the event properties object for the WalletFundsObtained metric event
  *
  * @param params
  * @param params.chainId - The chain ID where funds were obtained
  * @param params.amountUsd - The USD value of the funds received
- * @returns Built analytics event for wallet funds obtained tracking
- */
-export const getWalletFundsObtainedEvent = ({
-  chainId,
-  amountUsd,
-}: {
-  chainId: number;
-  amountUsd: string;
-}): AnalyticsEvent => {
-  return createEventBuilder(MetaMetricsEventName.WalletFundsObtained)
-    .addProperties({
-      timestamp: getMidnightISOTimestamp(),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      chain_id_caip: toCaipChainId(
-        KnownCaipNamespace.Eip155,
-        chainId.toString(),
-      ),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      funding_amount_usd: getAmountBucket(amountUsd),
-    })
-    .build();
-};
-
-/**
- * @param options0
- * @param options0.chainId
- * @param options0.amountUsd
- * @deprecated Use {@link getWalletFundsObtainedEvent} instead.
+ * @returns Complete event object with event name, timestamp, and properties
  */
 export const getWalletFundsObtainedEventProperties = ({
   chainId,
@@ -133,16 +104,17 @@ export const getWalletFundsObtainedEventProperties = ({
   chainId: number;
   amountUsd: string;
 }) => {
-  const event = getWalletFundsObtainedEvent({ chainId, amountUsd });
-
   return {
-    event: event.name,
-    timestamp: event.properties.timestamp as string,
+    event: MetaMetricsEventName.WalletFundsObtained,
+    timestamp: getMidnightISOTimestamp(),
     properties: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      chain_id_caip: event.properties.chain_id_caip,
+      chain_id_caip: toCaipChainId(
+        KnownCaipNamespace.Eip155,
+        chainId.toString(),
+      ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      funding_amount_usd: event.properties.funding_amount_usd,
+      funding_amount_usd: getAmountBucket(amountUsd),
     },
   };
 };

@@ -14,11 +14,11 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import { AssetsControllerGetStateAction } from '@metamask/assets-controller';
 import type { AppStateControllerSetCanTrackWalletFundsObtainedAction } from '../controllers/app-state-controller-method-action-types';
 import type { OnboardingControllerGetStateAction } from '../controllers/onboarding';
-import { trackEvent } from '../controllers/analytics';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import {
   hasNonZeroTokenBalance,
   hasNonZeroMultichainBalance,
-  getWalletFundsObtainedEvent,
+  getWalletFundsObtainedEventProperties,
 } from '../../../shared/lib/wallet-funds-obtained-metric';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
@@ -151,11 +151,18 @@ export class WalletFundsObtainedMonitor {
           : lastNotification.payload.data.amount.usd;
 
       if (chainId && amountUsd) {
+        const walletFundsObtainedEvent = getWalletFundsObtainedEventProperties({
+          chainId,
+          amountUsd,
+        });
+
         trackEvent(
-          getWalletFundsObtainedEvent({
-            chainId,
-            amountUsd,
-          }),
+          createEventBuilder(walletFundsObtainedEvent.event)
+            .addProperties({
+              timestamp: walletFundsObtainedEvent.timestamp,
+              ...walletFundsObtainedEvent.properties,
+            })
+            .build(),
         );
 
         this.#messenger.call(

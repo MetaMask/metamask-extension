@@ -96,9 +96,7 @@ export const NetworkControllerInit: MessengerClientInitFunction<
     },
   );
 
-  if (typeof messengerClient.init === 'function') {
-    messengerClient.init();
-  }
+  messengerClient.init();
 
   return {
     messengerClient,

@@ -11,7 +11,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { TransactionMetaMetricsEvent } from '../../../../shared/constants/transaction';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
-import { trackEvent } from '../../controllers/analytics';
+import { trackEvent, canSubmitAnalytics } from '../../controllers/analytics';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -23,11 +23,21 @@ import {
   handleTransactionSubmitted,
 } from './metrics';
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
-  trackEvent: jest.fn(),
-}));
+jest.mock('../../controllers/analytics', () => {
+  const actual = jest.requireActual('../../controllers/analytics');
+  const canSubmitAnalytics = jest.fn().mockReturnValue(true);
+  const trackEvent = jest.fn((built) => {
+    if (!canSubmitAnalytics(built.name)) {
+      return;
+    }
+  });
+
+  return {
+    ...actual,
+    canSubmitAnalytics,
+    trackEvent,
+  };
+});
 
 jest.mock('../../../../shared/lib/transaction.utils', () => ({
   ...jest.requireActual('../../../../shared/lib/transaction.utils'),
@@ -96,9 +106,11 @@ const createTxMeta = (overrides = {}) =>
 
 describe('transaction metrics handlers', () => {
   const trackEventMock = jest.mocked(trackEvent);
+  const canSubmitAnalyticsMock = jest.mocked(canSubmitAnalytics);
 
   beforeEach(() => {
     jest.clearAllMocks();
+    canSubmitAnalyticsMock.mockReturnValue(true);
   });
 
   it('tracks added event', async () => {
@@ -325,6 +337,21 @@ describe('transaction metrics handlers', () => {
       'approve',
       'transfer',
     ]);
+  });
+
+  it('does not track post transaction balance update when metrics opted out', async () => {
+    canSubmitAnalyticsMock.mockReturnValue(false);
+    const request = createRequest();
+    const transactionMeta = createTxMeta({
+      swapMetaData: { token_to_amount: '10' },
+      txReceipt: { status: '0x0' },
+    });
+
+    await handlePostTransactionBalanceUpdate(request, { transactionMeta });
+
+    expect(canSubmitAnalyticsMock).toHaveBeenCalledWith(
+      MetaMetricsEventName.SwapFailed,
+    );
   });
 
   it('does not track post transaction balance update when no swap metadata', async () => {
