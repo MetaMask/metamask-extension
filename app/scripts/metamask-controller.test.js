@@ -79,6 +79,7 @@ import {
 } from '../../shared/constants/defi-referrals';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
+import { trace, endTrace, TraceName } from '../../shared/lib/trace';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
 import * as utils from './lib/util';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -6176,6 +6177,59 @@ describe('MetaMaskController', () => {
       );
 
       warnSpy.mockRestore();
+    });
+
+    it('emits a backdated Discover Accounts span when accounts were discovered', async () => {
+      trace.mockClear();
+      endTrace.mockClear();
+
+      const wallet = {
+        discoverAccounts: jest
+          .fn()
+          .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
+      };
+
+      jest
+        .spyOn(
+          metamaskController.multichainAccountService,
+          'getMultichainAccountWallet',
+        )
+        .mockReturnValue(wallet);
+
+      await metamaskController.discoverAndCreateAccounts('test-keyring-id');
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.DiscoverAccounts,
+          startTime: expect.any(Number),
+        }),
+      );
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+      });
+    });
+
+    it('does not emit a Discover Accounts span when nothing was discovered', async () => {
+      trace.mockClear();
+      endTrace.mockClear();
+
+      const wallet = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+
+      jest
+        .spyOn(
+          metamaskController.multichainAccountService,
+          'getMultichainAccountWallet',
+        )
+        .mockReturnValue(wallet);
+
+      const result =
+        await metamaskController.discoverAndCreateAccounts('test-keyring-id');
+
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
+      expect(trace).not.toHaveBeenCalled();
+      expect(endTrace).not.toHaveBeenCalled();
     });
   });
 
