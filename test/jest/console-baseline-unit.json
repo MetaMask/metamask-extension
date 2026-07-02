@@ -945,9 +945,6 @@
     "ui/pages/home/home.container.test.tsx": {
       "Reselect: Input stability warnings": 1
     },
-    "ui/pages/keychains/restore-vault.test.tsx": {
-      "MetaMask: Background connection not initialized": 2
-    },
     "ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.test.tsx": {
       "React: Missing key props in lists": 1
     },
@@ -992,9 +989,6 @@
     "ui/pages/onboarding-flow/privacy-settings/privacy-settings.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1
-    },
-    "ui/pages/onboarding-flow/setup-passkey/setup-passkey.test.tsx": {
-      "MetaMask: Background connection not initialized": 36
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5
@@ -1134,7 +1128,7 @@
       "MetaMask: Background connection not initialized": 4
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 8
+      "MetaMask: Background connection not initialized": 1
     },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2
