@@ -6,9 +6,9 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
-  IconSize,
   IconColor,
 } from '@metamask/design-system-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -382,13 +382,13 @@ export const AmountInput = ({
           <Text variant={TextVariant.BodySm}>
             {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </Text>
-          <Icon
-            name={IconName.AddCircle}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-            aria-label="Add Funds"
+          <ButtonIcon
+            iconName={IconName.AddCircle}
+            size={ButtonIconSize.Xs}
+            iconProps={{ color: IconColor.IconAlternative }}
+            ariaLabel="Add Funds"
+            type="button"
             onClick={onAddFunds}
-            className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
             data-testid="amount-input-add-funds"
           />
         </Box>
@@ -435,13 +435,13 @@ export const AmountInput = ({
             >
               {isUsdDenomination ? 'USD' : getDisplaySymbol(asset)}
             </Text>
-            <Icon
-              name={IconName.SwapHorizontal}
-              size={IconSize.Sm}
-              color={IconColor.IconAlternative}
-              aria-label="Toggle size denomination"
+            <ButtonIcon
+              iconName={IconName.SwapHorizontal}
+              size={ButtonIconSize.Xs}
+              iconProps={{ color: IconColor.IconAlternative }}
+              ariaLabel="Toggle size denomination"
+              type="button"
               onClick={handleToggleDenomination}
-              className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
               data-testid="toggle-denomination"
             />
           </Box>
