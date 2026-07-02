@@ -3,6 +3,7 @@ import browser from 'webextension-polyfill';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { errorCodes } from '@metamask/rpc-errors';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
@@ -123,6 +124,14 @@ export default class ExtensionPlatform {
   async showTransactionNotification(txMeta, rpcPrefs) {
     const { status, txReceipt: { status: receiptStatus } = {} } = txMeta;
 
+    // Temporary verbose logging for HW QA – remove before merge.
+    // eslint-disable-next-line no-console
+    console.log('[showTransactionNotification] txMeta', txMeta);
+    // eslint-disable-next-line no-console
+    console.log('[showTransactionNotification] status', status);
+    // eslint-disable-next-line no-console
+    console.log('[showTransactionNotification] receiptStatus', receiptStatus);
+
     if (status === TransactionStatus.confirmed) {
       // There was an on-chain failure
       receiptStatus === '0x0'
@@ -131,14 +140,49 @@ export default class ExtensionPlatform {
             'Transaction encountered an error.',
           )
         : await this._showConfirmedTransaction(txMeta, rpcPrefs);
-    } else if (status === TransactionStatus.failed) {
+    } else if (
+      status === TransactionStatus.failed ||
+      status === TransactionStatus.rejected
+    ) {
+      // eslint-disable-next-line no-console
+      console.log(
+        '[showTransactionNotification] failed/rejected txMeta.error',
+        txMeta.error,
+      );
+
+      // TransactionController persists EIP-1193 `userRejectedRequest` (4001) for HW
+      // cancellations; only branch on that code here.
       if (txMeta.error?.message?.includes('EthAppNftNotSupported')) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[showTransactionNotification] EthAppNftNotSupported matched, using ledger-specific copy',
+        );
         await this._showFailedTransaction(
           txMeta,
           t('ledgerEthAppNftNotSupportedNotification'),
         );
+      } else if (
+        String(txMeta.error?.code) ===
+        String(errorCodes.provider.userRejectedRequest)
+      ) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[showTransactionNotification] error.code is userRejectedRequest (4001) – using HW user-rejection copy',
+        );
+        await this._showFailedTransaction(
+          txMeta,
+          t('notificationTransactionFailedUserRejectedMessage'),
+        );
       } else {
-        await this._showFailedTransaction(txMeta);
+        // eslint-disable-next-line no-console
+        console.log(
+          '[showTransactionNotification] generic failure path, forwarding message/stack',
+          txMeta.error,
+        );
+        await this._showFailedTransaction(
+          txMeta,
+          txMeta.error?.message || txMeta.error?.stack,
+        );
       }
     }
   }
@@ -213,12 +257,36 @@ export default class ExtensionPlatform {
   }
 
   async _showFailedTransaction(txMeta, errorMessage) {
+    // Temporary verbose logging for HW QA – remove before merge.
+    // eslint-disable-next-line no-console
+    console.log('[showFailedTransaction] txMeta', txMeta);
+    // eslint-disable-next-line no-console
+    console.log('[showFailedTransaction] raw errorMessage arg', errorMessage);
+    // eslint-disable-next-line no-console
+    console.log(
+      '[showFailedTransaction] txMeta.error',
+      txMeta.error,
+      'txMeta.error.message',
+      txMeta.error?.message,
+      'txMeta.error.stack',
+      txMeta.error?.stack,
+    );
+
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
-    const errorMessageText = errorMessage || txMeta.error.message;
+    const resolvedErrorMessage =
+      errorMessage || txMeta.error?.message || txMeta.error?.stack;
+    // eslint-disable-next-line no-console
+    console.log(
+      '[showFailedTransaction] resolvedErrorMessage used in notification',
+      resolvedErrorMessage,
+    );
     const message = Number.isNaN(nonce)
-      ? t('notificationTransactionWithoutNonceFailedMessage', errorMessageText)
-      : t('notificationTransactionFailedMessage', nonce, errorMessageText);
+      ? t(
+          'notificationTransactionWithoutNonceFailedMessage',
+          resolvedErrorMessage,
+        )
+      : t('notificationTransactionFailedMessage', nonce, resolvedErrorMessage);
     await this._showNotification(title, message);
   }
 
