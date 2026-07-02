@@ -141,8 +141,6 @@ jobs:
     timeout-minutes: 30
     needs:
       - prepare
-    # actions: write gives the job token a writable scope so actions/cache/save
-    # can write the updated-fixtures cache (see the prepare job for details).
     permissions:
       contents: read
       actions: write
