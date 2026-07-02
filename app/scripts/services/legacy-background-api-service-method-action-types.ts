@@ -197,6 +197,16 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 };
 
 /**
+ * Sets the currently selected internal account.
+ *
+ * @param id - The ID of the account to set as selected.
+ */
+export type LegacyBackgroundApiServiceSetSelectedInternalAccountAction = {
+  type: `LegacyBackgroundApiService:setSelectedInternalAccount`;
+  handler: LegacyBackgroundApiService['setSelectedInternalAccount'];
+};
+
+/**
  * Returns the next nonce according to the nonce-tracker
  *
  * @param address - The hex string address for the transaction
@@ -364,6 +374,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRemovePermissionsForAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
+  | LegacyBackgroundApiServiceSetSelectedInternalAccountAction
   | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceChangePasswordAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction

@@ -46,6 +46,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'OnboardingController:getIsSocialLoginFlow',
       'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
+      'AccountsController:getAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
