@@ -29,6 +29,7 @@ import {
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
+  AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
@@ -173,6 +174,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'removeAccount',
   'removePermissionsFor',
   'resetAccount',
+  'setAccountLabel',
   'setCurrentCurrency',
   'setLocked',
   'submitPasswordOrEncryptionKey',
@@ -193,6 +195,7 @@ type AllowedActions =
   | AccountTreeControllerInitAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
   | ApprovalControllerGetStateAction
@@ -610,6 +613,27 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call('KeyringController:removeAccount', address);
 
     return address;
+  }
+
+  /**
+   * Sets the label for the account at the given address.
+   *
+   * @param address - The address of the account to set the label for.
+   * @param label - The label to set for the account.
+   */
+  setAccountLabel(address: string, label: string): void {
+    const account = this.#messenger.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
+    if (account === undefined) {
+      throw new Error(`No account found for address: ${address}`);
+    }
+    this.#messenger.call(
+      'AccountsController:setAccountName',
+      account.id,
+      label,
+    );
   }
 
   /**
