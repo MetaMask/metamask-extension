@@ -14,6 +14,10 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
+import {
+  getNetworkControllerInstanceOptions,
+  setupRpcEndpointMetrics,
+} from './instance-options/network-controller';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -42,12 +46,14 @@ export type WalletInitMessenger = RootMessenger<
  * approval request to the user.
  * @param options.connectivityAdapter - Adapter that observes the device's
  * network connectivity.
+ * @param options.infuraProjectId - The Infura project ID.
  * @returns The constructed `Wallet`.
  */
 export function initializeWallet({
   messenger,
   state,
   encryptor,
+  infuraProjectId,
   showApprovalRequest,
   connectivityAdapter,
 }: {
@@ -56,6 +62,7 @@ export function initializeWallet({
   encryptor?: Encryptor;
   showApprovalRequest?: ShowApprovalRequest;
   connectivityAdapter: ConnectivityAdapter;
+  infuraProjectId: string;
 }) {
   const wallet = new Wallet({
     messenger,
@@ -71,6 +78,7 @@ export function initializeWallet({
         messenger,
         encryptor,
       }),
+      networkController: getNetworkControllerInstanceOptions(infuraProjectId),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),
@@ -92,6 +100,10 @@ export function initializeWallet({
         state.OnboardingController?.completedOnboarding === true,
     },
   });
+
+  setupRpcEndpointMetrics(infuraProjectId, messenger);
+
+  wallet.init().catch((error) => console.error(error));
 
   return wallet;
 }

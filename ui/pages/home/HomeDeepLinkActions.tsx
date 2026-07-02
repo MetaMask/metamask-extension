@@ -48,6 +48,17 @@ export const useHomeDeepLinkEffects = () => {
     }
   }, [dispatch, isNetworkMenuOpen]);
 
+  const openBatchSellQrCodeModal = useCallback(
+    (deeplinkUrl: string) => {
+      onQrCodeDeepLink?.({
+        deeplinkUrl,
+        descriptionKey: 'deepLinkQrBatchSellDescription',
+        titleKey: 'deepLinkQrBatchSellTitle',
+      });
+    },
+    [onQrCodeDeepLink],
+  );
+
   const openPredictQrCodeModal = useCallback(
     (deeplinkUrl: string) => {
       dispatch(
@@ -69,6 +80,11 @@ export const useHomeDeepLinkEffects = () => {
     }
   > = useMemo(
     () => ({
+      [HomeQueryParams.BatchSellDeeplinkUrl]: {
+        isValidParam: (param?: string) =>
+          isDeepLinkUrlForPath(param, '/batch-sell'),
+        action: openBatchSellQrCodeModal,
+      },
       [HomeQueryParams.OpenNetworkSelector]: {
         isValidParam: (param?: string) => param?.toLowerCase() === 'true',
         action: openNetworkSelectorModal,
@@ -79,7 +95,11 @@ export const useHomeDeepLinkEffects = () => {
         action: openPredictQrCodeModal,
       },
     }),
-    [openNetworkSelectorModal, openPredictQrCodeModal],
+    [
+      openBatchSellQrCodeModal,
+      openNetworkSelectorModal,
+      openPredictQrCodeModal,
+    ],
   );
 
   const clearDeepLinkParams = useCallback(() => {

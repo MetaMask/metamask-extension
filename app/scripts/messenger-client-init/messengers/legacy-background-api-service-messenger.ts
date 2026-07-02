@@ -52,6 +52,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:rejectPermissionsRequest',
+      'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
@@ -61,6 +62,9 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
       'MetaMetricsController:trackEvent',
+      'MetaMetricsController:createEventFragment',
+      'MetaMetricsController:getEventFragmentById',
+      'MetaMetricsController:updateEventFragment',
       'KeyringController:verifyPassword',
       'KeyringController:exportAccount',
       'KeyringController:changePassword',
@@ -92,6 +96,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'TransactionController:isAtomicBatchSupported',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
+      'PermissionController:acceptPermissionsRequest',
     ],
   });
 
