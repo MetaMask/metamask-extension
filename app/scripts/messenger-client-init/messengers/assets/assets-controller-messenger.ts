@@ -64,7 +64,6 @@ export function getAssetsControllerMessenger(
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- runtime event is stateChange
       // @ts-expect-error Package types expect ClientController:stateChanged
       'ClientController:stateChange',
       'NetworkEnablementController:stateChange',
@@ -78,7 +77,6 @@ export function getAssetsControllerMessenger(
       'PermissionController:stateChange',
       'SnapController:snapInstalled',
       'PreferencesController:stateChange',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- runtime event is stateChange
       // @ts-expect-error Package types expect AccountTreeController:stateChanged
       'AccountTreeController:stateChange',
       'TransactionController:transactionConfirmed',
