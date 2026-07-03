@@ -59,7 +59,7 @@ async function broadcastBitcoinSend(
   const sendPage = new SendPage(driver);
   await homePage.startSendFlow();
   await sendPage.selectToken(BTC_CHAIN_ID, 'BTC');
-  await sendPage.fillRecipient(recipient);
+  await sendPage.fillRecipient({ recipientAddress: recipient });
   await sendPage.fillAmount(amount);
   await sendPage.isContinueButtonEnabled();
   await sendPage.pressContinueButton();
