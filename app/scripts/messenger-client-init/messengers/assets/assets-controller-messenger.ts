@@ -5,6 +5,10 @@ import {
 } from '@metamask/messenger';
 import type { AssetsControllerMessenger } from '@metamask/assets-controller';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
+import type {
+  AccountsControllerAccountAddedEvent,
+  AccountsControllerListMultichainAccountsAction,
+} from '@metamask/accounts-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import {
   OnboardingControllerGetStateAction,
@@ -94,12 +98,15 @@ type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
   | SnapControllerHandleRequestAction
   | PreferencesControllerGetStateAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | AccountsControllerListMultichainAccountsAction;
 
 /**
  * Events needed during AssetsController initialization.
  */
-type AllowedInitializationEvents = OnboardingControllerStateChangeEvent;
+type AllowedInitializationEvents =
+  | OnboardingControllerStateChangeEvent
+  | AccountsControllerAccountAddedEvent;
 
 /**
  * Get a restricted messenger for AssetsController initialization.
@@ -131,8 +138,12 @@ export function getAssetsControllerInitMessenger(
       'SnapController:handleRequest',
       'PreferencesController:getState',
       'OnboardingController:getState',
+      'AccountsController:listMultichainAccounts',
     ],
-    events: ['OnboardingController:stateChange'],
+    events: [
+      'OnboardingController:stateChange',
+      'AccountsController:accountAdded',
+    ],
   });
 
   return initMessenger;

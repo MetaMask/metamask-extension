@@ -188,5 +188,22 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     },
   });
 
+  // When a new account is created, force a fresh fetch of all assets so the
+  // new account's balances/metadata/prices appear without waiting for the
+  // next poll cycle.
+  // TODO: Move this refresh-on-account-added behavior into the AssetsController
+  // itself (@metamask/assets-controller) so every client gets it for free,
+  // instead of wiring it up per-client here in the extension init.
+  initMessenger.subscribe('AccountsController:accountAdded', () => {
+    const accounts = initMessenger.call(
+      'AccountsController:listMultichainAccounts',
+    );
+    messengerClient
+      .getAssets(accounts, { forceUpdate: true })
+      .catch((error) => {
+        console.error('Failed to refresh assets after account added', error);
+      });
+  });
+
   return { messengerClient };
 };
