@@ -1523,6 +1523,42 @@ describe('PerpsStreamBridge', () => {
       expect(emit).not.toHaveBeenCalledWith('markets', expect.anything());
     });
 
+    it('does not emit an empty terminal refetch result so it cannot blank or latch the markets channel', async () => {
+      const controller = createMockController();
+      controller.getMarketDataWithPrices.mockResolvedValue([] as never);
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => true,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': {
+              data: [{ symbol: 'ETH' }],
+              timestamp: 1000,
+            },
+          },
+        },
+        [],
+      );
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+      expect(emit).not.toHaveBeenCalledWith('markets', expect.anything());
+    });
+
     it('skips the queued terminal refetch rerun when the backend is disabled before it runs', async () => {
       const controller = createMockController();
       const resolvers: ((value: unknown) => void)[] = [];

@@ -556,10 +556,15 @@ export class PerpsStreamBridge {
         // cycles resume refetching without an explicit reset. Also re-check the
         // flag: if the Terminal backend was disabled mid-flight, this enriched
         // payload no longer matches the active mode and must not be emitted.
+        // Guard the empty case symmetrically with the direct-provider branch
+        // in #handleMarketDataPreload: emitting an empty array would blank the
+        // UI list and flip the channel's hasCachedData() to true, suppressing
+        // the WS-grace REST fallback that would otherwise recover.
         if (
           this.#destroyGeneration === generationAtStart &&
           this.#isTerminalBackendEnabled() &&
-          markets
+          Array.isArray(markets) &&
+          markets.length > 0
         ) {
           this.#emit('markets', markets);
         }

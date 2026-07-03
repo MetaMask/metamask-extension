@@ -1,6 +1,7 @@
 import semver from 'semver';
 import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsTerminalBackendEnabled,
@@ -17,8 +18,15 @@ jest.mock('../../../shared/lib/environment', () => ({
   ),
   getIsPerpsIncludedInBuild: jest.fn(),
 }));
+jest.mock('../../../shared/lib/manifestFlags', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/manifestFlags')>(
+    '../../../shared/lib/manifestFlags',
+  ),
+  getManifestFlags: jest.fn(() => ({})),
+}));
 
 const getIsPerpsIncludedInBuildMock = jest.mocked(getIsPerpsIncludedInBuild);
+const getManifestFlagsMock = jest.mocked(getManifestFlags);
 
 type MockState = {
   metamask: {
@@ -42,6 +50,7 @@ describe('Perps Feature Flags', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getIsPerpsIncludedInBuildMock.mockReturnValue(true);
+    getManifestFlagsMock.mockReturnValue({});
   });
 
   describe('getIsPerpsExperienceAvailable', () => {
@@ -229,6 +238,35 @@ describe('Perps Feature Flags', () => {
       };
 
       expect(getIsPerpsTerminalBackendEnabled(state)).toBe(false);
+    });
+
+    it('is enabled via a manifest override even when the controller state omits the flag', () => {
+      getManifestFlagsMock.mockReturnValue({
+        remoteFeatureFlags: { perpsTerminalBackendEnabled: true },
+      });
+
+      const state = { metamask: { remoteFeatureFlags: {} } };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(true);
+    });
+
+    it('lets a manifest override take precedence over the controller remote flag', () => {
+      getManifestFlagsMock.mockReturnValue({
+        remoteFeatureFlags: { perpsTerminalBackendEnabled: true },
+      });
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsTerminalBackendEnabled: {
+              enabled: false,
+              minimumVersion: '0.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(true);
     });
   });
 
