@@ -1,4 +1,7 @@
-export { mockInitialFullScan } from './esplora';
+export {
+  mockInitialFullScan,
+  mockInitialFullScanWithConfirmedSend,
+} from './esplora';
 export {
   mockExchangeRates,
   mockCurrencyExchangeRates,

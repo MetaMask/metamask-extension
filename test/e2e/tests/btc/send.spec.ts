@@ -16,6 +16,7 @@ import {
   mockExchangeRates,
   mockFiatExchangeRates,
   mockInitialFullScan,
+  mockInitialFullScanWithConfirmedSend,
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
   mockTokensV2SupportedNetworks,
@@ -29,6 +30,21 @@ const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
     await mockInitialFullScan(mockServer),
+    await mockExchangeRates(mockServer),
+    await mockCurrencyExchangeRates(mockServer),
+    await mockFiatExchangeRates(mockServer),
+    await mockSolanaSpotPrices(mockServer),
+    await mockSupportedVsCurrencies(mockServer),
+    await mockPriceMulti(mockServer),
+    await mockPriceMultiBtcAndSol(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
+  ];
+}
+
+async function mockBtcSendConfirmMocks(mockServer: Mockttp) {
+  return [
+    await mockInitialFullScanWithConfirmedSend(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
@@ -198,6 +214,37 @@ describe('BTC Account - Send', function (this: Suite) {
         const activityListPage = new ActivityTab(driver);
         await activityListPage.checkTransactionActivityByText('Sending BTC');
         await activityListPage.checkWaitForTransactionStatus('pending');
+      },
+    );
+  });
+
+  it('sends part of the BTC balance and confirms it in Activity', async function () {
+    const sendAmount = '0.5';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
+        testSpecificMock: mockBtcSendConfirmMocks,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const { sendPage } = await landOnBitcoinSendForm(driver);
+
+        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillAmount(sendAmount);
+        await sendPage.isContinueButtonEnabled();
+        await sendPage.pressContinueButton();
+
+        const reviewPage = new BitcoinReviewTxPage(driver);
+        await reviewPage.checkPageIsLoaded();
+        await reviewPage.clickConfirmButton();
+
+        const activityListPage = new ActivityTab(driver);
+        await activityListPage.checkTransactionActivityByText('Sending BTC');
+        // Re-sync so the Snap reconciles the broadcast tx into a confirmed one.
+        await driver.refresh();
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
       },
     );
   });
