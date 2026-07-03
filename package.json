@@ -602,6 +602,7 @@
     "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",
     "@metamask/snap-simple-keyring-site": "^2.1.1",
     "@metamask/snaps-registry": "^4.0.0",
+    "@metamask/solana-test-validator-up": "^1.0.0",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "9.3.0",
