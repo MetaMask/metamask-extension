@@ -179,7 +179,13 @@ function RevealSeedPage() {
         })
         .build(),
     );
-  }, [createEventBuilder, hdEntropyIndex, phraseRevealed, seedWords, trackEvent]);
+  }, [
+    createEventBuilder,
+    hdEntropyIndex,
+    phraseRevealed,
+    seedWords,
+    trackEvent,
+  ]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -239,7 +245,14 @@ function RevealSeedPage() {
           endTrace({ name: TraceName.RevealSeed });
         });
     },
-    [createEventBuilder, dispatch, hdEntropyIndex, keyringId, password, trackEvent],
+    [
+      createEventBuilder,
+      dispatch,
+      hdEntropyIndex,
+      keyringId,
+      password,
+      trackEvent,
+    ],
   );
 
   const togglePasswordVisibility = useCallback(
