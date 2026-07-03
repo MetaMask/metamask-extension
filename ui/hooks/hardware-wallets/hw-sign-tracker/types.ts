@@ -59,8 +59,8 @@ export type TrackingStrategy = {
    *
    * @param transactionMeta - The transaction whose status changed.
    * @param classifySignedTransactionType - Optional classifier used to map a
-   *   `signed` transaction to a tracker action; defaults to
-   *   `defaultEventClassifier` when omitted.
+   * `signed` transaction to a tracker action; defaults to
+   * `defaultEventClassifier` when omitted.
    * @returns The tracker action to dispatch, or `NO_ACTION` if none applies.
    */
   processStatusUpdated(
