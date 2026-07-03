@@ -14,7 +14,6 @@ const rootDir = join(__dirname, '../../../../../');
 const unsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
-  'service-worker.ts',
 ]);
 
 export const lavamoatPlugin = (args: Args) =>
@@ -30,9 +29,9 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'runtime.<hash>.js' and 'scripts/contentscript.js'
+    // Inline SES into protected self-contained scripts and the shared runtime.
     inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u,
+      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|vendor\/trezor\/content-script\.js|service-worker\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -47,7 +46,10 @@ export const lavamoatPlugin = (args: Args) =>
       if (chunk.name && unsafeEntries.has(chunk.name)) {
         // unsafeEntries are running outside of LavaMoat
         return { mode: 'null_unsafe' };
-      } else if (chunk.name === 'scripts/contentscript.js') {
+      } else if (
+        chunk.name === 'scripts/contentscript.js' ||
+        chunk.name === 'vendor/trezor/content-script.js'
+      ) {
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -68,6 +70,16 @@ export const lavamoatPlugin = (args: Args) =>
                 join(rootDir, 'app/scripts/use-snow.js'),
               ]
             : [],
+        };
+      } else if (chunk.name === 'service-worker.ts') {
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              exceptions: ['chrome', 'importScripts'],
+            },
+          },
         };
       }
       return { mode: 'safe' };
