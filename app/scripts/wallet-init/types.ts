@@ -12,7 +12,7 @@ import type { MessengerClientFlatState } from '../messenger-client-init/controll
 import type {
   TransactionControllerInitMessengerActions,
   TransactionControllerInitMessengerEvents,
-} from './instance-options/transaction-controller-messenger';
+} from './messengers/transaction-controller-messenger';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -23,12 +23,12 @@ import type {
  * already covered by `DefaultActions`.
  */
 export type WalletInitMessenger = RootMessenger<
-  | DefaultActions
   | AnalyticsControllerGetStateAction
+  | DefaultActions
   | TransactionControllerInitMessengerActions,
   | DefaultEvents
-  | PreferencesControllerStateChangeEvent
   | OnboardingControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent
   | TransactionControllerInitMessengerEvents
 >;
 

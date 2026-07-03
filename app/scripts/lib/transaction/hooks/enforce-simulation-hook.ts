@@ -4,7 +4,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
-import { TransactionControllerInitMessenger } from '../../../wallet-init/instance-options/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 
 const log = createProjectLogger('enforce-simulation-hook');

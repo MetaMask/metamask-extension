@@ -11,7 +11,7 @@ import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
 import * as transactionMetricsModule from '../../lib/transaction/metrics';
 import { createMockMessenger } from '../test-utils';
-import { getTransactionControllerInitMessenger } from './transaction-controller-messenger';
+import { getTransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
   getTransactionControllerApi,
   getTransactionControllerInstanceOptions,

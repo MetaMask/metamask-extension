@@ -12,7 +12,7 @@ import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
-import { getTransactionControllerInitMessenger } from './instance-options/transaction-controller-messenger';
+import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -46,11 +46,14 @@ jest.mock('./instance-options/transaction-controller', () => ({
   ),
   setupTransactionControllerListeners: jest.fn(),
 }));
-jest.mock('./instance-options/transaction-controller-messenger', () => ({
-  getTransactionControllerInitMessenger: jest.fn(
-    () => 'transaction-controller-init-messenger',
-  ),
-}));
+jest.mock(
+  './messengers/transaction-controller-messenger',
+  () => ({
+    getTransactionControllerInitMessenger: jest.fn(
+      () => 'transaction-controller-init-messenger',
+    ),
+  }),
+);
 
 const MockWallet = jest.mocked(Wallet);
 const connectivityAdapter = {} as unknown as ConnectivityAdapter;

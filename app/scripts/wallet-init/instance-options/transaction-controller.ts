@@ -29,7 +29,7 @@ import { accountSupports7702 } from '../../lib/account-supports-7702';
 import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionControllerHooks } from '../../lib/transaction/hooks';
 import type { InitializeWalletRequest } from '../types';
-import { TransactionControllerInitMessenger } from './transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 
 type TransactionControllerInstanceOptions = NonNullable<
   NonNullable<WalletOptions['instanceOptions']>['transactionController']

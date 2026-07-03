@@ -15,7 +15,7 @@ import {
 } from './instance-options/transaction-controller';
 import {
   getTransactionControllerInitMessenger,
-} from './instance-options/transaction-controller-messenger';
+} from './messengers/transaction-controller-messenger';
 import type { InitializeWalletRequest } from './types';
 
 /**
