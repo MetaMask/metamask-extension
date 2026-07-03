@@ -54,7 +54,7 @@ export const SmartTransactionsControllerInit: MessengerClientInitFunction<
     trackEvent(
       createEventBuilder(payload.event)
         .addProperties({
-          ...payload.properties,
+          ...(payload.properties ?? {}),
           ...(payload.category === undefined
             ? {}
             : { category: payload.category }),
