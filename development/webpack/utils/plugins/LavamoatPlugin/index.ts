@@ -14,7 +14,6 @@ const rootDir = join(__dirname, '../../../../../');
 const unsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
-  'service-worker.ts',
 ]);
 
 export const lavamoatPlugin = (args: Args) =>
@@ -32,7 +31,7 @@ export const lavamoatPlugin = (args: Args) =>
     readableResourceIds: true,
     // we apply lockdown to 'runtime.<hash>.js' and 'scripts/contentscript.js'
     inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u,
+      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -68,6 +67,15 @@ export const lavamoatPlugin = (args: Args) =>
                 join(rootDir, 'app/scripts/use-snow.js'),
               ]
             : [],
+        };
+      } else if (chunk.name === 'service-worker.ts') {
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+            },
+          },
         };
       }
       return { mode: 'safe' };
