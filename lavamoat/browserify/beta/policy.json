@@ -3497,7 +3497,6 @@
         "defaultShouldDehydrateQuery": true,
         "dehydrate": true,
         "document": false,
-        "document.visibilityState": true,
         "experimental_streamedQuery": true,
         "focusManager": true,
         "hashKey": true,
@@ -3523,15 +3522,13 @@
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
@@ -3557,7 +3554,6 @@
         "defaultShouldDehydrateQuery": true,
         "dehydrate": true,
         "document": false,
-        "document.visibilityState": true,
         "experimental_streamedQuery": true,
         "focusManager": true,
         "hashKey": true,
