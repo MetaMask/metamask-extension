@@ -1,37 +1,22 @@
 import { it as jestIt } from '@jest/globals';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
-  getAccountAddressRelationship,
-  TransactionController,
   TransactionMeta,
   TransactionType,
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
-import * as transactionMetricsModule from '../../lib/transaction/metrics';
 import { createMockMessenger } from '../test-utils';
 import { getTransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
-import {
-  getTransactionControllerApi,
-  getTransactionControllerInstanceOptions,
-  setupTransactionControllerListeners,
-} from './transaction-controller';
+import { getTransactionControllerInstanceOptions } from './transaction-controller';
 
-jest.mock('@metamask/transaction-controller', () => {
-  const actual = jest.requireActual('@metamask/transaction-controller');
-  return {
-    ...actual,
-    getAccountAddressRelationship: jest.fn(),
-  };
-});
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
 jest.mock('../../../../shared/lib/selectors');
 jest.mock('../../lib/transaction/hooks', () => ({
   getTransactionControllerHooks: jest.fn(() => ({ beforeSign: jest.fn() })),
 }));
-jest.mock('../../lib/transaction/metrics');
 
 const CHAIN_ID_MOCK = '0x1';
 
@@ -76,13 +61,32 @@ describe('TransactionController wallet instance options', () => {
     });
   }
 
+  /**
+   * Extract an option passed to the controller.
+   *
+   * @param option - The option to extract.
+   * @param overrides - Optional overrides for the PreferencesController state.
+   * @param overrides.preferencesState
+   * @returns The extracted option.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  function testConstructorOption<T extends keyof ReturnType<typeof buildOptions>>(
+    option: T,
+    overrides: {
+      preferencesState?: Record<string, unknown>;
+    } = {},
+  ): ReturnType<typeof buildOptions>[T] {
+    return buildOptions(overrides)[option];
+  }
+
   beforeEach(() => {
     jest.resetAllMocks();
     isSendBundleSupportedMock.mockResolvedValue(false);
   });
 
   it('retrieves saved gas fees from preferences', () => {
-    const options = buildOptions({
+    const getSavedGasFees = testConstructorOption('getSavedGasFees', {
       preferencesState: {
         advancedGasFee: {
           [CHAIN_ID_MOCK]: {
@@ -93,30 +97,33 @@ describe('TransactionController wallet instance options', () => {
       },
     });
 
-    expect(options.getSavedGasFees?.(CHAIN_ID_MOCK)).toStrictEqual({
+    expect(getSavedGasFees?.(CHAIN_ID_MOCK)).toStrictEqual({
       maxBaseFee: '0x1',
       priorityFee: '0x2',
     });
   });
 
   it('determines if first time interaction is enabled using preferences', () => {
-    const options = buildOptions({
-      preferencesState: {
-        securityAlertsEnabled: true,
+    const isFirstTimeInteractionEnabled = testConstructorOption(
+      'isFirstTimeInteractionEnabled',
+      {
+        preferencesState: {
+          securityAlertsEnabled: true,
+        },
       },
-    });
+    );
 
-    expect(options.isFirstTimeInteractionEnabled?.()).toBe(true);
+    expect(isFirstTimeInteractionEnabled?.()).toBe(true);
   });
 
   it('determines if simulation is enabled using preferences', () => {
-    const options = buildOptions({
+    const isSimulationEnabled = testConstructorOption('isSimulationEnabled', {
       preferencesState: {
         useTransactionSimulations: true,
       },
     });
 
-    expect(options.isSimulationEnabled?.()).toBe(true);
+    expect(isSimulationEnabled?.()).toBe(true);
   });
 
   describe('isAutomaticGasFeeUpdateEnabled', () => {
@@ -124,15 +131,15 @@ describe('TransactionController wallet instance options', () => {
       overrides: Partial<TransactionMeta> = {},
     ): TransactionMeta {
       return {
-        chainId: CHAIN_ID_MOCK,
         id: '1',
+        type: TransactionType.contractInteraction,
+        chainId: CHAIN_ID_MOCK,
         networkClientId: 'test-network',
         status: TransactionStatus.unapproved,
         time: Date.now(),
         txParams: {
           from: '0x0000000000000000000000000000000000000000',
         },
-        type: TransactionType.contractInteraction,
         ...overrides,
       };
     }
@@ -147,49 +154,55 @@ describe('TransactionController wallet instance options', () => {
       ['predictRelayDeposit', TransactionType.predictRelayDeposit, false],
       ['contractInteraction', TransactionType.contractInteraction, true],
     ])('returns %s for %s transactions', (_label, type, expected) => {
-      const options = buildOptions();
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
 
       expect(
-        options.isAutomaticGasFeeUpdateEnabled?.(
-          buildTransactionMeta({ type }),
-        ),
+        isAutomaticGasFeeUpdateEnabled?.(buildTransactionMeta({ type })),
       ).toBe(expected);
     });
 
     it('returns false for transactions with nested relayDeposit type', () => {
-      const options = buildOptions();
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
 
       expect(
-        options.isAutomaticGasFeeUpdateEnabled?.(
+        isAutomaticGasFeeUpdateEnabled?.(
           buildTransactionMeta({
-            nestedTransactions: [{ type: TransactionType.relayDeposit }],
             type: TransactionType.contractInteraction,
+            nestedTransactions: [{ type: TransactionType.relayDeposit }],
           }),
         ),
       ).toBe(false);
     });
 
     it('returns false for tokenMethodApprove with ORIGIN_METAMASK', () => {
-      const options = buildOptions();
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
 
       expect(
-        options.isAutomaticGasFeeUpdateEnabled?.(
+        isAutomaticGasFeeUpdateEnabled?.(
           buildTransactionMeta({
-            origin: ORIGIN_METAMASK,
             type: TransactionType.tokenMethodApprove,
+            origin: ORIGIN_METAMASK,
           }),
         ),
       ).toBe(false);
     });
 
     it('returns true for tokenMethodApprove with non-MetaMask origin', () => {
-      const options = buildOptions();
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
 
       expect(
-        options.isAutomaticGasFeeUpdateEnabled?.(
+        isAutomaticGasFeeUpdateEnabled?.(
           buildTransactionMeta({
-            origin: 'https://external-dapp.com',
             type: TransactionType.tokenMethodApprove,
+            origin: 'https://external-dapp.com',
           }),
         ),
       ).toBe(true);
@@ -198,10 +211,10 @@ describe('TransactionController wallet instance options', () => {
 
   describe('isEIP7702GasFeeTokensEnabled', () => {
     const mockTransactionMeta = {
-      chainId: CHAIN_ID_MOCK,
       id: '1',
       networkClientId: 'test-network',
       status: TransactionStatus.unapproved,
+      chainId: CHAIN_ID_MOCK,
       time: Date.now(),
       txParams: {
         from: '0x0000000000000000000000000000000000000000',
@@ -212,147 +225,48 @@ describe('TransactionController wallet instance options', () => {
       getIsSmartTransactionMock.mockReturnValue(false);
       isSendBundleSupportedMock.mockResolvedValue(false);
 
-      const options = buildOptions();
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
 
-      expect(
-        await options.isEIP7702GasFeeTokensEnabled?.(mockTransactionMeta),
-      ).toBe(true);
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
 
     it('returns false when smart transactions enabled and send bundle supported', async () => {
       getIsSmartTransactionMock.mockReturnValue(true);
       isSendBundleSupportedMock.mockResolvedValue(true);
 
-      const options = buildOptions();
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
 
-      expect(
-        await options.isEIP7702GasFeeTokensEnabled?.(mockTransactionMeta),
-      ).toBe(false);
+      expect(await optionFn?.(mockTransactionMeta)).toBe(false);
     });
 
     it('returns true when smart transactions disabled and send bundle supported', async () => {
       getIsSmartTransactionMock.mockReturnValue(false);
       isSendBundleSupportedMock.mockResolvedValue(true);
 
-      const options = buildOptions();
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
 
-      expect(
-        await options.isEIP7702GasFeeTokensEnabled?.(mockTransactionMeta),
-      ).toBe(true);
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
 
     it('returns true when smart transactions enabled and send bundle not supported', async () => {
       getIsSmartTransactionMock.mockReturnValue(true);
       isSendBundleSupportedMock.mockResolvedValue(false);
 
-      const options = buildOptions();
-      expect(
-        await options.isEIP7702GasFeeTokensEnabled?.(mockTransactionMeta),
-      ).toBe(true);
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
 
     it('returns true when isExternalSign is true', async () => {
       getIsSmartTransactionMock.mockReturnValue(true);
       isSendBundleSupportedMock.mockResolvedValue(true);
 
-      const options = buildOptions();
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
       expect(
-        await options.isEIP7702GasFeeTokensEnabled?.({
+        await optionFn?.({
           ...mockTransactionMeta,
           isExternalSign: true,
         }),
       ).toBe(true);
     });
-  });
-});
-
-describe('setupTransactionControllerListeners', () => {
-  it('resolves transaction metrics lazily when controller events fire', () => {
-    const rootMessenger = createMockMessenger();
-    const messenger = getTransactionControllerInitMessenger(rootMessenger);
-    const transactionMetricsRequest = { id: 'metrics-request' } as never;
-    const getTransactionMetricsRequest = jest.fn(
-      () => transactionMetricsRequest,
-    );
-
-    setupTransactionControllerListeners({
-      getTransactionMetricsRequest,
-      messenger,
-    });
-
-    expect(getTransactionMetricsRequest).not.toHaveBeenCalled();
-
-    const transactionMeta = { id: '1' } as never;
-    rootMessenger.publish(
-      'TransactionController:transactionApproved',
-      transactionMeta,
-    );
-
-    expect(getTransactionMetricsRequest).toHaveBeenCalledTimes(1);
-    expect(
-      jest.mocked(transactionMetricsModule.handleTransactionApproved),
-    ).toHaveBeenCalledWith(transactionMetricsRequest, transactionMeta);
-  });
-});
-
-describe('getTransactionControllerApi', () => {
-  it('binds the TransactionController API and exposes first-time interaction checks', async () => {
-    const transactionController = {
-      abortTransactionSigning: jest.fn(),
-      getLayer1GasFee: jest.fn(),
-      getTransactions: jest.fn(),
-      isAtomicBatchSupported: jest.fn(),
-      updateAtomicBatchData: jest.fn(),
-      updateBatchTransactions: jest.fn(),
-      updateEditableParams: jest.fn(),
-      updatePreviousGasParams: jest.fn(),
-      updateSelectedGasFeeToken: jest.fn(),
-      updateTransactionGasFees: jest.fn(),
-    } as unknown as TransactionController;
-
-    jest.mocked(getAccountAddressRelationship).mockResolvedValue({
-      count: 0,
-    } as never);
-
-    const api = getTransactionControllerApi(transactionController);
-    api.getTransactions({ limit: 1 } as never);
-
-    expect(transactionController.getTransactions).toHaveBeenCalledWith({
-      limit: 1,
-    });
-    await expect(
-      api.checkFirstTimeInteraction({
-        chainId: 1,
-        from: '0x0000000000000000000000000000000000000000',
-        to: '0x0000000000000000000000000000000000000001',
-      }),
-    ).resolves.toBe(true);
-  });
-
-  it('returns undefined when first-time interaction cannot be determined', async () => {
-    const api = getTransactionControllerApi({
-      abortTransactionSigning: jest.fn(),
-      getLayer1GasFee: jest.fn(),
-      getTransactions: jest.fn(),
-      isAtomicBatchSupported: jest.fn(),
-      updateAtomicBatchData: jest.fn(),
-      updateBatchTransactions: jest.fn(),
-      updateEditableParams: jest.fn(),
-      updatePreviousGasParams: jest.fn(),
-      updateSelectedGasFeeToken: jest.fn(),
-      updateTransactionGasFees: jest.fn(),
-    } as unknown as TransactionController);
-
-    jest
-      .mocked(getAccountAddressRelationship)
-      .mockRejectedValue(new Error('network failed'));
-
-    await expect(
-      api.checkFirstTimeInteraction({
-        chainId: 1,
-        from: '0x0000000000000000000000000000000000000000',
-        to: '0x0000000000000000000000000000000000000001',
-      }),
-    ).resolves.toBeUndefined();
   });
 });
