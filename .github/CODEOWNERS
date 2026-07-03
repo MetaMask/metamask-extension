@@ -108,7 +108,10 @@ app/scripts/services/legacy-background-api-service.ts      @MetaMask/core-platfo
 app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platform
 
 
-# Co-owned by Confirmations and Snaps
+# Co-owned by Extension Platform and Core Platform
+app/scripts/metamask-controller.js @Metamask/extension-platform @MetaMask/core-platform
+
+# Co-owned by Confirmations and Core Platform
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Core Extension UX
