@@ -21,6 +21,21 @@ import * as Actions from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import CreatePassword from './create-password';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../hooks/useIsFirefox', () => ({
   useIsFirefox: jest.fn().mockReturnValue(false),
 }));
@@ -46,9 +61,9 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const getWalletSetupCompletedEvent = (mockTrackEvent: jest.Mock) => {
+const getWalletSetupCompletedEvent = () => {
   return mockTrackEvent.mock.calls.find(
-    (args) => args[0]?.event === MetaMetricsEventName.WalletSetupCompleted,
+    (args) => args[0]?.name === MetaMetricsEventName.WalletSetupCompleted,
   )?.[0];
 };
 
@@ -537,7 +552,6 @@ describe('Onboarding Create Password', () => {
     });
 
     it('includes deferred deep link UTM params in the wallet setup completed event for new wallets', async () => {
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -557,9 +571,6 @@ describe('Onboarding Create Password', () => {
           secretRecoveryPhrase="SRP"
         />,
         mockStore,
-        '/',
-        undefined,
-        () => mockTrackEvent,
       );
 
       const password = '12345678';
@@ -579,11 +590,10 @@ describe('Onboarding Create Password', () => {
       fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
 
       await waitFor(() => {
-        expect(getWalletSetupCompletedEvent(mockTrackEvent)).toBeDefined();
+        expect(getWalletSetupCompletedEvent()).toBeDefined();
       });
 
-      const walletSetupCompletedEvent =
-        getWalletSetupCompletedEvent(mockTrackEvent);
+      const walletSetupCompletedEvent = getWalletSetupCompletedEvent();
 
       expect(walletSetupCompletedEvent).toMatchObject({
         properties: {
@@ -706,7 +716,6 @@ describe('Onboarding Create Password', () => {
     });
 
     it('includes deferred deep link UTM params in the wallet setup completed event for imported wallets', async () => {
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const mockStore = configureMockStore([thunk])({
         ...importMockState,
         metamask: {
@@ -728,9 +737,6 @@ describe('Onboarding Create Password', () => {
       const { queryByTestId } = renderWithProvider(
         <CreatePassword {...props} />,
         mockStore,
-        '/',
-        undefined,
-        () => mockTrackEvent,
       );
 
       const password = '12345678';
@@ -750,11 +756,10 @@ describe('Onboarding Create Password', () => {
       fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
 
       await waitFor(() => {
-        expect(getWalletSetupCompletedEvent(mockTrackEvent)).toBeDefined();
+        expect(getWalletSetupCompletedEvent()).toBeDefined();
       });
 
-      const walletSetupCompletedEvent =
-        getWalletSetupCompletedEvent(mockTrackEvent);
+      const walletSetupCompletedEvent = getWalletSetupCompletedEvent();
 
       expect(walletSetupCompletedEvent).toMatchObject({
         properties: {
@@ -1034,7 +1039,6 @@ describe('Onboarding Create Password', () => {
 
   describe('handleCreatePassword error path', () => {
     it('tracks WalletSetupFailure event when wallet creation throws', async () => {
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const store = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -1049,9 +1053,6 @@ describe('Onboarding Create Password', () => {
           secretRecoveryPhrase="SRP"
         />,
         store,
-        '/',
-        undefined,
-        () => mockTrackEvent,
       );
 
       const password = '12345678';
@@ -1069,7 +1070,7 @@ describe('Onboarding Create Password', () => {
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith(
           expect.objectContaining({
-            event: MetaMetricsEventName.WalletSetupFailure,
+            name: MetaMetricsEventName.WalletSetupFailure,
           }),
         );
       });

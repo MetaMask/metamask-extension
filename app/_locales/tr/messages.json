@@ -82,12 +82,6 @@
   "account": {
     "message": "Hesap"
   },
-  "accountActivity": {
-    "message": "Hesap aktivitesi"
-  },
-  "accountActivityText": {
-    "message": "Hakkında bildirim almak istediğiniz hesapları seçin:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Oturum aç"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "Geri"
   },
-  "backToHome": {
-    "message": "Ana sayfaya geri dön"
-  },
   "backUpIncomplete": {
     "message": "Yedekleme tamamlanmadı"
   },
@@ -2422,9 +2413,6 @@
     "message": "Kapat: $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Dilediğiniz zaman bu pencereyi kapatabilirsiniz."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "müşteri hizmetleri"
-  },
-  "customizeYourNotifications": {
-    "message": "Bildirimlerinizi özelleştirin"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Almak istediğiniz bildirim türlerini açın:"
   },
   "dappConnections": {
     "message": "Dapp Bağlantıları"
@@ -4418,9 +4400,6 @@
   "imported": {
     "message": "İçe aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Şunu içerir:"
   },
   "includesXTransactions": {
     "message": "$1 işlem içerir"
@@ -5879,9 +5858,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Bildirimler ile cüzdanınızda neler olduğundan haberdar olun. Bildirimleri kullanmak için cihazlarınızdaki bazı ayarları senkronize etmek amacıyla bir profil kullanıyoruz. $1 bu özelliği kullanırken gizliliğinizi koruruz."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Nasıl olduğunu öğrenin"
@@ -7548,9 +7524,6 @@
   },
   "proceedWithTransaction": {
     "message": "Yine de devam etmek istiyorum"
-  },
-  "productAnnouncements": {
-    "message": "Ürün duyuruları"
   },
   "provide": {
     "message": "Sun"
@@ -9305,24 +9278,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Akıllı Swap'lar geçici olarak kullanılamıyor."
   },
-  "smartTransactionCancelled": {
-    "message": "İşleminiz iptal edildi"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "İşleminiz tamamlanamadığından gereksiz gaz ücreti ödemenizi önlemek amacıyla iptal edildi."
-  },
-  "smartTransactionError": {
-    "message": "İşleminiz başarısız oldu"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Ani piyasa değişimleri başarısızlıklara sebep olabilir. Sorun devam ederse MetaMask müşteri destek bölümüne ulaşın."
-  },
-  "smartTransactionPending": {
-    "message": "İşleminiz gönderildi"
-  },
-  "smartTransactionSuccess": {
-    "message": "İşleminiz tamamlandı"
-  },
   "smartTransactions": {
     "message": "Akıllı İşlemler"
   },
@@ -10289,9 +10244,6 @@
   "tokenContractAddress": {
     "message": "Token sözleşme adresi"
   },
-  "tokenContractError": {
-    "message": "Bu adres bir token sözleşmesi adresi. Bu adrese token gönderirseniz bunları kaybedersiniz."
-  },
   "tokenContractWarning": {
     "message": "Token sözleşmesi uyarısı"
   },
@@ -10547,29 +10499,8 @@
   "turnOn": {
     "message": "Aç"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Bildirimleri aç"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Aç"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Bildirimler oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Bildirimler ile cüzdanınızda neler olduğundan haberdar olun."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "bildirim ayarları."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Bu özelliği kullanırken gizliliğinizi nasıl koruduğumuzu öğrenin."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Cüzdan bildirimlerini kullanmak için cihazlarınız genelinde bazı ayarları senkronize etmek üzere bir profil kullanırız. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Bildirimleri dilediğiniz zaman $1 kısmında kapatabilirsiniz"
   },
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
@@ -10781,9 +10712,6 @@
   "view": {
     "message": "Görüntüle"
   },
-  "viewActivity": {
-    "message": "Aktiviteyi görüntüle"
-  },
   "viewAddressOnExplorer": {
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
@@ -10810,9 +10738,6 @@
   },
   "viewTokenDetails": {
     "message": "Token bilgilerini görüntüle"
-  },
-  "viewTransaction": {
-    "message": "İşlemi görüntüle"
   },
   "viewinExplorer": {
     "message": "Explorer'da $1 görüntüle",

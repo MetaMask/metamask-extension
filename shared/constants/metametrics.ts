@@ -293,6 +293,18 @@ export type SegmentEventPayload = {
     value?: number;
     currency?: string;
     category?: string;
+    /**
+     * The profile ID of the user if they have been signed in.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    profile_id?: string;
+    /**
+     * The canonical profile ID grouping profile IDs for the same person.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    canonical_profile_id?: string;
   };
   /**
    * The context the event occurred in.
@@ -857,6 +869,7 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BannerDisplay = 'Banner Display',
+  BannerDismissed = 'Banner Dismissed',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
   BridgeLinkClicked = 'Bridge Link Clicked',
@@ -1060,6 +1073,8 @@ export enum MetaMetricsEventName {
   AccountRemoveFailed = 'Account Remove Failed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
+  ChainlistAddClicked = 'Chainlist Add Clicked',
+  ChainlistNetworkSelected = 'Chainlist Network Selected',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
   NftDetailsOpened = 'NFT Details Opened',
@@ -1351,6 +1366,7 @@ export enum MetaMetricsSwapsEventSource {
   ActivityTabEmptyState = 'Activity Tab Empty State',
   ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
+  TransactionDetails = 'Transaction Details',
 }
 
 export enum MetaMetricsTokenEventSource {
