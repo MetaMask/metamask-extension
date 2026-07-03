@@ -10,18 +10,38 @@ import {
 } from '../../../seeder/tron/assets';
 import { TronNode } from '../../../seeder/tron/node';
 import { TronSeeder } from '../../../seeder/tron/tron-seeder';
+import { mockTokensV2SupportedNetworks } from '../../btc/mocks/tokens-api';
 import {
   TRON_ACCOUNT_ADDRESS,
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
+  SUN_PER_TRX,
+  TRX_TO_USD_RATE,
+  mockAccountsApiV2WithTron,
   mockExchangeRates,
   mockFiatExchangeRates,
   mockTronFeatureFlags,
+  mockTronGetBlock,
+  mockTronGetBlockByNum,
+  mockTronGetNowBlock,
+  mockTronGetReward,
+  mockTronGetTransactions,
+  mockTronGetTrc20Transactions,
 } from '../mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
+import { TRX } from './tokens';
 
 const TRON_PROVIDER_ANY_ACCOUNT_RE =
   /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/nile\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
+
+export const STAKED_TRX_ASSET_ID = `${TRON_CHAIN_ID}/slip44:195-staked-for-energy`;
+
+const STAKED_TRX_TOKEN_METADATA = {
+  assetId: STAKED_TRX_ASSET_ID,
+  decimals: 6,
+  name: 'Staked for Energy',
+  symbol: 'sTRX-ENERGY',
+} as const;
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
@@ -104,7 +124,12 @@ export function buildTronNodeOptions(
   for (const account of accounts) {
     for (const asset of account.assets ?? []) {
       if (asset.type === 'native') {
-        initialBalances[account.address] = asset.balance;
+        const stakedTopUp = account.stakedTrxBalance
+          ? Number(account.stakedTrxBalance)
+          : 0;
+        // Fund the local node with enough liquid TRX to freeze staked amounts;
+        // portfolio API mocks still report liquid and staked balances separately.
+        initialBalances[account.address] = asset.balance + stakedTopUp;
       } else if (asset.type === 'trc10') {
         trc10Balances[account.address] = {
           ...trc10Balances[account.address],
@@ -238,11 +263,26 @@ async function mockTronFixtureApis(
   ].filter((v, i, arr) => arr.indexOf(v) === i);
 
   return [
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockAccountsApiV2WithTron(mockServer),
+    await mockTronFixtureAccountsApiV5(mockServer, accounts, tronNode),
     await mockTronFeatureFlags(mockServer),
     await mockExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
     await mockTronFixtureSpotPrices(mockServer, accounts, tronNode),
     await mockTronFixtureAssets(mockServer, accounts, tronNode),
+    await mockTronGetReward(mockServer),
+    await mockTronGetBlock(mockServer),
+    await mockTronGetNowBlock(mockServer),
+    await mockTronGetBlockByNum(mockServer),
+    await mockTronGetTransactions(mockServer),
+    await mockTronGetTrc20Transactions(mockServer),
+    // NOTE: no static `broadcasttransaction` mock here. mockttp serves the
+    // first matching *unused* rule, so a static broadcast mock would swallow
+    // each test's single broadcast with a fake txid that the local node never
+    // sees — the tx then polls as pending forever. `proxyTronBlockchainCalls`
+    // below proxies broadcasts to the local Tron node and replays them as
+    // confirmed history.
     ...fixtureHistoryEndpoints,
     ...(await proxyTronBlockchainCalls(mockServer, tronNode, allAddresses)),
     await mockWildcardTronAccountApis(mockServer, tronNode, accountByAddress),
@@ -316,25 +356,110 @@ async function mockWildcardTronAccountApis(
     });
 }
 
+function formatFixtureBalanceForAccountsApi(asset: TronFixtureAsset): string {
+  if (asset.type === 'native') {
+    return String(asset.balance / SUN_PER_TRX);
+  }
+
+  return String(Number(asset.balance) / 10 ** asset.decimals);
+}
+
+function buildFixtureTokenMetadata(
+  accounts: TronFixtureAccount[],
+  tronNode: TronNode,
+) {
+  const nativeTrx = {
+    assetId: `${TRON_CHAIN_ID}/slip44:195`,
+    decimals: 6,
+    name: 'Tron',
+    symbol: 'TRX',
+  };
+
+  const fixtureAssets = getUniqueAssets(accounts).map((asset) => ({
+    assetId: getAssetId(asset, tronNode),
+    decimals: asset.decimals,
+    name: asset.name,
+    symbol: asset.symbol,
+  }));
+
+  const stakedAssets = accounts.some((account) =>
+    Boolean(account.stakedTrxBalance && BigInt(account.stakedTrxBalance) > 0n),
+  )
+    ? [STAKED_TRX_TOKEN_METADATA]
+    : [];
+
+  const assetsById = new Map(
+    [nativeTrx, ...fixtureAssets, ...stakedAssets].map((asset) => [
+      asset.assetId,
+      asset,
+    ]),
+  );
+
+  return [...assetsById.values()];
+}
+
+async function mockTronFixtureAccountsApiV5(
+  mockServer: Mockttp,
+  accounts: TronFixtureAccount[],
+  tronNode: TronNode,
+): Promise<MockedEndpoint> {
+  const balances = accounts.flatMap((account) => {
+    const assetBalances = (account.assets ?? []).map((asset) => ({
+      accountId: `${TRON_CHAIN_ID}:${account.address}`,
+      assetId: getAssetId(asset, tronNode),
+      balance: formatFixtureBalanceForAccountsApi(asset),
+    }));
+
+    if (account.stakedTrxBalance && BigInt(account.stakedTrxBalance) > 0n) {
+      assetBalances.push({
+        accountId: `${TRON_CHAIN_ID}:${account.address}`,
+        assetId: STAKED_TRX_ASSET_ID,
+        balance: String(Number(account.stakedTrxBalance) / SUN_PER_TRX),
+      });
+    }
+
+    return assetBalances;
+  });
+
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: balances.length,
+        unprocessedNetworks: [],
+        balances,
+      },
+    }));
+}
+
 async function mockTronFixtureAssets(
   mockServer: Mockttp,
   accounts: TronFixtureAccount[],
   tronNode: TronNode,
 ): Promise<MockedEndpoint> {
+  const knownAssets = buildFixtureTokenMetadata(accounts, tronNode);
+
   return mockServer
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: getUniqueAssets(accounts)
-        .filter((asset) => asset.type !== 'native')
-        .map((asset) => ({
-          assetId: getAssetId(asset, tronNode),
-          decimals: asset.decimals,
-          name: asset.name,
-          symbol: asset.symbol,
-        })),
-    }));
+    .thenCallback((request) => {
+      const assetIdsParam =
+        new URL(request.url).searchParams.get('assetIds') ?? '';
+
+      const json =
+        assetIdsParam.length > 0
+          ? knownAssets.filter((asset) => assetIdsParam.includes(asset.assetId))
+          : knownAssets.filter((asset) => !asset.assetId.endsWith('/slip44:195'));
+
+      return {
+        statusCode: 200,
+        json,
+      };
+    });
 }
 
 async function mockTronFixtureSpotPrices(
@@ -349,6 +474,21 @@ async function mockTronFixtureSpotPrices(
       getAssetId(asset, tronNode),
       createSpotPriceResponse(asset),
     ]),
+    ...(accounts.some(
+      (account) =>
+        account.stakedTrxBalance && BigInt(account.stakedTrxBalance) > 0n,
+    )
+      ? [
+          [
+            STAKED_TRX_ASSET_ID,
+            createSpotPriceResponse({
+              ...TRX,
+              balance: 0,
+              priceUsd: TRX_TO_USD_RATE,
+            }),
+          ],
+        ]
+      : []),
   ]);
 
   return mockServer
