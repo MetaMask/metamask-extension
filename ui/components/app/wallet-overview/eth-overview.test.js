@@ -411,7 +411,7 @@ describe('EthOverview', () => {
       expect(buyButton).toBeInTheDocument();
     });
 
-    it('should have the Buy native token button disabled if chain id is not part of supported buyable chains', () => {
+    it('enables the Buy native token button if chain id is not part of supported buyable chains', async () => {
       const mockedStoreWithUnbuyableChainId = {
         ...mockStore,
         metamask: {
@@ -434,7 +434,18 @@ describe('EthOverview', () => {
       );
       const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
       expect(buyButton).toBeInTheDocument();
-      expect(buyButton).toBeDisabled();
+      expect(buyButton).not.toBeDisabled();
+
+      fireEvent.click(buyButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
+        }),
+      );
     });
 
     it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
