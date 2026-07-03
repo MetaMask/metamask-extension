@@ -16,6 +16,7 @@ import {
   type UITrackEventMethod,
 } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
 
 const trackBuiltEventWithMetaMetricsContext = (
@@ -69,6 +70,7 @@ export default function BridgeExplorerLinks({
   destBlockExplorerUrl,
 }: ExplorerLinksProps) {
   const { trackEvent } = useContext(MetaMetricsContext);
+  const { createEventBuilder } = useAnalytics();
   const t = useI18nContext();
 
   // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render
@@ -93,6 +95,7 @@ export default function BridgeExplorerLinks({
                 METRICS_LOCATION,
                 (built) =>
                   trackBuiltEventWithMetaMetricsContext(built, trackEvent),
+                createEventBuilder,
               );
             }
           }}
@@ -110,6 +113,7 @@ export default function BridgeExplorerLinks({
                 METRICS_LOCATION,
                 (built) =>
                   trackBuiltEventWithMetaMetricsContext(built, trackEvent),
+                createEventBuilder,
               );
             }
           }}

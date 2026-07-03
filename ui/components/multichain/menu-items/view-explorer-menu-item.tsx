@@ -4,10 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  createEventBuilder as buildAnalyticsEvent,
-  type AnalyticsEvent,
-} from '../../../../shared/lib/analytics/create-event-builder';
+import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getMultichainAccountUrl,
@@ -55,14 +52,17 @@ export type ViewExplorerMenuItemProps = {
   account: InternalAccount;
 };
 
+type CreateEventBuilder = ReturnType<typeof useAnalytics>['createEventBuilder'];
+
 export const openBlockExplorer = (
   addressLink: string,
   metricsLocation: string,
   trackEvent: (built: AnalyticsEvent) => void,
+  createEventBuilder: CreateEventBuilder,
   closeMenu?: () => void,
 ) => {
   trackEvent(
-    buildAnalyticsEvent(MetaMetricsEventName.ExternalLinkClicked)
+    createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
       .addCategory(MetaMetricsEventCategory.Navigation)
       .addProperties({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -155,6 +155,7 @@ export const ViewExplorerMenuItem = ({
               actualAddressLink,
               metricsLocation,
               trackEvent,
+              createEventBuilder,
               closeMenu,
             );
 
