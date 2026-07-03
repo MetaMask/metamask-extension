@@ -323,6 +323,7 @@
     "quoteFetchError": null,
     "quoteRequest": "object",
     "quoteStreamComplete": null,
+    "quoteUpdateStatusStore": "object",
     "quotes": "object",
     "quotesInitialLoadTime": null,
     "quotesLastFetched": null,

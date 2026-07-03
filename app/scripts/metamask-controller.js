@@ -319,10 +319,7 @@ import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import {
-  rejectAllApprovals,
-  rejectOriginApprovals,
-} from './lib/approval/utils';
+import { rejectOriginApprovals } from './lib/approval/utils';
 import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
   MultichainAssetsControllerInit,
@@ -427,7 +424,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
 import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
@@ -627,7 +623,6 @@ export default class MetamaskController extends EventEmitter {
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
-      AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
       DecryptMessageManager: DecryptMessageManagerInit,
       DecryptMessageController: DecryptMessageControllerInit,
@@ -762,7 +757,9 @@ export default class MetamaskController extends EventEmitter {
     this.connectivityController = this.wallet.getInstance(
       'ConnectivityController',
     );
-    this.addressBookController = messengerClientsByName.AddressBookController;
+    this.addressBookController = this.wallet.getInstance(
+      'AddressBookController',
+    );
     this.alertController = messengerClientsByName.AlertController;
     this.decryptMessageController =
       messengerClientsByName.DecryptMessageController;
@@ -3077,23 +3074,18 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // AccountsController
-      setSelectedInternalAccount: (id) => {
-        const account = this.accountsController.getAccount(id);
-        if (account) {
-          this.accountsController.setSelectedAccount(id);
-        }
-      },
+      setSelectedInternalAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setSelectedInternalAccount',
+      ),
 
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
 
-      setAccountLabel: (address, label) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account === undefined) {
-          throw new Error(`No account found for address: ${address}`);
-        }
-        this.accountsController.setAccountName(account.id, label);
-      },
+      setAccountLabel: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setAccountLabel',
+      ),
 
       // AccountTreeController
       setSelectedMultichainAccount: (accountGroupId) => {
@@ -3113,16 +3105,16 @@ export default class MetamaskController extends EventEmitter {
         this.accountTreeController.setAccountGroupHidden.bind(
           this.accountTreeController,
         ),
-      syncAccountTreeWithUserStorage: async () => {
-        await this.accountTreeController.syncWithUserStorage();
-      },
+      syncAccountTreeWithUserStorage: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountTreeController:syncWithUserStorage',
+      ),
 
       // MultichainAccountService
-      createNextMultichainAccountGroup: async (walletId) => {
-        await this.multichainAccountService.createNextMultichainAccountGroup({
-          entropySource: walletId,
-        });
-      },
+      createNextMultichainAccountGroup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:createNextMultichainAccountGroup',
+      ),
 
       alignMultichainWallets: async () => {
         if (this.multichainAccountService) {
@@ -3622,7 +3614,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // ApprovalController
-      rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
+      rejectAllPendingApprovals: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectAllPendingApprovals',
+      ),
       rejectPendingApproval: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:rejectPendingApproval',
@@ -8529,19 +8524,6 @@ export default class MetamaskController extends EventEmitter {
       { waitForResult: true, walletType },
     );
   };
-
-  rejectAllPendingApprovals() {
-    const deleteInterface = (id) =>
-      this.controllerMessenger.call(
-        'SnapInterfaceController:deleteInterface',
-        id,
-      );
-
-    rejectAllApprovals({
-      approvalController: this.approvalController,
-      deleteInterface,
-    });
-  }
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(
