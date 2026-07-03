@@ -207,9 +207,9 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
           referrer: fullPayload.referrer,
           excludeMetaMetricsId: options?.excludeMetaMetricsId,
           matomoEvent: options?.matomoEvent,
-        };
+        } satisfies Parameters<typeof trackAnalyticsEvent>[1];
 
-        const built = builder.build(trackOptions);
+        const built = builder.build();
 
         trackAnalyticsEvent(built, trackOptions);
       } else if (canMaybeTrackLater) {
