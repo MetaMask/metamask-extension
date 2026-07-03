@@ -4397,9 +4397,6 @@
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Kabilang ang"
-  },
   "includesXTransactions": {
     "message": "Kabilang ang $1 (na) transaksyon"
   },
