@@ -97,5 +97,25 @@ describe('SelectHdPathPage', () => {
       expect(props.onPathChange).toHaveBeenCalledTimes(1);
       expect(props.onPathChange).toHaveBeenCalledWith(LEDGER_HD_PATHS[0].value);
     });
+
+    it('syncs the pending selection when selectedPath changes', () => {
+      const { rerender } = renderWithProvider(
+        <SelectHdPathPage
+          {...defaultProps}
+          selectedPath={LEDGER_HD_PATHS[0].value}
+        />,
+      );
+
+      rerender(
+        <SelectHdPathPage
+          {...defaultProps}
+          selectedPath={LEDGER_HD_PATHS[2].value}
+        />,
+      );
+
+      expect(
+        screen.getByRole('checkbox', { name: LEDGER_HD_PATHS[2].name }),
+      ).toBeChecked();
+    });
   });
 });

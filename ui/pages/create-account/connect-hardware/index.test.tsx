@@ -19,11 +19,9 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIsNewHardwareWalletOnboardingEnabled } from '../../../../shared/lib/environment';
 import {
-  createMockRawHardwareAccounts,
   MOCK_RAW_HARDWARE_ACCOUNTS,
 } from '../../../../test/unit/hardware-wallets/connect-hardware/raw-hardware-accounts';
 import type { RawHardwareAccount } from './types';
-import { LEDGER_HD_PATHS } from './utils/hardware-hd-paths';
 import ConnectHardwareForm from '.';
 
 jest.mock('../../../../shared/lib/environment', () => ({
@@ -892,12 +890,24 @@ describe('ConnectHardwareForm', () => {
       mockGetIsNewHardwareWalletOnboardingEnabled.mockReturnValue(true);
     });
 
+    async function connectDeviceAndWaitForAccountSelector(
+      mockStore: ReturnType<ReturnType<typeof configureMockStore>>,
+      deviceLabel = tEn('trezor'),
+    ) {
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+      connectToDevice(deviceLabel);
+
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
+      });
+    }
+
     it('renders the legacy account list when the feature flag is disabled', async () => {
       mockGetIsNewHardwareWalletOnboardingEnabled.mockReturnValue(false);
       mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
-
       connectToDevice(tEn('trezor'));
 
       await waitFor(() => {
@@ -909,114 +919,18 @@ describe('ConnectHardwareForm', () => {
     });
 
     it('renders the redesigned account selector when the feature flag is enabled', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
+      await connectDeviceAndWaitForAccountSelector(mockStore);
 
-      connectToDevice(tEn('trezor'));
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-      });
+      expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
       expect(
         screen.queryByTestId('hw-account-list__item'),
       ).not.toBeInTheDocument();
     });
 
-    it('hides balances on the redesigned account selector when they are unavailable', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+    it('returns to device selection when back is clicked on the account page', async () => {
       const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('trezor'));
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-      });
-
-      expect(
-        screen.queryByTestId('hardware-account-card-total-balance'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId('hardware-account-address-row-balance'),
-      ).not.toBeInTheDocument();
-      expect(screen.queryByText('...')).not.toBeInTheDocument();
-    });
-
-    it('hides the HD path settings button for QR hardware devices', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice('QRCode');
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-      });
-
-      expect(
-        screen.queryByTestId('select-hardware-accounts-page-settings-button'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('hides show more when the last fetched batch is smaller than five accounts', async () => {
-      mockConnectHardware.mockResolvedValue(createMockRawHardwareAccounts(3));
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('trezor'));
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(3);
-      });
-
-      expect(
-        screen.queryByTestId('select-hardware-accounts-page-show-more-button'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('reloads accounts when the HD path is changed', async () => {
-      const pathChangedAccounts = [{ address: '0xNewPathAddress', index: 0 }];
-      mockConnectHardware
-        .mockResolvedValueOnce(MOCK_ACCOUNTS)
-        .mockResolvedValueOnce(pathChangedAccounts);
-
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('ledger'));
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-      });
-
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-settings-button'),
-      );
-      fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
-      fireEvent.click(
-        screen.getByTestId('select-hd-path-page-continue-button'),
-      );
-
-      await waitFor(() => {
-        expect(mockConnectHardwareAction).toHaveBeenCalledTimes(2);
-      });
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(1);
-      });
-    });
-
-    it('returns to device selection when back is clicked on the new account page', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('trezor'));
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-      });
+      await connectDeviceAndWaitForAccountSelector(mockStore);
 
       fireEvent.click(
         screen.getByTestId('select-hardware-accounts-page-back-button'),
@@ -1027,48 +941,9 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
-    it('loads more accounts in batches of five when show more is clicked', async () => {
-      const nextBatch = createMockRawHardwareAccounts(5, 5);
-      mockConnectHardware
-        .mockResolvedValueOnce(MOCK_ACCOUNTS)
-        .mockResolvedValueOnce(nextBatch);
-
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('trezor'));
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-      });
-
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
-      );
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(10);
-      });
-
-      expect(mockConnectHardwareAction).toHaveBeenLastCalledWith(
-        HardwareDeviceNames.trezor,
-        1,
-        expect.any(String),
-        false,
-        expect.any(Function),
-      );
-    });
-
     it('navigates to home when continue is clicked with selected accounts', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('trezor'));
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-      });
+      await connectDeviceAndWaitForAccountSelector(mockStore);
 
       fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
       fireEvent.click(
@@ -1078,22 +953,14 @@ describe('ConnectHardwareForm', () => {
       await waitFor(() => {
         expect(mockUnlockHardwareWalletAccounts).toHaveBeenCalled();
       });
-
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith('/');
       });
     });
 
-    it('resets to device selection after forget device on the new account page', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+    it('resets to device selection after forget device on the account page', async () => {
       const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('trezor'));
-
-      await waitFor(() => {
-        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
-      });
+      await connectDeviceAndWaitForAccountSelector(mockStore);
 
       fireEvent.click(
         screen.getByTestId(
@@ -1104,7 +971,6 @@ describe('ConnectHardwareForm', () => {
       await waitFor(() => {
         expect(mockForgetDevice).toHaveBeenCalled();
       });
-
       await waitFor(() => {
         expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
       });

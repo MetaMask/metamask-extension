@@ -1,16 +1,19 @@
 import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { HardwareDeviceNames } from '../../../../../shared/constants/hardware-wallets';
-import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
+import {
+  createDefaultSelectHardwareAccountsPageProps,
+  createMockMetaMetricsContext,
+  createMockRawHardwareAccounts,
+  createSelectHardwareAccountsMockStore,
+  MOCK_RAW_HARDWARE_ACCOUNTS,
+  toHardwareConnectAccounts,
+} from '../../../../../test/unit/hardware-wallets/connect-hardware/fixtures';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { LEDGER_HD_PATHS, TREZOR_HD_PATHS } from '../utils/hardware-hd-paths';
-import { MOCK_RAW_HARDWARE_ACCOUNTS } from '../../../../../test/unit/hardware-wallets/connect-hardware/raw-hardware-accounts';
+import { LEDGER_HD_PATHS } from '../utils/hardware-hd-paths';
 import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
 import type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';
 
@@ -35,59 +38,10 @@ jest.mock('../../../../selectors/selectors', () => ({
   getHDEntropyIndex: () => 0,
 }));
 
-function createMockMetaMetricsContext() {
-  const mockTrackEvent = jest.fn();
-  return {
-    context: {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    },
-    mockTrackEvent,
-  };
-}
-
-const createMockState = () => ({
-  metamask: {
-    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    internalAccounts: {
-      accounts: {
-        accountId: {
-          address: '0x0000000000000000000000000000000000000000',
-          metadata: { keyring: 'HD Key Tree' },
-        },
-      },
-      selectedAccount: 'accountId',
-    },
-    keyrings: [],
-  },
-  appState: {
-    defaultHdPaths: {
-      [HardwareDeviceNames.ledger]: LEDGER_HD_PATHS[0].value,
-      [HardwareDeviceNames.trezor]: TREZOR_HD_PATHS[0].value,
-    },
-  },
-});
-
-const defaultPageProps: SelectHardwareAccountsPageProps = {
-  device: 'ledger',
-  accounts: MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 2).map((account) => ({
-    ...account,
-    balance: '...',
-  })),
-  connectedAccounts: [],
-  onBack: jest.fn(),
-  onError: jest.fn(),
-};
-
 const renderPage = (props: Partial<SelectHardwareAccountsPageProps> = {}) => {
-  const mergedProps: SelectHardwareAccountsPageProps = {
-    ...defaultPageProps,
-    ...props,
-  };
+  const mergedProps = createDefaultSelectHardwareAccountsPageProps(props);
   const { context, mockTrackEvent } = createMockMetaMetricsContext();
-  const mockStore = configureMockStore([thunk])(createMockState());
+  const mockStore = createSelectHardwareAccountsMockStore();
 
   return {
     props: mergedProps,
@@ -107,8 +61,8 @@ describe('SelectHardwareAccountsPage', () => {
     mockConnectHardware.mockResolvedValue([]);
   });
 
-  describe('account selector view', () => {
-    it('renders the account selector page by default', () => {
+  describe('rendering', () => {
+    it('renders the account selector with the provided accounts', () => {
       renderPage();
 
       expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
@@ -146,8 +100,20 @@ describe('SelectHardwareAccountsPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('hides the settings button for devices without HD path settings', () => {
+      renderPage({ device: HardwareDeviceNames.qr });
+
+      expect(
+        screen.queryByTestId('select-hardware-accounts-page-settings-button'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('metrics', () => {
     it('tracks the account selector viewed event on mount', () => {
-      const { mockTrackEvent } = renderPage({ device: 'trezor' });
+      const { mockTrackEvent } = renderPage({
+        device: HardwareDeviceNames.trezor,
+      });
 
       expect(mockTrackEvent).toHaveBeenCalledWith({
         event: MetaMetricsEventName.ConnectHardwareWalletAccountSelectorViewed,
@@ -157,25 +123,36 @@ describe('SelectHardwareAccountsPage', () => {
         },
       });
     });
+  });
 
-    it('reflects selected account indices as selected account ids', () => {
+  describe('account selection', () => {
+    it('selects and deselects accounts via checkbox', () => {
       renderPage();
 
-      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
-      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 2' }));
+      const accountOne = screen.getByRole('checkbox', { name: 'Account 1' });
+      const accountTwo = screen.getByRole('checkbox', { name: 'Account 2' });
 
-      expect(screen.getByRole('checkbox', { name: 'Account 1' })).toBeChecked();
-      expect(screen.getByRole('checkbox', { name: 'Account 2' })).toBeChecked();
+      fireEvent.click(accountOne);
+      fireEvent.click(accountTwo);
+      expect(accountOne).toBeChecked();
+      expect(accountTwo).toBeChecked();
+
+      fireEvent.click(accountOne);
+      expect(accountOne).not.toBeChecked();
+      expect(accountTwo).toBeChecked();
     });
 
-    it('forwards connected account state to the account cards', () => {
+    it('selects an account when the card header is clicked', () => {
+      renderPage();
+
+      fireEvent.click(screen.getAllByTestId('hardware-account-card-header')[0]);
+
+      expect(screen.getByRole('checkbox', { name: 'Account 1' })).toBeChecked();
+    });
+
+    it('disables already connected accounts', () => {
       renderPage({
-        accounts: [
-          {
-            ...MOCK_RAW_HARDWARE_ACCOUNTS[0],
-            balance: '...',
-          },
-        ],
+        accounts: toHardwareConnectAccounts([MOCK_RAW_HARDWARE_ACCOUNTS[0]]),
         connectedAccounts: [
           MOCK_RAW_HARDWARE_ACCOUNTS[0].address.toLowerCase(),
         ],
@@ -186,50 +163,21 @@ describe('SelectHardwareAccountsPage', () => {
       ).toBeDisabled();
     });
 
-    it('updates selection when an account card header is clicked', () => {
-      renderPage();
-
-      fireEvent.click(screen.getAllByTestId('hardware-account-card-header')[0]);
-
-      expect(screen.getByRole('checkbox', { name: 'Account 1' })).toBeChecked();
-    });
-
-    it('calls onBack when the back button is clicked', () => {
+    it('clears the parent error when the selection changes', () => {
       const { props } = renderPage();
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-back-button'),
-      );
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
 
-      expect(props.onBack).toHaveBeenCalledTimes(1);
+      expect(props.onError).toHaveBeenCalledWith(null);
     });
+  });
 
-    it('loads more accounts when show more is clicked', async () => {
-      mockConnectHardware.mockResolvedValue(
-        MOCK_RAW_HARDWARE_ACCOUNTS.slice(2, 7),
-      );
+  describe('pagination', () => {
+    it('hides show more when the initial batch is smaller than five accounts', () => {
       renderPage({
-        accounts: MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 5).map((account) => ({
-          ...account,
-          balance: '...',
-        })),
-      });
-
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
-      );
-
-      await waitFor(() => {
-        expect(mockConnectHardwareAction).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    it('hides the show more button when the last fetched batch is smaller than five accounts', () => {
-      renderPage({
-        accounts: MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 3).map((account) => ({
-          ...account,
-          balance: '...',
-        })),
+        accounts: toHardwareConnectAccounts(
+          MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 3),
+        ),
       });
 
       expect(
@@ -237,7 +185,31 @@ describe('SelectHardwareAccountsPage', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('disables the show more button while loading more accounts', async () => {
+    it('appends the next batch when show more is clicked', async () => {
+      mockConnectHardware.mockResolvedValue(
+        createMockRawHardwareAccounts(5, 5),
+      );
+      renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      );
+
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(10);
+      });
+      expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+        HardwareDeviceNames.ledger,
+        1,
+        LEDGER_HD_PATHS[0].value,
+        false,
+        expect.any(Function),
+      );
+    });
+
+    it('disables show more while the next batch is loading', async () => {
       let resolveConnectHardware: (value: unknown) => void = () => undefined;
       mockConnectHardware.mockImplementation(
         () =>
@@ -246,43 +218,56 @@ describe('SelectHardwareAccountsPage', () => {
           }),
       );
       renderPage({
-        accounts: MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 5).map((account) => ({
-          ...account,
-          balance: '...',
-        })),
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
       });
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      const showMoreButton = screen.getByTestId(
+        'select-hardware-accounts-page-show-more-button',
       );
+      fireEvent.click(showMoreButton);
 
-      expect(
-        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
-      ).toBeDisabled();
+      expect(showMoreButton).toBeDisabled();
 
       await act(async () => {
-        resolveConnectHardware(MOCK_RAW_HARDWARE_ACCOUNTS.slice(5, 10));
+        resolveConnectHardware(createMockRawHardwareAccounts(5, 5));
       });
     });
 
-    it('forgets the device and calls onBack when forget device is clicked', async () => {
-      const { props } = renderPage();
+    it('forwards fetch failures to onError', async () => {
+      mockConnectHardware.mockRejectedValue(new Error('Fetch failed'));
+      const { props } = renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
 
       fireEvent.click(
-        screen.getByTestId(
-          'select-hardware-accounts-page-forget-device-button',
-        ),
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
       );
 
       await waitFor(() => {
-        expect(mockForgetDevice).toHaveBeenCalledTimes(1);
-      });
-
-      await waitFor(() => {
-        expect(props.onBack).toHaveBeenCalledTimes(1);
+        expect(props.onError).toHaveBeenCalledWith('Fetch failed');
       });
     });
 
+    it('hides show more after a partial batch is appended', async () => {
+      mockConnectHardware.mockResolvedValue(createMockRawHardwareAccounts(3, 5));
+      renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      );
+
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(8);
+      });
+      expect(
+        screen.queryByTestId('select-hardware-accounts-page-show-more-button'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('continue and unlock', () => {
     it('disables continue when no accounts are selected', () => {
       renderPage();
 
@@ -291,7 +276,7 @@ describe('SelectHardwareAccountsPage', () => {
       ).toBeDisabled();
     });
 
-    it('calls unlock when continue is clicked with selected accounts', async () => {
+    it('unlocks selected accounts when continue is clicked', async () => {
       renderPage();
 
       fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
@@ -301,6 +286,22 @@ describe('SelectHardwareAccountsPage', () => {
 
       await waitFor(() => {
         expect(mockUnlockHardwareWalletAccounts).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('forwards unlock failures to onError', async () => {
+      mockUnlockHardwareWalletAccounts.mockRejectedValueOnce(
+        new Error('Unlock failed'),
+      );
+      const { props } = renderPage();
+
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-continue-button'),
+      );
+
+      await waitFor(() => {
+        expect(props.onError).toHaveBeenCalledWith('Unlock failed');
       });
     });
 
@@ -334,17 +335,54 @@ describe('SelectHardwareAccountsPage', () => {
         expect(continueButton).toBeEnabled();
       });
     });
+  });
 
-    it('hides the settings button when HD path settings are not supported', () => {
-      renderPage({ device: 'qr' });
+  describe('navigation', () => {
+    it('calls onBack when the back button is clicked', () => {
+      const { props } = renderPage();
 
-      expect(
-        screen.queryByTestId('select-hardware-accounts-page-settings-button'),
-      ).not.toBeInTheDocument();
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-back-button'),
+      );
+
+      expect(props.onBack).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('HD path view', () => {
+  describe('forget device', () => {
+    it('forgets the device and calls onBack when forget device is clicked', async () => {
+      const { props } = renderPage();
+
+      fireEvent.click(
+        screen.getByTestId(
+          'select-hardware-accounts-page-forget-device-button',
+        ),
+      );
+
+      await waitFor(() => {
+        expect(mockForgetDevice).toHaveBeenCalledTimes(1);
+      });
+      expect(props.onBack).toHaveBeenCalledTimes(1);
+    });
+
+    it('forwards forget failures to onError without navigating back', async () => {
+      mockForgetDevice.mockRejectedValueOnce(new Error('Forget failed'));
+      const { props } = renderPage();
+
+      fireEvent.click(
+        screen.getByTestId(
+          'select-hardware-accounts-page-forget-device-button',
+        ),
+      );
+
+      await waitFor(() => {
+        expect(props.onError).toHaveBeenCalledWith('Forget failed');
+      });
+      expect(props.onBack).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('HD path settings', () => {
     it('opens the HD path page when settings is clicked', () => {
       renderPage();
 
@@ -354,30 +392,16 @@ describe('SelectHardwareAccountsPage', () => {
 
       expect(screen.getByText(tEn('selectHdPath'))).toBeInTheDocument();
       expect(screen.getAllByTestId('hardware-hd-path-option')).toHaveLength(3);
-      expect(
-        screen.getByTestId('select-hd-path-page-continue-button'),
-      ).toBeInTheDocument();
     });
 
-    it('reloads accounts and returns to the account selector after confirming a path', async () => {
-      mockConnectHardware.mockResolvedValue([
-        { address: '0xNewPathAddress', index: 0 },
-      ]);
-      renderPage();
+    it('renders trezor HD path options for trezor devices', () => {
+      renderPage({ device: HardwareDeviceNames.trezor });
 
       fireEvent.click(
         screen.getByTestId('select-hardware-accounts-page-settings-button'),
       );
-      fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
-      fireEvent.click(
-        screen.getByTestId('select-hd-path-page-continue-button'),
-      );
 
-      await waitFor(() => {
-        expect(mockConnectHardwareAction).toHaveBeenCalledTimes(1);
-      });
-
-      expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
+      expect(screen.getAllByTestId('hardware-hd-path-option')).toHaveLength(3);
     });
 
     it('returns to the account selector when back is clicked on the HD path page', () => {
@@ -392,7 +416,7 @@ describe('SelectHardwareAccountsPage', () => {
       expect(screen.queryByText(tEn('selectHdPath'))).not.toBeInTheDocument();
     });
 
-    it('returns to the account selector without reloading when Continue is clicked with the same path', () => {
+    it('returns without reloading when Continue is clicked with the same path', () => {
       renderPage();
 
       fireEvent.click(
@@ -404,10 +428,9 @@ describe('SelectHardwareAccountsPage', () => {
 
       expect(mockConnectHardwareAction).not.toHaveBeenCalled();
       expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
-      expect(screen.queryByText(tEn('selectHdPath'))).not.toBeInTheDocument();
     });
 
-    it('does not reload accounts when a path is selected but Continue is not clicked', () => {
+    it('does not reload accounts when a new path is selected but not confirmed', () => {
       renderPage();
 
       fireEvent.click(
@@ -419,14 +442,26 @@ describe('SelectHardwareAccountsPage', () => {
       expect(screen.getByText(tEn('selectHdPath'))).toBeInTheDocument();
     });
 
-    it('renders HD path options for the connected device', () => {
-      renderPage({ device: 'trezor' });
+    it('reloads accounts and returns to the account selector after confirming a new path', async () => {
+      const pathChangedAccount = createMockRawHardwareAccounts(1, 0)[0];
+      mockConnectHardware.mockResolvedValue([pathChangedAccount]);
+      renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
 
       fireEvent.click(
         screen.getByTestId('select-hardware-accounts-page-settings-button'),
       );
+      fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
+      fireEvent.click(
+        screen.getByTestId('select-hd-path-page-continue-button'),
+      );
 
-      expect(screen.getAllByTestId('hardware-hd-path-option')).toHaveLength(3);
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalledTimes(1);
+      });
+      expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
+      expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(1);
     });
   });
 });

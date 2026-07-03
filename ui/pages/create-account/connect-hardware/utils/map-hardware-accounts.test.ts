@@ -114,6 +114,10 @@ describe('mapAccountIdsToIndices', () => {
       mapAccountIdsToIndices(['account-0', 'invalid', 'account-']),
     ).toStrictEqual([0]);
   });
+
+  it('ignores non-numeric suffixes after the account prefix', () => {
+    expect(mapAccountIdsToIndices(['account-abc'])).toStrictEqual([]);
+  });
 });
 
 describe('mapIndicesToAccountIds', () => {

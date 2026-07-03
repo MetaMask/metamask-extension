@@ -67,8 +67,16 @@ describe('getDeviceHdPaths', () => {
     expect(getDeviceHdPaths(HardwareDeviceNames.ledger)).toBe(LEDGER_HD_PATHS);
   });
 
+  it('returns lattice paths for lattice devices', () => {
+    expect(getDeviceHdPaths(HardwareDeviceNames.lattice)).toBe(LATTICE_HD_PATHS);
+  });
+
   it('returns trezor paths for trezor devices', () => {
     expect(getDeviceHdPaths(HardwareDeviceNames.trezor)).toBe(TREZOR_HD_PATHS);
+  });
+
+  it('returns trezor paths for oneKey devices', () => {
+    expect(getDeviceHdPaths(HardwareDeviceNames.oneKey)).toBe(TREZOR_HD_PATHS);
   });
 
   it('returns an empty array for unsupported devices', () => {
