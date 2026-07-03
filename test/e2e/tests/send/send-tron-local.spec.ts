@@ -1,3 +1,4 @@
+import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -21,10 +22,10 @@ import { proxyTronBlockchainCalls } from '../tron/mocks/local-tron-node-mocks';
 import { TronNode } from '../../seeder/tron/node';
 import { createTronPortfolioNodeOptions } from '../../seeder/tron/profiles';
 
-describe('Send Tron', function () {
-  this.timeout(180_000);
+describe('Send Tron (local blockchain)', function (this: Suite) {
+  this.timeout(180_000); // covers Docker startup and the test run
 
-  it('sends TRX using a local Tron node', async function () {
+  it('should be possible to send TRX using a real local blockchain', async function () {
     // Captured in afterLocalNodesStart (which runs before the network mocks
     // are set up) so the mock builder can proxy calls to the local node.
     // testSpecificMock itself keeps its single-argument contract.
@@ -52,11 +53,13 @@ describe('Send Tron', function () {
           }
 
           return [
+            // ── External service mocks (unchanged from original test) ──────────
             await mockTronFeatureFlags(mockServer),
             await mockExchangeRates(mockServer),
             await mockFiatExchangeRates(mockServer),
             await mockTrxNativeSpotPrices(mockServer),
             await mockTronAssets(mockServer, tronNode),
+            // ── Blockchain calls proxied to local Tron node ───────────────────
             ...(await proxyTronBlockchainCalls(mockServer, tronNode, [
               TRON_ACCOUNT_ADDRESS,
               TRON_RECIPIENT_ADDRESS,
@@ -67,36 +70,39 @@ describe('Send Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        // Switch to Tron via the UI. Enabling it through fixtures causes a redirect
-        // back to the default network because the snap is not yet initialized
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
         const nonEvmHomepage = new NonEvmHomepage(driver);
+        // Real balance from local node: 6,072,392 SUN ≈ 6.072 TRX
         await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed(
           '6.072',
           'TRX',
         );
-        const snapTransactionConfirmation = new SnapTransactionConfirmation(
-          driver,
-        );
+
         await nonEvmHomepage.clickOnSendButton();
+
         const sendPage = new SendPage(driver);
         await sendPage.selectToken('tron:728126428', 'TRX');
-
-        // Wait for the send page to load
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
+
+        const snapTransactionConfirmation = new SnapTransactionConfirmation(
+          driver,
+        );
         await snapTransactionConfirmation.checkPageIsLoaded();
         await snapTransactionConfirmation.clickFooterConfirmButton();
+
         const activityList = new ActivityTab(driver);
-        await activityList.checkTxAmountInActivity('-1 TRX', 1);
+        // The broadcast reached the real local node — no failed transaction should appear
         await activityList.checkNoFailedTransactions();
+        // The snap tracks the submitted transaction locally and renders it immediately
+        await activityList.checkTxAmountInActivity('-1 TRX', 1);
       },
     );
   });

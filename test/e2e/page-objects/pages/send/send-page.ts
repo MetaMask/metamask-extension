@@ -7,6 +7,10 @@ class SendPage {
 
   private readonly amountInput = { testId: 'send-amount-input' };
 
+  private readonly amountRequiredError = {
+    text: 'Required',
+  };
+
   private readonly continueButton = { testId: 'send-continue-button' };
 
   private readonly continueButtonEnabled =
@@ -23,6 +27,10 @@ class SendPage {
 
   private readonly inputRecipient = {
     testId: 'recipient-address-input',
+  };
+
+  private readonly insufficientBalanceToCoverFeesError = {
+    text: 'Insufficient balance to cover fees',
   };
 
   private readonly insufficientFundsError = {
@@ -118,6 +126,11 @@ class SendPage {
     );
   }
 
+  async checkAmountRequiredError(): Promise<void> {
+    console.log('Checking for amount required error');
+    await this.driver.waitForSelector(this.amountRequiredError);
+  }
+
   /**
    * Waits for the continue button to reach the expected enabled/disabled state.
    *
@@ -133,6 +146,11 @@ class SendPage {
     await this.driver.waitForSelector(this.continueButton, {
       state,
     });
+  }
+
+  async checkContinueButtonIsDisabled(): Promise<void> {
+    console.log('Checking that Continue button is disabled');
+    await this.checkContinueButton({ state: 'disabled' });
   }
 
   /**
@@ -158,9 +176,13 @@ class SendPage {
     });
   }
 
+  async checkInsufficientBalanceToCoverFeesError(): Promise<void> {
+    await this.driver.waitForSelector(this.insufficientBalanceToCoverFeesError);
+  }
+
   async checkInsufficientFundsError(): Promise<void> {
     console.log('Checking for insufficient funds error');
-    await this.driver.findElement(this.insufficientFundsError);
+    await this.driver.waitForSelector(this.insufficientFundsError);
   }
 
   async checkInsufficientFundsErrorDetailed(): Promise<void> {
@@ -170,7 +192,7 @@ class SendPage {
 
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
-    await this.driver.findElement(this.invalidAddressError);
+    await this.driver.waitForSelector(this.invalidAddressError);
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
@@ -318,6 +340,7 @@ class SendPage {
     }
   }
 
+
   /**
    * Clicks Continue once the button is stably enabled, then acknowledges the
    * optional send-alert modal when present.
@@ -357,7 +380,9 @@ class SendPage {
 
   async selectToken(chainId: string, symbol: string): Promise<void> {
     console.log(`Selecting token ${symbol} on chain ${chainId}`);
-    await this.driver.clickElement(this.tokenAsset(chainId, symbol));
+    const tokenAsset = this.tokenAsset(chainId, symbol);
+    await this.driver.waitForSelector(tokenAsset);
+    await this.driver.clickElement(tokenAsset);
   }
 
   /**
