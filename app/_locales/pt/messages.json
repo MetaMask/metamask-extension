@@ -10491,29 +10491,8 @@
   "turnOn": {
     "message": "Ativar"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Ativar notificações"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Ativar"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Ocorreu um erro ao criar as notificações. Tente novamente mais tarde."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Fique por dentro do que acontece em sua carteira com as notificações."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "configurações de notificações."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Saiba como protegemos sua privacidade enquanto usa este recurso."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Para usar as notificações da carteira, nós usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Você pode desativar as notificações quando quiser no $1"
   },
   "turnOnTokenDetection": {
     "message": "Ativar detecção avançada de token"

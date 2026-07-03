@@ -2572,6 +2572,7 @@
     "@metamask/wallet": {
       "packages": {
         "@metamask/accounts-controller": true,
+        "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/connectivity-controller": true,
