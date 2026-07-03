@@ -294,7 +294,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     },
     status: FeatureFlagStatus.Active,
   },
-
   bridgeConfig: {
     name: 'bridgeConfig',
     type: FeatureFlagType.Remote,
