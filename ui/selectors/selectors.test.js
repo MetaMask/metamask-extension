@@ -1,3 +1,5 @@
+/* eslint-disable jest/require-top-level-describe -- file-wide reselect dev mode hooks */
+import { setGlobalDevModeChecks } from 'reselect';
 import { ApprovalType } from '@metamask/controller-utils';
 import { KnownCaipNamespace } from '@metamask/utils';
 import {
@@ -63,6 +65,14 @@ jest.mock('./multichain/networks', () => ({
     return state.metamask.selectedMultichainNetworkChainId;
   }),
 }));
+
+beforeAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
+});
+
+afterAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'once' });
+});
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
@@ -4966,8 +4976,8 @@ describe('getUnconnectedAccounts', () => {
       stateWithConnectedAccount,
     );
     expect(result).toHaveLength(allAccounts.length - 1);
-    expect(
-      result.some((account) => account.address === connectedAddress),
-    ).toBe(false);
+    expect(result.some((account) => account.address === connectedAddress)).toBe(
+      false,
+    );
   });
 });
