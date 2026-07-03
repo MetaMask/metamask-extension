@@ -31,6 +31,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
       'NetworkController:getSelectedNetworkClient',
+      'NetworkController:addNetwork',
+      'NetworkController:setActiveNetwork',
       'NetworkController:lookupNetwork',
       'NetworkEnablementController:getState',
       'NetworkEnablementController:enableNetwork',
@@ -177,6 +179,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'OnboardingController:resetOnboarding',
     ],
     events: [
+      'NetworkEnablementController:stateChange',
       'TransactionController:unapprovedTransactionAdded',
       'SignatureController:stateChange',
     ],

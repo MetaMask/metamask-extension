@@ -1,7 +1,9 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  AddNetworkFields,
   NetworkConfiguration,
+  NetworkControllerAddNetworkAction,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
@@ -9,12 +11,16 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
+  NetworkControllerSetActiveNetworkAction,
   Provider,
+  UpdateNetworkFields,
 } from '@metamask/network-controller';
 import {
   NetworkEnablementControllerEnableAllPopularNetworksAction,
   NetworkEnablementControllerEnableNetworkAction,
   NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerState,
+  NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
 import {
   add0x,
@@ -444,6 +450,7 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addNetwork',
   'addTransaction',
   'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
@@ -605,6 +612,7 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceRemoveMultichainAccountWalletAction
   | MultichainAccountServiceResyncAccountsAction
+  | NetworkControllerAddNetworkAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
@@ -612,6 +620,7 @@ type AllowedActions =
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
   | NetworkControllerResetConnectionAction
+  | NetworkControllerSetActiveNetworkAction
   | NetworkEnablementControllerEnableAllPopularNetworksAction
   | NetworkEnablementControllerEnableNetworkAction
   | NetworkEnablementControllerGetStateAction
@@ -691,6 +700,7 @@ type AllowedActions =
  * transaction or signature request while running PPOM security validation.
  */
 type AllowedEvents =
+  | NetworkEnablementControllerStateChangeEvent
   | TransactionControllerUnapprovedTransactionAddedEvent
   | SignatureStateChange;
 
@@ -719,6 +729,9 @@ type LegacyBackgroundApiServiceOptions = {
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
   offscreenPromise: Promise<void>;
+  restoreEnabledNetworkMap: (
+    enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
+  ) => void;
 };
 
 /**
@@ -759,6 +772,10 @@ export class LegacyBackgroundApiService {
 
   readonly #offscreenPromise: Promise<void>;
 
+  readonly #restoreEnabledNetworkMap: (
+    enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
+  ) => void;
+
   #passkeyAutoUnlockSuppressedResetTimeoutId: NodeJS.Timeout | null = null;
 
   /**
@@ -776,6 +793,7 @@ export class LegacyBackgroundApiService {
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
+   * @param options.restoreEnabledNetworkMap - Restores the NetworkEnablementController's enabled network map to a previous value.
    */
   constructor({
     messenger,
@@ -790,6 +808,7 @@ export class LegacyBackgroundApiService {
     sendUpdate,
     seedlessOperationMutex,
     offscreenPromise,
+    restoreEnabledNetworkMap,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
 
@@ -810,6 +829,7 @@ export class LegacyBackgroundApiService {
     this.#seedlessOperationMutex = seedlessOperationMutex;
     this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
+    this.#restoreEnabledNetworkMap = restoreEnabledNetworkMap;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -1171,6 +1191,72 @@ export class LegacyBackgroundApiService {
       ).securityAlertsEnabled,
       waitForSubmit,
     };
+  }
+
+  /**
+   * Adds a network and (optionally) sets it as the active network.
+   *
+   * @param networkConfiguration - The network configuration to add.
+   * @param options - Options for post-add behavior.
+   * @param options.setActive - Whether to switch to the added network.
+   * @returns The added network configuration.
+   */
+  async addNetwork(
+    networkConfiguration: AddNetworkFields | UpdateNetworkFields,
+    { setActive = true } = {},
+  ): Promise<NetworkConfiguration> {
+    if (setActive) {
+      const addedNetwork = await this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration as AddNetworkFields,
+      );
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.#messenger.call(
+        'NetworkController:setActiveNetwork',
+        networkClientId,
+      );
+      return addedNetwork;
+    }
+
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const previousEnabledNetworkMap = Object.fromEntries(
+      Object.entries(enabledNetworkMap).map(([namespace, networks]) => [
+        namespace,
+        { ...networks },
+      ]),
+    ) as NetworkEnablementControllerState['enabledNetworkMap'];
+    const restorePreviousEnabledNetworkMap = () => {
+      this.#messenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      this.#restoreEnabledNetworkMap(previousEnabledNetworkMap);
+    };
+
+    this.#messenger.subscribe(
+      'NetworkEnablementController:stateChange',
+      restorePreviousEnabledNetworkMap,
+    );
+
+    try {
+      const addedNetwork = await this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration as AddNetworkFields,
+      );
+      await this.lookupSelectedNetworks();
+      return addedNetwork;
+    } catch (error) {
+      // `addNetwork` rejected, so `networkAdded` was not published
+      this.#messenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      throw error;
+    }
   }
 
   /**
