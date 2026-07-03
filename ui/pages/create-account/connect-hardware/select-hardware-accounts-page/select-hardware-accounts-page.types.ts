@@ -8,7 +8,15 @@ export const HARDWARE_ACCOUNTS_PAGE_VIEWS = ['accounts', 'hd-path'] as const;
 export type HardwareAccountsPageView =
   (typeof HARDWARE_ACCOUNTS_PAGE_VIEWS)[number];
 
-/** Props for the hardware account selection page. */
+/**
+ * Props for the hardware account selection page.
+ *
+ * @property device - Connected hardware device.
+ * @property accounts - Accounts from the initial connectHardware call.
+ * @property connectedAccounts - Lowercase addresses already imported in MetaMask.
+ * @property onBack - Called when the user leaves the account selector.
+ * @property onError - Called when the parent should display an error.
+ */
 export type SelectHardwareAccountsPageProps = {
   device: HardwareDeviceNames;
   accounts: HardwareConnectAccount[];

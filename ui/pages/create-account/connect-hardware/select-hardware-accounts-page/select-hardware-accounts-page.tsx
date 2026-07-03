@@ -69,14 +69,14 @@ function toRawAccounts(accounts: HardwareConnectAccount[]): RawHardwareAccount[]
 
 /**
  * Entry point for selecting hardware wallet accounts to import.
- * Handles account pagination, HD path changes, unlock, and forget-device actions.
+ * Handles pagination, HD path changes, unlock, and forget device actions.
  *
  * @param options - Page props.
- * @param options.device - Connected hardware device name.
- * @param options.accounts - Accounts returned from the initial connectHardware call.
+ * @param options.device - Connected hardware device.
+ * @param options.accounts - Accounts from the initial connectHardware call.
  * @param options.connectedAccounts - Lowercase addresses already imported in MetaMask.
  * @param options.onBack - Called when the user leaves the account selector.
- * @param options.onError - Called when an error should be shown by the parent.
+ * @param options.onError - Called when the parent should display an error.
  */
 export const SelectHardwareAccountsPage = ({
   device,

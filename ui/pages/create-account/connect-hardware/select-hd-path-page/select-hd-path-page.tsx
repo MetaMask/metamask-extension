@@ -26,8 +26,8 @@ import type { SelectHdPathPageProps } from './select-hd-path-page.types';
  * Lets the user choose an HD derivation path for a hardware wallet.
  *
  * @param options - Component props.
- * @param options.hdPaths - Available HD path options for the device.
- * @param options.selectedPath - Currently selected HD derivation path.
+ * @param options.hdPaths - HD path options for the connected device.
+ * @param options.selectedPath - Active HD derivation path.
  * @param options.onPathChange - Called when the user confirms a path selection.
  * @param options.onBack - Called when the user navigates back.
  */

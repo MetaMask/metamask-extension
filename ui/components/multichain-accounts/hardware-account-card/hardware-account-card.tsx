@@ -17,10 +17,11 @@ import type { HardwareAccountCardProps } from './hardware-account-card.types';
 
 /**
  * Account card for hardware wallet onboarding with selection and address rows.
- * @param options0
- * @param options0.account
- * @param options0.isSelected
- * @param options0.onToggleSelection
+ *
+ * @param options - Component props.
+ * @param options.account - Hardware wallet account to display.
+ * @param options.isSelected - Whether the account is selected for import.
+ * @param options.onToggleSelection - Called when the user toggles account selection.
  */
 export const HardwareAccountCard = ({
   account,

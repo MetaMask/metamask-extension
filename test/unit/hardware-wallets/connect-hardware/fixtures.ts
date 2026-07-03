@@ -20,8 +20,9 @@ import {
 export { createMockRawHardwareAccounts, MOCK_RAW_HARDWARE_ACCOUNTS };
 
 /**
- * Maps raw hardware accounts to connect-hardware page props shape.
- * @param accounts
+ * Maps raw hardware accounts to connect hardware page props.
+ *
+ * @param accounts - Raw hardware accounts to map.
  */
 export function toHardwareConnectAccounts(
   accounts: RawHardwareAccount[],
@@ -57,6 +58,11 @@ export function createSelectHardwareAccountsMockStore() {
   return configureMockStore([thunk])(createSelectHardwareAccountsMockState());
 }
 
+/**
+ * Creates default props for SelectHardwareAccountsPage tests.
+ *
+ * @param overrides - Optional prop overrides.
+ */
 export function createDefaultSelectHardwareAccountsPageProps(
   overrides: Partial<SelectHardwareAccountsPageProps> = {},
 ): SelectHardwareAccountsPageProps {

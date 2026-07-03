@@ -3,7 +3,7 @@ import type { HardwareWalletAccount } from '../../../../components/multichain-ac
 import type { RawHardwareAccount } from '../types';
 
 /**
- * Maps raw hardware wallet accounts from the background into wallet account cards.
+ * Maps raw hardware wallet accounts into wallet account cards.
  *
  * @param accounts - Accounts returned from connectHardware.
  * @param connectedAccounts - Lowercase addresses already imported in MetaMask.

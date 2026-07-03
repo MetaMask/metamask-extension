@@ -16,8 +16,9 @@ import type { HardwareAccountAddressRowProps } from './hardware-account-address-
 
 /**
  * Address row for a hardware wallet account card.
- * @param options0
- * @param options0.address
+ *
+ * @param options - Component props.
+ * @param options.address - Address data to display in the row.
  */
 export const HardwareAccountAddressRow = ({
   address,

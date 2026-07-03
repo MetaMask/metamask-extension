@@ -20,7 +20,7 @@ export const MOCK_RAW_HARDWARE_ACCOUNTS: RawHardwareAccount[] =
   }));
 
 /**
- * Creates raw hardware account fixtures for connect-hardware tests.
+ * Creates raw hardware account fixtures for connect hardware tests.
  *
  * @param count - Number of accounts to create.
  * @param startIndex - Hardware account index for the first fixture.

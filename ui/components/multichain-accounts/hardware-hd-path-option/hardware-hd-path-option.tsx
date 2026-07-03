@@ -21,7 +21,7 @@ import type { HardwareHdPathOptionProps } from './hardware-hd-path-option.types'
  *
  * @param options - Component props.
  * @param options.label - Display label for the HD path.
- * @param options.isSelected - Whether this path is currently selected.
+ * @param options.isSelected - Whether this path is selected.
  * @param options.onSelect - Called when the user selects this path.
  */
 export const HardwareHdPathOption = ({
