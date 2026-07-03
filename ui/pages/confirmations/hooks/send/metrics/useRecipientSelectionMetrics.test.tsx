@@ -1,26 +1,29 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React from 'react';
 import mockTestState from '../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../../../../shared/lib/analytics/create-event-builder';
 import { RecipientInputMethod } from '../../../context/send-metrics';
 
 import { useSendType } from '../useSendType';
 import { useRecipientSelectionMetrics } from './useRecipientSelectionMetrics';
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 
-const Container = ({ children }: { children: React.ReactNode }) => (
-  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-    {children}
-  </MetaMetricsContext.Provider>
-);
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder: actualCreateEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder: actualCreateEventBuilder,
+    }),
+  };
+});
 
 const mockSetRecipientInputMethod = jest.fn();
 
@@ -117,26 +120,20 @@ describe('useRecipientSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useRecipientSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       await result.current.captureRecipientSelected();
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
-        {
-          category: 'Send',
-          event: 'Send Recipient Selected',
-          properties: {
+        createEventBuilder(MetaMetricsEventName.SendRecipientSelected)
+          .addCategory(MetaMetricsEventCategory.Send)
+          .addProperties({
             account_type: 'EOA',
             chain_id: '0x1',
             chain_id_caip: 'eip155:1',
             input_method: 'manual',
-          },
-        },
-        {
-          excludeMetaMetricsId: false,
-        },
+          })
+          .build({ excludeMetaMetricsId: false }),
       );
     });
   });
