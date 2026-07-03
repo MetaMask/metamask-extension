@@ -817,7 +817,7 @@ class TestDapp {
   }
 
   async clickAddTokenToWallet() {
-    console.log('Click add token to wallet button');
+    console.log('Click add token to wallet button TEST');
     await this.driver.clickElement(this.addTokensToWalletButton);
   }
 
