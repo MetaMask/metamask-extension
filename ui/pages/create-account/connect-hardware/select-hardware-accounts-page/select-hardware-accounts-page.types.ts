@@ -10,9 +10,10 @@ export type HardwareAccountsPageView =
 
 /**
  * Props for the hardware account selection page.
+ * Rendered by index.tsx when the new hardware onboarding flag is enabled.
  *
  * @property device - Connected hardware device.
- * @property accounts - Accounts from the initial connectHardware call.
+ * @property accounts - Initial connectHardware rows from index.tsx (balance is ignored).
  * @property connectedAccounts - Lowercase addresses already imported in MetaMask.
  * @property onBack - Called when the user leaves the account selector.
  * @property onError - Called when the parent should display an error.

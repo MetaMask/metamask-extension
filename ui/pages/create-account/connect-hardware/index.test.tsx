@@ -5,6 +5,7 @@ import {
   waitFor,
   screen,
 } from '@testing-library/react';
+import { it as jestIt } from '@jest/globals';
 import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
@@ -12,8 +13,10 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import {
-  LedgerTransportTypes,
+  HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES,
+  HardwareConnectLegacyErrorMessage,
   HardwareDeviceNames,
+  LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -436,8 +439,12 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
-    it('displays ledgerLocked error for LEDGER_LOCKED', async () => {
-      mockConnectHardware.mockRejectedValue(new Error('LEDGER_LOCKED'));
+    jestIt.each([...HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES])(
+      'displays ledgerLocked error for legacy token %s',
+      async (
+        legacyMessage: (typeof HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES)[number],
+      ) => {
+      mockConnectHardware.mockRejectedValue(new Error(legacyMessage));
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -446,19 +453,8 @@ describe('ConnectHardwareForm', () => {
       await waitFor(() => {
         expect(screen.getByText(tEn('ledgerLocked'))).toBeInTheDocument();
       });
-    });
-
-    it('displays ledgerLocked error for LEDGER_WRONG_APP', async () => {
-      mockConnectHardware.mockRejectedValue(new Error('LEDGER_WRONG_APP'));
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('ledger'));
-
-      await waitFor(() => {
-        expect(screen.getByText(tEn('ledgerLocked'))).toBeInTheDocument();
-      });
-    });
+    },
+    );
 
     it('displays ledgerTimeout error for timeout errors', async () => {
       mockConnectHardware.mockRejectedValue(
@@ -512,8 +508,10 @@ describe('ConnectHardwareForm', () => {
       jest.restoreAllMocks();
     });
 
-    it('sets browserSupported to false for "Window blocked" error', async () => {
-      mockConnectHardware.mockRejectedValue(new Error('Window blocked'));
+    it('sets browserSupported to false for window blocked errors', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.WindowBlocked),
+      );
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -528,7 +526,9 @@ describe('ConnectHardwareForm', () => {
 
     it('displays QRHardwarePubkeyAccountOutOfRange for keystone pubkey error', async () => {
       mockConnectHardware.mockRejectedValue(
-        new Error('KeystoneError#pubkey_account.no_expected_account'),
+        new Error(
+          HardwareConnectLegacyErrorMessage.KeystonePubkeyAccountOutOfRange,
+        ),
       );
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
@@ -542,37 +542,9 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
-    it('ignores "Window closed" error silently', async () => {
-      mockConnectHardware.mockRejectedValue(new Error('Window closed'));
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('ledger'));
-
-      await waitFor(() => {
-        expect(mockConnectHardware).toHaveBeenCalled();
-      });
-
-      expect(screen.queryByText('Window closed')).not.toBeInTheDocument();
-    });
-
-    it('ignores "Popup closed" error silently', async () => {
-      mockConnectHardware.mockRejectedValue(new Error('Popup closed'));
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
-
-      connectToDevice(tEn('ledger'));
-
-      await waitFor(() => {
-        expect(mockConnectHardware).toHaveBeenCalled();
-      });
-
-      expect(screen.queryByText('Popup closed')).not.toBeInTheDocument();
-    });
-
-    it('ignores KeystoneError#sync_cancel error silently', async () => {
+    it('ignores window closed errors silently', async () => {
       mockConnectHardware.mockRejectedValue(
-        new Error('KeystoneError#sync_cancel'),
+        new Error(HardwareConnectLegacyErrorMessage.WindowClosed),
       );
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
@@ -584,7 +556,43 @@ describe('ConnectHardwareForm', () => {
       });
 
       expect(
-        screen.queryByText('KeystoneError#sync_cancel'),
+        screen.queryByText(HardwareConnectLegacyErrorMessage.WindowClosed),
+      ).not.toBeInTheDocument();
+    });
+
+    it('ignores popup closed errors silently', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.PopupClosed),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('ledger'));
+
+      await waitFor(() => {
+        expect(mockConnectHardware).toHaveBeenCalled();
+      });
+
+      expect(
+        screen.queryByText(HardwareConnectLegacyErrorMessage.PopupClosed),
+      ).not.toBeInTheDocument();
+    });
+
+    it('ignores keystone sync cancel errors silently', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.KeystoneSyncCancel),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('ledger'));
+
+      await waitFor(() => {
+        expect(mockConnectHardware).toHaveBeenCalled();
+      });
+
+      expect(
+        screen.queryByText(HardwareConnectLegacyErrorMessage.KeystoneSyncCancel),
       ).not.toBeInTheDocument();
     });
 

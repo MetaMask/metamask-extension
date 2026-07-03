@@ -29,10 +29,8 @@ import * as actions from '../../../../store/actions';
 import { getErrorMessage as toErrorMessage } from '../../../../../shared/lib/error';
 import {
   DEVICE_KEYRING_MAP,
-  HardwareDeviceNames,
   MEW_PATH,
 } from '../../../../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../../../../shared/constants/keyring';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -52,10 +50,17 @@ import {
 } from '../utils/hardware-hd-paths';
 import {
   mapAccountIdsToIndices,
+  mapConnectHardwarePageAccounts,
   mapHardwareAccountsToWalletAccounts,
   mapIndicesToAccountIds,
+  toRawHardwareAccounts,
 } from '../utils/map-hardware-accounts';
-import type { HardwareConnectAccount, RawHardwareAccount } from '../types';
+import { getConnectedHardwareWalletKeyrings } from '../utils/get-connected-hardware-wallet-keyrings';
+import {
+  HardwareConnectErrorResolutionKind,
+  resolveHardwareConnectUserError,
+} from '../utils/resolve-hardware-connect-user-error';
+import type { ConnectHardwarePageAccount, RawHardwareAccount } from '../types';
 import type {
   HardwareAccountsPageView,
   SelectHardwareAccountsPageProps,
@@ -63,13 +68,10 @@ import type {
 
 const ACCOUNTS_PER_PAGE = 5;
 
-function toRawAccounts(accounts: HardwareConnectAccount[]): RawHardwareAccount[] {
-  return accounts.map(({ address, index }) => ({ address, index }));
-}
-
 /**
- * Entry point for selecting hardware wallet accounts to import.
- * Handles pagination, HD path changes, unlock, and forget device actions.
+ * New hardware wallet account selector shown when NEW_HARDWARE_WALLET_ONBOARDING
+ * is enabled. Replaces the legacy AccountList inline view while keeping the same
+ * connectHardware, pagination, HD path, unlock, and forget-device actions.
  *
  * @param options - Page props.
  * @param options.device - Connected hardware device.
@@ -108,7 +110,7 @@ export const SelectHardwareAccountsPage = ({
 
   const [view, setView] = useState<HardwareAccountsPageView>('accounts');
   const [accounts, setAccounts] = useState<RawHardwareAccount[]>(() =>
-    toRawAccounts(initialAccounts),
+    toRawHardwareAccounts(initialAccounts),
   );
   const [selectedAccountIndices, setSelectedAccountIndices] = useState<
     number[]
@@ -120,19 +122,7 @@ export const SelectHardwareAccountsPage = ({
   const [isContinuing, setIsContinuing] = useState(false);
 
   const hardwareWalletKeyrings = useMemo(
-    () =>
-      keyrings.filter(
-        (keyring) =>
-          (
-            [
-              KeyringType.ledger,
-              KeyringType.trezor,
-              KeyringType.lattice,
-              KeyringType.qr,
-              KeyringType.oneKey,
-            ] as string[]
-          ).includes(keyring.type) && keyring.accounts.length > 0,
-      ),
+    () => getConnectedHardwareWalletKeyrings(keyrings),
     [keyrings],
   );
 
@@ -153,24 +143,19 @@ export const SelectHardwareAccountsPage = ({
       try {
         const nextAccounts = (await dispatch(
           actions.connectHardware(
-            device as HardwareDeviceNames,
+            device,
             page as unknown as string,
             hdPath,
             false,
             t as (key: string) => string,
           ),
-        )) as { address: string; index?: number }[];
+        )) as ConnectHardwarePageAccount[];
 
         if (requestId !== latestFetchRequestId.current) {
           return;
         }
 
-        const mappedAccounts: RawHardwareAccount[] = nextAccounts.map(
-          (account, idx) => ({
-            address: account.address,
-            index: account.index ?? idx,
-          }),
-        );
+        const mappedAccounts = mapConnectHardwarePageAccounts(nextAccounts);
 
         setLastFetchedBatchSize(mappedAccounts.length);
 
@@ -189,8 +174,11 @@ export const SelectHardwareAccountsPage = ({
           } else {
             setLastFetchedBatchSize(0);
           }
-        } else if (mappedAccounts.length > 0) {
+        } else {
           setAccounts(mappedAccounts);
+          if (mappedAccounts.length === 0) {
+            setLastFetchedBatchSize(0);
+          }
         }
 
         onError(null);
@@ -199,7 +187,15 @@ export const SelectHardwareAccountsPage = ({
           return;
         }
 
-        onError(toErrorMessage(error));
+        const resolution = resolveHardwareConnectUserError(
+          error,
+          device,
+          t as (key: string) => string,
+        );
+
+        if (resolution.kind === HardwareConnectErrorResolutionKind.Error) {
+          onError(resolution.message);
+        }
       }
     },
     [device, dispatch, onError, t],
@@ -213,7 +209,7 @@ export const SelectHardwareAccountsPage = ({
 
       dispatch(
         actions.setHardwareWalletDefaultHdPath({
-          device: device as HardwareDeviceNames,
+          device,
           path,
         }),
       );
@@ -282,7 +278,7 @@ export const SelectHardwareAccountsPage = ({
       await dispatch(
         actions.unlockHardwareWalletAccounts(
           selectedAccountIndexes,
-          device as HardwareDeviceNames,
+          device,
           selectedPath || null,
           description,
         ),
@@ -360,7 +356,7 @@ export const SelectHardwareAccountsPage = ({
 
   const handleForgetDevice = useCallback(async () => {
     try {
-      await dispatch(actions.forgetDevice(device as HardwareDeviceNames));
+      await dispatch(actions.forgetDevice(device));
 
       trackEvent({
         event: MetaMetricsEventName.HardwareWalletForgotten,

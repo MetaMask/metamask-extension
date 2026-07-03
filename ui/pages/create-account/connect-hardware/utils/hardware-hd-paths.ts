@@ -43,6 +43,8 @@ export const DEVICE_HD_PATHS: Record<string, HardwareHdPathOptionData[]> = {
 
 /**
  * Returns HD path options for a hardware device.
+ * Extracted from index.tsx so both the legacy and new onboarding flows share
+ * the same path labels and values.
  *
  * @param device - Hardware device name.
  */
@@ -52,6 +54,8 @@ export function getDeviceHdPaths(device: string): HardwareHdPathOptionData[] {
 
 /**
  * Returns whether the device supports HD path configuration.
+ * Ledger, Lattice, Trezor, and OneKey expose multiple derivation paths; QR and
+ * other devices use a fixed path and hide the settings view.
  *
  * @param device - Hardware device name.
  */

@@ -1,7 +1,10 @@
 import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import { HardwareDeviceNames } from '../../../../../shared/constants/hardware-wallets';
+import {
+  HardwareConnectLegacyErrorMessage,
+  HardwareDeviceNames,
+} from '../../../../../shared/constants/hardware-wallets';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
 import {
@@ -248,6 +251,41 @@ describe('SelectHardwareAccountsPage', () => {
       });
     });
 
+    it('does not call onError when fetch fails with a suppressed error', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.WindowClosed),
+      );
+      const { props } = renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      );
+
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalled();
+      });
+      expect(props.onError).not.toHaveBeenCalled();
+    });
+
+    it('forwards legacy ledger locked fetch errors to onError', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.LedgerLocked),
+      );
+      const { props } = renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      );
+
+      await waitFor(() => {
+        expect(props.onError).toHaveBeenCalledWith(tEn('ledgerLocked'));
+      });
+    });
+
     it('hides show more after a partial batch is appended', async () => {
       mockConnectHardware.mockResolvedValue(createMockRawHardwareAccounts(3, 5));
       renderPage({
@@ -462,6 +500,27 @@ describe('SelectHardwareAccountsPage', () => {
       });
       expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
       expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(1);
+    });
+
+    it('clears accounts when a path reload returns no accounts', async () => {
+      mockConnectHardware.mockResolvedValue([]);
+      renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-settings-button'),
+      );
+      fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
+      fireEvent.click(
+        screen.getByTestId('select-hd-path-page-continue-button'),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('hardware-account-card'),
+        ).not.toBeInTheDocument();
+      });
     });
   });
 });

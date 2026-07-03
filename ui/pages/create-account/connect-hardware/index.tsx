@@ -12,7 +12,6 @@ import { upperFirst } from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import {
   Box,
@@ -35,47 +34,37 @@ import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
   U2F_ERROR,
-  LEDGER_ERRORS_CODES,
   MEW_PATH,
   DEVICE_KEYRING_MAP,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getIsNewHardwareWalletOnboardingEnabled } from '../../../../shared/lib/environment';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  toHardwareWalletError,
-  HardwareWalletType,
-} from '../../../contexts/hardware-wallets';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
 import { DEVICE_HD_PATHS } from './utils/hardware-hd-paths';
-import type { HardwareConnectAccount } from './types';
+import { getConnectedHardwareWalletKeyrings } from './utils/get-connected-hardware-wallet-keyrings';
+import {
+  HardwareConnectErrorResolutionKind,
+  resolveHardwareConnectUserError,
+} from './utils/resolve-hardware-connect-user-error';
+import type {
+  ConnectHardwarePageAccount,
+  HardwareConnectAccount,
+} from './types';
 
 type ActiveQrCodeScanRequest = {
   type?: QrScanRequestType;
 } | null;
-
-const getErrorMessage = (
-  errorCode: string,
-  t: (key: string) => string,
-): string => {
-  const errorCodeLocalized =
-    LEDGER_ERRORS_CODES[errorCode as keyof typeof LEDGER_ERRORS_CODES];
-  if (errorCodeLocalized !== undefined) {
-    return t(errorCodeLocalized);
-  }
-  return errorCode;
-};
 
 const ConnectHardwareForm = () => {
   const t = useI18nContext();
@@ -140,19 +129,7 @@ const ConnectHardwareForm = () => {
   }, []);
 
   const hardwareWalletKeyrings = useMemo(
-    () =>
-      keyrings.filter(
-        (keyring) =>
-          (
-            [
-              KeyringType.ledger,
-              KeyringType.trezor,
-              KeyringType.lattice,
-              KeyringType.qr,
-              KeyringType.oneKey,
-            ] as string[]
-          ).includes(keyring.type) && keyring.accounts.length > 0,
-      ),
+    () => getConnectedHardwareWalletKeyrings(keyrings),
     [keyrings],
   );
 
@@ -207,7 +184,7 @@ const ConnectHardwareForm = () => {
             loadHid ?? false,
             t as (key: string) => string,
           ),
-        )) as { address: string; index?: number }[];
+        )) as ConnectHardwarePageAccount[];
 
         if (requestId !== latestGetPageRequestId.current) {
           return;
@@ -248,56 +225,21 @@ const ConnectHardwareForm = () => {
 
         latestPendingDevice.current = null;
 
-        const errorMessage = toErrorMessage(e);
-
-        // Use shared Ledger error mapping (hw-wallet-sdk) when connecting to Ledger.
-        if (deviceName === HardwareDeviceNames.ledger) {
-          const hwError = toHardwareWalletError(e, HardwareWalletType.Ledger);
-
-          if (
-            hwError.code !== ErrorCode.Unknown &&
-            hwError.code !== ErrorCode.ConnectionClosed
-          ) {
-            setError(hwError.userMessage);
-            return;
-          }
-        }
-
-        const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
-          (errorCode) => errorMessage.includes(errorCode),
+        const resolution = resolveHardwareConnectUserError(
+          e,
+          deviceName as HardwareDeviceNames,
+          t as (key: string) => string,
         );
-        if (errorMessage === 'Window blocked') {
+
+        if (
+          resolution.kind === HardwareConnectErrorResolutionKind.BrowserBlocked
+        ) {
           setBrowserSupported(false);
           setError(null);
-        } else if (errorMessage.includes(U2F_ERROR)) {
-          setError(U2F_ERROR);
         } else if (
-          errorMessage === 'LEDGER_LOCKED' ||
-          errorMessage === 'LEDGER_WRONG_APP'
+          resolution.kind === HardwareConnectErrorResolutionKind.Error
         ) {
-          setError(t('ledgerLocked') as string);
-        } else if (errorMessage.includes('timeout')) {
-          setError(t('ledgerTimeout') as string);
-        } else if (ledgerErrorCode) {
-          setError(
-            `${errorMessage} - ${getErrorMessage(ledgerErrorCode, t as (key: string) => string)}`,
-          );
-        } else if (
-          errorMessage
-            .toLowerCase()
-            .includes(
-              'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
-            )
-        ) {
-          setError(t('QRHardwarePubkeyAccountOutOfRange') as string);
-        } else if (
-          errorMessage !== 'Window closed' &&
-          errorMessage !== 'Popup closed' &&
-          !errorMessage
-            .toLowerCase()
-            .includes('KeystoneError#sync_cancel'.toLowerCase())
-        ) {
-          setError(errorMessage);
+          setError(resolution.message);
         }
       }
     },

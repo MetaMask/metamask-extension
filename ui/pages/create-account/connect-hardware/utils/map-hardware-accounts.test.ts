@@ -1,9 +1,11 @@
 import { ETH_TOKEN_IMAGE_URL } from '../../../../../shared/constants/network';
-import type { RawHardwareAccount } from '../types';
+import type { ConnectHardwarePageAccount, RawHardwareAccount } from '../types';
 import {
   mapAccountIdsToIndices,
+  mapConnectHardwarePageAccounts,
   mapHardwareAccountsToWalletAccounts,
   mapIndicesToAccountIds,
+  toRawHardwareAccounts,
 } from './map-hardware-accounts';
 
 const SAMPLE_ADDRESS = '0xABCDEF1234567890ABCDEF1234567890ABCDEF12';
@@ -139,5 +141,57 @@ describe('account id mapping round trip', () => {
     const accountIds = mapIndicesToAccountIds(indices);
 
     expect(mapAccountIdsToIndices(accountIds)).toStrictEqual(indices);
+  });
+});
+
+describe('toRawHardwareAccounts', () => {
+  it('returns an empty array when no accounts are provided', () => {
+    expect(toRawHardwareAccounts([])).toStrictEqual([]);
+  });
+
+  it('strips balance from connect hardware accounts', () => {
+    expect(
+      toRawHardwareAccounts([
+        { address: SAMPLE_ADDRESS, index: 0, balance: '1 ETH' },
+      ]),
+    ).toStrictEqual([{ address: SAMPLE_ADDRESS, index: 0 }]);
+  });
+});
+
+describe('mapConnectHardwarePageAccounts', () => {
+  it('returns an empty array when no page accounts are provided', () => {
+    expect(mapConnectHardwarePageAccounts([])).toStrictEqual([]);
+  });
+
+  it('uses the response index when present', () => {
+    const accounts: ConnectHardwarePageAccount[] = [
+      { address: '0x1111', index: 3 },
+    ];
+
+    expect(mapConnectHardwarePageAccounts(accounts)).toStrictEqual([
+      { address: '0x1111', index: 3 },
+    ]);
+  });
+
+  it('falls back to the array index when response index is missing', () => {
+    const accounts: ConnectHardwarePageAccount[] = [{ address: '0x2222' }];
+
+    expect(mapConnectHardwarePageAccounts(accounts)).toStrictEqual([
+      { address: '0x2222', index: 0 },
+    ]);
+  });
+
+  it('assigns sequential fallback indices for multiple page accounts', () => {
+    const accounts: ConnectHardwarePageAccount[] = [
+      { address: '0x1111' },
+      { address: '0x2222', index: 5 },
+      { address: '0x3333' },
+    ];
+
+    expect(mapConnectHardwarePageAccounts(accounts)).toStrictEqual([
+      { address: '0x1111', index: 0 },
+      { address: '0x2222', index: 5 },
+      { address: '0x3333', index: 2 },
+    ]);
   });
 });
