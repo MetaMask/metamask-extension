@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.37.0]
+
+### Added
+
+- Display a VIP tag when using a VIP referral code. (#43527)
+- Adds `metamask-aep[bot]` to the CLA Signature Bot allowlist in `.github/workflows/cla.yml`. (#43237)
+- Enabled ERC-7715 requests over the Multichain API and MetaMask Connect (#43513)
+- Remove CTA button under notification (#43685)
+- Swaps modal to page (#43691)
+- Fixed display approved transactions for Non-EVM networks (#43566)
+- Add bitcoin connectivity (#40633)
+- Includes `utm_*` parameters from the marketing campaign in the onboarding `Wallet Setup Completed` metrics (#42638)
+- Add QR error handling for invalid transaction signature (#43402)
+- Added configurable max slippage controls for perps market orders (#43357)
+
+### Changed
+
+- perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
+
+### Fixed
+
+- Correct state migration to be identical to real TokenBalancesController (#43626)
+- Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and trades no longer leave the user on the order screen). (#43367)
+- Fixed product announcement notification links opening MetaMask deeplinks externally before routing. (#42805)
+- Fixed perps close-all-positions toasts not appearing on the home screen perps tab (#43613)
+- Consume batch sell assets data from token controller (#43460)
+- Fixed infinite loader on bridge awaiting signatures page when using QR hardware wallets (#40838)
+- Fixed inconsistent spacing above the orders section on the perps market detail page. (#43350)
+
 ## [13.36.0]
 
 ### Added
@@ -36,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a bug where Firefox clipped the top of the search field focus outline in Send and Receive. (#43120)
 - Fix trezor connection for Firefox browser. (#43179)
 - Exclude Ondo assets from batch sell select screen. (#43327)
+- Fixed a bug where switching the extension between side panel and popup view and back could reopen MetaMask in the popup, sometimes leaving both the side panel and popup open at the same time. (#43221)
 - Fixed a bug where switching the extension between side panel and popup view and back could reopen MetaMask in the popup,
   sometimes leaving both the side panel and popup open at the same time. (#43221)
 - Delete token list. (#43108)
@@ -2555,7 +2585,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.37.0...HEAD
+[13.37.0]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...v13.37.0
 [13.36.0]: https://github.com/MetaMask/metamask-extension/compare/v13.35.1...v13.36.0
 [13.35.1]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...v13.35.1
 [13.35.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.35.0

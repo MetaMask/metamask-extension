@@ -83,7 +83,7 @@ const getMockedActions = () =>
   jest.requireMock('../../store/actions') as MockedTokenManagementActions;
 
 type MockSearchResult = {
-  assetId: string;
+  assetId?: string | null;
   symbol: string;
   decimals: number;
   name: string;
@@ -283,16 +283,18 @@ describe('TokenManagementPage', () => {
       '0x1': [mainnetToken, nativeToken],
       '0x5': [goerliToken],
     },
+    selectedMultichainNetworkChainId = 'eip155:1',
   }: {
     enabledNetworks?: Record<string, boolean>;
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
     networkManagementEnabled?: boolean;
     accountGroupAssets?: Record<string, unknown[]>;
+    selectedMultichainNetworkChainId?: string;
   } = {}) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      selectedMultichainNetworkChainId: 'eip155:1',
+      selectedMultichainNetworkChainId,
       useExternalServices: true,
       preferences: {
         ...mockState.metamask.preferences,
@@ -493,11 +495,7 @@ describe('TokenManagementPage', () => {
       await screen.findByTestId('home-network-filter-manage-networks'),
     );
 
-    await waitFor(() =>
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${NETWORKS_ROUTE}?drawerOpen=true`,
-      ),
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
   it('shows tokens from all enabled networks when the home page filter is all networks', () => {
@@ -518,6 +516,31 @@ describe('TokenManagementPage', () => {
     expect(
       screen.getByText(messages.allDefaultNetworks.message),
     ).toBeInTheDocument();
+  });
+
+  it('shows all default networks in the filter label when Solana is active but multiple namespaces are enabled', () => {
+    renderPage(
+      createState({
+        selectedMultichainNetworkChainId: solanaChainId,
+        enabledNetworkMap: {
+          eip155: { '0x1': true, '0x5': true },
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          '0x1': [mainnetToken],
+          '0x5': [goerliToken],
+          [solanaChainId]: [solanaToken],
+        },
+      }),
+    );
+
+    expect(
+      screen.getByText(messages.allDefaultNetworks.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(messages.networkNameSolana.message)).toBeNull();
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(screen.getByText('Beta Token')).toBeInTheDocument();
+    expect(screen.getByText('Solana Token')).toBeInTheDocument();
   });
 
   it('hides the Arc USDC ERC20 from the token list while keeping the native token', () => {
@@ -731,6 +754,44 @@ describe('TokenManagementPage', () => {
 
     expect(screen.queryByText('Alpha Token')).not.toBeInTheDocument();
     expect(screen.getByText('USD Coin')).toBeInTheDocument();
+  });
+
+  it('ignores API-backed results with missing asset IDs', () => {
+    const badTokenName = 'Bad Token';
+    const missingAssetIdTokenName = 'Missing Asset ID Token';
+    const validTokenName = 'USD Coin';
+
+    setTokenSearchState({
+      results: [
+        {
+          assetId: null,
+          symbol: 'BAD',
+          decimals: 18,
+          name: badTokenName,
+        },
+        {
+          symbol: 'MISSING',
+          decimals: 18,
+          name: missingAssetIdTokenName,
+        },
+        {
+          assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          symbol: 'USDC',
+          decimals: 6,
+          name: validTokenName,
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usd' },
+    });
+
+    expect(screen.queryByText(badTokenName)).not.toBeInTheDocument();
+    expect(screen.queryByText(missingAssetIdTokenName)).not.toBeInTheDocument();
+    expect(screen.getByText(validTokenName)).toBeInTheDocument();
   });
 
   it('renders imported tokens first and non-imported API browse results below as OFF', () => {

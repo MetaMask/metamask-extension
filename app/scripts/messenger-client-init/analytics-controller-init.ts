@@ -4,6 +4,8 @@ import {
   type AnalyticsControllerState,
 } from '@metamask/analytics-controller';
 import { generateMetaMetricsId } from '../../../shared/lib/generate-metametrics-id';
+import { configureAnalytics } from '../controllers/analytics';
+import type { AnalyticsMessenger } from '../controllers/analytics/analytics-messenger';
 import { createPlatformAdapter } from '../controllers/analytics/platform-adapter';
 import { MessengerClientInitFunction } from './types';
 
@@ -14,12 +16,14 @@ import { MessengerClientInitFunction } from './types';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state to use for the
  * controller.
+ * @param request.initMessenger
  * @returns The initialized controller.
  */
 export const AnalyticsControllerInit: MessengerClientInitFunction<
   AnalyticsController,
-  AnalyticsControllerMessenger
-> = ({ controllerMessenger, persistedState }) => {
+  AnalyticsControllerMessenger,
+  AnalyticsMessenger
+> = ({ controllerMessenger, initMessenger, persistedState }) => {
   const persisted = {
     ...persistedState.AnalyticsController,
   };
@@ -37,6 +41,12 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
     isEventQueuePersistenceEnabled: true,
   });
   controller.init();
+
+  configureAnalytics({
+    messenger: initMessenger,
+    version: process.env.METAMASK_VERSION as string,
+    environment: process.env.METAMASK_ENVIRONMENT as string,
+  });
 
   return { messengerClient: controller };
 };

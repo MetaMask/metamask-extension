@@ -13,19 +13,12 @@ const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
 const mockUseTransactionDisplay = jest.fn();
 
-jest.mock('react-hot-toast', () => ({
+jest.mock('../../ui/toast/toast', () => ({
   toast: {
     loading: (...args: unknown[]) => mockToastLoading(...args),
     success: (...args: unknown[]) => mockToastSuccess(...args),
     error: (...args: unknown[]) => mockToastError(...args),
   },
-}));
-
-jest.mock('../../../helpers/utils/transaction-display', () => ({
-  useTransactionDisplay: (status: string) => mockUseTransactionDisplay(status),
-}));
-
-jest.mock('../../ui/toast/toast', () => ({
   ToastContent: ({
     title,
     description,
@@ -38,6 +31,10 @@ jest.mock('../../ui/toast/toast', () => ({
       {description ? <p>{description}</p> : null}
     </div>
   ),
+}));
+
+jest.mock('../../../helpers/utils/transaction-display', () => ({
+  useTransactionDisplay: (status: string) => mockUseTransactionDisplay(status),
 }));
 
 describe('toast-listener/shared', () => {

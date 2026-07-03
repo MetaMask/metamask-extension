@@ -145,6 +145,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   BridgeStatusController: {
     txHistory: false,
+    quoteUpdateStatusStore: false,
   },
   ConnectivityController: {
     connectivityStatus: true,
@@ -152,6 +153,12 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   ComplianceController: {
     walletComplianceStatusMap: false,
     lastCheckedAt: false,
+  },
+  ConfigRegistryController: {
+    configs: false,
+    etag: true,
+    lastFetched: true,
+    version: true,
   },
   CronjobController: {
     events: false,

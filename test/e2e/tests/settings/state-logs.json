@@ -640,6 +640,9 @@
     },
     "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
+    "configs": {
+      "networks": "object"
+    },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
     "conversionRates": {
@@ -727,6 +730,10 @@
         "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z": "boolean",
         "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": "boolean"
       },
+      "stellar": {
+        "stellar:pubnet": "boolean",
+        "stellar:testnet": "boolean"
+      },
       "tron": {
         "tron:728126428": "boolean",
         "tron:3448148188": "boolean",
@@ -795,6 +802,7 @@
     "ensResolutionsByAddress": {},
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
+    "etag": "null",
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -877,6 +885,7 @@
     "initializationState": "string",
     "initialEnqueueCompleted": "boolean",
     "initialDelayEndTimestamp": "number",
+    "inputPrimaryDenomination": "string",
     "insights": {},
     "interfaces": {},
     "internalAccounts": {
@@ -1045,6 +1054,7 @@
     "lastDepositResult": "null",
     "lastDepositTransactionId": "null",
     "lastError": "null",
+    "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
     "lastUpdateTimestamp": "number",
@@ -1121,6 +1131,18 @@
         "name": "string",
         "nativeCurrency": "string"
       },
+      "stellar:pubnet": {
+        "chainId": "string",
+        "isEvm": "boolean",
+        "name": "string",
+        "nativeCurrency": "string"
+      },
+      "stellar:testnet": {
+        "chainId": "string",
+        "isEvm": "boolean",
+        "name": "string",
+        "nativeCurrency": "string"
+      },
       "tron:2494104990": {
         "chainId": "string",
         "isEvm": "boolean",
@@ -1141,6 +1163,7 @@
       }
     },
     "musdConversionEducationSeen": "boolean",
+    "perpsTabBadgeSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -1226,6 +1249,7 @@
       "tokenNetworkFilter": {
         "0x539": "boolean"
       },
+      "gasSponsorshipOptOutByChainId": "object",
       "tokenSortConfig": {
         "key": "string",
         "order": "string",
@@ -1245,6 +1269,7 @@
       }
     ],
     "quoteStreamComplete": "null",
+    "quoteUpdateStatusStore": {},
     "quotes": [],
     "quotesInitialLoadTime": "null",
     "quotesLastFetched": "null",
@@ -1512,6 +1537,7 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
+    "version": "null",
     "versionInfo": [],
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {
