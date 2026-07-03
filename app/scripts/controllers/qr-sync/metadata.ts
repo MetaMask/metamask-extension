@@ -60,7 +60,7 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
   },
   qrSyncError: {
     persist: false,
-    includeInDebugSnapshot: true,
+    includeInDebugSnapshot: false,
     usedInUi: true,
     includeInStateLogs: false,
   },
