@@ -32,20 +32,6 @@ const LOCALHOST_NETWORK = {
 };
 
 /**
- * Switches to the full-screen extension window that MetaMask opens
- * automatically on a fresh production build.
- *
- * @param driver - The WebDriver instance.
- */
-const switchToOnboardingWindow = async (driver: Driver): Promise<void> => {
-  // we don't need to use navigate since MM will automatically open a new window in prod build
-  await driver.waitAndSwitchToWindowWithTitle(
-    2,
-    WINDOW_TITLES.ExtensionInFullScreenView,
-  );
-};
-
-/**
  * Reads the persisted extension state, waiting briefly first so asynchronous
  * controller values have time to settle.
  *
@@ -79,16 +65,17 @@ const getPersistedState = async (driver: Driver): Promise<JsonLike> => {
  * (a fresh install sitting on the login/start-onboarding screen) and returns
  * the persisted state.
  *
- * The caller (test) is responsible for validating or exporting the returned
- * state against the committed fixture.
- *
  * @param driver - The WebDriver instance.
  * @returns The persisted state for the onboarding fixture.
  */
 export const generateOnboardingFixtureState = async (
   driver: Driver,
 ): Promise<JsonLike> => {
-  await switchToOnboardingWindow(driver);
+  // we don't need to use navigate since MM will automatically open a new window in prod build
+  await driver.waitAndSwitchToWindowWithTitle(
+    2,
+    WINDOW_TITLES.ExtensionInFullScreenView,
+  );
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.checkLoginPageIsLoaded();
 
@@ -100,9 +87,6 @@ export const generateOnboardingFixtureState = async (
  * imported wallet with a custom localhost network, native token as main
  * balance, and test networks enabled) and returns the persisted state.
  *
- * The caller (test) is responsible for validating or exporting the returned
- * state against the committed fixture.
- *
  * @param driver - The WebDriver instance.
  * @returns The persisted state for the default fixture.
  */
@@ -112,7 +96,11 @@ export const generateDefaultFixtureState = async (
   const { networkName, networkUrl, currencySymbol, chainId } =
     LOCALHOST_NETWORK;
 
-  await switchToOnboardingWindow(driver);
+  // we don't need to use navigate since MM will automatically open a new window in prod build
+  await driver.waitAndSwitchToWindowWithTitle(
+    2,
+    WINDOW_TITLES.ExtensionInFullScreenView,
+  );
 
   // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
   await importSRPOnboardingFlow({
