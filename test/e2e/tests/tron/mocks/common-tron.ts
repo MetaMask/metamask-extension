@@ -1207,6 +1207,89 @@ export async function mockBridgeGetTronQuoteEmpty(
     }));
 }
 
+export async function mockTronGetChainParameters(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getchainparameters'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        chainParameter: [
+          { key: 'getMaintenanceTimeInterval', value: 21600000 },
+          { key: 'getAccountUpgradeCost', value: 9999000000 },
+          { key: 'getCreateNewAccountFeeInSystemContract', value: 1000000 },
+          { key: 'getCreateAccountFee', value: 100000 },
+          { key: 'getTransactionFee', value: 1000 },
+          { key: 'getAssetIssueFee', value: 1024000000 },
+          { key: 'getEnergyFee', value: 420 },
+          { key: 'getTotalEnergyLimit', value: 180000000000 },
+          { key: 'getAllowTvmTransferTrc10', value: 1 },
+          { key: 'getTotalEnergyCurrentLimit', value: 180000000000 },
+          { key: 'getAllowMultiSign', value: 1 },
+          { key: 'getAllowAdaptivEnergy', value: 1 },
+        ],
+      },
+    }));
+}
+
+export async function mockTronGetNextMaintenanceTime(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getnextmaintenancetime'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { num: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR },
+    }));
+}
+
+export async function mockTronTriggerConstantContract(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/triggerconstantcontract'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        result: { result: true },
+        energy_used: 200000,
+        energy_penalty: 0,
+        constant_result: [
+          '0000000000000000000000000000000000000000000000000000000000000001',
+        ],
+        transaction: {
+          ret: [{}],
+          visible: false,
+          txID: 'mock_trigger_constant_txid',
+          raw_data: {
+            contract: [],
+            ref_block_bytes: 'f733',
+            ref_block_hash: 'ff89d72ddc1ce1ea',
+            expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+            timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+          },
+          raw_data_hex: '',
+        },
+      },
+    }));
+}
+
+export async function mockTronGetContract(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getcontract'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {},
+    }));
+}
+
 /**
  * Mocks the accounts API v2 supportedNetworks to include Tron so the
  * AccountsApiDataSource handles Tron balances via the v5 API instead of
@@ -1330,6 +1413,10 @@ export async function mockTronSwapApis(
     ...(await mockTronApis(mockServer, mockZeroBalance)),
     await mockBridgeGetTronTokens(mockServer),
     await mockBridgeGetTronQuote(mockServer),
+    await mockTronGetChainParameters(mockServer),
+    await mockTronGetNextMaintenanceTime(mockServer),
+    await mockTronTriggerConstantContract(mockServer),
+    await mockTronGetContract(mockServer),
   ];
 }
 
