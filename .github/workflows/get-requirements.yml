@@ -452,6 +452,32 @@ jobs:
             });
             core.info(`Posted build-source-hash: ${process.env.BUILD_HASH}`);
 
+      # Publish the canonical run that holds the builds for this commit — this
+      # run when builds are fresh, or the donor run when builds are reused — as a
+      # commit status on the PR head. Out-of-band workflows (e.g.
+      # update-e2e-fixtures.yml) read this to locate build artifacts without
+      # re-deriving the reuse lookup. Best-effort, like the build-source-hash
+      # status above.
+      - name: Post builds-from-run commit status
+        if: ${{ steps.compute-build-hash.outputs.build-hash }}
+        continue-on-error: true
+        uses: actions/github-script@v8
+        env:
+          BUILDS_FROM_RUN: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
+          HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
+        with:
+          script: |
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: process.env.HEAD_COMMIT_HASH,
+              state: 'success',
+              context: 'builds-from-run',
+              description: process.env.BUILDS_FROM_RUN,
+              target_url: `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.BUILDS_FROM_RUN}`,
+            });
+            core.info(`Posted builds-from-run: ${process.env.BUILDS_FROM_RUN}`);
+
       - id: filter
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         uses: dorny/paths-filter@9d7afb8d214ad99e78fbd4247752c4caed2b6e4c

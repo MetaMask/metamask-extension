@@ -7,6 +7,7 @@ import {
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
+import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
 import { useCachedEvmTransaction } from './useCachedEvmTransaction';
@@ -101,7 +102,9 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       </div>
 
       <div className="flex flex-col flex-1 overflow-y-auto px-4 pb-4">
-        <TemplateLoader item={transaction} />
+        <ErrorBoundary>
+          <TemplateLoader item={transaction} />
+        </ErrorBoundary>
       </div>
     </div>
   );

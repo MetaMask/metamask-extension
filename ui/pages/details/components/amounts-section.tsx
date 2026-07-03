@@ -1,4 +1,5 @@
 import React from 'react';
+import { CaipAssetType } from '@metamask/utils';
 import type {
   ActivityFee,
   ActivityListItem,
@@ -8,6 +9,7 @@ import type {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
+import { TokenLabel } from '../../../components/app/transaction/token-label';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import { Row } from './shared';
@@ -54,7 +56,15 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
             key={`${type}-${assetId ?? symbol ?? index}`}
             label={label}
             testId={type === 'base' ? 'transaction-base-fee' : undefined}
-            value={<TokenFiatValue token={feeToToken(fee)} />}
+            value={
+              <div className="flex items-center justify-end gap-2">
+                <TokenFiatValue token={feeToToken(fee)} />
+                <TokenLabel
+                  assetId={assetId as CaipAssetType}
+                  symbol={symbol}
+                />
+              </div>
+            }
           />
         );
       })}
