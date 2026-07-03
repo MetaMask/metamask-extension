@@ -427,21 +427,27 @@ class AccountListPage {
    *
    * @param options - Options for opening the multichain account menu
    * @param options.accountLabel - The label of the account to open the menu for
+   * @param options.srpIndex - Optional SRP index if there are multiple SRPs
    */
   async openMultichainAccountMenu(options: {
     accountLabel: string;
+    srpIndex?: number;
   }): Promise<void> {
+    const { accountLabel, srpIndex = 0 } = options;
     console.log(
-      `Open multichain account menu in account list for account ${options.accountLabel}`,
+      `Open multichain account menu in account list for account ${accountLabel}`,
     );
     // To ensure no pending Create Account action is in progress
     await this.driver.assertElementNotPresent(this.addingAccountMessage, {
       waitAtLeastGuard: largeDelayMs,
     });
 
-    await this.driver.clickElement(
-      `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
-    );
+    // Use an indexed XPath so the correct account is targeted when multiple
+    // accounts share the same label (e.g. "Account 1" across multiple SRPs).
+    // clickElement provides the visibility/enabled guards and auto-scroll.
+    await this.driver.clickElement({
+      xpath: `(//*[@data-testid="multichain-account-cell-end-accessory" and @aria-label=${quoteXPathText(`${accountLabel} options`)}])[${srpIndex + 1}]`,
+    });
   }
 
   /**
