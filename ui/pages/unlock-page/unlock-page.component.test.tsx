@@ -25,6 +25,10 @@ jest.mock('../../hooks/useAnalytics', () => {
   };
 });
 
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: () => ({ page: { title: 'Unlock' } }),
+}));
+
 const mockLogoElement = document.createElement('svg');
 
 jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
