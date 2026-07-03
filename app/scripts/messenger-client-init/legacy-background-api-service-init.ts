@@ -20,6 +20,7 @@ import { MessengerClientInitFunction } from './types';
  * @param request.sendUpdate - A function to send updates to the UI.
  * @param request.seedlessOperationMutex - A mutex to use for seedless operations.
  * @param request.offscreenPromise - A promise that resolves when the offscreen document is ready.
+ * @param request.restoreEnabledNetworkMap - Restores the NetworkEnablementController's enabled network map to a previous value.
  * @returns The initialized service.
  */
 export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
@@ -38,6 +39,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   sendUpdate,
   seedlessOperationMutex,
   offscreenPromise,
+  restoreEnabledNetworkMap,
 }) => {
   const messengerClient = new LegacyBackgroundApiService({
     messenger: controllerMessenger,
@@ -52,6 +54,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     sendUpdate,
     seedlessOperationMutex,
     offscreenPromise,
+    restoreEnabledNetworkMap,
   });
 
   return {
