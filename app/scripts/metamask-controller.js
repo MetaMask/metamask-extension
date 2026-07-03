@@ -3580,7 +3580,7 @@ export default class MetamaskController extends EventEmitter {
         trackEvent(
           createEventBuilder(payload.event)
             .addProperties({
-              ...payload.properties,
+              ...(payload.properties ?? {}),
               ...(payload.category === undefined
                 ? {}
                 : { category: payload.category }),
@@ -7370,7 +7370,7 @@ export default class MetamaskController extends EventEmitter {
           trackEvent(
             createEventBuilder(payload.event)
               .addProperties({
-                ...payload.properties,
+                ...(payload.properties ?? {}),
                 ...(payload.category === undefined
                   ? {}
                   : { category: payload.category }),
@@ -7464,7 +7464,7 @@ export default class MetamaskController extends EventEmitter {
             trackEvent(
               createEventBuilder(payload.event)
                 .addProperties({
-                  ...payload.properties,
+                  ...(payload.properties ?? {}),
                   ...(payload.category === undefined
                     ? {}
                     : { category: payload.category }),
@@ -8112,7 +8112,7 @@ export default class MetamaskController extends EventEmitter {
         trackEvent(
           createEventBuilder(payload.event)
             .addProperties({
-              ...payload.properties,
+              ...(payload.properties ?? {}),
               ...(payload.category === undefined
                 ? {}
                 : { category: payload.category }),

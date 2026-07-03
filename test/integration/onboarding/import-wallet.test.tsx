@@ -104,20 +104,22 @@ describe('Import Wallet Events', () => {
       // Check for ExtensionPinned tracking event
       extensionPinnedEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
+          (call) =>
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.name === MetaMetricsEventName.OnboardingCompleted,
         );
 
       expect(completeOnboardingCall?.[0]).toBe('completeOnboarding');
-      expect(extensionPinnedEvent?.[0]).toBe('trackMetaMetricsEvent');
+      expect(extensionPinnedEvent?.[0]).toBe('trackAnalyticsEvent');
     });
 
     // Verify ExtensionPinned event has correct properties for import flow
     expect(extensionPinnedEvent?.[1]).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingCompleted,
+          name: MetaMetricsEventName.OnboardingCompleted,
           properties: {
+            category: MetaMetricsEventCategory.Onboarding,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             wallet_setup_type: 'import',
