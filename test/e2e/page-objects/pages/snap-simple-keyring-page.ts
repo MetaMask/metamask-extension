@@ -371,10 +371,16 @@ class SnapSimpleKeyringPage {
 
   private async getDisplayedAccountAddresses(): Promise<string[]> {
     const addressTextNodes = await this.driver.executeScript(
-      () =>
-        Array.from(document.querySelectorAll('ul p'))
+      () => {
+        const accountsHeading = Array.from(document.querySelectorAll('p')).find(
+          (element) => element.textContent?.trim() === 'Accounts',
+        );
+        const accountList = accountsHeading?.parentElement?.querySelector('ul');
+
+        return Array.from(accountList?.querySelectorAll('p') ?? [])
           .map((element) => element.textContent?.trim() ?? '')
-          .filter((text) => text.length > 0),
+          .filter((text) => text.length > 0);
+      },
     );
 
     const addresses =
@@ -397,15 +403,13 @@ class SnapSimpleKeyringPage {
 
     await this.driver.waitUntil(
       async () =>
-        (await this.getDisplayedAccountAddresses()).some(
-          (address) => !existingAddressesSet.has(address.toLowerCase()),
-        ),
+        (await this.getNewDisplayedAccountAddresses(existingAddressesSet))
+          .length > 0,
       { interval: regularDelayMs, timeout: NEW_ACCOUNT_CREATION_TIMEOUT_MS },
     );
 
-    const displayedAddresses = await this.getDisplayedAccountAddresses();
-    const newAddress = displayedAddresses.find(
-      (address) => !existingAddressesSet.has(address.toLowerCase()),
+    const [newAddress] = await this.getNewDisplayedAccountAddresses(
+      existingAddressesSet,
     );
 
     if (!newAddress) {
@@ -413,6 +417,16 @@ class SnapSimpleKeyringPage {
     }
 
     return newAddress;
+  }
+
+  private async getNewDisplayedAccountAddresses(
+    existingAddressesSet: Set<string>,
+  ): Promise<string[]> {
+    const displayedAddresses = await this.getDisplayedAccountAddresses();
+
+    return displayedAddresses.filter(
+      (address) => !existingAddressesSet.has(address.toLowerCase()),
+    );
   }
 }
 
