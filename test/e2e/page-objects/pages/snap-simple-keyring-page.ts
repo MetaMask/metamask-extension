@@ -3,6 +3,15 @@ import { WINDOW_TITLES } from '../../constants';
 import { getCleanAppState, regularDelayMs } from '../../helpers';
 
 const SIMPLE_KEYRING_SNAP_ID = 'npm:@metamask/snap-simple-keyring-snap';
+const NEW_ACCOUNT_CREATION_TIMEOUT_MS = 20_000;
+
+function deduplicateAddresses(addresses: string[]): string[] {
+  return [
+    ...new Map(
+      addresses.map((address) => [address.toLowerCase(), address]),
+    ).values(),
+  ];
+}
 
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;
@@ -366,10 +375,10 @@ class SnapSimpleKeyringPage {
 
     const addresses =
       typeof pageText === 'string'
-        ? pageText.match(/0x[a-fA-F0-9]{40}/gu) ?? []
+        ? pageText.match(/\b0x[a-fA-F0-9]{40}\b/gu) ?? []
         : [];
 
-    return [...new Map(addresses.map((address) => [address.toLowerCase(), address])).values()];
+    return deduplicateAddresses(addresses);
   }
 
   private async waitForNewAccountAddress(
@@ -384,7 +393,7 @@ class SnapSimpleKeyringPage {
         (await this.getDisplayedAccountAddresses()).some(
           (address) => !existingAddressesSet.has(address.toLowerCase()),
         ),
-      { interval: regularDelayMs, timeout: 20000 },
+      { interval: regularDelayMs, timeout: NEW_ACCOUNT_CREATION_TIMEOUT_MS },
     );
 
     const displayedAddresses = await this.getDisplayedAccountAddresses();
