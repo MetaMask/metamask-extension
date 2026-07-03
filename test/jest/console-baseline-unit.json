@@ -237,9 +237,6 @@
     "ui/components/app/modals/identity/turn-on-backup-and-sync-modal/turn-on-backup-and-sync-modal.test.tsx": {
       "error: Error: MetaMetrics context trackEvent was": 2
     },
-    "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
-      "Reselect: Input stability warnings": 3
-    },
     "ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
@@ -642,9 +639,6 @@
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
       "MetaMask: Background connection not initialized": 32
-    },
-    "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.test.ts": {
-      "MetaMask: Background connection not initialized": 64
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
       "MetaMask: Background connection not initialized": 68,

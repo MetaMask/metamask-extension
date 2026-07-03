@@ -4401,9 +4401,6 @@
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Bao gồm"
-  },
   "includesXTransactions": {
     "message": "Bao gồm $1 giao dịch"
   },
@@ -10502,29 +10499,8 @@
   "turnOn": {
     "message": "Bật"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Bật thông báo"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Bật"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Đã xảy ra lỗi khi tạo thông báo. Vui lòng thử lại sau."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Nhận thông báo để cập nhật tình hình trong ví của bạn."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "cài đặt thông báo."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Để sử dụng tính năng thông báo ví, chúng tôi dùng hồ sơ để đồng bộ một số chế độ cài đặt trên các thiết bị của bạn. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Bạn có thể tắt thông báo bất kỳ lúc nào trong $1"
   },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"

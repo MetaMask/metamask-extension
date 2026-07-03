@@ -730,6 +730,10 @@
         "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z": "boolean",
         "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": "boolean"
       },
+      "stellar": {
+        "stellar:pubnet": "boolean",
+        "stellar:testnet": "boolean"
+      },
       "tron": {
         "tron:728126428": "boolean",
         "tron:3448148188": "boolean",
@@ -1127,6 +1131,18 @@
         "name": "string",
         "nativeCurrency": "string"
       },
+      "stellar:pubnet": {
+        "chainId": "string",
+        "isEvm": "boolean",
+        "name": "string",
+        "nativeCurrency": "string"
+      },
+      "stellar:testnet": {
+        "chainId": "string",
+        "isEvm": "boolean",
+        "name": "string",
+        "nativeCurrency": "string"
+      },
       "tron:2494104990": {
         "chainId": "string",
         "isEvm": "boolean",
@@ -1253,6 +1269,7 @@
       }
     ],
     "quoteStreamComplete": "null",
+    "quoteUpdateStatusStore": {},
     "quotes": [],
     "quotesInitialLoadTime": "null",
     "quotesLastFetched": "null",
