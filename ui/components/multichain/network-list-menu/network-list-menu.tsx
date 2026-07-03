@@ -21,6 +21,7 @@ import {
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
 import { NetworkListItem } from '../network-list-item';
@@ -165,7 +166,7 @@ const isCustomNetworkConfiguration = (
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);

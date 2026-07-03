@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   AlignItems,
   BlockSize,
@@ -43,7 +44,7 @@ export const EditNetworksModal = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [selectedChainIds, setSelectedChainIds] = useState(

@@ -59,6 +59,7 @@ export const DiscoverMenuItem = ({
     isMarketingEnabled,
     isMetaMetricsEnabled,
     analyticsId,
+    metricsLocation,
     trackEvent,
   ]);
 

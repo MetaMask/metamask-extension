@@ -16,6 +16,7 @@ import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
+import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from './useAnalytics';
 
 type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
@@ -38,7 +39,7 @@ const UNAVAILABLE_BANNER_TIMEOUT = 30 * 1000;
 export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
     const dispatch = useDispatch();
-    const { trackEvent, createEventBuilder } = useAnalytics();
+    const { trackEvent } = useAnalytics();
     const isOffline = useSelector(getIsDeviceOffline);
     const failedNetwork = useSelector(
       selectFirstFailedNetworkForNetworkConnectionBanner,
@@ -134,7 +135,7 @@ export const useNetworkConnectionBanner =
           console.error('Failed to track network banner event:', error);
         }
       },
-      [networkConfigurationsByChainId, trackEvent, createEventBuilder],
+      [networkConfigurationsByChainId, trackEvent],
     );
 
     const startUnavailableTimer = useCallback(() => {

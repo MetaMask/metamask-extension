@@ -101,6 +101,7 @@ export const FundingMethodModal = ({
     chainId,
     symbol,
     accountAddress,
+    trackEvent,
   ]);
 
   const handleBuyCryptoClick = useCallback(() => {
@@ -120,7 +121,7 @@ export const FundingMethodModal = ({
         .build(),
     );
     openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);
-  }, [chainId, symbol]);
+  }, [chainId, symbol, trackEvent, openBuyCryptoInPdapp]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>

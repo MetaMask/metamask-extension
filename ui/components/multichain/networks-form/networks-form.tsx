@@ -14,6 +14,7 @@ import {
 import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -110,7 +111,7 @@ export const NetworksForm = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
