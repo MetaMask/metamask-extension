@@ -14,7 +14,6 @@ import {
 
 import type { StyleUtilityProps } from '../../../component-library/box';
 import { hideAppHeader } from '../../../../pages/routes/utils';
-import { getPureBlackPageInnerContainerClassName } from '../../../../contexts/pure-black/pure-black-extension-styles';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -58,7 +57,7 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
         className={classnames(
           'multichain-page__inner-container',
           className,
-          getPureBlackPageInnerContainerClassName(isPureBlack),
+          isPureBlack && '!border-0',
         )}
         {...props}
       >

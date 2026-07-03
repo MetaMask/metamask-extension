@@ -33,11 +33,6 @@ html[data-theme] {
   background-color: var(--color-background-alternative);
 }
 
-// Temporary pure-black shell alignment until legacy extension chrome is migrated.
-html[data-theme='dark'][data-pure-black='true'] {
-  background-color: var(--color-background-default);
-}
-
 #app-content,
 #critical-error-content {
   overflow-x: hidden;

@@ -3,7 +3,6 @@ import classnames from 'clsx';
 import { usePureBlack } from '@metamask/design-system-react';
 
 import {
-  BackgroundColor,
   BorderRadius,
   BlockSize,
   Display,
@@ -16,7 +15,6 @@ import { Box, BoxProps } from '../box';
 import type { PolymorphicRef } from '../box';
 import { useModalContext } from '../modal/modal.context';
 import { ModalFocus } from '../modal-focus';
-import { getModalContentDialogClassName } from '../../../contexts/pure-black/pure-black-extension-styles';
 import {
   ModalContentProps,
   ModalContentSize,
@@ -115,7 +113,6 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             as="section"
             role="dialog"
             aria-modal="true"
-            backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
             display={Display.Flex}
@@ -127,7 +124,9 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             className={classnames(
               'mm-modal-content__dialog',
               `mm-modal-content__dialog--size-${size}`,
-              getModalContentDialogClassName(isPureBlack),
+              isPureBlack
+                ? 'bg-background-alternative'
+                : 'bg-background-default',
               modalDialogProps?.className,
             )}
           >
