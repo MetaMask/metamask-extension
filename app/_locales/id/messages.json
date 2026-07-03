@@ -10499,29 +10499,8 @@
   "turnOn": {
     "message": "Aktifkan"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Aktifkan notifikasi"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Aktifkan"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Terjadi kesalahan saat membuat notifikasi. Coba lagi nanti."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Pantau terus segala yang terjadi di dompet Anda dengan notifikasi."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "pengaturan notifikasi."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Pelajari cara kami melindungi privasi Anda saat menggunakan fitur ini."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Untuk menggunakan notifikasi dompet, kami menggunakan profil untuk menyinkronkan beberapa pengaturan di seluruh perangkat Anda. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Notifikasi dapat dinonaktifkan setiap saat di $1"
   },
   "turnOnTokenDetection": {
     "message": "Aktifkan deteksi token yang ditingkatkan"
