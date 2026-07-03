@@ -351,6 +351,36 @@ describe.each<string, boolean>([
     });
   });
 
+  it('does not match transactions when an expected param entry is empty', async () => {
+    const { dispatchEvent, fire } = await setupTracker({
+      expectedTransactionParams: [{}],
+      expectedTxIds: ['tx-main'],
+      includeSendBundleTransactions: true,
+      useBatchTracking,
+    });
+
+    // The root SEND tx still advances via expectedTxIds, but the generated
+    // batch member must NOT be classified as TransactionSubmitted by an empty
+    // param entry (which would otherwise match every transaction and drop the
+    // gas-tx signature).
+    await fire(STATUS_UPDATED, {
+      id: 'tx-main',
+      type: TransactionType.simpleSend,
+    });
+    await fire(STATUS_UPDATED, {
+      data: '0x123',
+      id: 'tx-generated-gas-payment',
+      to: '0xabc0000000000000000000000000000000000000',
+      type: TransactionType.contractInteraction,
+      value: '0x0',
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledTimes(1);
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+    });
+  });
+
   it('ignores signed events from other addresses', async () => {
     const { dispatchEvent, fire } = await setupTracker({ useBatchTracking });
     await fire(STATUS_UPDATED, {

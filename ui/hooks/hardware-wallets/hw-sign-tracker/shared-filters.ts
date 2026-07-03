@@ -43,7 +43,7 @@ export function matchesTx(
  * @param type - The transaction type.
  * @returns The action to dispatch, or null if the type is not recognized.
  */
-export function classifySignedEvent(
+export function classifySignedTransactionType(
   type: TransactionType,
 ): HwSignTrackerAction | null {
   if (APPROVAL_TYPES.has(type)) {
@@ -63,4 +63,4 @@ export function classifySignedEvent(
  * @returns The classified signature event, or null if unclassifiable.
  */
 export const defaultEventClassifier: SignedEventClassifier = (txMeta) =>
-  txMeta.type ? classifySignedEvent(txMeta.type) : null;
+  txMeta.type ? classifySignedTransactionType(txMeta.type) : null;

@@ -41,7 +41,7 @@ export type TrackingStrategy = {
    */
   processStatusUpdated(
     transactionMeta: TransactionMeta,
-    classifySignedEvent?: SignedEventClassifier,
+    classifySignedTransactionType?: SignedEventClassifier,
   ): EventResult;
 
   /** Process a transactionRejected event. */

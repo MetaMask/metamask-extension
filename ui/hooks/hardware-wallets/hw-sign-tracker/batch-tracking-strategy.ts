@@ -72,12 +72,12 @@ export class BatchTrackingStrategy implements TrackingStrategy {
    * `#handleFailed` (which ignores stale/non-current batches).
    *
    * @param transactionMeta - The updated transaction.
-   * @param classifySignedEvent
+   * @param classifySignedTransactionType
    * @returns The resulting action, or `{ action: null }` to emit nothing.
    */
   processStatusUpdated(
     transactionMeta: TransactionMeta,
-    classifySignedEvent: SignedEventClassifier = defaultEventClassifier,
+    classifySignedTransactionType: SignedEventClassifier = defaultEventClassifier,
   ): EventResult {
     const { status, type } = transactionMeta;
     const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
@@ -91,7 +91,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
         transactionMeta,
         batchId,
         type,
-        classifySignedEvent,
+        classifySignedTransactionType,
       );
     }
 
@@ -199,7 +199,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     transactionMeta: TransactionMeta,
     batchId: string,
     type: TransactionType | undefined,
-    classifySignedEvent: SignedEventClassifier,
+    classifySignedTransactionType: SignedEventClassifier,
   ): EventResult {
     if (this.#currentBatchId === undefined) {
       this.#currentBatchId = batchId;
@@ -215,7 +215,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     if (!type) {
       return NO_ACTION;
     }
-    const action = classifySignedEvent(transactionMeta);
+    const action = classifySignedTransactionType(transactionMeta);
     return action ? { action } : NO_ACTION;
   }
 
