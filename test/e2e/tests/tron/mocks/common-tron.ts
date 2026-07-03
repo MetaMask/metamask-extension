@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { createHash } from 'crypto';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
@@ -1215,203 +1214,63 @@ function buildMockTronBlock() {
   };
 }
 
-const TRON_SWAP_CONTRACT_DATA =
-  '14d08fca00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588c5216750cceaad16cf5a757e3f7b32835a5e1000000000000000000000000000000000678810ea08142469ddb483ccf2d999e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c00000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222e0000000000000000000000003c067dcd94cb563404b312f3114ecd307feaf53100000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084d6574614d61736b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd00000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000404cef95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000f742f4589459f0923fa579600815763d1646bec30000000000000000000000000000000000000000000000000000000069612c2c000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487b63d30b5b2c87fb7ffa8bcfade38eaac1abe00000000000000000000000094f24e992ca04b49c6f2a2753076ef8938ed4daa000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706f6f6c747573647573647400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
-
-function encodeProtobufVarint(value: number): Buffer {
-  let remaining = BigInt(value);
-  const bytes: number[] = [];
-
-  do {
-    let byte = Number(remaining % 128n);
-    remaining /= 128n;
-    if (remaining > 0n) {
-      byte += 128;
-    }
-    bytes.push(byte);
-  } while (remaining > 0n);
-
-  return Buffer.from(bytes);
-}
-
-function encodeProtobufVarintField(fieldNumber: number, value: number): Buffer {
-  return Buffer.concat([
-    encodeProtobufVarint(fieldNumber * 8),
-    encodeProtobufVarint(value),
-  ]);
-}
-
-function encodeProtobufBytesField(fieldNumber: number, value: Buffer): Buffer {
-  return Buffer.concat([
-    encodeProtobufVarint(fieldNumber * 8 + 2),
-    encodeProtobufVarint(value.length),
-    value,
-  ]);
-}
-
-function buildTronSwapRawDataHex(callValue: number): string {
-  const triggerSmartContract = Buffer.concat([
-    encodeProtobufBytesField(
-      1,
-      Buffer.from('41588c5216750cceaad16cf5a757e3f7b32835a5e1', 'hex'),
-    ),
-    encodeProtobufBytesField(
-      2,
-      Buffer.from('41f742f4589459f0923fa579600815763d1646bec3', 'hex'),
-    ),
-    encodeProtobufVarintField(3, callValue),
-    encodeProtobufBytesField(4, Buffer.from(TRON_SWAP_CONTRACT_DATA, 'hex')),
-  ]);
-  const parameter = Buffer.concat([
-    encodeProtobufBytesField(
-      1,
-      Buffer.from('type.googleapis.com/protocol.TriggerSmartContract'),
-    ),
-    encodeProtobufBytesField(2, triggerSmartContract),
-  ]);
-  const contract = Buffer.concat([
-    encodeProtobufVarintField(1, 31),
-    encodeProtobufBytesField(2, parameter),
-  ]);
-  const timestamp = MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR;
-
-  return Buffer.concat([
-    encodeProtobufBytesField(1, Buffer.from('f733', 'hex')),
-    encodeProtobufBytesField(4, Buffer.from('ff89d72ddc1ce1ea', 'hex')),
-    encodeProtobufVarintField(8, timestamp),
-    encodeProtobufBytesField(11, contract),
-    encodeProtobufVarintField(14, timestamp),
-    encodeProtobufVarintField(18, 300000),
-  ]).toString('hex');
-}
-
-function buildTronTrxToUsdtTrade(grossSrcAmount: string) {
-  const callValue = Number(grossSrcAmount);
-  const rawDataHex = buildTronSwapRawDataHex(callValue);
-
-  return {
-    visible: false,
-    txID: createHash('sha256')
-      .update(Buffer.from(rawDataHex, 'hex'))
-      .digest('hex'),
-    raw_data: {
-      contract: [
-        {
-          parameter: {
-            value: {
-              data: TRON_SWAP_CONTRACT_DATA,
-              owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
-              contract_address: '41f742f4589459f0923fa579600815763d1646bec3',
-              call_value: callValue,
-            },
-            type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
-          },
-          type: 'TriggerSmartContract',
-        },
-      ],
-      ref_block_bytes: 'f733',
-      ref_block_hash: 'ff89d72ddc1ce1ea',
-      expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
-      fee_limit: 300000,
-      timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
-    },
-    raw_data_hex: rawDataHex,
-    payload: {
-      owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
-      call_value: callValue,
-      contract_address: '41f742f4589459f0923fa579600815763d1646bec3',
-      fee_limit: 300000,
-      function_selector: '14d08fca',
-      parameter: TRON_SWAP_CONTRACT_DATA,
-      chainType: 0,
-      visible: false,
-    },
-    energyUsed: 300000,
-    energyPenalty: 0,
-  };
-}
-
-function buildTronQuoteResponse(fixture: TronQuoteFixture) {
-  const srcAsset = buildTronAsset(fixture.src);
-  const destAsset = buildTronAsset(fixture.dest);
-  const feeSun = fixture.feeSun ?? 8_750;
-  const minDestTokenAmount = String(
-    BigInt(fixture.destAmount) - BigInt(fixture.destAmount) / 50n, // 2% slippage floor
-  );
-  const grossSrcAmount = String(BigInt(fixture.srcAmount) + BigInt(feeSun));
-  const trxAsset = buildTronAsset('TRX');
-
-  return {
-    quote: {
-      bridgeId: 'rango',
-      requestId: '0678810e-a081-4246-9ddb-483ccf2d999e',
-      aggregator: 'rango',
-      srcChainId: 728126428,
-      srcTokenAmount: fixture.srcAmount,
-      srcAsset,
-      destChainId: 728126428,
-      destTokenAmount: fixture.destAmount,
-      destAsset,
-      minDestTokenAmount,
-      feeData: {
-        metabridge: {
-          amount: String(feeSun),
-          asset: trxAsset,
-          quoteBpsFee: 87.5,
-          baseBpsFee: 87.5,
-        },
-      },
-      bridges: ['sunswap (via Rango)'],
-      protocols: ['sunswap (via Rango)'],
-      steps: [
-        {
-          srcAsset,
-          destAsset,
-          action: 'bridge',
-          srcChainId: 728126428,
-          destChainId: 728126428,
-          protocol: {
-            name: 'Sun Swap',
-            displayName: 'sunswap',
-            icon: 'https://raw.githubusercontent.com/rango-exchange/assets/main/swappers/Sun Swap/icon.svg',
-          },
-          srcAmount: grossSrcAmount,
-          destAmount: fixture.destAmount,
-          minDestTokenAmount,
-        },
-      ],
-      priceData: {
-        totalFromAmountUsd: '0.295397',
-        totalToAmountUsd: '0.294578672196',
-        priceImpact: '-0.0060325201136438925',
-        totalFeeAmountUsd: '0.0025847237500000006',
-      },
-      slippage: 2,
-    },
-    trade:
-      fixture.src === 'TRX' && fixture.dest === 'USDT'
-        ? buildTronTrxToUsdtTrade(grossSrcAmount)
-        : {
-            chainId: 728126428,
-            from: TRON_ACCOUNT_ADDRESS,
-            value: fixture.src === 'TRX' ? grossSrcAmount : '0',
-            data: '0xdeadbeef',
-            to: 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax',
-            gasLimit: 200_000,
-          },
-    estimatedProcessingTimeInSeconds: 0,
-  };
-}
-
 export async function mockBridgeGetTronQuoteFor(
   mockServer: Mockttp,
   fixture: TronQuoteFixture,
 ): Promise<MockedEndpoint> {
+  const srcAsset = buildTronAsset(fixture.src);
+  const destAsset = buildTronAsset(fixture.dest);
+  const minDestTokenAmount = String(
+    BigInt(fixture.destAmount) - BigInt(fixture.destAmount) / 50n, // 2% slippage floor
+  );
+
   return mockServer
     .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u)
     .thenCallback(() => ({
       statusCode: 200,
-      json: [buildTronQuoteResponse(fixture)],
+      json: [
+        {
+          quote: {
+            bridgeId: 'rango',
+            requestId: '0678810e-a081-4246-9ddb-483ccf2d999e',
+            aggregator: 'rango',
+            srcChainId: 728126428,
+            srcTokenAmount: fixture.srcAmount,
+            srcAsset,
+            destChainId: 728126428,
+            destTokenAmount: fixture.destAmount,
+            destAsset,
+            minDestTokenAmount,
+            feeData: {
+              metabridge: {
+                amount: String(fixture.feeSun ?? 8_750),
+                asset: buildTronAsset('TRX'),
+                quoteBpsFee: 87.5,
+                baseBpsFee: 87.5,
+              },
+            },
+            bridges: ['sunswap (via Rango)'],
+            protocols: ['sunswap (via Rango)'],
+            steps: [
+              {
+                srcAsset,
+                destAsset,
+                srcAmount: fixture.srcAmount,
+                destAmount: fixture.destAmount,
+              },
+            ],
+          },
+          trade: {
+            chainId: 728126428,
+            from: TRON_ACCOUNT_ADDRESS,
+            value: fixture.src === 'TRX' ? fixture.srcAmount : '0',
+            data: '0xdeadbeef',
+            to: 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax', // SunSwap router
+            gasLimit: 200_000,
+          },
+          estimatedProcessingTimeInSeconds: 30,
+        },
+      ],
     }));
 }
 
