@@ -3200,6 +3200,12 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLinkQrBatchSellDescription": {
+    "message": "Batch sell is available on MetaMask mobile. Scan this code with your mobile device to use it."
+  },
+  "deepLinkQrBatchSellTitle": {
+    "message": "Open batch sell on mobile"
+  },
   "deepLinkQrPredictDescription": {
     "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
   },
@@ -3254,6 +3260,9 @@
   },
   "deepLink_theAssetPage": {
     "message": "the asset page"
+  },
+  "deepLink_theBatchSellPage": {
+    "message": "the batch sell page"
   },
   "deepLink_theBuyPage": {
     "message": "the buy page"
@@ -7214,6 +7223,10 @@
   },
   "perpsOrders": {
     "message": "Orders"
+  },
+  "perpsPerpMarketSubtitle": {
+    "message": "$1-$2 perp",
+    "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
   },
   "perpsPnl": {
     "message": "P&L"
