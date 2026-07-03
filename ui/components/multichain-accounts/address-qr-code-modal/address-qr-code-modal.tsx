@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useMemo,
   useState,
   useRef,
@@ -41,11 +40,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import {
-  MetaMetricsContext,
-  type UITrackEventMethod,
-} from '../../../contexts/metametrics';
-import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 
 // Constants for QR code generation
@@ -53,18 +47,6 @@ const QR_CODE_TYPE_NUMBER = 4;
 const QR_CODE_CELL_SIZE = 5;
 const QR_CODE_MARGIN = 16;
 const QR_CODE_ERROR_CORRECTION_LEVEL = 'M';
-
-const trackBuiltEventWithMetaMetricsContext = (
-  built: AnalyticsEvent,
-  trackEvent: UITrackEventMethod,
-) => {
-  const { category, ...properties } = built.properties;
-  trackEvent({
-    event: built.name,
-    category: category as string,
-    properties,
-  });
-};
 
 // Constants for address segmentation
 const PREFIX_LEN = 6;
@@ -96,8 +78,7 @@ export const AddressQRCodeModal = ({
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const { createEventBuilder } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [addressCopied, setAddressCopied] = useState(false);
   const timeoutRef = useRef<number | null>(null);
@@ -161,7 +142,7 @@ export const AddressQRCodeModal = ({
     openBlockExplorer(
       explorerInfo.addressUrl,
       'Address QR Code Modal',
-      (built) => trackBuiltEventWithMetaMetricsContext(built, trackEvent),
+      trackEvent,
       createEventBuilder,
     );
   }, [createEventBuilder, explorerInfo, trackEvent]);
