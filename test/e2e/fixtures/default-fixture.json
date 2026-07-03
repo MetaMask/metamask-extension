@@ -263,7 +263,7 @@
           "decimals": 18,
           "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/slip44/60.png",
           "name": "Ether",
-          "symbol": "ETH",
+          "symbol": "DAI",
           "type": "native"
         },
         "eip155:1337/slip44:1": {
