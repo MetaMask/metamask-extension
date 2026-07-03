@@ -428,7 +428,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
 import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
@@ -628,7 +627,6 @@ export default class MetamaskController extends EventEmitter {
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
-      AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
       DecryptMessageManager: DecryptMessageManagerInit,
       DecryptMessageController: DecryptMessageControllerInit,
@@ -763,7 +761,9 @@ export default class MetamaskController extends EventEmitter {
     this.connectivityController = this.wallet.getInstance(
       'ConnectivityController',
     );
-    this.addressBookController = messengerClientsByName.AddressBookController;
+    this.addressBookController = this.wallet.getInstance(
+      'AddressBookController',
+    );
     this.alertController = messengerClientsByName.AlertController;
     this.decryptMessageController =
       messengerClientsByName.DecryptMessageController;
@@ -3116,11 +3116,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // MultichainAccountService
-      createNextMultichainAccountGroup: async (walletId) => {
-        await this.multichainAccountService.createNextMultichainAccountGroup({
-          entropySource: walletId,
-        });
-      },
+      createNextMultichainAccountGroup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:createNextMultichainAccountGroup',
+      ),
 
       alignMultichainWallets: async () => {
         if (this.multichainAccountService) {

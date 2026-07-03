@@ -10491,29 +10491,8 @@
   "turnOn": {
     "message": "开启"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "开启通知"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "开启"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "创建通知时出错了。请稍后再试。"
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "通过通知随时了解您的钱包动态。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "通知设置。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "了解我们如何在使用此功能时保护您的隐私。"
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "为了使用钱包通知，我们使用配置文件在您的不同设备上同步某些设置。$1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "您可以随时在 $1 中关闭通知"
   },
   "turnOnTokenDetection": {
     "message": "开启增强型代币检测"

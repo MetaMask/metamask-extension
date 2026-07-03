@@ -1,6 +1,6 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope, XlmScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import {
   CaipChainId,
@@ -1795,6 +1795,7 @@ export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
   SolScope.Mainnet,
   BtcScope.Mainnet,
   TrxScope.Mainnet,
+  XlmScope.Pubnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];

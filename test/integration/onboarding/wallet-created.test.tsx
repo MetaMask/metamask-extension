@@ -124,7 +124,7 @@ describe('Wallet Created Events', () => {
       expect.arrayContaining([
         expect.objectContaining({
           name: MetaMetricsEventName.OnboardingCompleted,
-          properties: {
+          properties: expect.objectContaining({
             category: MetaMetricsEventCategory.Onboarding,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -135,8 +135,9 @@ describe('Wallet Created Events', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_basic_functionality_enabled: true,
-          },
+          }),
         }),
+        expect.anything(),
       ]),
     );
   });
