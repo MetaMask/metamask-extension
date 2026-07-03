@@ -51,7 +51,7 @@ export const HardwareHdPathOption = ({
       onClick={handleSelect}
     >
       <AvatarIcon
-        iconName={IconName.Hardware}
+        iconName={IconName.HardDrive}
         size={AvatarIconSize.Lg}
         color={IconColor.IconAlternative}
       />
