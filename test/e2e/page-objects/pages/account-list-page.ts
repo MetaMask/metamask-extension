@@ -36,6 +36,16 @@ class AccountListPage {
   private readonly multichainAccountOptionsMenuButton =
     '[data-testid="multichain-account-cell-end-accessory"]';
 
+  // Indexed XPath so the correct account is targeted when multiple accounts
+  // share the same label (e.g. "Account 1" across multiple SRPs).
+  private readonly multichainAccountOptionsMenuButtonByLabel = (
+    accountLabel: string,
+    srpIndex: number,
+  ) =>
+    `(//*[@data-testid="multichain-account-cell-end-accessory" and @aria-label=${quoteXPathText(
+      `${accountLabel} options`,
+    )}])[${srpIndex + 1}]`;
+
   private readonly addHardwareWalletButton =
     '[data-testid="choose-wallet-type-hardware-wallet"]';
 
@@ -442,11 +452,11 @@ class AccountListPage {
       waitAtLeastGuard: largeDelayMs,
     });
 
-    // Use an indexed XPath so the correct account is targeted when multiple
-    // accounts share the same label (e.g. "Account 1" across multiple SRPs).
-    // clickElement provides the visibility/enabled guards and auto-scroll.
     await this.driver.clickElement({
-      xpath: `(//*[@data-testid="multichain-account-cell-end-accessory" and @aria-label=${quoteXPathText(`${accountLabel} options`)}])[${srpIndex + 1}]`,
+      xpath: this.multichainAccountOptionsMenuButtonByLabel(
+        accountLabel,
+        srpIndex,
+      ),
     });
   }
 
