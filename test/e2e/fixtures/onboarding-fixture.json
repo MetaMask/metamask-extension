@@ -39,7 +39,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 214,
+      "currentMigrationVersion": 215,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -63,13 +63,13 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
-      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -2061,6 +2061,7 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
@@ -2074,7 +2075,6 @@
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
-        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",
