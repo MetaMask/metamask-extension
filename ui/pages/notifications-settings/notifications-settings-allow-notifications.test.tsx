@@ -6,6 +6,19 @@ import thunk from 'redux-thunk';
 import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 const store = mockStore({
