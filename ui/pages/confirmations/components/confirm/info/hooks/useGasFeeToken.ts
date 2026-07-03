@@ -180,7 +180,7 @@ function useFiatTokenValue(
     return fallbackFiatValue ?? '';
   }
 
-  const fiatAmount = nativeEth.times(conversionRate);
+  const fiatAmount = nativeEth.times(String(conversionRate));
 
   if (fiatAmount.lt(new BigNumber(0.01)) && fiatAmount.gt(new BigNumber(0))) {
     return `< ${fiatFormatter(0.01)}`;
