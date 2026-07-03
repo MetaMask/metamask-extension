@@ -1,11 +1,22 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  AddNetworkFields,
+  NetworkConfiguration,
+  NetworkControllerAddNetworkAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
+  NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
+  NetworkControllerSetActiveNetworkAction,
+  UpdateNetworkFields,
 } from '@metamask/network-controller';
+import {
+  NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerState,
+  NetworkEnablementControllerStateChangeEvent,
+} from '@metamask/network-enablement-controller';
 import { add0x, Hex, hexToBytes, Json, NonEmptyArray } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import {
@@ -112,6 +123,7 @@ import {
 import { SubscriptionControllerStopAllPollingAction } from '@metamask/subscription-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { cloneDeep } from 'lodash';
+import { selectAllEnabledNetworkClientIds } from '../../../shared/lib/selectors/multichain';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -160,6 +172,7 @@ const serviceName = 'LegacyBackgroundApiService';
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addNetwork',
   'applyTransactionContainersExisting',
   'changePassword',
   'checkIsSeedlessPasswordOutdated',
@@ -175,6 +188,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
+  'lookupSelectedNetworks',
   'markPasswordForgotten',
   'onAccountRemoved',
   'rejectAllPendingApprovals',
@@ -243,10 +257,14 @@ type AllowedActions =
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceResyncAccountsAction
+  | NetworkControllerAddNetworkAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
+  | NetworkControllerLookupNetworkAction
   | NetworkControllerResetConnectionAction
+  | NetworkControllerSetActiveNetworkAction
+  | NetworkEnablementControllerGetStateAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | PermissionControllerAcceptPermissionsRequestAction
@@ -278,13 +296,15 @@ type AllowedActions =
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerWipeTransactionsAction;
 
+type AllowedEvents = NetworkEnablementControllerStateChangeEvent;
+
 /**
  * The {@link LegacyBackgroundApiService} messenger.
  */
 export type LegacyBackgroundApiServiceMessenger = Messenger<
   typeof serviceName,
   LegacyBackgroundApiServiceActions | AllowedActions,
-  never
+  AllowedEvents
 >;
 
 /**
@@ -298,6 +318,9 @@ type LegacyBackgroundApiServiceOptions = {
   getOpenMetamaskTabsIds: () => Record<string, number>;
   sendUpdate: () => void;
   offscreenPromise: Promise<void>;
+  updateNetworkEnablementState: (
+    callback: (state: NetworkEnablementControllerState) => void,
+  ) => void;
 };
 
 /**
@@ -326,6 +349,10 @@ export class LegacyBackgroundApiService {
 
   readonly #offscreenPromise: Promise<void>;
 
+  readonly #updateNetworkEnablementState: (
+    callback: (state: NetworkEnablementControllerState) => void,
+  ) => void;
+
   #passkeyAutoUnlockSuppressedResetTimeoutId: NodeJS.Timeout | null = null;
 
   /**
@@ -338,6 +365,7 @@ export class LegacyBackgroundApiService {
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
+   * @param options.updateNetworkEnablementState - Updates the NetworkEnablementController state.
    */
   constructor({
     messenger,
@@ -347,6 +375,7 @@ export class LegacyBackgroundApiService {
     sendUpdate,
     seedlessOperationMutex,
     offscreenPromise,
+    updateNetworkEnablementState,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
 
@@ -359,6 +388,7 @@ export class LegacyBackgroundApiService {
     // TODO: Remove this once the migration is complete.
     this.#seedlessOperationMutex = seedlessOperationMutex;
     this.#offscreenPromise = offscreenPromise;
+    this.#updateNetworkEnablementState = updateNetworkEnablementState;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -492,6 +522,117 @@ export class LegacyBackgroundApiService {
     });
 
     return result.toString(16);
+  }
+
+  /**
+   * Adds a network and (optionally) sets it as the active network.
+   *
+   * @param networkConfiguration - The network configuration to add.
+   * @param options - Options for post-add behavior.
+   * @param options.setActive - Whether to switch to the added network.
+   * @returns The added network configuration.
+   */
+  async addNetwork(
+    networkConfiguration: AddNetworkFields | UpdateNetworkFields,
+    { setActive = true } = {},
+  ): Promise<NetworkConfiguration> {
+    if (setActive) {
+      const addedNetwork = await this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration as AddNetworkFields,
+      );
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.#messenger.call(
+        'NetworkController:setActiveNetwork',
+        networkClientId,
+      );
+      return addedNetwork;
+    }
+
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const previousEnabledNetworkMap: Record<
+      string,
+      Record<string, boolean>
+    > = Object.fromEntries(
+      Object.entries(enabledNetworkMap).map(([namespace, networks]) => [
+        namespace,
+        { ...networks },
+      ]),
+    );
+    const restorePreviousEnabledNetworkMap = () => {
+      this.#messenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      this.#updateNetworkEnablementState((state) => {
+        const nextEnabledNetworkMap = state.enabledNetworkMap as Record<
+          string,
+          Record<string, boolean>
+        >;
+        Object.entries(nextEnabledNetworkMap).forEach(
+          ([namespace, currentNetworks]) => {
+            Object.keys(currentNetworks).forEach((chainId) => {
+              const previousValue =
+                previousEnabledNetworkMap[namespace]?.[chainId];
+              nextEnabledNetworkMap[namespace][chainId] =
+                previousValue ?? false;
+            });
+          },
+        );
+      });
+    };
+
+    this.#messenger.subscribe(
+      'NetworkEnablementController:stateChange',
+      restorePreviousEnabledNetworkMap,
+    );
+
+    try {
+      const addedNetwork = await this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration as AddNetworkFields,
+      );
+      await this.lookupSelectedNetworks();
+      return addedNetwork;
+    } catch (error) {
+      // `addNetwork` rejected, so `networkAdded` was not published
+      this.#messenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Gathers metadata (primarily connectivity status) about the globally
+   * selected network as well as each enabled network and persists it to state.
+   */
+  async lookupSelectedNetworks(): Promise<void> {
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds({
+      metamask: { enabledNetworkMap, networkConfigurationsByChainId },
+    });
+
+    await Promise.allSettled([
+      this.#messenger.call('NetworkController:lookupNetwork'),
+      ...enabledNetworkClientIds.map((networkClientId) =>
+        this.#messenger.call(
+          'NetworkController:lookupNetwork',
+          networkClientId,
+        ),
+      ),
+    ]);
   }
 
   /**
