@@ -7214,7 +7214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^3.1.0, @metamask/multichain-network-controller@npm:^3.1.4, @metamask/multichain-network-controller@npm:^3.2.0":
+"@metamask/multichain-network-controller@npm:^3.1.4, @metamask/multichain-network-controller@npm:^3.2.0":
   version: 3.2.0
   resolution: "@metamask/multichain-network-controller@npm:3.2.0"
   dependencies:
@@ -33198,7 +33198,7 @@ __metadata:
     "@metamask/multichain-account-service": "npm:^11.0.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^3.1.4"
-    "@metamask/multichain-network-controller": "npm:^3.1.0"
+    "@metamask/multichain-network-controller": "npm:^3.2.0"
     "@metamask/multichain-transactions-controller": "npm:^7.1.0"
     "@metamask/name-controller": "npm:^9.1.0"
     "@metamask/network-controller": "npm:^34.0.0"
