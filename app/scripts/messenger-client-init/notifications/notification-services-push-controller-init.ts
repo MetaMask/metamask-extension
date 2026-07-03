@@ -107,7 +107,10 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
     'NotificationServicesPushController:pushNotificationClicked',
     (notification) => {
       const otherNotificationProperties = () => {
-        if ("notification_type" in notification && isOnChainNotification(notification)) {
+        if (
+          'notification_type' in notification &&
+          isOnChainNotification(notification)
+        ) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           return { chain_id: notification.payload.chain_id };

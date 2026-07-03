@@ -1,7 +1,10 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { hasProperty } from '@metamask/utils';
-import { isOnChainNotification, type INotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  isOnChainNotification,
+  type INotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,

@@ -93,8 +93,7 @@ const mockListNotificationsResponse = {
   response: mockNotifications,
 };
 
-const mockFeatureAnnouncementContent =
-  createMockFeatureAnnouncementAPIResult();
+const mockFeatureAnnouncementContent = createMockFeatureAnnouncementAPIResult();
 const FEATURE_ANNOUNCEMENT_EXPIRED_MS = 31 * 24 * 60 * 60 * 1000;
 const date = new Date(Date.now() - FEATURE_ANNOUNCEMENT_EXPIRED_MS);
 const firstFeatureAnnouncementItem = mockFeatureAnnouncementContent.items?.[0];
@@ -124,8 +123,7 @@ export function getMockWalletNotificationItemId(trigger: TRIGGER_TYPES) {
 
 export function getMockFeatureAnnouncementItemId() {
   return (
-    mockFeatureAnnouncementContent.items?.at(0)?.fields?.id ??
-    'DOES NOT EXIST'
+    mockFeatureAnnouncementContent.items?.at(0)?.fields?.id ?? 'DOES NOT EXIST'
   );
 }
 
