@@ -21,8 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added max leverage pill display in perps market list cards (#43775)
 - Default-check `Marketing` Opt-in checkbox for social login users in US region. (#43584)
 - Changed delete code for networks (#43499)
-- Allowed users with an enrolled passkey to reveal their Secret Recovery Phrase and export private keys using passkey (#43169)
-  verification instead of their MetaMask password.
+- Allowed users with an enrolled passkey to reveal their Secret Recovery Phrase and export private keys using passkey
+  verification instead of their MetaMask password. (#43169)
 - Added a redesigned DeFi referral consent UI for Hyperliquid behind an A/B test (#43683)
 - Display a VIP tag when using a VIP referral code. (#43527)
 - chore: Add deprecation message to `getApi` (#43813)
@@ -53,20 +53,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed Cancel button being disabled by a "Not enough gas" check while Speed Up stayed enabled on pending transactions. (#43602)
-- Fixed a bug where the Manage Tokens network filter could show a single network name while listing tokens from all enabled (#43852)
-  networks.
-- Fixed the Confirm Add Token full-page view staying open with an empty list after approving the request in another MetaMask (#43835)
-  window.
-- Title update (#43826)
-- Fixed Perps deposit activity items showing a question-mark icon and capitalized the generic "Transaction" title in (#43687)
-  transaction details.
+- Fixed a bug where the Manage Tokens network filter could show a single network name while listing tokens from all enabled
+  networks. (#43852)
+- Fixed the Confirm Add Token full-page view staying open with an empty list after approving the request in another MetaMask
+  window. Title update. (#43826)
+- Fixed Perps deposit activity items showing a question-mark icon and capitalized the generic "Transaction" title in
+  transaction details. (#43687)
 - Force-hide MAX button for Arc USDC swap/bridge (#43751)
 - Fixed an issue where MetaMask would not fail over to another RPC URL when Infura is down (#43682)
 - Empty activity on asset pages after switching network filters when a non-EVM chain was previously selected (#43705)
 - Null (#43555)
 - Correct state migration to be identical to real TokenBalancesController (#43626)
-- Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and (#43367)
-  trades no longer leave the user on the order screen).
+- Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and
+  trades no longer leave the user on the order screen). (#43367)
 ### Changed
 
 - perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
