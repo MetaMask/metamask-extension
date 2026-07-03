@@ -535,7 +535,11 @@ export class PerpsStreamBridge {
    * cachedMarketDataByProvider, so this cannot re-trigger the state listener.
    */
   #refetchTerminalMarketData(): void {
-    if (!this.#isConnectionAlive()) {
+    // Re-check the flag on every entry (including the queued follow-up rerun):
+    // the Terminal backend may have been disabled since the preload bump that
+    // scheduled this refetch, and we must not issue/emit Terminal data once it
+    // is off.
+    if (!this.#isConnectionAlive() || !this.#isTerminalBackendEnabled()) {
       return;
     }
     if (this.#terminalMarketRefetchInFlight) {
@@ -549,8 +553,14 @@ export class PerpsStreamBridge {
       .then((markets) => {
         // destroy() may have fired during the await; never emit onto a torn-down
         // stream. A generation bump (rather than a latched flag) lets later init
-        // cycles resume refetching without an explicit reset.
-        if (this.#destroyGeneration === generationAtStart && markets) {
+        // cycles resume refetching without an explicit reset. Also re-check the
+        // flag: if the Terminal backend was disabled mid-flight, this enriched
+        // payload no longer matches the active mode and must not be emitted.
+        if (
+          this.#destroyGeneration === generationAtStart &&
+          this.#isTerminalBackendEnabled() &&
+          markets
+        ) {
           this.#emit('markets', markets);
         }
       })

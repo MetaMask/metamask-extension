@@ -300,7 +300,16 @@ class PerpsStreamManager {
    * @param enabled - true to pass `useTerminalApi: true` on market REST calls
    */
   setUseTerminalApi(enabled: boolean): void {
+    if (this._useTerminalApi === enabled) {
+      return;
+    }
     this._useTerminalApi = enabled;
+    // The markets channel may already hold data fetched under the previous
+    // mode (direct-provider vs Terminal-enriched). Drop it so the next
+    // subscribe re-fetches through the correct backend instead of serving
+    // stale-mode data — otherwise a false→true flip could leave un-enriched
+    // direct markets cached and suppress the Terminal REST fallback.
+    this.markets.clearCache();
   }
 
   /**

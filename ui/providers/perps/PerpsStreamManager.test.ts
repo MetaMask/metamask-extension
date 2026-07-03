@@ -309,6 +309,26 @@ describe('PerpsStreamManager', () => {
       }
     });
 
+    it('clears cached markets when the terminal mode changes so the next fetch uses the new backend', () => {
+      manager.markets.pushData([{ symbol: 'BTC' }] as never[]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      manager.setUseTerminalApi(true);
+
+      expect(manager.markets.hasCachedData()).toBe(false);
+    });
+
+    it('keeps cached markets when the terminal mode is unchanged', () => {
+      manager.markets.pushData([{ symbol: 'BTC' }] as never[]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      // Default mode is already `false`; a no-op update must not wipe the
+      // warm cache on every remount that re-applies the same flag value.
+      manager.setUseTerminalApi(false);
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+    });
+
     it('skips REST fallback when WS delivers data within grace period', async () => {
       jest.useFakeTimers();
 

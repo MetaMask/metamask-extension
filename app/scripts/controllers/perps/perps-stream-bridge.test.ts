@@ -1475,6 +1475,100 @@ describe('PerpsStreamBridge', () => {
       expect(emit).not.toHaveBeenCalledWith('markets', expect.anything());
     });
 
+    it('does not emit a terminal refetch result when the backend is disabled mid-flight', async () => {
+      const controller = createMockController();
+      let resolveFetch: ((value: unknown) => void) | undefined;
+      controller.getMarketDataWithPrices.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveFetch = resolve;
+          }) as never,
+      );
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      let terminalEnabled = true;
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => terminalEnabled,
+      });
+      await bridge.bridgeApi().perpsInit();
+      emit.mockClear();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+
+      stateChangeCallback(
+        {
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': {
+              data: [{ symbol: 'ETH' }],
+              timestamp: 1000,
+            },
+          },
+        },
+        [],
+      );
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+
+      // Terminal backend flips off before the in-flight fetch settles: the
+      // enriched payload no longer matches the active mode and must not emit.
+      terminalEnabled = false;
+      resolveFetch?.([{ symbol: 'ENRICHED' }]);
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(emit).not.toHaveBeenCalledWith('markets', expect.anything());
+    });
+
+    it('skips the queued terminal refetch rerun when the backend is disabled before it runs', async () => {
+      const controller = createMockController();
+      const resolvers: ((value: unknown) => void)[] = [];
+      controller.getMarketDataWithPrices.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolvers.push(resolve);
+          }) as never,
+      );
+      const onControllerStateChange = jest.fn().mockReturnValue(jest.fn());
+      let terminalEnabled = true;
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        onControllerStateChange,
+        isTerminalBackendEnabled: () => terminalEnabled,
+      });
+      await bridge.bridgeApi().perpsInit();
+
+      const stateChangeCallback = onControllerStateChange.mock.calls[0][0] as (
+        state: Record<string, unknown>,
+        patches: unknown[],
+      ) => void;
+      const makeState = (timestamp: number) => ({
+        activeProvider: 'hyperliquid',
+        isTestnet: false,
+        cachedMarketDataByProvider: {
+          'hyperliquid:mainnet': { data: [{ symbol: 'ETH' }], timestamp },
+        },
+      });
+
+      // First bump starts an in-flight refetch; the second bump coalesces into
+      // a single pending rerun.
+      stateChangeCallback(makeState(1000), []);
+      stateChangeCallback(makeState(2000), []);
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+
+      // Backend turns off before the in-flight fetch settles and fires the
+      // queued rerun. The rerun must re-check the flag and bail out instead of
+      // issuing another Terminal REST call.
+      terminalEnabled = false;
+      resolvers[0]?.([{ symbol: 'ENRICHED' }]);
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+    });
+
     it('ignores a stale terminal refetch settling from a prior generation', async () => {
       const controller = createMockController();
       const resolvers: ((value: unknown) => void)[] = [];
