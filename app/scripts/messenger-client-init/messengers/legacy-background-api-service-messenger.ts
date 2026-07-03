@@ -101,6 +101,14 @@ export function getLegacyBackgroundApiServiceMessenger(
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',
+      'PreferencesController:toggleExternalServices',
+      'SubscriptionController:getState',
+      'TokenDetectionController:enable',
+      'TokenDetectionController:disable',
+      'GasFeeController:enableNonRPCGasFeeApis',
+      'GasFeeController:disableNonRPCGasFeeApis',
+      'ShieldController:start',
+      'ShieldController:stop',
     ],
   });
 
