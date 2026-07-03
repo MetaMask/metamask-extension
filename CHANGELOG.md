@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled ERC-7715 requests over the Multichain API and MetaMask Connect (#43513)
 
 ### Fixed
+
 - Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6927 (#43209)
 
 ## [13.37.0]
