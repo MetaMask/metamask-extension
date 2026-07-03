@@ -28669,7 +28669,7 @@ SOFTWARE.
 ******************************
 
 @mui/utils
-7.3.11 <https://github.com/mui/material-ui>
+7.3.10 <https://github.com/mui/material-ui>
 The MIT License (MIT)
 
 Copyright (c) 2014 Call-Em-All
@@ -31641,7 +31641,7 @@ SOFTWARE.
 ******************************
 
 react-is
-19.2.7 <https://github.com/facebook/react>
+19.2.5 <https://github.com/facebook/react>
 MIT License
 
 Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -38675,7 +38675,7 @@ authors: 강동윤 <kdy1997.dev@gmail.com>
 
 ******************************
 
-@swc/core-linux-x64-gnu
+@swc/core-darwin-arm64
 1.13.2 <https://github.com/swc-project/swc>
 license: Apache-2.0 AND MIT
 authors: 강동윤 <kdy1997.dev@gmail.com>
