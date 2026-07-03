@@ -5,7 +5,11 @@ import {
 import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import { Patch } from 'immer';
-import { sanitizePatches, sanitizeStateLogs, sanitizeUIState } from './state-utils';
+import {
+  sanitizePatches,
+  sanitizeStateLogs,
+  sanitizeUIState,
+} from './state-utils';
 
 describe('State Utils', () => {
   describe('sanitizeUIState', () => {
