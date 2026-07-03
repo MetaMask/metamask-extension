@@ -89,12 +89,20 @@ export function useTransactionConfirm() {
       transactionMeta.isGasFeeSponsored &&
       !isSponsorshipOptedOut;
 
-    // When the user opts out of gas sponsorship, clear `isExternalSign` so the
-    // transaction goes through the normal sign-and-publish flow instead of
-    // being routed to the relay. The TransactionController sets
-    // `isExternalSign = true` whenever `isGasFeeSponsored` is true during gas
-    // estimation, so we must explicitly revert it here.
-    if (isSponsorshipOptedOut && transactionMeta.isExternalSign) {
+    // Revert the controller's `isExternalSign` flag when this account cannot
+    // use an external relay — i.e. gasless is unsupported for the account/chain
+    // (such as hardware wallets, which cannot sign EIP-7702 authorization
+    // lists) — or the user has opted out of gas sponsorship. The
+    // TransactionController sets `isExternalSign = true` whenever
+    // `isGasFeeSponsored` is true during gas estimation, regardless of whether
+    // an external relay is actually eligible for this account. If we leave it
+    // set, the sign step is skipped (no keyring/device call) and, when no relay
+    // catches the publish, an unsigned/empty payload reaches
+    // `eth_sendRawTransaction` and is rejected by the node.
+    const isExternalSignSupported =
+      transactionMeta.isExternalSign &&
+      (!isGaslessSupported || isSponsorshipOptedOut);
+    if (isExternalSignSupported) {
       newTransactionMeta.isExternalSign = false;
     }
 
