@@ -69,14 +69,14 @@ describe('TransactionController wallet instance options', () => {
    * @param overrides.preferencesState
    * @returns The extracted option.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  function testConstructorOption<T extends keyof ReturnType<typeof buildOptions>>(
-    option: T,
+  function testConstructorOption<
+    Option extends keyof ReturnType<typeof buildOptions>,
+  >(
+    option: Option,
     overrides: {
       preferencesState?: Record<string, unknown>;
     } = {},
-  ): ReturnType<typeof buildOptions>[T] {
+  ): ReturnType<typeof buildOptions>[Option] {
     return buildOptions(overrides)[option];
   }
 

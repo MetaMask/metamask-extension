@@ -13,7 +13,10 @@ import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
-import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import type {
+  TransactionMetaEventPayload,
+  TransactionMetricsRequest,
+} from '../../../../shared/types/metametrics';
 import {
   handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
@@ -65,11 +68,8 @@ export function getTransactionControllerInstanceOptions({
   initMessenger,
   request,
 }: GetTransactionControllerInstanceOptionsRequest): TransactionControllerInstanceOptions {
-  const {
-    getFlatState,
-    getPermittedAccounts,
-    getTransactionMetricsRequest,
-  } = request;
+  const { getFlatState, getPermittedAccounts, getTransactionMetricsRequest } =
+    request;
 
   return {
     getPermittedAccounts: async (origin?: string) =>
@@ -148,8 +148,10 @@ export function setupTransactionControllerListeners({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (transactionMeta) =>
-      // @ts-expect-error Error is string in metrics code but TransactionError in TransactionMeta type from controller
-      handleTransactionConfirmed(getTransactionMetricsRequest(), transactionMeta),
+      handleTransactionConfirmed(
+        getTransactionMetricsRequest(),
+        transactionMeta as TransactionMetaEventPayload,
+      ),
   );
 
   messenger.subscribe(
