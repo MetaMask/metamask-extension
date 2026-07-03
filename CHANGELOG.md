@@ -66,14 +66,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Correct state migration to be identical to real TokenBalancesController (#43626)
 - Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and
   trades no longer leave the user on the order screen). (#43367)
-### Changed
-
-- perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
-
-### Fixed
-
-- Correct state migration to be identical to real TokenBalancesController (#43626)
-- Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and trades no longer leave the user on the order screen). (#43367)
 - Fixed product announcement notification links opening MetaMask deeplinks externally before routing. (#42805)
 - Fixed perps close-all-positions toasts not appearing on the home screen perps tab (#43613)
 - Consume batch sell assets data from token controller (#43460)
