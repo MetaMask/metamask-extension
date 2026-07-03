@@ -1,3 +1,4 @@
+import { sha256 } from '@noble/hashes/sha256';
 import { Mockttp } from 'mockttp';
 import {
   DEFAULT_BTC_ADDRESS,
@@ -648,39 +649,117 @@ type EsploraTx = {
  *
  * @param rawHex - The raw signed transaction hex from the POST /tx body.
  */
-async function buildConfirmedSpendTx(rawHex: string): Promise<EsploraTx> {
-  // bitcoinjs-lib is ESM-only; import it dynamically so the CommonJS test
-  // build can type-check and load it.
-  const { Transaction } = await import('bitcoinjs-lib');
-  const tx = Transaction.fromHex(rawHex);
+/**
+ * Reads a Bitcoin varint at the given offset.
+ *
+ * @param buf - The buffer to read from.
+ * @param offset - The byte offset to read at.
+ * @returns A tuple of the decoded value and the offset past it.
+ */
+function readVarInt(buf: Buffer, offset: number): [number, number] {
+  const first = buf[offset];
+  if (first < 0xfd) {
+    return [first, offset + 1];
+  }
+  if (first === 0xfd) {
+    return [buf.readUInt16LE(offset + 1), offset + 3];
+  }
+  if (first === 0xfe) {
+    return [buf.readUInt32LE(offset + 1), offset + 5];
+  }
+  return [Number(buf.readBigUInt64LE(offset + 1)), offset + 9];
+}
 
-  const vin = tx.ins.map((input) => ({
-    txid: Buffer.from(input.hash).reverse().toString('hex'),
-    vout: input.index,
-    prevout: {
-      scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
-      scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${E2E_BTC_SCRIPTPUBKEY.slice(4)}`,
-      scriptpubkey_type: 'v0_p2wpkh',
-      scriptpubkey_address: DEFAULT_BTC_ADDRESS,
-      value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC,
-    },
-    scriptsig: '',
-    scriptsig_asm: '',
-    witness: input.witness.map((w) => Buffer.from(w).toString('hex')),
-    is_coinbase: false,
-    sequence: input.sequence,
-  }));
+/**
+ * Parses the raw broadcast transaction hex and builds an Esplora-shaped
+ * transaction marked confirmed in the chain tip block. The txid is the
+ * double-SHA256 of the legacy (non-witness) serialization reversed, matching
+ * the id the Snap computes for the tx it broadcast, so the pending send is
+ * reconciled to confirmed rather than duplicated.
+ *
+ * bitcoinjs-lib would do this more concisely but it is ESM-only and breaks the
+ * browserify test bundle, so the parse is done by hand with @noble/hashes.
+ *
+ * @param rawHex - The raw signed transaction hex from the POST /tx body.
+ */
+function buildConfirmedSpendTx(rawHex: string): EsploraTx {
+  const buf = Buffer.from(rawHex, 'hex');
 
-  const vout = tx.outs.map((output) => ({
-    scriptpubkey: Buffer.from(output.script).toString('hex'),
-    scriptpubkey_type: 'v0_p2wpkh',
-    value: Number(output.value),
-  }));
+  const version = buf.readUInt32LE(0);
+  const versionBytes = buf.subarray(0, 4);
+  let offset = 4;
+  // Skip the SegWit marker + flag when present; both are excluded from the txid.
+  if (buf[offset] === 0x00 && buf[offset + 1] === 0x01) {
+    offset += 2;
+  }
+
+  const inputsStart = offset;
+  const [inputCount, afterInputCount] = readVarInt(buf, offset);
+  offset = afterInputCount;
+  const vin = [];
+  for (let i = 0; i < inputCount; i += 1) {
+    const prevTxid = Buffer.from(buf.subarray(offset, offset + 32))
+      .reverse()
+      .toString('hex');
+    offset += 32;
+    const prevVout = buf.readUInt32LE(offset);
+    offset += 4;
+    const [scriptLen, afterScriptLen] = readVarInt(buf, offset);
+    offset = afterScriptLen + scriptLen;
+    const sequence = buf.readUInt32LE(offset);
+    offset += 4;
+    vin.push({
+      txid: prevTxid,
+      vout: prevVout,
+      prevout: {
+        scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
+        scriptpubkey_type: 'v0_p2wpkh',
+        scriptpubkey_address: DEFAULT_BTC_ADDRESS,
+        value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC,
+      },
+      scriptsig: '',
+      scriptsig_asm: '',
+      is_coinbase: false,
+      sequence,
+    });
+  }
+  const inputsEnd = offset;
+
+  const outputsStart = offset;
+  const [outputCount, afterOutputCount] = readVarInt(buf, offset);
+  offset = afterOutputCount;
+  const vout = [];
+  for (let i = 0; i < outputCount; i += 1) {
+    const value = Number(buf.readBigUInt64LE(offset));
+    offset += 8;
+    const [scriptLen, afterScriptLen] = readVarInt(buf, offset);
+    offset = afterScriptLen;
+    const scriptpubkey = buf
+      .subarray(offset, offset + scriptLen)
+      .toString('hex');
+    offset += scriptLen;
+    vout.push({ scriptpubkey, scriptpubkey_type: 'v0_p2wpkh', value });
+  }
+  const outputsEnd = offset;
+
+  const locktimeBytes = buf.subarray(buf.length - 4);
+  const locktime = buf.readUInt32LE(buf.length - 4);
+
+  // Legacy serialization: version + inputs + outputs + locktime (no witness).
+  const legacy = Buffer.concat([
+    versionBytes,
+    buf.subarray(inputsStart, inputsEnd),
+    buf.subarray(outputsStart, outputsEnd),
+    locktimeBytes,
+  ]);
+  const txid = Buffer.from(sha256(sha256(legacy)))
+    .reverse()
+    .toString('hex');
 
   return {
-    txid: tx.getId(),
-    version: tx.version,
-    locktime: tx.locktime,
+    txid,
+    version,
+    locktime,
     vin,
     vout,
     size: rawHex.length / 2,
@@ -725,7 +804,7 @@ export async function mockInitialFullScanWithConfirmedSend(
     .thenCallback(async (request) => {
       const rawHex = (await request.body.getText())?.trim() ?? '';
       try {
-        confirmedSpendTx = await buildConfirmedSpendTx(rawHex);
+        confirmedSpendTx = buildConfirmedSpendTx(rawHex);
         console.log(
           `[BTC MOCK] Broadcast captured, confirmed txid: ${confirmedSpendTx.txid}`,
         );

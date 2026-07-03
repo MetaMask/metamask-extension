@@ -20288,7 +20288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitcoinjs-lib@npm:^7.0.0, bitcoinjs-lib@npm:^7.0.1":
+"bitcoinjs-lib@npm:^7.0.0":
   version: 7.0.1
   resolution: "bitcoinjs-lib@npm:7.0.1"
   dependencies:
@@ -33410,7 +33410,6 @@ __metadata:
     bify-module-groups: "npm:^2.0.0"
     bignumber.js: "npm:^4.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
-    bitcoinjs-lib: "npm:^7.0.1"
     bowser: "npm:^2.11.0"
     browserify: "npm:^17.0.0"
     browserslist: "npm:^4.28.1"
