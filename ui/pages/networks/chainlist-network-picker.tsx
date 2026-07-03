@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  AvatarNetwork,
   Box,
   FontWeight,
   Text,
@@ -7,6 +8,7 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import {
   type SafeChain,
   useSafeChains,
@@ -37,27 +39,18 @@ export const getUsableUrls = (urls: string[] = []) =>
     }
   });
 
-const CHAINLIST_ROW_COLORS = [
-  'bg-success-default',
-  'bg-warning-muted',
-  'bg-icon-default',
-  'bg-primary-default',
-  'bg-info-muted',
-  'bg-error-default',
-  'bg-success-muted',
-  'bg-primary-muted',
-];
-
 const CHAINLIST_PAGE_SIZE = 100;
 const CHAINLIST_SCROLL_THRESHOLD_PX = 120;
 
 type ChainlistNetworkPickerProps = {
   existingNetworkChainIds: Set<string>;
-  onSelect: (network: ChainlistNetwork) => void;
+  existingNetworkNamesByChainId: Record<string, string>;
+  onSelect: (network: ChainlistNetwork, searchQuery?: string) => void;
 };
 
 export const ChainlistNetworkPicker = ({
   existingNetworkChainIds,
+  existingNetworkNamesByChainId,
   onSelect,
 }: ChainlistNetworkPickerProps) => {
   const t = useI18nContext();
@@ -70,6 +63,8 @@ export const ChainlistNetworkPicker = ({
     const normalizedSearchValue = searchValue.trim().toLowerCase();
 
     return ((safeChains ?? []) as ChainlistNetwork[]).filter((network) => {
+      const existingNetworkName =
+        existingNetworkNamesByChainId[getHexChainId(network.chainId)];
       if (getUsableUrls(network.rpc).length === 0) {
         return false;
       }
@@ -80,10 +75,11 @@ export const ChainlistNetworkPicker = ({
 
       return (
         network.name.toLowerCase().includes(normalizedSearchValue) ||
+        existingNetworkName?.toLowerCase().includes(normalizedSearchValue) ||
         String(network.chainId).includes(normalizedSearchValue)
       );
     });
-  }, [safeChains, searchValue]);
+  }, [existingNetworkNamesByChainId, safeChains, searchValue]);
 
   const visibleChainlistNetworks = useMemo(
     () => chainlistNetworks.slice(0, visibleNetworkCount),
@@ -118,7 +114,7 @@ export const ChainlistNetworkPicker = ({
         <TextFieldSearch
           clearButtonOnClick={() => setSearchValue('')}
           clearButtonProps={{ ariaLabel: t('clear') }}
-          className="w-full rounded-xl bg-background-default"
+          className="mm-text-field-search w-full rounded-full border border-border-muted bg-background-default"
           data-testid="networks-page-chainlist-search"
           onChange={(event) => setSearchValue(event.target.value)}
           placeholder={t('searchNetworkNameOrChainId')}
@@ -134,28 +130,40 @@ export const ChainlistNetworkPicker = ({
         {showNoSearchResults ? (
           <NoSearchResult dataTestId="networks-page-chainlist-no-results" />
         ) : null}
-        {visibleChainlistNetworks.map((network, index) => {
+        {visibleChainlistNetworks.map((network) => {
           const isExistingNetwork = existingNetworkChainIds.has(
             getHexChainId(network.chainId),
           );
+          const displayName =
+            existingNetworkNamesByChainId[getHexChainId(network.chainId)] ??
+            network.name;
+          const networkImageUrl =
+            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+              getHexChainId(
+                network.chainId,
+              ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+            ];
 
           return (
             <button
-              className={`flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed ${
-                isExistingNetwork ? 'bg-muted' : ''
-              }`}
+              className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed"
               data-testid="networks-page-chainlist-network"
               key={`${network.chainId}-${network.name}`}
-              onClick={() => onSelect(network)}
+              onClick={() => onSelect(network, searchValue.trim() || undefined)}
               type="button"
             >
-              <Box
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-medium text-text-default ${
-                  CHAINLIST_ROW_COLORS[index % CHAINLIST_ROW_COLORS.length]
-                }`}
-              >
-                {network.name.charAt(0).toUpperCase()}
-              </Box>
+              {networkImageUrl ? (
+                <AvatarNetwork
+                  className="shrink-0 rounded-lg"
+                  name={displayName}
+                  size="md"
+                  src={networkImageUrl}
+                />
+              ) : (
+                <Box className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-medium text-text-default">
+                  {displayName.charAt(0).toUpperCase()}
+                </Box>
+              )}
               <Box className="min-w-0 flex-1">
                 <Box className="flex min-w-0 items-center gap-2">
                   <Text
@@ -163,11 +171,11 @@ export const ChainlistNetworkPicker = ({
                     fontWeight={FontWeight.Medium}
                     className="truncate"
                   >
-                    {network.name}
+                    {displayName}
                   </Text>
                   {isExistingNetwork ? (
                     <Box
-                      className="shrink-0 rounded-full bg-muted px-2 py-0.5"
+                      className="shrink-0 rounded bg-muted px-2 py-0.5"
                       data-testid="networks-page-chainlist-added-pill"
                     >
                       <Text

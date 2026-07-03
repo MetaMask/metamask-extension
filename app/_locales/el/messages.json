@@ -4397,9 +4397,6 @@
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Περιλαμβάνει"
-  },
   "includesXTransactions": {
     "message": "Περιλαμβάνει $1 συναλλαγές"
   },
