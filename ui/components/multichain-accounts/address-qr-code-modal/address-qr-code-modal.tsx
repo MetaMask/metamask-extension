@@ -40,7 +40,11 @@ import type { ModalProps } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsContext,
+  type UITrackEventMethod,
+} from '../../../contexts/metametrics';
+import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 
 // Constants for QR code generation
@@ -48,6 +52,18 @@ const QR_CODE_TYPE_NUMBER = 4;
 const QR_CODE_CELL_SIZE = 5;
 const QR_CODE_MARGIN = 16;
 const QR_CODE_ERROR_CORRECTION_LEVEL = 'M';
+
+const trackBuiltEventWithMetaMetricsContext = (
+  built: AnalyticsEvent,
+  trackEvent: UITrackEventMethod,
+) => {
+  const { category, ...properties } = built.properties;
+  trackEvent({
+    event: built.name,
+    category: category as string,
+    properties,
+  });
+};
 
 // Constants for address segmentation
 const PREFIX_LEN = 6;
@@ -143,7 +159,7 @@ export const AddressQRCodeModal = ({
     openBlockExplorer(
       explorerInfo.addressUrl,
       'Address QR Code Modal',
-      trackEvent,
+      (built) => trackBuiltEventWithMetaMetricsContext(built, trackEvent),
     );
   }, [explorerInfo, trackEvent]);
 

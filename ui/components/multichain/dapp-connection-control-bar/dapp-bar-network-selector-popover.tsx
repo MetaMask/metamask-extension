@@ -18,7 +18,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   AvatarNetworkSize,
   Popover,
@@ -87,7 +86,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
 > = ({ referenceElement, isOpen, onClose }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);
@@ -229,6 +228,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       allChainIds,
       tokenNetworkFilter,
       trackEvent,
+      createEventBuilder,
       onClose,
     ],
   );
@@ -249,7 +249,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
           .build(),
       );
     },
-    [dispatch, trackEvent, currentlyOnTestnet],
+    [dispatch, trackEvent, createEventBuilder, currentlyOnTestnet],
   );
 
   return (

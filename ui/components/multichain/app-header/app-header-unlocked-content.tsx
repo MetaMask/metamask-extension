@@ -3,7 +3,6 @@ import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   AlignItems,
   BlockSize,
@@ -50,7 +49,7 @@ export const AppHeaderUnlockedContent = ({
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -98,7 +97,7 @@ export const AppHeaderUnlockedContent = ({
       }
       return prev;
     });
-  }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
+  }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
@@ -177,6 +176,7 @@ export const AppHeaderUnlockedContent = ({
     selectedMultichainAccountId,
     navigate,
     trackEvent,
+    createEventBuilder,
     accountListStats,
   ]);
 

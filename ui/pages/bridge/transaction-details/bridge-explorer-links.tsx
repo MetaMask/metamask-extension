@@ -11,8 +11,24 @@ import {
   ButtonSecondary,
 } from '../../../components/component-library';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsContext,
+  type UITrackEventMethod,
+} from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
+
+const trackBuiltEventWithMetaMetricsContext = (
+  built: AnalyticsEvent,
+  trackEvent: UITrackEventMethod,
+) => {
+  const { category, ...properties } = built.properties;
+  trackEvent({
+    event: built.name,
+    category: category as string,
+    properties,
+  });
+};
 
 const getBlockExplorerName = (
   chainId: CaipChainId | undefined,
@@ -75,7 +91,8 @@ export default function BridgeExplorerLinks({
               openBlockExplorer(
                 srcBlockExplorerUrl,
                 METRICS_LOCATION,
-                trackEvent,
+                (built) =>
+                  trackBuiltEventWithMetaMetricsContext(built, trackEvent),
               );
             }
           }}
@@ -91,7 +108,8 @@ export default function BridgeExplorerLinks({
               openBlockExplorer(
                 destBlockExplorerUrl,
                 METRICS_LOCATION,
-                trackEvent,
+                (built) =>
+                  trackBuiltEventWithMetaMetricsContext(built, trackEvent),
               );
             }
           }}

@@ -33,7 +33,6 @@ import { NetworkListItem } from '../../components/multichain/network-list-item';
 import ToggleButton from '../../components/ui/toggle-button';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useAnalytics } from '../../hooks/useAnalytics';
-import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import { useIsNetworkGasSponsored } from '../../hooks/useIsNetworkGasSponsored';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
 import { getSelectedMultichainNetworkChainId } from '../../selectors/multichain/networks';
@@ -173,7 +172,7 @@ export const NetworksPageList = ({
 }: NetworksPageListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -305,7 +304,7 @@ export const NetworksPageList = ({
           .build(),
       );
     },
-    [currentlyOnTestnet, dispatch, trackEvent],
+    [currentlyOnTestnet, dispatch, trackEvent, createEventBuilder],
   );
 
   return (

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { type CaipChainId } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { createEventBuilder } from '../../../../../shared/lib/analytics/create-event-builder';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -59,7 +58,7 @@ export enum ACTION_MODE {
 
 export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -198,6 +197,7 @@ export const useNetworkChangeHandlers = () => {
       handleEvmNetworkChange,
       handleNonEvmNetworkChange,
       trackEvent,
+      createEventBuilder,
     ],
   );
 
