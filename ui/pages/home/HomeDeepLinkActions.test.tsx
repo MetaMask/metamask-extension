@@ -204,10 +204,9 @@ describe('HomeDeepLinkActions', () => {
     });
   });
 
-  it('notifies Home to show the batch sell QR code for a batch sell deeplink URL', async () => {
+  it('dispatches setHomeDeepLinkQrCode for a valid batch sell deeplink URL', async () => {
     const deeplinkUrl = 'https://link.metamask.io/batch-sell';
-    const onQrCodeDeepLink = jest.fn();
-    const { Wrapper } = createWrapper({
+    const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.BatchSellDeeplinkUrl]: deeplinkUrl,
@@ -215,12 +214,13 @@ describe('HomeDeepLinkActions', () => {
       isNetworkMenuOpen: false,
     });
 
-    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
-      wrapper: Wrapper,
-    });
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
 
     await waitFor(() => {
-      expect(onQrCodeDeepLink).toHaveBeenCalledWith({
+      const qrCode = (
+        store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+      ).appState.homeDeepLinkQrCode;
+      expect(qrCode).toEqual({
         deeplinkUrl,
         descriptionKey: 'deepLinkQrBatchSellDescription',
         titleKey: 'deepLinkQrBatchSellTitle',
@@ -229,8 +229,7 @@ describe('HomeDeepLinkActions', () => {
   });
 
   it('ignores batch sell QR deeplink params that do not point to /batch-sell', () => {
-    const onQrCodeDeepLink = jest.fn();
-    const { Wrapper } = createWrapper({
+    const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.BatchSellDeeplinkUrl]:
@@ -239,11 +238,12 @@ describe('HomeDeepLinkActions', () => {
       isNetworkMenuOpen: false,
     });
 
-    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
-      wrapper: Wrapper,
-    });
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
 
-    expect(onQrCodeDeepLink).not.toHaveBeenCalled();
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
   });
 
   it('ignores predict QR deeplink params that do not point to /predict', () => {

@@ -50,13 +50,15 @@ export const useHomeDeepLinkEffects = () => {
 
   const openBatchSellQrCodeModal = useCallback(
     (deeplinkUrl: string) => {
-      onQrCodeDeepLink?.({
-        deeplinkUrl,
-        descriptionKey: 'deepLinkQrBatchSellDescription',
-        titleKey: 'deepLinkQrBatchSellTitle',
-      });
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrBatchSellDescription',
+          titleKey: 'deepLinkQrBatchSellTitle',
+        }),
+      );
     },
-    [onQrCodeDeepLink],
+    [dispatch],
   );
 
   const openPredictQrCodeModal = useCallback(
