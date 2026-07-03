@@ -8,7 +8,6 @@ import {
   IconColor,
   IconSize,
 } from '@metamask/design-system-react';
-import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey';
 import {
@@ -29,7 +28,7 @@ export const UnlockPasskeyIconButton = ({
 }: UnlockPasskeyIconButtonProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const handleClick = useCallback(() => {
@@ -44,7 +43,7 @@ export const UnlockPasskeyIconButton = ({
         .build(),
     );
     onClick();
-  }, [onClick, passkeyDerivationMethod, trackEvent]);
+  }, [onClick, passkeyDerivationMethod, trackEvent, createEventBuilder]);
 
   return (
     <ButtonIcon

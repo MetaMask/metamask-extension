@@ -56,7 +56,6 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { I18nContext } from '../../contexts/i18n';
@@ -867,7 +866,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
 
 function UnlockPage(props: React.PropsWithChildren<Record<string, unknown>>) {
   const t = useContext(I18nContext);
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
   const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
 
@@ -901,7 +900,7 @@ function UnlockPage(props: React.PropsWithChildren<Record<string, unknown>>) {
           .build(),
       );
     },
-    [segmentContext.page?.title, trackEvent],
+    [segmentContext.page?.title, trackEvent, createEventBuilder],
   );
 
   return (
