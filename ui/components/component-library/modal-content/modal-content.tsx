@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import classnames from 'clsx';
+import { usePureBlack } from '@metamask/design-system-react';
 
 import {
   BackgroundColor,
@@ -15,6 +16,7 @@ import { Box, BoxProps } from '../box';
 import type { PolymorphicRef } from '../box';
 import { useModalContext } from '../modal/modal.context';
 import { ModalFocus } from '../modal-focus';
+import { getModalContentDialogClassName } from '../../../contexts/pure-black/pure-black-extension-styles';
 import {
   ModalContentProps,
   ModalContentSize,
@@ -50,6 +52,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
       restoreFocus,
       autoFocus,
     } = useModalContext();
+    const isPureBlack = usePureBlack();
     const modalDialogRef = useRef<HTMLElement>(null);
     const handleEscKey = (event: KeyboardEvent) => {
       if (isClosedOnEscapeKey && event.key === 'Escape') {
@@ -124,6 +127,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             className={classnames(
               'mm-modal-content__dialog',
               `mm-modal-content__dialog--size-${size}`,
+              getModalContentDialogClassName(isPureBlack),
               modalDialogProps?.className,
             )}
           >

@@ -104,7 +104,9 @@ TEST_SRP_2=
 ; Entry points to connecting remain unchanged regardless of this flag.
 NEW_HARDWARE_WALLET_ONBOARDING='false'
 
-; Set this to `true` to force enforced simulations to apply whenever a
+; Set to `true` to force enforced simulations to apply whenever a
 ; transaction has balance changes, bypassing the trust signal check.
 ; Intended for local development and QA only.
 ;FORCE_ENFORCED_SIMULATIONS='true'
+
+; Pure-black design-tokens preview

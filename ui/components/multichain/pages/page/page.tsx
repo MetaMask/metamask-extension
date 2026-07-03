@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useLocation } from 'react-router-dom';
+import { usePureBlack } from '@metamask/design-system-react';
 import { Box } from '../../../component-library';
 import {
   BackgroundColor,
@@ -13,6 +14,7 @@ import {
 
 import type { StyleUtilityProps } from '../../../component-library/box';
 import { hideAppHeader } from '../../../../pages/routes/utils';
+import { getPureBlackPageInnerContainerClassName } from '../../../../contexts/pure-black/pure-black-extension-styles';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -30,6 +32,7 @@ interface PageProps extends StyleUtilityProps {
 export const Page = ({ children, className = '', ...props }: PageProps) => {
   const location = useLocation();
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
+  const isPureBlack = usePureBlack();
 
   const classNames = classnames('multichain-page', {
     'multichain-page--has-app-header': hasAppHeader,
@@ -52,7 +55,11 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundDefault}
-        className={classnames('multichain-page__inner-container', className)}
+        className={classnames(
+          'multichain-page__inner-container',
+          className,
+          getPureBlackPageInnerContainerClassName(isPureBlack),
+        )}
         {...props}
       >
         {children}

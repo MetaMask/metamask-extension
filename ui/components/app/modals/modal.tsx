@@ -2,10 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { AnyAction, Dispatch } from 'redux';
 
 import { connect } from 'react-redux';
+import { usePureBlack } from '@metamask/design-system-react';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
+import { getExtensionModalBorderColor } from '../../../contexts/pure-black/pure-black-extension-styles';
 
 import { NetworkManager } from '../../multichain/network-manager';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
@@ -260,6 +262,7 @@ type ModalProps = {
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
   const modalRef = useRef<FadeModalRef>(null);
+  const isPureBlack = usePureBlack();
 
   useEffect(() => {
     if (active) {
@@ -271,8 +274,10 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
 
   const modal = MODALS[modalState.name ?? 'DEFAULT'];
   const { contents: children, disableBackdropClick = false, testId } = modal;
-  const modalStyle =
-    modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
+  const modalStyle = {
+    ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
+    border: `1px solid ${getExtensionModalBorderColor(isPureBlack)}`,
+  };
   const contentStyle = modal.contentStyle ?? {};
 
   return (

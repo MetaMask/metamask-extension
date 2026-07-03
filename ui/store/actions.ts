@@ -167,6 +167,7 @@ import type {
   AnalyticsEventBuildOptions,
 } from '../../shared/lib/analytics/create-event-builder';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
+import { setTheme as applyDocumentTheme } from '../pages/routes/utils';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors';
 import {
@@ -4880,13 +4881,15 @@ export function setTheme(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
+  return async () => {
+    // Theme is a synchronous preference update — apply DOM tokens immediately
+    // and skip the global loading overlay (which could stick if the RPC stalls).
+    applyDocumentTheme(val);
     log.debug(`background.setTheme`);
     try {
       await submitRequestToBackground('setTheme', [val]);
-    } finally {
-      dispatch(hideLoadingIndication());
+    } catch (error) {
+      logErrorWithMessage(error);
     }
   };
 }
