@@ -228,6 +228,30 @@ describe('HomeDeepLinkActions', () => {
     });
   });
 
+  it('notifies Home to show the trending QR code for a trending deeplink URL', async () => {
+    const deeplinkUrl = 'https://link.metamask.io/trending?tab=crypto';
+    const onQrCodeDeepLink = jest.fn();
+    const { Wrapper } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.TrendingDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(onQrCodeDeepLink).toHaveBeenCalledWith({
+        deeplinkUrl,
+        descriptionKey: 'deepLinkQrTrendingDescription',
+        titleKey: 'deepLinkQrTrendingTitle',
+      });
+    });
+  });
+
   it('ignores batch sell QR deeplink params that do not point to /batch-sell', () => {
     const onQrCodeDeepLink = jest.fn();
     const { Wrapper } = createWrapper({
@@ -252,6 +276,24 @@ describe('HomeDeepLinkActions', () => {
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.PredictDeeplinkUrl]:
+          'https://link.metamask.io/rewards?referral=ABC123',
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
+      wrapper: Wrapper,
+    });
+
+    expect(onQrCodeDeepLink).not.toHaveBeenCalled();
+  });
+
+  it('ignores trending QR deeplink params that do not point to /trending', () => {
+    const onQrCodeDeepLink = jest.fn();
+    const { Wrapper } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.TrendingDeeplinkUrl]:
           'https://link.metamask.io/rewards?referral=ABC123',
       }).toString()}`,
       isNetworkMenuOpen: false,
