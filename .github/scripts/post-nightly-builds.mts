@@ -1,9 +1,7 @@
 import { IncomingWebhook } from '@slack/webhook';
 import type { AnyBlock } from '@slack/types';
 import { version } from '../../package.json';
-import artifactsModule from '../../development/metamaskbot-build-announce/artifacts';
-
-const { getBuildLinks } = artifactsModule;
+import { getBuildLinks } from '../../development/metamaskbot-build-announce/build-links.ts';
 
 async function main() {
   const env = {
