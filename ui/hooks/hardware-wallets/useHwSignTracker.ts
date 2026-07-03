@@ -107,9 +107,9 @@ function matchesExpectedParams(
 
     if (
       expected.to &&
-      transactionMeta.txParams.to &&
-      normalizeAddress(transactionMeta.txParams.to) !==
-        normalizeAddress(expected.to)
+      (!transactionMeta.txParams.to ||
+        normalizeAddress(transactionMeta.txParams.to) !==
+          normalizeAddress(expected.to))
     ) {
       return false;
     }
