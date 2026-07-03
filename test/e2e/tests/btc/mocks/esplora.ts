@@ -1,4 +1,3 @@
-import { Transaction } from 'bitcoinjs-lib';
 import { Mockttp } from 'mockttp';
 import {
   DEFAULT_BTC_ADDRESS,
@@ -649,7 +648,10 @@ type EsploraTx = {
  *
  * @param rawHex - The raw signed transaction hex from the POST /tx body.
  */
-function buildConfirmedSpendTx(rawHex: string): EsploraTx {
+async function buildConfirmedSpendTx(rawHex: string): Promise<EsploraTx> {
+  // bitcoinjs-lib is ESM-only; import it dynamically so the CommonJS test
+  // build can type-check and load it.
+  const { Transaction } = await import('bitcoinjs-lib');
   const tx = Transaction.fromHex(rawHex);
 
   const vin = tx.ins.map((input) => ({
@@ -701,7 +703,9 @@ function buildConfirmedSpendTx(rawHex: string): EsploraTx {
  *
  * @param mockServer - The mock server instance
  */
-export async function mockInitialFullScanWithConfirmedSend(mockServer: Mockttp) {
+export async function mockInitialFullScanWithConfirmedSend(
+  mockServer: Mockttp,
+) {
   // A send is confirmed only after the Snap broadcasts it, so the confirmed
   // spend tx is captured at broadcast time and replayed on subsequent scans.
   let confirmedSpendTx: EsploraTx | null = null;
@@ -721,7 +725,7 @@ export async function mockInitialFullScanWithConfirmedSend(mockServer: Mockttp) 
     .thenCallback(async (request) => {
       const rawHex = (await request.body.getText())?.trim() ?? '';
       try {
-        confirmedSpendTx = buildConfirmedSpendTx(rawHex);
+        confirmedSpendTx = await buildConfirmedSpendTx(rawHex);
         console.log(
           `[BTC MOCK] Broadcast captured, confirmed txid: ${confirmedSpendTx.txid}`,
         );

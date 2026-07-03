@@ -93,7 +93,10 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const { sendPage } = await landOnBitcoinSendForm(driver);
 
-        await sendPage.fillRecipient('not-a-valid-btc-address');
+        await sendPage.fillRecipient({
+          recipientAddress: 'not-a-valid-btc-address',
+          validAddress: false,
+        });
         await sendPage.checkInvalidAddressError();
         const enabled = await sendPage.isContinueButtonEnabled();
         if (enabled) {
@@ -116,7 +119,7 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const { sendPage } = await landOnBitcoinSendForm(driver);
 
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount(String(DEFAULT_BTC_BALANCE + 1));
         await sendPage.checkInsufficientFundsError();
         const enabled = await sendPage.isContinueButtonEnabled();
@@ -142,7 +145,7 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const { sendPage } = await landOnBitcoinSendForm(driver);
 
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount(sendAmount);
 
         const enabled = await sendPage.isContinueButtonEnabled();
@@ -173,7 +176,7 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const { sendPage } = await landOnBitcoinSendForm(driver);
 
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount(sendAmount);
         await sendPage.isContinueButtonEnabled();
         await sendPage.pressContinueButton();
@@ -202,7 +205,7 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const { sendPage } = await landOnBitcoinSendForm(driver);
 
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount(`${DEFAULT_BTC_BALANCE}`);
         await sendPage.isContinueButtonEnabled();
         await sendPage.pressContinueButton();
@@ -231,7 +234,7 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const { sendPage } = await landOnBitcoinSendForm(driver);
 
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount(sendAmount);
         await sendPage.isContinueButtonEnabled();
         await sendPage.pressContinueButton();
