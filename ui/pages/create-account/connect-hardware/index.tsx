@@ -59,12 +59,7 @@ import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
 import { DEVICE_HD_PATHS } from './utils/hardware-hd-paths';
-
-type HardwareAccount = {
-  address: string;
-  balance: string;
-  index: number;
-};
+import type { HardwareConnectAccount } from './types';
 
 type ActiveQrCodeScanRequest = {
   type?: QrScanRequestType;
@@ -116,9 +111,9 @@ const ConnectHardwareForm = () => {
   // Local state
   const [error, setError] = useState<string | null>(null);
   const [selectedAccounts, setSelectedAccounts] = useState<number[]>([]);
-  const [hardwareAccounts, setHardwareAccounts] = useState<HardwareAccount[]>(
-    [],
-  );
+  const [hardwareAccounts, setHardwareAccounts] = useState<
+    HardwareConnectAccount[]
+  >([]);
   const [browserSupported, setBrowserSupported] = useState(true);
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
@@ -229,7 +224,7 @@ const ConnectHardwareForm = () => {
             showTemporaryAlert();
           }
 
-          const newAccounts: HardwareAccount[] = nextAccounts.map(
+          const newAccounts: HardwareConnectAccount[] = nextAccounts.map(
             (account, idx) => {
               const normalizedAddress = account.address.toLowerCase();
               const balanceValue = accounts[normalizedAddress]?.balance || null;
@@ -662,7 +657,7 @@ const ConnectHardwareForm = () => {
     if (isNewHardwareWalletOnboardingEnabled) {
       return (
         <SelectHardwareAccountsPage
-          device={device}
+          device={device as HardwareDeviceNames}
           accounts={hardwareAccounts}
           connectedAccounts={connectedAccounts}
           onBack={onCancel}

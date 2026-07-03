@@ -1,9 +1,8 @@
-import type { RawHardwareAccount } from './utils/map-hardware-accounts';
-
-export type { RawHardwareAccount };
-
-/** Callback that may complete synchronously or as a promise. */
-export type AsyncVoidCallback = () => void | Promise<void>;
+/** Raw account row returned from connectHardware before UI mapping. */
+export type RawHardwareAccount = {
+  address: string;
+  index: number;
+};
 
 /** Hardware account row from connectHardware, including legacy balance display. */
 export type HardwareConnectAccount = RawHardwareAccount & {

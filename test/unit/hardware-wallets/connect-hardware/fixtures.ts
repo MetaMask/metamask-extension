@@ -3,15 +3,15 @@ import thunk from 'redux-thunk';
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../stub/networks';
-import {
-  LEDGER_HD_PATHS,
-  TREZOR_HD_PATHS,
-} from '../../../../ui/pages/create-account/connect-hardware/utils/hardware-hd-paths';
 import type {
   HardwareConnectAccount,
   RawHardwareAccount,
 } from '../../../../ui/pages/create-account/connect-hardware/types';
 import type { SelectHardwareAccountsPageProps } from '../../../../ui/pages/create-account/connect-hardware/select-hardware-accounts-page/select-hardware-accounts-page.types';
+import {
+  LEDGER_HD_PATHS,
+  TREZOR_HD_PATHS,
+} from '../../../../ui/pages/create-account/connect-hardware/utils/hardware-hd-paths';
 import {
   createMockRawHardwareAccounts,
   MOCK_RAW_HARDWARE_ACCOUNTS,

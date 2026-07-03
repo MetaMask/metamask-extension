@@ -1,4 +1,5 @@
 import type { HardwareConnectAccount } from '../types';
+import type { HardwareDeviceNames } from '../../../../../shared/constants/hardware-wallets';
 
 /** Available views in the hardware account selection page. */
 export const HARDWARE_ACCOUNTS_PAGE_VIEWS = ['accounts', 'hd-path'] as const;
@@ -9,7 +10,7 @@ export type HardwareAccountsPageView =
 
 /** Props for the hardware account selection page. */
 export type SelectHardwareAccountsPageProps = {
-  device: string;
+  device: HardwareDeviceNames;
   accounts: HardwareConnectAccount[];
   connectedAccounts: string[];
   onBack: () => void;

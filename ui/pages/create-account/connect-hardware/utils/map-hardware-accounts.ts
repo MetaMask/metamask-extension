@@ -1,10 +1,6 @@
 import { ETH_TOKEN_IMAGE_URL } from '../../../../../shared/constants/network';
 import type { HardwareWalletAccount } from '../../../../components/multichain-accounts/hardware-account-card';
-
-export type RawHardwareAccount = {
-  address: string;
-  index: number;
-};
+import type { RawHardwareAccount } from '../types';
 
 /**
  * Maps raw hardware wallet accounts from the background into wallet account cards.

@@ -1,7 +1,5 @@
 import type { HardwareHdPathOptionData } from '../types';
 
-export type { HardwareHdPathOptionData };
-
 /** Props for SelectHdPathPage. */
 export type SelectHdPathPageProps = {
   hdPaths: HardwareHdPathOptionData[];

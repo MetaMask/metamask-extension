@@ -54,8 +54,8 @@ import {
   mapAccountIdsToIndices,
   mapHardwareAccountsToWalletAccounts,
   mapIndicesToAccountIds,
-  type RawHardwareAccount,
 } from '../utils/map-hardware-accounts';
+import type { HardwareConnectAccount, RawHardwareAccount } from '../types';
 import type {
   HardwareAccountsPageView,
   SelectHardwareAccountsPageProps,
@@ -63,9 +63,7 @@ import type {
 
 const ACCOUNTS_PER_PAGE = 5;
 
-function toRawAccounts(
-  accounts: SelectHardwareAccountsPageProps['accounts'],
-): RawHardwareAccount[] {
+function toRawAccounts(accounts: HardwareConnectAccount[]): RawHardwareAccount[] {
   return accounts.map(({ address, index }) => ({ address, index }));
 }
 
