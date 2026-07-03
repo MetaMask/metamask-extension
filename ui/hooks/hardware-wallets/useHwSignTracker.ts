@@ -359,14 +359,25 @@ export function useHwSignTracker(
           }),
         );
 
+        // Broad pre-filter: same sender, and (for bridge/swap) a tracked
+        // bridge type. In SendBundle mode `trackedTypes` is `null`, so only
+        // the sender is checked — the gas-payment tx isn't a bridge type.
         if (!matchesTx(transactionMeta, targetFrom, trackedTypes)) {
           return;
         }
 
+        // SendBundle mode needs an explicit allowlist to avoid tracking every
+        // same-address transaction.
         if (includeSendBundleTransactions && !hasExpectedTransactionFilters) {
           return;
         }
 
+        // Accept the tx only if it matches one of the two SendBundle
+        // signatures: the SEND tx by ID (1st sig, ID known up front), or the
+        // gas-payment tx by params (2nd sig, ID unknown — STX backend creates
+        // it as a nested batch member after the deferred approval resolves).
+        // Mirrors classifySignedTransactionTypeForFlow: ID →
+        // FirstSignatureSubmitted, params → TransactionSubmitted.
         if (
           hasExpectedTransactionFilters &&
           !expectedTxIdSet?.has(transactionMeta.id) &&

@@ -72,7 +72,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
    * `#handleFailed` (which ignores stale/non-current batches).
    *
    * @param transactionMeta - The updated transaction.
-   * @param classifySignedTransactionType
+   * @param classifySignedTransactionType - Signed transaction type classifier.
    * @returns The resulting action, or `{ action: null }` to emit nothing.
    */
   processStatusUpdated(

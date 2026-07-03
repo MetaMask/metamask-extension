@@ -16,7 +16,7 @@ import {
  *
  * @param transactionMeta - The transaction metadata to check.
  * @param targetFrom - The expected sender address (lowercased).
- * @param trackedTypes
+ * @param trackedTypes - The set of tracked transaction types.
  * @returns True if the transaction matches.
  */
 export function matchesTx(
