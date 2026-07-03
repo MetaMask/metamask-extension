@@ -38,6 +38,7 @@ import {
   canAcceptSyncOffer,
   isQrSyncOffer,
   normalizeQrSyncMessage,
+  resolveQrSyncErrorCode,
 } from './utils';
 import type { KeyManager } from './key-manager';
 import {
@@ -47,7 +48,7 @@ import {
   type QrSyncControllerMessenger,
   type QrSyncControllerState,
   type QrSyncData,
-  type QrSyncError,
+  type QrSyncErrorCodeType,
   type QrSyncOffer,
 } from './types';
 import {
@@ -127,6 +128,7 @@ export class QrSyncController extends BaseController<
   }
 
   async createSession(): Promise<void> {
+    console.log('check: createSession', this.state);
     await this.#initialize();
     this.#assertDappClientInitialized(this.#mwpDappClient);
 
@@ -136,12 +138,11 @@ export class QrSyncController extends BaseController<
         mode: 'untrusted',
       });
     } catch (error) {
+      console.log('check: createSession catch', error, this.state);
       this.#setError({
+        error,
         code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message:
-          error instanceof Error
-            ? error.message
-            : QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
+        message: QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
       });
       throw error;
     } finally {
@@ -305,11 +306,9 @@ export class QrSyncController extends BaseController<
       this.#transitionPhase(this.state.qrSyncPhase, 'connected');
     } catch (error) {
       this.#setError({
+        error,
         code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message:
-          error instanceof Error
-            ? error.message
-            : QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
+        message: QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
       });
       throw error;
     } finally {
@@ -498,11 +497,9 @@ export class QrSyncController extends BaseController<
       log.debug('QrSyncController: OTP required');
       this.#handleOtpRequired(payload).catch((error) => {
         this.#setError({
+          error,
           code: QrSyncErrorCodes.OTP_INVALID,
-          message:
-            error instanceof Error
-              ? error.message
-              : 'Failed to handle OTP requirement',
+          message: 'Failed to handle OTP requirement',
         });
       });
     };
@@ -525,6 +522,7 @@ export class QrSyncController extends BaseController<
     const clientError = (error: Error) => {
       log.error('QrSyncController: error', error);
       this.#setError({
+        error,
         code: QrSyncErrorCodes.UNKNOWN,
         message: error.message,
       });
@@ -684,13 +682,25 @@ export class QrSyncController extends BaseController<
     });
   }
 
-  #setError(error: QrSyncError): void {
+  #setError({
+    error,
+    code,
+    message,
+  }: {
+    error?: unknown;
+    code: QrSyncErrorCodeType;
+    message?: string;
+  }): void {
+    const resolvedCode = resolveQrSyncErrorCode(error, code);
+    const resolvedMessage =
+      error instanceof Error && error.message ? error.message : (message ?? '');
+
     this.#cleanupSession({ cancelOtp: true });
 
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.FAILED;
       state.qrSyncConnectionStatus = QrSyncConnectionStatus.ERRORED;
-      state.qrSyncError = error;
+      state.qrSyncError = { code: resolvedCode, message: resolvedMessage };
       state.syncOffer = null;
       state.qrSyncQrPayload = null;
       state.qrSyncSelectedAccountIds = [];

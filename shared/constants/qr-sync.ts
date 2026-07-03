@@ -35,5 +35,6 @@ export const QrSyncErrorCodes = {
   OTP_EXPIRED: 'OTP_EXPIRED',
   SYNC_REJECTED: 'SYNC_REJECTED',
   SYNC_FAILED: 'SYNC_FAILED',
+  QR_EXPIRED: 'QR_EXPIRED',
   UNKNOWN: 'UNKNOWN',
 } as const;

@@ -58,6 +58,7 @@ describe('SyncError', () => {
     [QrSyncErrorCodes.OTP_INVALID, 'add_device_error_invalid_code'],
     [QrSyncErrorCodes.SYNC_REJECTED, 'add_device_error_rejected'],
     [QrSyncErrorCodes.SYNC_FAILED, 'add_device_error_sync_failed'],
+    [QrSyncErrorCodes.QR_EXPIRED, 'add_device_error_expired'],
     [QrSyncErrorCodes.UNKNOWN, 'add_device_error_generic'],
   ])('shows the message for the %s error code', (code, messageKey) => {
     renderSyncError({ code, message: 'controller message' });
