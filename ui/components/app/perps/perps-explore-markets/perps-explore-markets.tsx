@@ -64,9 +64,11 @@ export const PerpsExploreMarkets = ({ markets }: PerpsExploreMarketsProps) => {
             <PerpsMarketCard
               key={market.symbol}
               symbol={market.symbol}
+              name={market.name}
               price={market.price}
               change24hPercent={market.change24hPercent}
               volume={market.volume}
+              maxLeverage={market.maxLeverage}
               onClick={handleMarketClick}
               data-testid={`explore-markets-${market.symbol.replaceAll(':', '-')}`}
             />

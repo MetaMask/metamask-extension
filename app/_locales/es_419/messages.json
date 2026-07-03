@@ -82,12 +82,6 @@
   "account": {
     "message": "Cuenta"
   },
-  "accountActivity": {
-    "message": "Actividad de la cuenta"
-  },
-  "accountActivityText": {
-    "message": "Seleccione las cuentas sobre las que desea recibir notificaciones:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Inicia sesión"
   },
@@ -1565,9 +1559,6 @@
   "back": {
     "message": "Volver"
   },
-  "backToHome": {
-    "message": "Volver a inicio"
-  },
   "backUpIncomplete": {
     "message": "Copia de seguridad incompleta"
   },
@@ -2382,9 +2373,6 @@
     "message": "Cerrar $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Puede cerrar esta ventana en cualquier momento."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2950,12 +2938,6 @@
   },
   "customerSupport": {
     "message": "atención al cliente"
-  },
-  "customizeYourNotifications": {
-    "message": "Personalice sus notificaciones"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Active los tipos de notificaciones que desea recibir:"
   },
   "dappConnections": {
     "message": "Conexiones de Dapp"
@@ -4331,9 +4313,6 @@
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Incluye"
-  },
   "includesXTransactions": {
     "message": "Incluye $1 transacciones"
   },
@@ -5490,9 +5469,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Actualizamos nuestra política de privacidad"
   },
-  "newRpcUrl": {
-    "message": "Nueva dirección URL de RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Ha importado $1 exitosamente.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5629,9 +5605,6 @@
   },
   "notCurrentAccount": {
     "message": "¿Esta es la cuenta correcta? No coincide con la cuenta seleccionada actualmente en la cartera"
-  },
-  "notEnoughGas": {
-    "message": "No hay gas suficiente"
   },
   "notificationDetail": {
     "message": "Detalles"
@@ -5794,9 +5767,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Se produjo un error. Inténtalo de nuevo."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Mantente al tanto de lo que sucede en tu billetera con notificaciones. Para usar notificaciones, usamos un perfil para sincronizar algunas configuraciones en tus dispositivos. $1 protegemos su privacidad mientras usa esta función."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Más información"
@@ -7438,9 +7408,6 @@
   },
   "proceedWithTransaction": {
     "message": "Quiero continuar de todos modos"
-  },
-  "productAnnouncements": {
-    "message": "Anuncios de producto"
   },
   "provide": {
     "message": "Proporcionar"
@@ -9192,24 +9159,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Los intercambios inteligentes no están disponibles temporalmente."
   },
-  "smartTransactionCancelled": {
-    "message": "Su transacción se canceló"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Su transacción no se pudo completar, por lo que se canceló para evitarle pagar tarifas de gas innecesarias."
-  },
-  "smartTransactionError": {
-    "message": "Su transacción falló"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Los cambios repentinos en el mercado pueden provocar fallos. Si el problema continúa, comuníquese con el soporte al cliente de MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Se envió su transacción"
-  },
-  "smartTransactionSuccess": {
-    "message": "Su transacción está completa"
-  },
   "smartTransactions": {
     "message": "Transacciones inteligentes"
   },
@@ -10173,9 +10122,6 @@
   "tokenContractAddress": {
     "message": "Dirección de contrato del token"
   },
-  "tokenContractError": {
-    "message": "Esta dirección es una dirección de contrato de tókens. Si envías tókens a esta dirección, los perderás."
-  },
   "tokenContractWarning": {
     "message": "Advertencia sobre el contrato de tokens"
   },
@@ -10665,9 +10611,6 @@
   "view": {
     "message": "Ver"
   },
-  "viewActivity": {
-    "message": "Ver actividad"
-  },
   "viewAddressOnExplorer": {
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
@@ -10694,9 +10637,6 @@
   },
   "viewTokenDetails": {
     "message": "Ver detalles del token"
-  },
-  "viewTransaction": {
-    "message": "Ver transacción"
   },
   "viewinExplorer": {
     "message": "Ver $1 en el explorador",

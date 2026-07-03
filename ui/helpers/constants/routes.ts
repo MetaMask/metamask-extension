@@ -38,6 +38,7 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
+export const ADD_DEVICE_ROUTE = '/settings/add-device';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -124,6 +125,14 @@ export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
 export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
+export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE =
+  '/settings/notifications/wallet-activity';
+export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE =
+  '/settings/notifications/perps';
+export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE =
+  '/settings/notifications/marketing';
+export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE =
+  '/settings/notifications/agentic-cli';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';

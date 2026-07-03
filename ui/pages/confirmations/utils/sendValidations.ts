@@ -9,7 +9,6 @@ import {
   isStellarAddress,
   isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
-import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 
 import { RecipientValidationResult } from '../types/send';
 import { LOWER_CASED_BURN_ADDRESSES } from '../constants/token';
@@ -53,9 +52,8 @@ export const findConfusablesInRecipient = (
   return {};
 };
 
-export const validateEvmHexAddress = async (
+export const validateEvmHexAddress = (
   address: string,
-  chainId?: string,
   assetAddress?: string,
 ) => {
   if (LOWER_CASED_BURN_ADDRESSES.includes(address.toLowerCase())) {
@@ -68,21 +66,6 @@ export const validateEvmHexAddress = async (
     return {
       error: 'contractAddressError',
     };
-  }
-
-  if (chainId) {
-    const tokenDetails = await getTokenStandardAndDetailsByChain(
-      address,
-      undefined,
-      undefined,
-      chainId,
-    );
-    if (tokenDetails?.standard) {
-      return {
-        error: 'tokenContractError',
-        allowAcknowledge: true,
-      };
-    }
   }
 
   return {};

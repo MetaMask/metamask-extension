@@ -160,7 +160,10 @@ describe('Settings - Preferences and display', function (this: Suite) {
 
         const sendPage = new SendPage(driver);
         await sendPage.selectToken('0x539', 'ETH');
-        await sendPage.fillRecipient('0xAAA');
+        await sendPage.fillRecipient({
+          recipientAddress: '0xAAA',
+          validAddress: false,
+        });
 
         // Recipient validation is debounced (~500ms); waitForSelector waits for the German error.
         await driver.waitForSelector(selectors.dialogTextDeutsch);
