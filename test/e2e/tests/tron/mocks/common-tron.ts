@@ -107,6 +107,7 @@ export const BIP44_STAGE_TWO = {
     enabled: true,
     minimumVersion: '13.6.0',
   },
+  tronTestnetsEnabled: true,
 };
 
 export const TRON_SWAP_TOKEN_REGISTRY = {
