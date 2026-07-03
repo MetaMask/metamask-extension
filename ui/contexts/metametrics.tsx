@@ -201,18 +201,17 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
           );
         }
 
-        const built = builder.build({
+        const trackOptions = {
           environmentType: fullPayload.environmentType,
           page: fullPayload.page,
           referrer: fullPayload.referrer,
           excludeMetaMetricsId: options?.excludeMetaMetricsId,
           matomoEvent: options?.matomoEvent,
-        });
+        };
 
-        trackAnalyticsEvent(
-          built,
-          built.options as Parameters<typeof trackAnalyticsEvent>[1],
-        );
+        const built = builder.build(trackOptions);
+
+        trackAnalyticsEvent(built, trackOptions);
       } else if (canMaybeTrackLater) {
         await submitRequestToBackground('addEventBeforeMetricsOptIn', [
           fullPayload as MetaMetricsEventPayload,
