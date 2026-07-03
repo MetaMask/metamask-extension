@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { hideModal } from '../../../store/actions';
 import { ModalHeader, ModalBody, Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
-import { t } from '../../../../shared/lib/translate';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
 
@@ -22,6 +22,7 @@ export const NetworkTabs = ({
   isPage = false,
 }: NetworkTabsProps) => {
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const [activeTab, setActiveTab] = useState(initialTab);
   const handleClose = useCallback(() => {
     if (onClose) {
@@ -38,7 +39,7 @@ export const NetworkTabs = ({
           onClose={handleClose}
           closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
         >
-          {t('bridgeSelectNetwork') ?? 'Select network'}
+          {t('bridgeSelectNetwork')}
         </ModalHeader>
       ) : null}
       <ModalBody style={{ padding: 0 }}>
@@ -57,14 +58,14 @@ export const NetworkTabs = ({
         >
           <Tab
             tabKey="networks"
-            name={t('networkTabPopular') ?? 'Popular'}
+            name={t('networkTabPopular')}
             className="flex-1"
           >
             <DefaultNetworks />
           </Tab>
           <Tab
             tabKey="custom-networks"
-            name={t('networkTabCustom') ?? 'Custom'}
+            name={t('networkTabCustom')}
             className="flex-1"
           >
             <CustomNetworks />

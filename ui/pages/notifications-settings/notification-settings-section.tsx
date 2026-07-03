@@ -26,7 +26,7 @@ import type {
   NotificationPreferences,
 } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 import type { NotificationWalletGroup } from './notifications-settings-helpers';
 import type { NotificationsSettingsSectionConfig } from './notifications-settings-types';
@@ -352,7 +352,7 @@ export function NotificationSettingsSection({
 }: NotificationSettingsSectionProps) {
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
-  const { trackEvent } = React.useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [preferenceError, setPreferenceError] = useSafeState<string | null>(
     null,
   );
@@ -373,21 +373,22 @@ export function NotificationSettingsSection({
       const newValue = !oldValue;
       try {
         await updatePreference(section.type, key, newValue);
-        trackEvent({
-          category: MetaMetricsEventCategory.NotificationSettings,
-          event: MetaMetricsEventName.NotificationsSettingsUpdated,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            settings_type: `${section.type}_${key}`,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            old_value: oldValue,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_value: newValue,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+            .addCategory(MetaMetricsEventCategory.NotificationSettings)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              settings_type: `${section.type}_${key}`,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              old_value: oldValue,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_value: newValue,
+            })
+            .build(),
+        );
         listNotifications();
       } catch (error) {
         setPreferenceError(
@@ -398,6 +399,7 @@ export function NotificationSettingsSection({
       }
     },
     [
+      createEventBuilder,
       listNotifications,
       section.type,
       sectionPreferences,

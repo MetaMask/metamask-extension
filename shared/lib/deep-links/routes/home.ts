@@ -5,12 +5,15 @@ import type { Destination } from './route';
 export const DEEP_LINK_ORIGIN = `https://${DEEP_LINK_HOST}`;
 
 export enum HomeQueryParams {
+  BatchSellDeeplinkUrl = 'batchSellDeeplinkUrl',
   OpenNetworkSelector = 'openNetworkSelector',
   PredictDeeplinkUrl = 'predictDeeplinkUrl',
 }
 
 export function createHomeQrCodeDestination(
-  queryParam: HomeQueryParams.PredictDeeplinkUrl,
+  queryParam:
+    | HomeQueryParams.BatchSellDeeplinkUrl
+    | HomeQueryParams.PredictDeeplinkUrl,
   deeplinkUrl: string,
 ): Destination {
   return {

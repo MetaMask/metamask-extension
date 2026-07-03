@@ -108,7 +108,10 @@ app/scripts/services/legacy-background-api-service.ts      @MetaMask/core-platfo
 app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platform
 
 
-# Co-owned by Confirmations and Snaps
+# Co-owned by Extension Platform and Core Platform
+app/scripts/metamask-controller.js @MetaMask/extension-platform @MetaMask/core-platform
+
+# Co-owned by Confirmations and Core Platform
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Core Extension UX
@@ -204,7 +207,7 @@ test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/
 # Wallet Integrations
 test/e2e/page-objects/benchmark                                       @MetaMask/core-platform
 test/e2e/playwright/benchmark                                         @MetaMask/core-platform
-app/scripts/lib/createDefiReferralMiddleware.ts                       @MetaMask/core-platform
+app/scripts/lib/defi-referrals/createDefiReferralMiddleware.ts        @MetaMask/core-platform
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/core-platform
 shared/lib/caip25-caveat-merger.ts                                    @MetaMask/core-platform
 test/e2e/flask/multichain-api                                         @MetaMask/core-platform
@@ -284,6 +287,7 @@ app/scripts/wallet-init/remote-feature-flags* @MetaMask/extension-platform @Meta
 app/scripts/wallet-init/instance-options/approval-controller* @MetaMask/confirmations
 app/scripts/wallet-init/instance-options/connectivity-controller* @MetaMask/extension-platform @MetaMask/core-platform
 app/scripts/wallet-init/instance-options/keyring-controller* @MetaMask/accounts-engineers @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/network-controller* @MetaMask/core-platform
 app/scripts/wallet-init/instance-options/remote-feature-flag-controller* @MetaMask/extension-platform @MetaMask/core-platform
 app/scripts/wallet-init/instance-options/storage-service* @MetaMask/extension-platform @MetaMask/core-platform
 

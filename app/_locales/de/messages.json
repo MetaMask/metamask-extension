@@ -4397,9 +4397,6 @@
     "message": "Importiert",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Beinhaltet"
-  },
   "includesXTransactions": {
     "message": "Beinhaltet $1 Transaktionen"
   },
@@ -10494,29 +10491,8 @@
   "turnOn": {
     "message": "Einschalten"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Benachrichtigungen einschalten"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Einschalten"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Beim Erstellen der Benachrichtigungen ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Bleiben Sie mit Benachrichtigungen auf dem Laufenden darüber, was in Ihrer Wallet passiert."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "Benachrichtigungseinstellungen."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Erfahren Sie, wie wir Ihre Privatsphäre bei der Nutzung dieser Funktion schützen."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Um Wallet-Benachrichtigungen zu nutzen, verwenden wir ein Profil, um bestimmte Einstellungen auf Ihren Geräten zu synchronisieren. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Sie können die Benachrichtigungen jederzeit unter $1 ausschalten"
   },
   "turnOnTokenDetection": {
     "message": "Erweiterte Token-Erkennung aktivieren"
