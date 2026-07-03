@@ -8,6 +8,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import messages from '../../../../../app/_locales/en/messages.json';
 import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import QrCodeScan from './qr-code-scan';
 
 jest.mock(
@@ -21,7 +22,13 @@ jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('../../../../selectors/qr-sync/qr-sync', () => ({
+  ...jest.requireActual('../../../../selectors/qr-sync/qr-sync'),
+  selectQrSyncQrPayload: jest.fn(),
+}));
+
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+const mockSelectQrSyncQrPayload = jest.mocked(selectQrSyncQrPayload);
 
 const createMockStore = (metamaskOverrides = {}) =>
   configureMockStore([thunk])({
@@ -37,6 +44,9 @@ const createMockStore = (metamaskOverrides = {}) =>
 describe('QrCodeScan', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSelectQrSyncQrPayload.mockImplementation(
+      (state) => state.metamask.qrSyncQrPayload,
+    );
   });
 
   afterEach(() => {
@@ -78,6 +88,18 @@ describe('QrCodeScan', () => {
     expect(
       screen.getByText(messages.generateNewQrCode.message),
     ).toBeInTheDocument();
+  });
+
+  it('keeps the previous QR image when the payload becomes null', () => {
+    const mockStore = createMockStore();
+    const { rerender } = renderWithProvider(<QrCodeScan />, mockStore);
+
+    expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
+
+    mockSelectQrSyncQrPayload.mockReturnValue(null);
+    rerender(<QrCodeScan />);
+
+    expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
   });
 
   it('requests a new session when the reset button is clicked', async () => {

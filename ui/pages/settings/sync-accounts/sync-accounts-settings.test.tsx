@@ -5,7 +5,10 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_PHASES,
+  QrSyncErrorCodes,
+} from '../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import SyncAccountsSettings from './sync-accounts-settings';
 
@@ -179,6 +182,40 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+  });
+
+  it('renders QrCodeScan when the phase is failed with a QR_EXPIRED error', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+        qrSyncError: {
+          code: QrSyncErrorCodes.QR_EXPIRED,
+          message: 'QR code expired.',
+        },
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
+    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+  });
+
+  it('renders SyncError when the phase is failed with a non-overridden error', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+        qrSyncError: {
+          code: QrSyncErrorCodes.SYNC_FAILED,
+          message: 'Sync failed.',
+        },
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+    expect(screen.queryByTestId('qr-code-scan')).not.toBeInTheDocument();
   });
 
   it('resets the session when retry is clicked on the error step', async () => {

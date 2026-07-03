@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Text,
@@ -21,6 +21,11 @@ import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/consta
 const QrCodeScan = () => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
+  const lastQrPayloadRef = useRef<string | null>(null);
+  if (qrPayload) {
+    lastQrPayloadRef.current = qrPayload;
+  }
+  const displayedPayload = qrPayload ?? lastQrPayloadRef.current;
   const [secondsLeft, setSecondsLeft] = useState(
     MWP_SESSION_REQUEST_EXPIRY_SECONDS,
   );
@@ -89,9 +94,14 @@ const QrCodeScan = () => {
         justifyContent={BoxJustifyContent.Center}
         marginTop={4}
       >
-        <Box style={{ opacity: shouldDimQr ? 0.3 : 1 }}>
-          {qrPayload ? (
-            <QRCodeImage data={qrPayload} />
+        <Box
+          style={{
+            opacity: shouldDimQr ? 0.3 : 1,
+            filter: shouldDimQr ? 'blur(4px)' : 'none',
+          }}
+        >
+          {displayedPayload ? (
+            <QRCodeImage data={displayedPayload} />
           ) : (
             <Skeleton width={240} height={240} />
           )}

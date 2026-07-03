@@ -4,8 +4,12 @@ import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
 import {
+  QR_SYNC_ERROR_PHASE_OVERRIDES,
+  QR_SYNC_PHASES,
+} from '../../../../shared/constants/qr-sync';
+import {
+  selectQrSyncError,
   selectQrSyncPhase,
   selectShouldCreateQrSyncSession,
 } from '../../../selectors/qr-sync/qr-sync';
@@ -24,6 +28,7 @@ const SyncAccountsSettings = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const qrSyncPhase = useSelector(selectQrSyncPhase);
+  const qrSyncError = useSelector(selectQrSyncError);
   const shouldCreateSession = useSelector(selectShouldCreateQrSyncSession);
   const [isExiting, setIsExiting] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
@@ -93,7 +98,12 @@ const SyncAccountsSettings = () => {
   );
 
   const renderStep = () => {
-    switch (qrSyncPhase) {
+    const effectivePhase =
+      qrSyncError && QR_SYNC_ERROR_PHASE_OVERRIDES[qrSyncError.code]
+        ? QR_SYNC_ERROR_PHASE_OVERRIDES[qrSyncError.code]
+        : qrSyncPhase;
+
+    switch (effectivePhase) {
       case QR_SYNC_PHASES.IDLE:
       case QR_SYNC_PHASES.DISPLAYING_QR:
         return <QrCodeScan />;

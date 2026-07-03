@@ -38,3 +38,16 @@ export const QrSyncErrorCodes = {
   QR_EXPIRED: 'QR_EXPIRED',
   UNKNOWN: 'UNKNOWN',
 } as const;
+
+export type QrSyncErrorCode =
+  (typeof QrSyncErrorCodes)[keyof typeof QrSyncErrorCodes];
+
+/**
+ * Error codes that should route the UI back to an earlier step instead of the
+ * generic error screen. The value is the phase whose step should be rendered.
+ */
+export const QR_SYNC_ERROR_PHASE_OVERRIDES: Partial<
+  Record<QrSyncErrorCode, QrSyncPhase>
+> = {
+  [QrSyncErrorCodes.QR_EXPIRED]: QR_SYNC_PHASES.DISPLAYING_QR,
+};
