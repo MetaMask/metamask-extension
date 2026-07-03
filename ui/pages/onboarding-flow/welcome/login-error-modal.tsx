@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -25,13 +25,13 @@ import {
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getSocialLoginType } from '../../../selectors';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
 import { resetWallet } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -62,7 +62,8 @@ export default function LoginErrorModal({
   loginError,
 }: LoginErrorModalProps) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const socialLoginType = useSelector(getSocialLoginType);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -102,19 +103,13 @@ export default function LoginErrorModal({
         size={TextButtonSize.BodyMd}
         onClick={() => {
           trackEvent(
-            {
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
+            createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+              .addCategory(MetaMetricsEventCategory.Onboarding)
+              .addProperties({
                 url: SUPPORT_LINK,
-                location: 'Welcome page',
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
+                location: segmentContext.page?.title ?? 'Welcome page',
+              })
+              .build(),
           );
         }}
         asChild
@@ -154,14 +149,15 @@ export default function LoginErrorModal({
   };
 
   const handleUpdateTelegramClick = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.SupportLinkClicked,
-      properties: {
-        url: TELEGRAM_DESKTOP_UPDATE_URL,
-        location: 'Telegram outdated modal',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          url: TELEGRAM_DESKTOP_UPDATE_URL,
+          location: 'Telegram outdated modal',
+        })
+        .build(),
+    );
     globalThis.platform.openTab({ url: TELEGRAM_DESKTOP_UPDATE_URL });
     onClose();
   };
