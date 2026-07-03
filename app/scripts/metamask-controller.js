@@ -1303,7 +1303,10 @@ export default class MetamaskController extends EventEmitter {
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
             onBeforeRequest,
             onAfterRequest,
           },
@@ -1323,7 +1326,10 @@ export default class MetamaskController extends EventEmitter {
         const permissionsSupportedByKernel = await forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
           },
           [],
           req,
@@ -1364,7 +1370,10 @@ export default class MetamaskController extends EventEmitter {
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
           },
           [],
           req,
@@ -1847,23 +1856,6 @@ export default class MetamaskController extends EventEmitter {
    */
   _getSnapMetadata(snapId) {
     return this.snapsRegistry.state.database?.verifiedSnaps?.[snapId]?.metadata;
-  }
-
-  /**
-   * Passes a JSON-RPC request object to the SnapController for execution.
-   *
-   * @param {object} args - A bag of options.
-   * @param {string} args.snapId - The ID of the recipient snap.
-   * @param {string} args.origin - The origin of the RPC request.
-   * @param {string} args.handler - The handler to trigger on the snap for the request.
-   * @param {object} args.request - The JSON-RPC request object.
-   * @returns The result of the JSON-RPC request.
-   */
-  async handleSnapRequest(args) {
-    return await this.controllerMessenger.call(
-      'SnapController:handleRequest',
-      args,
-    );
   }
 
   /**
@@ -3486,7 +3478,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:removeSnap',
       ),
-      handleSnapRequest: this.handleSnapRequest.bind(this),
+      handleSnapRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:handleRequest',
+      ),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:revokeDynamicSnapPermissions',
