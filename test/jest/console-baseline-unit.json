@@ -44,10 +44,6 @@
       "error: Failed to record sentinel_relay metrics": 1,
       "error: Failed to record sentinel_stx metrics": 1
     },
-    "app/scripts/messenger-client-init/confirmations/transaction-controller-init.test.ts": {
-      "error: Failed to record sentinel_relay metrics": 1,
-      "error: Failed to record sentinel_stx metrics": 3
-    },
     "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },
