@@ -317,6 +317,33 @@ describe('PayWithRow', () => {
       expect(screen.queryByTestId('pay-with-arrow')).not.toBeInTheDocument();
     });
   });
+
+  describe('USD balance', () => {
+    it('renders the parenthesized balance in the default inline row', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
+        '($150.00)',
+      );
+    });
+
+    it('does not render the balance for a perps withdraw', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'test-id',
+          type: TransactionType.perpsWithdraw,
+          chainId: CHAIN_ID_MOCK,
+          txParams: { from: FROM_ADDRESS_MOCK },
+        },
+      } as never);
+
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(screen.queryByTestId('pay-with-balance')).not.toBeInTheDocument();
+    });
+  });
 });
 
 describe('PayWithRowSkeleton', () => {

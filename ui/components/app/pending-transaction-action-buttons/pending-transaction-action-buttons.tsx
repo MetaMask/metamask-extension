@@ -1,6 +1,5 @@
 import React from 'react';
 import clsx from 'clsx';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Button, ButtonSize } from '@metamask/design-system-react';
 import CancelButton from '../cancel-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -10,16 +9,13 @@ type PendingTransactionActionButtonsProps = {
   showCancel: boolean;
   onCancel: (event: React.MouseEvent) => void;
   speedUp: PendingTransactionSpeedUpAction;
-  primaryTransaction: TransactionMeta;
   className?: string;
 };
 
-// Cancel / Speed up buttons for pending EVM activity rows
 export const PendingTransactionActionButtons = ({
   showCancel,
   onCancel,
   speedUp,
-  primaryTransaction,
   className,
 }: Readonly<PendingTransactionActionButtonsProps>) => {
   const t = useI18nContext();
@@ -39,7 +35,6 @@ export const PendingTransactionActionButtons = ({
         <CancelButton
           data-testid="cancel-button"
           size={ButtonSize.Sm}
-          transaction={primaryTransaction}
           cancelTransaction={onCancel}
         />
       ) : null}
