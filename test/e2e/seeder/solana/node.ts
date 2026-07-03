@@ -14,6 +14,7 @@ import {
   assertValidPort,
   getAvailablePorts,
   isTcpPortAvailable,
+  isTcpPortRangeAvailable,
 } from '../ports';
 
 export const SOLANA_LOCAL_NODE_HOST = '127.0.0.1';
@@ -35,6 +36,19 @@ type SolanaRpcResponse<Result> = {
 };
 
 const PROCESS_OUTPUT_LIMIT = 8_000;
+
+/**
+ * Without an explicit `--dynamic-port-range`, `solana-test-validator` assigns
+ * its gossip/TVU/TPU ports from 8000 upwards. Gossip binds TCP
+ * `127.0.0.1:8000`, which shadows the E2E mock proxy listening on the
+ * wildcard address of the same port and silently breaks all browser traffic.
+ * A dedicated range keeps the validator away from the harness ports
+ * (8000 proxy, 8080+ dapps, 8088-8090 WebSocket mocks, 8545 anvil).
+ */
+const DYNAMIC_PORT_RANGE_SIZE = 32;
+const DYNAMIC_PORT_RANGE_MIN_START = 10_000;
+const DYNAMIC_PORT_RANGE_MAX_START = 60_000;
+const DYNAMIC_PORT_RANGE_ATTEMPTS = 20;
 
 export class SolanaNode {
   #ledgerDirectory: string | undefined;
@@ -161,6 +175,7 @@ export class SolanaNode {
     });
 
     const [rpcPort, faucetPort] = await resolveValidatorPorts(options);
+    const dynamicPortRangeStart = await findAvailableDynamicPortRangeStart();
     const ledgerDirectory = await mkdtemp(
       join(tmpdir(), 'solana-test-validator-e2e-'),
     );
@@ -183,6 +198,12 @@ export class SolanaNode {
         String(rpcPort),
         '--faucet-port',
         String(faucetPort),
+        '--gossip-port',
+        String(dynamicPortRangeStart),
+        '--dynamic-port-range',
+        `${dynamicPortRangeStart}-${
+          dynamicPortRangeStart + DYNAMIC_PORT_RANGE_SIZE - 1
+        }`,
       ],
       {
         cwd: ledgerDirectory,
@@ -256,6 +277,32 @@ async function resolveValidatorPorts(
     options.rpcPort ?? (allocatedPorts.shift() as number),
     options.faucetPort ?? (allocatedPorts.shift() as number),
   ];
+}
+
+/**
+ * Finds the start of a free contiguous port range for the validator's
+ * dynamically assigned ports (gossip/TVU/TPU). Availability is checked over
+ * TCP; the validator mostly binds UDP within the range, but gossip also
+ * listens on TCP, which is the binding that can clash with the E2E harness.
+ *
+ * @returns The first port of an available range.
+ */
+async function findAvailableDynamicPortRangeStart(): Promise<number> {
+  for (let attempt = 0; attempt < DYNAMIC_PORT_RANGE_ATTEMPTS; attempt += 1) {
+    const startPort =
+      DYNAMIC_PORT_RANGE_MIN_START +
+      Math.floor(
+        Math.random() *
+          (DYNAMIC_PORT_RANGE_MAX_START - DYNAMIC_PORT_RANGE_MIN_START),
+      );
+    if (await isTcpPortRangeAvailable(startPort, DYNAMIC_PORT_RANGE_SIZE)) {
+      return startPort;
+    }
+  }
+
+  throw new Error(
+    `Unable to find ${DYNAMIC_PORT_RANGE_SIZE} contiguous available ports for the Solana test validator`,
+  );
 }
 
 async function stopProcess(childProcess: ChildProcess): Promise<void> {
