@@ -97,11 +97,6 @@ class SnapSimpleKeyringPage {
     tag: 'div',
   };
 
-  private readonly newAccountMessage = {
-    text: '"address":',
-    tag: 'div',
-  };
-
   private readonly pageTitle = {
     text: 'Snap Simple Keyring',
     tag: 'p',
@@ -235,6 +230,7 @@ class SnapSimpleKeyringPage {
    */
   async createNewAccount(isFirstAccount: boolean = true): Promise<string> {
     console.log('Create new account on Snap Simple Keyring page');
+    const existingAddresses = await this.getDisplayedAccountAddresses();
     await this.openCreateSnapAccountConfirmationScreen(isFirstAccount);
     await this.confirmCreateSnapOnConfirmationScreen();
 
@@ -247,13 +243,7 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
-    await this.driver.waitForSelector(this.newAccountMessage);
-
-    const newAccountJSONMessage = await (
-      await this.driver.waitForSelector(this.newAccountMessage)
-    ).getText();
-    const newPublicKey = JSON.parse(newAccountJSONMessage).address;
-    return newPublicKey;
+    return await this.waitForNewAccountAddress(existingAddresses);
   }
 
   /**
@@ -263,6 +253,7 @@ class SnapSimpleKeyringPage {
    */
   async importAccountWithPrivateKey(privateKey: string): Promise<void> {
     console.log('Import account with private key on Snap Simple Keyring page');
+    const existingAddresses = await this.getDisplayedAccountAddresses();
     await this.driver.clickElement(this.importAccountSection);
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
     await this.driver.clickElement(this.importAccountButton);
@@ -278,7 +269,7 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
-    await this.driver.waitForSelector(this.newAccountMessage);
+    await this.waitForNewAccountAddress(existingAddresses);
   }
 
   /**
@@ -366,6 +357,46 @@ class SnapSimpleKeyringPage {
       { interval: regularDelayMs, timeout: 10000 },
     );
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
+  private async getDisplayedAccountAddresses(): Promise<string[]> {
+    const pageText = await this.driver.executeScript(
+      () => document.body.innerText ?? '',
+    );
+
+    const addresses =
+      typeof pageText === 'string'
+        ? pageText.match(/0x[a-fA-F0-9]{40}/gu) ?? []
+        : [];
+
+    return [...new Map(addresses.map((address) => [address.toLowerCase(), address])).values()];
+  }
+
+  private async waitForNewAccountAddress(
+    existingAddresses: string[],
+  ): Promise<string> {
+    const existingAddressesSet = new Set(
+      existingAddresses.map((address) => address.toLowerCase()),
+    );
+
+    await this.driver.waitUntil(
+      async () =>
+        (await this.getDisplayedAccountAddresses()).some(
+          (address) => !existingAddressesSet.has(address.toLowerCase()),
+        ),
+      { interval: regularDelayMs, timeout: 20000 },
+    );
+
+    const displayedAddresses = await this.getDisplayedAccountAddresses();
+    const newAddress = displayedAddresses.find(
+      (address) => !existingAddressesSet.has(address.toLowerCase()),
+    );
+
+    if (!newAddress) {
+      throw new Error('Expected a newly created Snap account address to appear');
+    }
+
+    return newAddress;
   }
 }
 
