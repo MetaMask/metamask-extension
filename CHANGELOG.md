@@ -9,16 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.38.0]
 
-### Uncategorized
-
-- chore: Add deprecation message to `getApi` (#43813)
-- chore: Migrate `setLocked` and `syncPasswordAndUnlockWallet` to `LegacyBackgroundApiService` (#43624)
-- perf(6598): audit core platform selectors (#43607)
-- chore: Set `core-platform` as codeowners of `LegacyBackgroundApiService` (#43625)
-- perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
-- Enabled ERC-7715 requests over the Multichain API and MetaMask Connect (#43513)
-- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6927 (#43209)
-
 ### Added
 
 - Bumped `@metamask/seedless-onboarding-controller` to `v10.0.3`. (#43908)
@@ -35,6 +25,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   verification instead of their MetaMask password.
 - Added a redesigned DeFi referral consent UI for Hyperliquid behind an A/B test (#43683)
 - Display a VIP tag when using a VIP referral code. (#43527)
+- chore: Add deprecation message to `getApi` (#43813)
+- chore: Migrate `setLocked` and `syncPasswordAndUnlockWallet` to `LegacyBackgroundApiService` (#43624)
+- perf(6598): audit core platform selectors (#43607)
+- chore: Set `core-platform` as codeowners of `LegacyBackgroundApiService` (#43625)
+- perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
+- Enabled ERC-7715 requests over the Multichain API and MetaMask Connect (#43513)
+
+### Fixed
+- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6927 (#43209)
+
 ## [13.37.0]
 
 ### Added
@@ -2631,8 +2631,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.38.0...HEAD
-[13.38.0]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...v13.38.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.37.0...HEAD
+[13.38.0]: https://github.com/MetaMask/metamask-extension/compare/v13.37.0...v13.38.0
 [13.37.0]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...v13.37.0
 [13.36.0]: https://github.com/MetaMask/metamask-extension/compare/v13.35.1...v13.36.0
 [13.35.1]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...v13.35.1
