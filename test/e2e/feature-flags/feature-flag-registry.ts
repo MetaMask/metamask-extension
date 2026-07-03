@@ -294,7 +294,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     },
     status: FeatureFlagStatus.Active,
   },
-
   bridgeConfig: {
     name: 'bridgeConfig',
     type: FeatureFlagType.Remote,
@@ -2111,6 +2110,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  coreExtensionUxCeux1141AbtestBottomNav: {
+    name: 'coreExtensionUxCeux1141AbtestBottomNav',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
+
   extensionUpdatePromptMinimumVersion: {
     name: 'extensionUpdatePromptMinimumVersion',
     type: FeatureFlagType.Remote,
@@ -2177,6 +2184,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
 
   extensionUxNetworkManagement: {
     name: 'extensionUxNetworkManagement',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.38.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  extensionUxChainlist: {
+    name: 'extensionUxChainlist',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {

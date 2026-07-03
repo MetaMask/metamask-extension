@@ -76,7 +76,10 @@
       "needsProfilePairing": "boolean"
     },
     "BridgeController": { "inputPrimaryDenomination": "string" },
-    "BridgeStatusController": { "txHistory": "object" },
+    "BridgeStatusController": {
+      "quoteUpdateStatusStore": "object",
+      "txHistory": "object"
+    },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,
@@ -153,6 +156,7 @@
         "bip122": "object",
         "eip155": "object",
         "solana": "object",
+        "stellar": "object",
         "tron": "object"
       },
       "nativeAssetIdentifiers": "object"

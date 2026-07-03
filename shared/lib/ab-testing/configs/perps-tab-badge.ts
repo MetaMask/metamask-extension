@@ -1,6 +1,6 @@
-import { MetaMetricsEventName } from '../../constants/metametrics';
-import type { ABTestAnalyticsMapping } from './ab-test-analytics';
-import { ABTestVariant, type ABTestVariantName } from './variants';
+import { MetaMetricsEventName } from '../../../constants/metametrics';
+import type { ABTestAnalyticsMapping } from '../ab-test-analytics';
+import { ABTestVariant, type ABTestVariantName } from '../variants';
 
 /**
  * Remote feature flag key for the Perps tab "New" badge A/B test.
