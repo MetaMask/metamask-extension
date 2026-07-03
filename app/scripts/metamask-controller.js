@@ -319,10 +319,7 @@ import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import {
-  rejectAllApprovals,
-  rejectOriginApprovals,
-} from './lib/approval/utils';
+import { rejectOriginApprovals } from './lib/approval/utils';
 import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
   MultichainAssetsControllerInit,
@@ -2994,14 +2991,6 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      setSelectedAddress: (address) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account) {
-          this.accountsController.setSelectedAccount(account.id);
-        } else {
-          throw new Error(`No account found for address: ${address}`);
-        }
-      },
       toggleExternalServices: this.toggleExternalServices.bind(this),
       addToken: async ({
         address,
@@ -3085,23 +3074,18 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // AccountsController
-      setSelectedInternalAccount: (id) => {
-        const account = this.accountsController.getAccount(id);
-        if (account) {
-          this.accountsController.setSelectedAccount(id);
-        }
-      },
+      setSelectedInternalAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setSelectedInternalAccount',
+      ),
 
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
 
-      setAccountLabel: (address, label) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account === undefined) {
-          throw new Error(`No account found for address: ${address}`);
-        }
-        this.accountsController.setAccountName(account.id, label);
-      },
+      setAccountLabel: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setAccountLabel',
+      ),
 
       // AccountTreeController
       setSelectedMultichainAccount: (accountGroupId) => {
@@ -3121,9 +3105,10 @@ export default class MetamaskController extends EventEmitter {
         this.accountTreeController.setAccountGroupHidden.bind(
           this.accountTreeController,
         ),
-      syncAccountTreeWithUserStorage: async () => {
-        await this.accountTreeController.syncWithUserStorage();
-      },
+      syncAccountTreeWithUserStorage: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountTreeController:syncWithUserStorage',
+      ),
 
       // MultichainAccountService
       createNextMultichainAccountGroup: async (walletId) => {
@@ -3630,7 +3615,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // ApprovalController
-      rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
+      rejectAllPendingApprovals: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectAllPendingApprovals',
+      ),
       rejectPendingApproval: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:rejectPendingApproval',
@@ -5806,7 +5794,10 @@ export default class MetamaskController extends EventEmitter {
     const checkExistingCodeMap = {
       [DefiReferralPartner.GMX]: (account) =>
         checkGmxHasReferralCode(this.networkController, account),
-      [DefiReferralPartner.Hyperliquid]: checkHyperliquidHasReferralCode,
+      [DefiReferralPartner.Hyperliquid]: this.preferencesController.state
+        .useExternalServices
+        ? checkHyperliquidHasReferralCode
+        : undefined,
     };
 
     if (shouldShowApproval || shouldRedirect) {
@@ -8534,19 +8525,6 @@ export default class MetamaskController extends EventEmitter {
       { waitForResult: true, walletType },
     );
   };
-
-  rejectAllPendingApprovals() {
-    const deleteInterface = (id) =>
-      this.controllerMessenger.call(
-        'SnapInterfaceController:deleteInterface',
-        id,
-      );
-
-    rejectAllApprovals({
-      approvalController: this.approvalController,
-      deleteInterface,
-    });
-  }
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(

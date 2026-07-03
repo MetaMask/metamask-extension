@@ -27,8 +27,10 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
+  AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
+  AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
@@ -46,6 +48,7 @@ import { AssetsControllerSetSelectedCurrencyAction } from '@metamask/assets-cont
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
+  ApprovalControllerAcceptRequestAction,
   ApprovalControllerGetStateAction,
   ApprovalControllerRejectRequestAction,
   ApprovalRequestNotFoundError,
@@ -89,6 +92,9 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { SnapInterfaceControllerDeleteInterfaceAction } from '@metamask/snaps-controllers';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
@@ -98,7 +104,7 @@ import {
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
 } from '@metamask/account-tree-controller';
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
 import {
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
@@ -116,7 +122,10 @@ import {
   AssetsUnifyStateFeatureFlag,
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
@@ -168,13 +177,16 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'rejectAllPendingApprovals',
   'rejectPendingApproval',
   'rejectPermissionsRequest',
   'removeAccount',
   'removePermissionsFor',
   'resetAccount',
+  'setAccountLabel',
   'setCurrentCurrency',
   'setLocked',
+  'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
@@ -191,10 +203,13 @@ export type LegacyBackgroundApiServiceActions =
 type AllowedActions =
   | AccountTreeControllerGetSelectedAccountGroupAction
   | AccountTreeControllerInitAction
+  | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
+  | ApprovalControllerAcceptRequestAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
@@ -254,6 +269,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
+  | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerStopAllPollingAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
@@ -613,6 +629,27 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Sets the label for the account at the given address.
+   *
+   * @param address - The address of the account to set the label for.
+   * @param label - The label to set for the account.
+   */
+  setAccountLabel(address: string, label: string): void {
+    const account = this.#messenger.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
+    if (account === undefined) {
+      throw new Error(`No account found for address: ${address}`);
+    }
+    this.#messenger.call(
+      'AccountsController:setAccountName',
+      account.id,
+      label,
+    );
+  }
+
+  /**
    * Execute side effects of a removed account.
    *
    * @param address - The address of the account to remove.
@@ -812,6 +849,18 @@ export class LegacyBackgroundApiService {
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
     return getAccountsBySnapId(this.#messenger, snapId);
+  }
+
+  /**
+   * Sets the currently selected internal account.
+   *
+   * @param id - The ID of the account to set as selected.
+   */
+  setSelectedInternalAccount(id: string): void {
+    const account = this.#messenger.call('AccountsController:getAccount', id);
+    if (account) {
+      this.#messenger.call('AccountsController:setSelectedAccount', id);
+    }
   }
 
   /**
@@ -1388,6 +1437,77 @@ export class LegacyBackgroundApiService {
     } catch (err) {
       if (!(err instanceof ApprovalRequestNotFoundError)) {
         throw err;
+      }
+    }
+  }
+
+  /**
+   * Rejects all pending approval requests.
+   *
+   * Snap dialogs and account confirmations are accepted with a falsy value and
+   * their interface deleted where applicable, while all other approvals are
+   * rejected with a user-rejected-request error.
+   */
+  rejectAllPendingApprovals(): void {
+    const { pendingApprovals } = this.#messenger.call(
+      'ApprovalController:getState',
+    );
+
+    const approvalRequests = Object.values(pendingApprovals);
+
+    for (const approvalRequest of approvalRequests) {
+      const { id, type, origin } = approvalRequest;
+      const interfaceId = approvalRequest.requestData?.id as string;
+
+      switch (type) {
+        case ApprovalType.SnapDialogAlert:
+        case ApprovalType.SnapDialogPrompt:
+        case DIALOG_APPROVAL_TYPES.default:
+          log.debug('Rejecting snap dialog', { id, interfaceId, origin, type });
+          this.#messenger.call('ApprovalController:acceptRequest', id, null);
+          this.#messenger.call(
+            'SnapInterfaceController:deleteInterface',
+            interfaceId,
+          );
+          break;
+
+        case ApprovalType.SnapDialogConfirmation:
+          log.debug('Rejecting snap confirmation', {
+            id,
+            interfaceId,
+            origin,
+            type,
+          });
+          this.#messenger.call('ApprovalController:acceptRequest', id, false);
+          this.#messenger.call(
+            'SnapInterfaceController:deleteInterface',
+            interfaceId,
+          );
+          break;
+
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
+          log.debug('Rejecting snap account confirmation', {
+            id,
+            origin,
+            type,
+          });
+          this.#messenger.call('ApprovalController:acceptRequest', id, false);
+          break;
+
+        default:
+          log.debug('Rejecting pending approval', { id, origin, type });
+          this.#messenger.call(
+            'ApprovalController:rejectRequest',
+            id,
+            providerErrors.userRejectedRequest({
+              data: {
+                cause: 'rejectAllApprovals',
+              },
+            }),
+          );
+          break;
       }
     }
   }

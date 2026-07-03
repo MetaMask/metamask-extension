@@ -4401,9 +4401,6 @@
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Bao gồm"
-  },
   "includesXTransactions": {
     "message": "Bao gồm $1 giao dịch"
   },
