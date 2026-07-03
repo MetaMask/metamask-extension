@@ -1,7 +1,7 @@
 # Bitcoin E2E — local regtest
 
 BTC E2E tests run against a local `bitcoind -regtest` provided by
-[`bitcoin-regtest-up`](https://github.com/ulissesferreira/bitcoin-regtest-up),
+[`@metamask/bitcoin-regtest-up`](https://www.npmjs.com/package/@metamask/bitcoin-regtest-up),
 the Bitcoin equivalent of Foundryup for Anvil.
 
 ## Install
@@ -31,9 +31,7 @@ and the Esplora-shaped proxy that the BTC snap calls into.
 
 ## Notes
 
-- `bitcoin-regtest-up` is currently sourced from
-  `github:ulissesferreira/bitcoin-regtest-up` as a stopgap. Swap to the
-  npm-published `@metamask/bitcoin-regtest-up` once
-  [MetaMask/core#8827](https://github.com/MetaMask/core/pull/8827) ships.
+- `bitcoin-regtest-up` is sourced from the npm-published
+  `@metamask/bitcoin-regtest-up` package.
 - The cache moves to `~/.cache/metamask` only if `.yarnrc.yml` sets
   `enableGlobalCache: true`. This repo keeps it local.

@@ -5854,6 +5854,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/bitcoin-regtest-up@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/bitcoin-regtest-up@npm:1.0.0"
+  dependencies:
+    "@metamask/local-node-utils": "npm:^1.0.0"
+  bin:
+    bitcoin-regtest-up: ./dist/bin/bitcoin-regtest-up.mjs
+  checksum: 10/d77338ff9667a9d49fdcdc6987fe7b5f5c11ad101b3adb009cdf82f5a2dd3355500fefde86f1b9d62e83e6859eb550b0680939baff4337ad2fa74a2e9e0ac196
+  languageName: node
+  linkType: hard
+
 "@metamask/bitcoin-wallet-snap@npm:^1.14.0":
   version: 1.14.1
   resolution: "@metamask/bitcoin-wallet-snap@npm:1.14.1"
@@ -7061,6 +7072,15 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/d0917b2f634d9eb2f563827739fca00c1675ee90674ec49b2b68afcb604aee843d6c5be5d79e9780fa22d29f71fc876f40b2d3d0ed4cab7f5948937ddd276691
+  languageName: node
+  linkType: hard
+
+"@metamask/local-node-utils@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/local-node-utils@npm:1.0.0"
+  dependencies:
+    yaml: "npm:^2.3.4"
+  checksum: 10/ecbe70ee0c27b391988b5703034bd690099c4855369ccef3f013d8e08a1ccefe20db462f48e9f38c9e8165bc2094970ff27adeaa4eb9f612e7c19eb1e2574b1f
   languageName: node
   linkType: hard
 
@@ -17496,15 +17516,6 @@ __metadata:
     "@typescript-eslint/types": "npm:8.62.0"
     eslint-visitor-keys: "npm:^5.0.0"
   checksum: 10/63d66db628befb1d160c02f3fe3b00b7c7ffc47a477335591affde2108e913a72d4a327bdd15d91f5784c3c3624e9b347e9351754390a61ca182bb7e1788d350
-  languageName: node
-  linkType: hard
-
-"@ulissesferreira/bitcoin-regtest-up@github:ulissesferreira/bitcoin-regtest-up":
-  version: 0.1.2
-  resolution: "@ulissesferreira/bitcoin-regtest-up@https://github.com/ulissesferreira/bitcoin-regtest-up.git#commit=b7fd2e45e5b68841c6c1ed385254ae8a7860b9a9"
-  bin:
-    bitcoin-regtest-up: dist/bin/bitcoin-regtest-up.js
-  checksum: 10/c09ec081bf0c1d387f6a876aa152a73a3ee9f746dd35e5c955d8cfd24b730d374e6c647edf3cda232f0df20239d697fcd9725b35cca6e71448a2868c299581fc
   languageName: node
   linkType: hard
 
@@ -33172,6 +33183,7 @@ __metadata:
     "@metamask/authenticated-user-storage": "npm:^2.1.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.14.0"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^77.2.0"
@@ -33405,7 +33417,6 @@ __metadata:
     "@types/yazl": "npm:^3.3.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.1.0"
     "@typescript-eslint/parser": "npm:^8.1.0"
-    "@ulissesferreira/bitcoin-regtest-up": "github:ulissesferreira/bitcoin-regtest-up"
     "@viem/anvil": "npm:^0.0.10"
     "@welldone-software/why-did-you-render": "npm:^8.0.3"
     "@zxing/browser": "npm:^0.1.5"
