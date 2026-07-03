@@ -24,6 +24,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
   createMetaMetricsDataDeletionTask: jest.fn(),
 }));
 
@@ -127,8 +128,8 @@ describe('DeleteMetaMetricsDataButton', () => {
     );
   });
 
-  // if user does not opt in to participate in metrics or for backup and sync, metametricsId will not be created.
-  it('should disable the data deletion button when there is metametrics id not available', async () => {
+  // If the user does not opt in to metrics or backup and sync, analyticsId will not be created.
+  it('should disable the data deletion button when there is no analytics id available', async () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getCompletedMetaMetricsOnboarding) {
         return true;

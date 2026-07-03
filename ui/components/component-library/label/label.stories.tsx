@@ -1,27 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import README from './README.mdx';
-import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  IconColor,
-} from '../../../helpers/constants/design-system';
 
 import { Label } from './label';
 
-import { Icon, IconName, IconSize } from '../icon';
-import { Box } from '../box';
-import { TextField } from '../text-field';
-
 export default {
-  title: 'Components/ComponentLibrary/Label',
+  title: 'Components/ComponentLibrary/Label (deprecated)',
 
   component: Label,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [Label from @metamask/design-system-react] instead.',
+      },
     },
   },
   argTypes: {
@@ -44,52 +36,3 @@ const Template: ComponentStory<typeof Label> = (args) => <Label {...args} />;
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const Children: ComponentStory<typeof Label> = (args) => (
-  <Box
-    display={Display.InlineFlex}
-    flexDirection={FlexDirection.Column}
-    gap={2}
-  >
-    <Label {...args}>Plain text</Label>
-    <Label {...args} display={Display.Flex} alignItems={AlignItems.flexStart}>
-      Text and icon
-      <Icon
-        color={IconColor.iconAlternative}
-        name={IconName.Info}
-        size={IconSize.Inherit}
-      />
-    </Label>
-    <Label
-      {...args}
-      display={Display.InlineFlex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.flexStart}
-    >
-      Label that wraps an input
-      <TextField placeholder="Click label to focus" />
-    </Label>
-  </Box>
-);
-
-export const HtmlFor: ComponentStory<typeof Label> = (args) => {
-  const [value, setValue] = useState('');
-  const handleOnChange = (e) => {
-    setValue(e.target.value);
-  };
-  return (
-    <Box display={Display.InlineFlex} flexDirection={FlexDirection.Column}>
-      <Label {...args} />
-      <TextField
-        id="add-network"
-        value={value}
-        onChange={handleOnChange}
-        placeholder="Enter network name"
-      />
-    </Box>
-  );
-};
-HtmlFor.args = {
-  children: 'Network name',
-  htmlFor: 'add-network',
-};
