@@ -2065,6 +2065,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  splitStatePersistenceDiagnostics: {
+    name: 'splitStatePersistenceDiagnostics',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   walletFrameworkRpcFailoverEnabled: {
     name: 'walletFrameworkRpcFailoverEnabled',
     type: FeatureFlagType.Remote,
