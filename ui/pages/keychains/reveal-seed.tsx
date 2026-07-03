@@ -24,7 +24,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
-import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -66,7 +65,7 @@ function RevealSeedPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { keyringId } = useParams<Record<string, string | undefined>>();
   const locationState = useLocation().state as RevealSeedLocationState | null;
@@ -143,7 +142,7 @@ function RevealSeedPage() {
           .build(),
       );
     }
-  }, [scanResult]);
+  }, [createEventBuilder, scanResult]);
 
   // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
@@ -180,7 +179,7 @@ function RevealSeedPage() {
         })
         .build(),
     );
-  }, [seedWords, phraseRevealed, trackEvent, hdEntropyIndex]);
+  }, [createEventBuilder, hdEntropyIndex, phraseRevealed, seedWords, trackEvent]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -240,7 +239,7 @@ function RevealSeedPage() {
           endTrace({ name: TraceName.RevealSeed });
         });
     },
-    [dispatch, password, keyringId, trackEvent, hdEntropyIndex],
+    [createEventBuilder, dispatch, hdEntropyIndex, keyringId, password, trackEvent],
   );
 
   const togglePasswordVisibility = useCallback(
@@ -265,7 +264,7 @@ function RevealSeedPage() {
     globalThis.platform.openTab({
       url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
     });
-  }, [trackEvent]);
+  }, [createEventBuilder, trackEvent]);
 
   const handleBack = useCallback(() => {
     trackEvent(
@@ -281,7 +280,7 @@ function RevealSeedPage() {
         .build(),
     );
     navigate(PREVIOUS_ROUTE);
-  }, [trackEvent, screen, hdEntropyIndex, navigate]);
+  }, [createEventBuilder, hdEntropyIndex, navigate, screen, trackEvent]);
 
   const handleQuizComplete = useCallback(() => {
     setScreen(initialCredentialScreen);
@@ -361,7 +360,7 @@ function RevealSeedPage() {
         endTrace({ name: TraceName.RevealSeed });
       }
     },
-    [dispatch, keyringId, trackEvent, hdEntropyIndex],
+    [createEventBuilder, dispatch, hdEntropyIndex, keyringId, trackEvent],
   );
 
   const handleUsePassword = useCallback(() => {
@@ -399,7 +398,7 @@ function RevealSeedPage() {
       );
       setSrpViewEventTracked(true);
     }
-  }, [screen, srpViewEventTracked, trackEvent]);
+  }, [createEventBuilder, screen, srpViewEventTracked, trackEvent]);
 
   const handleRevealPhrase = useCallback(() => {
     trackEvent(
@@ -414,7 +413,7 @@ function RevealSeedPage() {
         .build(),
     );
     setPhraseRevealed(true);
-  }, [trackEvent, hdEntropyIndex]);
+  }, [createEventBuilder, hdEntropyIndex, trackEvent]);
 
   const handleTabClick = useCallback(
     (tabKey: 'text-seed' | 'qr-srp') => {
@@ -440,7 +439,7 @@ function RevealSeedPage() {
         );
       }
     },
-    [trackEvent],
+    [createEventBuilder, trackEvent],
   );
 
   const handlePasswordContinueClick = useCallback(
@@ -469,7 +468,7 @@ function RevealSeedPage() {
       );
       handleSubmit(event);
     },
-    [trackEvent, hdEntropyIndex, handleSubmit],
+    [createEventBuilder, handleSubmit, hdEntropyIndex, trackEvent],
   );
 
   const handleQuizGetStarted = useCallback(() => {
@@ -485,7 +484,7 @@ function RevealSeedPage() {
         .build(),
     );
     setScreen(QUIZ_QUESTIONS_SCREEN);
-  }, [trackEvent, hdEntropyIndex]);
+  }, [createEventBuilder, hdEntropyIndex, trackEvent]);
 
   const renderContent = () => {
     if (screen === QUIZ_INTRODUCTION_SCREEN) {

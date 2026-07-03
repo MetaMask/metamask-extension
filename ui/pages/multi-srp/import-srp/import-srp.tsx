@@ -29,7 +29,6 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 
 const toastId = 'new-srp-added-toast';
@@ -44,7 +43,7 @@ export const ImportSrp = () => {
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   async function importWallet() {
     try {

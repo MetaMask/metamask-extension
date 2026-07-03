@@ -20,7 +20,6 @@ import { useSelector } from 'react-redux';
 import PasswordForm from '../../components/app/password-form/password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useAnalytics } from '../../hooks/useAnalytics';
-import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -53,7 +52,7 @@ const CreatePasswordForm = ({
     (state: { metamask: { location: string } }) => state.metamask?.location,
   );
 
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   useEffect(() => {
     if (

@@ -18,7 +18,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { createEventBuilder } from '../../../../../shared/lib/analytics/create-event-builder';
 import { useWalletInfo } from '../../../../hooks/multichain-accounts/useWalletInfo';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSingleWalletAccountsBalanceCallback } from '../../../../hooks/multichain-accounts/useWalletBalance';
@@ -51,7 +50,7 @@ export const SrpCard = ({
   hideShowAccounts = false,
 }: SrpCardProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { multichainAccounts, keyringId } = useWalletInfo(walletId);
   const [showAccounts, setShowAccounts] = useState<boolean>(false);
   const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);

@@ -7,7 +7,6 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { createEventBuilder } from '../../../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   BlockSize,
@@ -79,7 +78,7 @@ export type SRPQuizProps = {
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
@@ -306,7 +305,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
           .build(),
       );
     },
-    [hdEntropyIndex, trackEvent],
+    [createEventBuilder, hdEntropyIndex, trackEvent],
   );
 
   useEffect(() => {

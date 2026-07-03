@@ -11,7 +11,6 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -30,7 +29,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [hasTriggeredUnlock, setHasTriggeredUnlock] = useState(false);
-  const { trackEvent } = useAnalytics();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   /**
    * Prevent animation events from propogating up
@@ -97,7 +96,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
       setHasTriggeredUnlock(true);
       preventPropogation(e);
     },
-    [onLongPressed, trackEvent],
+    [createEventBuilder, onLongPressed, trackEvent],
   );
 
   /**
