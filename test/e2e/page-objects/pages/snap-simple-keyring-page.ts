@@ -3,6 +3,7 @@ import { WINDOW_TITLES } from '../../constants';
 import { getCleanAppState, regularDelayMs } from '../../helpers';
 
 const SIMPLE_KEYRING_SNAP_ID = 'npm:@metamask/snap-simple-keyring-snap';
+const ETHEREUM_ADDRESS_REGEX = /\b0x[a-fA-F0-9]{40}\b/u;
 const NEW_ACCOUNT_CREATION_TIMEOUT_MS = 20_000;
 
 function deduplicateAddresses(addresses: string[]): string[] {
@@ -260,7 +261,7 @@ class SnapSimpleKeyringPage {
    *
    * @param privateKey - The private key to import.
    */
-  async importAccountWithPrivateKey(privateKey: string): Promise<void> {
+  async importAccountWithPrivateKey(privateKey: string): Promise<string> {
     console.log('Import account with private key on Snap Simple Keyring page');
     const existingAddresses = await this.getDisplayedAccountAddresses();
     await this.driver.clickElement(this.importAccountSection);
@@ -278,7 +279,7 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
-    await this.waitForNewAccountAddress(existingAddresses);
+    return await this.waitForNewAccountAddress(existingAddresses);
   }
 
   /**
@@ -369,13 +370,19 @@ class SnapSimpleKeyringPage {
   }
 
   private async getDisplayedAccountAddresses(): Promise<string[]> {
-    const pageText = await this.driver.executeScript(
-      () => document.body.innerText ?? '',
+    const addressTextNodes = await this.driver.executeScript(
+      () =>
+        Array.from(document.querySelectorAll('ul p'))
+          .map((element) => element.textContent?.trim() ?? '')
+          .filter((text) => text.length > 0),
     );
 
     const addresses =
-      typeof pageText === 'string'
-        ? pageText.match(/\b0x[a-fA-F0-9]{40}\b/gu) ?? []
+      Array.isArray(addressTextNodes)
+        ? addressTextNodes.filter(
+            (text): text is string =>
+              typeof text === 'string' && ETHEREUM_ADDRESS_REGEX.test(text),
+          )
         : [];
 
     return deduplicateAddresses(addresses);
