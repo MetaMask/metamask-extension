@@ -186,6 +186,7 @@ ${Object.entries(env)
     mode: 'safe' | 'unlocked_unsafe' | 'null_unsafe';
     embeddedOptions?: {
       scuttleGlobalThis?: {
+        enabled?: boolean;
         scuttlerName?: string;
         exceptions?: (string | RegExp)[];
       };
@@ -433,35 +434,10 @@ ${Object.entries(env)
       serviceWorkerConfig.embeddedOptions?.scuttleGlobalThis?.scuttlerName,
       undefined,
     );
-    const scuttleGlobalThisExceptions =
-      lavaMoatPlugin.options.scuttleGlobalThis?.exceptions;
-    const serviceWorkerExceptions =
-      serviceWorkerConfig.embeddedOptions?.scuttleGlobalThis?.exceptions;
-    assert(scuttleGlobalThisExceptions);
-    assert(serviceWorkerExceptions);
-    const sharedStringExceptions = scuttleGlobalThisExceptions.filter(
-      (exception): exception is string => typeof exception === 'string',
+    assert.strictEqual(
+      serviceWorkerConfig.embeddedOptions?.scuttleGlobalThis?.enabled,
+      false,
     );
-    for (const exception of sharedStringExceptions) {
-      assert(
-        serviceWorkerExceptions.includes(exception),
-        `service worker should preserve ${exception}`,
-      );
-    }
-    assert(serviceWorkerExceptions.includes('chrome'));
-    assert(serviceWorkerExceptions.includes('importScripts'));
-    assert(serviceWorkerExceptions.includes('self'));
-    assert(serviceWorkerExceptions.includes('location'));
-    assert(serviceWorkerExceptions.includes('fetch'));
-    assert(serviceWorkerExceptions.includes('XMLHttpRequest'));
-    assert(serviceWorkerExceptions.includes('TextEncoder'));
-    assert(serviceWorkerExceptions.includes('TextDecoder'));
-    assert(serviceWorkerExceptions.includes('URLSearchParams'));
-    assert(serviceWorkerExceptions.includes('indexedDB'));
-    assert(serviceWorkerExceptions.includes('setTimeout'));
-    assert(serviceWorkerExceptions.includes('setInterval'));
-    assert(serviceWorkerExceptions.includes('performance'));
-    assert(serviceWorkerExceptions.includes('stateHooks'));
 
     const trezorContentScriptConfig = runtimeConfiguration({
       name: 'vendor/trezor/content-script.js',

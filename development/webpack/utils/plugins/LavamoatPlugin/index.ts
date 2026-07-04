@@ -90,53 +90,6 @@ const getScuttleGlobalThisExceptions = (
   ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
 ];
 
-const getServiceWorkerScuttleGlobalThisExceptions = (
-  args: Args,
-): ScuttleGlobalThisException[] => [
-  ...new Set([
-    ...getScuttleGlobalThisExceptions(args),
-    // globals used by the MV3 service worker runtime and background deps
-    'self',
-    'location',
-    'chrome',
-    'importScripts',
-    'trustedTypes',
-    'XMLHttpRequest',
-    'WebSocket',
-    'URL',
-    'URLSearchParams',
-    'TextEncoder',
-    'TextDecoder',
-    'Blob',
-    'FormData',
-    'Headers',
-    'Request',
-    'Response',
-    'ReadableStream',
-    'WritableStream',
-    'AbortSignal',
-    'indexedDB',
-    'queueMicrotask',
-    'structuredClone',
-    'setInterval',
-    'clearInterval',
-    'atob',
-    'btoa',
-    'DOMException',
-    'CustomEvent',
-    'MessageChannel',
-    'MessagePort',
-    'BroadcastChannel',
-    'File',
-    'FileReader',
-    'WorkerGlobalScope',
-    'caches',
-    'clients',
-    'registration',
-    'Notification',
-  ]),
-];
-
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
     rootDir,
@@ -196,9 +149,12 @@ export const lavamoatPlugin = (args: Args) =>
         return {
           mode: 'safe',
           embeddedOptions: {
+            // The MV3 service worker relies on Chrome's host global for
+            // extension APIs, worker APIs, and webextension-polyfill setup.
+            // Keep LavaMoat compartments/lockdown, but do not scuttle this
+            // host global.
             scuttleGlobalThis: {
-              enabled: true,
-              exceptions: getServiceWorkerScuttleGlobalThisExceptions(args),
+              enabled: false,
             },
           },
         };
