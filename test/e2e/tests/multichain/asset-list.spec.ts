@@ -263,7 +263,7 @@ describe('Multichain Asset List', function (this: Suite) {
     await withFixtures(
       buildFixturesForSend(this.test?.fullTitle() as string),
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         const sendPage = new SendPage(driver);

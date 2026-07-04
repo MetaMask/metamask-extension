@@ -64,9 +64,7 @@ export function getAssetsControllerMessenger(
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
-      'AccountTreeController:stateChange',
       'AccountTreeController:stateChanged',
-      'ClientController:stateChange',
       'ClientController:stateChanged',
       'NetworkEnablementController:stateChange',
       'NetworkEnablementController:stateChanged',

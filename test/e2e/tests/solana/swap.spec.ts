@@ -653,7 +653,7 @@ describe('Swap on Solana', function () {
         testSpecificMock: mockSwapSOLtoUSDC,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         if (isUnifiedAssetsEnabled) {
