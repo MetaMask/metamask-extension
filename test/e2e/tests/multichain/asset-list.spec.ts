@@ -18,6 +18,8 @@ import {
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
 const HST_TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
+const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+const MUSD_MAINNET_ASSET_ID = `eip155:1/erc20:${MUSD_ADDRESS}`;
 /** Aggregated fiat total when mainnet (24.998 ETH) + polygon (25 POL) are enabled at $1/ea. */
 const AGGREGATED_BALANCE_USD = '$50';
 
@@ -55,6 +57,36 @@ async function mockSetup(mockServer: Mockttp) {
         statusCode: 200,
         json: {},
       })),
+    await mockServer
+      .forGet(/^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const assetIds = url.searchParams
+          .getAll('assetIds')
+          .join(',')
+          .toLowerCase();
+        const results = [];
+
+        if (assetIds.includes('eip155:1/slip44:60')) {
+          results.push({
+            assetId: 'eip155:1/slip44:60',
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+          });
+        }
+
+        if (assetIds.includes(MUSD_MAINNET_ASSET_ID.toLowerCase())) {
+          results.push({
+            assetId: MUSD_MAINNET_ASSET_ID,
+            name: 'MUSD',
+            symbol: 'MUSD',
+            decimals: 6,
+          });
+        }
+
+        return { statusCode: 200, json: { data: results } };
+      }),
   ];
 }
 function buildFixturesForAssetDetails(title: string) {
@@ -72,6 +104,7 @@ function buildFixturesForAssetDetails(title: string) {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {
             'eip155:1/slip44:60': { amount: '24.998' },
             'eip155:137/slip44:60': { amount: '25' },
+            [MUSD_MAINNET_ASSET_ID]: { amount: '0' },
           },
         },
         assetsInfo: {
@@ -87,6 +120,15 @@ function buildFixturesForAssetDetails(title: string) {
             symbol: 'POL',
             name: 'Polygon',
           },
+          [MUSD_MAINNET_ASSET_ID]: {
+            type: 'erc20',
+            decimals: 6,
+            symbol: 'MUSD',
+            name: 'MUSD',
+          },
+        },
+        customAssets: {
+          [DEFAULT_FIXTURE_ACCOUNT_ID]: [MUSD_MAINNET_ASSET_ID],
         },
         assetsPrice: {
           'eip155:1/slip44:60': {
@@ -209,7 +251,7 @@ describe('Multichain Asset List', function (this: Suite) {
           'Popular',
           NETWORK_NAME_MAINNET,
         );
-        // Only Ethereum network is selected so only 1 token visible
+        // Ethereum filter: native ETH + zero-balance mUSD (always shown on mainnet).
         await tokensTab.checkTokenItemNumber(2);
         await tokensTab.clickOnAsset('Ether');
         await tokensTab.checkBuySellButtonIsPresent();
