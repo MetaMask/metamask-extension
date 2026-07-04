@@ -33,6 +33,11 @@ export const UTM_PARAMETERS = new Set([
   'utm_term',
 ]) as Set<UTMParameter> & { has: (key: string) => key is UTMParameter };
 
+export type TransactionFrameContext = {
+  frameId?: number;
+  mainFrameOrigin?: string;
+};
+
 export type TransactionMetricsRequest = {
   getTransactionUIMetricsFragment: (
     transactionId: string,
@@ -87,6 +92,10 @@ export type TransactionMetricsRequest = {
     cacheKey: string,
   ) => ScanAddressResponse | undefined;
   getSecurityAlertsEnabled: () => boolean;
+  getTransactionFrameContext: (
+    transactionRequestId: string,
+  ) => TransactionFrameContext | undefined;
+  removeTransactionFrameContext: (transactionRequestId: string) => void;
 };
 
 export type TransactionEventPayload = {
