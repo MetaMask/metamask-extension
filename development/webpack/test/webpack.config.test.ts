@@ -195,6 +195,9 @@ ${Object.entries(env)
   type LavaMoatWebpackPlugin = WebpackPluginInstance & {
     options: {
       inlineLockdown?: RegExp;
+      scuttleGlobalThis?: {
+        exceptions?: (string | RegExp)[];
+      };
       runtimeConfigurationPerChunk_experimental?: (chunk: {
         name?: string;
       }) => LavaMoatRuntimeConfiguration;
@@ -430,10 +433,27 @@ ${Object.entries(env)
       serviceWorkerConfig.embeddedOptions?.scuttleGlobalThis?.scuttlerName,
       undefined,
     );
-    assert.deepStrictEqual(
-      serviceWorkerConfig.embeddedOptions?.scuttleGlobalThis?.exceptions,
-      ['chrome', 'importScripts'],
+    const scuttleGlobalThisExceptions =
+      lavaMoatPlugin.options.scuttleGlobalThis?.exceptions;
+    const serviceWorkerExceptions =
+      serviceWorkerConfig.embeddedOptions?.scuttleGlobalThis?.exceptions;
+    assert(scuttleGlobalThisExceptions);
+    assert(serviceWorkerExceptions);
+    const sharedStringExceptions = scuttleGlobalThisExceptions.filter(
+      (exception): exception is string => typeof exception === 'string',
     );
+    for (const exception of sharedStringExceptions) {
+      assert(
+        serviceWorkerExceptions.includes(exception),
+        `service worker should preserve ${exception}`,
+      );
+    }
+    assert(serviceWorkerExceptions.includes('chrome'));
+    assert(serviceWorkerExceptions.includes('importScripts'));
+    assert(serviceWorkerExceptions.includes('fetch'));
+    assert(serviceWorkerExceptions.includes('setTimeout'));
+    assert(serviceWorkerExceptions.includes('performance'));
+    assert(serviceWorkerExceptions.includes('stateHooks'));
 
     const trezorContentScriptConfig = runtimeConfiguration({
       name: 'vendor/trezor/content-script.js',
