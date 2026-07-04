@@ -11,10 +11,7 @@ import type { Args } from '../../cli';
 const rootDir = join(__dirname, '../../../../../');
 
 // Entries that need to be included in the unsafe layer to run without LavaMoat.
-const unsafeEntries: Set<string> = new Set([
-  'scripts/inpage.js',
-  'bootstrap',
-]);
+const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
 
 type ScuttleGlobalThisException = string | RegExp;
 
@@ -98,8 +95,45 @@ const getServiceWorkerScuttleGlobalThisExceptions = (
 ): ScuttleGlobalThisException[] => [
   ...new Set([
     ...getScuttleGlobalThisExceptions(args),
+    // globals used by the MV3 service worker runtime and background deps
+    'self',
+    'location',
     'chrome',
     'importScripts',
+    'trustedTypes',
+    'XMLHttpRequest',
+    'WebSocket',
+    'URL',
+    'URLSearchParams',
+    'TextEncoder',
+    'TextDecoder',
+    'Blob',
+    'FormData',
+    'Headers',
+    'Request',
+    'Response',
+    'ReadableStream',
+    'WritableStream',
+    'AbortSignal',
+    'indexedDB',
+    'queueMicrotask',
+    'structuredClone',
+    'setInterval',
+    'clearInterval',
+    'atob',
+    'btoa',
+    'DOMException',
+    'CustomEvent',
+    'MessageChannel',
+    'MessagePort',
+    'BroadcastChannel',
+    'File',
+    'FileReader',
+    'WorkerGlobalScope',
+    'caches',
+    'clients',
+    'registration',
+    'Notification',
   ]),
 ];
 

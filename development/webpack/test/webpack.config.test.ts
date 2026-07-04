@@ -450,8 +450,16 @@ ${Object.entries(env)
     }
     assert(serviceWorkerExceptions.includes('chrome'));
     assert(serviceWorkerExceptions.includes('importScripts'));
+    assert(serviceWorkerExceptions.includes('self'));
+    assert(serviceWorkerExceptions.includes('location'));
     assert(serviceWorkerExceptions.includes('fetch'));
+    assert(serviceWorkerExceptions.includes('XMLHttpRequest'));
+    assert(serviceWorkerExceptions.includes('TextEncoder'));
+    assert(serviceWorkerExceptions.includes('TextDecoder'));
+    assert(serviceWorkerExceptions.includes('URLSearchParams'));
+    assert(serviceWorkerExceptions.includes('indexedDB'));
     assert(serviceWorkerExceptions.includes('setTimeout'));
+    assert(serviceWorkerExceptions.includes('setInterval'));
     assert(serviceWorkerExceptions.includes('performance'));
     assert(serviceWorkerExceptions.includes('stateHooks'));
 
