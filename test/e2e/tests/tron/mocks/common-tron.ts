@@ -1257,7 +1257,7 @@ export async function mockTronTriggerConstantContract(
       statusCode: 200,
       json: {
         result: { result: true },
-        energy_used: 200000,
+        energy_used: 1000,
         energy_penalty: 0,
         constant_result: [
           '0000000000000000000000000000000000000000000000000000000000000001',
