@@ -1,0 +1,308 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 480338e18fc5d1b9a1dc247318ebac15c90f3015..3d6578061a936b93d85140998bc98080884703b4 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_accountRefreshMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_onTransactionConfirmed, _AssetsController_onAccountActivityBalanceUpdated, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_runAccountTreeRefresh, _AssetsController_runStartupRefresh, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_fetchMissingPricesWithoutCache, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_getSlowPipelineChainIds, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshActiveChainsOnNetworkSwitch, _AssetsController_getSelectedEvmChainIdFromNetworkState, _AssetsController_handleNetworkDidChange, _AssetsController_refreshAssetsAfterNetworkChange, _AssetsController_refreshAssetsAfterNetworkAdded;
++var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_accountRefreshMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_onTransactionConfirmed, _AssetsController_onAccountActivityBalanceUpdated, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_runAccountTreeRefresh, _AssetsController_fetchAccountBalancesViaRpc, _AssetsController_runStartupRefresh, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_fetchMissingPricesWithoutCache, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_getSlowPipelineChainIds, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleSelectedEvmAccountChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshActiveChainsOnNetworkSwitch, _AssetsController_getSelectedEvmChainIdFromNetworkState, _AssetsController_handleNetworkDidChange, _AssetsController_refreshAssetsAfterNetworkChange, _AssetsController_refreshAssetsAfterNetworkAdded;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.AssetsController = exports.getDefaultAssetsControllerState = void 0;
+ const base_controller_1 = require("@metamask/base-controller");
+@@ -1082,6 +1082,10 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     this.messenger.subscribe('AccountTreeController:selectedAccountGroupChange', () => {
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_handleAccountGroupChanged).call(this).catch(console.error);
+     });
++    // Switching EVM address within the same account group (e.g. Account 1 → Account 2).
++    this.messenger.subscribe('AccountsController:selectedEvmAccountChange', (account) => {
++        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_handleSelectedEvmAccountChanged).call(this, account).catch(console.error);
++    });
+     // Catch the initial tree build. On returning users,
+     // `selectedAccountGroupChange` does NOT fire when the persisted group
+     // is unchanged, and `accountTreeChange` doesn't fire either (init()
+@@ -1237,17 +1241,18 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+             previousCount: __classPrivateFieldGet(this, _AssetsController_lastKnownAccountIds, "f").size,
+             currentCount: currentIds.size,
+         });
++        const newAccounts = accounts.filter((account) => !__classPrivateFieldGet(this, _AssetsController_lastKnownAccountIds, "f").has(account.id));
+         __classPrivateFieldSet(this, _AssetsController_lastKnownAccountIds, currentIds, "f");
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureDefaultTrackedAssetsSeeded).call(this);
+-        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_runAccountTreeRefresh).call(this, accounts).catch((error) => {
++        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_runAccountTreeRefresh).call(this, accounts, newAccounts).catch((error) => {
+             log('Failed to refresh assets after tree change', error);
+         });
+     }
+     else {
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_start).call(this);
+     }
+-}, _AssetsController_runAccountTreeRefresh = async function _AssetsController_runAccountTreeRefresh(accounts) {
++}, _AssetsController_runAccountTreeRefresh = async function _AssetsController_runAccountTreeRefresh(accounts, newAccounts = []) {
+     const releaseLock = await __classPrivateFieldGet(this, _AssetsController_accountRefreshMutex, "f").acquire();
+     try {
+         await this.getAssets(accounts, {
+@@ -1255,6 +1260,11 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+             forceUpdate: true,
+         });
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_subscribeAssets).call(this);
++        if (newAccounts.length > 0) {
++            await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, newAccounts, [
++                ...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f"),
++            ]);
++        }
+     }
+     catch (error) {
+         log('Failed to fetch assets after tree change', error);
+@@ -1263,6 +1273,30 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     finally {
+         releaseLock();
+     }
++}, _AssetsController_fetchAccountBalancesViaRpc = 
++/**
++ * Fetch balances via RpcDataSource and merge into state.
++ *
++ * @param accounts - Accounts to fetch for.
++ * @param chainIds - Chains to fetch on.
++ */
++async function _AssetsController_fetchAccountBalancesViaRpc(accounts, chainIds) {
++    if (accounts.length === 0 || chainIds.length === 0) {
++        return;
++    }
++    const rpcChains = chainIds.filter((chainId) => __classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f").getActiveChainsSync().includes(chainId));
++    if (rpcChains.length === 0) {
++        return;
++    }
++    const request = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_buildDataRequest).call(this, accounts, rpcChains, {
++        dataTypes: ['balance'],
++        forceUpdate: true,
++    });
++    const { response } = await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_executeMiddlewares).call(this, [
++        (0, ParallelMiddleware_1.createParallelBalanceMiddleware)([__classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f")]),
++        __classPrivateFieldGet(this, _AssetsController_detectionMiddleware, "f"),
++    ], request);
++    await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_updateState).call(this, { ...response, updateMode: 'merge' });
+ }, _AssetsController_runStartupRefresh = 
+ /**
+  * Force-fetch balances then subscribe. Used on unlock / first startup.
+@@ -2106,12 +2140,40 @@ async function _AssetsController_handleAccountGroupChanged() {
+         }
+         // Subscribe after fetch so WS notifications can recover state
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_subscribeAssets).call(this);
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, accounts, [
++            ...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f"),
++        ]);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureDefaultTrackedAssetsSeeded).call(this);
+     }
+     finally {
+         releaseLock();
+     }
++}, _AssetsController_handleSelectedEvmAccountChanged = 
++/**
++ * Handle EVM account selection within the current account group.
++ * Fires when the user picks a different address under the same logical
++ * account (not when switching account groups).
++ *
++ * @param account - Newly selected EVM account.
++ */
++async function _AssetsController_handleSelectedEvmAccountChanged(account) {
++    if (!__classPrivateFieldGet(this, _AssetsController_uiOpen, "f") || !__classPrivateFieldGet(this, _AssetsController_keyringUnlocked, "f") || !__classPrivateFieldGet(this, _AssetsController_isEnabled, "f").call(this)) {
++        return;
++    }
++    const releaseLock = await __classPrivateFieldGet(this, _AssetsController_accountRefreshMutex, "f").acquire();
++    try {
++        await this.getAssets([account], {
++            chainIds: [...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f")],
++            forceUpdate: true,
++        });
++        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_subscribeAssets).call(this);
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, [account], [...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f")]);
++        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
++    }
++    finally {
++        releaseLock();
++    }
+ }, _AssetsController_handleEnabledNetworksChanged = async function _AssetsController_handleEnabledNetworksChanged(enabledNetworkMap) {
+     const previousChains = __classPrivateFieldGet(this, _AssetsController_enabledChains, "f");
+     __classPrivateFieldSet(this, _AssetsController_enabledChains, __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_extractEnabledChains).call(this, enabledNetworkMap), "f");
+@@ -2141,12 +2203,14 @@ async function _AssetsController_handleAccountGroupChanged() {
+     // Refresh subscriptions for new chain set
+     __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_subscribeAssets).call(this);
+     // Do one-time fetch for newly enabled chains; merge so we keep existing chain balances
+-    if (addedChains.length > 0 && __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this).length > 0) {
+-        await this.getAssets(__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this), {
++    const accounts = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this);
++    if (addedChains.length > 0 && accounts.length > 0) {
++        await this.getAssets(accounts, {
+             chainIds: addedChains,
+             forceUpdate: true,
+             updateMode: 'merge',
+         });
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, accounts, addedChains);
+     }
+     __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
+     // Seed default tracked assets (mUSD) for any chain the user has
+@@ -2226,6 +2290,7 @@ async function _AssetsController_handleNetworkDidChange(networkState) {
+             forceUpdate: true,
+             dataTypes: ['balance', 'metadata', 'price'],
+         });
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, accounts, [selectedChainId]);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchMissingPricesWithoutCache).call(this, accounts, [selectedChainId]);
+     }
+diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
+index b2bec5f3ac0e3ee5aa2e4b4438c18899cce6f1d5..cbcd48329534192bb280f69c109df8b71e471692 100644
+--- a/dist/AssetsController.mjs
++++ b/dist/AssetsController.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+ };
+-var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_accountRefreshMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_onTransactionConfirmed, _AssetsController_onAccountActivityBalanceUpdated, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_runAccountTreeRefresh, _AssetsController_runStartupRefresh, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_fetchMissingPricesWithoutCache, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_getSlowPipelineChainIds, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshActiveChainsOnNetworkSwitch, _AssetsController_getSelectedEvmChainIdFromNetworkState, _AssetsController_handleNetworkDidChange, _AssetsController_refreshAssetsAfterNetworkChange, _AssetsController_refreshAssetsAfterNetworkAdded;
++var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_accountRefreshMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_onTransactionConfirmed, _AssetsController_onAccountActivityBalanceUpdated, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_runAccountTreeRefresh, _AssetsController_fetchAccountBalancesViaRpc, _AssetsController_runStartupRefresh, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_fetchMissingPricesWithoutCache, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_getSlowPipelineChainIds, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleSelectedEvmAccountChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshActiveChainsOnNetworkSwitch, _AssetsController_getSelectedEvmChainIdFromNetworkState, _AssetsController_handleNetworkDidChange, _AssetsController_refreshAssetsAfterNetworkChange, _AssetsController_refreshAssetsAfterNetworkAdded;
+ import { BaseController } from "@metamask/base-controller";
+ import { clientControllerSelectors } from "@metamask/client-controller";
+ import { isCaipChainId, isStrictHexString, KnownCaipNamespace, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
+@@ -1075,6 +1075,10 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     this.messenger.subscribe('AccountTreeController:selectedAccountGroupChange', () => {
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_handleAccountGroupChanged).call(this).catch(console.error);
+     });
++    // Switching EVM address within the same account group (e.g. Account 1 → Account 2).
++    this.messenger.subscribe('AccountsController:selectedEvmAccountChange', (account) => {
++        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_handleSelectedEvmAccountChanged).call(this, account).catch(console.error);
++    });
+     // Catch the initial tree build. On returning users,
+     // `selectedAccountGroupChange` does NOT fire when the persisted group
+     // is unchanged, and `accountTreeChange` doesn't fire either (init()
+@@ -1230,17 +1234,18 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+             previousCount: __classPrivateFieldGet(this, _AssetsController_lastKnownAccountIds, "f").size,
+             currentCount: currentIds.size,
+         });
++        const newAccounts = accounts.filter((account) => !__classPrivateFieldGet(this, _AssetsController_lastKnownAccountIds, "f").has(account.id));
+         __classPrivateFieldSet(this, _AssetsController_lastKnownAccountIds, currentIds, "f");
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureDefaultTrackedAssetsSeeded).call(this);
+-        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_runAccountTreeRefresh).call(this, accounts).catch((error) => {
++        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_runAccountTreeRefresh).call(this, accounts, newAccounts).catch((error) => {
+             log('Failed to refresh assets after tree change', error);
+         });
+     }
+     else {
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_start).call(this);
+     }
+-}, _AssetsController_runAccountTreeRefresh = async function _AssetsController_runAccountTreeRefresh(accounts) {
++}, _AssetsController_runAccountTreeRefresh = async function _AssetsController_runAccountTreeRefresh(accounts, newAccounts = []) {
+     const releaseLock = await __classPrivateFieldGet(this, _AssetsController_accountRefreshMutex, "f").acquire();
+     try {
+         await this.getAssets(accounts, {
+@@ -1248,6 +1253,11 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+             forceUpdate: true,
+         });
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_subscribeAssets).call(this);
++        if (newAccounts.length > 0) {
++            await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, newAccounts, [
++                ...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f"),
++            ]);
++        }
+     }
+     catch (error) {
+         log('Failed to fetch assets after tree change', error);
+@@ -1256,6 +1266,30 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     finally {
+         releaseLock();
+     }
++}, _AssetsController_fetchAccountBalancesViaRpc = 
++/**
++ * Fetch balances via RpcDataSource and merge into state.
++ *
++ * @param accounts - Accounts to fetch for.
++ * @param chainIds - Chains to fetch on.
++ */
++async function _AssetsController_fetchAccountBalancesViaRpc(accounts, chainIds) {
++    if (accounts.length === 0 || chainIds.length === 0) {
++        return;
++    }
++    const rpcChains = chainIds.filter((chainId) => __classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f").getActiveChainsSync().includes(chainId));
++    if (rpcChains.length === 0) {
++        return;
++    }
++    const request = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_buildDataRequest).call(this, accounts, rpcChains, {
++        dataTypes: ['balance'],
++        forceUpdate: true,
++    });
++    const { response } = await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_executeMiddlewares).call(this, [
++        createParallelBalanceMiddleware([__classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f")]),
++        __classPrivateFieldGet(this, _AssetsController_detectionMiddleware, "f"),
++    ], request);
++    await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_updateState).call(this, { ...response, updateMode: 'merge' });
+ }, _AssetsController_runStartupRefresh = 
+ /**
+  * Force-fetch balances then subscribe. Used on unlock / first startup.
+@@ -2099,12 +2133,40 @@ async function _AssetsController_handleAccountGroupChanged() {
+         }
+         // Subscribe after fetch so WS notifications can recover state
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_subscribeAssets).call(this);
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, accounts, [
++            ...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f"),
++        ]);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureDefaultTrackedAssetsSeeded).call(this);
+     }
+     finally {
+         releaseLock();
+     }
++}, _AssetsController_handleSelectedEvmAccountChanged = 
++/**
++ * Handle EVM account selection within the current account group.
++ * Fires when the user picks a different address under the same logical
++ * account (not when switching account groups).
++ *
++ * @param account - Newly selected EVM account.
++ */
++async function _AssetsController_handleSelectedEvmAccountChanged(account) {
++    if (!__classPrivateFieldGet(this, _AssetsController_uiOpen, "f") || !__classPrivateFieldGet(this, _AssetsController_keyringUnlocked, "f") || !__classPrivateFieldGet(this, _AssetsController_isEnabled, "f").call(this)) {
++        return;
++    }
++    const releaseLock = await __classPrivateFieldGet(this, _AssetsController_accountRefreshMutex, "f").acquire();
++    try {
++        await this.getAssets([account], {
++            chainIds: [...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f")],
++            forceUpdate: true,
++        });
++        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_subscribeAssets).call(this);
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, [account], [...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f")]);
++        __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
++    }
++    finally {
++        releaseLock();
++    }
+ }, _AssetsController_handleEnabledNetworksChanged = async function _AssetsController_handleEnabledNetworksChanged(enabledNetworkMap) {
+     const previousChains = __classPrivateFieldGet(this, _AssetsController_enabledChains, "f");
+     __classPrivateFieldSet(this, _AssetsController_enabledChains, __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_extractEnabledChains).call(this, enabledNetworkMap), "f");
+@@ -2134,12 +2196,14 @@ async function _AssetsController_handleAccountGroupChanged() {
+     // Refresh subscriptions for new chain set
+     __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_subscribeAssets).call(this);
+     // Do one-time fetch for newly enabled chains; merge so we keep existing chain balances
+-    if (addedChains.length > 0 && __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this).length > 0) {
+-        await this.getAssets(__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this), {
++    const accounts = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this);
++    if (addedChains.length > 0 && accounts.length > 0) {
++        await this.getAssets(accounts, {
+             chainIds: addedChains,
+             forceUpdate: true,
+             updateMode: 'merge',
+         });
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, accounts, addedChains);
+     }
+     __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
+     // Seed default tracked assets (mUSD) for any chain the user has
+@@ -2219,6 +2283,7 @@ async function _AssetsController_handleNetworkDidChange(networkState) {
+             forceUpdate: true,
+             dataTypes: ['balance', 'metadata', 'price'],
+         });
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchAccountBalancesViaRpc).call(this, accounts, [selectedChainId]);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_ensureNativeBalancesDefaultZero).call(this);
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_fetchMissingPricesWithoutCache).call(this, accounts, [selectedChainId]);
+     }
