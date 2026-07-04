@@ -27,7 +27,7 @@ import {
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
-import * as useSubmitBridgeTransactionModule from '.../../hooks/bridge/useSubmitBridgeTransaction';
+import * as useSubmitBridgeTransactionModule from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
@@ -62,6 +62,7 @@ setBackgroundConnection({
   submitTx: jest.fn(),
   setEnabledAllPopularNetworks: jest.fn(),
   getStatePatches: jest.fn(),
+  getLocation: jest.fn().mockResolvedValue('Main View'),
   resetState: () => mockResetState(),
 } as never);
 

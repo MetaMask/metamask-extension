@@ -12,8 +12,26 @@ export type HwSignTrackerAction =
 /** Result of processing a transaction event through a tracking strategy. */
 export type EventResult = { action: HwSignTrackerAction | null };
 
+/**
+ * Sentinel {@link EventResult} returned by tracking strategies when a processed
+ * event should not dispatch any state-machine action.
+ *
+ * Shared as a single frozen-ish reference so strategies can return it from many
+ * code paths without allocating a new object each time.
+ */
 export const NO_ACTION: EventResult = { action: null };
 
+/**
+ * Inspects a signed transaction and decides which state-machine action (if any)
+ * it maps to. Returning `null` means the transaction does not correspond to a
+ * tracked signature event.
+ *
+ * Used by tracking strategies to classify `signed` status updates; the default
+ * implementation lives in `shared-filters.ts` and flows may override it.
+ *
+ * @param transactionMeta - The transaction metadata to classify.
+ * @returns The matching tracker action, or `null` if no action applies.
+ */
 export type SignedEventClassifier = (
   transactionMeta: TransactionMeta,
 ) => HwSignTrackerAction | null;
@@ -38,10 +56,16 @@ export type TrackingStrategy = {
   /**
    * Process a transactionStatusUpdated event.
    * Handles `signed` and `failed` statuses.
+   *
+   * @param transactionMeta - The transaction whose status changed.
+   * @param classifySignedTransactionType - Optional classifier used to map a
+   * `signed` transaction to a tracker action; defaults to
+   * `defaultEventClassifier` when omitted.
+   * @returns The tracker action to dispatch, or `NO_ACTION` if none applies.
    */
   processStatusUpdated(
     transactionMeta: TransactionMeta,
-    classifySignedEvent?: SignedEventClassifier,
+    classifySignedTransactionType?: SignedEventClassifier,
   ): EventResult;
 
   /** Process a transactionRejected event. */
@@ -57,13 +81,14 @@ export type TrackingStrategy = {
   reset(): void;
 };
 
-/** Options for configuring the hardware wallet signature tracker. */
+/** Expected transaction parameters for tracking. */
 export type ExpectedTransactionParams = {
   data?: Hex;
   to?: string;
   value?: string;
 };
 
+/** Options for configuring the hardware wallet signature tracker. */
 export type UseHwSignTrackerOptions = {
   enabled?: boolean;
   useBatchTracking: boolean;

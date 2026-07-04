@@ -12,6 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { createMockNotificationPreferences } from '../../../ui/hooks/metamask-notifications/mocks';
 import {
   ethSentNotification,
   featureNotification,
@@ -34,6 +35,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
+      getNotificationPreferences: createMockNotificationPreferences(),
       ...mockRequests,
     }),
   );

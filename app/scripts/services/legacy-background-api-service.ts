@@ -2,6 +2,7 @@ import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
@@ -19,6 +20,7 @@ import {
   KeyringControllerRemoveAccountAction,
   KeyringControllerWithKeyringV2Action,
   KeyringControllerSetLockedAction,
+  KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSubmitEncryptionKeyAction,
   KeyringControllerSubmitPasswordAction,
   KeyringControllerVerifyPasswordAction,
@@ -31,8 +33,12 @@ import {
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import {
+  TransactionContainerType,
+  TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUpdateEditableParamsAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
 import { CurrencyRateControllerSetCurrentCurrencyAction } from '@metamask/assets-controllers';
@@ -72,7 +78,6 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
-import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
@@ -88,6 +93,8 @@ import {
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
 import { SubscriptionControllerStopAllPollingAction } from '@metamask/subscription-controller';
+import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { cloneDeep } from 'lodash';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -102,8 +109,9 @@ import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
+import { applyTransactionContainers } from '../lib/transaction/containers/util';
+import { TransactionControllerInitMessenger } from '../messenger-client-init/messengers/transaction-controller-messenger';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
-import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerTrackEventAction,
@@ -124,8 +132,10 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'applyTransactionContainersExisting',
   'changePassword',
   'checkIsSeedlessPasswordOutdated',
+  'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
   'getCode',
@@ -170,6 +180,7 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | CurrencyRateControllerSetCurrentCurrencyAction
+  | DelegationControllerSignDelegationAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
   | KeyringControllerExportAccountAction
@@ -181,6 +192,7 @@ type AllowedActions =
   | KeyringControllerWithKeyringV2Action
   | MetaMetricsControllerTrackEventAction
   | KeyringControllerSetLockedAction
+  | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSubmitEncryptionKeyAction
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
@@ -191,6 +203,7 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
@@ -213,10 +226,12 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SubscriptionControllerStopAllPollingAction
+  | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
-  | TransactionControllerWipeTransactionsAction
-  | SnapAccountServiceGetLegacySnapKeyringAction;
+  | TransactionControllerIsAtomicBatchSupportedAction
+  | TransactionControllerUpdateEditableParamsAction
+  | TransactionControllerWipeTransactionsAction;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -407,6 +422,31 @@ export class LegacyBackgroundApiService {
       method: 'eth_getCode',
       params: [address],
     });
+  }
+
+  /**
+   * Estimates the gas for a given transaction using the currently selected
+   * network client.
+   *
+   * @param estimateGasParams - The parameters of the transaction to estimate
+   * the gas for.
+   * @returns The estimated gas as a hexadecimal string.
+   */
+  async estimateGas(estimateGasParams: Json): Promise<string> {
+    const networkClient = this.#messenger.call(
+      'NetworkController:getSelectedNetworkClient',
+    );
+
+    if (!networkClient) {
+      throw new Error('No network client available for gas estimation');
+    }
+
+    const result = await networkClient.provider.request<Json[], number>({
+      method: 'eth_estimateGas',
+      params: [estimateGasParams],
+    });
+
+    return result.toString(16);
   }
 
   /**
@@ -696,10 +736,7 @@ export class LegacyBackgroundApiService {
    * @returns The addresses of the accounts managed by the snap.
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
-    return getAccountsBySnapId(
-      getSnapKeyring.bind(null, this.#messenger),
-      snapId,
-    );
+    return getAccountsBySnapId(this.#messenger, snapId);
   }
 
   /**
@@ -1027,10 +1064,6 @@ export class LegacyBackgroundApiService {
     // Force account-tree refresh after all accounts have been updated.
     this.#messenger.call('AccountTreeController:init');
 
-    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
-    // available as soon as possible (enabling faster keyring access for future operations).
-    await getSnapKeyring(this.#messenger);
-
     // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
     // for mobile.
     // NOTE: We run this asynchronously on purpose, see FIXME^.
@@ -1140,6 +1173,55 @@ export class LegacyBackgroundApiService {
       'KeyringController:exportAccount',
       { password },
       address,
+    );
+  }
+
+  /**
+   * Applies the given transaction container types to an existing transaction.
+   *
+   * @param transactionId - The ID of the transaction to update.
+   * @param containerTypes - The container types to apply to the transaction.
+   */
+  async applyTransactionContainersExisting(
+    transactionId: string,
+    containerTypes: TransactionContainerType[],
+  ): Promise<void> {
+    const { transactions } = await this.#messenger.call(
+      'TransactionController:getState',
+    );
+
+    const transactionMeta = transactions.find((tx) => tx.id === transactionId);
+
+    if (!transactionMeta) {
+      throw new Error(`Transaction with ID ${transactionId} not found.`);
+    }
+
+    const { updateTransaction } = await applyTransactionContainers({
+      isApproved: false,
+      messenger:
+        this.#messenger as unknown as TransactionControllerInitMessenger,
+      transactionMeta,
+      types: containerTypes,
+    });
+
+    const newTransactionMeta = cloneDeep(transactionMeta);
+
+    updateTransaction(newTransactionMeta);
+
+    this.#messenger.call(
+      'TransactionController:updateEditableParams',
+      transactionId,
+      {
+        containerTypes,
+        data: newTransactionMeta.txParams.data ?? '0x',
+        gas: newTransactionMeta.txParams.gas,
+        gasPrice: transactionMeta.txParams.gasPrice,
+        maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
+        maxPriorityFeePerGas: transactionMeta.txParams.maxPriorityFeePerGas,
+        to: newTransactionMeta.txParams.to,
+        updateType: false,
+        value: newTransactionMeta.txParams.value,
+      },
     );
   }
 }

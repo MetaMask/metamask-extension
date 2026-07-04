@@ -200,6 +200,12 @@ describe('QRHardwarePopover', () => {
 });
 
 describe('title behavior', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+    mockPathname = '/';
+  });
+
   it('displays errorTitle when child sets it, overriding the flow title', async () => {
     renderPopover(
       buildStore({

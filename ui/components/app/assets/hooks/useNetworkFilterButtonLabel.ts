@@ -43,7 +43,9 @@ export function useNetworkFilterButtonLabel(): string {
       const caipChainId = isStrictHexString(chainId)
         ? toEvmCaipChainId(chainId)
         : chainId;
-      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
+      const networkName =
+        allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
+      return `${t('network')}: ${networkName}`;
     }
     // > 1 network selected, show whether that means every visible network or
     // only the default-network set.

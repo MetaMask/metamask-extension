@@ -28,6 +28,7 @@ export function getLegacyBackgroundApiServiceMessenger(
     actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:setSelectedCurrency',
@@ -56,7 +57,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
-      'SnapAccountService:getLegacySnapKeyring',
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
       'MetaMetricsController:trackEvent',
@@ -86,6 +86,11 @@ export function getLegacyBackgroundApiServiceMessenger(
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
+      'TransactionController:updateEditableParams',
+      'TransactionController:estimateGas',
+      'TransactionController:isAtomicBatchSupported',
+      'DelegationController:signDelegation',
+      'KeyringController:signEip7702Authorization',
     ],
   });
 
