@@ -1,0 +1,40 @@
+diff --git a/dist/AssetsController.d.cts b/dist/AssetsController.d.cts
+index 1b0f66f9f659d628973cfb0ea1feb3efe6d6967d..3c6f99424547fdfebdd283d3510f99b3e31315b2 100644
+--- a/dist/AssetsController.d.cts
++++ b/dist/AssetsController.d.cts
+@@ -1,5 +1,5 @@
+ import type { AccountTreeControllerGetAccountsFromSelectedAccountGroupAction, AccountTreeControllerSelectedAccountGroupChangeEvent, AccountTreeControllerState } from "@metamask/account-tree-controller";
+-import type { AccountsControllerGetSelectedAccountAction } from "@metamask/accounts-controller";
++import type { AccountsControllerGetSelectedAccountAction, AccountsControllerSelectedEvmAccountChangeEvent } from "@metamask/accounts-controller";
+ import { BaseController } from "@metamask/base-controller";
+ import type { ControllerGetStateAction, ControllerStateChangeEvent, ControllerStateChangedEvent } from "@metamask/base-controller";
+ import type { ClientControllerState } from "@metamask/client-controller";
+@@ -113,7 +113,7 @@ type AllowedActions = AccountsControllerGetSelectedAccountAction | AccountTreeCo
+ type AccountTreeControllerStateChangedEvent = ControllerStateChangedEvent<'AccountTreeController', AccountTreeControllerState>;
+ type ClientControllerStateChangedEvent = ControllerStateChangedEvent<'ClientController', ClientControllerState>;
+ type NetworkEnablementControllerStateChangedEvent = ControllerStateChangedEvent<'NetworkEnablementController', NetworkEnablementControllerState>;
+-type AllowedEvents = AccountTreeControllerSelectedAccountGroupChangeEvent | AccountTreeControllerStateChangedEvent | ClientControllerStateChangedEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerUnapprovedTransactionAddedEvent | TransactionControllerTransactionConfirmedEvent | NetworkControllerStateChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkDidChangeEvent | NetworkControllerNetworkRemovedEvent | NetworkEnablementControllerEvents | NetworkEnablementControllerStateChangedEvent | AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange | SnapControllerSnapInstalledEvent | BackendWebSocketServiceEvents | AccountActivityServiceBalanceUpdatedEvent;
++type AllowedEvents = AccountTreeControllerSelectedAccountGroupChangeEvent | AccountTreeControllerStateChangedEvent | ClientControllerStateChangedEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerUnapprovedTransactionAddedEvent | TransactionControllerTransactionConfirmedEvent | NetworkControllerStateChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkDidChangeEvent | NetworkControllerNetworkRemovedEvent | NetworkEnablementControllerEvents | NetworkEnablementControllerStateChangedEvent | AccountsControllerAccountBalancesUpdatedEvent | AccountsControllerSelectedEvmAccountChangeEvent | PermissionControllerStateChange | SnapControllerSnapInstalledEvent | BackendWebSocketServiceEvents | AccountActivityServiceBalanceUpdatedEvent;
+ export type AssetsControllerMessenger = Messenger<typeof CONTROLLER_NAME, AssetsControllerActions | AllowedActions, AssetsControllerEvents | AllowedEvents>;
+ export type AssetsControllerOptions = {
+     messenger: AssetsControllerMessenger;
+diff --git a/dist/AssetsController.d.mts b/dist/AssetsController.d.mts
+index 30c1813436044f65821a2fb63257a7a06d1a0233..adc981ef066c268c3041a2b2c985f6ff0892db87 100644
+--- a/dist/AssetsController.d.mts
++++ b/dist/AssetsController.d.mts
+@@ -1,5 +1,5 @@
+ import type { AccountTreeControllerGetAccountsFromSelectedAccountGroupAction, AccountTreeControllerSelectedAccountGroupChangeEvent, AccountTreeControllerState } from "@metamask/account-tree-controller";
+-import type { AccountsControllerGetSelectedAccountAction } from "@metamask/accounts-controller";
++import type { AccountsControllerGetSelectedAccountAction, AccountsControllerSelectedEvmAccountChangeEvent } from "@metamask/accounts-controller";
+ import { BaseController } from "@metamask/base-controller";
+ import type { ControllerGetStateAction, ControllerStateChangeEvent, ControllerStateChangedEvent } from "@metamask/base-controller";
+ import type { ClientControllerState } from "@metamask/client-controller";
+@@ -113,7 +113,7 @@ type AllowedActions = AccountsControllerGetSelectedAccountAction | AccountTreeCo
+ type AccountTreeControllerStateChangedEvent = ControllerStateChangedEvent<'AccountTreeController', AccountTreeControllerState>;
+ type ClientControllerStateChangedEvent = ControllerStateChangedEvent<'ClientController', ClientControllerState>;
+ type NetworkEnablementControllerStateChangedEvent = ControllerStateChangedEvent<'NetworkEnablementController', NetworkEnablementControllerState>;
+-type AllowedEvents = AccountTreeControllerSelectedAccountGroupChangeEvent | AccountTreeControllerStateChangedEvent | ClientControllerStateChangedEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerUnapprovedTransactionAddedEvent | TransactionControllerTransactionConfirmedEvent | NetworkControllerStateChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkDidChangeEvent | NetworkControllerNetworkRemovedEvent | NetworkEnablementControllerEvents | NetworkEnablementControllerStateChangedEvent | AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange | SnapControllerSnapInstalledEvent | BackendWebSocketServiceEvents | AccountActivityServiceBalanceUpdatedEvent;
++type AllowedEvents = AccountTreeControllerSelectedAccountGroupChangeEvent | AccountTreeControllerStateChangedEvent | ClientControllerStateChangedEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerUnapprovedTransactionAddedEvent | TransactionControllerTransactionConfirmedEvent | NetworkControllerStateChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkDidChangeEvent | NetworkControllerNetworkRemovedEvent | NetworkEnablementControllerEvents | NetworkEnablementControllerStateChangedEvent | AccountsControllerAccountBalancesUpdatedEvent | AccountsControllerSelectedEvmAccountChangeEvent | PermissionControllerStateChange | SnapControllerSnapInstalledEvent | BackendWebSocketServiceEvents | AccountActivityServiceBalanceUpdatedEvent;
+ export type AssetsControllerMessenger = Messenger<typeof CONTROLLER_NAME, AssetsControllerActions | AllowedActions, AssetsControllerEvents | AllowedEvents>;
+ export type AssetsControllerOptions = {
+     messenger: AssetsControllerMessenger;
