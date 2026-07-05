@@ -13,8 +13,6 @@ const { chrome } = globalThis;
 
 addMv3ServiceWorkerDiagnosticErrorListeners();
 logMv3ServiceWorkerDiagnostic('service-worker-module-start', {
-  enableLavaMoat: process.env.ENABLE_LAVAMOAT,
-  enableSnow: process.env.ENABLE_SNOW,
   environment: process.env.METAMASK_ENVIRONMENT,
   buildType: process.env.METAMASK_BUILD_TYPE,
   inTest: Boolean(process.env.IN_TEST),
@@ -59,7 +57,8 @@ async function runImportScripts() {
   }
 
   const endImportScriptsTime = performance.now();
-  const durationSeconds = (endImportScriptsTime - startImportScriptsTime) / 1000;
+  const durationSeconds =
+    (endImportScriptsTime - startImportScriptsTime) / 1000;
 
   // for performance metrics/reference
   console.log(`importScripts completed in ${durationSeconds} seconds`);

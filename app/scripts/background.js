@@ -202,8 +202,6 @@ function logBackgroundMv3ServiceWorkerDiagnostic(event, details = {}) {
 if (shouldLogMv3ServiceWorkerDiagnostics) {
   addMv3ServiceWorkerDiagnosticErrorListeners();
   logBackgroundMv3ServiceWorkerDiagnostic('background-module-start', {
-    enableLavaMoat: process.env.ENABLE_LAVAMOAT,
-    enableSnow: process.env.ENABLE_SNOW,
     environment: process.env.METAMASK_ENVIRONMENT,
     buildType: process.env.METAMASK_BUILD_TYPE,
     inTest: Boolean(inTest),

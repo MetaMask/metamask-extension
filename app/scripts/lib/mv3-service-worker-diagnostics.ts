@@ -5,11 +5,7 @@ let diagnosticLogCount = 0;
 let globalErrorListenersInstalled = false;
 
 export function isMv3ServiceWorkerDiagnosticsEnabled(): boolean {
-  return Boolean(
-    process.env.IN_TEST ||
-      process.env.METAMASK_DEBUG ||
-      process.env.ENABLE_LAVAMOAT === 'true',
-  );
+  return Boolean(process.env.IN_TEST || process.env.METAMASK_DEBUG);
 }
 
 export function getDiagnosticError(error: unknown) {
@@ -24,8 +20,7 @@ export function getDiagnosticError(error: unknown) {
   if (error && typeof error === 'object') {
     const errorRecord = error as Record<string, unknown>;
     return {
-      name:
-        typeof errorRecord.name === 'string' ? errorRecord.name : undefined,
+      name: typeof errorRecord.name === 'string' ? errorRecord.name : undefined,
       message:
         typeof errorRecord.message === 'string'
           ? errorRecord.message
