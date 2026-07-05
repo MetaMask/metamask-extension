@@ -10,42 +10,11 @@ import type { Args } from '../../cli';
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
 const rootDir = join(__dirname, '../../../../../');
 
-// The MV3 service worker entry. Its own module and everything it *statically*
-// imports (the pre-lockdown bootstrap + top-level event-listener registration)
-// must run outside LavaMoat: a Compartment-wrapped module cannot register
-// listeners on the real `ServiceWorkerGlobalScope`. Unlike the other unsafe
-// entries, though, its chunk must still carry the LavaMoat runtime + SES,
-// because it hosts the dynamically-imported, LavaMoat-wrapped `background`
-// bundle (see `backgroundEntryRe`).
-const SERVICE_WORKER_ENTRY = 'service-worker.ts';
-
-// Entries assigned to the 'unsafe' layer so they (and their statically-imported
-// graph) are excluded from Compartment wrapping.
-const unsafeLayerEntries: Set<string> = new Set([
-  'scripts/inpage.js',
-  'bootstrap',
-  SERVICE_WORKER_ENTRY,
-]);
-
-// Entries that run fully outside LavaMoat and host no wrapped code, so their
-// chunk gets no LavaMoat runtime at all. The service worker is intentionally
-// absent: it hosts the wrapped `background` bundle and so needs the runtime.
+// Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
 const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
 ]);
-
-// Matches the app's `background` root module, which the service worker pulls in
-// via `await import('./scripts/background.js')`. This is the boundary at which
-// the 'unsafe' layer must stop, so that `background` and its entire dependency
-// graph run *inside* LavaMoat. This is the whole point of the security model:
-// a compromised npm dependency in the background must not get unrestricted
-// global access.
-const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.js$/u;
-
-// The dedicated layer that `background` (and, by inheritance, its dependency
-// graph) is moved into so it escapes the 'unsafe' exclusion and gets wrapped.
-const BACKGROUND_LAYER = 'sw-background';
 
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
@@ -76,24 +45,18 @@ export const lavamoatPlugin = (args: Args) =>
       reporting: 'none',
     },
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
-      if (chunk.name === SERVICE_WORKER_ENTRY) {
-        // The SW entry module and its static bootstrap imports are excluded
-        // from wrapping (the 'unsafe' layer), but this chunk must run in 'safe'
-        // mode so it carries the LavaMoat runtime (`_LM_`) + SES. The
-        // dynamically-imported `background` bundle is wrapped and relies on
-        // both being present in the SW realm.
-        return {
-          mode: 'safe',
-          // Scuttling poisons globals (chrome, self, importScripts, ...) that
-          // the unwrapped bootstrap and webpack's importScripts chunk loader
-          // depend on in a service worker. Compartment wrapping + lockdown
-          // already contain background dependencies, so scuttling is disabled
-          // here.
-          embeddedOptions: { scuttleGlobalThis: { enabled: false } },
-        };
-      } else if (chunk.name && nullUnsafeEntries.has(chunk.name)) {
+      if (chunk.name && nullUnsafeEntries.has(chunk.name)) {
         // nullUnsafeEntries run fully outside of LavaMoat, no runtime added
         return { mode: 'null_unsafe' };
+      } else if (chunk.name === 'service-worker.ts') {
+        // The SW entry module and its static bootstrap imports are excluded
+        // from wrapping (the 'unsafe' layer), but this chunk must run in 'safe'
+        // mode so it carries the LavaMoat runtime. The imported `background` bundle
+        // is wrapped and relies on both being present in the SW realm.
+        return {
+          mode: 'safe',
+          embeddedOptions: { scuttleGlobalThis: { enabled: false } },
+        };
       } else if (chunk.name === 'scripts/contentscript.js') {
         return {
           mode: 'safe',
@@ -198,6 +161,11 @@ export const lavamoatPlugin = (args: Args) =>
     },
   });
 
+// Matches the app's `background` root module, which the service worker imports.
+// This is the boundary at which the 'unsafe' layer must stop, so that `background`
+// and its entire dependency graph run inside LavaMoat.
+const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.js$/u;
+
 // Unsafe layer that runs code without LavaMoat. `background` is excluded here
 // because, although it is imported from the unsafe service worker, it must
 // itself be wrapped; `lavamoatBackgroundLayerRule` re-layers it (and its graph)
@@ -208,15 +176,21 @@ export const lavamoatUnsafeLayerRule = {
   use: LavamoatExcludeLoader,
 } satisfies RuleSetRule;
 
-// Moves `background` (and, by layer inheritance, its entire dependency graph)
-// out of the 'unsafe' layer so LavaMoat wraps it. Without this, the dynamic
-// import from the unsafe service worker would drag the whole background graph
-// into the 'unsafe' layer and leave it unprotected — the MV3 background bug.
+// Moves `background` out of the 'unsafe' layer so LavaMoat wraps it.
+// Without this, the import from the unsafe service worker would drag
+// the whole background graph into the 'unsafe' layer and leave it unprotected.
 export const lavamoatBackgroundLayerRule = {
   test: backgroundEntryRe,
   issuerLayer: 'unsafe',
-  layer: BACKGROUND_LAYER,
+  layer: 'background',
 } satisfies RuleSetRule;
+
+// Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
+const unsafeLayerEntries: Set<string> = new Set([
+  'scripts/inpage.js',
+  'bootstrap',
+  'service-worker.ts',
+]);
 
 // Unsafe layer plugin that applies the layer and assigns the unsafe entries to it
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
