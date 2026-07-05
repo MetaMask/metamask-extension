@@ -53,11 +53,13 @@ jest.mock('webextension-polyfill', () => ({
 
 jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
-const mockGetIsBasicFunctionalityToggleEnabled = jest.fn(() => false);
-jest.mock('../../../selectors/multichain/feature-flags', () => ({
-  ...jest.requireActual('../../../selectors/multichain/feature-flags'),
-  getIsBasicFunctionalityToggleEnabled: () =>
-    mockGetIsBasicFunctionalityToggleEnabled(),
+const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
+  () => false,
+);
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
 }));
 
 // Mock background connection to prevent "Background connection not initialized" warnings
@@ -121,7 +123,9 @@ describe('Wallet Ready Page', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetIsBasicFunctionalityToggleEnabled.mockReturnValue(false);
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      false,
+    );
     mockUseNavigate.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
   });
@@ -197,8 +201,8 @@ describe('Wallet Ready Page', () => {
     });
   });
 
-  it('sets the consolidated Basic Functionality cohort marker when the remote flag is enabled', async () => {
-    mockGetIsBasicFunctionalityToggleEnabled.mockReturnValue(true);
+  it('sets the consolidated Basic Functionality cohort marker when the build flag is enabled', async () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(true);
     const mockStore = configureMockStore([thunk])(mockState);
     const { getByTestId } = renderWithProvider(
       <CreationSuccessful />,

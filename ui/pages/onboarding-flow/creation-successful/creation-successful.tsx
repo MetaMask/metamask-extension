@@ -65,8 +65,8 @@ import {
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-import { getIsBasicFunctionalityToggleEnabled } from '../../../selectors/multichain/feature-flags';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
   buildInterstitialRoute,
@@ -90,9 +90,8 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
-  const isBasicFunctionalityToggleEnabled = useSelector(
-    getIsBasicFunctionalityToggleEnabled,
-  );
+  const isBasicFunctionalityToggleEnabled =
+    getIsBasicFunctionalityConsolidationEnabledInBuild();
   const backupAndSyncOnboardingToggleState = useSelector(
     getBackupAndSyncOnboardingToggleState,
   );
