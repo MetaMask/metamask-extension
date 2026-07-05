@@ -137,7 +137,7 @@ describe('BasicFunctionalityToggleItem', () => {
         useExternalServices: false,
         remoteFeatureFlags: {
           ...mockState.metamask.remoteFeatureFlags,
-          basicFunctionality: true,
+          extensionBasicFunctionalityToggle: true,
         },
         preferences: {
           ...mockState.metamask.preferences,

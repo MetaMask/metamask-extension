@@ -53,7 +53,7 @@ describe('SecurityAndPasswordTab', () => {
   it('hides phishing detection when consolidated Basic Functionality is enabled', () => {
     renderWithProvider(
       <SecurityAndPasswordTab />,
-      createStore({ basicFunctionality: true }, true),
+      createStore({ extensionBasicFunctionalityToggle: true }, true),
     );
 
     expect(

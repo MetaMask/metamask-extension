@@ -49,7 +49,7 @@ describe('ThirdPartyApisSubPage', () => {
   it('redirects when consolidated Basic Functionality is enabled', () => {
     renderWithProvider(
       <ThirdPartyApisSubPage />,
-      createStore({ basicFunctionality: true }, true),
+      createStore({ extensionBasicFunctionalityToggle: true }, true),
     );
 
     expect(screen.queryByTestId('ipfs-gateway-toggle')).not.toBeInTheDocument();

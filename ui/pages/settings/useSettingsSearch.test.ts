@@ -144,7 +144,7 @@ describe('useSettingsSearch', () => {
 
   it('hides consolidated Basic Functionality settings when the flag is enabled', () => {
     const { result } = renderHook(() => useSettingsSearch('auto'), {
-      wrapper: createWrapper({ basicFunctionality: true }, true),
+      wrapper: createWrapper({ extensionBasicFunctionalityToggle: true }, true),
     });
 
     expect(result.current).toEqual([]);
@@ -152,7 +152,7 @@ describe('useSettingsSearch', () => {
 
   it('keeps IPFS searchable on the Privacy page when the flag is enabled', () => {
     const { result } = renderHook(() => useSettingsSearch('ipfs'), {
-      wrapper: createWrapper({ basicFunctionality: true }, true),
+      wrapper: createWrapper({ extensionBasicFunctionalityToggle: true }, true),
     });
 
     expect(result.current).toHaveLength(1);
@@ -162,7 +162,7 @@ describe('useSettingsSearch', () => {
 
   it('keeps granular settings searchable when the flag is enabled without the local cohort marker', () => {
     const { result } = renderHook(() => useSettingsSearch('auto'), {
-      wrapper: createWrapper({ basicFunctionality: true }, false),
+      wrapper: createWrapper({ extensionBasicFunctionalityToggle: true }, false),
     });
 
     expect(result.current).toHaveLength(1);

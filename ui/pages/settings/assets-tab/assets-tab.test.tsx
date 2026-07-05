@@ -46,7 +46,7 @@ describe('Assets Tab', () => {
   it('hides asset API toggles when consolidated Basic Functionality is enabled', () => {
     renderWithProvider(
       <Assets />,
-      createStore({ basicFunctionality: true }, true),
+      createStore({ extensionBasicFunctionalityToggle: true }, true),
     );
 
     expect(

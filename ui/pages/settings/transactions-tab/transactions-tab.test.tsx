@@ -65,7 +65,7 @@ describe('TransactionsTab', () => {
     it('hides consolidated Basic Functionality toggles when the flag is enabled', () => {
       renderWithProvider(
         <TransactionsTab />,
-        createStore({ basicFunctionality: true }, true),
+        createStore({ extensionBasicFunctionalityToggle: true }, true),
       );
 
       expect(

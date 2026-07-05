@@ -101,14 +101,15 @@ export const getIsTokenManagementFilterEnabled = createSelector(
 );
 
 /**
- * Get the state of the `basicFunctionality` remote feature flag.
+ * Get the state of the `extensionBasicFunctionalityToggle` remote feature flag.
  *
  * @param _state - The MetaMask state object
  * @returns boolean - True if the feature is enabled, false otherwise.
  */
 export const getIsBasicFunctionalityToggleEnabled = createSelector(
   getRemoteFeatureFlags,
-  ({ basicFunctionality }) => true,
+  ({ extensionBasicFunctionalityToggle }) =>
+    getBooleanFeatureFlag(extensionBasicFunctionalityToggle, false),
 );
 
 /**

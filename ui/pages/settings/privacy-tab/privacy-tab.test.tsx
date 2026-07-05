@@ -47,7 +47,7 @@ describe('PrivacyTab', () => {
   it('hides granular privacy controls when consolidated Basic Functionality is enabled', () => {
     renderWithProvider(
       <PrivacyTab />,
-      createStore({ basicFunctionality: true }, true),
+      createStore({ extensionBasicFunctionalityToggle: true }, true),
     );
 
     expect(
@@ -65,7 +65,7 @@ describe('PrivacyTab', () => {
   it('keeps existing Privacy settings when the remote flag is enabled without the local cohort marker', () => {
     renderWithProvider(
       <PrivacyTab />,
-      createStore({ basicFunctionality: true }, false),
+      createStore({ extensionBasicFunctionalityToggle: true }, false),
     );
 
     expect(

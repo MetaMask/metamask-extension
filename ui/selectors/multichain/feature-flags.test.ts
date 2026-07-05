@@ -193,7 +193,7 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
     expect(
       getIsBasicFunctionalityToggleEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        buildState({ basicFunctionality: true }) as any,
+        buildState({ extensionBasicFunctionalityToggle: true }) as any,
       ),
     ).toBe(true);
   });
@@ -202,7 +202,7 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
     expect(
       getIsBasicFunctionalityToggleEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        buildState({ basicFunctionality: false }) as any,
+        buildState({ extensionBasicFunctionalityToggle: false }) as any,
       ),
     ).toBe(false);
   });
@@ -211,7 +211,7 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
     expect(
       getIsBasicFunctionalityToggleEnabled(
         buildState({
-          basicFunctionality: {
+          extensionBasicFunctionalityToggle: {
             enabled: true,
             minimumVersion: '0.0.0',
           },
@@ -225,7 +225,7 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
     expect(
       getIsBasicFunctionalityToggleEnabled(
         buildState({
-          basicFunctionality: {
+          extensionBasicFunctionalityToggle: {
             enabled: true,
             minimumVersion: '999.0.0',
           },
@@ -248,7 +248,7 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        buildState({ basicFunctionality: true }, true) as any,
+        buildState({ extensionBasicFunctionalityToggle: true }, true) as any,
       ),
     ).toBe(true);
   });
@@ -257,7 +257,7 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        buildState({ basicFunctionality: true }, false) as any,
+        buildState({ extensionBasicFunctionalityToggle: true }, false) as any,
       ),
     ).toBe(false);
   });
@@ -266,7 +266,7 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        buildState({ basicFunctionality: false }, true) as any,
+        buildState({ extensionBasicFunctionalityToggle: false }, true) as any,
       ),
     ).toBe(false);
   });
