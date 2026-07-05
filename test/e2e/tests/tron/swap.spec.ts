@@ -34,7 +34,7 @@ describe('Swap on Tron', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('6.07');
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
@@ -74,7 +74,7 @@ describe('Swap on Tron', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('6.07');
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
