@@ -121,6 +121,12 @@ import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageM
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
 import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
+import {
+  addMv3ServiceWorkerDiagnosticErrorListeners,
+  getDiagnosticError,
+  isMv3ServiceWorkerDiagnosticsEnabled,
+  logMv3ServiceWorkerDiagnostic,
+} from './lib/mv3-service-worker-diagnostics';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -139,8 +145,75 @@ const BADGE_MAX_COUNT = 9;
 const maxSeenFailedNonces = 99;
 
 const inTest = process.env.IN_TEST;
+const shouldLogMv3ServiceWorkerDiagnostics =
+  isManifestV3 && isMv3ServiceWorkerDiagnosticsEnabled();
 
 const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
+const NETWORK_DIAGNOSTIC_LIMIT = 20;
+
+let networkDiagnosticCount = 0;
+
+function getNetworkStatusDiagnostics(networkControllerState) {
+  const networksMetadata = networkControllerState?.networksMetadata ?? {};
+  const selectedNetworkClientId =
+    networkControllerState?.selectedNetworkClientId ?? null;
+  const statuses = Object.fromEntries(
+    Object.entries(networksMetadata).map(([networkClientId, metadata]) => [
+      networkClientId,
+      metadata?.status ?? null,
+    ]),
+  );
+
+  return {
+    selectedNetworkClientId,
+    selectedStatus: selectedNetworkClientId
+      ? (statuses[selectedNetworkClientId] ?? null)
+      : null,
+    statuses,
+    networkClientIds: Object.keys(statuses),
+  };
+}
+
+function logNetworkStatusDiagnostic(event, networkControllerState, details) {
+  if (
+    !shouldLogMv3ServiceWorkerDiagnostics ||
+    networkDiagnosticCount >= NETWORK_DIAGNOSTIC_LIMIT
+  ) {
+    return;
+  }
+
+  networkDiagnosticCount += 1;
+
+  logMv3ServiceWorkerDiagnostic(event, {
+    networkDiagnosticCount,
+    ...details,
+    ...getNetworkStatusDiagnostics(networkControllerState),
+  });
+}
+
+function logBackgroundMv3ServiceWorkerDiagnostic(event, details = {}) {
+  if (!shouldLogMv3ServiceWorkerDiagnostics) {
+    return;
+  }
+
+  logMv3ServiceWorkerDiagnostic(event, details);
+}
+
+if (shouldLogMv3ServiceWorkerDiagnostics) {
+  addMv3ServiceWorkerDiagnosticErrorListeners();
+  logBackgroundMv3ServiceWorkerDiagnostic('background-module-start', {
+    enableLavaMoat: process.env.ENABLE_LAVAMOAT,
+    enableSnow: process.env.ENABLE_SNOW,
+    environment: process.env.METAMASK_ENVIRONMENT,
+    buildType: process.env.METAMASK_BUILD_TYPE,
+    inTest: Boolean(inTest),
+    hasChromeRuntime: Boolean(globalThis.chrome?.runtime),
+    hasBrowserRuntime: Boolean(browser?.runtime),
+    hasFetch: typeof globalThis.fetch === 'function',
+    hasIndexedDB: Boolean(globalThis.indexedDB),
+    navigatorOnLine: globalThis.navigator?.onLine,
+  });
+}
 
 /**
  * Whether backup fetch saw a vault at startup less than {@link VAULT_AT_STARTUP_TEST_WINDOW_MS} ago.
@@ -805,11 +878,19 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize(backup) {
+  logBackgroundMv3ServiceWorkerDiagnostic('initialize-start', {
+    hasBackup: Boolean(backup),
+  });
+
   // Initialize install type early so it's cached for MetaMetrics user traits
   // This is fire-and-forget - we don't await it to avoid blocking initialization
   initInstallType();
 
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+  logBackgroundMv3ServiceWorkerDiagnostic('offscreen-create-requested', {
+    isManifestV3,
+    hasOffscreenApi: Boolean(browser.offscreen),
+  });
 
   // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
   // This ensures we capture the initial connectivity status from the offscreen document
@@ -819,6 +900,11 @@ async function initialize(backup) {
 
   if (isManifestV3) {
     addOffscreenConnectivityListener((isOnline) => {
+      logBackgroundMv3ServiceWorkerDiagnostic('offscreen-connectivity-status', {
+        isOnline,
+        connectivityReady,
+        hasConnectivityAdapter: Boolean(controller?.connectivityAdapter),
+      });
       if (connectivityReady && controller.connectivityAdapter) {
         const status = isOnline ? 'online' : 'offline';
         controller.connectivityAdapter.setStatus(status);
@@ -830,9 +916,17 @@ async function initialize(backup) {
   }
 
   const initData = await loadStateFromPersistence(backup);
+  logBackgroundMv3ServiceWorkerDiagnostic('state-loaded-from-persistence', {
+    storageKind: persistenceManager.storageKind,
+    stateKeys: Object.keys(initData.data ?? {}),
+    migrationVersion: initData.meta?.version,
+  });
 
   const initState = initData.data;
   const initLangCode = await getFirstPreferredLangCode();
+  logBackgroundMv3ServiceWorkerDiagnostic('preferred-language-loaded', {
+    hasLanguage: Boolean(initLangCode),
+  });
 
   let isFirstMetaMaskControllerSetup;
 
@@ -868,8 +962,12 @@ async function initialize(backup) {
   }
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
+  logBackgroundMv3ServiceWorkerDiagnostic('preinstalled-snaps-loaded', {
+    count: preinstalledSnaps.length,
+  });
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
+  logBackgroundMv3ServiceWorkerDiagnostic('cronjob-storage-manager-ready');
 
   setupController(
     initState,
@@ -879,6 +977,23 @@ async function initialize(backup) {
     offscreenPromise,
     preinstalledSnaps,
     cronjobControllerStorageManager,
+  );
+  logNetworkStatusDiagnostic(
+    'network-controller-initial-state',
+    controller.networkController.state,
+    {
+      afterSetupController: true,
+    },
+  );
+  controller.controllerMessenger.subscribe(
+    'NetworkController:stateChange',
+    (networkControllerState) => {
+      logNetworkStatusDiagnostic(
+        'network-controller-state-change',
+        networkControllerState,
+        {},
+      );
+    },
   );
 
   controller.metaMetricsController.updateTraits({
@@ -895,6 +1010,12 @@ async function initialize(backup) {
     if (pendingConnectivityStatus !== null) {
       const status = pendingConnectivityStatus ? 'online' : 'offline';
       controller.connectivityAdapter.setStatus(status);
+      logBackgroundMv3ServiceWorkerDiagnostic(
+        'pending-connectivity-status-applied',
+        {
+          status,
+        },
+      );
     }
   } else {
     // MV2: Background page has access to window events
@@ -911,6 +1032,7 @@ async function initialize(backup) {
     await loadPhishingWarningPage();
   }
   await sendReadyMessageToTabs();
+  logBackgroundMv3ServiceWorkerDiagnostic('ready-message-sent-to-tabs');
 
   new DeepLinkRouter({
     getExtensionURL: platform.getExtensionURL,
@@ -2594,8 +2716,12 @@ async function initBackground(backup) {
     }
 
     log.info('MetaMask initialization complete.');
+    logBackgroundMv3ServiceWorkerDiagnostic('initialization-complete');
     resolveInitialization();
   } catch (error) {
+    logBackgroundMv3ServiceWorkerDiagnostic('initialization-failed', {
+      error: getDiagnosticError(error),
+    });
     log.error(error);
     rejectInitialization(error);
   }
