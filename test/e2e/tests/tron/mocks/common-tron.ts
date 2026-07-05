@@ -16,7 +16,7 @@ const MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR = new Date(
 ).getTime();
 
 // TRX balance in SUN (1 TRX = 1,000,000 SUN)
-export const TRX_BALANCE = 6072392; // ~6.07 TRX
+export const TRX_BALANCE = 106072392; // ~106.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
 
