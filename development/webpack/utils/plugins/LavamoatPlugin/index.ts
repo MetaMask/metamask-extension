@@ -10,12 +10,42 @@ import type { Args } from '../../cli';
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
 const rootDir = join(__dirname, '../../../../../');
 
-// Entries that need to be included in the unsafe layer to run without LavaMoat.
-const unsafeEntries: Set<string> = new Set([
+// The MV3 service worker entry. Its own module and everything it *statically*
+// imports (the pre-lockdown bootstrap + top-level event-listener registration)
+// must run outside LavaMoat: a Compartment-wrapped module cannot register
+// listeners on the real `ServiceWorkerGlobalScope`. Unlike the other unsafe
+// entries, though, its chunk must still carry the LavaMoat runtime + SES,
+// because it hosts the dynamically-imported, LavaMoat-wrapped `background`
+// bundle (see `backgroundEntryRe`).
+const SERVICE_WORKER_ENTRY = 'service-worker.ts';
+
+// Entries assigned to the 'unsafe' layer so they (and their statically-imported
+// graph) are excluded from Compartment wrapping.
+const unsafeLayerEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
-  'service-worker.ts',
+  SERVICE_WORKER_ENTRY,
 ]);
+
+// Entries that run fully outside LavaMoat and host no wrapped code, so their
+// chunk gets no LavaMoat runtime at all. The service worker is intentionally
+// absent: it hosts the wrapped `background` bundle and so needs the runtime.
+const nullUnsafeEntries: Set<string> = new Set([
+  'scripts/inpage.js',
+  'bootstrap',
+]);
+
+// Matches the app's `background` root module, which the service worker pulls in
+// via `await import('./scripts/background.js')`. This is the boundary at which
+// the 'unsafe' layer must stop, so that `background` and its entire dependency
+// graph run *inside* LavaMoat. This is the whole point of the security model:
+// a compromised npm dependency in the background must not get unrestricted
+// global access.
+const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.js$/u;
+
+// The dedicated layer that `background` (and, by inheritance, its dependency
+// graph) is moved into so it escapes the 'unsafe' exclusion and gets wrapped.
+const BACKGROUND_LAYER = 'sw-background';
 
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
@@ -30,9 +60,11 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'runtime.<hash>.js' and 'scripts/contentscript.js'
+    // we apply lockdown to 'runtime.<hash>.js', 'scripts/contentscript.js', and
+    // 'service-worker.js' (the MV3 SW loads no separate runtime chunk, so SES
+    // must be inlined into its own bundle for the wrapped background to work)
     inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u,
+      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -44,8 +76,23 @@ export const lavamoatPlugin = (args: Args) =>
       reporting: 'none',
     },
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
-      if (chunk.name && unsafeEntries.has(chunk.name)) {
-        // unsafeEntries are running outside of LavaMoat
+      if (chunk.name === SERVICE_WORKER_ENTRY) {
+        // The SW entry module and its static bootstrap imports are excluded
+        // from wrapping (the 'unsafe' layer), but this chunk must run in 'safe'
+        // mode so it carries the LavaMoat runtime (`_LM_`) + SES. The
+        // dynamically-imported `background` bundle is wrapped and relies on
+        // both being present in the SW realm.
+        return {
+          mode: 'safe',
+          // Scuttling poisons globals (chrome, self, importScripts, ...) that
+          // the unwrapped bootstrap and webpack's importScripts chunk loader
+          // depend on in a service worker. Compartment wrapping + lockdown
+          // already contain background dependencies, so scuttling is disabled
+          // here.
+          embeddedOptions: { scuttleGlobalThis: { enabled: false } },
+        };
+      } else if (chunk.name && nullUnsafeEntries.has(chunk.name)) {
+        // nullUnsafeEntries run fully outside of LavaMoat, no runtime added
         return { mode: 'null_unsafe' };
       } else if (chunk.name === 'scripts/contentscript.js') {
         return {
@@ -151,21 +198,38 @@ export const lavamoatPlugin = (args: Args) =>
     },
   });
 
-// Unsafe layer that runs code without LavaMoat
+// Unsafe layer that runs code without LavaMoat. `background` is excluded here
+// because, although it is imported from the unsafe service worker, it must
+// itself be wrapped; `lavamoatBackgroundLayerRule` re-layers it (and its graph)
+// so it escapes this exclusion.
 export const lavamoatUnsafeLayerRule = {
   issuerLayer: 'unsafe',
+  exclude: backgroundEntryRe,
   use: LavamoatExcludeLoader,
 } satisfies RuleSetRule;
 
-// Unsafe layer plugin that applies the layer and assigns the unsafeEntries to it
+// Moves `background` (and, by layer inheritance, its entire dependency graph)
+// out of the 'unsafe' layer so LavaMoat wraps it. Without this, the dynamic
+// import from the unsafe service worker would drag the whole background graph
+// into the 'unsafe' layer and leave it unprotected — the MV3 background bug.
+export const lavamoatBackgroundLayerRule = {
+  test: backgroundEntryRe,
+  issuerLayer: 'unsafe',
+  layer: BACKGROUND_LAYER,
+} satisfies RuleSetRule;
+
+// Unsafe layer plugin that applies the layer and assigns the unsafe entries to it
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
-    compiler.options.module.rules.push(lavamoatUnsafeLayerRule);
+    compiler.options.module.rules.push(
+      lavamoatUnsafeLayerRule,
+      lavamoatBackgroundLayerRule,
+    );
     compiler.hooks.thisCompilation.tap('Layer', (compilation) => {
       compilation.hooks.addEntry.tap('Layer', (entry, options) => {
         const { name } = options;
         if (name && 'request' in entry && typeof entry.request === 'string') {
-          if (unsafeEntries.has(name)) {
+          if (unsafeLayerEntries.has(name)) {
             const entryData = compilation.entries.get(name);
             if (entryData) {
               entryData.options.layer = lavamoatUnsafeLayerRule.issuerLayer;
