@@ -226,7 +226,7 @@ describe('Add existing token using search', function () {
         testSpecificMock: mockBscApis,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const tokensTab = new TokensTab(driver);
         await tokensTab.importTokenBySearch({
