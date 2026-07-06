@@ -39,6 +39,15 @@ function buildInitRequestMock(): jest.Mocked<
     jest.fn().mockReturnValue(PREFERENCES_STATE),
   );
 
+  baseControllerMessenger.registerActionHandler(
+    'RemoteFeatureFlagController:getState',
+    jest.fn().mockReturnValue({
+      remoteFeatureFlags: {
+        stellarAccounts: true,
+      },
+    }),
+  );
+
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getMultichainAccountServiceMessenger(

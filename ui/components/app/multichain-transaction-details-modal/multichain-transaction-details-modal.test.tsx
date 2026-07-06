@@ -21,7 +21,6 @@ import {
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { CustomTransactionTypeLabel } from '../../../hooks/useMultichainTransactionDisplay';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
@@ -410,87 +409,5 @@ describe('MultichainTransactionDetailsModal', () => {
     );
     const fromLink = fromAddressElement.closest('a');
     expect(fromLink).toHaveAttribute('href', expectedHref);
-  });
-
-  it('renders trustline approve transaction without amount', () => {
-    const trustlineApproveTransaction: Transaction = {
-      ...mockTransaction,
-      type: 'unknown' as const,
-      chain: MultichainNetworks.STELLAR,
-      details: {
-        typeLabel: CustomTransactionTypeLabel.TrustlineApprove,
-      },
-      from: [
-        {
-          address: 'GABC123',
-          asset: {
-            fungible: true,
-            type: 'token' as CaipAssetType,
-            amount: '0',
-            unit: 'USDC',
-          },
-        },
-      ],
-      to: [
-        {
-          address: 'GABC123',
-          asset: {
-            fungible: true,
-            type: 'token' as CaipAssetType,
-            amount: '0',
-            unit: 'USDC',
-          },
-        },
-      ],
-    };
-
-    renderComponent({
-      transaction: trustlineApproveTransaction,
-      onClose: jest.fn(),
-    });
-
-    expect(screen.getByText('Trustlineapprove')).toBeInTheDocument();
-    expect(screen.queryByTestId('transaction-amount')).not.toBeInTheDocument();
-  });
-
-  it('renders trustline disapprove transaction without amount', () => {
-    const trustlineDisapproveTransaction: Transaction = {
-      ...mockTransaction,
-      type: 'unknown' as const,
-      chain: MultichainNetworks.STELLAR,
-      details: {
-        typeLabel: CustomTransactionTypeLabel.TrustlineDisapprove,
-      },
-      from: [
-        {
-          address: 'GABC123',
-          asset: {
-            fungible: true,
-            type: 'token' as CaipAssetType,
-            amount: '0',
-            unit: 'USDC',
-          },
-        },
-      ],
-      to: [
-        {
-          address: 'GABC123',
-          asset: {
-            fungible: true,
-            type: 'token' as CaipAssetType,
-            amount: '0',
-            unit: 'USDC',
-          },
-        },
-      ],
-    };
-
-    renderComponent({
-      transaction: trustlineDisapproveTransaction,
-      onClose: jest.fn(),
-    });
-
-    expect(screen.getByText('Trustlinedisapprove')).toBeInTheDocument();
-    expect(screen.queryByTestId('transaction-amount')).not.toBeInTheDocument();
   });
 });

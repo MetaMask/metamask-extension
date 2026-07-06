@@ -138,8 +138,6 @@ export function MultichainTransactionDetailsModal({
     type,
     timestamp,
     id,
-    simplifiedTitle,
-    shouldShowAmountOrUnit,
   } = useMultichainTransactionDisplay(transaction);
 
   const internalAccountsById = useSelector(getInternalAccountsObject);
@@ -197,6 +195,16 @@ export function MultichainTransactionDetailsModal({
     );
   };
 
+  const typeToTitle: Partial<Record<TransactionType, string>> = {
+    // TODO: Add support for other transaction types
+    [TransactionType.Send]: t('send'),
+    [TransactionType.Receive]: t('receive'),
+    [TransactionType.Swap]: t('swap'),
+    [TransactionType.StakeDeposit]: t('stakingDeposit'),
+    [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
+    [TransactionType.Unknown]: t('interaction'),
+  };
+
   return (
     <Modal
       onClose={onClose}
@@ -214,7 +222,7 @@ export function MultichainTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {capitalize(isRedeposit ? t('redeposit') : simplifiedTitle)}
+            {capitalize(isRedeposit ? t('redeposit') : typeToTitle[type])}
           </Text>
           <Text
             variant={TextVariant.bodyMd}
@@ -295,12 +303,11 @@ export function MultichainTransactionDetailsModal({
             {/* Amounts per token */}
             <>
               <AccountRow label={t('to')} address={toAddress} chain={chain} />
-              {shouldShowAmountOrUnit &&
-                amountComponent(
-                  type === TransactionType.Swap ? from : to,
-                  t('amount'),
-                  'transaction-amount',
-                )}
+              {amountComponent(
+                type === TransactionType.Swap ? from : to,
+                t('amount'),
+                'transaction-amount',
+              )}
             </>
             {/* Base Fees */}
             {amountComponent(baseFee, t('networkFee'), 'transaction-base-fee')}

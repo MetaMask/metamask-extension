@@ -8,10 +8,7 @@ import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-
 import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
-import {
-  TransactionGroupCategory,
-  TransactionGroupStatus,
-} from '../../shared/constants/transaction';
+import { TransactionGroupStatus } from '../../shared/constants/transaction';
 import { getAssetsMetadata } from '../selectors/assets';
 import { useI18nContext } from './useI18nContext';
 
@@ -21,19 +18,6 @@ export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Unconfirmed]: TransactionGroupStatus.pending,
   [KeyringTransactionStatus.Submitted]: TransactionStatus.submitted,
 };
-
-/**
- * Custom labels for non-EVM transactions.
- * The labels are used to map the transaction type to the title in the activity list and dialog.
- * The labels are defined in the `transaction.details.typeLabel` property.
- * For details: {@link https://github.com/MetaMask/metamask-extension/pull/38040}
- */
-export enum CustomTransactionTypeLabel {
-  // Token requires one off approve to receive
-  TrustlineApprove = 'trustline-approve',
-  // Token requires revoke the approve to stop receiving
-  TrustlineDisapprove = 'trustline-disapprove',
-}
 
 type Asset = {
   unit: string;
@@ -89,21 +73,25 @@ export function useMultichainTransactionDisplay(transaction: Transaction) {
     undefined,
     assetsMetadata,
   );
-  const title = getEnrichedTitle(transaction, t, from?.unit, to?.unit);
-  const simplifiedTitle = getEnrichedTitle(transaction, t);
 
-  // A flag to indicate if the transaction is a trustline type.
-  const isTrustlineType = [
-    String(CustomTransactionTypeLabel.TrustlineApprove),
-    String(CustomTransactionTypeLabel.TrustlineDisapprove),
-  ].includes(transaction.details?.typeLabel ?? '');
+  const typeToTitle: Partial<Record<TransactionType, string>> = {
+    // TODO: Add support for other transaction types
+    [TransactionType.Send]: t('sent'),
+    [TransactionType.Receive]: t('received'),
+    [TransactionType.Swap]: `${t('swap')} ${from?.unit} ${t(
+      'to',
+    ).toLowerCase()} ${to?.unit}`,
+    [TransactionType.StakeDeposit]: t('stakingDeposit'),
+    [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
+    [TransactionType.TokenApprove]: from?.unit
+      ? t('approveSpendingCap', [from.unit])
+      : t('approve'),
+    [TransactionType.Unknown]: t('interaction'),
+  };
 
   return {
     ...transaction,
-    groupCategory: getTransactionGroupCategory(transaction),
-    title,
-    simplifiedTitle,
-    shouldShowAmountOrUnit: !isTrustlineType,
+    title: typeToTitle[transaction.type],
     from,
     to,
     baseFee,
@@ -111,78 +99,6 @@ export function useMultichainTransactionDisplay(transaction: Transaction) {
     isRedeposit:
       transaction.to.length === 0 && transaction.type === TransactionType.Send,
   };
-}
-
-function getEnrichedTitle(
-  transaction: Transaction,
-  t: ReturnType<typeof useI18nContext>,
-  fromSymbol?: string,
-  toSymbol?: string,
-) {
-  const isSimplified = !fromSymbol || !toSymbol;
-
-  // TODO: Add support for other transaction types
-  const typeToTitle: Partial<Record<TransactionType, string>> = {
-    // Simplify title is mainly for modal title,
-    // The original title is 'Send' instead of 'Sent' in modal.
-    // We don't change this title if it is by purpose.
-    [TransactionType.Send]: isSimplified ? t('send') : `${t('sent')}`,
-    [TransactionType.Receive]: t('received'),
-    [TransactionType.Swap]: isSimplified
-      ? t('swap')
-      : `${t('swap')} ${fromSymbol} ${t('to').toLowerCase()} ${toSymbol}`,
-    [TransactionType.StakeDeposit]: t('stakingDeposit'),
-    [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
-    [TransactionType.TokenApprove]: fromSymbol
-      ? t('approveSpendingCap', [fromSymbol])
-      : t('approve'),
-    [TransactionType.Unknown]: t('interaction'),
-  };
-
-  let title = typeToTitle[transaction.type];
-  const typeLabel = transaction.details?.typeLabel;
-  // Enrich title by `transaction.details.typeLabel` if available.
-  if (typeLabel) {
-    switch (typeLabel) {
-      case CustomTransactionTypeLabel.TrustlineApprove:
-        title = isSimplified
-          ? t('trustlineApprove')
-          : `${t('trustlineApprove')} ${fromSymbol}`;
-        break;
-      case CustomTransactionTypeLabel.TrustlineDisapprove:
-        title = isSimplified
-          ? t('trustlineDisapprove')
-          : `${t('trustlineDisapprove')} ${fromSymbol}`;
-        break;
-      default:
-        break;
-    }
-  }
-  return title;
-}
-
-function getTransactionGroupCategory(transaction: Transaction) {
-  const { type } = transaction;
-  let category = type as TransactionGroupCategory;
-
-  if (type === TransactionType.Unknown) {
-    category = TransactionGroupCategory.interaction;
-  }
-
-  // If there is a type label, use it to determine the group category.
-  const typeLabel = transaction.details?.typeLabel;
-  if (typeLabel) {
-    switch (typeLabel) {
-      case CustomTransactionTypeLabel.TrustlineApprove:
-      case CustomTransactionTypeLabel.TrustlineDisapprove:
-        category = TransactionGroupCategory.interaction;
-        break;
-      default:
-        break;
-    }
-  }
-
-  return category;
 }
 
 function aggregateAmount(
@@ -195,9 +111,7 @@ function aggregateAmount(
   const amountByAsset: Record<string, AggregatedMovement> = {};
 
   for (const mv of movement) {
-    // Further to keyring transaction structure,
-    // `asset` can be null.
-    if (!mv?.asset?.fungible) {
+    if (!mv?.asset.fungible) {
       continue;
     }
     const assetId = mv.asset.type;

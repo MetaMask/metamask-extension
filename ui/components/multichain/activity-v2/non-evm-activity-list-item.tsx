@@ -26,15 +26,8 @@ type Props = {
 export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const matchedBridgeHistoryItem = bridgeHistoryItems[transaction.id];
-  const {
-    from,
-    to,
-    type,
-    groupCategory,
-    isRedeposit,
-    title,
-    shouldShowAmountOrUnit,
-  } = useMultichainTransactionDisplay(transaction);
+  const { from, to, type, timestamp, isRedeposit, title } =
+    useMultichainTransactionDisplay(transaction);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
   if (
@@ -75,15 +68,14 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   }
 
   let { amount, unit } = to ?? {};
+  let category = type as TransactionGroupCategory;
   if (type === KeyringTransactionType.Swap) {
     amount = from?.amount;
     unit = from?.unit;
   }
 
-  // If the transaction is a trustline approve or disapprove, set the amount and unit to empty strings.
-  if (!shouldShowAmountOrUnit) {
-    amount = '';
-    unit = '';
+  if (type === KeyringTransactionType.Unknown) {
+    category = TransactionGroupCategory.interaction;
   }
 
   return (
@@ -93,7 +85,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
       // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       icon={
         <ChainBadge chainId={transaction.chain}>
-          <TransactionIcon category={groupCategory} status={statusKey} />
+          <TransactionIcon category={category} status={statusKey} />
         </ChainBadge>
       }
       // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
