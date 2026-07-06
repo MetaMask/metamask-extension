@@ -503,7 +503,7 @@ async function runNetworkSendTest(
     console.log(
       `[PROD TEST] Filling recipient address (Account 1) for ${networkName}: ${recipientAddress}`,
     );
-    await sendPage.fillRecipient(recipientAddress);
+    await sendPage.fillRecipient({ recipientAddress });
 
     // Fill amount
     console.log(
@@ -682,7 +682,7 @@ async function runNetworkSendTest(
     console.log(
       `[PROD TEST] Filling recipient address (Account 2) for second send on ${networkName}: ${senderAddress}`,
     );
-    await sendPage.fillRecipient(senderAddress);
+    await sendPage.fillRecipient({ recipientAddress: senderAddress });
 
     // Fill amount
     console.log(
