@@ -150,6 +150,27 @@ function normalizeSmartContracts(smartContract) {
  * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
  */
 
+const LOCALHOST_EVM_CHAIN_ID_HEX = '0x539';
+
+/**
+ * Hardware wallet fixtures that enable only mainnet (not localhost) need seeded
+ * mainnet balances under unified assets; localhost-first fixtures expect zero.
+ *
+ * @param {object | undefined} fixtures
+ * @returns {boolean}
+ */
+function shouldSeedHardwareWalletMainnetBalance(fixtures) {
+  const eip155Enabled =
+    fixtures?.data?.NetworkEnablementController?.enabledNetworkMap?.eip155;
+  if (!eip155Enabled) {
+    return false;
+  }
+  return (
+    eip155Enabled['0x1'] === true &&
+    eip155Enabled[LOCALHOST_EVM_CHAIN_ID_HEX] !== true
+  );
+}
+
 /**
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
@@ -277,7 +298,10 @@ async function withFixtures(options, testSuite) {
 
     const selectedAccountId =
       fixtures?.data?.AccountsController?.internalAccounts?.selectedAccount;
-    if (selectedAccountId === HARDWARE_WALLET_ACCOUNT_ID) {
+    if (
+      selectedAccountId === HARDWARE_WALLET_ACCOUNT_ID &&
+      shouldSeedHardwareWalletMainnetBalance(fixtures)
+    ) {
       fixtures.data.AssetsController ??= {};
       fixtures.data.AssetsController.assetsBalance ??= {};
       fixtures.data.AssetsController.assetsBalance[HARDWARE_WALLET_ACCOUNT_ID] =
@@ -386,7 +410,8 @@ async function withFixtures(options, testSuite) {
     }
     if (
       selectedAccountId === HARDWARE_WALLET_ACCOUNT_ID &&
-      !unifiedEvmAccountsApiBalances?.mainnetNativeEthHuman
+      !unifiedEvmAccountsApiBalances?.mainnetNativeEthHuman &&
+      shouldSeedHardwareWalletMainnetBalance(fixtures)
     ) {
       effectiveUnifiedEvmAccountsApiBalances = {
         ...effectiveUnifiedEvmAccountsApiBalances,
