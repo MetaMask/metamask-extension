@@ -2589,7 +2589,7 @@ export function createNextMultichainAccountGroup(
       const walletIdWithoutTypePrefix =
         stripWalletTypePrefixFromWalletId(walletId);
       await submitRequestToBackground('createNextMultichainAccountGroup', [
-        walletIdWithoutTypePrefix,
+        { entropySource: walletIdWithoutTypePrefix },
       ]);
       // Forcing update of the state speeds up the UI update process
       // and makes UX better

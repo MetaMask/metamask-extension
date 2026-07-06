@@ -69,7 +69,10 @@
     "AssetsController": "object",
     "AuthenticationController": {},
     "BridgeController": { "inputPrimaryDenomination": "string" },
-    "BridgeStatusController": { "txHistory": "object" },
+    "BridgeStatusController": {
+      "quoteUpdateStatusStore": "object",
+      "txHistory": "object"
+    },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,

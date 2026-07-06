@@ -118,7 +118,10 @@
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object"
   },
-  "BridgeStatusController": { "txHistory": "object" },
+  "BridgeStatusController": {
+    "quoteUpdateStatusStore": "object",
+    "txHistory": "object"
+  },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",

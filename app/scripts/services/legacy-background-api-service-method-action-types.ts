@@ -148,6 +148,17 @@ export type LegacyBackgroundApiServiceRemoveAccountAction = {
 };
 
 /**
+ * Sets the label for the account at the given address.
+ *
+ * @param address - The address of the account to set the label for.
+ * @param label - The label to set for the account.
+ */
+export type LegacyBackgroundApiServiceSetAccountLabelAction = {
+  type: `LegacyBackgroundApiService:setAccountLabel`;
+  handler: LegacyBackgroundApiService['setAccountLabel'];
+};
+
+/**
  * Execute side effects of a removed account.
  *
  * @param address - The address of the account to remove.
@@ -194,6 +205,16 @@ export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
 export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
   type: `LegacyBackgroundApiService:getAccountsBySnapId`;
   handler: LegacyBackgroundApiService['getAccountsBySnapId'];
+};
+
+/**
+ * Sets the currently selected internal account.
+ *
+ * @param id - The ID of the account to set as selected.
+ */
+export type LegacyBackgroundApiServiceSetSelectedInternalAccountAction = {
+  type: `LegacyBackgroundApiService:setSelectedInternalAccount`;
+  handler: LegacyBackgroundApiService['setSelectedInternalAccount'];
 };
 
 /**
@@ -332,6 +353,18 @@ export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
 };
 
 /**
+ * Rejects all pending approval requests.
+ *
+ * Snap dialogs and account confirmations are accepted with a falsy value and
+ * their interface deleted where applicable, while all other approvals are
+ * rejected with a user-rejected-request error.
+ */
+export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
+  type: `LegacyBackgroundApiService:rejectAllPendingApprovals`;
+  handler: LegacyBackgroundApiService['rejectAllPendingApprovals'];
+};
+
+/**
  * Accepts a permissions request. Silently ignores the request if it can no
  * longer be found.
  *
@@ -359,11 +392,13 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
+  | LegacyBackgroundApiServiceSetAccountLabelAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
   | LegacyBackgroundApiServiceRejectPermissionsRequestAction
   | LegacyBackgroundApiServiceRemovePermissionsForAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
+  | LegacyBackgroundApiServiceSetSelectedInternalAccountAction
   | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceChangePasswordAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
@@ -375,4 +410,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction;
