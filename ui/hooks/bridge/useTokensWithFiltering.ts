@@ -10,7 +10,6 @@ import {
   isSolanaChainId,
   isBitcoinChainId,
   isNonEvmChainId,
-  isTronChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
@@ -18,6 +17,7 @@ import {
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
+  isStellarChainId,
 } from '@metamask/bridge-controller';
 import type {
   TokenListMap,
@@ -161,8 +161,8 @@ export const useTokensWithFiltering = (
       }
       return undefined;
     }
-    // Non-EVM chains other than Tron do not use the EVM hex token cache (Tron maps to a numeric hex ref).
-    if (isNonEvmChainId(chainId) && !isTronChainId(chainId)) {
+    // For Solana chains and Stellar Chain, we don't cache in the same way, return undefined to trigger fetch
+    if (isSolanaChainId(chainId) || isStellarChainId(chainId)) {
       return undefined;
     }
     // For EVM chains, check the cache

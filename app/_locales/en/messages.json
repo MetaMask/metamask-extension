@@ -10107,9 +10107,9 @@
   "stellarNativeValue": {
     "message": "Value"
   },
-  "stellarTrustlineInactive": {
+  "trustlineInactive": {
     "message": "Inactive",
-    "description": "Label for a Stellar classic token the user imported but has not established an on-chain trustline for yet"
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "stillConnectingTo": {
     "message": "Still connecting to $1...",

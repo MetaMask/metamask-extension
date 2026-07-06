@@ -49,10 +49,9 @@ const TokenButtons = ({
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
-  const hasNonZeroTokenBalance = Boolean(
+  const shouldShowSendButton = Boolean(
     token.balance?.value && token.balance.value !== '0',
   );
-  const shouldShowSendButton = hasNonZeroTokenBalance;
 
   const currentChainId = token.chainId;
 

@@ -4,7 +4,7 @@ import { TokenFiatDisplayInfo } from '../../types';
 import { isAssetRequireActivate } from '../../../../../../shared/lib/multichain/trustline';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
-import { StellarTrustlineInactiveBadge } from '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
+import { AssetInactiveBadge } from '../../asset-inactive-badge/asset-inactive-badge';
 import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
@@ -31,7 +31,7 @@ export const TokenCellTitle = React.memo(
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
-        {tokenRequireActivate && <StellarTrustlineInactiveBadge />}
+        {tokenRequireActivate && <AssetInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}
@@ -55,9 +55,8 @@ export const TokenCellTitle = React.memo(
       nextProps.token.rwaData?.nextPause?.end &&
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.chainId === nextProps.token.chainId &&
-    prevProps.token.assetId === nextProps.token.assetId &&
     prevProps.token.symbol === nextProps.token.symbol &&
-    prevProps.token.balance === nextProps.token.balance &&
+    prevProps.token.assetId === nextProps.token.assetId &&
     prevProps.token.accountAssetInfo?.limit ===
       nextProps.token.accountAssetInfo?.limit,
 );

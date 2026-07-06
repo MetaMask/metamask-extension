@@ -6,7 +6,7 @@ import { XlmScope } from '@metamask/keyring-api';
  * Account-scoped metadata for a trustline asset, when provided by the
  * account asset controller.
  */
-type TrustlineAccountAssetInfo = {
+type AssetMetadata = {
   limit?: string;
 };
 
@@ -38,19 +38,19 @@ export function isTrustlineAsset(assetId: string): boolean {
  * Determines whether a classic trustline asset should be treated as inactive
  * and require activation before use.
  *
- * When account metadata is unavailable (for example, on first import), the
+ * When asset metadata is unavailable (for example, on first import), the
  * asset is assumed inactive.
  *
  * @param params - Parameters for checking if an asset requires activation.
  * @param params.assetId - CAIP asset ID for the asset to check.
- * @param params.accountAssetInfo - Optional account asset metadata.
+ * @param params.assetMetadata - Optional asset metadata.
  * @returns `true` when the asset is a trustline asset that is inactive.
  */
 export function isAssetRequireActivate(params: {
   assetId?: string;
-  accountAssetInfo?: TrustlineAccountAssetInfo;
+  assetMetadata?: AssetMetadata;
 }): boolean {
-  const { assetId, accountAssetInfo } = params;
+  const { assetId, assetMetadata } = params;
 
   if (!isTrustlineAsset(assetId ?? '')) {
     return false;
@@ -58,13 +58,11 @@ export function isAssetRequireActivate(params: {
 
   // TODO: different network can apply different logic here,
   // Today we only support Stellar, so we only check the limit.
-  if (accountAssetInfo !== undefined) {
-    return (
-      accountAssetInfo.limit === undefined || accountAssetInfo.limit === '0'
-    );
+  if (assetMetadata !== undefined) {
+    return assetMetadata.limit === undefined || assetMetadata.limit === '0';
   }
 
-  // default to true because the imported token doesn't have accountAssetInfo at first,
+  // default to true because the imported token doesn't have assetMetadata at first,
   // we assume it is inactive
   return true;
 }

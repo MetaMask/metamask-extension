@@ -11,7 +11,10 @@ import {
 import { getNativeCurrencyForChain } from '../../../../../selectors';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
+import {
+  getAssetImageUrl,
+  isEvmChainId,
+} from '../../../../../../shared/lib/asset-utils';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
@@ -29,8 +32,10 @@ export const getAvatarTokenSrc = (
   >,
 ): string => {
   try {
-    if (opts.isNative) {
-      return getNativeCurrencyForChain(opts.chainId) ?? opts.tokenImage;
+    const isEvm = isEvmChainId(opts.chainId);
+
+    if (isEvm && opts.isNative) {
+      return getNativeCurrencyForChain(opts.chainId);
     }
 
     if (!opts.tokenImage && opts.assetId) {

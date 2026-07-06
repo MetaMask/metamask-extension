@@ -101,7 +101,7 @@ import {
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
-import { StellarTrustlineInactiveBadge } from '../../../components/app/assets/stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
+import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -279,15 +279,14 @@ const AssetPage = ({
     accountAssetInfo: assetWithBalance?.accountAssetInfo,
   };
 
-  // Derive trustline and native reserve page state via focused helpers.
-  const isTrustlineInactive = isAssetRequireActivate({
+  const isAssetInactive = isAssetRequireActivate({
     assetId: bip44Asset?.assetId ?? assetId,
-    accountAssetInfo: assetWithBalance?.accountAssetInfo,
+    assetMetadata: assetWithBalance?.accountAssetInfo,
   });
 
   const baseReserve = computeBaseReserve({
     assetId: bip44Asset?.assetId ?? assetId,
-    accountAssetInfo: assetWithBalance?.accountAssetInfo,
+    assetMetadata: assetWithBalance?.accountAssetInfo,
   });
 
   const { safeChains } = useSafeChains();
@@ -332,16 +331,16 @@ const AssetPage = ({
   };
 
   const renderAssetTitleSection = () => {
-    if (isTrustlineInactive) {
+    if (isAssetInactive) {
       return (
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           gap={2}
-          data-testid="stellar-inactive-asset-header"
+          data-testid="asset-inactive-asset-header"
         >
           {assetNameElement}
-          <StellarTrustlineInactiveBadge />
+          <AssetInactiveBadge />
         </Box>
       );
     }
@@ -453,14 +452,20 @@ const AssetPage = ({
         </Box>
         {optionsButton}
       </Box>
-      {
-        isTrustlineInactive && (
-          <StellarClassicTrustlineActivateCard
-             asset={tokenAsset as Asset}
-          />
-        )
-      }
-      <Box paddingLeft={4}>{renderAssetTitleSection()}</Box>
+      {isAssetInactive && (
+        <StellarClassicTrustlineActivateCard asset={tokenAsset as Asset} />
+      )}
+      <Box paddingLeft={4}>
+        {isStockToken || isAssetInactive ? (
+          <Box alignItems={BoxAlignItems.Center} gap={2}>
+            {assetNameElement}
+            {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+            {isAssetInactive && <AssetInactiveBadge />}
+          </Box>
+        ) : (
+          assetNameElement
+        )}
+      </Box>
       <AssetChart
         chainId={chainId}
         address={address}
@@ -511,7 +516,72 @@ const AssetPage = ({
             />
           </Box>
         )}
-        {renderAssetBalanceSection()}
+        {isMusdAssetPage ? (
+          <>
+            <MusdPositionSection
+              balanceDisplay={balance ? `${balance} ${t('musdSymbol')}` : '0'}
+              fiatValue={tokenFiatAmount}
+              showFiat={showFiat}
+            />
+            {isMerklClaimingEnabled ? (
+              <>
+                <Box
+                  marginTop={5}
+                  marginBottom={5}
+                  className="asset-page__divider"
+                />
+                <MusdBonusSection
+                  chainId={chainId as Hex}
+                  tokenAddress={(asset as { address: Hex }).address}
+                  positionFiatValue={showFiat ? aggregatedMusdFiat : null}
+                  showFiat={showFiat}
+                  hasPositiveBalance={hasAnyMusdBalance}
+                />
+                <Box
+                  marginTop={5}
+                  marginBottom={5}
+                  className="asset-page__divider"
+                />
+              </>
+            ) : (
+              <Box
+                marginTop={5}
+                marginBottom={5}
+                className="asset-page__divider"
+              />
+            )}
+            <MusdConvertSection />
+            <Box
+              marginTop={5}
+              marginBottom={5}
+              className="asset-page__divider"
+            />
+          </>
+        ) : baseReserve !== undefined ? (
+          <StellarNativeBalanceSection
+            totalBalance={String(balance)}
+            symbol={symbol}
+            baseReserve={baseReserve}
+            fiatValue={tokenFiatAmount}
+          />
+        ) : (
+          <>
+            <Text
+              variant={TextVariant.HeadingSm}
+              className="asset-page__balance-heading"
+            >
+              {t('yourBalance')}
+            </Text>
+            {[AssetType.token, AssetType.native].includes(type) && (
+              <TokenCell
+                key={`${symbol}-${address}`}
+                token={tokenWithFiatAmount as TokenWithFiatAmount}
+                safeChains={safeChains}
+                musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
+              />
+            )}
+          </>
+        )}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}
         {!isNativeAsset(updatedAsset) &&
           type === AssetType.token &&

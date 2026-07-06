@@ -12,7 +12,7 @@ export const NATIVE_RESERVE_SLIP44_IDS: Set<string> = new Set([
  * Account-scoped metadata for a multichain asset, when provided by the
  * account asset controller.
  */
-export type AccountAssetInfo = { baseReserve?: string } | undefined;
+export type AssetMetadata = { baseReserve?: string } | undefined;
 
 /**
  * Parses a string as a non-negative finite number and returns the original
@@ -38,22 +38,22 @@ function parseFloatSafe(value?: string): string | undefined {
  *
  * @param params - Parameters for computing the base reserve.
  * @param params.assetId - CAIP asset ID for the native asset.
- * @param params.accountAssetInfo - Optional account asset metadata.
+ * @param params.assetMetadata - Optional asset metadata.
  * @returns The base reserve amount as a string, `'0'` when supported but
  * missing, or `undefined` when the asset does not support reserve balance.
  */
 export function computeBaseReserve({
   assetId,
-  accountAssetInfo,
+  assetMetadata,
 }: {
   assetId: string;
-  accountAssetInfo?: AccountAssetInfo;
+  assetMetadata?: AssetMetadata;
 }): string | undefined {
   const isAssetSupportBaseReserve = isSupportBaseReserve(assetId);
 
   return isAssetSupportBaseReserve
-      ? (parseFloatSafe(accountAssetInfo?.baseReserve) ?? '0')
-      : undefined;
+    ? (parseFloatSafe(assetMetadata?.baseReserve) ?? '0')
+    : undefined;
 }
 
 /**

@@ -42,14 +42,9 @@ jest.mock('../../stock-badge/stock-badge', () => ({
   ),
 }));
 
-jest.mock(
-  '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge',
-  () => ({
-    StellarTrustlineInactiveBadge: () => (
-      <span data-testid="stellar-trustline-inactive-badge" />
-    ),
-  }),
-);
+jest.mock('../../asset-inactive-badge/asset-inactive-badge', () => ({
+  AssetInactiveBadge: () => <span data-testid="asset-inactive-badge" />,
+}));
 
 const mockIsStockToken = jest.fn();
 const mockIsTokenTradingOpen = jest.fn();
@@ -122,7 +117,7 @@ describe('TokenCellTitle', () => {
 
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
-    expect(getByTestId('stellar-trustline-inactive-badge')).toBeInTheDocument();
+    expect(getByTestId('asset-inactive-badge')).toBeInTheDocument();
   });
 
   it('does not render tag when accountType is undefined', () => {
@@ -399,9 +394,7 @@ describe('TokenCellTitle', () => {
       );
 
       // Initially active trustline (limit 10) -> badge absent
-      expect(
-        queryByTestId('stellar-trustline-inactive-badge'),
-      ).not.toBeInTheDocument();
+      expect(queryByTestId('asset-inactive-badge')).not.toBeInTheDocument();
 
       // Change limit to '0' -> should re-render and show inactive badge
       const updatedToken = createMockToken({
@@ -415,9 +408,7 @@ describe('TokenCellTitle', () => {
 
       rerender(<TokenCellTitle token={updatedToken} />);
 
-      expect(
-        queryByTestId('stellar-trustline-inactive-badge'),
-      ).toBeInTheDocument();
+      expect(queryByTestId('asset-inactive-badge')).toBeInTheDocument();
     });
 
     it('treats a missing accountAssetInfo as inactive regardless of balance', () => {
@@ -435,9 +426,7 @@ describe('TokenCellTitle', () => {
 
       const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
-      expect(
-        queryByTestId('stellar-trustline-inactive-badge'),
-      ).toBeInTheDocument();
+      expect(queryByTestId('asset-inactive-badge')).toBeInTheDocument();
     });
 
     it('skips re-render when all compared props are the same', () => {

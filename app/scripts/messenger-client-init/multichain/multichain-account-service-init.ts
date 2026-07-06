@@ -5,17 +5,12 @@ import {
   TRX_ACCOUNT_PROVIDER_NAME,
   BTC_ACCOUNT_PROVIDER_NAME,
   AccountProviderWrapper,
-  ///: BEGIN:ONLY_INCLUDE_IF(stellar)
-  XLM_ACCOUNT_PROVIDER_NAME,
   XlmAccountProvider,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
 import { MessengerClientInitFunction } from '../types';
 import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
 import { previousValueComparator } from '../../lib/util';
-///: BEGIN:ONLY_INCLUDE_IF(stellar)
 import { isMultichainFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
-///: END:ONLY_INCLUDE_IF
 import { trace } from '../../../../shared/lib/trace';
 
 /**
@@ -52,15 +47,8 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
   };
 
-  const providerConfigs: Record<string, typeof snapAccountProviderConfig> = {
-    [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
-    [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
-    [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
-  };
-
   const customProviders = [];
 
-  ///: BEGIN:ONLY_INCLUDE_IF(stellar)
   const xlmProvider = new AccountProviderWrapper(
     controllerMessenger,
     new XlmAccountProvider(controllerMessenger, {
@@ -73,12 +61,15 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     }),
   );
   customProviders.push(xlmProvider);
-  ///: END:ONLY_INCLUDE_IF
 
   const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
     providers: customProviders,
-    providerConfigs,
+    providerConfigs: {
+      [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+      [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+      [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+    },
     config: {
       // @ts-expect-error Controller uses string for names rather than enum
       trace,
@@ -111,7 +102,6 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
   );
 
   // Handle Stellar provider feature flag using previousValueComparator pattern
-  ///: BEGIN:ONLY_INCLUDE_IF(stellar)
   const initialRemoteFeatureFlagsState = initMessenger.call(
     'RemoteFeatureFlagController:getState',
   );
@@ -161,7 +151,6 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
       return true;
     }, initialRemoteFeatureFlagsState),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   return {
     memStateKey: null,

@@ -29,11 +29,11 @@ describe('isTrustlineAsset', () => {
 });
 
 describe('isAssetRequireActivate', () => {
-  it('returns true for a classic asset with accountAssetInfo.limit === "0"', () => {
+  it('returns true for a classic asset with assetMetadata.limit === "0"', () => {
     expect(
       isAssetRequireActivate({
         assetId: CLASSIC_ASSET_ID,
-        accountAssetInfo: { limit: '0' },
+        assetMetadata: { limit: '0' },
       }),
     ).toBe(true);
   });
@@ -42,7 +42,7 @@ describe('isAssetRequireActivate', () => {
     expect(
       isAssetRequireActivate({
         assetId: CLASSIC_ASSET_ID,
-        accountAssetInfo: { limit: '10' },
+        assetMetadata: { limit: '10' },
       }),
     ).toBe(false);
   });
@@ -51,16 +51,16 @@ describe('isAssetRequireActivate', () => {
     expect(
       isAssetRequireActivate({
         assetId: SEP41_ASSET_ID,
-        accountAssetInfo: { limit: '0' },
+        assetMetadata: { limit: '0' },
       }),
     ).toBe(false);
   });
 
-  it('treats missing accountAssetInfo as inactive', () => {
+  it('treats missing assetMetadata as inactive', () => {
     expect(
       isAssetRequireActivate({
         assetId: CLASSIC_ASSET_ID,
-        accountAssetInfo: undefined,
+        assetMetadata: undefined,
       }),
     ).toBe(true);
   });
@@ -69,16 +69,16 @@ describe('isAssetRequireActivate', () => {
     expect(
       isAssetRequireActivate({
         assetId: CLASSIC_ASSET_ID,
-        accountAssetInfo: {},
+        assetMetadata: {},
       }),
     ).toBe(true);
   });
 
-  it('returns false for a non-trustline asset regardless of accountAssetInfo', () => {
+  it('returns false for a non-trustline asset regardless of assetMetadata', () => {
     expect(
       isAssetRequireActivate({
         assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000000',
-        accountAssetInfo: { limit: '0' },
+        assetMetadata: { limit: '0' },
       }),
     ).toBe(false);
   });

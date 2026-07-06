@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { StellarTrustlineInactiveBadge } from './stellar-trustline-inactive-badge';
+import { AssetInactiveBadge } from './asset-inactive-badge';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -32,12 +32,12 @@ jest.mock('../../../component-library', () => ({
   ),
 }));
 
-describe('StellarTrustlineInactiveBadge', () => {
+describe('AssetInactiveBadge', () => {
   it('renders inactive label with warning styling', () => {
-    const { getByTestId } = render(<StellarTrustlineInactiveBadge />);
-    const badge = getByTestId('stellar-trustline-inactive-badge');
+    const { getByTestId } = render(<AssetInactiveBadge />);
+    const badge = getByTestId('asset-inactive-badge');
 
-    expect(badge).toHaveAttribute('data-label', 'stellarTrustlineInactive');
+    expect(badge).toHaveAttribute('data-label', 'trustlineInactive');
     expect(badge).toHaveAttribute('data-background-color', 'warning-muted');
     expect(badge).toHaveAttribute('data-border-radius', 'pill');
     expect(badge).not.toHaveAttribute('data-icon-name');

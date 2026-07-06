@@ -26,7 +26,7 @@ describe('computeBaseReserve', () => {
     expect(
       computeBaseReserve({
         assetId: ETHER_NATIVE_ASSET_ID,
-        accountAssetInfo: undefined,
+        assetMetadata: undefined,
       }),
     ).toBeUndefined();
   });
@@ -35,7 +35,7 @@ describe('computeBaseReserve', () => {
     expect(
       computeBaseReserve({
         assetId: STELLAR_NATIVE_ASSET_ID,
-        accountAssetInfo: { baseReserve: '0.5' },
+        assetMetadata: { baseReserve: '0.5' },
       }),
     ).toStrictEqual('0.5');
   });
@@ -44,7 +44,7 @@ describe('computeBaseReserve', () => {
     expect(
       computeBaseReserve({
         assetId: STELLAR_NATIVE_ASSET_ID,
-        accountAssetInfo: undefined,
+        assetMetadata: undefined,
       }),
     ).toStrictEqual('0');
   });
@@ -53,7 +53,7 @@ describe('computeBaseReserve', () => {
     expect(
       computeBaseReserve({
         assetId: STELLAR_NATIVE_ASSET_ID,
-        accountAssetInfo: { baseReserve: 'not-a-number' },
+        assetMetadata: { baseReserve: 'not-a-number' },
       }),
     ).toStrictEqual('0');
   });

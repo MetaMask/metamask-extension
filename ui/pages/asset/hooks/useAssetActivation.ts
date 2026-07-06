@@ -65,7 +65,7 @@ export const useAssetActivation = ({
     isAssetIsTrustlineAsset &&
     !isAssetRequireActivate({
       assetId,
-      accountAssetInfo: assetFromState?.accountAssetInfo,
+      assetMetadata: assetFromState?.accountAssetInfo,
     });
 
   const deactivateAsset = useCallback(async () => {

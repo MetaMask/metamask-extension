@@ -7,17 +7,17 @@ import {
 import { Tag } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const StellarTrustlineInactiveBadge = () => {
+export const AssetInactiveBadge = () => {
   const t = useI18nContext();
 
   return (
     <Tag
-      label={t('stellarTrustlineInactive')}
+      label={t('trustlineInactive')}
       backgroundColor={BackgroundColor.warningMuted}
       borderRadius={BorderRadius.pill}
       labelProps={{ color: TextColor.WarningDefault as never }}
       textVariant={TextVariant.BodySm}
-      data-testid="stellar-trustline-inactive-badge"
+      data-testid="asset-inactive-badge"
     />
   );
 };
