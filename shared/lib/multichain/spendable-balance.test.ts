@@ -1,9 +1,10 @@
 import { XlmScope } from '@metamask/keyring-api';
 import {
   computeBaseReserve,
+  computeSpendableBalance,
   isSupportBaseReserve,
   NATIVE_RESERVE_SLIP44_IDS,
-} from './reserve-balance';
+} from './spendable-balance';
 
 const STELLAR_NATIVE_ASSET_ID = `${XlmScope.Pubnet}/slip44:148`;
 const ETHER_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
@@ -56,5 +57,23 @@ describe('computeBaseReserve', () => {
         assetMetadata: { baseReserve: 'not-a-number' },
       }),
     ).toStrictEqual('0');
+  });
+});
+
+describe('computeSpendableBalance', () => {
+  it('subtracts base reserve from total balance', () => {
+    expect(computeSpendableBalance('250', '2.5')).toBe(247.5);
+  });
+
+  it('clamps spendable balance at zero when reserve exceeds total', () => {
+    expect(computeSpendableBalance('1', '2.5')).toBe(0);
+  });
+
+  it('treats invalid total balance as zero', () => {
+    expect(computeSpendableBalance('not-a-number', '2.5')).toBe(0);
+  });
+
+  it('treats invalid base reserve as zero', () => {
+    expect(computeSpendableBalance('250', 'not-a-number')).toBe(250);
   });
 });

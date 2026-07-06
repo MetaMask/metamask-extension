@@ -40,13 +40,13 @@ describe('SpendableBalanceSection', () => {
     expect(screen.getByText(messages.balance.message)).toBeInTheDocument();
     expect(
       screen.getByTestId('spendable-balance-total-balance'),
-    ).toHaveTextContent('250.00 XLM');
+    ).toHaveTextContent('250 XLM');
     expect(
       screen.getByTestId('spendable-balance-spendable-balance'),
-    ).toHaveTextContent('247.50 XLM');
+    ).toHaveTextContent('247.5 XLM');
     expect(
       screen.getByTestId('spendable-balance-base-reserved'),
-    ).toHaveTextContent('2.50 XLM');
+    ).toHaveTextContent('2.5 XLM');
     expect(
       screen.getByTestId('spendable-balance-fiat-value'),
     ).toHaveTextContent('$105.00');
@@ -64,6 +64,6 @@ describe('SpendableBalanceSection', () => {
 
     expect(
       screen.getByTestId('spendable-balance-spendable-balance'),
-    ).toHaveTextContent('0.00 XLM');
+    ).toHaveTextContent('0 XLM');
   });
 });

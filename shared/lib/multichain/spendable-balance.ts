@@ -15,21 +15,20 @@ export const NATIVE_RESERVE_SLIP44_IDS: Set<string> = new Set([
 export type AssetMetadata = { baseReserve?: string } | undefined;
 
 /**
- * Parses a string as a non-negative finite number and returns the original
- * string when valid.
+ * Validates if a string is a valid number string.
  *
  * @param value - Numeric string to validate.
- * @returns The original string when valid, otherwise `undefined`.
+ * @returns `true` when the string is a valid number string, otherwise `false`.
  */
-function parseFloatSafe(value?: string): string | undefined {
+function isValidNumberString(value?: string): boolean {
   if (value === undefined) {
-    return undefined;
+    return false;
   }
   const parsed = Number.parseFloat(value);
   if (!Number.isFinite(parsed) || parsed < 0) {
-    return undefined;
+    return false;
   }
-  return value;
+  return true;
 }
 
 /**
@@ -52,8 +51,32 @@ export function computeBaseReserve({
   const isAssetSupportBaseReserve = isSupportBaseReserve(assetId);
 
   return isAssetSupportBaseReserve
-    ? (parseFloatSafe(assetMetadata?.baseReserve) ?? '0')
+    ? isValidNumberString(assetMetadata?.baseReserve)
+      ? assetMetadata?.baseReserve
+      : '0'
     : undefined;
+}
+
+/**
+ * Computes the spendable balance for a native asset that supports reserve
+ * balance display.
+ *
+ * @param totalBalance - The total balance of the asset.
+ * @param baseReserve - The base reserve of the asset.
+ * @returns The spendable balance as a number.
+ */
+export function computeSpendableBalance(
+  totalBalance: string,
+  baseReserve: string,
+): number {
+  const total = Number.parseFloat(totalBalance);
+  const reserved = Number.parseFloat(baseReserve);
+  const spendable = Math.max(
+    0,
+    (Number.isFinite(total) ? total : 0) -
+      (Number.isFinite(reserved) ? reserved : 0),
+  );
+  return spendable;
 }
 
 /**

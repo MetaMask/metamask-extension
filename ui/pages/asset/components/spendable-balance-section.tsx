@@ -9,6 +9,7 @@ import {
 import React, { useMemo } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
+import { computeSpendableBalance } from '../../../../shared/lib/multichain/spendable-balance';
 
 export type SpendableBalanceSectionProps = {
   totalBalance: string;
@@ -16,13 +17,6 @@ export type SpendableBalanceSectionProps = {
   baseReserve: string;
   fiatValue: number | null;
 };
-
-function formatDisplayAmount(value: number): string {
-  if (!Number.isFinite(value)) {
-    return '0.00';
-  }
-  return value.toFixed(2);
-}
 
 /**
  * Spendable balance section: breakdown for a native asset (total, spendable, reserved, fiat value).
@@ -43,22 +37,12 @@ export function SpendableBalanceSection({
   const formatFiat = useFiatFormatter();
 
   const { totalDisplay, spendableDisplay, reservedDisplay } = useMemo(() => {
-    const total = Number.parseFloat(totalBalance);
-    const reserved = Number.parseFloat(baseReserve);
-    const spendable = Math.max(
-      0,
-      (Number.isFinite(total) ? total : 0) -
-        (Number.isFinite(reserved) ? reserved : 0),
-    );
+    const spendable = computeSpendableBalance(totalBalance, baseReserve);
 
     return {
-      totalDisplay: `${formatDisplayAmount(
-        Number.isFinite(total) ? total : 0,
-      )} ${symbol}`,
-      spendableDisplay: `${formatDisplayAmount(spendable)} ${symbol}`,
-      reservedDisplay: `${formatDisplayAmount(
-        Number.isFinite(reserved) ? reserved : 0,
-      )} ${symbol}`,
+      totalDisplay: `${totalBalance} ${symbol}`,
+      spendableDisplay: `${spendable} ${symbol}`,
+      reservedDisplay: `${baseReserve} ${symbol}`,
     };
   }, [baseReserve, symbol, totalBalance]);
 

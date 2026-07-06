@@ -35,7 +35,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isAssetRequireActivate } from '../../../../shared/lib/multichain/trustline';
-import { computeBaseReserve } from '../../../../shared/lib/multichain/reserve-balance';
+import { computeBaseReserve } from '../../../../shared/lib/multichain/spendable-balance';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -285,7 +285,9 @@ const AssetPage = ({
 
   const baseReserve = computeBaseReserve({
     assetId: bip44Asset?.assetId ?? assetId,
-    assetMetadata: assetWithBalance?.accountAssetInfo,
+    assetMetadata: assetWithBalance?.accountAssetInfo as {
+      baseReserve?: string;
+    },
   });
 
   const { safeChains } = useSafeChains();
