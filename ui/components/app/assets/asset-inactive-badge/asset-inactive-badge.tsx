@@ -12,7 +12,7 @@ export const AssetInactiveBadge = () => {
 
   return (
     <Tag
-      label={t('trustlineInactive')}
+      label={t('assetInactive')}
       backgroundColor={BackgroundColor.warningMuted}
       borderRadius={BorderRadius.pill}
       labelProps={{ color: TextColor.WarningDefault as never }}
