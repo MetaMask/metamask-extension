@@ -116,6 +116,7 @@ import {
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
 import { requestRepair } from './lib/repair';
+import { setupSidepanelMessageHandler } from './sidepanel-helper';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
@@ -2143,12 +2144,18 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
+
+  const sidepanelPreferred =
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true;
+  const sidepanelSupported = Boolean(browser?.sidePanel?.open);
+
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
     openSidePanelCount === 0 &&
-    true
+    !(sidepanelPreferred && sidepanelSupported)
   ) {
     uiIsTriggering = true;
     try {
@@ -2366,6 +2373,12 @@ const setupSidePanelToolbarBehavior = async () => {
 };
 
 setupSidePanelToolbarBehavior();
+
+setupSidepanelMessageHandler({
+  isSidepanelPreferred: () =>
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true,
+});
 
 // Initialize appActiveTab by querying the current active tab on startup
 const initializeAppActiveTab = async () => {

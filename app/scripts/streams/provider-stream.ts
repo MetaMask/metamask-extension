@@ -21,6 +21,7 @@ import {
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
+import { setupSidepanelListener } from '../sidepanel-helper';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 
@@ -47,6 +48,9 @@ const setupPageStreams = () => {
     name: CONTENT_SCRIPT,
     target: METAMASK_INPAGE,
   });
+
+  // Signal the background to open the side panel for allowlisted dapp requests
+  setupSidepanelListener();
 
   // create and connect channel muxers
   // so we can handle the channels individually
