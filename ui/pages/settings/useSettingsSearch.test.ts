@@ -114,10 +114,7 @@ jest.mock('./search-config', () => ({
       subPages: [
         {
           path: '/settings/privacy/third-party-apis',
-          items: [
-            { id: 'autodetect-nfts', titleKey: 'useNftDetection' },
-            { id: 'ipfs-gateway', titleKey: 'ipfsGateway' },
-          ],
+          items: [{ id: 'autodetect-nfts', titleKey: 'useNftDetection' }],
         },
       ],
     },
@@ -232,14 +229,14 @@ describe('useSettingsSearch', () => {
       wrapper: createWrapper(),
     });
 
-    const ipfsGateway = result.current.find(
+    const autodetectNfts = result.current.find(
       (item) =>
-        item.settingId === 'ipfs-gateway' &&
+        item.settingId === 'autodetect-nfts' &&
         item.tabRoute === '/settings/privacy/third-party-apis',
     );
-    expect(ipfsGateway).toEqual(
+    expect(autodetectNfts).toEqual(
       expect.objectContaining({
-        settingId: 'ipfs-gateway',
+        settingId: 'autodetect-nfts',
         parentTabLabelKey: 'privacy',
         tabRoute: '/settings/privacy/third-party-apis',
       }),

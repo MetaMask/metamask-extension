@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createSelectItem, createToggleItem } from '../shared';
@@ -73,13 +73,9 @@ const SecurityAndPasswordTab = () => {
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,
   );
-  const items = useMemo(
-    () =>
-      isBasicFunctionalityConsolidationEnabled
-        ? CONSOLIDATED_BASIC_FUNCTIONALITY_SECURITY_AND_PASSWORD_ITEMS
-        : SECURITY_AND_PASSWORD_SETTING_ITEMS,
-    [isBasicFunctionalityConsolidationEnabled],
-  );
+  const items = isBasicFunctionalityConsolidationEnabled
+    ? CONSOLIDATED_BASIC_FUNCTIONALITY_SECURITY_AND_PASSWORD_ITEMS
+    : SECURITY_AND_PASSWORD_SETTING_ITEMS;
 
   return <SettingsTab items={items} />;
 };

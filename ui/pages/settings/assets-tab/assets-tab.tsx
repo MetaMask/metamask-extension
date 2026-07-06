@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
@@ -74,13 +74,9 @@ const AssetsTab = () => {
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,
   );
-  const items = useMemo(
-    () =>
-      isBasicFunctionalityConsolidationEnabled
-        ? CONSOLIDATED_BASIC_FUNCTIONALITY_ASSET_ITEMS
-        : ASSET_SETTING_ITEMS,
-    [isBasicFunctionalityConsolidationEnabled],
-  );
+  const items = isBasicFunctionalityConsolidationEnabled
+    ? CONSOLIDATED_BASIC_FUNCTIONALITY_ASSET_ITEMS
+    : ASSET_SETTING_ITEMS;
 
   return <SettingsTab items={items} />;
 };
