@@ -6,6 +6,7 @@ import {
   BTC_ACCOUNT_PROVIDER_NAME,
   AccountProviderWrapper,
   XlmAccountProvider,
+  XLM_ACCOUNT_PROVIDER_NAME,
 } from '@metamask/multichain-account-service';
 import { MessengerClientInitFunction } from '../types';
 import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
@@ -47,24 +48,17 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
   };
 
-  const customProviders = [];
-
   const xlmProvider = new AccountProviderWrapper(
     controllerMessenger,
-    new XlmAccountProvider(controllerMessenger, {
-      ...snapAccountProviderConfig,
-      createAccounts: {
-        ...snapAccountProviderConfig.createAccounts,
-        batched: true,
-        timeoutMs: 10000,
-      },
-    }),
+    new XlmAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
-  customProviders.push(xlmProvider);
+
+  // Set default to false, then let the feature flag controller enable it if needed.
+  xlmProvider.setEnabled(false);
 
   const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
-    providers: customProviders,
+    providers: [xlmProvider],
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,

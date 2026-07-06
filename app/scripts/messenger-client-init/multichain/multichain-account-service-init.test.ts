@@ -32,7 +32,9 @@ function buildInitRequestMock(): jest.Mocked<
 > {
   const baseControllerMessenger = new Messenger<
     MockAnyNamespace,
-    PreferencesControllerGetStateAction | RemoteFeatureFlagControllerGetStateAction | ActionConstraint,
+    | PreferencesControllerGetStateAction
+    | RemoteFeatureFlagControllerGetStateAction
+    | ActionConstraint,
     never
   >({ namespace: MOCK_ANY_NAMESPACE });
 
@@ -94,9 +96,7 @@ describe('MultichainAccountServiceInit', () => {
 
       expect(multichainAccountServiceClassMock).toHaveBeenCalledWith({
         messenger: requestMock.controllerMessenger,
-        providers: [
-          expect.any(AccountProviderWrapper),
-        ],
+        providers: [expect.any(AccountProviderWrapper)],
         providerConfigs: expect.any(Object),
         config: expect.any(Object),
         ensureOnboardingComplete: requestMock.ensureOnboardingComplete,
