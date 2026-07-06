@@ -2,16 +2,20 @@ import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
-import Home from './home.component';
 import mockState from '../../../test/data/mock-state.json';
+import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
 import configureStore from '../../store/store';
+import { RouteMessengerContext } from '../../contexts/route-messenger';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
+import Home from './home.component';
 
 // Create store with mock state
 const store = configureStore({
   ...mockState,
 });
+
+const routeMessenger = createMockRouteMessenger();
 
 interface WrapperProps {
   children: React.ReactNode;
@@ -19,7 +23,11 @@ interface WrapperProps {
 
 // Wrapper component to provide necessary providers
 const Wrapper = ({ children }: WrapperProps) => (
-  <Provider store={store}>{children}</Provider>
+  <Provider store={store}>
+    <RouteMessengerContext.Provider value={routeMessenger}>
+      {children}
+    </RouteMessengerContext.Provider>
+  </Provider>
 );
 
 const meta: Meta<typeof Home> = {
