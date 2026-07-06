@@ -12,20 +12,11 @@ import { Driver } from '../../webdriver/driver';
 import {
   DAPP_PATH,
   DEFAULT_FIXTURE_ACCOUNT_ID,
-  HARDWARE_WALLET_ACCOUNT_ID,
   WINDOW_TITLES,
 } from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import {
-  mockSnapSimpleKeyringAndSite,
-  SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
-} from '../account/snap-keyring-site-mocks';
-import {
-  MOCK_ETH_CONVERSION_RATE,
-  mockPriceApi,
-  getMainnet25EthAssetsControllerPatch,
-  MAINNET_NATIVE_ASSET_ID,
-} from '../tokens/utils/mocks';
+import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
+import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
   it('should display basic wallets and accounts', async function () {
@@ -45,7 +36,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
               },
             },
           })
-          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -93,10 +83,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPreferencesController({
-            preferences: {
-              showFiatInTestnets: true,
-              showNativeTokenAsMainBalance: true,
-            },
+            preferences: { showFiatInTestnets: true },
             useCurrencyRateCheck: true,
           })
           .withCurrencyController({
@@ -111,23 +98,13 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()
           .withAssetsController({
-            ...getMainnet25EthAssetsControllerPatch(
-              MOCK_ETH_CONVERSION_RATE,
-              HARDWARE_WALLET_ACCOUNT_ID,
-            ),
             assetsBalance: {
               [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-                [MAINNET_NATIVE_ASSET_ID]: { amount: '0' },
-              },
-              [HARDWARE_WALLET_ACCOUNT_ID]: {
-                [MAINNET_NATIVE_ASSET_ID]: { amount: '25' },
+                'eip155:1/slip44:60': { amount: '0' },
               },
             },
           })
           .build(),
-        unifiedEvmAccountsApiBalances: {
-          mainnetNativeEthHuman: '25',
-        },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockSnapSimpleKeyringAndSite(mockServer);
@@ -139,10 +116,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x15af1d78b58c40000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, {
-          expectedBalance: '$85,025.00',
-          waitForNonEvmAccounts: false,
-        });
+        await login(driver, { waitForNonEvmAccounts: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const headerNavbar = new HeaderNavbar(driver);
@@ -190,9 +164,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
               },
             },
           })
-          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
-        manifestFlags: SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
         title: this.test?.fullTitle(),
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],

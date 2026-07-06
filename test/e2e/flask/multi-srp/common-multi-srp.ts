@@ -32,6 +32,23 @@ export function buildZeroBalanceMultiSrpFixture() {
 export async function mockActiveNetworks(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
+  // Localhost (1337) balances come from the Anvil RPC node, not the Accounts API.
+  // Exclude 1337 from supported networks so newly imported SRP accounts report
+  // their real on-chain balance (0 ETH) instead of inheriting the funded
+  // fixture account's 25 ETH from the v5 multiaccount balances mock.
+  await mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+        partialSupport: {
+          balances: [42220, 43114],
+        },
+      },
+    }));
+
   return await mockServer
     .forGet('https://accounts.api.cx.metamask.io/v2/activeNetworks')
     .thenCallback(() => {

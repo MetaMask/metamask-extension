@@ -16,11 +16,7 @@ import LoginPage from '../../page-objects/pages/login-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { Driver } from '../../webdriver/driver';
-import {
-  MOCK_ETH_CONVERSION_RATE,
-  mockPriceApi,
-  getMainnet25EthAssetsControllerPatch,
-} from '../tokens/utils/mocks';
+import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const SECOND_ACCOUNT_NAME = 'Account 2';
@@ -53,7 +49,6 @@ describe('Add account', function () {
               },
             },
           })
-          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -135,24 +130,11 @@ describe('Add account', function () {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_CONVERSION_RATE,
-                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
-          })
-          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          return [await mockPriceApi(mockServer)];
-        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { expectedBalance: '$85,025.00' });
+        await login(driver, { expectedBalance: '$75,250.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -198,7 +180,6 @@ describe('Add account', function () {
               },
             },
           })
-          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -271,24 +252,11 @@ describe('Add account', function () {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_CONVERSION_RATE,
-                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
-          })
-          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          return [await mockPriceApi(mockServer)];
-        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { expectedBalance: '$85,025.00' });
+        await login(driver, { expectedBalance: '$75,250.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
