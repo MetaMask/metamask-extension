@@ -148,7 +148,7 @@ const mm = (pkg: string, ...rest: string[]): readonly string[] => [
 /** Mapping of dapp keys to relative path segments from this repo's test root */
 export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
   Object.freeze({
-    'snap-simple-keyring-site': mm('snap-simple-keyring-site', 'public'),
+    'snap-simple-keyring-site': mm('snap-simple-keyring-site', 'dist'),
     'snap-account-abstraction-keyring': mm(
       'snap-account-abstraction-keyring-site',
       'public',

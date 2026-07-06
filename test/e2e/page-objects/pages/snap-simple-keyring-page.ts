@@ -24,11 +24,6 @@ class SnapSimpleKeyringPage {
 
   private readonly approveRequestIdInput = '#approve-request-request-id';
 
-  private readonly approveRequestSection = {
-    text: 'Approve request',
-    tag: 'div',
-  };
-
   private readonly confirmAddtoMetamask = {
     text: 'Confirm',
     tag: 'button',
@@ -60,11 +55,6 @@ class SnapSimpleKeyringPage {
   private readonly createAccountMessage =
     '[data-testid="create-snap-account-content-title"]';
 
-  private readonly createAccountSection = {
-    text: 'Create account',
-    tag: 'div',
-  };
-
   private readonly errorRequestMessage = {
     text: 'Error request',
     tag: 'p',
@@ -77,11 +67,6 @@ class SnapSimpleKeyringPage {
 
   private readonly importAccountPrivateKeyInput = '#import-account-private-key';
 
-  private readonly importAccountSection = {
-    text: 'Import account',
-    tag: 'div',
-  };
-
   private readonly installationCompleteMessage = {
     text: 'Installation complete',
     tag: 'h2',
@@ -92,19 +77,14 @@ class SnapSimpleKeyringPage {
     tag: 'button',
   };
 
-  private readonly listRequestsSection = {
-    text: 'List requests',
-    tag: 'div',
-  };
-
   private readonly newAccountMessage = {
     text: '"address":',
-    tag: 'div',
+    tag: 'pre',
   };
 
   private readonly pageTitle = {
-    text: 'Snap Simple Keyring',
-    tag: 'p',
+    text: 'Simple Snap Keyring',
+    tag: 'h2',
   };
 
   private readonly rejectRequestButton = {
@@ -114,14 +94,9 @@ class SnapSimpleKeyringPage {
 
   private readonly rejectRequestIdInput = '#reject-request-request-id';
 
-  private readonly rejectRequestSection = {
-    text: 'Reject request',
-    tag: 'div',
-  };
-
   private readonly requestMessage = {
     text: '"scope":',
-    tag: 'div',
+    tag: 'pre',
   };
 
   private readonly snapConnectedMessage = '#snapConnected';
@@ -183,7 +158,6 @@ class SnapSimpleKeyringPage {
     );
 
     // Get the first request from the requests list on simple keyring snap page
-    await this.driver.clickElementUsingMouseMove(this.listRequestsSection);
     await this.driver.clickElement(this.listRequestsButton);
     const requestJSON = await (
       await this.driver.waitForSelector(this.requestMessage)
@@ -193,7 +167,6 @@ class SnapSimpleKeyringPage {
       console.log(
         'Approve snap account transaction on Snap Simple Keyring page',
       );
-      await this.driver.clickElementUsingMouseMove(this.approveRequestSection);
       await this.driver.fill(
         this.approveRequestIdInput,
         JSON.parse(requestJSON)[0].id,
@@ -203,7 +176,6 @@ class SnapSimpleKeyringPage {
       console.log(
         'Reject snap account transaction on Snap Simple Keyring page',
       );
-      await this.driver.clickElementUsingMouseMove(this.rejectRequestSection);
       await this.driver.fill(
         this.rejectRequestIdInput,
         JSON.parse(requestJSON)[0].id,
@@ -230,12 +202,11 @@ class SnapSimpleKeyringPage {
   /**
    * Creates a new account on the Snap Simple Keyring page and checks the account is created.
    *
-   * @param isFirstAccount - Indicates if this is the first snap account being created. Defaults to true.
    * @returns the public key of the new created account
    */
-  async createNewAccount(isFirstAccount: boolean = true): Promise<string> {
+  async createNewAccount(): Promise<string> {
     console.log('Create new account on Snap Simple Keyring page');
-    await this.openCreateSnapAccountConfirmationScreen(isFirstAccount);
+    await this.openCreateSnapAccountConfirmationScreen();
     await this.confirmCreateSnapOnConfirmationScreen();
 
     // Wait for account creation to complete and success message
@@ -263,7 +234,6 @@ class SnapSimpleKeyringPage {
    */
   async importAccountWithPrivateKey(privateKey: string): Promise<void> {
     console.log('Import account with private key on Snap Simple Keyring page');
-    await this.driver.clickElement(this.importAccountSection);
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
     await this.driver.clickElement(this.importAccountButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -313,16 +283,9 @@ class SnapSimpleKeyringPage {
 
   /**
    * Opens the create snap account confirmation screen.
-   *
-   * @param isFirstAccount - Indicates if this is the first snap account being created. Defaults to true.
    */
-  async openCreateSnapAccountConfirmationScreen(
-    isFirstAccount: boolean = true,
-  ): Promise<void> {
+  async openCreateSnapAccountConfirmationScreen(): Promise<void> {
     console.log('Open create snap account confirmation screen');
-    if (isFirstAccount) {
-      await this.driver.clickElement(this.createAccountSection);
-    }
     await this.driver.clickElement(this.createAccountButton);
 
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

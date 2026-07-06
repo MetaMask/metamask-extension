@@ -64,9 +64,9 @@ describe('Create Snap Account', function (this: Suite) {
         ];
 
         // Create multiple snap accounts on snap simple keyring page
-        await snapSimpleKeyringPage.createNewAccount(true);
-        await snapSimpleKeyringPage.createNewAccount(false);
-        await snapSimpleKeyringPage.createNewAccount(false);
+        await snapSimpleKeyringPage.createNewAccount();
+        await snapSimpleKeyringPage.createNewAccount();
+        await snapSimpleKeyringPage.createNewAccount();
 
         // Check 3 created snap accounts are displayed in the account list.
         await driver.switchToWindowWithTitle(
