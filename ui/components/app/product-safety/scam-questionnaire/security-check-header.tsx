@@ -9,7 +9,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-} from '../../../../components/component-library';
+} from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type SecurityCheckHeaderProps = {

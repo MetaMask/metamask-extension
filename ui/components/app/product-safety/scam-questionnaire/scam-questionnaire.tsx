@@ -4,7 +4,7 @@ import {
   Modal,
   ModalContent,
   ModalContentSize,
-} from '../../../../components/component-library';
+} from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Answers,

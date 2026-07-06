@@ -42,7 +42,7 @@ import {
 import { isSignatureTransactionType } from '../../../utils';
 import ScamQuestionnaire, {
   useSendScamQuestionnaire,
-} from '../../../external/scam-questionnaire';
+} from '../../../../../components/app/product-safety/scam-questionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {

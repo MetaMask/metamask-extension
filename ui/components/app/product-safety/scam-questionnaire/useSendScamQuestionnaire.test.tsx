@@ -8,11 +8,11 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import { MetaMetricsEventLocation } from '../../../../../shared/constants/metametrics';
 import useAlerts from '../../../../hooks/useAlerts';
-import { useConfirmContext } from '../../context/confirm';
+import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import { useSendScamQuestionnaire } from './useSendScamQuestionnaire';
 
 jest.mock('../../../../hooks/useAlerts');
-jest.mock('../../context/confirm');
+jest.mock('../../../../pages/confirmations/context/confirm');
 
 const mockUseAlerts = jest.mocked(useAlerts);
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
