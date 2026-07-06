@@ -8,8 +8,8 @@ import type {
   Event as SentryEvent,
   EventHint,
   Integration,
-} from '@sentry/types';
-import { addFetchInstrumentationHandler } from '@sentry/utils';
+} from '@sentry/core';
+import { addFetchInstrumentationHandler } from '@sentry/core';
 import { v4 as uuidv4 } from 'uuid';
 
 const NAME = 'ConsensysTracePropagation';
@@ -109,7 +109,13 @@ export function getCurrentTraceparent(): string | undefined {
       return `00-${traceId}-${spanId}-${flags}`;
     }
 
-    const { traceId, spanId, sampled } = {
+    // v10 renamed the propagation context's `spanId` to `propagationSpanId`
+    // (the span id used for trace propagation when there's no active span).
+    const {
+      traceId,
+      propagationSpanId: spanId,
+      sampled,
+    } = {
       ...getIsolationScope().getPropagationContext(),
       ...getCurrentScope().getPropagationContext(),
     };

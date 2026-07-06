@@ -81,6 +81,10 @@ const scuttlingConfigBase = {
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
     setTimeout: 'window',
+    // v10 browserTracingIntegration's INP listener calls these on globalThis;
+    // they are "this sensitive" so must be bound to window.
+    addEventListener: 'window',
+    removeEventListener: 'window',
     // sentry special props
     __SENTRY__: '',
     sentryHooks: '',
