@@ -50,7 +50,7 @@ export const lavamoatPlugin = (args: Args) =>
         // The SW entry module and its static bootstrap imports are excluded
         // from wrapping (the 'unsafe' layer), but this chunk must run in 'safe'
         // mode so it carries the LavaMoat runtime. The imported `background` bundle
-        // is wrapped and relies on both being present in the SW realm.
+        // is wrapped and relies on it.
         return {
           mode: 'safe',
           embeddedOptions: {
