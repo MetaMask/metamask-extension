@@ -197,6 +197,52 @@
   "activity_approveSpendingCap_success_title": {
     "message": "Approved spending cap"
   },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "Activate trustline failed"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "Activating trustline: $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "Trustline activated: $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "Deactivate trustline failed"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "Deactivating trustline: $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "Trustline deactivated: $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_bridge_failed_description": {
     "message": "Bridge failed"
   },
@@ -1632,26 +1678,26 @@
   "asset": {
     "message": "Asset"
   },
+  "assetActivate": {
+    "message": "Activate",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "Activate $1 on $2 to get started.",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "We could not fetch any historical data"
+  },
+  "assetDeactivate": {
+    "message": "Remove",
+    "description": "Button label to deactivate an asset."
   },
   "assetOptions": {
     "message": "Asset options"
   },
   "assets": {
     "message": "Assets"
-  },
-  "assetActivateDescription": {
-    "message": "Activate $1 on $2 to get started.",
-    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
-  },
-  "assetActivate": {
-    "message": "Activate",
-    "description": "Primary button to activate an asset."
-  },
-  "assetDeactivate": {
-    "message": "Remove",
-    "description": "Button label to deactivate an asset."
   },
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
@@ -9848,6 +9894,18 @@
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
   },
+  "spendableBalance": {
+    "message": "Spendable"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "Reserved (locked)"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "Value"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "Total balance"
+  },
   "spender": {
     "message": "Spender"
   },
@@ -10091,22 +10149,6 @@
   "stellarClassicTrustlineRemoveNonZeroBalanceError": {
     "message": "You still have $1 $2 in this wallet. You must send or swap it all before deactivating this asset on Stellar.",
     "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
-  "spendableBalanceBaseReserved": {
-    "message": "Reserved (locked)"
-  },
-  "spendableBalance": {
-    "message": "Spendable"
-  },
-  "spendableBalanceTotalBalance": {
-    "message": "Total balance"
-  },
-  "spendableBalanceFiatValue": {
-    "message": "Value"
-  },
-  "trustlineInactive": {
-    "message": "Inactive",
-    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "stillConnectingTo": {
     "message": "Still connecting to $1...",
@@ -10856,6 +10898,10 @@
   },
   "trustlineDisapprove": {
     "message": "Deactivate trustline"
+  },
+  "trustlineInactive": {
+    "message": "Inactive",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "tryAgain": {
     "message": "Try again"

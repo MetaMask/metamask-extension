@@ -90,14 +90,7 @@ export function useMultichainTransactionDisplay(transaction: Transaction) {
     assetsMetadata,
   );
   const title = getEnrichedTitle(transaction, t, from?.unit, to?.unit);
-  let simplifiedTitle = getEnrichedTitle(transaction, t);
-
-  // Simplify title is mainly for modal title,
-  // The original title is 'Send' instead of 'Sent' in modal.
-  // We don't change this title if it is by purpose.
-  if (transaction.type === TransactionType.Send) {
-    simplifiedTitle = t('send');
-  }
+  const simplifiedTitle = getEnrichedTitle(transaction, t);
 
   // A flag to indicate if the transaction is a trustline type.
   const isTrustlineType = [
@@ -128,9 +121,12 @@ function getEnrichedTitle(
 ) {
   const isSimplified = !fromSymbol || !toSymbol;
 
+  // TODO: Add support for other transaction types
   const typeToTitle: Partial<Record<TransactionType, string>> = {
-    // TODO: Add support for other transaction types
-    [TransactionType.Send]: t('sent'),
+    // Simplify title is mainly for modal title,
+    // The original title is 'Send' instead of 'Sent' in modal.
+    // We don't change this title if it is by purpose.
+    [TransactionType.Send]: isSimplified ? t('send') : `${t('sent')}`,
     [TransactionType.Receive]: t('received'),
     [TransactionType.Swap]: isSimplified
       ? t('swap')
