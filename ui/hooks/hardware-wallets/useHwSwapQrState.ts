@@ -71,16 +71,21 @@ export function useHwSwapQrState({
   confirmationTxDataRef.current = confirmationTxData;
 
   const currentQrRequestId = qrSignRequest?.request.requestId;
-  const firstStepRequestIdRef = useRef<string | undefined>(undefined);
-  const stepTrackingResetKeyRef = useRef(stepTrackingResetKey);
+
+  // Track the first-step QR request id to detect the final step before the
+  // state machine transitions.
+  const [firstStepRequestId, setFirstStepRequestId] = useState<
+    string | undefined
+  >(undefined);
+  const [lastResetKey, setLastResetKey] = useState(stepTrackingResetKey);
 
   useEffect(() => {
     setIsReadingQrSignature(false);
   }, [currentQrRequestId]);
 
-  if (stepTrackingResetKeyRef.current !== stepTrackingResetKey) {
-    stepTrackingResetKeyRef.current = stepTrackingResetKey;
-    firstStepRequestIdRef.current = undefined;
+  if (lastResetKey !== stepTrackingResetKey) {
+    setLastResetKey(stepTrackingResetKey);
+    setFirstStepRequestId(undefined);
   }
 
   const isAwaitingSignature =
@@ -89,22 +94,21 @@ export function useHwSwapQrState({
     signatureState.status ===
       HardwareWalletSignatureStatus.AwaitingFinalSignature;
 
-  if (!isAwaitingSignature) {
-    firstStepRequestIdRef.current = undefined;
+  if (!isAwaitingSignature && firstStepRequestId !== undefined) {
+    setFirstStepRequestId(undefined);
   }
 
   if (
     signatureState.status ===
       HardwareWalletSignatureStatus.AwaitingFirstSignature &&
     currentQrRequestId &&
-    !firstStepRequestIdRef.current
+    !firstStepRequestId
   ) {
-    firstStepRequestIdRef.current = currentQrRequestId;
+    setFirstStepRequestId(currentQrRequestId);
   }
 
   const isFinalStepRequest =
-    Boolean(firstStepRequestIdRef.current) &&
-    currentQrRequestId !== firstStepRequestIdRef.current;
+    Boolean(firstStepRequestId) && currentQrRequestId !== firstStepRequestId;
 
   const showInlineQrSigning = Boolean(qrSignRequest) && isAwaitingSignature;
 
