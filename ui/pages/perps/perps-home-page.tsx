@@ -1,6 +1,6 @@
 import React from 'react';
-import { Page } from '../../components/multichain/pages/page';
 import { Text, FontWeight, TextVariant } from '@metamask/design-system-react';
+import { Page } from '../../components/multichain/pages/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { PerpsTab } from '../../components/app/perps/perps-tab';
 
