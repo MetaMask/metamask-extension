@@ -32,52 +32,79 @@ jobs:
       matrix:
         include:
           # plugin: pr | prebase | norunchecks
-          # workload command runs after webpack:tsc
+          #   prebase => full-tree checkout at PRE_PR_SHA (ref set below);
+          #              the pre-PR webpack:lavamoat script is then patched to
+          #              add --max-old-space-size=8192 so heap matches all jobs.
+          #   pr       => tree at trigger branch HEAD, plugin unmodified.
+          #   norunchecks => tree at HEAD, plugin patched runChecks true->false.
+          # Concurrent jobs call `yarn exec concurrently --` so the binary
+          # resolves from node_modules/.bin (bare `concurrently` = exit 127).
           - label: 1-prebase-build
             plugin: prebase
-            heap: '8192'
+            ref: 3924472a09bcafbf74fc5f882500c41f9f7481aa
             command: 'yarn webpack:lavamoat:build --no-stats'
           - label: 2-pr-build
             plugin: pr
-            heap: '8192'
+            ref: ''
             command: 'yarn webpack:lavamoat:build --no-stats'
           - label: 3-pr-build-norunchecks
             plugin: norunchecks
-            heap: '8192'
+            ref: ''
             command: 'yarn webpack:lavamoat:build --no-stats'
           - label: 4-prebase-policy-single
             plugin: prebase
-            heap: '8192'
+            ref: 3924472a09bcafbf74fc5f882500c41f9f7481aa
             command: 'yarn webpack:lavamoat:policy:build'
           - label: 5-pr-policy-single
             plugin: pr
-            heap: '8192'
+            ref: ''
             command: 'yarn webpack:lavamoat:policy:build'
           - label: 6-pr-policy-single-norunchecks
             plugin: norunchecks
-            heap: '8192'
+            ref: ''
             command: 'yarn webpack:lavamoat:policy:build'
           - label: 7-prebase-policy-mv3-concurrent
             plugin: prebase
-            heap: '8192'
-            # Direct concurrently at 8192 each (bypasses the Option-2-patched
-            # policy:mv3 script, whose inner 4096 assignment would shadow ours).
-            # Reproduces the pre-Option-2 4x8=32GB runner-OOM scenario.
-            command: "concurrently 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
+            ref: 3924472a09bcafbf74fc5f882500c41f9f7481aa
+            # 4x8=32GB concurrent policy gen => reproduces pre-Option-2 runner OOM.
+            command: "yarn exec concurrently -- 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
           - label: 8-pr-policy-mv3-concurrent
             plugin: pr
-            heap: '8192'
-            command: "concurrently 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
-          - label: 9-pr-policy-mv3-concurrent-norunchecks
-            plugin: norunchecks
-            heap: '8192'
-            command: "concurrently 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
+            ref: ''
+            command: "yarn exec concurrently -- 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
+          - label: 9-pr-policy-mv3-concurrent-4096
+            plugin: pr
+            ref: ''
+            # 4x4=16GB (the Option-2 config) => should PASS, proving the fix.
+            command: "yarn exec concurrently -- 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          # prebase jobs check out the FULL tree at PRE_PR_SHA (faithful
+          # pre-PR baseline: old plugin, old package.json, old lockfile).
+          # Empty ref => the trigger branch HEAD (PR).
+          ref: ${{ matrix.ref }}
+
+      - name: Confirm checked-out tree
+        run: |
+          set -euo pipefail
+          echo "=== HEAD ==="
+          git rev-parse HEAD
+          echo "=== expected ref: '${{ matrix.ref }}' (empty = trigger HEAD) ==="
+          if [ -n "${{ matrix.ref }}" ]; then
+            if [ "$(git rev-parse HEAD)" != "${{ matrix.ref }}" ]; then
+              echo "::error::checked-out HEAD does not match requested ref"
+              exit 1
+            fi
+            echo "OK: tree is at PRE_PR_SHA"
+          fi
+          echo "=== plugin runChecks/service-worker lines ==="
+          grep -nE "runChecks:|nullUnsafeEntries|service-worker" "$PLUGIN_PATH" | head
+          echo "=== webpack:lavamoat script (line 13) ==="
+          grep -nE '"webpack:lavamoat":' package.json | head -1
 
       - name: Report available memory
         run: |
@@ -86,32 +113,45 @@ jobs:
           echo "=== nproc ==="
           nproc
 
-      - name: Apply plugin variant
+      - name: Apply variant patches
         run: |
           set -euo pipefail
           case "${{ matrix.plugin }}" in
             pr)
-              echo "Using PR plugin as-is"
+              echo "PR tree, plugin unmodified"
               ;;
             prebase)
-              echo "Restoring pre-PR plugin from $PRE_PR_SHA"
-              git fetch --depth=1 origin "$PRE_PR_SHA" || git fetch origin "$PRE_PR_SHA" || true
-              git show "$PRE_PR_SHA:$PLUGIN_PATH" > "$PLUGIN_PATH"
+              # Pre-PR webpack:lavamoat has NO --max-old-space-size flag (uses
+              # V8 default). Inject 8192 so heap matches every other job and the
+              # only variable under test is the plugin/tree, not the heap size.
+              echo "Patching pre-PR webpack:lavamoat heap -> 8192"
+              node -e '
+                const fs = require("fs");
+                const p = "package.json";
+                const j = JSON.parse(fs.readFileSync(p, "utf8"));
+                const s = j.scripts["webpack:lavamoat"];
+                if (!s.includes("max-old-space-size")) {
+                  j.scripts["webpack:lavamoat"] = s.replace(
+                    "NODE_OPTIONS=--no-deprecation",
+                    "NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8192\"",
+                  );
+                }
+                fs.writeFileSync(p, JSON.stringify(j, null, 2) + "\n");
+              '
+              grep -nE '"webpack:lavamoat":' package.json | head -1
               ;;
             norunchecks)
               echo "Patching runChecks: true -> false"
               sed -i 's/runChecks: true/runChecks: false/' "$PLUGIN_PATH"
+              grep -nE "runChecks:" "$PLUGIN_PATH" | head
               ;;
           esac
-          echo "=== runChecks + service-worker lines ==="
-          grep -nE "runChecks:|unsafeEntries|nullUnsafeEntries|service-worker" "$PLUGIN_PATH" | head
 
       - name: Compile webpack launcher
         run: yarn webpack:tsc
 
       - name: Measure peak RSS
         env:
-          WEBPACK_LAVAMOAT_HEAP: ${{ matrix.heap }}
           # Passed via env to avoid any YAML/shell quote nesting issues with the
           # single quotes inside `concurrently '...' '...'` commands.
           WORKLOAD_CMD: ${{ matrix.command }}
@@ -120,19 +160,25 @@ jobs:
 
           echo "=== workload ==="
           echo "$WORKLOAD_CMD"
-          echo "=== heap=${WEBPACK_LAVAMOAT_HEAP} ==="
 
           totalkb=$(grep MemTotal /proc/meminfo | grep -oE '[0-9]+')
 
-          # Background sampler: records the lowest MemAvailable (peak pressure)
-          # and the highest summed RSS of all node processes. Handles both single
-          # and concurrent workloads correctly (time -v maxRSS only covers one child).
-          min_avail_kb=$totalkb
-          max_node_rss_kb=0
+          # Background sampler: records the lowest MemAvailable (peak system
+          # pressure) and the highest summed RSS of all node processes. The node
+          # RSS is summed straight from /proc/*/status (VmRSS) for every process
+          # whose /proc/*/comm is "node" — reliable for both single and
+          # concurrent workloads (time -v maxRSS only covers one child).
           (
             while true; do
               avail=$(grep MemAvailable /proc/meminfo | grep -oE '[0-9]+')
-              node_rss=$(ps -A -o rss=,comm= 2>/dev/null | awk '$2 ~ /node/ {s+=$1} END{print s+0}')
+              node_rss=0
+              for c in /proc/[0-9]*/comm; do
+                if [ "$(cat "$c" 2>/dev/null)" = "node" ]; then
+                  d=$(dirname "$c")
+                  r=$(grep -m1 VmRSS "$d/status" 2>/dev/null | grep -oE '[0-9]+')
+                  node_rss=$(( node_rss + ${r:-0} ))
+                fi
+              done
               echo "$avail $node_rss"
               sleep 1
             done
