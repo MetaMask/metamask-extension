@@ -275,10 +275,7 @@ export async function mockTronGetAccountResource(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forPost(tronInfuraUrl('/wallet/getaccountresource'))
-    .withJsonBody({
-      address: TRON_ACCOUNT_ADDRESS,
-      visible: true,
-    })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -1262,18 +1259,48 @@ export async function mockTronTriggerConstantContract(
           '0000000000000000000000000000000000000000000000000000000000000001',
         ],
         transaction: {
-          ret: [{}],
+          ret: [{ ret: 'SUCCESS' }],
           visible: false,
           txID: 'mock_trigger_constant_txid',
           raw_data: {
-            contract: [],
+            contract: [
+              {
+                parameter: {
+                  value: {
+                    data: '14d08fca',
+                    owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
+                    contract_address:
+                      '41f742f4589459f0923fa579600815763d1646bec3',
+                  },
+                  type_url:
+                    'type.googleapis.com/protocol.TriggerSmartContract',
+                },
+                type: 'TriggerSmartContract',
+              },
+            ],
             ref_block_bytes: 'f733',
             ref_block_hash: 'ff89d72ddc1ce1ea',
             expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
             timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
           },
-          raw_data_hex: '',
+          raw_data_hex:
+            '0a02f7332208ff89d72ddc1ce1ea4090ad9ad68d375af40f081f12ef0f0a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412b90f',
         },
+      },
+    }));
+}
+
+export async function mockTronEstimateEnergy(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/estimateenergy'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        result: { result: true },
+        energy_required: 1000,
       },
     }));
 }
@@ -1416,6 +1443,7 @@ export async function mockTronSwapApis(
     await mockTronGetChainParameters(mockServer),
     await mockTronGetNextMaintenanceTime(mockServer),
     await mockTronTriggerConstantContract(mockServer),
+    await mockTronEstimateEnergy(mockServer),
     await mockTronGetContract(mockServer),
   ];
 }
