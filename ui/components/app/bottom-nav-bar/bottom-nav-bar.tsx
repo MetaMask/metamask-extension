@@ -15,7 +15,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
-  PERPS_MARKET_LIST_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   PERPS_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
@@ -71,7 +71,8 @@ export function BottomNavBar() {
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
 
   const isHome = pathname === DEFAULT_ROUTE;
-  const isPerps = pathname.startsWith(PERPS_ROUTE);
+  const isPerps =
+    pathname === PERPS_HOME_PAGE_ROUTE || pathname.startsWith(PERPS_ROUTE);
   const isSwaps = pathname.startsWith(SWAP_PATH);
   const isActivity = pathname === ACTIVITY_ROUTE;
 
@@ -84,7 +85,7 @@ export function BottomNavBar() {
   );
 
   const handlePerpsClick = useCallback(
-    () => navigate(PERPS_MARKET_LIST_ROUTE),
+    () => navigate(PERPS_HOME_PAGE_ROUTE),
     [navigate],
   );
 
