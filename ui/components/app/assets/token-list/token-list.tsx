@@ -10,6 +10,7 @@ import {
   type CaipAssetType,
   type CaipChainId,
   type Hex,
+  isCaipAssetType,
 } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import {
@@ -356,7 +357,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     const tokenAddress =
       isEvmChainId(token.chainId) && token.isNative ? '' : token.address;
 
-    onTokenClick(token.chainId, tokenAddress, token.assetId);
+    const routeAssetId =
+      token.assetId && isCaipAssetType(token.assetId)
+        ? token.assetId
+        : undefined;
+
+    onTokenClick(token.chainId, tokenAddress, routeAssetId);
 
     // Track event: token details
     trackEvent({

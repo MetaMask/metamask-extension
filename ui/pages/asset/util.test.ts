@@ -1,5 +1,6 @@
 import { Token } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { type AssetRouteParams } from '../../../shared/lib/asset-route';
 import {
   findAssetByAddress,
   fromIso8601DurationToPriceApiTimePeriod,
@@ -221,7 +222,11 @@ describe('utils', () => {
       const erc20AssetId = `eip155:1/erc20:${tokenAddress}` as const;
       const nativeAssetId = 'eip155:1/slip44:60' as const;
 
-      const testCases = [
+      const testCases: {
+        name: string;
+        params: AssetRouteParams;
+        expected: Record<string, unknown>;
+      }[] = [
         {
           name: 'resolves an ERC-20 CAIP-19 route',
           params: { chainId, asset: erc20AssetId },
@@ -232,7 +237,10 @@ describe('utils', () => {
         },
         {
           name: 'resolves a native CAIP-19 route',
-          params: { chainId: 'eip155:42161', asset: 'eip155:42161/slip44:60' },
+          params: {
+            chainId: 'eip155:42161',
+            asset: 'eip155:42161/slip44:60',
+          },
           expected: {
             decodedAsset: 'eip155:42161/slip44:60',
             chainId: 'eip155:42161',

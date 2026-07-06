@@ -6,7 +6,11 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { parseCaipAssetType } from '@metamask/utils';
+import {
+  type CaipChainId,
+  type Hex,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import {
   AssetType,
   FeatureId,

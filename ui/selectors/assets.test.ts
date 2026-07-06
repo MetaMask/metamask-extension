@@ -1665,7 +1665,7 @@ describe('getFungibleAssetForRoute', () => {
 
     jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
       '0x1': [nativeEth],
-    } as AccountGroupAssets);
+    } as unknown as AccountGroupAssets);
 
     const result = getFungibleAssetForRoute(createMockState('native-evm'), {
       assetId: 'eip155:1/slip44:60',
@@ -1692,7 +1692,7 @@ describe('getFungibleAssetForRoute', () => {
 
     jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
       '0x1': [customToken],
-    } as AccountGroupAssets);
+    } as unknown as AccountGroupAssets);
 
     const result = getFungibleAssetForRoute(createMockState('erc20-route'), {
       assetId: `eip155:1/erc20:${tokenAddress}` as CaipAssetType,

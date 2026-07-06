@@ -115,11 +115,7 @@ describe('useBridgeNavigation', () => {
   describe('navigateToAssetPage', () => {
     it('navigates to the CAIP-19 asset route for an EVM ERC-20 token', () => {
       const { result } = renderUseBridgeNavigation(
-        createBridgeMockStore({
-          bridgeStateOverrides: {
-            fromTokenInputValue: '25',
-          },
-        }),
+        createBridgeMockStore(),
       );
 
       act(() => {

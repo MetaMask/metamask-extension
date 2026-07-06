@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, act, waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -161,7 +162,7 @@ const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
 
 type RenderAssetListOptions = {
   balance?: string;
-  chainId?: string;
+  chainId?: Hex;
   showTokensLinks?: boolean;
   onClickAsset?: typeof mockOnClickAsset;
 };

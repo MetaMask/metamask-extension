@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { CaipAssetType } from '@metamask/utils';
+import { CaipAssetType, Hex } from '@metamask/utils';
 import { useAsyncResult } from '../../../hooks/useAsync';
+import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { buildTokenFromCaipAssetId } from '../build-token-from-caip-asset-id';
 import { getRouteAssetChainId, useRouteAssetToken } from './useRouteAssetToken';
 
@@ -15,13 +16,16 @@ describe('useRouteAssetToken', () => {
     'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' as CaipAssetType;
 
   const ownedToken = {
-    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Hex,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
-    chainId: '0x1',
+    chainId: '0x1' as Hex,
     decimals: 18,
+    image: '',
     isNative: false,
-  };
+    secondary: null,
+    title: 'DAI',
+  } as TokenWithFiatAmount;
 
   const locationStateToken = {
     address: '0x6b175474e89094c44da98b954eedeac495271d0f',
@@ -32,10 +36,10 @@ describe('useRouteAssetToken', () => {
   };
 
   const fetchedToken = {
-    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Hex,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
-    chainId: '0x1',
+    chainId: '0x1' as Hex,
     decimals: 18,
     image: '',
     isNative: false,
@@ -47,8 +51,8 @@ describe('useRouteAssetToken', () => {
       value: undefined,
       pending: false,
       error: undefined,
-      status: 'idle',
-      idle: true,
+      status: 'success',
+      idle: false,
     });
   });
 
@@ -202,8 +206,11 @@ describe('getRouteAssetChainId', () => {
   it('returns the token chain id when present', () => {
     expect(
       getRouteAssetChainId({
-        chainId: 'eip155:1',
+        address: '0x0000000000000000000000000000000000000000',
         symbol: 'ETH',
+        name: 'Ethereum',
+        chainId: 'eip155:1',
+        decimals: 18,
       }),
     ).toBe('eip155:1');
   });

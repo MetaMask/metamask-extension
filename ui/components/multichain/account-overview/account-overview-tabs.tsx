@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Hex, type CaipAssetType } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -21,9 +21,7 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { buildAssetRoutePathFromParts } from '../../../../shared/lib/asset-route';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { DEFI_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../networks-form/use-safe-chains';
@@ -220,18 +218,10 @@ export const AccountOverviewTabs = ({
   );
 
   const onClickAsset = useCallback(
-    (chainId: string, asset: string, assetId?: CaipAssetType) => {
-      const path = buildAssetRoutePathFromParts(chainId, asset, {
-        assetId,
-        isNative: isEvmChainId(chainId) && !asset,
-      });
-
-      if (!path) {
-        return;
-      }
-
-      transitionForward(() => navigate(path));
-    },
+    (chainId: string, asset: string) =>
+      transitionForward(() =>
+        navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      ),
     [navigate],
   );
   const onClickDeFi = useCallback(

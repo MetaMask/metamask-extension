@@ -1,4 +1,3 @@
-import { Token } from '@metamask/assets-controllers';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   type CaipAssetType,
@@ -14,6 +13,7 @@ import {
   getCaipAssetImageUrl,
   isEvmChainId,
 } from '../../../shared/lib/asset-utils';
+import { Token } from '../../components/app/assets/types';
 
 /**
  * Builds a fungible token model from a CAIP-19 asset id, including assets
@@ -61,27 +61,26 @@ export const buildTokenFromCaipAssetId = async (
 
     const image = getCaipAssetImageUrl(assetId) ?? '';
     const isEvm = isEvmChainId(caipChainId);
-    const chainId = isEvm
-      ? (decimalToPrefixedHex(parsed.chain.reference) as Hex)
-      : (caipChainId as CaipChainId);
 
     if (!isEvm) {
       return {
-        address: assetId as unknown as Hex,
+        address: assetId,
         symbol: metadata.symbol,
         name: metadata.name,
-        chainId,
+        chainId: caipChainId as CaipChainId,
         decimals: metadata.decimals,
         image,
         isNative: assetNamespace === 'slip44',
       };
     }
 
+    const hexChainId = decimalToPrefixedHex(parsed.chain.reference) as Hex;
+
     return {
       address: assetReference as Hex,
       symbol: metadata.symbol,
       name: metadata.name,
-      chainId,
+      chainId: hexChainId,
       decimals: metadata.decimals,
       image,
       isNative: false,

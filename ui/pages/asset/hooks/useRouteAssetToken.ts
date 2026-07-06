@@ -1,4 +1,3 @@
-import { Token } from '@metamask/assets-controllers';
 import {
   type CaipAssetType,
   type CaipChainId,
@@ -7,7 +6,7 @@ import {
 } from '@metamask/utils';
 
 import { useAsyncResult } from '../../../hooks/useAsync';
-import { TokenWithFiatAmount } from '../../../components/app/assets/types';
+import { Token, TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { buildTokenFromCaipAssetId } from '../build-token-from-caip-asset-id';
 
 type LocationStateToken = {

@@ -1430,7 +1430,13 @@ const getChainIdsForAssetRouteLookup = (
     const { chainId: caipChainId, chain } = parseCaipAssetType(assetId);
     const hexChainId = toHex(chain.reference) as Hex;
 
-    return [...new Set([chainId, caipChainId, hexChainId].filter(Boolean))];
+    return [
+      ...new Set(
+        [chainId, caipChainId, hexChainId].filter(
+          (id): id is Hex | CaipChainId => id !== undefined,
+        ),
+      ),
+    ];
   } catch {
     return chainId ? [chainId] : [];
   }
@@ -1504,7 +1510,10 @@ const itemMatchesRouteAsset = (
   }
 
   if (item.address && item.chainId) {
-    const itemRouteAssetId = toAssetId(item.address, item.chainId);
+    const itemRouteAssetId = toAssetId(
+      item.address,
+      item.chainId as Hex | CaipChainId,
+    );
     if (itemRouteAssetId && assetIdsMatch(itemRouteAssetId, routeAssetId)) {
       return true;
     }
@@ -1573,7 +1582,7 @@ export const getFungibleAssetForRoute = (
           itemMatchesRouteAsset(item, assetId, decodedAsset),
         );
         if (match) {
-          return match as TokenWithFiatAmount;
+          return match as unknown as TokenWithFiatAmount;
         }
       }
 
@@ -1583,7 +1592,7 @@ export const getFungibleAssetForRoute = (
             (item) => item.isNative,
           );
           if (nativeAsset) {
-            return nativeAsset as TokenWithFiatAmount;
+            return nativeAsset as unknown as TokenWithFiatAmount;
           }
         }
       }
@@ -1593,7 +1602,7 @@ export const getFungibleAssetForRoute = (
         .find((item) => itemMatchesRouteAsset(item, assetId, decodedAsset));
 
       if (flatMatch) {
-        return flatMatch as TokenWithFiatAmount;
+        return flatMatch as unknown as TokenWithFiatAmount;
       }
 
       // Native assets may be keyed by zero address while the route uses slip44.
@@ -1607,7 +1616,7 @@ export const getFungibleAssetForRoute = (
           );
 
         if (nativeFlatMatch) {
-          return nativeFlatMatch as TokenWithFiatAmount;
+          return nativeFlatMatch as unknown as TokenWithFiatAmount;
         }
       }
     } catch {
