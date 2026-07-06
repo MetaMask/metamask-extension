@@ -1603,11 +1603,9 @@ async function setupMocking(
         // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
         // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
         let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
-        if (
-          chainRef === '1' &&
-          mainnetNativeOverride !== null &&
-          isKnownFundedTestAccount
-        ) {
+        if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
+          nativeBalance = '0';
+        } else if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
         } else if (
           chainRef === '1337' &&

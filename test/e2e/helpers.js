@@ -275,6 +275,20 @@ async function withFixtures(options, testSuite) {
       contractRegistry = seeder.getContractRegistry();
     }
 
+    const selectedAccountId =
+      fixtures?.data?.AccountsController?.internalAccounts?.selectedAccount;
+    if (selectedAccountId === HARDWARE_WALLET_ACCOUNT_ID) {
+      fixtures.data.AssetsController ??= {};
+      fixtures.data.AssetsController.assetsBalance ??= {};
+      fixtures.data.AssetsController.assetsBalance[HARDWARE_WALLET_ACCOUNT_ID] =
+        {
+          ...(fixtures.data.AssetsController.assetsBalance[
+            HARDWARE_WALLET_ACCOUNT_ID
+          ] ?? {}),
+          'eip155:1/slip44:60': { amount: '25' },
+        };
+    }
+
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
@@ -360,8 +374,6 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    const selectedAccountId =
-      fixtures?.data?.AccountsController?.internalAccounts?.selectedAccount;
     if (
       selectedAccountId === HARDWARE_WALLET_ACCOUNT_ID &&
       localChainId === 1337 &&
@@ -370,6 +382,15 @@ async function withFixtures(options, testSuite) {
       effectiveUnifiedEvmAccountsApiBalances = {
         ...effectiveUnifiedEvmAccountsApiBalances,
         localhostNativeEthHuman: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+      };
+    }
+    if (
+      selectedAccountId === HARDWARE_WALLET_ACCOUNT_ID &&
+      !unifiedEvmAccountsApiBalances?.mainnetNativeEthHuman
+    ) {
+      effectiveUnifiedEvmAccountsApiBalances = {
+        ...effectiveUnifiedEvmAccountsApiBalances,
+        mainnetNativeEthHuman: '25',
       };
     }
 
