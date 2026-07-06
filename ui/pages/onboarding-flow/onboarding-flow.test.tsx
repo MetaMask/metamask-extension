@@ -36,6 +36,8 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/envir
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import OnboardingFlow from './onboarding-flow';
 
+const mockTrackEvent = jest.fn();
+
 jest.mock('../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../shared/lib/analytics/create-event-builder',
@@ -43,7 +45,7 @@ jest.mock('../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: jest.fn(),
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
       createEventBuilder,
     }),
   };
