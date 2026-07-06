@@ -266,4 +266,49 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       },
     );
   });
+
+  it('can complete a swap from BTC to USDC', async function () {
+    await withFixtures(
+      {
+        fixtures: buildBtcSwapFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockBtcSwapMocks,
+      },
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await driver.refresh();
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
+        );
+
+        await homePage.clickOnSwapButton();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.checkPageIsLoaded();
+
+        await bridgePage.enterBridgeQuote({
+          amount: '0.1',
+          tokenTo: 'USDC',
+          toChain: 'Ethereum',
+        });
+
+        await bridgePage.waitForQuote();
+        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+        await bridgePage.submitQuote();
+
+        await homePage.goToActivityList();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPendingBridgeTransactionActivity(1);
+        await activityTab.checkTxAction({
+          action: 'Bridge to Ethereum',
+          confirmedTx: 1,
+        });
+      },
+    );
+  });
 });
