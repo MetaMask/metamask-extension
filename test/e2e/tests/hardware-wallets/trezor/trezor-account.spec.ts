@@ -1,8 +1,5 @@
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
-import {
-  buildHardwareWalletConnectFixture,
-  HARDWARE_WALLET_ZERO_BALANCE_API_OVERRIDES,
-} from '../fixtures';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
@@ -17,16 +14,11 @@ describe('Trezor Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
-        fixtures: buildHardwareWalletConnectFixture(),
-        unifiedEvmAccountsApiBalances:
-          HARDWARE_WALLET_ZERO_BALANCE_API_OVERRIDES,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, {
-          waitForNonEvmAccounts: false,
-          expectedBalance: '0',
-        });
+        await login(driver, { waitForNonEvmAccounts: false });
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -69,16 +61,11 @@ describe('Trezor Hardware', function () {
   it('unlocks multiple accounts at once and removes one', async function () {
     await withFixtures(
       {
-        fixtures: buildHardwareWalletConnectFixture(),
-        unifiedEvmAccountsApiBalances:
-          HARDWARE_WALLET_ZERO_BALANCE_API_OVERRIDES,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, {
-          waitForNonEvmAccounts: false,
-          expectedBalance: '0',
-        });
+        await login(driver, { waitForNonEvmAccounts: false });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 

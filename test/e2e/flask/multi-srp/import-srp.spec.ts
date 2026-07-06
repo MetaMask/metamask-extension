@@ -15,11 +15,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import {
-  buildZeroBalanceMultiSrpFixture,
-  mockActiveNetworks,
-  ZERO_UNIFIED_EVM_BALANCES,
-} from './common-multi-srp';
+import { mockActiveNetworks } from './common-multi-srp';
 
 const TEST_SRP_WORDS_FOR_UI_TEST = [
   'ghost',
@@ -40,13 +36,12 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
   it('successfully imports a new srp', async function () {
     await withFixtures(
       {
-        fixtures: buildZeroBalanceMultiSrpFixture(),
-        unifiedEvmAccountsApiBalances: ZERO_UNIFIED_EVM_BALANCES,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockActiveNetworks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         await importAdditionalSecretRecoveryPhrase(driver);
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkAccountBelongsToSrp('Account 1', 2);
@@ -57,13 +52,12 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
   it('successfully imports a new srp and it matches the srp imported', async function () {
     await withFixtures(
       {
-        fixtures: buildZeroBalanceMultiSrpFixture(),
-        unifiedEvmAccountsApiBalances: ZERO_UNIFIED_EVM_BALANCES,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockActiveNetworks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         await importAdditionalSecretRecoveryPhrase(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();

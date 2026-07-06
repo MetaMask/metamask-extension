@@ -20,11 +20,15 @@ import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
   BRIDGE_ETH_USD_SPOT_PRICE,
-  BRIDGE_L2_ETH_BALANCE_PER_CHAIN,
   BRIDGE_L2_ETH_USD_SPOT_PRICE,
   BRIDGE_L2_MOCK_CURRENCY_RATES,
-  BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST,
+  BRIDGE_L2_WITH_FIXTURES_OPTIONS,
   BRIDGE_MOCK_CURRENCY_RATES,
+  BRIDGE_WITH_FIXTURES_OPTIONS,
+  getBridgeAssetsControllerConfig,
+  getBridgeL2AssetsControllerConfig,
+} from './bridge-unified-assets-config';
+import {
   MOCK_TOKENS_ARBITRUM,
   MOCK_TOKENS_ETHEREUM,
   MOCK_TOKENS_LINEA,
@@ -45,47 +49,11 @@ import {
   EXPECTED_INPUT_CHANGES,
   BRIDGE_REFRESH_RATE,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-  getMockAssetsPrice,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
-
-const DEFAULT_FIXTURE_ACCOUNT_ID = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
-
-/** Native ETH balances seeded for mainnet bridge fixtures (mainnet loses gas to HST deploy). */
-const getBridgeFixtureAssetsBalance = () => ({
-  [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-    'eip155:1/slip44:60': {
-      amount: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
-    },
-    'eip155:59144/slip44:60': {
-      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
-    },
-    'eip155:42161/slip44:60': {
-      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
-    },
-  },
-});
-
-const BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES = {
-  mainnetNativeEthHuman: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
-  nativeBalance: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
-};
-
-/** Native ETH balances seeded for L2 bridge fixtures (25 ETH on each enabled chain). */
-const getBridgeL2FixtureAssetsBalance = () => ({
-  [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-    'eip155:1/slip44:60': { amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN) },
-    'eip155:59144/slip44:60': {
-      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
-    },
-    'eip155:42161/slip44:60': {
-      amount: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
-    },
-  },
-});
 
 export class BridgePage {
   driver: Driver;
@@ -1385,10 +1353,7 @@ export const getBridgeFixtures = ({
         '0xa4b1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
-    });
+    .withAssetsController(getBridgeAssetsControllerConfig());
 
   return {
     forceBip44Version: false,
@@ -1463,7 +1428,7 @@ export const getBridgeFixtures = ({
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
-    ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
+    ...BRIDGE_WITH_FIXTURES_OPTIONS,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1476,7 +1441,6 @@ export const getBridgeFixtures = ({
         },
       },
     ],
-    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };
@@ -1505,9 +1469,7 @@ export const getQuoteNegativeCasesFixtures = (
         '0x1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-    });
+    .withAssetsController(getBridgeAssetsControllerConfig());
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1549,7 +1511,7 @@ export const getQuoteNegativeCasesFixtures = (
         },
       },
     ],
-    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
+    ...BRIDGE_WITH_FIXTURES_OPTIONS,
     title,
   };
 };
@@ -1568,9 +1530,7 @@ export const getBridgeNegativeCasesFixtures = (
         '0x1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-    });
+    .withAssetsController(getBridgeAssetsControllerConfig());
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1614,7 +1574,7 @@ export const getBridgeNegativeCasesFixtures = (
         },
       },
     ],
-    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
+    ...BRIDGE_WITH_FIXTURES_OPTIONS,
     title,
   };
 };
@@ -1631,9 +1591,7 @@ export const getInsufficientFundsFixtures = (
         '0x1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-    });
+    .withAssetsController(getBridgeAssetsControllerConfig());
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1671,7 +1629,7 @@ export const getInsufficientFundsFixtures = (
         },
       },
     ],
-    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
+    ...BRIDGE_WITH_FIXTURES_OPTIONS,
     title,
   };
 };
@@ -1731,10 +1689,7 @@ export const getBridgeL2Fixtures = (
         '0xa4b1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeL2FixtureAssetsBalance(),
-      assetsPrice: getMockAssetsPrice(BRIDGE_L2_ETH_USD_SPOT_PRICE),
-    });
+    .withAssetsController(getBridgeL2AssetsControllerConfig());
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -1785,10 +1740,7 @@ export const getBridgeL2Fixtures = (
         ...STX_LINEA_NETWORK_CONFIG,
       },
     },
-    ethConversionInUsd: BRIDGE_L2_ETH_USD_SPOT_PRICE,
-    unifiedEvmAccountsApiBalances: {
-      nativeBalance: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
-    },
+    ...BRIDGE_L2_WITH_FIXTURES_OPTIONS,
     localNodeOptions: [
       {
         type: 'anvil',
@@ -1904,10 +1856,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         '0xa4b1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
-    });
+    .withAssetsController(getBridgeAssetsControllerConfig());
 
   return {
     forceBip44Version: false,
@@ -1949,7 +1898,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
-    ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
+    ...BRIDGE_WITH_FIXTURES_OPTIONS,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1962,7 +1911,6 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         },
       },
     ],
-    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };
@@ -2040,10 +1988,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         '0xa4b1': true,
       },
     })
-    .withAssetsController({
-      assetsBalance: getBridgeFixtureAssetsBalance(),
-      assetsPrice: getMockAssetsPrice(BRIDGE_ETH_USD_SPOT_PRICE),
-    });
+    .withAssetsController(getBridgeAssetsControllerConfig());
 
   return {
     forceBip44Version: false,
@@ -2102,7 +2047,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         },
       },
     },
-    ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
+    ...BRIDGE_WITH_FIXTURES_OPTIONS,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -2115,7 +2060,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         },
       },
     ],
-    unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
     title,
   };
 };

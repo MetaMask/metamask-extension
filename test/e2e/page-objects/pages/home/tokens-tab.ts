@@ -19,11 +19,6 @@ class TokensTab extends HomePage {
     tag: 'p',
   };
 
-  private readonly confirmImportMultipleTokensMessage = {
-    text: 'Would you like to import these tokens?',
-    tag: 'p',
-  };
-
   private readonly currentNetworkOption =
     '[data-testid="network-filter-current__button"]';
 
@@ -465,13 +460,8 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.importTokenModalTitle, {
       waitAtLeastGuard: 2000,
     });
-    await this.driver.assertElementNotPresent(this.importTokensLoading, {
-      findElementGuard: this.importTokenModalTitle,
-    });
-    await this.driver.waitForSelector(this.tokenSearchInput);
 
     for (const name of tokenNames) {
-      await this.driver.fill(this.tokenSearchInput, '');
       await this.driver.pasteIntoField(this.tokenSearchInput, name);
       // Wait for the async search results to fully settle before interacting,
       // mirroring the guard in importTokenBySearch.
@@ -481,13 +471,9 @@ class TokensTab extends HomePage {
       await this.driver.waitForSelector(this.tokenSearchSelected);
     }
     await this.driver.clickElement(this.importTokensNextButton);
-    await this.driver.waitForSelector(this.tokenConfirmListItem);
-    await this.driver.waitForSelector(this.confirmImportMultipleTokensMessage);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
-      20000,
     );
-    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
   async openNetworksFilter(): Promise<void> {

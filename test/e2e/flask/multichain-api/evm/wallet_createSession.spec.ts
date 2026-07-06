@@ -20,10 +20,6 @@ import {
   getExpectedSessionScope,
   type FixtureCallbackArgs,
 } from '../testHelpers';
-import {
-  HARDWARE_WALLET_ZERO_ASSETS_BALANCE,
-  HARDWARE_WALLET_ZERO_BALANCE_API_OVERRIDES,
-} from '../../../tests/hardware-wallets/fixtures';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
@@ -89,12 +85,7 @@ describe('Multichain API', function () {
           fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
             .withTrezorAccount()
-            .withAssetsController({
-              assetsBalance: HARDWARE_WALLET_ZERO_ASSETS_BALANCE,
-            })
             .build(),
-          unifiedEvmAccountsApiBalances:
-            HARDWARE_WALLET_ZERO_BALANCE_API_OVERRIDES,
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
@@ -438,12 +429,7 @@ describe('Multichain API', function () {
               chainIds: [1337, 1],
             })
             .withTrezorAccount()
-            .withAssetsController({
-              assetsBalance: HARDWARE_WALLET_ZERO_ASSETS_BALANCE,
-            })
             .build(),
-          unifiedEvmAccountsApiBalances:
-            HARDWARE_WALLET_ZERO_BALANCE_API_OVERRIDES,
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
@@ -451,7 +437,7 @@ describe('Multichain API', function () {
             validateBalance: false,
             waitForNonEvmAccounts: false,
           });
-          await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
+          new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
