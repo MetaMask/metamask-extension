@@ -107,7 +107,7 @@ jobs:
         if: >-
           github.event_name == 'workflow_dispatch' ||
           (github.event_name == 'workflow_run' && steps.gate.outputs.skip == 'false')
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8229314a6d7814faff7aec6a6db50b987d9a2ca3
         with:
           ref: ${{ github.event.repository.default_branch }}
           is-high-risk-environment: false

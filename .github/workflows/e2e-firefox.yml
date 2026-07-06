@@ -122,7 +122,7 @@ jobs:
       TEST_RUNS_PATH: test/test-results/test-runs-firefox.json
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8229314a6d7814faff7aec6a6db50b987d9a2ca3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
