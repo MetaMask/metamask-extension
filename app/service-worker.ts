@@ -42,7 +42,12 @@ async function runImportScripts() {
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
-self.addEventListener('install', runImportScripts);
+self.addEventListener('install', (event) => {
+  // Extend the install event lifetime until background scripts finish loading.
+  // Without waitUntil, Chrome may terminate the service worker before the async
+  // dynamic import completes (see https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers).
+  (event as ExtendableEvent).waitUntil(runImportScripts());
+});
 
 // listen for connection events from other contexts, and respond to liveness
 // checks, and ping them to let them know we're listening.

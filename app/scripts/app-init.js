@@ -146,7 +146,10 @@ function importAllScripts() {
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
-self.addEventListener('install', importAllScripts);
+self.addEventListener('install', (event) => {
+  // Extend the install event lifetime until background scripts finish loading.
+  event.waitUntil(Promise.resolve(importAllScripts()));
+});
 
 // listen for connection events from other contexts, and respond to liveness
 // checks, and ping them to let them know we're listening.
