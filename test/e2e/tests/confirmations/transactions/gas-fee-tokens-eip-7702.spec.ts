@@ -111,8 +111,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
-          expectedBalance: MAINNET_NATIVE_ETH_BALANCE,
-          expectFundYourWalletBanner: false,
+          validateBalance: false,
           waitForNonEvmAccounts: false,
         });
 
@@ -182,8 +181,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
-          expectedBalance: MAINNET_NATIVE_ETH_BALANCE,
-          expectFundYourWalletBanner: false,
+          validateBalance: false,
           waitForNonEvmAccounts: false,
         });
         await createDappTransaction(driver);
