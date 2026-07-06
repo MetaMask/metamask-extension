@@ -17,6 +17,19 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import CreationSuccessful from './creation-successful';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockUseNavigate = jest.fn();
 let mockUseLocationSearch = '';
 

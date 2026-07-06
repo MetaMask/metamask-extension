@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
@@ -41,7 +35,7 @@ import {
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -95,7 +89,7 @@ export default function CreationSuccessful() {
   const backupAndSyncOnboardingToggleState = useSelector(
     getBackupAndSyncOnboardingToggleState,
   );
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
@@ -280,18 +274,20 @@ export default function CreationSuccessful() {
         firstTimeFlowType === FirstTimeFlowType.create ||
         firstTimeFlowType === FirstTimeFlowType.socialCreate;
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type: firstTimeFlowType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: isNewWallet,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.OnboardingCompleted)
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            wallet_setup_type: firstTimeFlowType,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_wallet: isNewWallet,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_basic_functionality_enabled:
+              externalServicesOnboardingToggleState,
+          })
+          .build(),
+      );
     }
 
     if (isBasicFunctionalityToggleEnabled) {
@@ -317,16 +313,19 @@ export default function CreationSuccessful() {
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: isOptedIn
-          ? MetaMetricsEventName.MetricsOptIn
-          : MetaMetricsEventName.MetricsOptOut,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountTypeForMetrics,
-        },
-      });
+      trackEvent(
+        createEventBuilder(
+          isOptedIn
+            ? MetaMetricsEventName.MetricsOptIn
+            : MetaMetricsEventName.MetricsOptOut,
+        )
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountTypeForMetrics,
+          })
+          .build(),
+      );
     }
 
     // Side Panel - only if feature flag is enabled
@@ -386,6 +385,7 @@ export default function CreationSuccessful() {
     navigate,
     isFromSettingsSecurity,
     firstTimeFlowType,
+    createEventBuilder,
     trackEvent,
     isOptedIn,
     handleOnDoneNavigation,

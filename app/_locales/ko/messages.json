@@ -82,12 +82,6 @@
   "account": {
     "message": "계정"
   },
-  "accountActivity": {
-    "message": "계정 활동"
-  },
-  "accountActivityText": {
-    "message": "알림을 수신할 계정을 선택하세요:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "로그인"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "뒤로"
   },
-  "backToHome": {
-    "message": "홈으로 돌아가기"
-  },
   "backUpIncomplete": {
     "message": "백업 미완료"
   },
@@ -2422,9 +2413,6 @@
     "message": "$1 닫기",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "언제든 이 창을 닫을 수 있습니다."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "고객 지원"
-  },
-  "customizeYourNotifications": {
-    "message": "알림 맞춤 설정"
-  },
-  "customizeYourNotificationsText": {
-    "message": "수신하려는 알림의 유형을 켜세요."
   },
   "dappConnections": {
     "message": "디앱 연결"
@@ -4418,9 +4400,6 @@
   "imported": {
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "포함됨"
   },
   "includesXTransactions": {
     "message": "$1건의 트랜잭션 포함"
@@ -5879,9 +5858,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "오류가 발생했습니다. 다시 시도해 주세요."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "알림을 통해 지갑에서 일어나는 활동을 계속 확인할 수 있습니다. 알림 이용 시 당사는 일부 설정을 기기 간에 동기화하기 위해 프로필을 사용합니다. $1 이 기능을 사용하는 동안에도 사용자 개인정보는 보호됩니다."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "방법 확인하기"
@@ -7548,9 +7524,6 @@
   },
   "proceedWithTransaction": {
     "message": "계속 진행"
-  },
-  "productAnnouncements": {
-    "message": "제품 공지"
   },
   "provide": {
     "message": "제공"
@@ -9305,24 +9278,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "스마트 스왑을 잠시 사용할 수 없습니다."
   },
-  "smartTransactionCancelled": {
-    "message": "트랜잭션이 취소되었습니다"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "트랜잭션이 완료되지 않았습니다. 가스비 지출이 없도록 트랜잭션을 취소했습니다."
-  },
-  "smartTransactionError": {
-    "message": "트랜잭션 실패"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 MetaMask 고객 지원으로 문의하세요."
-  },
-  "smartTransactionPending": {
-    "message": "트랜잭션이 제출되었습니다"
-  },
-  "smartTransactionSuccess": {
-    "message": "트랜잭션이 완료되었습니다"
-  },
   "smartTransactions": {
     "message": "스마트 트랜잭션"
   },
@@ -10289,9 +10244,6 @@
   "tokenContractAddress": {
     "message": "토큰 계약 주소"
   },
-  "tokenContractError": {
-    "message": "이 주소는 토큰 계약 주소입니다. 이 주소로 토큰을 보내면 토큰을 잃게 됩니다."
-  },
   "tokenContractWarning": {
     "message": "토큰 계약 경고"
   },
@@ -10547,29 +10499,8 @@
   "turnOn": {
     "message": "켜기"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "알림 켜기"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "켜기"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "알림을 생성하는 동안 오류가 발생했습니다. 나중에 다시 시도해 주세요."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "알림을 통해 지갑에서 무슨 일이 일어나고 있는지 계속 확인하세요."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "알림 설정."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "이 기능을 사용하는 동안 개인정보가 어떻게 보호되는지 알아보세요."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "지갑 알림 기능을 사용하려면 프로필을 사용해 기기 간에 일부 설정을 동기화해야 합니다. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "$1에서 언제든지 알림을 끌 수 있습니다"
   },
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"
@@ -10781,9 +10712,6 @@
   "view": {
     "message": "보기"
   },
-  "viewActivity": {
-    "message": "활동 보기"
-  },
   "viewAddressOnExplorer": {
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
@@ -10810,9 +10738,6 @@
   },
   "viewTokenDetails": {
     "message": "토큰 세부 정보 보기"
-  },
-  "viewTransaction": {
-    "message": "트랜잭션 보기"
   },
   "viewinExplorer": {
     "message": "Explorer에서 $1 보기",

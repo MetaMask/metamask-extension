@@ -141,3 +141,15 @@ export const getIsNetworkManagementEnabled = createSelector(
   ({ extensionUxNetworkManagement }) =>
     getBooleanFeatureFlag(extensionUxNetworkManagement, false),
 );
+
+/**
+ * Get the state of the `extensionUxChainlist` remote feature flag.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled, false otherwise.
+ */
+export const getIsChainlistEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ extensionUxChainlist }) =>
+    getBooleanFeatureFlag(extensionUxChainlist, false),
+);

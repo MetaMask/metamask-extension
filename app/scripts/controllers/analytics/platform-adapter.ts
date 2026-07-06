@@ -20,6 +20,26 @@ import {
 
 export const ANONYMOUS_EVENT_PROPERTY = 'anonymous' as const;
 
+const PROFILE_IDENTITY_PROPERTY_KEYS = [
+  'profile_id',
+  'canonical_profile_id',
+] as const;
+
+function stripProfileIdentityProperties<
+  TProperties extends AnalyticsEventProperties | undefined,
+>(properties: TProperties): TProperties {
+  if (!properties) {
+    return properties;
+  }
+
+  const sanitizedProperties = { ...properties };
+  for (const propertyKey of PROFILE_IDENTITY_PROPERTY_KEYS) {
+    delete sanitizedProperties[propertyKey];
+  }
+
+  return sanitizedProperties;
+}
+
 const anonymousEventNameOverrides = {
   [TransactionMetaMetricsEvent.added]:
     AnonymousTransactionMetaMetricsEvent.added,
@@ -96,7 +116,9 @@ export function createPlatformAdapter(): AnalyticsPlatformAdapter {
       const isAnonymousEvent = properties?.[ANONYMOUS_EVENT_PROPERTY] === true;
       let payloadProperties = properties;
       if (isAnonymousEvent) {
-        payloadProperties = { ...properties };
+        payloadProperties = stripProfileIdentityProperties({
+          ...properties,
+        });
         delete payloadProperties[ANONYMOUS_EVENT_PROPERTY];
       }
 

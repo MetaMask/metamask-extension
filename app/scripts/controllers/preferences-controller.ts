@@ -176,6 +176,7 @@ export const getDefaultPreferencesControllerState =
       },
       useNativeCurrencyAsPrimaryCurrency: true,
       useSidePanelAsDefault: true,
+      gasSponsorshipOptOutByChainId: {},
     },
     securityAlertsEnabled: true,
     showSidePanelMigrationToast: false,
