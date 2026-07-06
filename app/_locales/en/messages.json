@@ -1632,8 +1632,24 @@
   "asset": {
     "message": "Asset"
   },
+  "assetActivate": {
+    "message": "Activate",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "Activate $1 on $2 to get started.",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "We could not fetch any historical data"
+  },
+  "assetDeactivate": {
+    "message": "Remove",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetInactive": {
+    "message": "Inactive",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "assetOptions": {
     "message": "Asset options"
@@ -10064,6 +10080,18 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
+  },
+  "stellarClassicTrustlineAddError": {
+    "message": "Something went wrong while adding this trustline. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "Something went wrong while removing this trustline. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
+    "message": "You still have $1 $2 in this wallet. You must send or swap it all before deactivating this asset on Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "stillConnectingTo": {
     "message": "Still connecting to $1...",
