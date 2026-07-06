@@ -29,8 +29,9 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   toHardwareWalletError: jest.fn(),
 }));
 
-const mockToHardwareWalletError =
-  toHardwareWalletError as jest.MockedFunction<typeof toHardwareWalletError>;
+const mockToHardwareWalletError = toHardwareWalletError as jest.MockedFunction<
+  typeof toHardwareWalletError
+>;
 
 const createHwError = (
   code: ErrorCode,
@@ -62,10 +63,7 @@ describe('resolveHardwareConnectUserError', () => {
   describe('sdk mapped errors', () => {
     it('returns the sdk user message for mapped hardware wallet errors', () => {
       mockToHardwareWalletError.mockReturnValue(
-        createHwError(
-          ErrorCode.AuthenticationDeviceLocked,
-          'Ledger is locked',
-        ),
+        createHwError(ErrorCode.AuthenticationDeviceLocked, 'Ledger is locked'),
       );
 
       expect(
@@ -142,7 +140,9 @@ describe('resolveHardwareConnectUserError', () => {
   describe('legacy ledger locked tokens', () => {
     jestIt.each([...HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES])(
       'returns ledgerLocked for legacy token %s',
-      (legacyMessage: (typeof HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES)[number]) => {
+      (
+        legacyMessage: (typeof HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES)[number],
+      ) => {
         expect(
           resolveHardwareConnectUserError(
             new Error(legacyMessage),

@@ -21,9 +21,7 @@ import {
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIsNewHardwareWalletOnboardingEnabled } from '../../../../shared/lib/environment';
-import {
-  MOCK_RAW_HARDWARE_ACCOUNTS,
-} from '../../../../test/unit/hardware-wallets/connect-hardware/raw-hardware-accounts';
+import { MOCK_RAW_HARDWARE_ACCOUNTS } from '../../../../test/unit/hardware-wallets/connect-hardware/raw-hardware-accounts';
 import type { RawHardwareAccount } from './types';
 import ConnectHardwareForm from '.';
 
@@ -444,16 +442,16 @@ describe('ConnectHardwareForm', () => {
       async (
         legacyMessage: (typeof HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES)[number],
       ) => {
-      mockConnectHardware.mockRejectedValue(new Error(legacyMessage));
-      const mockStore = configureMockStore([thunk])(createMockState());
-      renderWithProvider(<ConnectHardwareForm />, mockStore);
+        mockConnectHardware.mockRejectedValue(new Error(legacyMessage));
+        const mockStore = configureMockStore([thunk])(createMockState());
+        renderWithProvider(<ConnectHardwareForm />, mockStore);
 
-      connectToDevice(tEn('ledger'));
+        connectToDevice(tEn('ledger'));
 
-      await waitFor(() => {
-        expect(screen.getByText(tEn('ledgerLocked'))).toBeInTheDocument();
-      });
-    },
+        await waitFor(() => {
+          expect(screen.getByText(tEn('ledgerLocked'))).toBeInTheDocument();
+        });
+      },
     );
 
     it('displays ledgerTimeout error for timeout errors', async () => {
@@ -592,7 +590,9 @@ describe('ConnectHardwareForm', () => {
       });
 
       expect(
-        screen.queryByText(HardwareConnectLegacyErrorMessage.KeystoneSyncCancel),
+        screen.queryByText(
+          HardwareConnectLegacyErrorMessage.KeystoneSyncCancel,
+        ),
       ).not.toBeInTheDocument();
     });
 

@@ -287,7 +287,9 @@ describe('SelectHardwareAccountsPage', () => {
     });
 
     it('hides show more after a partial batch is appended', async () => {
-      mockConnectHardware.mockResolvedValue(createMockRawHardwareAccounts(3, 5));
+      mockConnectHardware.mockResolvedValue(
+        createMockRawHardwareAccounts(3, 5),
+      );
       renderPage({
         accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
       });

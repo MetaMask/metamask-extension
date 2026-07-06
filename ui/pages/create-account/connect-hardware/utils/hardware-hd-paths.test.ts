@@ -68,7 +68,9 @@ describe('getDeviceHdPaths', () => {
   });
 
   it('returns lattice paths for lattice devices', () => {
-    expect(getDeviceHdPaths(HardwareDeviceNames.lattice)).toBe(LATTICE_HD_PATHS);
+    expect(getDeviceHdPaths(HardwareDeviceNames.lattice)).toBe(
+      LATTICE_HD_PATHS,
+    );
   });
 
   it('returns trezor paths for trezor devices', () => {
