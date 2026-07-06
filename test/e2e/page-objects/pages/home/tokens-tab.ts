@@ -6,6 +6,8 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
   CHAIN: 'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
   CHANGE: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
   DAI: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+  'MUSICAL TOKEN':
+    'eip155:1/erc20:0x0994206dfe8de6ec6920ff4d779b0d950605fb53',
   MUSD: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
 };
 
@@ -125,18 +127,6 @@ class TokensTab extends HomePage {
     return `[data-testid="token-management-cell-search-${assetId.toLowerCase()}-toggle"]`;
   }
 
-  private tokenManagementSearchToggleControl(tokenName: string): string {
-    const assetId = SEARCH_TOKEN_ASSET_IDS[tokenName.toUpperCase()];
-
-    if (!assetId) {
-      throw new Error(
-        `No e2e token-management search asset ID for ${tokenName}`,
-      );
-    }
-
-    return `[data-testid="token-management-cell-search-${assetId.toLowerCase()}-toggle-control"]`;
-  }
-
   private readonly tokenManagementAddCustomTokenButton =
     '[data-testid="token-management-add-custom-token-button"]';
 
@@ -240,6 +230,25 @@ class TokensTab extends HomePage {
     }
 
     await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+  }
+
+  private async clickTokenManagementToggle(toggleSelector: string) {
+    await this.driver.waitForSelector(toggleSelector);
+    const labelSelector = await this.driver.executeScript(([selector]) => {
+      const input = document.querySelector(selector);
+      const label = input?.closest('label');
+
+      if (!(label instanceof HTMLElement)) {
+        throw new Error(`Token management toggle label not found: ${selector}`);
+      }
+
+      const e2eToggleId = `e2e-toggle-label-${Date.now()}`;
+      label.setAttribute('data-testid', e2eToggleId);
+      return `[data-testid="${e2eToggleId}"]`;
+    }, toggleSelector);
+    const label = await this.driver.findElement(labelSelector);
+    await label.sendKeys(this.driver.Key.ENTER);
+    await this.driver.delay(1000);
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
@@ -424,9 +433,7 @@ class TokensTab extends HomePage {
       tokenName,
     );
     const toggle = this.tokenManagementSearchToggle(tokenName);
-    const toggleControl = this.tokenManagementSearchToggleControl(tokenName);
-    await this.driver.waitForSelector(toggle);
-    await this.driver.clickElement(toggleControl);
+    await this.clickTokenManagementToggle(toggle);
     await this.driver.waitForSelector(toggle, {
       state: 'enabled',
       waitAtLeastGuard: 1000,
@@ -448,9 +455,7 @@ class TokensTab extends HomePage {
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenManagementSearchInput, name);
       const toggle = this.tokenManagementSearchToggle(name);
-      const toggleControl = this.tokenManagementSearchToggleControl(name);
-      await this.driver.waitForSelector(toggle);
-      await this.driver.clickElement(toggleControl);
+      await this.clickTokenManagementToggle(toggle);
       await this.driver.waitForSelector(toggle, {
         state: 'enabled',
         waitAtLeastGuard: 1000,
