@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { Mockttp } from 'mockttp';
 import { TRANSACTION_HASH_MOCK } from '../common-tron';
 
@@ -263,6 +264,10 @@ export const mockTriggerSmartContract = (mockServer: Mockttp) =>
         encodeVarintHex(timestamp),
       );
 
+      const txID = createHash('sha256')
+        .update(Buffer.from(rawDataHex, 'hex'))
+        .digest('hex');
+
       return {
         statusCode: 200,
         json: {
@@ -271,7 +276,7 @@ export const mockTriggerSmartContract = (mockServer: Mockttp) =>
           },
           transaction: {
             visible: false,
-            txID: 'c58a836f6a2a06f56b3fa35cc64513499c7b3ee4b1045760a66128842868f49c',
+            txID,
             raw_data: {
               contract: [
                 {
