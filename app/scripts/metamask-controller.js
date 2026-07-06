@@ -424,7 +424,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
 import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
@@ -624,7 +623,6 @@ export default class MetamaskController extends EventEmitter {
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
-      AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
       DecryptMessageManager: DecryptMessageManagerInit,
       DecryptMessageController: DecryptMessageControllerInit,
@@ -759,7 +757,9 @@ export default class MetamaskController extends EventEmitter {
     this.connectivityController = this.wallet.getInstance(
       'ConnectivityController',
     );
-    this.addressBookController = messengerClientsByName.AddressBookController;
+    this.addressBookController = this.wallet.getInstance(
+      'AddressBookController',
+    );
     this.alertController = messengerClientsByName.AlertController;
     this.decryptMessageController =
       messengerClientsByName.DecryptMessageController;
@@ -1300,7 +1300,10 @@ export default class MetamaskController extends EventEmitter {
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
             onBeforeRequest,
             onAfterRequest,
           },
@@ -1320,7 +1323,10 @@ export default class MetamaskController extends EventEmitter {
         const permissionsSupportedByKernel = await forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
           },
           [],
           req,
@@ -1361,7 +1367,10 @@ export default class MetamaskController extends EventEmitter {
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
           },
           [],
           req,
@@ -1844,23 +1853,6 @@ export default class MetamaskController extends EventEmitter {
    */
   _getSnapMetadata(snapId) {
     return this.snapsRegistry.state.database?.verifiedSnaps?.[snapId]?.metadata;
-  }
-
-  /**
-   * Passes a JSON-RPC request object to the SnapController for execution.
-   *
-   * @param {object} args - A bag of options.
-   * @param {string} args.snapId - The ID of the recipient snap.
-   * @param {string} args.origin - The origin of the RPC request.
-   * @param {string} args.handler - The handler to trigger on the snap for the request.
-   * @param {object} args.request - The JSON-RPC request object.
-   * @returns The result of the JSON-RPC request.
-   */
-  async handleSnapRequest(args) {
-    return await this.controllerMessenger.call(
-      'SnapController:handleRequest',
-      args,
-    );
   }
 
   /**
@@ -3470,7 +3462,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:removeSnap',
       ),
-      handleSnapRequest: this.handleSnapRequest.bind(this),
+      handleSnapRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:handleRequest',
+      ),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:revokeDynamicSnapPermissions',
@@ -3479,7 +3474,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disconnectOrigin',
       ),
-      updateNetworksList: this.updateNetworksList.bind(this),
+      updateNetworksList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkOrderController:updateNetworksList',
+      ),
       updateAccountsList: this.updateAccountsList.bind(this),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
       setEnabledAllPopularNetworks:
@@ -8370,15 +8368,6 @@ export default class MetamaskController extends EventEmitter {
       if (!(exp instanceof PermissionsRequestNotFoundError)) {
         throw exp;
       }
-    }
-  };
-
-  updateNetworksList = (chainIds) => {
-    try {
-      this.networkOrderController.updateNetworksList(chainIds);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
     }
   };
 

@@ -166,7 +166,6 @@ import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
-import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 import {
   getDecryptMessageControllerInitMessenger,
@@ -210,7 +209,6 @@ export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
-export { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
@@ -334,10 +332,6 @@ export const MESSENGER_FACTORIES = {
   AccountTrackerController: {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,
-  },
-  AddressBookController: {
-    getMessenger: getAddressBookControllerMessenger,
-    getInitMessenger: noop,
   },
   AlertController: {
     getMessenger: getAlertControllerMessenger,
