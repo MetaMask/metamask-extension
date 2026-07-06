@@ -82,12 +82,16 @@ const mockSetIsBackupAndSyncFeatureEnabled = jest
   .mockResolvedValue(undefined);
 const mockToggleExternalServices = jest.fn().mockResolvedValue(undefined);
 const mockSetPreference = jest.fn().mockResolvedValue(undefined);
+const mockSetUseMultiAccountBalanceChecker = jest
+  .fn()
+  .mockResolvedValue(undefined);
 const backgroundConnectionMock = new Proxy(
   {
     removeDeferredDeepLink: mockRemoveDeferredDeepLink,
     setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
     toggleExternalServices: mockToggleExternalServices,
     setPreference: mockSetPreference,
+    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
   },
   {
     get: (target, prop) => {

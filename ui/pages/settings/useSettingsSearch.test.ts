@@ -199,10 +199,7 @@ describe('useSettingsSearch', () => {
 
   it('keeps granular settings searchable when the flag is enabled without the local cohort marker', () => {
     const { result } = renderHook(() => useSettingsSearch('auto'), {
-      wrapper: createWrapper(
-        { extensionBasicFunctionalityToggle: true },
-        false,
-      ),
+      wrapper: createWrapper({ extensionBasicFunctionalityToggle: true }, false),
     });
 
     expect(result.current).toHaveLength(1);
