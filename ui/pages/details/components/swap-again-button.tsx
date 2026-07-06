@@ -4,7 +4,10 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import { UnifiedSwapBridgeEventName } from '@metamask/bridge-controller';
+import {
+  FeatureId,
+  UnifiedSwapBridgeEventName,
+} from '@metamask/bridge-controller';
 import { useDispatch } from 'react-redux';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
@@ -59,23 +62,24 @@ export function SwapAgainButton({
         /* eslint-disable @typescript-eslint/naming-convention */
         token_symbol_source: sourceToken?.symbol ?? 'ETH',
         token_symbol_destination: destinationToken?.symbol ?? '',
+        feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
         /* eslint-enable @typescript-eslint/naming-convention */
       }),
     );
 
-    transitionForward(() =>
+    transitionForward(() => {
       navigateToBridgePage({
         token: null,
         search: searchParams,
         isEntrypoint: true,
-      }),
-    );
+      });
+    });
   }, [
-    destinationToken?.symbol,
     dispatch,
     navigateToBridgePage,
     searchParams,
     sourceToken?.symbol,
+    destinationToken?.symbol,
   ]);
 
   if (!searchParams) {

@@ -10,7 +10,7 @@
  * - Dismiss button aligned to top-right
  */
 
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
@@ -32,7 +32,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversion } from '../../../hooks/musd';
 import { addMusdConversionDismissedCtaKey } from '../../../store/actions';
@@ -95,7 +95,7 @@ export const MusdAssetCta = ({
 }: MusdAssetCtaProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { startConversionFlow, educationSeen } = useMusdConversion();
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -119,20 +119,23 @@ export const MusdAssetCta = ({
       educationSeen,
     });
 
-    trackEvent({
-      event: MetaMetricsEventName.MusdConversionCtaClicked,
-      category: MetaMetricsEventCategory.Tokens,
-      properties: createMusdCtaClickedEventProperties({
-        location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW,
-        redirectsTo,
-        ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.TERTIARY,
-        ctaText: String(ctaDisplayText),
-        chainId: token.chainId,
-        chainName: networkName,
-        assetSymbol: token.symbol,
-        clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
-      }),
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.MusdConversionCtaClicked)
+        .addCategory(MetaMetricsEventCategory.Tokens)
+        .addProperties(
+          createMusdCtaClickedEventProperties({
+            location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW,
+            redirectsTo,
+            ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.TERTIARY,
+            ctaText: String(ctaDisplayText),
+            chainId: token.chainId,
+            chainName: networkName,
+            assetSymbol: token.symbol,
+            clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
+          }),
+        )
+        .build(),
+    );
 
     await startConversionFlow({
       preferredToken: {
@@ -141,7 +144,15 @@ export const MusdAssetCta = ({
       },
       entryPoint: 'asset_overview',
     });
-  }, [token, trackEvent, startConversionFlow, t, educationSeen, networkName]);
+  }, [
+    token,
+    createEventBuilder,
+    trackEvent,
+    startConversionFlow,
+    t,
+    educationSeen,
+    networkName,
+  ]);
 
   /**
    * Handle dismiss button click

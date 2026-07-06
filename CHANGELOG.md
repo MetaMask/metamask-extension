@@ -7,6 +7,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.38.0]
+
+### Added
+
+- Bumped `@metamask/seedless-onboarding-controller` to `v10.0.3`. (#43908)
+- Event-based transaction toasts (#43744)
+- Adds `metamask_canonical_profile_id` to support links when users consent to share data (#43798)
+- Added Trophy icon to the component library (#43574)
+- Add proof of ownership to profile metrics (#43715)
+- Added Batch Sell feature allowing users to sell multiple tokens in a single transaction from the wallet overview (#43311)
+- Added KONET network and native token logos in the custom network UI (#43810)
+- Added max leverage pill display in perps market list cards (#43775)
+- Default-check `Marketing` Opt-in checkbox for social login users in US region. (#43584)
+- Changed delete code for networks (#43499)
+- Allowed users with an enrolled passkey to reveal their Secret Recovery Phrase and export private keys using passkey
+  verification instead of their MetaMask password. (#43169)
+- Added a redesigned DeFi referral consent UI for Hyperliquid behind an A/B test (#43683)
+- Display a VIP tag when using a VIP referral code. (#43527)
+- chore: Add deprecation message to `getApi` (#43813)
+- chore: Migrate `setLocked` and `syncPasswordAndUnlockWallet` to `LegacyBackgroundApiService` (#43624)
+- perf(6598): audit core platform selectors (#43607)
+- chore: Set `core-platform` as codeowners of `LegacyBackgroundApiService` (#43625)
+- perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
+- Enabled ERC-7715 requests over the Multichain API and MetaMask Connect (#43513)
+
+### Fixed
+
+- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6927 (#43209)
+
+## [13.37.0]
+
+### Added
+
+- Display a VIP tag when using a VIP referral code. (#43527)
+- Adds `metamask-aep[bot]` to the CLA Signature Bot allowlist in `.github/workflows/cla.yml`. (#43237)
+- Enabled ERC-7715 requests over the Multichain API and MetaMask Connect (#43513)
+- Remove CTA button under notification (#43685)
+- Swaps modal to page (#43691)
+- Fixed display approved transactions for Non-EVM networks (#43566)
+- Add bitcoin connectivity (#40633)
+- Includes `utm_*` parameters from the marketing campaign in the onboarding `Wallet Setup Completed` metrics (#42638)
+- Add QR error handling for invalid transaction signature (#43402)
+- Added configurable max slippage controls for perps market orders (#43357)
+
+### Fixed
+
+- Fixed Cancel button being disabled by a "Not enough gas" check while Speed Up stayed enabled on pending transactions. (#43602)
+- Fixed a bug where the Manage Tokens network filter could show a single network name while listing tokens from all enabled
+  networks. (#43852)
+- Fixed the Confirm Add Token full-page view staying open with an empty list after approving the request in another MetaMask
+  window. Title update. (#43826)
+- Fixed Perps deposit activity items showing a question-mark icon and capitalized the generic "Transaction" title in
+  transaction details. (#43687)
+- Force-hide MAX button for Arc USDC swap/bridge (#43751)
+- Fixed an issue where MetaMask would not fail over to another RPC URL when Infura is down (#43682)
+- Empty activity on asset pages after switching network filters when a non-EVM chain was previously selected (#43705)
+- Null (#43555)
+- Correct state migration to be identical to real TokenBalancesController (#43626)
+- Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and
+  trades no longer leave the user on the order screen). (#43367)
+- Fixed product announcement notification links opening MetaMask deeplinks externally before routing. (#42805)
+- Fixed perps close-all-positions toasts not appearing on the home screen perps tab (#43613)
+- Consume batch sell assets data from token controller (#43460)
+- Fixed infinite loader on bridge awaiting signatures page when using QR hardware wallets (#40838)
+- Fixed inconsistent spacing above the orders section on the perps market detail page. (#43350)
+
 ## [13.36.0]
 
 ### Added
@@ -36,6 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a bug where Firefox clipped the top of the search field focus outline in Send and Receive. (#43120)
 - Fix trezor connection for Firefox browser. (#43179)
 - Exclude Ondo assets from batch sell select screen. (#43327)
+- Fixed a bug where switching the extension between side panel and popup view and back could reopen MetaMask in the popup, sometimes leaving both the side panel and popup open at the same time. (#43221)
 - Fixed a bug where switching the extension between side panel and popup view and back could reopen MetaMask in the popup,
   sometimes leaving both the side panel and popup open at the same time. (#43221)
 - Delete token list. (#43108)
@@ -2555,7 +2622,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.38.0...HEAD
+[13.38.0]: https://github.com/MetaMask/metamask-extension/compare/v13.37.0...v13.38.0
+[13.37.0]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...v13.37.0
 [13.36.0]: https://github.com/MetaMask/metamask-extension/compare/v13.35.1...v13.36.0
 [13.35.1]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...v13.35.1
 [13.35.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.35.0

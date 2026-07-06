@@ -36,6 +36,16 @@ class AccountListPage {
   private readonly multichainAccountOptionsMenuButton =
     '[data-testid="multichain-account-cell-end-accessory"]';
 
+  // Indexed XPath so the correct account is targeted when multiple accounts
+  // share the same label (e.g. "Account 1" across multiple SRPs).
+  private readonly multichainAccountOptionsMenuButtonByLabel = (
+    accountLabel: string,
+    srpIndex: number,
+  ) =>
+    `(//*[@data-testid="multichain-account-cell-end-accessory" and @aria-label=${quoteXPathText(
+      `${accountLabel} options`,
+    )}])[${srpIndex + 1}]`;
+
   private readonly addHardwareWalletButton =
     '[data-testid="choose-wallet-type-hardware-wallet"]';
 
@@ -433,19 +443,21 @@ class AccountListPage {
     accountLabel: string;
     srpIndex?: number;
   }): Promise<void> {
+    const { accountLabel, srpIndex = 0 } = options;
     console.log(
-      `Open multichain account menu in account list for account ${options.accountLabel}`,
+      `Open multichain account menu in account list for account ${accountLabel}`,
     );
     // To ensure no pending Create Account action is in progress
     await this.driver.assertElementNotPresent(this.addingAccountMessage, {
       waitAtLeastGuard: largeDelayMs,
     });
 
-    const multichainAccountMenuIcons = await this.driver.findElements(
-      `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
-    );
-
-    await multichainAccountMenuIcons[options.srpIndex ?? 0].click();
+    await this.driver.clickElement({
+      xpath: this.multichainAccountOptionsMenuButtonByLabel(
+        accountLabel,
+        srpIndex,
+      ),
+    });
   }
 
   /**

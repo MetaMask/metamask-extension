@@ -82,12 +82,6 @@
   "account": {
     "message": "Λογαριασμός"
   },
-  "accountActivity": {
-    "message": "Δραστηριότητα λογαριασμού"
-  },
-  "accountActivityText": {
-    "message": "Επιλέξτε τους λογαριασμούς για τους οποίους θέλετε να λαμβάνετε ειδοποιήσεις:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Σύνδεση"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "Πίσω"
   },
-  "backToHome": {
-    "message": "Επιστροφή στην αρχική σελίδα"
-  },
   "backUpIncomplete": {
     "message": "Η δημιουργία αντιγράφου ασφαλείας δεν ολοκληρώθηκε"
   },
@@ -2422,9 +2413,6 @@
     "message": "Κλείσιμο του $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Μπορείτε να κλείσετε αυτό το παράθυρο ανά πάσα στιγμή."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "υποστήριξη πελατών"
-  },
-  "customizeYourNotifications": {
-    "message": "Προσαρμογή των ειδοποιήσεών σας"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Ενεργοποιήστε τους τύπους ειδοποιήσεων που θέλετε να λαμβάνετε:"
   },
   "dappConnections": {
     "message": "Συνδέσεις με Αποκεντρωμένες Εφαρμογές (Dapps)"
@@ -4415,9 +4397,6 @@
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Περιλαμβάνει"
-  },
   "includesXTransactions": {
     "message": "Περιλαμβάνει $1 συναλλαγές"
   },
@@ -5577,9 +5556,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Ενημερώσαμε την πολιτική απορρήτου μας"
   },
-  "newRpcUrl": {
-    "message": "Νέα διεύθυνση URL του RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Έχετε εισάγει με επιτυχία το $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5716,9 +5692,6 @@
   },
   "notCurrentAccount": {
     "message": "Είναι αυτός ο σωστός λογαριασμός; Είναι διαφορετικός από τον τρέχοντα επιλεγμένο λογαριασμό στο πορτοφόλι σας."
-  },
-  "notEnoughGas": {
-    "message": "Δεν υπάρχει αρκετό τέλος συναλλαγής"
   },
   "notificationDetail": {
     "message": "Λεπτομέρειες"
@@ -5881,9 +5854,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Μείνετε ενημερωμένοι για ό,τι συμβαίνει στο πορτοφόλι σας με ειδοποιήσεις. Για να χρησιμοποιήσετε τις ειδοποιήσεις, χρησιμοποιούμε ένα προφίλ ώστε να συγχρονίζουμε ορισμένες ρυθμίσεις στις συσκευές σας. $1, προστατεύουμε τα προσωπικά σας δεδομένα κατά τη χρήση αυτής της λειτουργίας."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Μάθετε πως"
@@ -7546,9 +7516,6 @@
   },
   "proceedWithTransaction": {
     "message": "Θέλω να προχωρήσω έτσι κι αλλιώς"
-  },
-  "productAnnouncements": {
-    "message": "Ανακοινώσεις προϊόντων"
   },
   "provide": {
     "message": "Παροχή"
@@ -9303,24 +9270,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Οι Έξυπνες Ανταλλαγές είναι προσωρινά μη διαθέσιμες."
   },
-  "smartTransactionCancelled": {
-    "message": "Η συναλλαγή σας ακυρώθηκε"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Η συναλλαγή σας δεν ήταν δυνατόν να ολοκληρωθεί, οπότε ακυρώθηκε για να μην πληρώσετε περιττά τέλη συναλλαγών."
-  },
-  "smartTransactionError": {
-    "message": "Η συναλλαγή σας απέτυχε"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Οι ξαφνικές αλλαγές στην αγορά μπορεί να προκαλέσουν αποτυχίες. Εάν το πρόβλημα συνεχίζεται, επικοινωνήστε με την υποστήριξη πελατών του MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Η συναλλαγή σας υποβλήθηκε"
-  },
-  "smartTransactionSuccess": {
-    "message": "Η συναλλαγή σας ολοκληρώθηκε"
-  },
   "smartTransactions": {
     "message": "Έξυπνες Συναλλαγές"
   },
@@ -10287,9 +10236,6 @@
   "tokenContractAddress": {
     "message": "Διεύθυνση συμβολαίου token"
   },
-  "tokenContractError": {
-    "message": "Αυτή η διεύθυνση είναι διεύθυνση συμβολαίου token. Αν στείλετε tokens σε αυτήν τη διεύθυνση, θα τα χάσετε."
-  },
   "tokenContractWarning": {
     "message": "Προειδοποίηση συμβολαίου token"
   },
@@ -10545,29 +10491,8 @@
   "turnOn": {
     "message": "Ενεργοποίηση"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Ενεργοποίηση των ειδοποιήσεων"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Ενεργοποίηση"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Προέκυψε σφάλμα κατά τη δημιουργία των ειδοποιήσεων. Προσπαθήστε ξανά αργότερα."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Μείνετε ενήμεροι για ό,τι συμβαίνει στο πορτοφόλι σας με τις ειδοποιήσεις"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "ρυθμίσεις ειδοποιήσεων."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας κατά τη χρήση αυτής της λειτουργίας."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Για να χρησιμοποιήσετε τις ειδοποιήσεις στο πορτοφόλι σας χρησιμοποιούμε ένα προφίλ για να συγχρονίσουμε ορισμένες ρυθμίσεις στις συσκευές σας. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Μπορείτε να απενεργοποιήσετε τις ειδοποιήσεις ανά πάσα στιγμή στις $1"
   },
   "turnOnTokenDetection": {
     "message": "Ενεργοποίηση της ενισχυμένης ανίχνευσης των token"
@@ -10779,9 +10704,6 @@
   "view": {
     "message": "Προβολή"
   },
-  "viewActivity": {
-    "message": "Προβολή δραστηριότητας"
-  },
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
@@ -10808,9 +10730,6 @@
   },
   "viewTokenDetails": {
     "message": "Προβολή λεπτομερειών token"
-  },
-  "viewTransaction": {
-    "message": "Προβολή συναλλαγών"
   },
   "viewinExplorer": {
     "message": "Προβολή $1 στον explorer",

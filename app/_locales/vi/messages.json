@@ -82,12 +82,6 @@
   "account": {
     "message": "Tài khoản"
   },
-  "accountActivity": {
-    "message": "Hoạt động của tài khoản"
-  },
-  "accountActivityText": {
-    "message": "Chọn tài khoản mà bạn muốn nhận thông báo:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Đăng nhập"
   },
@@ -1584,9 +1578,6 @@
   "back": {
     "message": "Quay lại"
   },
-  "backToHome": {
-    "message": "Quay lại trang chủ"
-  },
   "backUpIncomplete": {
     "message": "Sao lưu chưa hoàn tất"
   },
@@ -2422,9 +2413,6 @@
     "message": "Đóng $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Bạn có thể đóng cửa sổ này bất kỳ lúc nào."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2990,12 +2978,6 @@
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
-  },
-  "customizeYourNotifications": {
-    "message": "Tùy chỉnh thông báo"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Bật các loại thông báo mà bạn muốn nhận:"
   },
   "dappConnections": {
     "message": "Kết nối Dapp"
@@ -4419,9 +4401,6 @@
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Bao gồm"
-  },
   "includesXTransactions": {
     "message": "Bao gồm $1 giao dịch"
   },
@@ -5581,9 +5560,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Chúng tôi đã cập nhật chính sách quyền riêng tư"
   },
-  "newRpcUrl": {
-    "message": "URL RPC mới"
-  },
   "newTokensImportedMessage": {
     "message": "Bạn đã nhập thành công $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -5720,9 +5696,6 @@
   },
   "notCurrentAccount": {
     "message": "Tài khoản này có chính xác không? Tài khoản này khác với tài khoản bạn đang chọn trong ví của mình"
-  },
-  "notEnoughGas": {
-    "message": "Không đủ phí gas"
   },
   "notificationDetail": {
     "message": "Chi tiết"
@@ -5885,9 +5858,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Đã xảy ra lỗi. Vui lòng thử lại."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Nhận thông báo để cập nhật tình hình trong ví của bạn. Để sử dụng thông báo, chúng tôi dùng hồ sơ để đồng bộ một số cài đặt trên các thiết bị của bạn. $1 chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Tìm hiểu cách thức"
@@ -7554,9 +7524,6 @@
   },
   "proceedWithTransaction": {
     "message": "Tôi vẫn muốn tiếp tục"
-  },
-  "productAnnouncements": {
-    "message": "Thông báo về sản phẩm"
   },
   "provide": {
     "message": "Cung cấp"
@@ -9311,24 +9278,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Hoán đổi thông minh tạm thời không khả dụng."
   },
-  "smartTransactionCancelled": {
-    "message": "Giao dịch của bạn đã bị hủy"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Giao dịch của bạn không thể hoàn tất nên nó đã bị hủy để giúp bạn không phải trả phí gas không cần thiết."
-  },
-  "smartTransactionError": {
-    "message": "Giao dịch của bạn đã thất bại"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Biến động đột ngột của thị trường có thể gây ra lỗi. Nếu sự cố tiếp diễn, hãy liên hệ với bộ phận hỗ trợ khách hàng của MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Giao dịch của bạn đã được gửi"
-  },
-  "smartTransactionSuccess": {
-    "message": "Giao dịch của bạn đã hoàn tất"
-  },
   "smartTransactions": {
     "message": "Giao dịch thông minh"
   },
@@ -10295,9 +10244,6 @@
   "tokenContractAddress": {
     "message": "Địa chỉ hợp đồng của token"
   },
-  "tokenContractError": {
-    "message": "Đây là địa chỉ hợp đồng token. Nếu bạn gửi token đến địa chỉ này, bạn sẽ bị mất chúng."
-  },
   "tokenContractWarning": {
     "message": "Cảnh báo hợp đồng token"
   },
@@ -10553,29 +10499,8 @@
   "turnOn": {
     "message": "Bật"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Bật thông báo"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Bật"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Đã xảy ra lỗi khi tạo thông báo. Vui lòng thử lại sau."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Nhận thông báo để cập nhật tình hình trong ví của bạn."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "cài đặt thông báo."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Để sử dụng tính năng thông báo ví, chúng tôi dùng hồ sơ để đồng bộ một số chế độ cài đặt trên các thiết bị của bạn. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Bạn có thể tắt thông báo bất kỳ lúc nào trong $1"
   },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"
@@ -10787,9 +10712,6 @@
   "view": {
     "message": "Xem"
   },
-  "viewActivity": {
-    "message": "Xem hoạt động"
-  },
   "viewAddressOnExplorer": {
     "message": "Xem trên $1",
     "description": "$1 is the block explorer name"
@@ -10816,9 +10738,6 @@
   },
   "viewTokenDetails": {
     "message": "Xem chi tiết token"
-  },
-  "viewTransaction": {
-    "message": "Xem giao dịch"
   },
   "viewinExplorer": {
     "message": "Xem $1 trong trình khám phá",
