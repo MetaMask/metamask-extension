@@ -196,9 +196,11 @@ export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
+export const ACTIVITY_ROUTE = '/activity';
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
+  { path: ACTIVITY_ROUTE, label: 'Activity', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   {
     path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
