@@ -19,6 +19,7 @@ import {
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
 import {
+  PERSONAL_SIGN_SENDER_ADDRESS,
   signatureRequestSIWE,
   unapprovedPersonalSignMsg,
 } from '../../../../../../test/data/confirmations/personal_sign';
@@ -72,6 +73,8 @@ const mockIsUserRejectedHardwareWalletError = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 const mockNavigateNext = jest.fn();
 const mockNavigateToId = jest.fn();
+const HARDWARE_CONFIRMATION_SENDER =
+  '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
 const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
   trackHardwareWalletRecoveryConnectCtaClicked,
@@ -273,6 +276,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: false,
       walletType: null,
+      accountAddress: null,
     });
     mockUseHardwareWalletActions.mockReturnValue({
       ensureDeviceReady: ensureDeviceReadyMock,
@@ -608,6 +612,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Ready },
@@ -641,6 +646,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
@@ -674,6 +680,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Ready },
@@ -688,6 +695,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Ready },
@@ -738,6 +746,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Connected },
@@ -758,6 +767,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -778,6 +788,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Disconnected },
@@ -797,6 +808,22 @@ describe('ConfirmFooter', () => {
       expect(queryByTestId('confirm-footer-button')).not.toBeInTheDocument();
     });
 
+    it('renders confirm button when selected hardware wallet does not match confirmation sender', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+
+      const { getByTestId, queryByTestId } = render();
+
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
     it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
       const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const connectionState = {
@@ -805,6 +832,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState,
@@ -839,6 +867,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -867,6 +896,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Disconnected },
@@ -916,6 +946,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Disconnected },
@@ -938,6 +969,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -954,7 +986,7 @@ describe('ConfirmFooter', () => {
         getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
           msgParams: {
-            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            from: HARDWARE_CONFIRMATION_SENDER,
           },
         } as SignatureRequestType),
       );
@@ -966,7 +998,7 @@ describe('ConfirmFooter', () => {
       });
 
       expect(resolveSpy).toHaveBeenCalledWith(expect.any(String), undefined, {
-        fromAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        fromAddress: HARDWARE_CONFIRMATION_SENDER,
         waitForResult: true,
         walletType: HardwareWalletType.Ledger,
       });
@@ -981,6 +1013,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -997,7 +1030,7 @@ describe('ConfirmFooter', () => {
         getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
           msgParams: {
-            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            from: HARDWARE_CONFIRMATION_SENDER,
           },
         } as SignatureRequestType),
       );
@@ -1022,6 +1055,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -1038,7 +1072,7 @@ describe('ConfirmFooter', () => {
         getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
           msgParams: {
-            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            from: HARDWARE_CONFIRMATION_SENDER,
           },
         } as SignatureRequestType),
       );

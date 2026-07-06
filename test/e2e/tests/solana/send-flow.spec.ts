@@ -13,6 +13,7 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import { buildSolanaTestSpecificMock } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
+const solSendAmountFiatValue = '$11.28';
 
 describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
@@ -34,10 +35,13 @@ describe('Send flow', function (this: Suite) {
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        await sendPage.fillRecipient('2433asd');
+        await sendPage.fillRecipient({
+          recipientAddress: '2433asd',
+          validAddress: false,
+        });
         await sendPage.checkInvalidAddressError();
 
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('1');
         await sendPage.checkInsufficientFundsError();
         assert.equal(
@@ -76,8 +80,10 @@ describe('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
+        await sendPage.waitForSendAmountBalance();
+        await sendPage.waitForSendAmountFiatValue(solSendAmountFiatValue);
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
           true,
@@ -126,7 +132,7 @@ describe('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
         assert.equal(
           await sendPage.isContinueButtonEnabled(),

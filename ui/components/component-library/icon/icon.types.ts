@@ -276,6 +276,7 @@ export enum IconName {
   Tooltip = 'tooltip',
   Translate = 'translate',
   Trash = 'trash',
+  Trophy = 'trophy',
   TrendDown = 'trend-down',
   TrendUp = 'trend-up',
   TriangleUp = 'triangle-up',
