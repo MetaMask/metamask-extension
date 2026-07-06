@@ -215,7 +215,9 @@ describe('Wallet Ready Page', () => {
   });
 
   it('sets the consolidated Basic Functionality cohort marker when the build flag is enabled', async () => {
-    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(true);
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
     const mockStore = configureMockStore([thunk])(mockState);
     const { getByTestId } = renderWithProvider(
       <CreationSuccessful />,

@@ -45,6 +45,7 @@ const SkipLinkConfirmationToggleItem = createToggleItem({
 const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
   { id: 'third-party-apis', component: ThirdPartyApisItem },
+  { id: 'ipfs-gateway', component: IpfsGatewayItem },
   {
     id: 'batch-account-balance-requests',
     component: BatchAccountBalanceRequestsToggleItem,
