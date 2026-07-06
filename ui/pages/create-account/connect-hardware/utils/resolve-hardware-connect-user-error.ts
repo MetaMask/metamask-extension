@@ -92,9 +92,9 @@ function getLedgerLocalizedErrorMessage(
  * @returns True when the message matches a locked state token.
  */
 function isLedgerLockedLegacyMessage(errorMessage: string): boolean {
-  return HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES.some(
-    (message) => message === errorMessage,
-  );
+  return (
+    HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES as readonly string[]
+  ).includes(errorMessage);
 }
 
 /**
