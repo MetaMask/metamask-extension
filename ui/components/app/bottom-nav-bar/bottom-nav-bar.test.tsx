@@ -113,7 +113,10 @@ describe('BottomNavBar', () => {
     });
 
     it('marks Perps as active on the /perps-home route', () => {
-      const { getByTestId } = renderBottomNavBar(baseState, PERPS_HOME_PAGE_ROUTE);
+      const { getByTestId } = renderBottomNavBar(
+        baseState,
+        PERPS_HOME_PAGE_ROUTE,
+      );
 
       expect(getByTestId('bottom-nav-perps')).toHaveAttribute(
         'aria-current',
@@ -164,9 +167,7 @@ describe('BottomNavBar', () => {
       );
 
       fireEvent.click(getByTestId('bottom-nav-home'));
-      expect(mockNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=nfts`,
-      );
+      expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`);
     });
 
     it('navigates to the perps page when Perps is clicked', () => {

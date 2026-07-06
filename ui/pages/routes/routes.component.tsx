@@ -573,15 +573,15 @@ export const routeConfig = [
                 path: PERPS_WITHDRAW_ROUTE,
                 element: <PerpsWithdrawPage />,
               },
-              {
-                path: ACTIVITY_ROUTE,
-                element: <ActivityPage />,
-              },
-              {
-                path: PERPS_HOME_PAGE_ROUTE,
-                element: <PerpsPage />,
-              },
             ],
+          },
+          {
+            path: ACTIVITY_ROUTE,
+            element: <ActivityPage />,
+          },
+          {
+            path: PERPS_HOME_PAGE_ROUTE,
+            element: <PerpsPage />,
           },
         ],
       },
