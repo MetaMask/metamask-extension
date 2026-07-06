@@ -3,25 +3,21 @@ import { render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
-import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
+import { I18nContext } from '../../ui/contexts/i18n';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
 import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
 
 /** @type {import('react').FC<{ currentLocale?: string; current?: object; en?: object; children?: import('react').ReactNode }>} */
-export const I18nProvider = (props) => {
-  const { currentLocale, current, en: eng } = props;
-
+export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
       getMessage(currentLocale, eng, key, ...args);
   }, [currentLocale, current, eng]);
 
-  return (
-    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={t}>{children}</I18nContext.Provider>;
 };
 
 I18nProvider.propTypes = {
@@ -31,14 +27,10 @@ I18nProvider.propTypes = {
   children: PropTypes.node,
 };
 
-I18nProvider.defaultProps = {
-  children: undefined,
-};
-
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (
     <I18nProvider currentLocale="en" current={en} en={en}>
-      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+      {children}
     </I18nProvider>
   );
 

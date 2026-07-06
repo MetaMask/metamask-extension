@@ -7,7 +7,11 @@ import {
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
-import type { Transaction as KeyringTransaction } from '@metamask/keyring-api';
+import {
+  EthScope,
+  isEvmAccountType,
+  type Transaction as KeyringTransaction,
+} from '@metamask/keyring-api';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
@@ -29,8 +33,10 @@ import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selecto
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
-import { Status } from '../../shared/lib/activity/types';
+import { ActivityListItem, Status } from '../../shared/lib/activity/types';
 import { getInternalAccountsObject } from './accounts';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
 import { getAssetsMetadata } from './assets';
 import {
@@ -147,7 +153,7 @@ export const selectLocalTransactionsByHash = createSelector(
         }
 
         // Also index by id so signing/queued transactions (no hash yet) can be
-        // looked up — the activity adapter sets data.hash = primaryTransaction.id
+        // looked up — the activity adapter sets hash = primaryTransaction.id
         // as a fallback when no real tx hash exists.
         const id = transaction.id?.toLowerCase();
         if (id && !transactionsByHash.has(id)) {
@@ -221,7 +227,7 @@ export const selectNonEvmActivityItemsById = createSelector(
     const itemsById = new Map<string, (typeof items)[number]>();
 
     for (const item of items) {
-      const id = item.data.hash?.toLowerCase();
+      const id = item.hash?.toLowerCase();
 
       if (id) {
         itemsById.set(id, item);
@@ -522,10 +528,10 @@ export const selectLocalActivityItems = createSelector(
 export const selectLocalActivityItemsByIdentifier = createSelector(
   selectLocalActivityItems,
   (items) => {
-    const itemsByIdentifier = new Map();
+    const itemsByIdentifier = new Map<string, ActivityListItem>();
 
     for (const item of items) {
-      const hash = item.data.hash?.toLowerCase();
+      const hash = item.hash?.toLowerCase();
 
       if (hash) {
         itemsByIdentifier.set(hash, item);
@@ -568,4 +574,12 @@ export const selectMarketRates = createSelector(
 
     return rates;
   },
+);
+
+// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
+export const selectEvmAddress = createSelector(
+  (state: MultichainAccountsState) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
 );

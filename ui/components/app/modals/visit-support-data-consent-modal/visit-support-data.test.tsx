@@ -10,14 +10,35 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
+import { buildSupportLinkWithUserData } from '../../../../../shared/lib/build-support-link';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { openWindow } from '../../../../helpers/utils/window';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getAnalyticsId } from '../../../../selectors/selectors';
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../../../hooks/useSegmentContext', () => ({
+  useSegmentContext: jest.fn(() => ({
+    page: { title: 'Settings' },
+  })),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -34,15 +55,9 @@ jest.mock('../../../../hooks/subscription/useSubscription', () => ({
 
 describe('VisitSupportDataConsentModal', () => {
   const store = configureMockState([thunk])(mockState);
-  const mockTrackEvent = jest.fn();
-  const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
-    bufferedTrace: jest.fn(),
-    bufferedEndTrace: jest.fn(),
-    onboardingParentContext: { current: null },
-  };
   const mockOnClose = jest.fn();
   const mockProfileId = 'test-profile-id';
+  const mockCanonicalProfileId = 'test-canonical-profile-id';
   const mockAnalyticsId = 'test-metrics-id';
   const mockShieldCustomerId = 'test-shield-customer-id';
   const useSelectorMock = useSelector as jest.Mock;
@@ -51,7 +66,12 @@ describe('VisitSupportDataConsentModal', () => {
   beforeEach(() => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === selectSessionData) {
-        return { profile: { profileId: mockProfileId } };
+        return {
+          profile: {
+            profileId: mockProfileId,
+            canonicalProfileId: mockCanonicalProfileId,
+          },
+        };
       }
       if (selector === getAnalyticsId) {
         return mockAnalyticsId;
@@ -80,9 +100,7 @@ describe('VisitSupportDataConsentModal', () => {
     };
 
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <VisitSupportDataConsentModal {...defaultProps} />
-      </MetaMetricsContext.Provider>,
+      <VisitSupportDataConsentModal {...defaultProps} />,
       store,
     );
   };
@@ -102,24 +120,23 @@ describe('VisitSupportDataConsentModal', () => {
       );
     });
 
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    url.searchParams.append('metamask_profile_id', mockProfileId);
-    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
-    url.searchParams.append('shield_id', mockShieldCustomerId);
-    const expectedUrl = url.toString();
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      profileId: mockProfileId,
+      canonicalProfileId: mockCanonicalProfileId,
+      analyticsId: mockAnalyticsId,
+      shieldCustomerId: mockShieldCustomerId,
+    });
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
           url: expectedUrl,
-        },
+          [MetaMetricsContextProp.PageTitle]: 'Settings',
+        }),
       }),
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -139,15 +156,13 @@ describe('VisitSupportDataConsentModal', () => {
     expect(mockOnClose).toHaveBeenCalled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
           url: expectedUrl,
-        },
+          [MetaMetricsContextProp.PageTitle]: 'Settings',
+        }),
       }),
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -168,23 +183,22 @@ describe('VisitSupportDataConsentModal', () => {
       );
     });
 
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    url.searchParams.append('metamask_profile_id', mockProfileId);
-    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
-    const expectedUrl = url.toString();
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      profileId: mockProfileId,
+      canonicalProfileId: mockCanonicalProfileId,
+      analyticsId: mockAnalyticsId,
+    });
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
           url: expectedUrl,
-        },
+          [MetaMetricsContextProp.PageTitle]: 'Settings',
+        }),
       }),
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -216,21 +230,19 @@ describe('VisitSupportDataConsentModal', () => {
       );
     });
 
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    const expectedUrl = url.toString();
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+    });
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
           url: expectedUrl,
-        },
+          [MetaMetricsContextProp.PageTitle]: 'Settings',
+        }),
       }),
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -267,6 +279,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     // Verify personal params are not in URL
     expect(calledUrl).not.toContain('metamask_profile_id');
+    expect(calledUrl).not.toContain('metamask_canonical_profile_id');
     expect(calledUrl).not.toContain('metamask_metametrics_id');
     expect(calledUrl).not.toContain('shield_id');
     expect(calledUrl).not.toContain('metamask_version');
@@ -285,11 +298,11 @@ describe('VisitSupportDataConsentModal', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-      }),
-      expect.objectContaining({
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
+          [MetaMetricsContextProp.PageTitle]: 'Settings',
+        }),
       }),
     );
     expect(openWindow).toHaveBeenCalled();
@@ -328,11 +341,11 @@ describe('VisitSupportDataConsentModal', () => {
       );
     });
 
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
-    url.searchParams.append('shield_id', mockShieldCustomerId);
-    const expectedUrl = url.toString();
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      analyticsId: mockAnalyticsId,
+      shieldCustomerId: mockShieldCustomerId,
+    });
 
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -356,16 +369,16 @@ describe('VisitSupportDataConsentModal', () => {
       );
     });
 
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
-    url.searchParams.append('shield_id', mockShieldCustomerId);
-    const expectedUrl = url.toString();
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      analyticsId: mockAnalyticsId,
+      shieldCustomerId: mockShieldCustomerId,
+    });
 
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
 
-  it('handles accept button with only metaMetricsId defined', async () => {
+  it('handles accept button with only analyticsId defined', async () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === selectSessionData) {
         return { profile: { profileId: undefined } };
@@ -392,10 +405,10 @@ describe('VisitSupportDataConsentModal', () => {
       );
     });
 
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
-    const expectedUrl = url.toString();
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      analyticsId: mockAnalyticsId,
+    });
 
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
     expect(mockOnClose).toHaveBeenCalled();

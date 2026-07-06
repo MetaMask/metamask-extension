@@ -83,14 +83,6 @@ jobs:
           cache-node-modules: true
           skip-allow-scripts: true
 
-      # Need to cache `.metamask` folder for the anvil binary
-      - name: Cache .metamask folder
-        if: ${{ steps.checkout-and-setup.outputs.node-modules-cache-hit != 'true' }}
-        uses: actions/cache/save@v5
-        with:
-          path: .metamask
-          key: .metamask-${{ hashFiles('yarn.lock') }}
-
   lint-workflows:
     name: Lint workflows
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
@@ -446,13 +438,12 @@ jobs:
   bundle-size:
     needs:
       - get-requirements
-      - build-dist-browserify
+      - build-dist-webpack
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
-      EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
@@ -461,19 +452,31 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-dist-browserify'
+      - name: Download artifact 'build-dist-webpack'
         uses: actions/download-artifact@v7
         with:
-          name: build-dist-browserify
+          name: build-dist-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from the run that produced the builds.
 
-      - name: Measure bundle size
-        run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
+      - name: Copy bundle size summary
+        run: mkdir -p test-artifacts && mv dist/bundle-size test-artifacts/chrome
+
+      - name: Get token
+        id: token
+        if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension_bundlesize_stats
+          permissions: |
+            contents: write
 
       - name: Record bundle size at commit
         # Skip on fork repos — only record stats on the canonical repository.
         if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
+        env:
+          EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ steps.token.outputs.token }}
         run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3
@@ -546,8 +549,6 @@ jobs:
     needs:
       - get-requirements
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
-    secrets:
-      TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
 
   publish-prerelease:
     name: Publish prerelease
@@ -645,9 +646,18 @@ jobs:
     timeout-minutes: 5
     environment: release-ci
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension-regression-validation-poc
+          permissions: |
+            contents: write
+
       - name: Trigger regression validation in external repo
         env:
-          DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
+          DISPATCH_TOKEN: ${{ steps.token.outputs.token }}
           BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)

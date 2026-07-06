@@ -123,6 +123,7 @@ import { MultichainAccountAddressListPage } from '../multichain-accounts/multich
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
+import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
@@ -144,6 +145,7 @@ import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
+import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -337,7 +339,11 @@ export const routeConfig = [
       },
       {
         path: NETWORKS_ROUTE,
-        element: <NetworksPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <NetworksPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: TOKEN_MANAGEMENT_ROUTE,
@@ -349,7 +355,11 @@ export const routeConfig = [
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
-        element: <Settings />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Settings />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
@@ -401,11 +411,19 @@ export const routeConfig = [
       },
       {
         path: PERMISSIONS,
-        element: <PermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <PermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: GATOR_PERMISSIONS,
-        element: <GatorPermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <GatorPermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
@@ -453,6 +471,11 @@ export const routeConfig = [
       },
       {
         path: CONTACTS_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Outlet />
+          </GlobalMenuRouteTransition>
+        ),
         children: contactsRoutes,
       },
       {
@@ -476,11 +499,19 @@ export const routeConfig = [
           },
           {
             path: NOTIFICATIONS_ROUTE,
-            element: <Notifications />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <Notifications />
+              </GlobalMenuRouteTransition>
+            ),
           },
           {
             path: SNAPS_ROUTE,
-            element: <SnapList />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <SnapList />
+              </GlobalMenuRouteTransition>
+            ),
           },
           createRouteWithMessenger({
             path: SNAPS_VIEW_ROUTE,
@@ -554,6 +585,7 @@ export default function Routes() {
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
   const isLoading = useAppSelector((state) => state.appState.isLoading);
+  const showLoadingOverlay = useSpinDelay(isLoading);
   const loadingMessage = useAppSelector(
     (state) => state.appState.loadingMessage,
   );
@@ -692,7 +724,7 @@ export default function Routes() {
   const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
 
   const isLoadingShown =
-    isLoading &&
+    showLoadingOverlay &&
     completedOnboarding &&
     !pendingConfirmations.some(
       (confirmation) =>

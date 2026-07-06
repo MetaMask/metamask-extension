@@ -48,6 +48,10 @@ class TokensTab extends HomePage {
 
   private readonly importTokensButton = '[data-testid="importTokens"]';
 
+  private readonly importTokensLoading = {
+    testId: 'import-tokens-loading',
+  };
+
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
@@ -251,6 +255,11 @@ class TokensTab extends HomePage {
     return text;
   }
 
+  async waitForNetworksFilter(): Promise<void> {
+    console.log(`Waiting for the network filter`);
+    await this.driver.waitForSelector(this.networksToggle);
+  }
+
   async getNumberOfAssets(): Promise<number> {
     console.log(`Returning the total number of asset items in the token list`);
     const assets = await this.driver.findElements(this.tokenListItem);
@@ -264,6 +273,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.sortByPopoverToggle);
     if (sortBy === 'alphabetically') {
       await this.driver.clickElement(this.sortByAlphabetically);
+      await this.driver.assertElementNotPresent(this.lowValueAssetsToggle);
     } else if (sortBy === 'decliningBalance') {
       await this.driver.clickElement(this.sortByDecliningBalance);
     }
@@ -367,6 +377,12 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.waitForSelector(this.selectedNetwork(networkName));
+    await this.driver.assertElementNotPresent(this.importTokensLoading, {
+      findElementGuard: this.importTokenModalTitle,
+    });
+    await this.driver.waitForSelector(this.tokenSearchInput);
+    // Keep paste to avoid flakiness because fill each word separately will cause the search to be triggered multiple times,
+    // and the list will be re-rendered multiple times, leading to flakiness.
     await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
@@ -464,89 +480,6 @@ class TokensTab extends HomePage {
       css: this.networksToggle,
       text: expectedText,
     });
-  }
-
-  /**
-   * Gets the network icon details from the sort-by-networks button
-   *
-   * @returns Object containing icon src, alt text, and visibility status, or null if no icon found
-   */
-  async getNetworkIcon(): Promise<{
-    src: string;
-    alt: string;
-    isVisible: boolean;
-  } | null> {
-    console.log('Getting network icon details from sort-by-networks button');
-    const iconDetails = await this.driver.executeScript(`
-      const button = document.querySelector('[data-testid="sort-by-networks"]');
-      const avatarNetwork = button?.querySelector('.mm-avatar-network img');
-      return avatarNetwork ? {
-        src: avatarNetwork.src,
-        alt: avatarNetwork.alt,
-        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
-      } : null;
-    `);
-    return iconDetails as {
-      src: string;
-      alt: string;
-      isVisible: boolean;
-    } | null;
-  }
-
-  /**
-   * Checks if the network icon is visible in the sort-by-networks button
-   *
-   * @returns true if icon is present and visible, false otherwise
-   */
-  async isNetworkIconVisible(): Promise<boolean> {
-    console.log('Checking if network icon is visible');
-    const iconElement = await this.driver.executeScript(`
-      const button = document.querySelector('[data-testid="sort-by-networks"]');
-      const avatarNetwork = button?.querySelector('.mm-avatar-network');
-      return avatarNetwork ? {
-        isPresent: true,
-        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
-      } : { isPresent: false, isVisible: false };
-    `);
-
-    const result = iconElement as { isPresent: boolean; isVisible: boolean };
-    return result.isPresent && result.isVisible;
-  }
-
-  /**
-   * Verifies that the network icon matches expected characteristics
-   *
-   * @param expectedIndicators - Array of strings that should be present in the icon URL
-   * @throws Error if icon is not found or doesn't match expected characteristics
-   */
-  async checkNetworkIconContains(expectedIndicators: string[]): Promise<void> {
-    console.log(
-      `Checking network icon contains one of: ${expectedIndicators.join(', ')}`,
-    );
-
-    const iconDetails = await this.getNetworkIcon();
-
-    if (!iconDetails) {
-      throw new Error('Network icon not found in sort-by-networks button');
-    }
-
-    if (!iconDetails.isVisible) {
-      throw new Error('Network icon is not visible');
-    }
-
-    const hasValidIcon = expectedIndicators.some((indicator) =>
-      iconDetails.src.toLowerCase().includes(indicator.toLowerCase()),
-    );
-
-    if (!hasValidIcon) {
-      throw new Error(
-        `Expected icon to contain one of ${expectedIndicators.join(', ')}, but got: ${iconDetails.src}`,
-      );
-    }
-
-    console.log(
-      `✅ Network icon verification passed - Icon src: ${iconDetails.src}`,
-    );
   }
 
   async checkPriceChartIsShown(): Promise<void> {

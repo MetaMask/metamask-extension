@@ -6,7 +6,23 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { MetametricsToggleItem } from './metametrics-item';
+
+const mockTrackAnalyticsEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackAnalyticsEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockEnableMetametrics = jest.fn().mockResolvedValue(undefined);
 const mockDisableMetametrics = jest.fn().mockResolvedValue(undefined);
@@ -136,23 +152,16 @@ describe('MetametricsToggleItem', () => {
   });
 
   it('fires TurnOffMetaMetrics event when toggled off', async () => {
-    const mockTrackEvent = jest.fn();
     const mockStore = createMockStore({ optedIn: true });
 
-    renderWithProvider(
-      <MetametricsToggleItem />,
-      mockStore,
-      '/',
-      undefined,
-      () => mockTrackEvent,
-    );
+    renderWithProvider(<MetametricsToggleItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
 
     await waitFor(() => {
-      expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          event: 'MetaMetrics Turned Off',
+          name: MetaMetricsEventName.TurnOffMetaMetrics,
         }),
       );
     });

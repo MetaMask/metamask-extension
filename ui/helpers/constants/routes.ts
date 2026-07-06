@@ -38,6 +38,7 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
+export const ADD_DEVICE_ROUTE = '/settings/add-device';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -124,6 +125,14 @@ export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
 export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
+export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE =
+  '/settings/notifications/wallet-activity';
+export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE =
+  '/settings/notifications/perps';
+export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE =
+  '/settings/notifications/marketing';
+export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE =
+  '/settings/notifications/agentic-cli';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -137,6 +146,8 @@ export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const TX_DETAILS_ROUTE = '/tx';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+export const PREPARE_SWAP_ASSETS_ROUTE = '/swaps/prepare-bridge-page/assets';
+export const SWAP_ASSETS_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ASSETS_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
 export const HARDWARE_WALLET_SIGNATURES_ROUTE =
   '/swaps/hardware-wallet-signatures';

@@ -9,6 +9,8 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -21,10 +23,17 @@ import Settings from './settings';
 
 const mockNavigate = jest.fn();
 const mockGetEnvironmentType = jest.fn(() => ENVIRONMENT_TYPE_POPUP);
+const mockRunCloseTransition = jest.fn((onComplete: () => void) =>
+  onComplete(),
+);
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../routes/global-menu-route-transition', () => ({
+  useGlobalMenuRouteTransition: () => mockRunCloseTransition,
 }));
 
 jest.mock('../../../shared/lib/environment-type', () => ({
@@ -174,6 +183,7 @@ describe('Settings', () => {
           `${DEFAULT_ROUTE}?drawerOpen=true`,
         );
       });
+      expect(mockRunCloseTransition).toHaveBeenCalledTimes(1);
     });
 
     it('navigates to home with the drawer open when back is clicked at settings root regardless of settings URL query', async () => {
@@ -191,9 +201,10 @@ describe('Settings', () => {
           `${DEFAULT_ROUTE}?drawerOpen=true`,
         );
       });
+      expect(mockRunCloseTransition).toHaveBeenCalledTimes(1);
     });
 
-    it('navigates to parent tab when back is clicked on a sub-page', async () => {
+    it('navigates to parent tab without global-menu transition when back is clicked on a sub-page', async () => {
       mockPathname = CURRENCY_ROUTE;
       renderSettings(mockStore);
 
@@ -207,6 +218,22 @@ describe('Settings', () => {
         expect(mockNavigate).toHaveBeenCalledWith(
           PREFERENCES_AND_DISPLAY_ROUTE,
         );
+      });
+      expect(mockRunCloseTransition).not.toHaveBeenCalled();
+    });
+
+    it('navigates from a notification section back to the main notifications settings page', async () => {
+      mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
+      renderSettings(mockStore);
+
+      const backButton = await screen.findByTestId(
+        'settings-header-back-button',
+      );
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(NOTIFICATIONS_SETTINGS_ROUTE);
       });
     });
   });
