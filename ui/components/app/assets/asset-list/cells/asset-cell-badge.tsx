@@ -33,12 +33,11 @@ export const getAvatarTokenSrc = (
 ): string => {
   try {
     const isEvm = isEvmChainId(opts.chainId);
-
     if (isEvm && opts.isNative) {
       return getNativeCurrencyForChain(opts.chainId);
     }
 
-    if (!opts.tokenImage && opts.assetId) {
+    if (!opts.tokenImage && opts.assetId && !opts.isNative) {
       return getAssetImageUrl(opts.assetId, opts.chainId) ?? '';
     }
 
