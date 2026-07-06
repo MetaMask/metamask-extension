@@ -932,10 +932,6 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:getState',
           jest.fn().mockReturnValue({ migrationVersion: 0 }),
         );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:trackEvent',
-          jest.fn(),
-        );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
 
@@ -3173,10 +3169,6 @@ function getMessenger(
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
-      'MetaMetricsController:trackEvent',
-      'MetaMetricsController:createEventFragment',
-      'MetaMetricsController:getEventFragmentById',
-      'MetaMetricsController:updateEventFragment',
       'KeyringController:verifyPassword',
       'KeyringController:exportAccount',
       'KeyringController:changePassword',
@@ -3202,6 +3194,10 @@ function getMessenger(
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
+      'MetaMetricsController:trackEvent',
+      'MetaMetricsController:getEventFragmentById',
+      'MetaMetricsController:updateEventFragment',
+      'MetaMetricsController:createEventFragment',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
       'TransactionController:updateEditableParams',

@@ -49,10 +49,6 @@ export function setupRpcEndpointMetrics(
         endpointUrl,
         error,
         infuraProjectId,
-        trackEvent: messenger.call.bind(
-          messenger,
-          'MetaMetricsController:trackEvent',
-        ),
         analyticsId: messenger.call('AnalyticsController:getState').analyticsId,
       });
     },
@@ -79,10 +75,6 @@ export function setupRpcEndpointMetrics(
         retryReason,
         rpcMethodName,
         traceId,
-        trackEvent: messenger.call.bind(
-          messenger,
-          'MetaMetricsController:trackEvent',
-        ),
         analyticsId: messenger.call('AnalyticsController:getState').analyticsId,
         type,
       });
