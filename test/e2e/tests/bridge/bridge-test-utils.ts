@@ -15,7 +15,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
-import { MOCK_ANALYTICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID, DEFAULT_BTC_CONVERSION_RATE } from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
@@ -895,6 +895,7 @@ async function mockPriceSpotPricesV3(
   ethUsdSpotPrice: number = BRIDGE_ETH_USD_SPOT_PRICE,
 ) {
   const resolvedEthPrice = ethUsdSpotPrice;
+  const SOLANA_SPOT_PRICE = 112.87;
 
   const tokenEntry = (
     id: string,
@@ -907,59 +908,61 @@ async function mockPriceSpotPricesV3(
     pricePercentChange1d,
   });
 
+  const ethNativeAssetIds = [
+    'eip155:1/slip44:60',
+    'eip155:59144/slip44:60',
+    'eip155:42161/slip44:60',
+  ] as const;
+
+  const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
+    'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
+      'dai',
+      1.0,
+    ),
+    'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
+      tokenEntry('dai', 1.0),
+    'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
+      'musd',
+      0.9999,
+    ),
+  };
+
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback((request) => {
       const url = new URL(request.url);
       const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
+      const ethPriceChange1d = vsCurrency === 'usd' ? 2.5 : 0;
+      const requestedAssetIds = (url.searchParams.get('assetIds') ?? '')
+        .split(',')
+        .map((assetId) => assetId.trim())
+        .filter(Boolean);
+      const assetIdsToReturn =
+        requestedAssetIds.length > 0
+          ? requestedAssetIds
+          : [...ethNativeAssetIds, ...Object.keys(stablecoins)];
 
-      const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
-        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
-          'dai',
-          1.0,
-        ),
-        'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
-          tokenEntry('dai', 1.0),
-        'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
-          'musd',
-          0.9999,
-        ),
-      };
+      const json: Record<string, ReturnType<typeof tokenEntry>> = {};
 
-      const json =
-        vsCurrency === 'usd'
-          ? {
-              'eip155:1/slip44:60': tokenEntry(
-                'ethereum',
-                resolvedEthPrice,
-                2.5,
-              ),
-              'eip155:59144/slip44:60': tokenEntry(
-                'ethereum',
-                resolvedEthPrice,
-                2.5,
-              ),
-              'eip155:42161/slip44:60': tokenEntry(
-                'ethereum',
-                resolvedEthPrice,
-                2.5,
-              ),
-              ...stablecoins,
-            }
-          : {
-              'eip155:1/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
-              'eip155:59144/slip44:60': tokenEntry(
-                'ethereum',
-                resolvedEthPrice,
-                0,
-              ),
-              'eip155:42161/slip44:60': tokenEntry(
-                'ethereum',
-                resolvedEthPrice,
-                0,
-              ),
-              ...stablecoins,
-            };
+      for (const assetId of assetIdsToReturn) {
+        if (
+          (ethNativeAssetIds as readonly string[]).includes(assetId) ||
+          assetId.endsWith('/slip44:60') ||
+          assetId.endsWith('/slip44:1')
+        ) {
+          json[assetId] = tokenEntry('ethereum', resolvedEthPrice, ethPriceChange1d);
+        } else if (stablecoins[assetId]) {
+          json[assetId] = stablecoins[assetId];
+        } else if (assetId.startsWith('solana:')) {
+          json[assetId] = tokenEntry('solana', SOLANA_SPOT_PRICE, 6.5);
+        } else if (assetId.startsWith('bip122:')) {
+          json[assetId] = tokenEntry(
+            'bitcoin',
+            DEFAULT_BTC_CONVERSION_RATE,
+            0.12,
+          );
+        }
+      }
 
       return { statusCode: 200, json };
     });

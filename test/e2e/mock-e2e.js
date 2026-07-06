@@ -1603,9 +1603,7 @@ async function setupMocking(
         // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
         // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
         let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
-        if (defaultNativeOverride !== null) {
-          nativeBalance = defaultNativeOverride;
-        } else if (
+        if (
           chainRef === '1' &&
           mainnetNativeOverride !== null &&
           isKnownFundedTestAccount
@@ -1617,6 +1615,8 @@ async function setupMocking(
           isKnownFundedTestAccount
         ) {
           nativeBalance = localhostNativeOverride;
+        } else if (defaultNativeOverride !== null) {
+          nativeBalance = defaultNativeOverride;
         }
 
         // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
