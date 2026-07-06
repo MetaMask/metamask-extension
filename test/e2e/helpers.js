@@ -151,10 +151,14 @@ function normalizeSmartContracts(smartContract) {
  */
 
 const LOCALHOST_EVM_CHAIN_ID_HEX = '0x539';
+const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
+const LOCALHOST_NATIVE_ASSET_ID = 'eip155:1337/slip44:1';
 
 /**
  * Hardware wallet fixtures that enable only mainnet (not localhost) need seeded
- * mainnet balances under unified assets; localhost-first fixtures expect zero.
+ * mainnet balances under unified assets when the fixture expects a funded wallet.
+ * Skip when the fixture explicitly zeroes the hardware wallet (e.g. overwrite
+ * with localhost amount `0` and no mainnet row).
  *
  * @param {object | undefined} fixtures
  * @returns {boolean}
@@ -165,10 +169,34 @@ function shouldSeedHardwareWalletMainnetBalance(fixtures) {
   if (!eip155Enabled) {
     return false;
   }
-  return (
-    eip155Enabled['0x1'] === true &&
-    eip155Enabled[LOCALHOST_EVM_CHAIN_ID_HEX] !== true
-  );
+  if (
+    eip155Enabled['0x1'] !== true ||
+    eip155Enabled[LOCALHOST_EVM_CHAIN_ID_HEX] === true
+  ) {
+    return false;
+  }
+
+  const hardwareAssets =
+    fixtures?.data?.AssetsController?.assetsBalance?.[
+      HARDWARE_WALLET_ACCOUNT_ID
+    ];
+  if (!hardwareAssets) {
+    return true;
+  }
+
+  if (hardwareAssets[MAINNET_NATIVE_ASSET_ID]?.amount === '0') {
+    return false;
+  }
+
+  const localhostAmount = hardwareAssets[LOCALHOST_NATIVE_ASSET_ID]?.amount;
+  if (
+    localhostAmount === '0' &&
+    hardwareAssets[MAINNET_NATIVE_ASSET_ID] === undefined
+  ) {
+    return false;
+  }
+
+  return true;
 }
 
 /**
