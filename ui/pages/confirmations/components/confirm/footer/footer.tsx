@@ -40,9 +40,8 @@ import {
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
-import ScamQuestionnaire, {
-  useSendScamQuestionnaire,
-} from '../../../../../components/app/product-safety/scam-questionnaire';
+import ScamQuestionnaire from '../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire';
+import { useSendScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useSendScamQuestionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
