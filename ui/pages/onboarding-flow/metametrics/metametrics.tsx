@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
@@ -40,9 +40,9 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -152,7 +152,7 @@ export default function OnboardingMetametrics() {
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   let nextRouteByBrowser = useSelector(
     getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
@@ -181,21 +181,23 @@ export default function OnboardingMetametrics() {
       }
 
       if (isParticipateInMetaMetricsChecked) {
-        await trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AppInstalled,
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.AppInstalled)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .build(),
+        );
 
-        await trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: {
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-            [MetaMetricsUserTrait.HasMarketingConsent]:
-              isDataCollectionForMarketingChecked,
-            location: 'onboarding_metametrics',
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .addProperties({
+              [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+              [MetaMetricsUserTrait.HasMarketingConsent]:
+                isDataCollectionForMarketingChecked,
+              location: 'onboarding_metametrics',
+            })
+            .build(),
+        );
 
         dispatch(
           setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
