@@ -201,6 +201,7 @@ import {
   endTrace,
   TraceName,
   TraceOperation,
+  getPerformanceTimestamp,
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
@@ -231,10 +232,9 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
 import {
-  DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
+  getPartnerByOrigin,
 } from '../../shared/constants/defi-referrals';
-import { checkGmxHasReferralCode } from './lib/defi-referral-onchain-check';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -279,10 +279,12 @@ import {
   convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
+import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
 import {
   createDefiReferralMiddleware,
   ReferralTriggerType,
-} from './lib/createDefiReferralMiddleware';
+} from './lib/defi-referrals/createDefiReferralMiddleware';
 
 import {
   diffMap,
@@ -317,10 +319,7 @@ import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import {
-  rejectAllApprovals,
-  rejectOriginApprovals,
-} from './lib/approval/utils';
+import { rejectOriginApprovals } from './lib/approval/utils';
 import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
   MultichainAssetsControllerInit,
@@ -367,6 +366,7 @@ import {
 } from './messenger-client-init/core-backend';
 import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
+import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
@@ -380,7 +380,6 @@ import {
   OAuthServiceInit,
   SeedlessOnboardingControllerInit,
 } from './messenger-client-init/seedless-onboarding';
-import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
@@ -408,10 +407,8 @@ import {
   SubscriptionServiceInit,
 } from './messenger-client-init/subscription';
 import { ConfigRegistryControllerInit } from './messenger-client-init/config-registry-controller-init';
-import { ConnectivityControllerInit } from './messenger-client-init/connectivity';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
-import { RemoteFeatureFlagControllerInit } from './messenger-client-init/remote-feature-flag-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
@@ -420,16 +417,13 @@ import { PermissionControllerInit } from './messenger-client-init/permission-con
 import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
-import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
-import { AccountsControllerInit } from './messenger-client-init/accounts-controller-init';
 import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
 import { AlertControllerInit } from './messenger-client-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
 import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
@@ -454,6 +448,7 @@ import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-b
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
+import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -545,11 +540,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.initializeChainlist();
 
+    const connectivityAdapter = new ExtensionConnectivityAdapter();
+    this.connectivityAdapter = connectivityAdapter;
     this.wallet = initializeWallet({
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
+      infuraProjectId: this.opts.infuraProjectId,
       showApprovalRequest: this.opts.showUserConfirmation,
+      connectivityAdapter,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -624,8 +623,6 @@ export default class MetamaskController extends EventEmitter {
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
-      AccountsController: AccountsControllerInit,
-      AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
       DecryptMessageManager: DecryptMessageManagerInit,
       DecryptMessageController: DecryptMessageControllerInit,
@@ -638,8 +635,6 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       PasskeyController: PasskeyControllerInit,
-      RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
-      NetworkController: NetworkControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -702,6 +697,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
+      AuthenticatedUserStorageService: AuthenticatedUserStorageServiceInit,
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
@@ -711,7 +707,6 @@ export default class MetamaskController extends EventEmitter {
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       SubscriptionController: SubscriptionControllerInit,
       SubscriptionService: SubscriptionServiceInit,
-      ConnectivityController: ConnectivityControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       ClaimsController: ClaimsControllerInit,
@@ -758,8 +753,13 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = messengerClientsByName.PreferencesController;
     this.keyringController = this.wallet.getInstance('KeyringController');
     this.snapAccountService = messengerClientsByName.SnapAccountService;
-    this.accountsController = messengerClientsByName.AccountsController;
-    this.addressBookController = messengerClientsByName.AddressBookController;
+    this.accountsController = this.wallet.getInstance('AccountsController');
+    this.connectivityController = this.wallet.getInstance(
+      'ConnectivityController',
+    );
+    this.addressBookController = this.wallet.getInstance(
+      'AddressBookController',
+    );
     this.alertController = messengerClientsByName.AlertController;
     this.decryptMessageController =
       messengerClientsByName.DecryptMessageController;
@@ -772,14 +772,15 @@ export default class MetamaskController extends EventEmitter {
     this.subjectMetadataController =
       messengerClientsByName.SubjectMetadataController;
     this.appStateController = messengerClientsByName.AppStateController;
-    this.networkController = messengerClientsByName.NetworkController;
+    this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
       messengerClientsByName.MetaMetricsDataDeletionController;
-    this.remoteFeatureFlagController =
-      messengerClientsByName.RemoteFeatureFlagController;
+    this.remoteFeatureFlagController = this.wallet.getInstance(
+      'RemoteFeatureFlagController',
+    );
     this.gasFeeController = messengerClientsByName.GasFeeController;
     this.userOperationController =
       messengerClientsByName.UserOperationController;
@@ -836,6 +837,8 @@ export default class MetamaskController extends EventEmitter {
     this.authenticationController =
       messengerClientsByName.AuthenticationController;
     this.userStorageController = messengerClientsByName.UserStorageController;
+    this.authenticatedUserStorageService =
+      messengerClientsByName.AuthenticatedUserStorageService;
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
@@ -1297,7 +1300,10 @@ export default class MetamaskController extends EventEmitter {
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
             onBeforeRequest,
             onAfterRequest,
           },
@@ -1317,7 +1323,10 @@ export default class MetamaskController extends EventEmitter {
         const permissionsSupportedByKernel = await forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
           },
           [],
           req,
@@ -1358,7 +1367,10 @@ export default class MetamaskController extends EventEmitter {
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
           },
           [],
           req,
@@ -1443,6 +1455,7 @@ export default class MetamaskController extends EventEmitter {
     this.memStore = new ComposableObservableStore({
       config: {
         AccountsController: this.accountsController,
+        ConnectivityController: this.connectivityController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
@@ -1840,23 +1853,6 @@ export default class MetamaskController extends EventEmitter {
    */
   _getSnapMetadata(snapId) {
     return this.snapsRegistry.state.database?.verifiedSnaps?.[snapId]?.metadata;
-  }
-
-  /**
-   * Passes a JSON-RPC request object to the SnapController for execution.
-   *
-   * @param {object} args - A bag of options.
-   * @param {string} args.snapId - The ID of the recipient snap.
-   * @param {string} args.origin - The origin of the RPC request.
-   * @param {string} args.handler - The handler to trigger on the snap for the request.
-   * @param {object} args.request - The JSON-RPC request object.
-   * @returns The result of the JSON-RPC request.
-   */
-  async handleSnapRequest(args) {
-    return await this.controllerMessenger.call(
-      'SnapController:handleRequest',
-      args,
-    );
   }
 
   /**
@@ -2609,6 +2605,7 @@ export default class MetamaskController extends EventEmitter {
       // Notification Controllers
       authenticationController,
       userStorageController,
+      authenticatedUserStorageService,
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
@@ -2986,14 +2983,6 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      setSelectedAddress: (address) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account) {
-          this.accountsController.setSelectedAccount(account.id);
-        } else {
-          throw new Error(`No account found for address: ${address}`);
-        }
-      },
       toggleExternalServices: this.toggleExternalServices.bind(this),
       addToken: async ({
         address,
@@ -3077,23 +3066,18 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // AccountsController
-      setSelectedInternalAccount: (id) => {
-        const account = this.accountsController.getAccount(id);
-        if (account) {
-          this.accountsController.setSelectedAccount(id);
-        }
-      },
+      setSelectedInternalAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setSelectedInternalAccount',
+      ),
 
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
 
-      setAccountLabel: (address, label) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account === undefined) {
-          throw new Error(`No account found for address: ${address}`);
-        }
-        this.accountsController.setAccountName(account.id, label);
-      },
+      setAccountLabel: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setAccountLabel',
+      ),
 
       // AccountTreeController
       setSelectedMultichainAccount: (accountGroupId) => {
@@ -3113,16 +3097,16 @@ export default class MetamaskController extends EventEmitter {
         this.accountTreeController.setAccountGroupHidden.bind(
           this.accountTreeController,
         ),
-      syncAccountTreeWithUserStorage: async () => {
-        await this.accountTreeController.syncWithUserStorage();
-      },
+      syncAccountTreeWithUserStorage: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountTreeController:syncWithUserStorage',
+      ),
 
       // MultichainAccountService
-      createNextMultichainAccountGroup: async (walletId) => {
-        await this.multichainAccountService.createNextMultichainAccountGroup({
-          entropySource: walletId,
-        });
-      },
+      createNextMultichainAccountGroup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:createNextMultichainAccountGroup',
+      ),
 
       alignMultichainWallets: async () => {
         if (this.multichainAccountService) {
@@ -3396,8 +3380,10 @@ export default class MetamaskController extends EventEmitter {
             waitForSubmit: true,
           }),
         ),
-      upsertTransactionUIMetricsFragment:
-        this.upsertTransactionUIMetricsFragment.bind(this),
+      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+      ),
       setTransactionActive:
         txController.setTransactionActive.bind(txController),
       // decryptMessageController
@@ -3440,9 +3426,18 @@ export default class MetamaskController extends EventEmitter {
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
 
       // permissions
-      removePermissionsFor: this.removePermissionsFor,
-      approvePermissionsRequest: this.acceptPermissionsRequest,
-      rejectPermissionsRequest: this.rejectPermissionsRequest,
+      removePermissionsFor: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermissionsFor',
+      ),
+      approvePermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:acceptPermissionsRequest',
+      ),
+      rejectPermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectPermissionsRequest',
+      ),
       ...getPermissionBackgroundApiMethods({
         permissionController,
         approvalController,
@@ -3467,7 +3462,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:removeSnap',
       ),
-      handleSnapRequest: this.handleSnapRequest.bind(this),
+      handleSnapRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:handleRequest',
+      ),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:revokeDynamicSnapPermissions',
@@ -3476,7 +3474,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disconnectOrigin',
       ),
-      updateNetworksList: this.updateNetworksList.bind(this),
+      updateNetworksList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkOrderController:updateNetworksList',
+      ),
       updateAccountsList: this.updateAccountsList.bind(this),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
       setEnabledAllPopularNetworks:
@@ -3611,8 +3612,14 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // ApprovalController
-      rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
-      rejectPendingApproval: this.rejectPendingApproval,
+      rejectAllPendingApprovals: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectAllPendingApprovals',
+      ),
+      rejectPendingApproval: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectPendingApproval',
+      ),
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
@@ -3783,6 +3790,14 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
+      getNotificationPreferences:
+        authenticatedUserStorageService.getNotificationPreferences.bind(
+          authenticatedUserStorageService,
+        ),
+      putNotificationPreferences:
+        authenticatedUserStorageService.putNotificationPreferences.bind(
+          authenticatedUserStorageService,
+        ),
       // NotificationServicesController
       checkAccountsPresence:
         notificationServicesController.checkAccountsPresence.bind(
@@ -3826,10 +3841,8 @@ export default class MetamaskController extends EventEmitter {
         notificationServicesPushController.disablePushNotifications.bind(
           notificationServicesPushController,
         ),
-      enableMetamaskNotifications:
-        notificationServicesController.enableMetamaskNotifications.bind(
-          notificationServicesController,
-        ),
+      enableMetamaskNotifications: (options) =>
+        notificationServicesController.enableMetamaskNotifications(options),
       disableMetamaskNotifications:
         notificationServicesController.disableNotificationServices.bind(
           notificationServicesController,
@@ -3884,15 +3897,10 @@ export default class MetamaskController extends EventEmitter {
       openUpdateTabAndReload: () =>
         openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
-      applyTransactionContainersExisting: (transactionId, containerTypes) =>
-        applyTransactionContainersExisting({
-          containerTypes,
-          messenger: this.controllerMessenger,
-          transactionId,
-          updateEditableParams: this.txController.updateEditableParams.bind(
-            this.txController,
-          ),
-        }),
+      applyTransactionContainersExisting: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:applyTransactionContainersExisting',
+      ),
       lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
       resetWallet: this.resetWallet.bind(this),
     };
@@ -4782,10 +4790,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
    */
   async discoverAndCreateAccounts(id) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
+    // Hold the start time so the span can be backdated if discovery does real
+    // work. The common no-op discovery (every login, per keyring) is not traced.
+    const startTime = getPerformanceTimestamp();
     try {
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
@@ -4803,6 +4810,18 @@ export default class MetamaskController extends EventEmitter {
 
       const counts = this.getDiscoveryCountByProvider(result);
 
+      // Only emit a span when discovery actually created accounts.
+      if (result.length > 0) {
+        trace({
+          name: TraceName.DiscoverAccounts,
+          op: TraceOperation.AccountDiscover,
+          startTime,
+        });
+        endTrace({
+          name: TraceName.DiscoverAccounts,
+        });
+      }
+
       return counts;
     } catch (error) {
       log.warn(`Failed to add accounts with balance. ${error}`);
@@ -4811,10 +4830,6 @@ export default class MetamaskController extends EventEmitter {
         Solana: 0,
         Tron: 0,
       };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-      });
     }
   }
 
@@ -5658,7 +5673,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Runs when CAIP-25 permitted accounts are extended via the permission background API.
-   * If the origin is Hyperliquid and the globally selected account is EVM and included
+   * If the origin is a referral partner and the globally selected account is EVM and included
    * among the newly permitted accounts, it triggers the DeFi referral flow.
    *
    * @param {{ origin: string; newCaipAccountIds: import('@metamask/utils').CaipAccountId[] }} details - Added accounts payload.
@@ -5666,9 +5681,8 @@ export default class MetamaskController extends EventEmitter {
   _handleDefiReferralOnPermittedAccountsAdded(details) {
     const { origin, newCaipAccountIds } = details;
 
-    // Only run for Hyperliquid
-    const partner = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
-    if (origin !== partner.origin) {
+    const partner = getPartnerByOrigin(origin);
+    if (!partner) {
       return;
     }
 
@@ -5774,20 +5788,26 @@ export default class MetamaskController extends EventEmitter {
     // We should redirect to the referral url if the account is approved
     const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
 
-    if (
-      partner.id === DefiReferralPartner.GMX &&
-      (shouldShowApproval || shouldRedirect)
-    ) {
-      const hasExistingCode = await checkGmxHasReferralCode(
-        this.networkController,
-        activePermittedAccount,
-      );
-      if (hasExistingCode) {
-        this.preferencesController.addReferralPassedAccount(
-          partner.id,
-          activePermittedAccount,
-        );
-        return;
+    const checkExistingCodeMap = {
+      [DefiReferralPartner.GMX]: (account) =>
+        checkGmxHasReferralCode(this.networkController, account),
+      [DefiReferralPartner.Hyperliquid]: this.preferencesController.state
+        .useExternalServices
+        ? checkHyperliquidHasReferralCode
+        : undefined,
+    };
+
+    if (shouldShowApproval || shouldRedirect) {
+      const checkExistingCode = checkExistingCodeMap[partner.id];
+      if (checkExistingCode) {
+        const hasExistingCode = await checkExistingCode(activePermittedAccount);
+        if (hasExistingCode) {
+          this.preferencesController.addReferralPassedAccount(
+            partner.id,
+            activePermittedAccount,
+          );
+          return;
+        }
       }
     }
 
@@ -7991,44 +8011,15 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  upsertTransactionUIMetricsFragment(transactionId, payload) {
-    if (!transactionId || !payload) {
-      return;
-    }
-
-    const fragmentId = this.getTransactionUIMetricsFragmentId(transactionId);
-    const existingFragment =
-      this.getTransactionUIMetricsFragment(transactionId);
-
-    if (existingFragment) {
-      this.controllerMessenger.call(
-        'MetaMetricsController:updateEventFragment',
-        fragmentId,
-        payload,
-      );
-      return;
-    }
-
-    this.controllerMessenger.call('MetaMetricsController:createEventFragment', {
-      id: fragmentId,
-      uniqueIdentifier: fragmentId,
-      // Required by createEventFragment, but this fragment is storage-only.
-      // We never finalize this fragment and we do not set initialEvent.
-      successEvent: 'Transaction Fragment Created',
-      category: MetaMetricsEventCategory.Transactions,
-      canDeleteIfAbandoned: true,
-      properties: payload.properties ?? {},
-      sensitiveProperties: payload.sensitiveProperties ?? {},
-    });
-  }
-
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Transaction metrics state
       getTransactionUIMetricsFragment:
         this.getTransactionUIMetricsFragment.bind(this),
-      upsertTransactionUIMetricsFragment:
-        this.upsertTransactionUIMetricsFragment.bind(this),
+      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+      ),
       // Metametrics Actions
       getParticipateInMetrics: () => {
         const { completedMetaMetricsOnboarding } =
@@ -8244,7 +8235,11 @@ export default class MetamaskController extends EventEmitter {
       // unlocked.
       this.controllerMessenger.call('SnapController:setClientActive', open);
 
-      if (open) {
+      const { completedOnboarding } = this.controllerMessenger.call(
+        'OnboardingController:getState',
+      );
+
+      if (open && completedOnboarding) {
         // If the client is open and unlocked, request a periodic update of the
         // Snaps registry.
         this.controllerMessenger
@@ -8360,16 +8355,6 @@ export default class MetamaskController extends EventEmitter {
     await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
 
-  removePermissionsFor = (subjects) => {
-    try {
-      this.permissionController.revokePermissions(subjects);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
       this.controllerMessenger.call(
@@ -8383,15 +8368,6 @@ export default class MetamaskController extends EventEmitter {
       if (!(exp instanceof PermissionsRequestNotFoundError)) {
         throw exp;
       }
-    }
-  };
-
-  updateNetworksList = (chainIds) => {
-    try {
-      this.networkOrderController.updateNetworksList(chainIds);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
     }
   };
 
@@ -8449,26 +8425,6 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  rejectPermissionsRequest = (requestId) => {
-    try {
-      this.permissionController.rejectPermissionsRequest(requestId);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  acceptPermissionsRequest = (request) => {
-    try {
-      this.permissionController.acceptPermissionsRequest(request);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
   /**
    * Resolve a pending approval. For hardware wallet transactions and signatures,
    * this handles error parsing.
@@ -8501,19 +8457,6 @@ export default class MetamaskController extends EventEmitter {
       }
 
       throw error;
-    }
-  };
-
-  rejectPendingApproval = (id, error) => {
-    try {
-      this.approvalController.rejectRequest(
-        id,
-        new JsonRpcError(error.code, error.message, error.data),
-      );
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
-      }
     }
   };
 
@@ -8570,19 +8513,6 @@ export default class MetamaskController extends EventEmitter {
       { waitForResult: true, walletType },
     );
   };
-
-  rejectAllPendingApprovals() {
-    const deleteInterface = (id) =>
-      this.controllerMessenger.call(
-        'SnapInterfaceController:deleteInterface',
-        id,
-      );
-
-    rejectAllApprovals({
-      approvalController: this.approvalController,
-      deleteInterface,
-    });
-  }
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(

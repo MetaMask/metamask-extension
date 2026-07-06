@@ -49,7 +49,7 @@ import {
   PERPS_TAB_BADGE_AB_KEY,
   PERPS_TAB_BADGE_VARIANTS,
   PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
-} from '../../../../shared/lib/ab-testing/perps-tab-badge';
+} from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
 import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
