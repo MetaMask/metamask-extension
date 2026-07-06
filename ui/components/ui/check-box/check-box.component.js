@@ -37,8 +37,16 @@ const CheckBox = ({
     ref.current.indeterminate = checked === CHECKBOX_STATE.INDETERMINATE;
   }, [checked]);
 
+  let ariaChecked = 'false';
+  if (checked === CHECKBOX_STATE.INDETERMINATE) {
+    ariaChecked = 'mixed';
+  } else if (checked === CHECKBOX_STATE.CHECKED) {
+    ariaChecked = 'true';
+  }
+
   return (
     <input
+      aria-checked={ariaChecked}
       checked={checked === CHECKBOX_STATE.CHECKED}
       className={classnames('check-box', className, {
         'far fa-square': checked === CHECKBOX_STATE.UNCHECKED,

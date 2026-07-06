@@ -264,11 +264,15 @@ class SendPage {
       await this.driver.waitForSelector(this.sendAlertAcknowledgeButton, {
         timeout: 2000,
       });
-      console.log('Acknowledging send alert modal');
-      await this.driver.clickElement(this.sendAlertAcknowledgeButton);
-    } catch {
-      console.log('No send alert modal to acknowledge');
+    } catch (error) {
+      if ((error as { name?: string }).name === 'TimeoutError') {
+        console.log('No send alert modal to acknowledge');
+        return;
+      }
+      throw error;
     }
+    console.log('Acknowledging send alert modal');
+    await this.driver.clickElement(this.sendAlertAcknowledgeButton);
   }
 
   async pressOnAmountInput(key: string): Promise<void> {
