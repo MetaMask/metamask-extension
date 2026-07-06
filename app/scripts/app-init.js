@@ -150,7 +150,7 @@ self.addEventListener('install', (event) => {
   // Extend the install event lifetime until background scripts finish loading.
   // Without waitUntil, Chrome may finish the install event before the async
   // dynamic import of background.js completes.
-  event.waitUntil(Promise.resolve(importAllScripts()));
+  event.waitUntil(Promise.resolve().then(() => importAllScripts()));
 });
 
 // listen for connection events from other contexts, and respond to liveness
