@@ -3959,26 +3959,29 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 
 /**
  * Returns the banner state in the flattened shape consumed by the UI,
- * derived from NetworkConnectionBannerController.
+ * derived from NetworkConnectionBannerController. Memoized so consumers get
+ * a stable reference while the controller state is unchanged.
  *
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
+ * @type {(state: MetaMaskReduxState) => import('../../shared/constants/app-state').NetworkConnectionBanner}
  */
-export function getNetworkConnectionBanner(state) {
-  const { status, network } = state.metamask;
-  if ((status !== 'degraded' && status !== 'unavailable') || !network) {
-    return { status: 'available' };
-  }
+export const getNetworkConnectionBanner = createSelector(
+  (state) => state.metamask.status,
+  (state) => state.metamask.network,
+  (status, network) => {
+    if ((status !== 'degraded' && status !== 'unavailable') || !network) {
+      return { status: 'available' };
+    }
 
-  return {
-    status,
-    networkName: network.name,
-    networkClientId: network.networkClientId,
-    chainId: network.chainId,
-    isInfuraEndpoint: network.isInfuraEndpoint,
-    switchableInfuraNetworkClientId: network.switchableInfuraNetworkClientId,
-  };
-}
+    return {
+      status,
+      networkName: network.name,
+      networkClientId: network.networkClientId,
+      chainId: network.chainId,
+      isInfuraEndpoint: network.isInfuraEndpoint,
+      switchableInfuraNetworkClientId: network.switchableInfuraNetworkClientId,
+    };
+  },
+);
 
 /**
  * Check if the device is offline.
