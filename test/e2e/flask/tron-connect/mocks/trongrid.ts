@@ -278,7 +278,8 @@ export const mockTriggerSmartContract = (mockServer: Mockttp) =>
                   parameter: {
                     value: {
                       data: 'a9059cbb00000000000000000000000032f9c0c487f21716b7a8f12906b7528899026558000000000000000000000000000000000000000000000000000000000754d4c0',
-                      owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
+                      owner_address:
+                        '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
                       contract_address:
                         '41a614f803b6fd780986a42c78ec9c7f77e6ded13c',
                     },
