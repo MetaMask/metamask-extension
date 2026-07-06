@@ -31,52 +31,42 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # plugin: pr | prebase | norunchecks
-          #   prebase => full-tree checkout at PRE_PR_SHA (ref set below);
-          #              the pre-PR webpack:lavamoat script is then patched to
-          #              add --max-old-space-size=8192 so heap matches all jobs.
-          #   pr       => tree at trigger branch HEAD, plugin unmodified.
-          #   norunchecks => tree at HEAD, plugin patched runChecks true->false.
-          # Concurrent jobs call `yarn exec concurrently --` so the binary
-          # resolves from node_modules/.bin (bare `concurrently` = exit 127).
-          - label: 1-prebase-build
-            plugin: prebase
+          # Decisive A/B: both trees run the EXACT command that OOM'd in real CI
+          # (build-dist-webpack = `yarn webpack:lavamoat:build --zip --stats
+          # --bundleAnalyzer`, per run-build.yml line 92), at the HISTORICAL heap
+          # configs. RSS at a generous ceiling cannot detect a heap-demand
+          # regression (lazy GC balloons any build to the ceiling), so:
+          #   - default/4096 jobs are pass/fail probes at the real boundary
+          #   - tracegc jobs (12GB ceiling, --trace-gc) yield the quantitative
+          #     live-set (max post-Mark-Compact used heap), GC-noise-free.
+          # node_options: '' = leave script untouched (faithful pre-PR default);
+          # otherwise the script's NODE_OPTIONS value is rewritten wholesale.
+          - label: A-prebase-default
             ref: 3924472a09bcafbf74fc5f882500c41f9f7481aa
-            command: 'yarn webpack:lavamoat:build --no-stats'
-          - label: 2-pr-build
-            plugin: pr
+            node_options: ''
+            command: 'yarn webpack:lavamoat:build --zip --stats --bundleAnalyzer'
+          - label: B-pr-default
             ref: ''
-            command: 'yarn webpack:lavamoat:build --no-stats'
-          - label: 3-pr-build-norunchecks
-            plugin: norunchecks
-            ref: ''
-            command: 'yarn webpack:lavamoat:build --no-stats'
-          - label: 4-prebase-policy-single
-            plugin: prebase
+            # Remove the heap flag added by the PR's fix commits => reproduces
+            # the tree as it was when the original OOM happened (V8 default).
+            node_options: '--no-deprecation'
+            command: 'yarn webpack:lavamoat:build --zip --stats --bundleAnalyzer'
+          - label: C-prebase-4096
             ref: 3924472a09bcafbf74fc5f882500c41f9f7481aa
-            command: 'yarn webpack:lavamoat:policy:build'
-          - label: 5-pr-policy-single
-            plugin: pr
+            node_options: '--no-deprecation --max-old-space-size=4096'
+            command: 'yarn webpack:lavamoat:build --zip --stats --bundleAnalyzer'
+          - label: D-pr-4096
             ref: ''
-            command: 'yarn webpack:lavamoat:policy:build'
-          - label: 6-pr-policy-single-norunchecks
-            plugin: norunchecks
-            ref: ''
-            command: 'yarn webpack:lavamoat:policy:build'
-          - label: 7-prebase-policy-mv3-concurrent
-            plugin: prebase
+            node_options: '--no-deprecation --max-old-space-size=4096'
+            command: 'yarn webpack:lavamoat:build --zip --stats --bundleAnalyzer'
+          - label: E-prebase-tracegc
             ref: 3924472a09bcafbf74fc5f882500c41f9f7481aa
-            # 4x8=32GB concurrent policy gen => reproduces pre-Option-2 runner OOM.
-            command: "yarn exec concurrently -- 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
-          - label: 8-pr-policy-mv3-concurrent
-            plugin: pr
+            node_options: '--no-deprecation --max-old-space-size=12288 --trace-gc'
+            command: 'yarn webpack:lavamoat:build --zip --stats --bundleAnalyzer'
+          - label: F-pr-tracegc
             ref: ''
-            command: "yarn exec concurrently -- 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=8192 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
-          - label: 9-pr-policy-mv3-concurrent-4096
-            plugin: pr
-            ref: ''
-            # 4x4=16GB (the Option-2 config) => should PASS, proving the fix.
-            command: "yarn exec concurrently -- 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail"
+            node_options: '--no-deprecation --max-old-space-size=12288 --trace-gc'
+            command: 'yarn webpack:lavamoat:build --zip --stats --bundleAnalyzer'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -113,47 +103,43 @@ jobs:
           echo "=== nproc ==="
           nproc
 
-      - name: Apply variant patches
+      - name: Set node flags variant
+        env:
+          NEW_NODE_OPTIONS: ${{ matrix.node_options }}
         run: |
           set -euo pipefail
-          case "${{ matrix.plugin }}" in
-            pr)
-              echo "PR tree, plugin unmodified"
-              ;;
-            prebase)
-              # Pre-PR webpack:lavamoat has NO --max-old-space-size flag (uses
-              # V8 default). Inject 8192 so heap matches every other job and the
-              # only variable under test is the plugin/tree, not the heap size.
-              echo "Patching pre-PR webpack:lavamoat heap -> 8192"
-              node -e '
-                const fs = require("fs");
-                const p = "package.json";
-                const j = JSON.parse(fs.readFileSync(p, "utf8"));
-                const s = j.scripts["webpack:lavamoat"];
-                if (!s.includes("max-old-space-size")) {
-                  j.scripts["webpack:lavamoat"] = s.replace(
-                    "NODE_OPTIONS=--no-deprecation",
-                    "NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8192\"",
-                  );
-                }
-                fs.writeFileSync(p, JSON.stringify(j, null, 2) + "\n");
-              '
-              grep -nE '"webpack:lavamoat":' package.json | head -1
-              ;;
-            norunchecks)
-              echo "Patching runChecks: true -> false"
-              sed -i 's/runChecks: true/runChecks: false/' "$PLUGIN_PATH"
-              grep -nE "runChecks:" "$PLUGIN_PATH" | head
-              ;;
-          esac
+          if [ -z "$NEW_NODE_OPTIONS" ]; then
+            echo "Leaving webpack:lavamoat script untouched (faithful default)"
+          else
+            # Rewrite the `NODE_OPTIONS=<value> lavamoat` prefix of the script to
+            # invoke node directly with CLI flags. This is required because
+            # --trace-gc is NOT on Node's NODE_OPTIONS allowlist (node exits with
+            # "not allowed in NODE_OPTIONS"); direct CLI flags have no allowlist.
+            # Target lavamoat's real JS entrypoint (bin: src/cli.js; NOT the
+            # .bin shim, which is a shell script node can't execute). Both trees
+            # pin lavamoat@10.0.5 so the path is identical across the A/B.
+            node -e '
+              const fs = require("fs");
+              const j = JSON.parse(fs.readFileSync("package.json", "utf8"));
+              const s = j.scripts["webpack:lavamoat"];
+              const out = s.replace(
+                /NODE_OPTIONS=("[^"]*"|\x27[^\x27]*\x27|\S+) lavamoat /,
+                `node ${process.env.NEW_NODE_OPTIONS} node_modules/lavamoat/src/cli.js `,
+              );
+              if (out === s) throw new Error("script prefix rewrite did not match");
+              j.scripts["webpack:lavamoat"] = out;
+              fs.writeFileSync("package.json", JSON.stringify(j, null, 2) + "\n");
+            '
+          fi
+          grep -nE '"webpack:lavamoat":' package.json | head -1
 
       - name: Compile webpack launcher
         run: yarn webpack:tsc
 
-      - name: Measure peak RSS
+      - name: Run workload and measure heap
         env:
-          # Passed via env to avoid any YAML/shell quote nesting issues with the
-          # single quotes inside `concurrently '...' '...'` commands.
+          # Passed via env so shell quoting inside the command never collides
+          # with YAML/step quoting.
           WORKLOAD_CMD: ${{ matrix.command }}
         run: |
           set -o pipefail
@@ -163,57 +149,71 @@ jobs:
 
           totalkb=$(grep MemTotal /proc/meminfo | grep -oE '[0-9]+')
 
-          # Background sampler: records the lowest MemAvailable (peak system
-          # pressure) and the highest summed RSS of all node processes. The node
-          # RSS is summed straight from /proc/*/status (VmRSS) for every process
-          # whose /proc/*/comm is "node" — reliable for both single and
-          # concurrent workloads (time -v maxRSS only covers one child).
+          # Secondary metric: sample system memory pressure once per second.
           (
             while true; do
-              avail=$(grep MemAvailable /proc/meminfo | grep -oE '[0-9]+')
-              node_rss=0
-              for c in /proc/[0-9]*/comm; do
-                if [ "$(cat "$c" 2>/dev/null)" = "node" ]; then
-                  d=$(dirname "$c")
-                  r=$(grep -m1 VmRSS "$d/status" 2>/dev/null | grep -oE '[0-9]+')
-                  node_rss=$(( node_rss + ${r:-0} ))
-                fi
-              done
-              echo "$avail $node_rss"
+              grep MemAvailable /proc/meminfo | grep -oE '[0-9]+'
               sleep 1
             done
           ) > mem-samples.log &
           sampler=$!
 
           set +e
-          # Write workload to a script file so quoting is never an issue.
           printf '%s\n' "$WORKLOAD_CMD" > workload.sh
-          /usr/bin/time -v bash workload.sh 2> time.log
+          # All workload output (incl. V8 --trace-gc lines and OOM crash dumps,
+          # which go to stderr) lands in workload.log; GNU time report in time.log.
+          /usr/bin/time -v -o time.log bash workload.sh > workload.log 2>&1
           code=$?
           set -e
 
           kill "$sampler" 2>/dev/null || true
 
-          echo "=== command exit code: $code ==="
-
-          # Derive peak pressure from samples.
-          min_avail_kb=$(awk 'NR==1||$1<m{m=$1} END{print m+0}' mem-samples.log)
-          max_node_rss_kb=$(awk '$2>m{m=$2} END{print m+0}' mem-samples.log)
-          used_peak_kb=$(( totalkb - min_avail_kb ))
-
           echo "=== RESULTS (${{ matrix.label }}) ==="
-          awk -v t="$totalkb" 'BEGIN{printf "MemTotal=%.2fGB\n", t/1024/1024}'
-          awk -v u="$used_peak_kb" 'BEGIN{printf "PEAK_USED_GB=%.2f (MemTotal - min MemAvailable)\n", u/1024/1024}'
-          awk -v n="$max_node_rss_kb" 'BEGIN{printf "PEAK_NODE_RSS_SUM_GB=%.2f\n", n/1024/1024}'
-          trmax=$(grep -E "Maximum resident set size" time.log | grep -oE '[0-9]+' | tail -1)
-          if [ -n "${trmax:-}" ]; then
-            awk -v kb="$trmax" 'BEGIN{printf "TIME_V_MAXRSS_GB=%.2f (single largest child only)\n", kb/1024/1024}'
-          fi
           echo "EXIT_CODE=$code"
 
-          echo "=== tail of time.log ==="
-          tail -15 time.log || true
+          # PRIMARY metric: did V8 hit its heap limit?
+          if grep -qE "Reached heap limit|JavaScript heap out of memory" workload.log; then
+            echo "V8_OOM=true"
+            echo "--- OOM context ---"
+            grep -B2 -A6 "heap out of memory" workload.log | head -30 || true
+          else
+            echo "V8_OOM=false"
+          fi
+
+          # QUANTITATIVE metric (tracegc jobs): per Mark-Compact GC line
+          # "... Mark-Compact[ (reduce)] PRE (COMMIT) -> POST (COMMIT) MB ..."
+          #   max PRE  = peak heap demand right before a full GC
+          #   max POST = peak live set (what the build truly needs)
+          if grep -qE "Mark-Compact|Mark-sweep" workload.log; then
+            grep -E "Mark-Compact|Mark-sweep" workload.log \
+              | sed -nE 's/.* ([0-9.]+) \(([0-9.]+)\) -> ([0-9.]+) \(([0-9.]+)\) MB.*/\1 \3 \4/p' \
+              | awk '{if($1>a)a=$1; if($2>b)b=$2; if($3>c)c=$3}
+                     END{printf "MAX_HEAP_BEFORE_FULLGC_MB=%.0f\nMAX_LIVE_SET_MB=%.0f\nMAX_COMMITTED_MB=%.0f\n", a, b, c}'
+          fi
+
+          # Secondary: system pressure and single-largest-process RSS.
+          min_avail_kb=$(awk 'NR==1||$1<m{m=$1} END{print m+0}' mem-samples.log)
+          used_peak_kb=$(( totalkb - min_avail_kb ))
+          awk -v u="$used_peak_kb" 'BEGIN{printf "PEAK_USED_GB=%.2f (system)\n", u/1024/1024}'
+          trmax=$(grep -E "Maximum resident set size" time.log | grep -oE '[0-9]+' | tail -1)
+          if [ -n "${trmax:-}" ]; then
+            awk -v kb="$trmax" 'BEGIN{printf "TIME_V_MAXRSS_GB=%.2f\n", kb/1024/1024}'
+          fi
+
+          echo "=== tail of workload.log ==="
+          grep -vE "Scavenge|Minor GC" workload.log | tail -25 || true
 
           if [ "$code" -ne 0 ]; then
-            echo "::warning::${{ matrix.label }} exited non-zero ($code) — likely OOM/kill"
+            echo "::warning::${{ matrix.label }} exited non-zero ($code)"
           fi
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.label }}
+          path: |
+            workload.log
+            time.log
+            mem-samples.log
+          retention-days: 3
