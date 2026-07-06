@@ -623,6 +623,27 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
+    // Evaluate RPC connection health (and run the banner escalation timers)
+    // only while a UI is open on an unlocked wallet.
+    const updateNetworkConnectionBannerLifecycle = () => {
+      const { isUnlocked } = this.controllerMessenger.call(
+        'KeyringController:getState',
+      );
+      if (this.activeControllerConnections > 0 && isUnlocked) {
+        this.controllerMessenger.call(
+          'NetworkConnectionBannerController:start',
+        );
+      } else {
+        this.controllerMessenger.call('NetworkConnectionBannerController:stop');
+      }
+    };
+    this.on(
+      'controllerConnectionChanged',
+      updateNetworkConnectionBannerLifecycle,
+    );
+    this.on('unlock', updateNetworkConnectionBannerLifecycle);
+    this.on('lock', updateNetworkConnectionBannerLifecycle);
+
     /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const messengerClientInitFunctions = {
       LoggingController: LoggingControllerInit,

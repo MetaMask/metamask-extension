@@ -46,6 +46,7 @@ describe('NetworkConnectionBanner', () => {
         networkClientId: 'mainnet',
         chainId: '0x1',
         isInfuraEndpoint: false,
+        switchableInfuraNetworkClientId: null,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -71,6 +72,7 @@ describe('NetworkConnectionBanner', () => {
         networkClientId: 'mainnet',
         chainId: '0x1',
         isInfuraEndpoint: true,
+        switchableInfuraNetworkClientId: null,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -97,6 +99,7 @@ describe('NetworkConnectionBanner', () => {
           networkClientId: 'mainnet',
           chainId: '0x1',
           isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: null,
           trackNetworkBannerEvent: jest.fn(),
           switchToInfura: jest.fn(),
         });
@@ -123,6 +126,7 @@ describe('NetworkConnectionBanner', () => {
           networkClientId: 'mainnet',
           chainId: '0x1',
           isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: null,
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
           switchToInfura: jest.fn(),
         });
@@ -152,6 +156,7 @@ describe('NetworkConnectionBanner', () => {
         networkClientId: 'mainnet',
         chainId: '0x1',
         isInfuraEndpoint: false,
+        switchableInfuraNetworkClientId: null,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -182,6 +187,7 @@ describe('NetworkConnectionBanner', () => {
         networkClientId: 'mainnet',
         chainId: '0x1',
         isInfuraEndpoint: true,
+        switchableInfuraNetworkClientId: null,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -213,6 +219,7 @@ describe('NetworkConnectionBanner', () => {
           networkClientId: 'mainnet',
           chainId: '0x1',
           isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: null,
           trackNetworkBannerEvent: jest.fn(),
           switchToInfura: jest.fn(),
         });
@@ -239,6 +246,7 @@ describe('NetworkConnectionBanner', () => {
           networkClientId: 'mainnet',
           chainId: '0x1',
           isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: null,
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
           switchToInfura: jest.fn(),
         });
@@ -257,24 +265,6 @@ describe('NetworkConnectionBanner', () => {
           networkClientId: 'mainnet',
         });
       });
-    });
-  });
-
-  describe('when the status of the banner is "unknown"', () => {
-    it('does not render the banner', () => {
-      mockUseNetworkConnectionBanner.mockReturnValue({
-        status: 'unknown',
-        trackNetworkBannerEvent: jest.fn(),
-        switchToInfura: jest.fn(),
-      });
-      const store = configureStore({});
-
-      const { container } = renderWithProvider(
-        <NetworkConnectionBanner />,
-        store,
-      );
-
-      expect(container.firstChild).not.toBeInTheDocument();
     });
   });
 
@@ -305,7 +295,7 @@ describe('NetworkConnectionBanner', () => {
         networkClientId: 'custom-arbitrum',
         chainId: '0xa4b1',
         isInfuraEndpoint: false,
-        infuraEndpointIndex: 1,
+        switchableInfuraNetworkClientId: 'arbitrum-infura',
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: switchToInfuraMock,
       });
@@ -330,7 +320,7 @@ describe('NetworkConnectionBanner', () => {
         networkClientId: 'custom-arbitrum',
         chainId: '0xa4b1',
         isInfuraEndpoint: false,
-        infuraEndpointIndex: 1,
+        switchableInfuraNetworkClientId: 'arbitrum-infura',
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: switchToInfuraMock,
       });
@@ -358,7 +348,7 @@ describe('NetworkConnectionBanner', () => {
         networkClientId: 'custom-arbitrum',
         chainId: '0xa4b1',
         isInfuraEndpoint: false,
-        infuraEndpointIndex: 1,
+        switchableInfuraNetworkClientId: 'arbitrum-infura',
         trackNetworkBannerEvent: trackNetworkBannerEventMock,
         switchToInfura: switchToInfuraMock,
       });
@@ -388,7 +378,7 @@ describe('NetworkConnectionBanner', () => {
         networkClientId: 'custom-arbitrum',
         chainId: '0xa4b1',
         isInfuraEndpoint: false,
-        infuraEndpointIndex: 1,
+        switchableInfuraNetworkClientId: 'arbitrum-infura',
         trackNetworkBannerEvent: trackNetworkBannerEventMock,
         switchToInfura: switchToInfuraMock,
       });

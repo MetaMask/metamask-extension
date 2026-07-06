@@ -63,7 +63,7 @@ export enum StorageWriteErrorType {
 }
 
 export type NetworkConnectionBanner =
-  | { status: 'unknown' | 'available' }
+  | { status: 'available' }
   | {
       status: 'degraded' | 'unavailable';
       networkName: string;
@@ -71,9 +71,9 @@ export type NetworkConnectionBanner =
       chainId: Hex;
       isInfuraEndpoint: boolean;
       /**
-       * The index of an available Infura RPC endpoint in the network's
-       * rpcEndpoints array. Only set for custom networks that have an
-       * Infura endpoint available to switch to.
+       * The networkClientId of an Infura endpoint on the same chain that the
+       * user can switch to. `null` when the failing endpoint is already
+       * Infura or when no Infura alternative exists.
        */
-      infuraEndpointIndex?: number;
+      switchableInfuraNetworkClientId: NetworkClientId | null;
     };

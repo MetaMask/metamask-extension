@@ -39,7 +39,7 @@ const PrimaryMessage = ({
   primaryMessageKey: string;
   networkConnectionBanner: Exclude<
     NetworkConnectionBannerType,
-    { status: 'unknown' | 'available' }
+    { status: 'available' }
   >;
 }) => {
   return (
@@ -126,7 +126,7 @@ const SwitchToInfuraButton = ({
 const getBannerContent = (
   networkConnectionBanner: Exclude<
     NetworkConnectionBannerType,
-    { status: 'unknown' | 'available' }
+    { status: 'available' }
   >,
   t: ReturnType<typeof useI18nContext>,
   updateRpc: () => void,
@@ -142,7 +142,7 @@ const getBannerContent = (
 
   // Check if we have an Infura endpoint available to switch to
   const hasInfuraEndpoint =
-    networkConnectionBanner.infuraEndpointIndex !== undefined;
+    networkConnectionBanner.switchableInfuraNetworkClientId !== null;
 
   if (networkConnectionBanner.status === 'degraded') {
     const primaryMessage = (

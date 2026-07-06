@@ -3958,50 +3958,25 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 );
 
 /**
- * Returns the banner state in the legacy shape consumed by the UI, derived
- * from NetworkConnectionBannerController. The controller stores the failing
- * network's Infura switch target as `infuraNetworkClientId`; we look up the
- * matching index in `networkConfigurationsByChainId` so the existing
- * "Switch to MetaMask default RPC" call site (which uses
- * `infuraEndpointIndex`) needs no changes.
+ * Returns the banner state in the flattened shape consumed by the UI,
+ * derived from NetworkConnectionBannerController.
  *
  * @param {MetaMaskReduxState} state - The Redux state
  * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
  */
 export function getNetworkConnectionBanner(state) {
   const { status, network } = state.metamask;
-  if (!status || status === 'available') {
-    return { status: status || 'available' };
-  }
-  if (status !== 'degraded' && status !== 'unavailable') {
+  if ((status !== 'degraded' && status !== 'unavailable') || !network) {
     return { status: 'available' };
-  }
-  if (!network) {
-    return { status: 'available' };
-  }
-
-  let infuraEndpointIndex;
-  if (network.infuraNetworkClientId) {
-    const config =
-      state.metamask.networkConfigurationsByChainId?.[network.chainId];
-    if (config) {
-      const idx = config.rpcEndpoints.findIndex(
-        (endpoint) =>
-          endpoint.networkClientId === network.infuraNetworkClientId,
-      );
-      if (idx !== -1) {
-        infuraEndpointIndex = idx;
-      }
-    }
   }
 
   return {
     status,
-    networkName: network.networkName,
+    networkName: network.name,
     networkClientId: network.networkClientId,
     chainId: network.chainId,
     isInfuraEndpoint: network.isInfuraEndpoint,
-    infuraEndpointIndex,
+    switchableInfuraNetworkClientId: network.switchableInfuraNetworkClientId,
   };
 }
 

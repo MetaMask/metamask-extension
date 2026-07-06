@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { getNetworkConnectionBanner } from '../selectors/selectors';
-import { updateNetwork } from '../store/actions';
+import type { RouteMessengerInstance } from '../pages/home/messenger';
 import { MetaMetricsContext } from '../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -13,6 +13,7 @@ import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
+import { useMessenger } from './useMessenger';
 
 type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
   trackNetworkBannerEvent: (event: {
@@ -31,6 +32,7 @@ type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
 export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
     const dispatch = useDispatch();
+    const messenger = useMessenger<RouteMessengerInstance>();
     const { trackEvent } = useContext(MetaMetricsContext);
     const networkConnectionBannerState = useSelector(
       getNetworkConnectionBanner,
@@ -133,42 +135,26 @@ export const useNetworkConnectionBanner =
         return;
       }
 
-      const { chainId, infuraEndpointIndex } = networkConnectionBannerState;
-      if (infuraEndpointIndex === undefined) {
-        return;
-      }
-
-      const networkConfiguration = networkConfigurationsByChainId[chainId];
-      if (!networkConfiguration) {
+      const { chainId, switchableInfuraNetworkClientId } =
+        networkConnectionBannerState;
+      if (!switchableInfuraNetworkClientId) {
         return;
       }
 
       try {
-        await dispatch(
-          updateNetwork(
-            {
-              chainId,
-              name: networkConfiguration.name,
-              nativeCurrency: networkConfiguration.nativeCurrency,
-              rpcEndpoints: networkConfiguration.rpcEndpoints,
-              blockExplorerUrls: networkConfiguration.blockExplorerUrls,
-              defaultBlockExplorerUrlIndex:
-                networkConfiguration.defaultBlockExplorerUrlIndex,
-              defaultRpcEndpointIndex: infuraEndpointIndex,
-            },
-            { replacementSelectedRpcEndpointIndex: infuraEndpointIndex },
-          ),
+        await messenger.call(
+          'NetworkConnectionBannerController:switchToDefaultInfuraRpcEndpoint',
+          chainId,
         );
         dispatch(setShowInfuraSwitchToast(true));
-      } catch {
-        // Error is already handled by updateNetwork which shows a warning
-        // Do not show success toast on failure
+      } catch (error) {
+        // Do not show the success toast on failure
+        console.error(
+          'Failed to switch to the default Infura RPC endpoint:',
+          error,
+        );
       }
-    }, [
-      networkConnectionBannerState,
-      networkConfigurationsByChainId,
-      dispatch,
-    ]);
+    }, [networkConnectionBannerState, messenger, dispatch]);
 
     return {
       ...networkConnectionBannerState,
