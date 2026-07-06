@@ -23,5 +23,20 @@ export function getNetworkConnectionBannerControllerMessenger(
       namespace: 'NetworkConnectionBannerController',
       parent: messenger,
     });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
+      'NetworkController:getState',
+      'NetworkController:getNetworkConfigurationByChainId',
+      'NetworkController:updateNetwork',
+      'NetworkEnablementController:getState',
+      'ConnectivityController:getState',
+    ],
+    events: [
+      'NetworkController:stateChange',
+      'NetworkEnablementController:stateChange',
+      'ConnectivityController:stateChange',
+    ],
+  });
   return controllerMessenger;
 }
