@@ -15,7 +15,10 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
-import { MOCK_ANALYTICS_ID, DEFAULT_BTC_CONVERSION_RATE } from '../../constants';
+import {
+  MOCK_ANALYTICS_ID,
+  DEFAULT_BTC_CONVERSION_RATE,
+} from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
@@ -919,8 +922,10 @@ async function mockPriceSpotPricesV3(
       'dai',
       1.0,
     ),
-    'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
-      tokenEntry('dai', 1.0),
+    'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
+      'dai',
+      1.0,
+    ),
     'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
       'musd',
       0.9999,
@@ -950,7 +955,11 @@ async function mockPriceSpotPricesV3(
           assetId.endsWith('/slip44:60') ||
           assetId.endsWith('/slip44:1')
         ) {
-          json[assetId] = tokenEntry('ethereum', resolvedEthPrice, ethPriceChange1d);
+          json[assetId] = tokenEntry(
+            'ethereum',
+            resolvedEthPrice,
+            ethPriceChange1d,
+          );
         } else if (stablecoins[assetId]) {
           json[assetId] = stablecoins[assetId];
         } else if (assetId.startsWith('solana:')) {
