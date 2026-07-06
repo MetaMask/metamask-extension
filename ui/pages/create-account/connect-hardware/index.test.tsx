@@ -475,7 +475,10 @@ describe('ConnectHardwareForm', () => {
       // Backup & Sync does not stay stuck on "Syncing...".
       mockConnectHardware.mockReturnValue(new Promise(() => undefined));
       const mockStore = configureMockStore([thunk])(createMockState());
-      const { unmount } = renderWithProvider(<ConnectHardwareForm />, mockStore);
+      const { unmount } = renderWithProvider(
+        <ConnectHardwareForm />,
+        mockStore,
+      );
 
       connectToDevice(tEn('trezor'));
 
@@ -493,7 +496,10 @@ describe('ConnectHardwareForm', () => {
     it('does not cancel after a connection has successfully completed', async () => {
       mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
-      const { unmount } = renderWithProvider(<ConnectHardwareForm />, mockStore);
+      const { unmount } = renderWithProvider(
+        <ConnectHardwareForm />,
+        mockStore,
+      );
 
       connectToDevice(tEn('trezor'));
 
