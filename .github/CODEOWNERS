@@ -89,7 +89,7 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/ramps/**                                           @MetaMask/ramp
 
 # Product Safety Team
-ui/components/app/product-safety/                     @MetaMask/product-safety
+**/product-safety/**                     @MetaMask/product-safety
 
 # Perps Team
 ui/pages/perps/ @MetaMask/perps
