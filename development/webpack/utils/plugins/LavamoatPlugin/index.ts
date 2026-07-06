@@ -29,9 +29,7 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'runtime.<hash>.js', 'scripts/contentscript.js', and
-    // 'service-worker.js' (the MV3 SW loads no separate runtime chunk, so SES
-    // must be inlined into its own bundle for the wrapped background to work)
+    // we apply lockdown to 'runtime.<hash>.js', 'scripts/contentscript.js', and 'service-worker.js'.
     inlineLockdown:
       /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
     debugRuntime: args.lavamoatDebug,
@@ -55,7 +53,27 @@ export const lavamoatPlugin = (args: Args) =>
         // is wrapped and relies on both being present in the SW realm.
         return {
           mode: 'safe',
-          embeddedOptions: { scuttleGlobalThis: { enabled: false } },
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              // Globals used by the service worker
+              exceptions: [
+                'importScripts',
+                'console',
+                'performance',
+                'setTimeout',
+                'clearTimeout',
+                '__SENTRY__',
+                'sentry',
+                'sentryHooks',
+                'stateHooks',
+                'appState',
+                'extra',
+                'logEncryptedVault',
+                'history',
+              ],
+            },
+          },
         };
       } else if (chunk.name === 'scripts/contentscript.js') {
         return {
@@ -192,7 +210,6 @@ const unsafeLayerEntries: Set<string> = new Set([
   'service-worker.ts',
 ]);
 
-// Unsafe layer plugin that applies the layer and assigns the unsafe entries to it
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
     compiler.options.module.rules.push(
