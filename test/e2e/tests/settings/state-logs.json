@@ -1170,9 +1170,10 @@
     },
     "nameSources": {},
     "needsProfilePairing": "boolean",
-    "network": null,
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
+    "networkConnectionBannerNetwork": null,
+    "networkConnectionBannerStatus": "string",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": {

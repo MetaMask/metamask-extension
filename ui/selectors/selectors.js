@@ -3965,8 +3965,8 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
  * @type {(state: MetaMaskReduxState) => import('../../shared/constants/app-state').NetworkConnectionBanner}
  */
 export const getNetworkConnectionBanner = createSelector(
-  (state) => state.metamask.status,
-  (state) => state.metamask.network,
+  (state) => state.metamask.networkConnectionBannerStatus,
+  (state) => state.metamask.networkConnectionBannerNetwork,
   (status, network) => {
     if ((status !== 'degraded' && status !== 'unavailable') || !network) {
       return { status: 'available' };

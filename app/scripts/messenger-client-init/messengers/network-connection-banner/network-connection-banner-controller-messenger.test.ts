@@ -91,8 +91,8 @@ describe('getNetworkConnectionBannerControllerMessenger', () => {
     expect(getConnectivityControllerState).toHaveBeenCalled();
     expect(getNetworkControllerState).toHaveBeenCalled();
     expect(controller.state).toStrictEqual({
-      status: 'available',
-      network: null,
+      networkConnectionBannerStatus: 'available',
+      networkConnectionBannerNetwork: null,
     });
   });
 

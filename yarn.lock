@@ -6041,14 +6041,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connectivity-controller@npm:@metamask-previews/connectivity-controller@0.2.0-preview-022b2ce8d":
-  version: 0.2.0-preview-022b2ce8d
-  resolution: "@metamask-previews/connectivity-controller@npm:0.2.0-preview-022b2ce8d"
+"@metamask/connectivity-controller@npm:@metamask-previews/connectivity-controller@0.2.0-preview-bd4161b27":
+  version: 0.2.0-preview-bd4161b27
+  resolution: "@metamask-previews/connectivity-controller@npm:0.2.0-preview-bd4161b27"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/0b830ef3abfb80e5b3858fb229c0c52796c480643c60bc12941a1e41b2aa4f0051688ade895eb6aa7b36f6aeb4b4a888c281a66d4595ae67d9c7027a4e9ad7f2
+  checksum: 10/aac1dc96929f3e4ad36481374a717c8e5234bdd244f365c1def1cd0248f31793b3aa55caf3d17df81a4f586dbeef8484fa278f1f438daff28d5c0e5ba949ac9e
   languageName: node
   linkType: hard
 
@@ -7128,17 +7128,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^1.0.0, @metamask/messenger@npm:^1.1.1, @metamask/messenger@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@metamask/messenger@npm:1.2.0"
+"@metamask/messenger@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/messenger@npm:2.0.0"
   dependencies:
-    "@metamask/utils": "npm:^11.9.0"
-    yargs: "npm:^17.7.2"
+    "@metamask/utils": "npm:^11.11.0"
   peerDependencies:
     typescript: ">=5.0.0"
-  bin:
-    messenger-generate-action-types: ./dist/generate-action-types/cli.mjs
-  checksum: 10/6818e4609d6162a436cc07955905f9e57ff6dbef841e9066a5fb9cc0538e981526fbcb5eef1fa1968d79212d57ddda2fce4dda5f87eb64d8d98f7db1216a6a98
+  checksum: 10/c387511edd89db73b774f631fb4bb382c9254af2dd7f80f9bd45f776e618cf90f653cc0e9744b1bf491f71f99c8318b16e8230a847f619a4fca655ea3f6a08e1
   languageName: node
   linkType: hard
 
@@ -7269,20 +7266,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-connection-banner-controller@npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-022b2ce8d":
-  version: 0.1.0-preview-022b2ce8d
-  resolution: "@metamask-previews/network-connection-banner-controller@npm:0.1.0-preview-022b2ce8d"
+"@metamask/network-connection-banner-controller@npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-bd4161b27":
+  version: 0.1.0-preview-bd4161b27
+  resolution: "@metamask-previews/network-connection-banner-controller@npm:0.1.0-preview-bd4161b27"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/network-enablement-controller": "npm:^5.4.1"
     "@metamask/utils": "npm:^11.11.0"
     ip-regex: "npm:^4.3.0"
     psl: "npm:^1.15.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/37b036bc426459def90b1b4ca130e9de78586c5589f3e7630accc603de82e3fb923c8f61121f321a0cd80bcea486cdb73e6f759493a3a58366f8f519b1266544
+  checksum: 10/9bc8f36fac6698debc848f297c949dba87947bc14086410044e93d95c5f42a64d5854a8679f30402522788212e5613f2d65c4f7dcd45059c33bf82d98c093348
   languageName: node
   linkType: hard
 
@@ -33248,7 +33245,7 @@ __metadata:
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/message-signing-snap": "npm:1.1.4"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/messenger-cli": "npm:^0.1.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^11.0.0"
