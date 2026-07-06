@@ -668,6 +668,102 @@ async function mockGetTxStatusInvalid(
     });
 }
 
+// Quote id used by the bridgeQuoteStatusManager e2e coverage below. The
+// BridgeStatusController only calls getQuoteStatus for history items that
+// have a `quoteId`, so the mocked quote response must include one.
+const QUOTE_STATUS_MANAGER_QUOTE_ID = 'quote-status-manager-test-quote-1';
+
+async function mockETHtoETHWithQuoteId(
+  mockServer: Mockttp,
+  sseEnabled?: boolean,
+) {
+  const quotesWithId = MOCK_BRIDGE_ETH_TO_ETH_LINEA.map((quoteResponse) => ({
+    ...quoteResponse,
+    quoteId: QUOTE_STATUS_MANAGER_QUOTE_ID,
+  }));
+
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .withQuery({
+        srcTokenAddress: '0x0000000000000000000000000000000000000000',
+        destTokenAddress: '0x0000000000000000000000000000000000000000',
+      })
+      .thenStream(200, mockSseEventSource(quotesWithId), SSE_RESPONSE_HEADER);
+  }
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0x0000000000000000000000000000000000000000',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: quotesWithId,
+      };
+    });
+}
+
+/**
+ * Mocks the bridge-api `getQuoteStatus` endpoint, used by the
+ * `bridgeQuoteStatusManager` code path in `BridgeStatusController` in place of
+ * `getTxStatus` when a history item has a `quoteId`.
+ *
+ * @param mockServer - The Mockttp server instance to register the mock on.
+ * @param options - The response to return.
+ * @param options.statusCode - The HTTP status code to return.
+ * @param options.json - The response body to return.
+ */
+export async function mockGetQuoteStatus(
+  mockServer: Mockttp,
+  options: { statusCode: number; json: unknown } = {
+    statusCode: 200,
+    json: {
+      submittedTx: {
+        status: 'COMPLETE',
+        isExpectedToken: true,
+        bridge: 'across',
+        srcChain: {
+          chainId: 1,
+          txHash:
+            '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5',
+        },
+        destChain: {
+          chainId: 59144,
+          txHash: BRIDGE_DEST_TX_HASH,
+        },
+      },
+    },
+  },
+) {
+  return await mockServer.forGet(/getQuoteStatus/u).thenCallback(() => {
+    return {
+      statusCode: options.statusCode,
+      json: options.json,
+    };
+  });
+}
+
+/**
+ * Mocks the bridge-api `quote/updateStatus` endpoint. The quote status
+ * manager calls this whenever a tracked quote's source transaction is
+ * submitted or finalized, independently of the `getQuoteStatus` polling flow.
+ *
+ * @param mockServer - The Mockttp server instance to register the mock on.
+ */
+async function mockUpdateQuoteStatus(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(/quote\/updateStatus/u)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+}
+
 async function mockL2toMainnet(mockServer: Mockttp, sseEnabled?: boolean) {
   if (sseEnabled) {
     return await mockServer
@@ -1561,6 +1657,81 @@ export const getBridgeNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
         ...STX_MAINNET_NETWORK_CONFIG,
+      },
+    },
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+          hardfork: 'london',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+/**
+ * Fixtures for e2e coverage of the `bridgeQuoteStatusManager` code path,
+ * where `BridgeStatusController` fetches status via `getQuoteStatus` instead
+ * of `getTxStatus` for history items that have a `quoteId`. Enables the
+ * `bridgeQuoteStatusManager` remote feature flag and mocks a quote response
+ * that includes a `quoteId`, so the primary (non-fallback) status-fetching
+ * path is exercised.
+ *
+ * @param getQuoteStatusOptions - The response for the mocked `getQuoteStatus`
+ * endpoint. Return a response without `submittedTx` (e.g.
+ * `{ statusCode: 200, json: {} }`) to exercise the `getTxStatus` fallback
+ * instead.
+ * @param getQuoteStatusOptions.statusCode - The HTTP status code to return.
+ * @param getQuoteStatusOptions.json - The response body to return.
+ * @param featureFlags - Bridge feature flags to layer on top of the default
+ * mainnet smart-transactions config.
+ * @param title - The Mocha test title for manifest flag injection.
+ */
+export const getBridgeQuoteStatusManagerFixtures = (
+  getQuoteStatusOptions: { statusCode: number; json: unknown },
+  featureFlags: Partial<FeatureFlagResponse> = {},
+  title?: string,
+) => {
+  const fixtureBuilder = new FixtureBuilderV2()
+    .withNetworkRpcUrlOnLocalhost('0x1')
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    });
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const mocks = [
+        await mockTopAssetsLinea(mockServer),
+        await mockTokensLinea(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockETHtoETHWithQuoteId(mockServer, featureFlags.sse?.enabled),
+        await mockGetTxStatus(mockServer),
+        await mockGetQuoteStatus(mockServer, getQuoteStatusOptions),
+        await mockUpdateQuoteStatus(mockServer),
+        await mockPriceSpotPrices(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags, {
+          ...STX_MAINNET_NETWORK_CONFIG,
+          bridgeQuoteStatusManager: { enabled: true },
+        }),
+      ].concat(...(await mockSearchTokens(mockServer)));
+
+      await mockSmartTransactionsForBridge(mockServer);
+
+      return mocks;
+    },
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+        ...STX_MAINNET_NETWORK_CONFIG,
+        bridgeQuoteStatusManager: { enabled: true },
       },
     },
     smartContract: SMART_CONTRACTS.HST,

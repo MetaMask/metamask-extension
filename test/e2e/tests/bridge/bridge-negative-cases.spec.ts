@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -7,6 +8,7 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
   enterBridgeQuote,
   getBridgeNegativeCasesFixtures,
+  getBridgeQuoteStatusManagerFixtures,
   getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
 } from './bridge-test-utils';
@@ -18,6 +20,31 @@ import {
 } from './constants';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '24.998';
+
+/**
+ * Finds a mocked endpoint whose regex-path matcher includes the given
+ * substring (e.g. `getQuoteStatus` or `getTxStatus`).
+ *
+ * @param mockedEndpoints - The mocked endpoints returned by `withFixtures`.
+ * @param pathSubstring - The substring to match against the mock's regex path.
+ */
+function findMockedEndpointByPath(
+  mockedEndpoints: {
+    rule: { matchers: { type: string; regexSource: string }[] };
+    getSeenRequests: () => Promise<unknown[]>;
+  }[],
+  pathSubstring: string,
+) {
+  const endpoint = mockedEndpoints.find(({ rule: { matchers } }) =>
+    matchers.some(
+      (matcher) =>
+        matcher.type === 'regex-path' &&
+        matcher.regexSource.includes(pathSubstring),
+    ),
+  );
+  assert.ok(endpoint, `No mocked endpoint found for path "${pathSubstring}"`);
+  return endpoint;
+}
 
 describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
@@ -260,5 +287,133 @@ describe('Bridge functionality', function (this: Suite) {
         );
       },
     );
+  });
+
+  describe('bridgeQuoteStatusManager', function () {
+    it('fetches bridge status via getQuoteStatus instead of getTxStatus when the flag is enabled and the quote has a quoteId', async function () {
+      await withFixtures(
+        {
+          ...getBridgeQuoteStatusManagerFixtures(
+            {
+              statusCode: 200,
+              json: {
+                submittedTx: {
+                  status: 'COMPLETE',
+                  isExpectedToken: true,
+                  bridge: 'across',
+                  srcChain: {
+                    chainId: 1,
+                    txHash:
+                      '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5',
+                  },
+                  destChain: {
+                    chainId: 59144,
+                    txHash:
+                      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                  },
+                },
+              },
+            },
+            BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+            this.test?.fullTitle(),
+          ),
+        },
+        async ({ driver, localNodes, mockedEndpoint }) => {
+          await login(driver, { localNode: localNodes[0] });
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.startSwapFlow();
+
+          const bridgePage = await enterBridgeQuote(driver);
+          await bridgePage.submitQuoteAndDismiss();
+          await homePage.goToActivityList();
+
+          const activityTab = new ActivityTab(driver);
+          await activityTab.checkCompletedBridgeTransactionActivity();
+          await activityTab.checkBridgeTransactionDetails(
+            'Bridged ETH',
+            true,
+            'success',
+            '1',
+            'ETH',
+          );
+
+          const getQuoteStatusMock = findMockedEndpointByPath(
+            mockedEndpoint,
+            'getQuoteStatus',
+          );
+          const getTxStatusMock = findMockedEndpointByPath(
+            mockedEndpoint,
+            'getTxStatus',
+          );
+          assert.equal(
+            (await getQuoteStatusMock.getSeenRequests()).length > 0,
+            true,
+            'getQuoteStatus should have been called',
+          );
+          assert.equal(
+            (await getTxStatusMock.getSeenRequests()).length,
+            0,
+            'getTxStatus should not have been called when getQuoteStatus resolves the status',
+          );
+        },
+      );
+    });
+
+    it('falls back to getTxStatus when getQuoteStatus has no submitted status yet', async function () {
+      await withFixtures(
+        {
+          ...getBridgeQuoteStatusManagerFixtures(
+            {
+              statusCode: 200,
+              json: {},
+            },
+            BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+            this.test?.fullTitle(),
+          ),
+        },
+        async ({ driver, localNodes, mockedEndpoint }) => {
+          await login(driver, { localNode: localNodes[0] });
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.startSwapFlow();
+
+          const bridgePage = await enterBridgeQuote(driver);
+          await bridgePage.submitQuoteAndDismiss();
+          await homePage.goToActivityList();
+
+          const activityTab = new ActivityTab(driver);
+          await activityTab.checkCompletedBridgeTransactionActivity();
+          await activityTab.checkBridgeTransactionDetails(
+            'Bridged ETH',
+            true,
+            'success',
+            '1',
+            'ETH',
+          );
+
+          const getQuoteStatusMock = findMockedEndpointByPath(
+            mockedEndpoint,
+            'getQuoteStatus',
+          );
+          const getTxStatusMock = findMockedEndpointByPath(
+            mockedEndpoint,
+            'getTxStatus',
+          );
+          assert.equal(
+            (await getQuoteStatusMock.getSeenRequests()).length > 0,
+            true,
+            'getQuoteStatus should have been attempted',
+          );
+          assert.equal(
+            (await getTxStatusMock.getSeenRequests()).length > 0,
+            true,
+            'getTxStatus should have been used as a fallback',
+          );
+        },
+      );
+    });
   });
 });
