@@ -2,10 +2,9 @@ import {
   SnapRegistryController,
   SnapRegistryControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { SemVerVersion } from '@metamask/utils';
-import { parse } from 'semver';
 import { MessengerClientInitFunction } from '../types';
 import { getBooleanFlag } from '../../lib/util';
+import { getClientConfig } from './utils';
 
 /**
  * Initialize the Snaps registry controller.
@@ -21,15 +20,6 @@ export const SnapRegistryControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
 
-  const originalVersion = process.env.METAMASK_VERSION;
-  const parsedVersion = parse(originalVersion);
-  // Strip prerelease versions as they just indicate build types.
-  const version = (
-    parsedVersion
-      ? `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}`
-      : originalVersion
-  ) as SemVerVersion;
-
   const messengerClient = new SnapRegistryController({
     // @ts-expect-error: `persistedState.SnapRegistryController` is not
     // compatible with the expected type.
@@ -37,10 +27,7 @@ export const SnapRegistryControllerInit: MessengerClientInitFunction<
     state: persistedState.SnapRegistryController,
     messenger: controllerMessenger,
     refetchOnAllowlistMiss: requireAllowlist,
-    clientConfig: {
-      type: 'extension',
-      version,
-    },
+    clientConfig: getClientConfig(),
   });
 
   return {

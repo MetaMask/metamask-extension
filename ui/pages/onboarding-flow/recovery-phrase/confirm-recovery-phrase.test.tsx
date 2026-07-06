@@ -14,6 +14,19 @@ import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.uti
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import ConfirmRecoveryPhrase from './confirm-recovery-phrase';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../store/actions.ts', () => ({
   ...jest.requireActual('../../../store/actions.ts'),
   setSeedPhraseBackedUp: jest.fn().mockReturnValue(jest.fn()),
