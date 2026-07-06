@@ -1458,3 +1458,20 @@ export async function mockTronSwapApisNoQuotes(
     await mockBridgeGetTronQuoteEmpty(mockServer),
   ];
 }
+
+/**
+ * Tron swap mocks without fee-estimation RPC endpoints. The bridge quote still
+ * loads, but the Tron snap cannot compute network fees so the swap CTA stays disabled.
+ * @param mockServer
+ * @param mockZeroBalance
+ */
+export async function mockTronSwapApisWithoutFeeEstimation(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint[]> {
+  return [
+    ...(await mockTronApis(mockServer, mockZeroBalance)),
+    await mockBridgeGetTronTokens(mockServer),
+    await mockBridgeGetTronQuote(mockServer),
+  ];
+}

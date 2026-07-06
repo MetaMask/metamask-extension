@@ -9,6 +9,7 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
+  mockTronSwapApisWithoutFeeEstimation,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
 
@@ -51,6 +52,40 @@ describe('Swap on Tron', function () {
           swapTo: 'USDT',
           swapFromAmount: '1',
         });
+      },
+    );
+  });
+
+  it('Swap disabled when Tron network fees cannot be estimated', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockTronSwapApisWithoutFeeEstimation,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByNameWithWait('Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
+
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.createSwap({
+          amount: 1,
+          swapTo: 'USDT',
+          swapFrom: 'TRX',
+          network: 'Tron',
+        });
+
+        await swapPage.checkQuoteIsDisplayedWithoutNetworkFee();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
       },
     );
   });
