@@ -8531,10 +8531,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@1.28.0-preview-e5e1c78":
-  version: 1.28.0-preview-e5e1c78
-  resolution: "@metamask-previews/tron-wallet-snap@npm:1.28.0-preview-e5e1c78"
-  checksum: 10/b406795b1e2523259707f4ee69040574066ce069af9557cdc68d5d39f571bf482d53c8dcc7be1a01c0ecc9921b9b634db4036f2540b66ebf9bff887fdc3bc10d
+"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@1.28.0-preview-9726947":
+  version: 1.28.0-preview-9726947
+  resolution: "@metamask-previews/tron-wallet-snap@npm:1.28.0-preview-9726947"
+  checksum: 10/de9bdcb7c8c7cd75009c6765145b7eecde3ba01d535fe793344a7a316f5af92e4386814f698b77aec4dcd167314bda9c08afa4a580064515f2ae34ff56541efa
   languageName: node
   linkType: hard
 

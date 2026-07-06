@@ -308,7 +308,7 @@
     "@metamask/accounts-controller": "^39.0.3",
     "@metamask/multichain-account-service": "^11.0.0",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
-    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@1.28.0-preview-e5e1c78"
+    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@1.28.0-preview-9726947"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
