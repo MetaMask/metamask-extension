@@ -1,7 +1,6 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React from 'react';
 import { TokenFiatDisplayInfo } from '../../types';
-import { isAssetRequireActivate } from '../../../../../../shared/lib/multichain/trustline';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { AssetInactiveBadge } from '../../asset-inactive-badge/asset-inactive-badge';
@@ -22,16 +21,12 @@ export const TokenCellTitle = React.memo(
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(token);
 
-    const tokenRequireActivate = isAssetRequireActivate({
-      assetId: token.assetId,
-      accountAssetInfo: token.accountAssetInfo,
-    });
 
     return (
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
-        {tokenRequireActivate && <AssetInactiveBadge />}
+        {token.tokenRequireActivate && <AssetInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}
@@ -56,7 +51,5 @@ export const TokenCellTitle = React.memo(
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.chainId === nextProps.token.chainId &&
     prevProps.token.symbol === nextProps.token.symbol &&
-    prevProps.token.assetId === nextProps.token.assetId &&
-    prevProps.token.accountAssetInfo?.limit ===
-      nextProps.token.accountAssetInfo?.limit,
+    prevProps.token.tokenRequireActivate === nextProps.token.tokenRequireActivate
 );

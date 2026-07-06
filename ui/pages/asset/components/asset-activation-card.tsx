@@ -20,25 +20,29 @@ import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAssetActivation } from '../hooks/useAssetActivation';
 import { Asset } from '../types/asset';
-import { StellarClassicTrustlineErrorToast } from './stellar-classic-trustline-error-toast';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
-export type StellarClassicTrustlineActivateCardProps = {
+export type AssetActivateCardProps = {
   asset: Asset;
+  chainName: string;
 };
 
 /**
- * Asset detail CTA for Stellar classic tokens with an inactive trustline: opens the Stellar wallet
+ * Asset activation card: opens the wallet
  * snap to add the trustline (the snap handles funding / activation messaging).
  *
  * @param params - Trustline activate card parameters
- * @param params.asset
+ * @param params.asset - The asset to activate
+ * @param params.chainName - The name of the chain
  */
-export const StellarClassicTrustlineActivateCard = ({
+export const AssetActivateCard = ({
   asset,
-}: StellarClassicTrustlineActivateCardProps) => {
+  chainName,
+}: AssetActivateCardProps) => {
   const t = useI18nContext();
-  const {symbol} = asset;
-  const { activateAsset, isActivating, errorMessage, dismissErrorMessage } = useAssetActivation({ asset });
+  const { symbol } = asset;
+  const { activateAsset, isActivating, errorMessage, dismissErrorMessage } =
+    useAssetActivation({ asset });
 
   return (
     <Box
@@ -46,7 +50,7 @@ export const StellarClassicTrustlineActivateCard = ({
       marginBottom={4}
       paddingLeft={4}
       paddingRight={4}
-      data-testid="stellar-classic-trustline-activate-card"
+      data-testid="asset-activate-card"
     >
       <Box
         flexDirection={BoxFlexDirection.Row}
@@ -73,7 +77,7 @@ export const StellarClassicTrustlineActivateCard = ({
               fontWeight={FontWeight.Regular}
               color={TextColor.TextDefault}
             >
-              {t('stellarClassicActivateOnStellar', [symbol])}
+              {t('assetActivateDescription', [symbol, chainName])}
             </Text>
           </Box>
           <Button
@@ -81,17 +85,16 @@ export const StellarClassicTrustlineActivateCard = ({
             size={ButtonSize.Sm}
             onClick={activateAsset}
             disabled={isActivating}
-            data-testid="stellar-classic-trustline-activate-button"
+            data-testid="asset-activate-button"
             className="self-start"
           >
-            {t('stellarClassicActivateOnStellarButton')}
+            {t('assetActivate')}
           </Button>
         </Box>
       </Box>
-      <StellarClassicTrustlineErrorToast
+      <AssetActivationErrorToast
         message={errorMessage}
         onClose={dismissErrorMessage}
-        dataTestId="stellar-classic-trustline-add-error-toast"
       />
     </Box>
   );

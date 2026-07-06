@@ -11,9 +11,15 @@ import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as storeActions from '../../../store/actions';
+import { getAsset } from '../../../selectors/assets';
 import * as stellarSnapRequests from '../utils/stellar-snap-client-requests';
 import type { Asset } from '../types/asset';
 import TokenButtons from './token-buttons';
+
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  getAsset: jest.fn(),
+}));
 
 const PUBNET_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
@@ -25,6 +31,11 @@ const STELLAR_TOKEN = {
   symbol: 'USDC',
   decimals: 7,
   image: '',
+  balance: {
+    value: '0',
+    display: '0.00',
+    fiat: '0.00',
+  },
 } as Asset & { type: typeof AssetType.token };
 
 const STELLAR_WALLET_ID = 'entropy:stellar-test';
@@ -78,6 +89,9 @@ describe('TokenButtons', () => {
   const mockStore = configureMockStore([thunk])(stellarMockState);
 
   beforeEach(() => {
+    (getAsset as unknown as jest.Mock).mockReturnValue({
+      accountAssetInfo: { limit: '10' },
+    });
     jest
       .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
       .mockResolvedValue(undefined);
@@ -104,7 +118,7 @@ describe('TokenButtons', () => {
     );
 
     expect(
-      screen.queryByTestId('token-overview-stellar-remove-trustline'),
+      screen.queryByTestId('token-overview-deactivate-asset'),
     ).not.toBeInTheDocument();
   });
 
@@ -115,7 +129,7 @@ describe('TokenButtons', () => {
     );
 
     expect(
-      screen.getByTestId('token-overview-stellar-remove-trustline'),
+      screen.getByTestId('token-overview-deactivate-asset'),
     ).toBeInTheDocument();
   });
 
@@ -125,9 +139,7 @@ describe('TokenButtons', () => {
       mockStore,
     );
 
-    fireEvent.click(
-      screen.getByTestId('token-overview-stellar-remove-trustline'),
-    );
+    fireEvent.click(screen.getByTestId('token-overview-deactivate-asset'));
 
     await waitFor(() => {
       expect(
@@ -141,7 +153,7 @@ describe('TokenButtons', () => {
 
     expect(storeActions.forceUpdateMetamaskState).toHaveBeenCalled();
     expect(
-      screen.queryByTestId('stellar-classic-trustline-remove-error-toast'),
+      screen.queryByTestId('asset-activation-error-container'),
     ).not.toBeInTheDocument();
   });
 
@@ -155,13 +167,11 @@ describe('TokenButtons', () => {
       mockStore,
     );
 
-    fireEvent.click(
-      screen.getByTestId('token-overview-stellar-remove-trustline'),
-    );
+    fireEvent.click(screen.getByTestId('token-overview-deactivate-asset'));
 
     await waitFor(() => {
       expect(
-        screen.getByTestId('stellar-classic-trustline-remove-error-toast'),
+        screen.getByTestId('asset-activation-error-container'),
       ).toBeInTheDocument();
     });
 
@@ -188,13 +198,11 @@ describe('TokenButtons', () => {
       mockStore,
     );
 
-    fireEvent.click(
-      screen.getByTestId('token-overview-stellar-remove-trustline'),
-    );
+    fireEvent.click(screen.getByTestId('token-overview-deactivate-asset'));
 
     await waitFor(() => {
       expect(
-        screen.getByTestId('stellar-classic-trustline-remove-error-toast'),
+        screen.getByTestId('asset-activation-error-container'),
       ).toHaveTextContent(
         'You still have 25.50 USDC in this wallet. You must send or swap it all before deactivating this asset on Stellar.',
       );

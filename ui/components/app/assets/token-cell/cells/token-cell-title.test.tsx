@@ -104,14 +104,14 @@ describe('TokenCellTitle', () => {
     expect(queryByTestId('tag')).not.toBeInTheDocument();
   });
 
-  it('renders inactive trustline badge for a classic asset with zero limit', () => {
+  it('renders inactive trustline badge when token requires activation', () => {
     const token = createMockToken({
       accountType: undefined,
       chainId: 'stellar:pubnet',
       assetId:
         'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
       isNative: false,
-      accountAssetInfo: { limit: '0' },
+      tokenRequireActivate: true,
       balance: '0',
     } as unknown as TokenFiatDisplayInfo);
 
@@ -256,8 +256,7 @@ describe('TokenCellTitle', () => {
       );
 
       // Change only non-compared props. The comparator checks
-      // title/address/chainId/assetId/isNative/symbol/balance/
-      // accountAssetInfo.limit and rwaData fields — avoid changing
+      // title/address/chainId/symbol/tokenRequireActivate and rwaData fields — avoid changing
       // any of those here.
       const updatedToken = createMockToken({
         title: 'Original Title',
@@ -376,16 +375,14 @@ describe('TokenCellTitle', () => {
       expect(getByTestId('asset-cell-title')).toHaveTextContent('After');
     });
 
-    it('re-renders when accountAssetInfo.limit changes from active to inactive trustline state', () => {
-      const assetId =
-        'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
-
+    it('re-renders when tokenRequireActivate changes from false to true', () => {
       const token = createMockToken({
         accountType: undefined,
         chainId: 'stellar:pubnet',
-        assetId,
+        assetId:
+          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
         isNative: false,
-        accountAssetInfo: { limit: '10' },
+        tokenRequireActivate: false,
         balance: '0',
       } as unknown as TokenFiatDisplayInfo);
 
@@ -393,16 +390,15 @@ describe('TokenCellTitle', () => {
         <TokenCellTitle token={token} />,
       );
 
-      // Initially active trustline (limit 10) -> badge absent
       expect(queryByTestId('asset-inactive-badge')).not.toBeInTheDocument();
 
-      // Change limit to '0' -> should re-render and show inactive badge
       const updatedToken = createMockToken({
         accountType: undefined,
         chainId: 'stellar:pubnet',
-        assetId,
+        assetId:
+          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
         isNative: false,
-        accountAssetInfo: { limit: '0' },
+        tokenRequireActivate: true,
         balance: '0',
       } as unknown as TokenFiatDisplayInfo);
 
@@ -411,16 +407,14 @@ describe('TokenCellTitle', () => {
       expect(queryByTestId('asset-inactive-badge')).toBeInTheDocument();
     });
 
-    it('treats a missing accountAssetInfo as inactive regardless of balance', () => {
-      const assetId =
-        'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
-
+    it('renders inactive badge when tokenRequireActivate is true regardless of balance', () => {
       const token = createMockToken({
         accountType: undefined,
         chainId: 'stellar:pubnet',
-        assetId,
+        assetId:
+          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
         isNative: false,
-        accountAssetInfo: undefined,
+        tokenRequireActivate: true,
         balance: '1',
       } as unknown as TokenFiatDisplayInfo);
 

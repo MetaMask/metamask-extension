@@ -20,6 +20,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { isAssetRequireActivate } from '../../../../../shared/lib/multichain/trustline';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -51,9 +52,9 @@ export const useTokenDisplayInfo = ({
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTestnetSelected = Boolean(
     Object.keys(enabledNetworksByNamespace).length === 1 &&
-    TEST_CHAINS.includes(
-      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
-    ),
+      TEST_CHAINS.includes(
+        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+      ),
   );
 
   const isMainnet = !isTestnetSelected;
@@ -127,6 +128,10 @@ export const useTokenDisplayInfo = ({
   // The BIP44 flag is enabled and stable, so this can be refactored to use the type from the new selector
   const nonEvmSecondary = secondary as unknown as number;
 
+  const tokenRequireActivate = isAssetRequireActivate({
+    assetId: token.assetId,
+    assetMetadata: token.accountAssetInfo,
+  });
   // TODO non-evm assets. this is only the native token
   return {
     title: token.title,
@@ -134,6 +139,7 @@ export const useTokenDisplayInfo = ({
     secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,
+    tokenRequireActivate,
   };
 };
 

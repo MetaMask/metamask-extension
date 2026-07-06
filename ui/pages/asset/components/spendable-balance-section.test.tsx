@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { I18nContext } from '../../../contexts/i18n';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
-import { StellarNativeBalanceSection } from './stellar-native-balance-section';
+import { SpendableBalanceSection } from './spendable-balance-section';
 
 jest.mock('../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (n: number) => `$${n.toFixed(2)}`,
@@ -25,10 +25,10 @@ const renderWithProviders = (component: React.ReactElement) =>
     </Provider>,
   );
 
-describe('StellarNativeBalanceSection', () => {
+describe('SpendableBalanceSection', () => {
   it('renders total, spendable, and reserved balances', () => {
     renderWithProviders(
-      <StellarNativeBalanceSection
+      <SpendableBalanceSection
         totalBalance="250"
         symbol="XLM"
         baseReserve="2.5"
@@ -36,29 +36,25 @@ describe('StellarNativeBalanceSection', () => {
       />,
     );
 
+    expect(screen.getByTestId('spendable-balance-section')).toBeInTheDocument();
+    expect(screen.getByText(messages.balance.message)).toBeInTheDocument();
     expect(
-      screen.getByTestId('stellar-native-balance-section'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.stellarNativeBalanceTitle.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('stellar-native-total-balance'),
+      screen.getByTestId('spendable-balance-total-balance'),
     ).toHaveTextContent('250.00 XLM');
     expect(
-      screen.getByTestId('stellar-native-spendable-balance'),
+      screen.getByTestId('spendable-balance-spendable-balance'),
     ).toHaveTextContent('247.50 XLM');
     expect(
-      screen.getByTestId('stellar-native-reserved-balance'),
+      screen.getByTestId('spendable-balance-base-reserved'),
     ).toHaveTextContent('2.50 XLM');
-    expect(screen.getByTestId('stellar-native-fiat-value')).toHaveTextContent(
-      '$105.00',
-    );
+    expect(
+      screen.getByTestId('spendable-balance-fiat-value'),
+    ).toHaveTextContent('$105.00');
   });
 
   it('clamps spendable balance at zero when reserve exceeds total', () => {
     renderWithProviders(
-      <StellarNativeBalanceSection
+      <SpendableBalanceSection
         totalBalance="1"
         symbol="XLM"
         baseReserve="2.5"
@@ -67,7 +63,7 @@ describe('StellarNativeBalanceSection', () => {
     );
 
     expect(
-      screen.getByTestId('stellar-native-spendable-balance'),
+      screen.getByTestId('spendable-balance-spendable-balance'),
     ).toHaveTextContent('0.00 XLM');
   });
 });

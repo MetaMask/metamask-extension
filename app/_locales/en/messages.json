@@ -1641,6 +1641,18 @@
   "assets": {
     "message": "Assets"
   },
+  "assetActivateDescription": {
+    "message": "Activate $1 on $2 to get started.",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
+  "assetActivate": {
+    "message": "Activate",
+    "description": "Primary button to activate an asset."
+  },
+  "assetDeactivate": {
+    "message": "Remove",
+    "description": "Button label to deactivate an asset."
+  },
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
@@ -10068,18 +10080,6 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "stellarClassicActivateOnStellar": {
-    "message": "Activate $1 on Stellar to get started.",
-    "description": "Explainer for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
-  },
-  "stellarClassicActivateOnStellarButton": {
-    "message": "Activate",
-    "description": "Primary button to submit a Stellar classic trustline add via the wallet snap"
-  },
-  "stellarClassicDeactivateOnStellar": {
-    "message": "Remove",
-    "description": "Button label to deactivate an active Stellar classic asset on the asset detail page."
-  },
   "stellarClassicTrustlineAddError": {
     "message": "Something went wrong while adding this trustline. Try again.",
     "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
@@ -10092,19 +10092,16 @@
     "message": "You still have $1 $2 in this wallet. You must send or swap it all before deactivating this asset on Stellar.",
     "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
-  "stellarNativeBalanceTitle": {
-    "message": "Balance"
-  },
-  "stellarNativeReservedBalance": {
+  "spendableBalanceBaseReserved": {
     "message": "Reserved (locked)"
   },
-  "stellarNativeSpendableBalance": {
+  "spendableBalance": {
     "message": "Spendable"
   },
-  "stellarNativeTotalBalance": {
+  "spendableBalanceTotalBalance": {
     "message": "Total balance"
   },
-  "stellarNativeValue": {
+  "spendableBalanceFiatValue": {
     "message": "Value"
   },
   "trustlineInactive": {

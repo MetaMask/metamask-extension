@@ -30,7 +30,7 @@ import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { useAssetActivation } from '../hooks/useAssetActivation';
-import { StellarClassicTrustlineErrorToast } from './stellar-classic-trustline-error-toast';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
   token,
@@ -201,16 +201,15 @@ const TokenButtons = ({
               />
             }
             onClick={deactivateAsset}
-            data-testid="token-overview-stellar-remove-trustline"
-            label={t('stellarClassicDeactivateOnStellar') as string}
+            data-testid="token-overview-deactivate-asset"
+            label={t('assetDeactivate') as string}
             disabled={isDeactivating}
           />
         ) : null}
       </Box>
-      <StellarClassicTrustlineErrorToast
+      <AssetActivationErrorToast
         message={errorMessage}
         onClose={dismissErrorMessage}
-        dataTestId="stellar-classic-trustline-remove-error-toast"
       />
     </>
   );

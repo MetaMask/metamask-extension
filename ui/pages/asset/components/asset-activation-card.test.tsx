@@ -6,15 +6,26 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import React from 'react';
 
+import { AssetType } from '../../../../shared/constants/transaction';
 import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as storeActions from '../../../store/actions';
 import * as stellarSnapRequests from '../utils/stellar-snap-client-requests';
-import { StellarClassicTrustlineActivateCard } from './stellar-classic-trustline-activate-card';
+import type { Asset } from '../types/asset';
+import { AssetActivateCard } from './asset-activation-card';
 
 const PUBNET_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
+
+const STELLAR_TOKEN = {
+  type: AssetType.token,
+  address: PUBNET_USDC_ASSET,
+  chainId: XlmScope.Pubnet,
+  symbol: 'USDC',
+  decimals: 7,
+  image: '',
+} as Asset & { type: typeof AssetType.token };
 
 const STELLAR_WALLET_ID = 'entropy:stellar-test';
 const STELLAR_GROUP_ID = 'entropy:stellar-test/0';
@@ -63,7 +74,7 @@ const stellarMockState = {
   },
 };
 
-describe('StellarClassicTrustlineActivateCard', () => {
+describe('AssetActivateCard', () => {
   const mockStore = configureMockStore([thunk])(stellarMockState);
 
   beforeEach(() => {
@@ -79,40 +90,29 @@ describe('StellarClassicTrustlineActivateCard', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders nothing when not visible', () => {
+  it('renders the activate card with asset and chain details', () => {
     renderWithProvider(
-      <StellarClassicTrustlineActivateCard
-        visible={false}
-        assetId={PUBNET_USDC_ASSET}
-        symbol="USDC"
-      />,
+      <AssetActivateCard asset={STELLAR_TOKEN} chainName="Stellar" />,
       mockStore,
     );
 
-    expect(
-      screen.queryByTestId('stellar-classic-trustline-activate-card'),
-    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('asset-activate-card')).toBeInTheDocument();
+    expect(screen.getByTestId('asset-activate-button')).toBeInTheDocument();
+    expect(screen.getByText(/USDC/)).toBeInTheDocument();
+    expect(screen.getByText(/Stellar/)).toBeInTheDocument();
   });
 
   it('submits changeTrustOpt add when the user taps Activate', async () => {
     renderWithProvider(
-      <StellarClassicTrustlineActivateCard
-        visible
-        assetId={PUBNET_USDC_ASSET}
-        symbol="USDC"
-      />,
+      <AssetActivateCard asset={STELLAR_TOKEN} chainName="Stellar" />,
       mockStore,
     );
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('stellar-classic-trustline-activate-button'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('asset-activate-button')).toBeInTheDocument();
     });
 
-    fireEvent.click(
-      screen.getByTestId('stellar-classic-trustline-activate-button'),
-    );
+    fireEvent.click(screen.getByTestId('asset-activate-button'));
 
     await waitFor(() => {
       expect(
@@ -126,7 +126,7 @@ describe('StellarClassicTrustlineActivateCard', () => {
 
     expect(storeActions.forceUpdateMetamaskState).toHaveBeenCalled();
     expect(
-      screen.queryByTestId('stellar-classic-trustline-add-error-toast'),
+      screen.queryByTestId('asset-activation-error-container'),
     ).not.toBeInTheDocument();
   });
 
@@ -136,17 +136,11 @@ describe('StellarClassicTrustlineActivateCard', () => {
       .mockResolvedValue({ status: false });
 
     renderWithProvider(
-      <StellarClassicTrustlineActivateCard
-        visible
-        assetId={PUBNET_USDC_ASSET}
-        symbol="USDC"
-      />,
+      <AssetActivateCard asset={STELLAR_TOKEN} chainName="Stellar" />,
       mockStore,
     );
 
-    fireEvent.click(
-      screen.getByTestId('stellar-classic-trustline-activate-button'),
-    );
+    fireEvent.click(screen.getByTestId('asset-activate-button'));
 
     await waitFor(() => {
       expect(
@@ -156,7 +150,7 @@ describe('StellarClassicTrustlineActivateCard', () => {
 
     expect(storeActions.forceUpdateMetamaskState).not.toHaveBeenCalled();
     expect(
-      screen.queryByTestId('stellar-classic-trustline-add-error-toast'),
+      screen.queryByTestId('asset-activation-error-container'),
     ).not.toBeInTheDocument();
   });
 
@@ -166,21 +160,15 @@ describe('StellarClassicTrustlineActivateCard', () => {
       .mockRejectedValue(new Error('network failure'));
 
     renderWithProvider(
-      <StellarClassicTrustlineActivateCard
-        visible
-        assetId={PUBNET_USDC_ASSET}
-        symbol="USDC"
-      />,
+      <AssetActivateCard asset={STELLAR_TOKEN} chainName="Stellar" />,
       mockStore,
     );
 
-    fireEvent.click(
-      screen.getByTestId('stellar-classic-trustline-activate-button'),
-    );
+    fireEvent.click(screen.getByTestId('asset-activate-button'));
 
     await waitFor(() => {
       expect(
-        screen.getByTestId('stellar-classic-trustline-add-error-toast'),
+        screen.getByTestId('asset-activation-error-container'),
       ).toBeInTheDocument();
     });
 

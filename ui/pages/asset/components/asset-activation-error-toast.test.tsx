@@ -1,20 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { StellarClassicTrustlineErrorToast } from './stellar-classic-trustline-error-toast';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
-describe('StellarClassicTrustlineErrorToast', () => {
+describe('AssetActivationErrorToast', () => {
   it('renders nothing when message is null', () => {
-    render(
-      <StellarClassicTrustlineErrorToast
-        message={null}
-        onClose={jest.fn()}
-        dataTestId="stellar-trustline-error"
-      />,
-    );
+    render(<AssetActivationErrorToast message={null} onClose={jest.fn()} />);
 
     expect(
-      screen.queryByTestId('stellar-trustline-error-container'),
+      screen.queryByTestId('asset-activation-error-container'),
     ).not.toBeInTheDocument();
   });
 
@@ -22,10 +16,9 @@ describe('StellarClassicTrustlineErrorToast', () => {
     const onClose = jest.fn();
 
     render(
-      <StellarClassicTrustlineErrorToast
+      <AssetActivationErrorToast
         message="Something went wrong"
         onClose={onClose}
-        dataTestId="stellar-trustline-error"
       />,
     );
 

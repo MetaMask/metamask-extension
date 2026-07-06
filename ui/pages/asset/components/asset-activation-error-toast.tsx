@@ -5,40 +5,37 @@ import { Icon, IconName } from '../../../components/component-library';
 import { Toast } from '../../../components/multichain/toast/toast';
 import { IconColor } from '../../../helpers/constants/design-system';
 
-export const STELLAR_TRUSTLINE_ERROR_TOAST_DURATION_MS = 5000;
+export const ASSET_ACTIVATION_ERROR_TOAST_DURATION_MS = 5000;
 
-export type StellarClassicTrustlineErrorToastProps = {
+export type AssetActivationErrorToastProps = {
   message: string | null;
   onClose: () => void;
-  dataTestId: string;
 };
 
 /**
- * Dismissible inline error toast for Stellar classic trustline actions on the asset page.
- * @param options0
- * @param options0.message
- * @param options0.onClose
- * @param options0.dataTestId
+ * Asset activation error toast: displays an error message when an asset activation fails.
+ *
+ * @param params - Asset activation error toast parameters
+ * @param params.message - The error message
+ * @param params.onClose - The function to call when the toast is closed
  */
-export const StellarClassicTrustlineErrorToast = ({
+export const AssetActivationErrorToast = ({
   message,
   onClose,
-  dataTestId,
-}: StellarClassicTrustlineErrorToastProps) => {
+}: AssetActivationErrorToastProps) => {
   if (!message) {
     return null;
   }
 
   return (
-    <Box marginTop={3} data-testid={`${dataTestId}-container`}>
+    <Box marginTop={3} data-testid={`asset-activation-error-container`}>
       <Toast
-        dataTestId={dataTestId}
         startAdornment={
           <Icon name={IconName.Danger} color={IconColor.errorDefault} />
         }
         text={message}
         onClose={onClose}
-        autoHideTime={STELLAR_TRUSTLINE_ERROR_TOAST_DURATION_MS}
+        autoHideTime={ASSET_ACTIVATION_ERROR_TOAST_DURATION_MS}
         onAutoHideToast={onClose}
       />
     </Box>

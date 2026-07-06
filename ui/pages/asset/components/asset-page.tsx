@@ -27,7 +27,6 @@ import {
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
-  type CaipChainId,
   Hex,
   isCaipChainId,
   parseCaipAssetType,
@@ -106,8 +105,8 @@ import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
-import { StellarClassicTrustlineActivateCard } from './stellar-classic-trustline-activate-card';
-import { StellarNativeBalanceSection } from './stellar-native-balance-section';
+import { AssetActivateCard } from './asset-activation-card';
+import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
@@ -330,106 +329,6 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   };
 
-  const renderAssetTitleSection = () => {
-    if (isAssetInactive) {
-      return (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-          data-testid="asset-inactive-asset-header"
-        >
-          {assetNameElement}
-          <AssetInactiveBadge />
-        </Box>
-      );
-    }
-
-    if (isStockToken) {
-      return (
-        <Box alignItems={BoxAlignItems.Center} gap={2}>
-          {assetNameElement}
-          <StockBadge isMarketClosed={isMarketClosed} />
-        </Box>
-      );
-    }
-
-    return assetNameElement;
-  };
-
-  const renderAssetBalanceSection = () => {
-    if (isMusdAssetPage) {
-      return (
-        <>
-          <MusdPositionSection
-            balanceDisplay={balance ? `${balance} ${t('musdSymbol')}` : '0'}
-            fiatValue={tokenFiatAmount}
-            showFiat={showFiat}
-          />
-          {isMerklClaimingEnabled ? (
-            <>
-              <Box
-                marginTop={5}
-                marginBottom={5}
-                className="asset-page__divider"
-              />
-              <MusdBonusSection
-                chainId={chainId as Hex}
-                tokenAddress={(asset as { address: Hex }).address}
-                positionFiatValue={showFiat ? aggregatedMusdFiat : null}
-                showFiat={showFiat}
-                hasPositiveBalance={hasAnyMusdBalance}
-              />
-              <Box
-                marginTop={5}
-                marginBottom={5}
-                className="asset-page__divider"
-              />
-            </>
-          ) : (
-            <Box
-              marginTop={5}
-              marginBottom={5}
-              className="asset-page__divider"
-            />
-          )}
-          <MusdConvertSection />
-          <Box marginTop={5} marginBottom={5} className="asset-page__divider" />
-        </>
-      );
-    }
-
-    if (baseReserve !== undefined) {
-      return (
-        <StellarNativeBalanceSection
-          totalBalance={String(balance)}
-          symbol={symbol}
-          baseReserve={baseReserve}
-          fiatValue={tokenFiatAmount}
-        />
-      );
-    }
-
-    return (
-      <>
-        <Text
-          variant={TextVariant.HeadingSm}
-          className="asset-page__balance-heading"
-        >
-          {t('yourBalance')}
-        </Text>
-        {[AssetType.token, AssetType.native].includes(type) && (
-          <TokenCell
-            key={`${symbol}-${address}`}
-            token={tokenWithFiatAmount as TokenWithFiatAmount}
-            safeChains={safeChains}
-            musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
-          />
-        )}
-      </>
-    );
-  };
-
   return (
     <Box className="asset__content">
       <Box
@@ -453,14 +352,20 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       {isAssetInactive && (
-        <StellarClassicTrustlineActivateCard asset={tokenAsset as Asset} />
+        <AssetActivateCard asset={tokenAsset as Asset} chainName={networkName} />
       )}
       <Box paddingLeft={4}>
         {isStockToken || isAssetInactive ? (
           <Box alignItems={BoxAlignItems.Center} gap={2}>
             {assetNameElement}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
             {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
             {isAssetInactive && <AssetInactiveBadge />}
+            </Box>
           </Box>
         ) : (
           assetNameElement
@@ -558,7 +463,7 @@ const AssetPage = ({
             />
           </>
         ) : baseReserve !== undefined ? (
-          <StellarNativeBalanceSection
+          <SpendableBalanceSection
             totalBalance={String(balance)}
             symbol={symbol}
             baseReserve={baseReserve}

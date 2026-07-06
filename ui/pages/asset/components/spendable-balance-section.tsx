@@ -10,7 +10,7 @@ import React, { useMemo } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 
-export type StellarNativeBalanceSectionProps = {
+export type SpendableBalanceSectionProps = {
   totalBalance: string;
   symbol: string;
   baseReserve: string;
@@ -25,19 +25,20 @@ function formatDisplayAmount(value: number): string {
 }
 
 /**
- * Balance breakdown for native Stellar XLM (total, spendable, reserved, fiat value).
- * @param options0
- * @param options0.totalBalance
- * @param options0.symbol
- * @param options0.baseReserve
- * @param options0.fiatValue
+ * Spendable balance section: breakdown for a native asset (total, spendable, reserved, fiat value).
+ *
+ * @param params - Spendable balance section parameters
+ * @param params.totalBalance - The total balance
+ * @param params.symbol - The symbol of the asset
+ * @param params.baseReserve - The base reserve
+ * @param params.fiatValue - The fiat value
  */
-export function StellarNativeBalanceSection({
+export function SpendableBalanceSection({
   totalBalance,
   symbol,
   baseReserve,
   fiatValue,
-}: StellarNativeBalanceSectionProps) {
+}: SpendableBalanceSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
 
@@ -74,11 +75,9 @@ export function StellarNativeBalanceSection({
       paddingTop={3}
       paddingBottom={3}
       gap={3}
-      data-testid="stellar-native-balance-section"
+      data-testid="spendable-balance-section"
     >
-      <Text variant={TextVariant.HeadingSm}>
-        {t('stellarNativeBalanceTitle')}
-      </Text>
+      <Text variant={TextVariant.HeadingSm}>{t('balance')}</Text>
       <Box flexDirection={BoxFlexDirection.Row} gap={3}>
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -90,12 +89,12 @@ export function StellarNativeBalanceSection({
             fontWeight={FontWeight.Medium}
             color={TextColor.TextAlternative}
           >
-            {t('stellarNativeTotalBalance')}
+            {t('spendableBalanceTotalBalance')}
           </Text>
           <Text
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
-            data-testid="stellar-native-total-balance"
+            data-testid="spendable-balance-total-balance"
           >
             {totalDisplay}
           </Text>
@@ -110,11 +109,11 @@ export function StellarNativeBalanceSection({
             fontWeight={FontWeight.Medium}
             color={TextColor.TextAlternative}
           >
-            {t('stellarNativeValue')}
+            {t('spendableBalanceFiatValue')}
           </Text>
           <Text
             variant={TextVariant.BodyMd}
-            data-testid="stellar-native-fiat-value"
+            data-testid="spendable-balance-fiat-value"
           >
             {valueDisplay}
           </Text>
@@ -131,12 +130,12 @@ export function StellarNativeBalanceSection({
             fontWeight={FontWeight.Medium}
             color={TextColor.TextAlternative}
           >
-            {t('stellarNativeSpendableBalance')}
+            {t('spendableBalance')}
           </Text>
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.SuccessDefault}
-            data-testid="stellar-native-spendable-balance"
+            data-testid="spendable-balance-spendable-balance"
           >
             {spendableDisplay}
           </Text>
@@ -151,12 +150,12 @@ export function StellarNativeBalanceSection({
             fontWeight={FontWeight.Medium}
             color={TextColor.TextAlternative}
           >
-            {t('stellarNativeReservedBalance')}
+            {t('spendableBalanceBaseReserved')}
           </Text>
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.SuccessDefault}
-            data-testid="stellar-native-reserved-balance"
+            data-testid="spendable-balance-base-reserved"
           >
             {reservedDisplay}
           </Text>
@@ -166,4 +165,4 @@ export function StellarNativeBalanceSection({
   );
 }
 
-export default StellarNativeBalanceSection;
+export default SpendableBalanceSection;
