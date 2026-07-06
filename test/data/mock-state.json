@@ -1673,9 +1673,6 @@
     "grantedPermissions": [],
     "isFetchingGatorPermissions": false,
     "lastSyncedTimestamp": -1,
-    "networkConnectionBanner": {
-      "status": "unknown"
-    },
     "coverageResults": {}
   },
   "ramps": {
