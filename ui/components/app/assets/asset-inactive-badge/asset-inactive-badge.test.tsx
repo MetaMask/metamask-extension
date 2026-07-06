@@ -37,7 +37,7 @@ describe('AssetInactiveBadge', () => {
     const { getByTestId } = render(<AssetInactiveBadge />);
     const badge = getByTestId('asset-inactive-badge');
 
-    expect(badge).toHaveAttribute('data-label', 'trustlineInactive');
+    expect(badge).toHaveAttribute('data-label', 'assetInactive');
     expect(badge).toHaveAttribute('data-background-color', 'warning-muted');
     expect(badge).toHaveAttribute('data-border-radius', 'pill');
     expect(badge).not.toHaveAttribute('data-icon-name');
