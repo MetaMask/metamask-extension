@@ -145,6 +145,17 @@ export function createProviderWrapper(
   return Wrapper;
 }
 
+/**
+ * Renders a component with the standard provider tree.
+ *
+ * @param component - The component to render.
+ * @param [store] - The redux store.
+ * @param [pathname] - The initial pathname for the history.
+ * @param [renderer] - The testing-library render function to use.
+ * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
+ * @param {UIMessenger} [uiMessenger] - An optional mock UI messenger instance.
+ * @param {RouteMessenger | null} [routeMessenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
+ */
 export function renderWithProvider(
   component,
   store,
