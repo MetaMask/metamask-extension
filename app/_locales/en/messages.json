@@ -209,7 +209,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_pending_title": {
-    "message": "Activating trustline: $1",
+    "message": "Activating trustline $1",
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_success_description": {
@@ -217,7 +217,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_success_title": {
-    "message": "Trustline activated: $1",
+    "message": "Trustline activated $1",
     "description": "$1 is the token symbol"
   },
   "activity_assetDeactivation_failed_description": {
@@ -232,7 +232,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_assetDeactivation_pending_title": {
-    "message": "Deactivating trustline: $1",
+    "message": "Deactivating trustline $1",
     "description": "$1 is the token symbol"
   },
   "activity_assetDeactivation_success_description": {
@@ -240,7 +240,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_assetDeactivation_success_title": {
-    "message": "Trustline deactivated: $1",
+    "message": "Trustline deactivated $1",
     "description": "$1 is the token symbol"
   },
   "activity_bridge_failed_description": {
