@@ -1,7 +1,5 @@
 import React from 'react';
-import type {
-  ActivityListItem,
-} from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';

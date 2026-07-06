@@ -5,10 +5,16 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { getAsset } from '../../../selectors/assets';
-import { isAssetRequireActivate, isTrustlineAsset } from '../../../../shared/lib/multichain/trustline';
+import {
+  isAssetRequireActivate,
+  isTrustlineAsset,
+} from '../../../../shared/lib/multichain/trustline';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { forceUpdateMetamaskState } from '../../../store/actions';
-import { requestStellarChangeTrustOptAdd, requestStellarChangeTrustOptDelete } from '../utils/stellar-snap-client-requests';
+import {
+  requestStellarChangeTrustOptAdd,
+  requestStellarChangeTrustOptDelete,
+} from '../utils/stellar-snap-client-requests';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -22,11 +28,7 @@ import { Asset } from '../types/asset';
  * @returns Trustline actions, loading flags, error state, and whether deactivation is allowed.
  *   For assets that do not require a trustline, actions are inert and deactivation is disabled.
  */
-export const useAssetActivation = ({
-  asset,
-}: {
-  asset: Asset;
-}) => {
+export const useAssetActivation = ({ asset }: { asset: Asset }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -54,8 +56,7 @@ export const useAssetActivation = ({
 
   const [isDeactivating, setIsDeactivating] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
-  const [errorMessage, setErrorMessage] =
-    useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const dismissErrorMessage = useCallback(() => {
     setErrorMessage(null);
   }, []);
@@ -69,13 +70,22 @@ export const useAssetActivation = ({
     });
 
   const deactivateAsset = useCallback(async () => {
-    if (!canDeactivate || !account || !chainId || !assetId || !asset || !asset.balance?.display) {
+    if (
+      !canDeactivate ||
+      !account ||
+      !chainId ||
+      !assetId ||
+      !asset ||
+      !asset.balance?.display
+    ) {
       return;
     }
 
-    const hasNonZeroBalance = Boolean(asset.balance?.value && asset.balance.value !== '0');
+    const hasNonZeroBalance = Boolean(
+      asset.balance?.value && asset.balance.value !== '0',
+    );
     const balance = asset.balance?.display;
-    const {symbol} = asset;
+    const { symbol } = asset;
 
     setErrorMessage(null);
     setIsDeactivating(true);
@@ -103,15 +113,7 @@ export const useAssetActivation = ({
     } finally {
       setIsDeactivating(false);
     }
-  }, [
-    account,
-    assetId,
-    asset,
-    canDeactivate,
-    chainId,
-    dispatch,
-    t,
-  ]);
+  }, [account, assetId, asset, canDeactivate, chainId, dispatch, t]);
 
   const activateAsset = useCallback(async () => {
     if (!account || !chainId || !assetId) {

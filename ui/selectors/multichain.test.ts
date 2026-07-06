@@ -778,7 +778,7 @@ describe('Multichain Selectors', () => {
       expect(getMultichainIsTestnet(state)).toBe(true);
     });
 
-    it('returns false for Stellar pubnet account', () => {
+    it('returns false for Stellar pubnet account (expected behavior)', () => {
       const state = getStellarState(
         MOCK_ACCOUNT_STELLAR_PUBNET,
         XlmScope.Pubnet,

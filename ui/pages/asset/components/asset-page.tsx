@@ -354,7 +354,10 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       {isAssetInactive && (
-        <AssetActivateCard asset={tokenAsset as Asset} chainName={networkName} />
+        <AssetActivateCard
+          asset={tokenAsset as Asset}
+          chainName={networkName}
+        />
       )}
       <Box paddingLeft={4}>
         {isStockToken || isAssetInactive ? (
@@ -365,8 +368,8 @@ const AssetPage = ({
               alignItems={BoxAlignItems.Center}
               gap={2}
             >
-            {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
-            {isAssetInactive && <AssetInactiveBadge />}
+              {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+              {isAssetInactive && <AssetInactiveBadge />}
             </Box>
           </Box>
         ) : (

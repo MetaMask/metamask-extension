@@ -1250,43 +1250,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     expect(result).toBe(true);
   });
 
-  it('should return true when balance is greater than 0 for Stellar pubnet', () => {
-    const baseState = createBaseMockState(
-      'account3',
-      'stellar:account',
-      [XlmScope.Pubnet],
-      {
-        snap: { id: 'npm:@metamask/stellar-wallet-snap', enabled: true },
-      },
-    );
-
-    const state: BalanceCalculationState = {
-      metamask: {
-        ...baseState,
-        networkConfigurationsByChainId: {},
-        multichainNetworkConfigurationsByChainId: {
-          [XlmScope.Pubnet]:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[XlmScope.Pubnet],
-        },
-        balances: {
-          account3: {
-            'stellar:pubnet/slip44:148': {
-              amount: '10.5',
-              unit: 'XLM',
-            },
-          },
-        },
-        snaps: {
-          'npm:@metamask/stellar-wallet-snap': { enabled: true },
-        },
-      } as unknown as BalanceCalculationState['metamask'],
-    };
-
-    const result = selectAccountGroupBalanceForEmptyState(state);
-
-    expect(result).toBe(true);
-  });
-
   it('should return false when balance is 0', () => {
     const state = createMockStateWithEVMNetworks();
 

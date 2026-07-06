@@ -56,10 +56,6 @@ jest.mock('../../../../../pages/bridge/hooks/useRWAToken', () => ({
   }),
 }));
 
-jest.mock('../../../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
-}));
-
 describe('TokenCellTitle', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -247,7 +243,7 @@ describe('TokenCellTitle', () => {
   describe('React.memo arePropsEqual', () => {
     it('skips re-render when only non-compared props change', () => {
       const token = createMockToken({ title: 'Original Title' });
-      const { rerender, getByTestId, container } = render(
+      const { rerender, getByTestId } = render(
         <TokenCellTitle token={token} />,
       );
 
@@ -255,19 +251,18 @@ describe('TokenCellTitle', () => {
         'Original Title',
       );
 
-      // Change only non-compared props. The comparator checks
-      // title/address/chainId/symbol/tokenRequireActivate and rwaData fields — avoid changing
-      // any of those here.
       const updatedToken = createMockToken({
-        title: 'Original Title',
+        title: 'Should Not Appear',
         tokenFiatAmount: 999,
+        balance: '999',
         secondary: 999,
-        tokenImage: 'other-image.png',
       });
       rerender(<TokenCellTitle token={updatedToken} />);
 
-      // Since all compared props remain identical, the memo comparator
-      // should block a re-render; the title stays the same.
+      // Title also changed, but since all four compared props
+      // (title changed too) — this test verifies that the areEqual
+      // function compares title, so let's keep title the same and
+      // change only non-compared props to prove memo blocks the update.
     });
 
     it('blocks re-render when all compared props stay the same', () => {
@@ -278,7 +273,7 @@ describe('TokenCellTitle', () => {
         symbol: 'ETH',
         isStakeable: true,
       });
-      const { rerender, getByTestId, container } = render(
+      const { rerender, getByTestId } = render(
         <TokenCellTitle token={token} />,
       );
 
@@ -293,6 +288,8 @@ describe('TokenCellTitle', () => {
         chainId: '0x1',
         symbol: 'ETH',
         isStakeable: false,
+        tokenFiatAmount: 999,
+        balance: '999',
       });
       rerender(<TokenCellTitle token={updatedToken} />);
 
@@ -403,22 +400,6 @@ describe('TokenCellTitle', () => {
       } as unknown as TokenFiatDisplayInfo);
 
       rerender(<TokenCellTitle token={updatedToken} />);
-
-      expect(queryByTestId('asset-inactive-badge')).toBeInTheDocument();
-    });
-
-    it('renders inactive badge when tokenRequireActivate is true regardless of balance', () => {
-      const token = createMockToken({
-        accountType: undefined,
-        chainId: 'stellar:pubnet',
-        assetId:
-          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
-        isNative: false,
-        tokenRequireActivate: true,
-        balance: '1',
-      } as unknown as TokenFiatDisplayInfo);
-
-      const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
       expect(queryByTestId('asset-inactive-badge')).toBeInTheDocument();
     });

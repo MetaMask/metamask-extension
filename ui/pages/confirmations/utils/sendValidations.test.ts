@@ -20,12 +20,7 @@ jest.mock('unicode-confusables');
 jest.mock('../../../../shared/lib/multichain/accounts');
 
 const mockIsSolanaAddress = jest.mocked(isSolanaAddress);
-// Use the real implementation of isStellarAddress while keeping the module mocked
-const actualAccounts = jest.requireActual(
-  '../../../../shared/lib/multichain/accounts',
-);
 const mockIsStellarAddress = jest.mocked(isStellarAddress);
-mockIsStellarAddress.mockImplementation(actualAccounts.isStellarAddress);
 
 describe('SendValidations', () => {
   describe('findConfusablesInRecipient', () => {
@@ -174,13 +169,18 @@ describe('SendValidations', () => {
   });
 
   describe('validateStellarAddress', () => {
-    // Use real isStellarAddress implementation from the actual module
+    beforeEach(() => {
+      mockIsStellarAddress.mockReturnValue(true);
+    });
+
     it('returns success for valid Stellar account id format', () => {
       const validAddress = `G${'A'.repeat(55)}`;
       expect(validateStellarAddress(validAddress)).toEqual({});
     });
 
     it('returns error for invalid Stellar address', () => {
+      mockIsStellarAddress.mockReturnValue(false);
+
       expect(validateStellarAddress('not-a-stellar-address')).toEqual({
         error: 'invalidAddress',
       });

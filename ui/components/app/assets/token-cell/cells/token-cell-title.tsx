@@ -21,7 +21,6 @@ export const TokenCellTitle = React.memo(
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(token);
 
-
     return (
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
@@ -51,5 +50,6 @@ export const TokenCellTitle = React.memo(
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.chainId === nextProps.token.chainId &&
     prevProps.token.symbol === nextProps.token.symbol &&
-    prevProps.token.tokenRequireActivate === nextProps.token.tokenRequireActivate
+    prevProps.token.tokenRequireActivate ===
+      nextProps.token.tokenRequireActivate,
 );
