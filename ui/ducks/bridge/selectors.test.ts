@@ -529,7 +529,7 @@ describe('Bridge selectors', () => {
       });
       const result = getToChains(state as never);
 
-      expect(result).toHaveLength(17);
+      expect(result).toHaveLength(18);
       expect(result.map(({ name, chainId }) => ({ name, chainId })))
         .toMatchInlineSnapshot(`
         [
@@ -552,6 +552,10 @@ describe('Bridge selectors', () => {
           {
             "chainId": "tron:728126428",
             "name": "Tron",
+          },
+          {
+            "chainId": "stellar:pubnet",
+            "name": "Stellar",
           },
           {
             "chainId": "eip155:8453",
