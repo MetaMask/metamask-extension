@@ -6,8 +6,7 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
   CHAIN: 'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
   CHANGE: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
   DAI: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
-  'MUSICAL TOKEN':
-    'eip155:1/erc20:0x0994206dfe8de6ec6920ff4d779b0d950605fb53',
+  'MUSICAL TOKEN': 'eip155:1/erc20:0x0994206dfe8de6ec6920ff4d779b0d950605fb53',
   MUSD: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
 };
 
@@ -247,7 +246,9 @@ class TokensTab extends HomePage {
       const control = input?.closest('label');
 
       if (!(control instanceof HTMLElement)) {
-        throw new Error(`Token management toggle control not found: ${selector}`);
+        throw new Error(
+          `Token management toggle control not found: ${selector}`,
+        );
       }
 
       control.click();

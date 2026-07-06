@@ -92,7 +92,8 @@ export async function mockTokenMetadataApis(
                 .filter((token) => {
                   const assetId = `eip155:${token.chainId}/erc20:${token.address}`;
                   return (
-                    assetIds.includes(assetId) || assetIds.includes(token.address)
+                    assetIds.includes(assetId) ||
+                    assetIds.includes(token.address)
                   );
                 })
                 .map((token) => ({
@@ -112,7 +113,9 @@ export async function mockTokenMetadataApis(
     [...new Set(normalizedTokens.map((token) => token.chainId))].map(
       async (chainId) =>
         mockServer
-          .forGet(new RegExp(`${TOKEN_API_URL}/tokens/${chainId}(\\?.*)?$`, 'u'))
+          .forGet(
+            new RegExp(`${TOKEN_API_URL}/tokens/${chainId}(\\?.*)?$`, 'u'),
+          )
           .always()
           .thenCallback(() => ({
             statusCode: 200,
@@ -136,11 +139,14 @@ export async function mockTokenMetadataApis(
   );
 
   const accountBalancesMock = await mockServer
-    .forGet(`${TOKEN_API_URL.replace('token.api', 'accounts.api')}/v4/multiaccount/balances`)
+    .forGet(
+      `${TOKEN_API_URL.replace('token.api', 'accounts.api')}/v4/multiaccount/balances`,
+    )
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
-      const accountAddressesParam = url.searchParams.get('accountAddresses') ?? '';
+      const accountAddressesParam =
+        url.searchParams.get('accountAddresses') ?? '';
       const accountAddresses = accountAddressesParam
         .split(',')
         .map((accountAddress) => accountAddress.trim())

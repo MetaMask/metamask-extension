@@ -1,8 +1,6 @@
 import { Context } from 'mocha';
 import { Mockttp } from 'mockttp';
-import {
-  CHAIN_IDS,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
@@ -113,20 +111,24 @@ describe('Token List via StorageService', function () {
           await mockFiatExchangeRates(mockServer),
           await mockSupportedVsCurrencies(mockServer),
           await mockPriceApiSupportedNetworks(mockServer),
-          ...(await mockTokenMetadataApis(mockServer, [
-            {
-              address: tokenAddress,
-              symbol: tokenSymbol,
-              name: tokenName,
-              decimals: 18,
-            },
-            {
-              address: mUsdAddress,
-              symbol: 'MUSD',
-              name: 'mUSD',
-              decimals: 6,
-            },
-          ], { includeAssetsV3: false })),
+          ...(await mockTokenMetadataApis(
+            mockServer,
+            [
+              {
+                address: tokenAddress,
+                symbol: tokenSymbol,
+                name: tokenName,
+                decimals: 18,
+              },
+              {
+                address: mUsdAddress,
+                symbol: 'MUSD',
+                name: 'mUSD',
+                decimals: 6,
+              },
+            ],
+            { includeAssetsV3: false },
+          )),
           // Token Search API – /tokens/search
           await mockServer
             .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
