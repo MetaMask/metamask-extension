@@ -148,6 +148,8 @@ function importAllScripts() {
 // eslint-disable-next-line no-undef
 self.addEventListener('install', (event) => {
   // Extend the install event lifetime until background scripts finish loading.
+  // Without waitUntil, Chrome may finish the install event before the async
+  // dynamic import of background.js completes.
   event.waitUntil(Promise.resolve(importAllScripts()));
 });
 

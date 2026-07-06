@@ -44,8 +44,8 @@ async function runImportScripts() {
 // eslint-disable-next-line no-undef
 self.addEventListener('install', (event) => {
   // Extend the install event lifetime until background scripts finish loading.
-  // Without waitUntil, Chrome may terminate the service worker before the async
-  // dynamic import completes (see https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers).
+  // Without waitUntil, Chrome may finish the install event before the async
+  // dynamic import of background.js completes.
   (event as ExtendableEvent).waitUntil(runImportScripts());
 });
 
