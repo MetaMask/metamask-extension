@@ -6041,13 +6041,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connectivity-controller@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/connectivity-controller@npm:0.2.0"
+"@metamask/connectivity-controller@npm:@metamask-previews/connectivity-controller@0.2.0-preview-022b2ce8d":
+  version: 0.2.0-preview-022b2ce8d
+  resolution: "@metamask-previews/connectivity-controller@npm:0.2.0-preview-022b2ce8d"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/messenger": "npm:^1.0.0"
-  checksum: 10/586c80931341375c713aa5a474725ec88174e6e885d5f75d23b6458b734ec0e912a8c47996bea94a82f9549c9598ba982ac99aaeccac1fd92002c35a38f5397f
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/0b830ef3abfb80e5b3858fb229c0c52796c480643c60bc12941a1e41b2aa4f0051688ade895eb6aa7b36f6aeb4b4a888c281a66d4595ae67d9c7027a4e9ad7f2
   languageName: node
   linkType: hard
 
@@ -7268,19 +7269,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-connection-banner-controller@npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-7507a11":
-  version: 0.1.0-preview-7507a11
-  resolution: "@metamask-previews/network-connection-banner-controller@npm:0.1.0-preview-7507a11"
+"@metamask/network-connection-banner-controller@npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-022b2ce8d":
+  version: 0.1.0-preview-022b2ce8d
+  resolution: "@metamask-previews/network-connection-banner-controller@npm:0.1.0-preview-022b2ce8d"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/network-controller": "npm:^32.0.0"
-    "@metamask/network-enablement-controller": "npm:^5.3.0"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/network-enablement-controller": "npm:^5.4.1"
+    "@metamask/utils": "npm:^11.11.0"
     ip-regex: "npm:^4.3.0"
     psl: "npm:^1.15.0"
-  checksum: 10/a3a8bb5f0e14aa503c72ed4d0b16ebd1763817bbdf3fb04f5dc4c6156ca8c0f02284fe73989676043b48fc198c366b6171f369fbafd1ceb906b397ccc22dcd11
+    reselect: "npm:^5.1.1"
+  checksum: 10/37b036bc426459def90b1b4ca130e9de78586c5589f3e7630accc603de82e3fb923c8f61121f321a0cd80bcea486cdb73e6f759493a3a58366f8f519b1266544
   languageName: node
   linkType: hard
 

@@ -1184,7 +1184,8 @@
     },
     "@metamask/connectivity-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/base-controller": true,
+        "reselect": true
       }
     },
     "@metamask/controller-utils": {
@@ -1990,6 +1991,23 @@
         "@metamask/name-controller>@metamask/controller-utils": true,
         "@metamask/utils": true,
         "async-mutex": true
+      }
+    },
+    "@metamask/network-connection-banner-controller": {
+      "globals": {
+        "URL": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/connectivity-controller": true,
+        "@metamask/network-controller": true,
+        "@metamask/network-enablement-controller": true,
+        "@metamask/utils": true,
+        "ip-regex": true,
+        "@metamask/network-connection-banner-controller>psl": true,
+        "reselect": true
       }
     },
     "@metamask/network-controller": {
