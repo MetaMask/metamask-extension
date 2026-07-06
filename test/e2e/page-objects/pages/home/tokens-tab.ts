@@ -234,20 +234,24 @@ class TokensTab extends HomePage {
 
   private async clickTokenManagementToggle(toggleSelector: string) {
     await this.driver.waitForSelector(toggleSelector);
-    const labelSelector = await this.driver.executeScript(([selector]) => {
-      const input = document.querySelector(selector);
-      const label = input?.closest('label');
+    const toggle = await this.driver.findElement(toggleSelector);
+    if ((await toggle.getAttribute('value')) === 'true') {
+      return;
+    }
 
-      if (!(label instanceof HTMLElement)) {
-        throw new Error(`Token management toggle label not found: ${selector}`);
+    await this.driver.executeScript((rawSelector: string | string[]) => {
+      const selector = Array.isArray(rawSelector)
+        ? rawSelector[0]
+        : rawSelector;
+      const input = document.querySelector(selector);
+      const control = input?.closest('label');
+
+      if (!(control instanceof HTMLElement)) {
+        throw new Error(`Token management toggle control not found: ${selector}`);
       }
 
-      const e2eToggleId = `e2e-toggle-label-${Date.now()}`;
-      label.setAttribute('data-testid', e2eToggleId);
-      return `[data-testid="${e2eToggleId}"]`;
+      control.click();
     }, toggleSelector);
-    const label = await this.driver.findElement(labelSelector);
-    await label.sendKeys(this.driver.Key.ENTER);
     await this.driver.delay(1000);
   }
 
@@ -434,10 +438,6 @@ class TokensTab extends HomePage {
     );
     const toggle = this.tokenManagementSearchToggle(tokenName);
     await this.clickTokenManagementToggle(toggle);
-    await this.driver.waitForSelector(toggle, {
-      state: 'enabled',
-      waitAtLeastGuard: 1000,
-    });
     await this.returnFromTokenManagementToHome();
   }
 
@@ -456,10 +456,6 @@ class TokensTab extends HomePage {
       await this.driver.pasteIntoField(this.tokenManagementSearchInput, name);
       const toggle = this.tokenManagementSearchToggle(name);
       await this.clickTokenManagementToggle(toggle);
-      await this.driver.waitForSelector(toggle, {
-        state: 'enabled',
-        waitAtLeastGuard: 1000,
-      });
     }
     await this.returnFromTokenManagementToHome();
   }

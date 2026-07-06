@@ -4,6 +4,10 @@ import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils'
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 const TOKENS_API_URL = 'https://tokens.api.cx.metamask.io';
 const TOKEN_API_URL = 'https://token.api.cx.metamask.io';
+const NATIVE_ASSET_ID_BY_CHAIN_ID: Record<number, string> = {
+  1: 'eip155:1/slip44:60',
+  56: 'eip155:56/slip44:714',
+};
 
 /**
  * The ETH-to-USD conversion rate used by {@link mockPriceApi}.
@@ -142,13 +146,19 @@ export async function mockTokenMetadataApis(
         .map((accountAddress) => accountAddress.trim())
         .filter(Boolean);
 
+      const chainIds = [
+        ...new Set(normalizedTokens.map((token) => token.chainId)),
+      ];
       const balances = accountAddresses.flatMap((accountId) => [
-        {
-          accountId,
-          accountAddress: accountId,
-          assetId: 'eip155:1/slip44:60',
-          balance: '25',
-        },
+        ...chainIds
+          .map((chainId) => NATIVE_ASSET_ID_BY_CHAIN_ID[chainId])
+          .filter(Boolean)
+          .map((assetId) => ({
+            accountId,
+            accountAddress: accountId,
+            assetId,
+            balance: '25',
+          })),
         ...normalizedTokens.map((token) => ({
           accountId,
           accountAddress: accountId,
