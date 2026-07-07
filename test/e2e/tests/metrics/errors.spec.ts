@@ -512,10 +512,7 @@ describe('Sentry errors', function () {
             '\\$&',
           );
           const migrationErrorRegex = new RegExp(escapedMigrationError, 'u');
-          assert.match(
-            JSON.stringify(mockJsonBody),
-            migrationErrorRegex,
-          );
+          assert.match(JSON.stringify(mockJsonBody), migrationErrorRegex);
         },
       );
     });
