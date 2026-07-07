@@ -100,7 +100,7 @@ const persistedStateMask = {
  */
 globalThis.stateHooks.getSentryState = function () {
   const sentryState = {
-    browser: window.navigator.userAgent,
+    browser: globalThis.navigator?.userAgent ?? '',
     // we use the manifest.json version from getVersion and not
     // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
     // for more info)
