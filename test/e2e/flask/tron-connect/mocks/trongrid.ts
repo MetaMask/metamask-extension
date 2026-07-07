@@ -163,7 +163,7 @@ const accountResourcesResponse = {
 // treats the transaction as expired and disables the Confirm button:
 //   - number % 65536 === 0x8b15  → getRefBlockBytes(number) === '8b15'
 //   - blockID.slice(16, 32)      === '5fca48bd51bf3f1d' (ref_block_hash)
-const blockResponse = {
+const buildBlockResponse = () => ({
   blockID: '00000000039d8b155fca48bd51bf3f1d00000000000000000000000000000000',
   block_header: {
     raw_data: {
@@ -180,22 +180,22 @@ const blockResponse = {
     witness_signature:
       '354261801bf88973cc144d74d81f90e3ebeb8ea6029b42412757e7e996df6d3a2ad22db54675d77be3774cc067e47f374a9bc8ffbdeb0cb62c6057be26201c9000',
   },
-};
+});
 
 export const mockGetBlock = (mockServer: Mockttp) =>
   mockServer
     .forPost(`${TRONGRID_API_URL}/wallet/getblock`)
-    .thenJson(200, blockResponse);
+    .thenCallback(() => ({ statusCode: 200, json: buildBlockResponse() }));
 
 export const mockGetNowBlock = (mockServer: Mockttp) =>
   mockServer
     .forPost(`${TRONGRID_API_URL}/wallet/getnowblock`)
-    .thenJson(200, blockResponse);
+    .thenCallback(() => ({ statusCode: 200, json: buildBlockResponse() }));
 
 export const mockGetBlockByNum = (mockServer: Mockttp) =>
   mockServer
     .forPost(`${TRONGRID_API_URL}/wallet/getblockbynum`)
-    .thenJson(200, blockResponse);
+    .thenCallback(() => ({ statusCode: 200, json: buildBlockResponse() }));
 
 // TODO: Check why we had to mock this. Do we intend this call to be routed through Infura
 // instead of Trongrid ?
@@ -203,7 +203,7 @@ export const mockGetNowBlockInfura = (mockServer: Mockttp) =>
   mockServer
     .forGet(/tron-mainnet\.infura\.io\/v3\/.*\/wallet\/getnowblock/u)
     .always()
-    .thenJson(200, blockResponse);
+    .thenCallback(() => ({ statusCode: 200, json: buildBlockResponse() }));
 
 export const mockBroadcastTransaction = (mockServer: Mockttp) =>
   mockServer
