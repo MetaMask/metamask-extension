@@ -6,6 +6,7 @@ import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS_BY_CHAIN,
   MUSD_TOKEN_ASSET_ID_BY_CHAIN,
+  MUSD_BUYABLE_CHAIN_IDS,
   MUSD_CONVERSION_APY,
   MUSD_CURRENCY,
   TOAST_TRACKING_CLEANUP_DELAY_MS,
@@ -17,6 +18,7 @@ import {
   getMusdTokenAddressForChain,
   getMusdAssetIdForChain,
   isMusdSupportedChain,
+  isMusdBuyableOnChain,
 } from './constants';
 
 describe('MUSD Constants', () => {
@@ -107,6 +109,20 @@ describe('MUSD Constants', () => {
       expect(MUSD_TOKEN_ASSET_ID_BY_CHAIN[CHAIN_IDS.BSC]).toBe(
         'eip155:56/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
       );
+    });
+  });
+
+  describe('MUSD_BUYABLE_CHAIN_IDS', () => {
+    it('should include Mainnet', () => {
+      expect(MUSD_BUYABLE_CHAIN_IDS).toContain(CHAIN_IDS.MAINNET);
+    });
+
+    it('should include Linea Mainnet', () => {
+      expect(MUSD_BUYABLE_CHAIN_IDS).toContain(CHAIN_IDS.LINEA_MAINNET);
+    });
+
+    it('should not include BSC (buy routes not yet available)', () => {
+      expect(MUSD_BUYABLE_CHAIN_IDS).not.toContain(CHAIN_IDS.BSC);
     });
   });
 
@@ -251,6 +267,20 @@ describe('MUSD Utility Functions', () => {
 
     it('should return false for unsupported chain', () => {
       expect(isMusdSupportedChain('0x89' as `0x${string}`)).toBe(false);
+    });
+  });
+
+  describe('isMusdBuyableOnChain', () => {
+    it('should return true for buyable chain (lowercase)', () => {
+      expect(isMusdBuyableOnChain(CHAIN_IDS.MAINNET)).toBe(true);
+    });
+
+    it('should return true for buyable chain with uppercase hex', () => {
+      expect(isMusdBuyableOnChain('0xE708' as `0x${string}`)).toBe(true);
+    });
+
+    it('should return false for non-buyable chain', () => {
+      expect(isMusdBuyableOnChain('0x89' as `0x${string}`)).toBe(false);
     });
   });
 });

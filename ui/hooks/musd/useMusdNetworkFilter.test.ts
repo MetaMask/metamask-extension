@@ -10,6 +10,10 @@ jest.mock('../../../shared/lib/selectors/multichain', () => ({
   getEnabledNetworks: jest.fn(),
 }));
 
+jest.mock('../../components/app/musd/constants', () => ({
+  MUSD_BUYABLE_CHAIN_IDS: ['0x1', '0xe708'],
+}));
+
 const { useSelector } = jest.requireMock('react-redux');
 
 function setupNetworks(evmNetworks: Record<string, boolean> = {}) {

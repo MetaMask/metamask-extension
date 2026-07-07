@@ -1,4 +1,5 @@
 import * as manifestFlags from '../../../shared/lib/manifestFlags';
+import { MUSD_BUYABLE_CHAIN_IDS } from '../../components/app/musd/constants';
 import type { MusdFeatureFlags } from '../../pages/musd/types';
 import {
   DEFAULT_MUSD_BOOLEAN_FLAG,
@@ -22,6 +23,7 @@ import {
   selectMusdMinAssetBalanceRequired,
   selectAllMusdFeatureFlags,
   selectShouldShowAnyMusdCta,
+  selectMusdBuyableChainIds,
 } from './feature-flags';
 
 type MockState = {
@@ -61,6 +63,7 @@ describe('MUSD Feature Flag Selectors', () => {
     selectMusdMinAssetBalanceRequired.resetRecomputations();
     selectAllMusdFeatureFlags.resetRecomputations();
     selectShouldShowAnyMusdCta.resetRecomputations();
+    selectMusdBuyableChainIds.resetRecomputations();
   });
 
   afterEach(() => {
@@ -413,6 +416,15 @@ describe('MUSD Feature Flag Selectors', () => {
     it('returns false when all flags are absent (defaults)', () => {
       const state = getMockState();
       expect(selectShouldShowAnyMusdCta(state as never)).toBe(false);
+    });
+  });
+
+  describe('selectMusdBuyableChainIds', () => {
+    it('returns the buyable chain IDs constant', () => {
+      const state = getMockState();
+      expect(selectMusdBuyableChainIds(state as never)).toStrictEqual(
+        MUSD_BUYABLE_CHAIN_IDS,
+      );
     });
   });
 });

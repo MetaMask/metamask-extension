@@ -12,6 +12,7 @@
 
 import { createSelector } from 'reselect';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { MUSD_BUYABLE_CHAIN_IDS } from '../../components/app/musd/constants';
 import type {
   MusdFeatureFlags,
   WildcardTokenList,
@@ -238,4 +239,14 @@ export const selectShouldShowAnyMusdCta = createSelector(
   selectIsMusdAssetOverviewCtaEnabled,
   (flowEnabled, ctaEnabled, tokenListEnabled, assetOverviewEnabled): boolean =>
     flowEnabled && (ctaEnabled || tokenListEnabled || assetOverviewEnabled),
+);
+
+/**
+ * Select the buyable chain IDs for mUSD
+ * This combines the constant with any remote configuration
+ */
+export const selectMusdBuyableChainIds = createSelector(
+  selectMusdRemoteFeatureFlags,
+  // Could add remote config for additional chains here
+  (): string[] => MUSD_BUYABLE_CHAIN_IDS as string[],
 );
