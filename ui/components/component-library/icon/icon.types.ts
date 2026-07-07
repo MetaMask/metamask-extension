@@ -68,6 +68,7 @@ export enum IconName {
   BuySell = 'buy-sell',
   Cake = 'cake',
   Calculator = 'calculator',
+  CandlestickFilled = 'candlestick-filled',
   Calendar = 'calendar',
   Call = 'call',
   Camera = 'camera',
