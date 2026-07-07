@@ -140,6 +140,10 @@
       }
     },
     "@metamask/network-controller": {
+      "globals": {
+        "btoa": true,
+        "fetch": true
+      },
       "packages": {
         "cockatiel": true
       }
