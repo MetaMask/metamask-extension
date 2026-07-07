@@ -143,7 +143,7 @@ function numberToBigNumber(value: number, numericBase: NumericBase) {
   if (numericBase === 16 && isHexString(`${value}`)) {
     return new BigNumber(`${value}`, 16);
   }
-  return new BigNumber(value, 10);
+  return new BigNumber(String(value), 10);
 }
 
 function bigintToBigNumber(value: bigint, numericBase: NumericBase) {

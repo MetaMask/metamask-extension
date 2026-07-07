@@ -82,12 +82,6 @@
   "account": {
     "message": "Cuenta"
   },
-  "accountActivity": {
-    "message": "Actividad de la cuenta"
-  },
-  "accountActivityText": {
-    "message": "Seleccione las cuentas sobre las que desea recibir notificaciones:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Inicia sesión"
   },
@@ -2945,12 +2939,6 @@
   "customerSupport": {
     "message": "atención al cliente"
   },
-  "customizeYourNotifications": {
-    "message": "Personalice sus notificaciones"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Active los tipos de notificaciones que desea recibir:"
-  },
   "dappConnections": {
     "message": "Conexiones de Dapp"
   },
@@ -4324,9 +4312,6 @@
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Incluye"
   },
   "includesXTransactions": {
     "message": "Incluye $1 transacciones"
@@ -5782,9 +5767,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Se produjo un error. Inténtalo de nuevo."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Mantente al tanto de lo que sucede en tu billetera con notificaciones. Para usar notificaciones, usamos un perfil para sincronizar algunas configuraciones en tus dispositivos. $1 protegemos su privacidad mientras usa esta función."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Más información"
@@ -7426,9 +7408,6 @@
   },
   "proceedWithTransaction": {
     "message": "Quiero continuar de todos modos"
-  },
-  "productAnnouncements": {
-    "message": "Anuncios de producto"
   },
   "provide": {
     "message": "Proporcionar"
@@ -10398,29 +10377,8 @@
   "turnOn": {
     "message": "Activar"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Activar las notificaciones"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Activar"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Hubo un error al crear las notificaciones. Vuelva a intentarlo más tarde."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Manténgase al tanto de lo que sucede en su monedero mediante notificaciones."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "configuración de notificaciones."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Descubra cómo protegemos su privacidad mientras utiliza esta función."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Para usar las notificaciones del monedero, utilizamos un perfil para sincronizar algunas configuraciones en sus dispositivos. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Puede desactivar las notificaciones en cualquier momento en $1"
   },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"

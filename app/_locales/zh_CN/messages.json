@@ -82,12 +82,6 @@
   "account": {
     "message": "账户"
   },
-  "accountActivity": {
-    "message": "账户活动"
-  },
-  "accountActivityText": {
-    "message": "选择您想要接收通知的账户："
-  },
   "accountAlreadyExistsLogin": {
     "message": "登录"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "客户支持团队"
   },
-  "customizeYourNotifications": {
-    "message": "自定义您的通知"
-  },
-  "customizeYourNotificationsText": {
-    "message": "开启您想要接收的通知类型："
-  },
   "dappConnections": {
     "message": "去中心化应用连接"
   },
@@ -4408,9 +4396,6 @@
   "imported": {
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "包括"
   },
   "includesXTransactions": {
     "message": "包含 $1 笔交易"
@@ -5869,9 +5854,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "出错了。请重试。"
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "通过通知随时了解您的钱包动态。为了使用通知，我们使用配置文件在您的不同设备上同步一些设置。$1 我们在使用此功能时保护您的隐私。"
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "了解操作方法"
@@ -7534,9 +7516,6 @@
   },
   "proceedWithTransaction": {
     "message": "我仍然想继续"
-  },
-  "productAnnouncements": {
-    "message": "产品公告"
   },
   "provide": {
     "message": "提供"
@@ -10512,29 +10491,8 @@
   "turnOn": {
     "message": "开启"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "开启通知"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "开启"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "创建通知时出错了。请稍后再试。"
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "通过通知随时了解您的钱包动态。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "通知设置。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "了解我们如何在使用此功能时保护您的隐私。"
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "为了使用钱包通知，我们使用配置文件在您的不同设备上同步某些设置。$1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "您可以随时在 $1 中关闭通知"
   },
   "turnOnTokenDetection": {
     "message": "开启增强型代币检测"

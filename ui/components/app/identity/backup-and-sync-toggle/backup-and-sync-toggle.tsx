@@ -12,12 +12,12 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
   selectIsBackupAndSyncEnabled,
@@ -60,7 +60,7 @@ type BackupAndSyncToggleProps = {
 export const BackupAndSyncToggle = ({
   isOnboarding = false,
 }: BackupAndSyncToggleProps) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -95,29 +95,35 @@ export const BackupAndSyncToggle = ({
 
   const trackBackupAndSyncToggleEvent = useCallback(
     (newValue: boolean) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_group: 'backup_and_sync',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'main',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: displayedBackupAndSyncEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: newValue,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          was_notifications_on: isMetamaskNotificationsEnabled,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_group: 'backup_and_sync',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_type: 'main',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: displayedBackupAndSyncEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: newValue,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            was_notifications_on: isMetamaskNotificationsEnabled,
+          })
+          .build(),
+      );
     },
-    [trackEvent, displayedBackupAndSyncEnabled, isMetamaskNotificationsEnabled],
+    [
+      trackEvent,
+      createEventBuilder,
+      displayedBackupAndSyncEnabled,
+      isMetamaskNotificationsEnabled,
+    ],
   );
 
   // Cascading side effects: keep backup & sync in sync with basic functionality.

@@ -5,17 +5,17 @@ import {
 } from '@metamask/transaction-controller';
 import { useMusdConversionToastStatus } from './useMusdConversionToastStatus';
 
-jest.mock('../../contexts/metametrics', () => {
-  const React = jest.requireActual('react');
-  const trackEvent = jest.fn().mockResolvedValue(undefined);
+const mockTrackEvent = jest.fn();
+
+jest.mock('../useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
   return {
-    MetaMetricsContext: React.createContext({
-      trackEvent,
-      bufferedTrace: jest.fn().mockResolvedValue(undefined),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
     }),
-    mockTrackEvent: trackEvent,
   };
 });
 
@@ -24,7 +24,6 @@ jest.mock('react-redux', () => ({
 }));
 
 const { useSelector } = jest.requireMock('react-redux');
-const { mockTrackEvent } = jest.requireMock('../../contexts/metametrics');
 
 const MOCK_PAYMENT_TOKEN = {
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',

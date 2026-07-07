@@ -1,4 +1,4 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { useVipTier } from './useVipTier';
@@ -216,5 +216,41 @@ describe('useVipTier', () => {
 
     expect(result.current).toBeNull();
     expect(mockGetVipTierForAccount).not.toHaveBeenCalled();
+  });
+
+  it('refetches the VIP tier once the rewards subscription hydrates (cold-start race)', async () => {
+    // Cold start: subscription state is not hydrated yet, so the controller
+    // resolves no subscription and the background returns null (no /vip/fees).
+    mockGetVipTierForAccount.mockResolvedValueOnce(null);
+
+    const { result, store } = renderHookWithProvider(
+      () => useVipTier(),
+      stateWithAccount,
+    );
+
+    await waitFor(() => {
+      expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
+    });
+    expect(result.current).toBeNull();
+
+    // Silent auth completes and populates the active rewards subscription id.
+    // The query is keyed on it, so this triggers a refetch that now resolves.
+    mockGetVipTierForAccount.mockResolvedValueOnce(5);
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          rewardsActiveAccount: {
+            account: 'eip155:1:0xabc123',
+            subscriptionId: 'sub-1',
+          },
+        },
+      });
+    });
+
+    await waitFor(() => {
+      expect(result.current).toBe(5);
+    });
+    expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(2);
   });
 });
