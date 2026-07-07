@@ -58,13 +58,16 @@ export const setupSidepanelListener = () => {
 
 type SidepanelMessageHandlerOptions = {
   isSidepanelPreferred: () => boolean;
+  // Delegates the actual open to the background, which records the outcome so
+  // triggerUi can decide between the panel and the notification window.
+  openSidePanel: (tabId: number) => void;
 };
 
-// Background side: opens the side panel when the user prefers it. triggerUi
-// suppresses the notification window whenever the side panel is preferred, so
-// the panel is the only surface in that case.
+// Background side: when the user prefers the side panel, hands the tab off to
+// the background to open the panel for an allowlisted, dapp-initiated request.
 export const setupSidepanelMessageHandler = ({
   isSidepanelPreferred,
+  openSidePanel,
 }: SidepanelMessageHandlerOptions) => {
   if (process.env.IN_TEST) {
     return;
@@ -77,20 +80,14 @@ export const setupSidepanelMessageHandler = ({
 
     const method = message?.method;
     const tabId = sender?.tab?.id;
-    // @ts-expect-error sidePanel API not in webextension-polyfill types yet
-    const canOpen = Boolean(browser.sidePanel?.open);
 
     if (
       typeof method === 'string' &&
       SIDEPANEL_METHOD_ALLOWLIST.has(method) &&
       isSidepanelPreferred() &&
-      canOpen &&
       tabId
     ) {
-      // @ts-expect-error sidePanel API not in webextension-polyfill types yet
-      browser.sidePanel.open({ tabId }).catch(() => {
-        // Open failed; nothing to recover here.
-      });
+      openSidePanel(tabId);
     }
 
     return undefined;

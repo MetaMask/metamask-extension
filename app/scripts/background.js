@@ -225,6 +225,14 @@ let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
+// Records the outcome of the most recent dapp-initiated side panel open attempt
+// so triggerUi can tell whether a user-driven open succeeded (show the panel) or
+// failed/was programmatic (fall back to the notification window).
+// Shape: { tabId: number, opened: Promise<boolean>, at: number }
+let lastSidePanelOpen = null;
+// A recorded open attempt older than this is treated as unrelated to the current
+// confirmation and ignored.
+const SIDE_PANEL_OPEN_FRESHNESS_MS = 2000;
 let failedTxCount = 0;
 const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
@@ -2150,12 +2158,27 @@ async function triggerUi() {
       ?.useSidePanelAsDefault ?? true;
   const sidepanelSupported = Boolean(browser?.sidePanel?.open);
 
+  // When the side panel is preferred, defer to a recent dapp-initiated open for
+  // the active tab: if it opened (user-driven), the panel shows the confirmation
+  // and we skip the notification window. If it failed (no gesture / programmatic)
+  // or never happened (non-allowlisted method), we fall through to the notification.
+  if (sidepanelPreferred && sidepanelSupported) {
+    const activeTabId = tabs[0]?.id;
+    const attempt = lastSidePanelOpen;
+    const attemptIsForThisTab =
+      attempt &&
+      attempt.tabId === activeTabId &&
+      Date.now() - attempt.at < SIDE_PANEL_OPEN_FRESHNESS_MS;
+    if (attemptIsForThisTab && (await attempt.opened)) {
+      return;
+    }
+  }
+
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    openSidePanelCount === 0 &&
-    !(sidepanelPreferred && sidepanelSupported)
+    openSidePanelCount === 0
   ) {
     uiIsTriggering = true;
     try {
@@ -2374,10 +2397,25 @@ const setupSidePanelToolbarBehavior = async () => {
 
 setupSidePanelToolbarBehavior();
 
+// Opens the side panel for a dapp-initiated request and records the outcome.
+// The open() promise resolves when Chrome accepts the open (a real user gesture
+// was present) and rejects otherwise (e.g. programmatic call with no gesture).
+function openSidePanelForTab(tabId) {
+  if (!browser?.sidePanel?.open) {
+    return;
+  }
+  const opened = browser.sidePanel
+    .open({ tabId })
+    .then(() => true)
+    .catch(() => false);
+  lastSidePanelOpen = { tabId, opened, at: Date.now() };
+}
+
 setupSidepanelMessageHandler({
   isSidepanelPreferred: () =>
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? true,
+  openSidePanel: openSidePanelForTab,
 });
 
 // Initialize appActiveTab by querying the current active tab on startup
