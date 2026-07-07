@@ -295,8 +295,67 @@ function initSentryClient(clientOptions) {
 
   Sentry.setCurrentClient(client);
   client.init();
+  startInitialBrowserSession(clientOptions);
 
   return client;
+}
+
+function startInitialBrowserSession(clientOptions) {
+  if (
+    clientOptions.autoSessionTracking === false ||
+    typeof globalThis.document === 'undefined'
+  ) {
+    return;
+  }
+
+  // Sentry.init starts browser session tracking after binding the client.
+  // Manual client initialization must preserve the initial page-view session.
+  Sentry.startSession({ ignoreDuration: true });
+  Sentry.captureSession();
+  trackBrowserNavigationSessions();
+}
+
+function trackBrowserNavigationSessions() {
+  if (
+    globalThis.stateHooks?.isSentrySessionTrackingEnabled ||
+    !globalThis.history ||
+    !globalThis.location
+  ) {
+    return;
+  }
+
+  globalThis.stateHooks = globalThis.stateHooks || {};
+  globalThis.stateHooks.isSentrySessionTrackingEnabled = true;
+
+  let lastHref = globalThis.location.href;
+  const handleNavigation = () => {
+    const currentHref = globalThis.location.href;
+    if (lastHref === currentHref) {
+      return;
+    }
+
+    lastHref = currentHref;
+    Sentry.startSession({ ignoreDuration: true });
+    Sentry.captureSession();
+  };
+
+  wrapHistoryMethod('pushState', handleNavigation);
+  wrapHistoryMethod('replaceState', handleNavigation);
+  globalThis.addEventListener?.('hashchange', handleNavigation);
+  globalThis.addEventListener?.('popstate', handleNavigation);
+}
+
+function wrapHistoryMethod(method, afterNavigation) {
+  const original = globalThis.history?.[method];
+  if (typeof original !== 'function') {
+    return;
+  }
+
+  globalThis.history[method] = function (...args) {
+    const result = original.apply(this, args);
+    afterNavigation();
+    return result;
+  };
 }
 
 /**
