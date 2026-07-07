@@ -198,11 +198,6 @@ export type MetaMetricsControllerUpdateTraitsAction = {
   handler: MetaMetricsController['updateTraits'];
 };
 
-export type MetaMetricsControllerGetMetaMetricsIdAction = {
-  type: `MetaMetricsController:getMetaMetricsId`;
-  handler: MetaMetricsController['getMetaMetricsId'];
-};
-
 /**
  * Union of all MetaMetricsController action types.
  */
@@ -230,5 +225,4 @@ export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerAddTraceBeforeMetricsOptInAction
   | MetaMetricsControllerBufferedTraceAction
   | MetaMetricsControllerBufferedEndTraceAction
-  | MetaMetricsControllerUpdateTraitsAction
-  | MetaMetricsControllerGetMetaMetricsIdAction;
+  | MetaMetricsControllerUpdateTraitsAction;

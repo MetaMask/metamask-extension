@@ -6,6 +6,7 @@ import {
   TRIGGER_TYPES,
   NOTIFICATION_API_TRIGGER_TYPES_SET,
 } from '@metamask/notification-services-controller/notification-services';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
@@ -23,9 +24,9 @@ import {
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
+import { useSafeState } from '../../hooks/metamask-notifications/useNotifications';
 import { getNotifySnaps } from '../../selectors';
 import {
-  selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
@@ -34,16 +35,44 @@ import {
   Display,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { deleteExpiredNotifications } from '../../store/actions';
+import {
+  deleteExpiredNotifications,
+  getNotificationPreferences,
+} from '../../store/actions';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
+
+const useFeatureAnnouncementsEnabled = () => {
+  const dispatch = useDispatch();
+  const [areFeatureAnnouncementsEnabled, setAreFeatureAnnouncementsEnabled] =
+    useSafeState(false);
+
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const preferences = (await dispatch(
+          getNotificationPreferences(),
+        )) as unknown as NotificationPreferences | null;
+
+        setAreFeatureAnnouncementsEnabled(
+          Boolean(preferences?.marketing.inAppNotificationsEnabled),
+        );
+      } catch {
+        setAreFeatureAnnouncementsEnabled(false);
+      }
+    };
+
+    loadPreferences();
+  }, [dispatch, setAreFeatureAnnouncementsEnabled]);
+
+  return areFeatureAnnouncementsEnabled;
+};
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
 const useMetaMaskNotifications = () => {
-  const isFeatureAnnouncementsEnabled = useSelector(
-    selectIsFeatureAnnouncementsEnabled,
-  );
+  const areFeatureAnnouncementsEnabled = useFeatureAnnouncementsEnabled();
 
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -52,12 +81,12 @@ const useMetaMaskNotifications = () => {
   const notificationsData = useSelector(getMetamaskNotifications);
 
   const featureAnnouncementNotifications = useMemo(() => {
-    return isFeatureAnnouncementsEnabled
+    return areFeatureAnnouncementsEnabled
       ? (notificationsData ?? []).filter(
           (n) => n.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
         )
       : [];
-  }, [isFeatureAnnouncementsEnabled, notificationsData]);
+  }, [areFeatureAnnouncementsEnabled, notificationsData]);
 
   const walletNotifications = useMemo(() => {
     return isMetamaskNotificationsEnabled
@@ -139,6 +168,7 @@ export const filterNotifications = (
 export default function Notifications() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -146,7 +176,7 @@ export default function Notifications() {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(DEFAULT_ROUTE);
     }

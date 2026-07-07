@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { selectIsNetworkMenuOpen } from '../../selectors';
 import { toggleNetworkMenu } from '../../store/actions';
+import { setHomeDeepLinkQrCode } from '../../ducks/app/app';
 import {
   DEEP_LINK_ORIGIN,
   HomeQueryParams,
@@ -15,9 +16,7 @@ export type HomeDeepLinkQrCode = {
   titleKey: string;
 };
 
-type HomeDeepLinkActionsProps = {
-  onQrCodeDeepLink?: (qrCode: HomeDeepLinkQrCode) => void;
-};
+type HomeDeepLinkActionsProps = Record<string, never>;
 
 function isDeepLinkUrlForPath(urlString: string | undefined, pathname: string) {
   if (!urlString) {
@@ -34,12 +33,8 @@ function isDeepLinkUrlForPath(urlString: string | undefined, pathname: string) {
 
 /**
  * Reusable hook to handle deep link actions for the home route.
- * @param options0
- * @param options0.onQrCodeDeepLink
  */
-export const useHomeDeepLinkEffects = ({
-  onQrCodeDeepLink,
-}: HomeDeepLinkActionsProps = {}) => {
+export const useHomeDeepLinkEffects = () => {
   const { pathname } = useLocation();
   const isHomeRoute = pathname === DEFAULT_ROUTE;
 
@@ -53,15 +48,30 @@ export const useHomeDeepLinkEffects = ({
     }
   }, [dispatch, isNetworkMenuOpen]);
 
+  const openBatchSellQrCodeModal = useCallback(
+    (deeplinkUrl: string) => {
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrBatchSellDescription',
+          titleKey: 'deepLinkQrBatchSellTitle',
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const openPredictQrCodeModal = useCallback(
     (deeplinkUrl: string) => {
-      onQrCodeDeepLink?.({
-        deeplinkUrl,
-        descriptionKey: 'deepLinkQrPredictDescription',
-        titleKey: 'deepLinkQrPredictTitle',
-      });
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrPredictDescription',
+          titleKey: 'deepLinkQrPredictTitle',
+        }),
+      );
     },
-    [onQrCodeDeepLink],
+    [dispatch],
   );
 
   const deepLinkHandlers: Record<
@@ -72,6 +82,11 @@ export const useHomeDeepLinkEffects = ({
     }
   > = useMemo(
     () => ({
+      [HomeQueryParams.BatchSellDeeplinkUrl]: {
+        isValidParam: (param?: string) =>
+          isDeepLinkUrlForPath(param, '/batch-sell'),
+        action: openBatchSellQrCodeModal,
+      },
       [HomeQueryParams.OpenNetworkSelector]: {
         isValidParam: (param?: string) => param?.toLowerCase() === 'true',
         action: openNetworkSelectorModal,
@@ -82,7 +97,11 @@ export const useHomeDeepLinkEffects = ({
         action: openPredictQrCodeModal,
       },
     }),
-    [openNetworkSelectorModal, openPredictQrCodeModal],
+    [
+      openBatchSellQrCodeModal,
+      openNetworkSelectorModal,
+      openPredictQrCodeModal,
+    ],
   );
 
   const clearDeepLinkParams = useCallback(() => {
@@ -118,12 +137,11 @@ export const useHomeDeepLinkEffects = ({
 };
 
 /**
- * Ghost component that manages the useHomeDeepLinkEffects
- * Can be used in non-functional components (that cannot use hooks)
+ * Ghost component that manages the useHomeDeepLinkEffects.
+ * Dispatches deep-link QR code data to Redux so
+ * DeeplinkQrCodeModalContainer can render it independently.
  */
-export const HomeDeepLinkActions = memo(
-  ({ onQrCodeDeepLink }: HomeDeepLinkActionsProps) => {
-    useHomeDeepLinkEffects({ onQrCodeDeepLink });
-    return null;
-  },
-);
+export const HomeDeepLinkActions = memo(() => {
+  useHomeDeepLinkEffects();
+  return null;
+});
