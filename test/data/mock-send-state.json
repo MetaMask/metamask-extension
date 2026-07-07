@@ -11,9 +11,7 @@
   },
   "appState": {
     "networkDropdownOpen": false,
-    "importNftsModal": {
-      "open": false
-    },
+    "importNftsModal": { "open": false },
     "showPermittedNetworkToastOpen": false,
     "isLoading": false,
     "importTokensModalOpen": false,
@@ -150,6 +148,7 @@
     },
     "featureFlags": {},
     "network": "5",
+
     "networkConfigurationsByChainId": {
       "0x5": {
         "nativeCurrency": "ETH",
@@ -562,6 +561,7 @@
         }
       }
     },
+
     "transactions": [
       {
         "id": 8393540981007587,
