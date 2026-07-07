@@ -17,14 +17,16 @@ export type ActiveBottomNavTabs = {
  *
  * @param pathname - The current location pathname.
  */
-export function getActiveBottomNavTabs(pathname: string): ActiveBottomNavTabs {
+export const getActiveBottomNavTabs = (
+  pathname: string,
+): ActiveBottomNavTabs => {
   return {
     isHome: pathname === DEFAULT_ROUTE,
     isPerps: pathname === PERPS_HOME_PAGE_ROUTE,
     isSwaps: pathname === SWAP_PATH,
     isActivity: pathname === ACTIVITY_ROUTE,
   };
-}
+};
 
 /**
  * Returns true when the pathname corresponds to one of the bottom nav
@@ -32,7 +34,7 @@ export function getActiveBottomNavTabs(pathname: string): ActiveBottomNavTabs {
  *
  * @param pathname - The current location pathname.
  */
-export function isBottomNavRoute(pathname: string): boolean {
+export const isBottomNavRoute = (pathname: string): boolean => {
   const activeBottomNavTabs = getActiveBottomNavTabs(pathname);
   return Object.values(activeBottomNavTabs).some(Boolean);
-}
+};
