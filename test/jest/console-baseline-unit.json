@@ -265,9 +265,6 @@
     "ui/components/app/modals/identity/turn-on-backup-and-sync-modal/turn-on-backup-and-sync-modal.test.tsx": {
       "error: Error: MetaMetrics context trackEvent was": 2
     },
-    "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
-      "Reselect: Input stability warnings": 3
-    },
     "ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
@@ -1005,6 +1002,12 @@
     },
     "ui/pages/settings/about-tab/about-info.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
+    },
+    "ui/pages/settings/add-device-tab/add-device-settings.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/add-device-tab/components/qr-code-scan.test.tsx": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1

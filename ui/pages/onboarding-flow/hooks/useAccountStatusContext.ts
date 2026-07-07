@@ -16,6 +16,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { useOnboardingReset } from './useOnboardingReset';
@@ -63,12 +64,9 @@ export function useAccountStatusContext({
   const socialLoginType = useSelector(getSocialLoginType);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
 
-  const {
-    trackEvent,
-    bufferedTrace,
-    bufferedEndTrace,
-    onboardingParentContext,
-  } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    useContext(MetaMetricsContext);
 
   const descriptionKey = useMemo(() => {
     if (socialLoginType === AuthConnection.Telegram) {
@@ -86,10 +84,11 @@ export function useAccountStatusContext({
 
   useEffect(() => {
     if (firstTimeFlowType === validFlowType) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: pageViewedEventName,
-      });
+      trackEvent(
+        createEventBuilder(pageViewedEventName)
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .build(),
+      );
       bufferedTrace?.({
         name: pageTraceName,
         op: TraceOperation.OnboardingUserJourney,
@@ -112,6 +111,7 @@ export function useAccountStatusContext({
     onboardingParentContext,
     bufferedTrace,
     bufferedEndTrace,
+    createEventBuilder,
     trackEvent,
   ]);
 
@@ -121,6 +121,7 @@ export function useAccountStatusContext({
     descriptionInterpolation,
     resetOnboardingAndReturn,
     trackEvent,
+    createEventBuilder,
     bufferedTrace,
     onboardingParentContext,
   };
