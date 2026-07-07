@@ -615,7 +615,9 @@ describe('QrSyncDataService', () => {
 
       await expect(
         dataService.buildWalletExportEntries(TEST_PASSWORD, [fixture.groupId]),
-      ).rejects.toThrow(`Wallet for account group "${fixture.groupId}" not found.`);
+      ).rejects.toThrow(
+        `Wallet for account group "${fixture.groupId}" not found.`,
+      );
     });
 
     it('throws when entropy wallet group is not a multichain account', async () => {
