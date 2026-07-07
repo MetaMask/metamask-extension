@@ -555,9 +555,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       const store = makeMockStore();
       jest.spyOn(console, 'error').mockImplementationOnce(() => undefined);
       isHardwareWalletSpy.mockImplementation(() => true);
-      getHardwareWalletTypeSpy.mockImplementation(
-        () => HardwareKeyringType.qr,
-      );
+      getHardwareWalletTypeSpy.mockImplementation(() => HardwareKeyringType.qr);
       submitTxSpy.mockImplementationOnce((async () => {
         throw new Error('network error');
       }) as never);
