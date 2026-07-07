@@ -124,8 +124,6 @@ function getPerpsWithdrawToastTransaction(
   };
 }
 
-export { selectTransactionIds } from './transaction-ids';
-
 export const selectBridgeApprovalTxIds = createSelector(
   selectTxHistory,
   (txHistory) => {

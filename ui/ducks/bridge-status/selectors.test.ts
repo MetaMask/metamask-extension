@@ -5,6 +5,7 @@ import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryForToast,
   selectNonEvmBridgeSourceTxIds,
+  selectTransactionIds,
 } from './selectors';
 
 type BridgeStatusAppState = {
@@ -23,6 +24,28 @@ jest.mock('../../selectors/multichain-transactions', () => ({
 }));
 
 describe('bridge-status selectors', () => {
+  describe('selectTransactionIds', () => {
+    it('returns a Set of all transaction ids', () => {
+      const state = {
+        metamask: {
+          transactions: [{ id: 'a' }, { id: 'b' }, { id: 'c' }],
+        },
+      };
+
+      const result = selectTransactionIds(
+        state as unknown as BridgeStatusAppState,
+      );
+      expect(result).toStrictEqual(new Set(['a', 'b', 'c']));
+    });
+
+    it('returns an empty Set when there are no transactions', () => {
+      const result = selectTransactionIds({
+        metamask: {},
+      } as unknown as BridgeStatusAppState);
+      expect(result).toStrictEqual(new Set());
+    });
+  });
+
   describe('selectBridgeHistoryForToast', () => {
     it('returns cross-chain items whose source tx exists in transactions', () => {
       const state = {

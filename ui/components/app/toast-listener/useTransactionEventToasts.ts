@@ -128,12 +128,12 @@ export function useTransactionEventToasts(): void {
       }
 
       const toastId = generateToastId(id);
-      const toastOptions = { transactionId: id };
+      const props = { transactionId: id };
 
       if (status === 'submitted' && shouldShowPendingToast(id)) {
-        showPendingToast(toastId, toastOptions);
+        showPendingToast(toastId, props);
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
-        showSuccessToast(toastId, toastOptions);
+        showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
           const transactions = store.getState().metamask?.transactions ?? [];
@@ -143,10 +143,10 @@ export function useTransactionEventToasts(): void {
             dismissToast(toastId);
             clearToastPhase(id);
           } else if (shouldShowTerminalToast(id)) {
-            showFailedToast(toastId, toastOptions);
+            showFailedToast(toastId, props);
           }
         } else if (shouldShowTerminalToast(id)) {
-          showFailedToast(toastId, toastOptions);
+          showFailedToast(toastId, props);
         }
       }
     };

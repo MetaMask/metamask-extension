@@ -10,11 +10,7 @@ const genericToastLabels: Record<ToastStatus, string> = {
   failed: 'transactionFailed',
 };
 
-// Per-activity-kind toast content. Mirrors the activity list's getContent switch
-// (ui/pages/activity/rows/useActivityRowContent.tsx): keyed on the already-
-// classified ActivityKind and reading from the centrally-enriched
-// ActivityListItem. Add a new kind by adding a case here — never a new Redux
-// selector.
+// Add support for new activity types by adding a case here
 function useGetToastContent(
   status: ToastStatus,
   item?: ActivityListItem,
@@ -50,8 +46,6 @@ export function useToastLabel(
   status: ToastStatus,
   transactionId?: string,
 ): { title: string; description?: string } {
-  // A single, memoized selector shared with the activity list. The per-kind
-  // label logic is pure, so no extra selector runs as more kinds are added.
   const itemsByIdentifier = useSelector(selectLocalActivityItemsByIdentifier);
   const item = transactionId
     ? itemsByIdentifier.get(transactionId.toLowerCase())

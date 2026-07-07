@@ -12,9 +12,8 @@ import {
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
-import { EMPTY_OBJECT } from '../../selectors/shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../selectors/shared';
 import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
-import { selectTransactionIds } from '../../selectors/transaction-ids';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
@@ -29,6 +28,14 @@ const normalizeBridgeHistoryLookupKey = (value: unknown) =>
 
 const selectBridgeHistory = (state: BridgeStatusAppState) =>
   state.metamask.txHistory;
+
+const selectTransactions = (state: BridgeStatusAppState) =>
+  state.metamask.transactions ?? EMPTY_ARRAY;
+
+export const selectTransactionIds = createSelector(
+  selectTransactions,
+  (transactions) => new Set<string>(transactions.map((tx) => tx.id)),
+);
 
 const selectBridgeHistoryForAccount = createSelector(
   [(_, selectedAddresses?: string[]) => selectedAddresses, selectBridgeHistory],
