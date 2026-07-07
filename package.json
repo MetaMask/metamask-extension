@@ -142,7 +142,6 @@
     "validate-branch-name": "validate-branch-name",
     "add-release-label-to-pr-and-linked-issues": "tsx ./.github/scripts/add-release-label-to-pr-and-linked-issues.mts",
     "check-pr-has-required-labels": "tsx ./.github/scripts/check-pr-has-required-labels.mts",
-    "check-template-and-add-labels": "tsx ./.github/scripts/check-template-and-add-labels.mts",
     "create-bug-report-issue": "tsx ./.github/scripts/create-bug-report-issue.mts",
     "audit": "yarn tsx .github/scripts/yarn-audit-local.mts",
     "audit:legacy": "yarn npm audit --recursive --environment production --severity moderate",
