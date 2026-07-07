@@ -1403,3 +1403,14 @@ export async function mockTronSwapApisNoQuotes(
     await mockBridgeGetTronQuoteEmpty(mockServer),
   ];
 }
+
+export async function mockTronSwapApisWithoutFeeEstimation(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint[]> {
+  return [
+    ...(await mockTronApis(mockServer, mockZeroBalance)),
+    await mockBridgeGetTronTokens(mockServer),
+    await mockBridgeGetTronQuote(mockServer),
+  ];
+}
