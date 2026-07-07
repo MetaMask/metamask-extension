@@ -5,6 +5,7 @@ import {
 } from '@metamask/messenger';
 import { DeFiPositionsControllerMessenger } from '@metamask/assets-controllers';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -36,7 +37,9 @@ export function getDeFiPositionsControllerMessenger(
   return controllerMessenger;
 }
 
-type AllowedInitializationActions = RemoteFeatureFlagControllerGetStateAction;
+type AllowedInitializationActions =
+  | RemoteFeatureFlagControllerGetStateAction
+  | MetaMetricsControllerTrackEventAction;
 
 export type DeFiPositionsControllerInitMessenger = ReturnType<
   typeof getDeFiPositionsControllerInitMessenger
@@ -56,7 +59,10 @@ export function getDeFiPositionsControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['RemoteFeatureFlagController:getState'],
+    actions: [
+      'RemoteFeatureFlagController:getState',
+      'MetaMetricsController:trackEvent',
+    ],
   });
   return controllerInitMessenger;
 }

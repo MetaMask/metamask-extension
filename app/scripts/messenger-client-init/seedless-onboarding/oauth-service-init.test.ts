@@ -21,24 +21,16 @@ function buildInitRequestMock(): jest.Mocked<
 describe('OAuthServiceInit', () => {
   it('returns the service instance', () => {
     const requestMock = buildInitRequestMock();
-    const metaMetricsController = {
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      addEventBeforeMetricsOptIn: jest.fn(),
-      state: { completedMetaMetricsOnboarding: true },
-    };
-    const analyticsController = {
-      state: { optedIn: false },
-    };
 
-    // OAuthServiceInit reads MetaMetrics onboarding state and Analytics opt-in state.
     // @ts-expect-error: Partial mock for testing.
-    requestMock.getMessengerClient.mockImplementation((controllerName) => {
-      if (controllerName === 'AnalyticsController') {
-        return analyticsController;
-      }
-
-      return metaMetricsController;
+    requestMock.getMessengerClient.mockImplementation(() => {
+      return {
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        trackEvent: jest.fn(),
+        addEventBeforeMetricsOptIn: jest.fn(),
+        state: { completedMetaMetricsOnboarding: true, optedIn: false },
+      };
     });
 
     expect(OAuthServiceInit(requestMock).messengerClient).toBeInstanceOf(

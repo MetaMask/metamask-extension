@@ -42,7 +42,7 @@ describe('useHardwareWalletMetrics', () => {
 
   it('returns a callback that forwards to trackHardwareWalletRecoveryConnectCtaClicked', () => {
     const { result } = renderHook(() => useHardwareWalletMetrics(), {
-      wrapper: ({ children }: React.PropsWithChildren<unknown>) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <MetaMetricsContext.Provider
           value={{
             trackEvent: mockTrackEvent,

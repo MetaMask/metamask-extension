@@ -12,7 +12,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { createMockNotificationPreferences } from '../../../ui/hooks/metamask-notifications/mocks';
 import {
   ethSentNotification,
   featureNotification,
@@ -35,7 +34,6 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      getNotificationPreferences: createMockNotificationPreferences(),
       ...mockRequests,
     }),
   );
@@ -151,24 +149,25 @@ describe('Notifications List', () => {
       const notificationsInteractionsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackAnalyticsEvent' &&
-            call[1]?.[0]?.properties?.category ===
+            call[0] === 'trackMetaMetricsEvent' &&
+            call[1]?.[0].category ===
               MetaMetricsEventCategory.NotificationInteraction,
         );
 
-      expect(notificationsInteractionsEvent?.[0]).toBe('trackAnalyticsEvent');
+      expect(notificationsInteractionsEvent?.[0]).toBe('trackMetaMetricsEvent');
       const [metricsEvent] = notificationsInteractionsEvent?.[1] as unknown as [
         {
-          name: string;
+          event: string;
+          category: string;
           properties: Record<string, unknown>;
         },
       ];
 
-      expect(metricsEvent?.name).toBe(
+      expect(metricsEvent?.event).toBe(
         MetaMetricsEventName.NotificationsMenuOpened,
       );
 
-      expect(metricsEvent?.properties?.category).toBe(
+      expect(metricsEvent?.category).toBe(
         MetaMetricsEventCategory.NotificationInteraction,
       );
 

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
   BlockSize,
@@ -34,6 +33,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export const EditNetworksModal = ({
   nonTestNetworks,
@@ -43,7 +43,7 @@ export const EditNetworksModal = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [selectedChainIds, setSelectedChainIds] = useState(
@@ -195,18 +195,15 @@ export const EditNetworksModal = ({
                     (chainId) => !selectedChainIdsSet.has(chainId),
                   );
 
-                  trackEvent(
-                    createEventBuilder(
-                      MetaMetricsEventName.UpdatePermissionedNetworks,
-                    )
-                      .addCategory(MetaMetricsEventCategory.Permissions)
-                      .addProperties({
-                        addedNetworks: addedNetworks.length,
-                        removedNetworks: removedNetworks.length,
-                        location: 'Edit Networks Modal',
-                      })
-                      .build(),
-                  );
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Permissions,
+                    event: MetaMetricsEventName.UpdatePermissionedNetworks,
+                    properties: {
+                      addedNetworks: addedNetworks.length,
+                      removedNetworks: removedNetworks.length,
+                      location: 'Edit Networks Modal',
+                    },
+                  });
                   onClose();
                 }}
                 size={ButtonPrimarySize.Lg}

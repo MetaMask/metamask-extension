@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { useSendContext } from '../../../context/send';
 import {
   AmountInputMethod,
@@ -14,7 +14,7 @@ import {
 import { useSendType } from '../useSendType';
 
 export const useAmountSelectionMetrics = () => {
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { chainId } = useSendContext();
   const { isEvmSendType } = useSendType();
   const {
@@ -47,9 +47,10 @@ export const useAmountSelectionMetrics = () => {
 
   const captureAmountSelected = useCallback(() => {
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.SendAmountSelected)
-        .addCategory(MetaMetricsEventCategory.Send)
-        .addProperties({
+      {
+        event: MetaMetricsEventName.SendAmountSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: accountType,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -60,15 +61,17 @@ export const useAmountSelectionMetrics = () => {
           chain_id: isEvmSendType ? chainId : undefined,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id_caip: isEvmSendType ? undefined : chainId,
-        })
-        .build({ excludeMetaMetricsId: false }),
+        },
+      },
+      {
+        excludeMetaMetricsId: false,
+      },
     );
   }, [
     accountType,
     amountInputMethod,
     amountInputType,
     chainId,
-    createEventBuilder,
     isEvmSendType,
     trackEvent,
   ]);

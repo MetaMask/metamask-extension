@@ -160,12 +160,12 @@ const themeToInputProps = {
 
 const TextField = ({
   'data-testid': dataTestId,
-  error = null,
-  theme = 'bordered',
+  error,
+  theme,
   startAdornment,
   endAdornment,
   largeLabel,
-  dir = 'auto',
+  dir,
   min,
   max,
   autoComplete,
@@ -201,6 +201,12 @@ const TextField = ({
       {...textFieldProps}
     />
   );
+};
+
+TextField.defaultProps = {
+  error: null,
+  dir: 'auto',
+  theme: 'bordered',
 };
 
 TextField.propTypes = {

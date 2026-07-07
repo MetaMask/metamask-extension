@@ -157,30 +157,6 @@ describe('createPlatformAdapter', () => {
         undefined,
       );
     });
-
-    it('strips profile identity properties from anonymous track payloads', () => {
-      const { adapter, segment } = buildAdapter();
-
-      adapter.track('Signature Requested', {
-        foo: 'bar',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        profile_id: 'profileId',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        canonical_profile_id: 'canonicalProfileId',
-        [ANONYMOUS_EVENT_PROPERTY]: true,
-      });
-
-      expect(segment.track).toHaveBeenCalledWith(
-        {
-          anonymousId: METAMETRICS_ANONYMOUS_ID,
-          event: MetaMetricsEventName.SignatureRequestedAnon,
-          properties: { foo: 'bar' },
-        },
-        undefined,
-      );
-    });
   });
 
   describe('identify', () => {

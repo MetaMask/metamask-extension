@@ -47,7 +47,6 @@ export function getSnapControllerMessenger(
       'SnapRegistryController:registryUpdated',
     ],
     actions: [
-      'AnalyticsController:trackEvent',
       'PermissionController:getEndowments',
       'PermissionController:getPermissions',
       'PermissionController:hasPermission',

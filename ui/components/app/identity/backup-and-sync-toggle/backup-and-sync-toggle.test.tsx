@@ -12,6 +12,7 @@ import {
   onboardingToggleBackupAndSyncOn,
   onboardingToggleBasicFunctionalityOn,
 } from '../../../../ducks/app/app';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   BackupAndSyncToggle,
@@ -23,21 +24,6 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
 }));
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
-  };
-});
 
 const mockStore = configureMockStore();
 const initialStore = () => ({
@@ -75,21 +61,30 @@ describe('BackupAndSyncToggle', () => {
   });
 
   it('tracks the toggle event', () => {
+    const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = initialStore();
 
     store.metamask.isBackupAndSyncEnabled = true;
     arrangeMocks();
 
     const { getByTestId } = renderWithProvider(
-      <BackupAndSyncToggle />,
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <BackupAndSyncToggle />
+      </MetaMetricsContext.Provider>,
       mockStore(store),
     );
 
     fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      name: 'Settings Updated',
+      category: 'Settings',
+      event: 'Settings Updated',
       properties: {
-        category: 'Settings',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         settings_group: 'backup_and_sync',
@@ -106,7 +101,6 @@ describe('BackupAndSyncToggle', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         was_notifications_on: false,
       },
-      sensitiveProperties: {},
     });
   });
 
@@ -271,10 +265,19 @@ describe('BackupAndSyncToggle', () => {
   });
 
   describe('isOnboarding mode', () => {
+    const noopMetaMetricsContext = {
+      trackEvent: jest.fn(),
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
+
     const renderInOnboarding = (store: ReturnType<typeof initialStore>) =>
       render(
         <Redux.Provider store={mockStore(store)}>
-          <BackupAndSyncToggle isOnboarding />
+          <MetaMetricsContext.Provider value={noopMetaMetricsContext}>
+            <BackupAndSyncToggle isOnboarding />
+          </MetaMetricsContext.Provider>
         </Redux.Provider>,
       );
 

@@ -1,28 +1,22 @@
 /**
  * Maintains a WebSocket connection to the dev server, reconnecting with
  * exponential backoff, and hands every parsed message to `onMessage`. Once
- * the optional `isDone()` returns true (the client has begun a reload),
- * messages stop being dispatched and a closed socket is no longer reconnected
- * — the teardown is expected.
+ * `isDone()` returns true (the client has begun a reload), messages stop
+ * being dispatched and a closed socket is no longer reconnected — the
+ * teardown is expected.
  *
- * @param options - Connection options.
- * @param options.url - The WebSocket URL to connect to.
- * @param options.onMessage - Receives each message's type and data, and the
- * socket it arrived on.
- * @param options.isDone - Whether the client is finished with the connection.
- * @param options.maxReconnectDelayMs - The ceiling for the reconnection backoff.
+ * @param url - The WebSocket URL to connect to.
+ * @param isDone - Whether the client is finished with the connection.
+ * @param onMessage - Receives each message's type and data, and the socket it
+ * arrived on.
+ * @param maxReconnectDelayMs - The ceiling for the reconnection backoff.
  */
-export function connectToDevServer({
-  url,
-  onMessage,
-  isDone,
-  maxReconnectDelayMs = 5000,
-}: {
-  url: string;
-  onMessage: (type: string, data: unknown, socket: WebSocket) => void;
-  isDone?: () => boolean;
-  maxReconnectDelayMs?: number;
-}): void {
+export function connectToDevServer(
+  url: string,
+  isDone: () => boolean,
+  onMessage: (type: string, data: unknown, socket: WebSocket) => void,
+  maxReconnectDelayMs: number = 5000,
+): void {
   /**
    * Schedules a reconnection attempt with exponential backoff.
    *
@@ -55,7 +49,7 @@ export function connectToDevServer({
     });
 
     socket.addEventListener('message', (event: MessageEvent) => {
-      if (isDone?.()) {
+      if (isDone()) {
         return;
       }
       if (typeof event.data !== 'string') {
@@ -88,7 +82,7 @@ export function connectToDevServer({
     // A failed connection also fires `close` (after its `error`), so this
     // handler covers both connection failures and later disconnects.
     socket.addEventListener('close', () => {
-      if (!isDone?.()) {
+      if (!isDone()) {
         scheduleReconnect(attempt);
       }
     });

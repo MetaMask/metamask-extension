@@ -9,7 +9,6 @@ import type {
   AssignmentPatternProperty,
   KeyValuePatternProperty,
 } from '@swc/types';
-import { TYPESCRIPT_FILE_RE } from '../helpers';
 
 // Options are serialized to a JSON array for thread-loader compatibility
 export type EnvValidationLoaderOptions = {
@@ -27,7 +26,7 @@ export type EnvValidationLoaderOptions = {
  * @returns The parse options with appropriate syntax configuration.
  */
 function getParseOptions(resourcePath: string): ParseOptions {
-  const isTypeScript = TYPESCRIPT_FILE_RE.test(resourcePath);
+  const isTypeScript = /\.(?:ts|mts|tsx)$/u.test(resourcePath);
 
   if (isTypeScript) {
     return { syntax: 'typescript', tsx: true };

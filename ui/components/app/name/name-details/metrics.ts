@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -24,7 +24,7 @@ export function usePetnamesMetrics({
   selectedSourceId?: string;
   type: NameType;
 }) {
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const trackPetnamesEvent = useCallback(
     (
@@ -52,14 +52,13 @@ export function usePetnamesMetrics({
         ...additionalProperties,
       };
 
-      trackEvent(
-        createEventBuilder(event)
-          .addCategory(MetaMetricsEventCategory.Petnames)
-          .addProperties(properties)
-          .build(),
-      );
+      trackEvent({
+        event,
+        category: MetaMetricsEventCategory.Petnames,
+        properties,
+      });
     },
-    [trackEvent, createEventBuilder, type, proposedNameOptions],
+    [trackEvent, type, proposedNameOptions],
   );
 
   const trackPetnamesSaveEvent = useCallback(() => {

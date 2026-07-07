@@ -33,8 +33,8 @@ export const sendRedesignedTransactionToAddress = async ({
   });
 
   // confirm transaction when user lands on confirm transaction screen
-  const transactionConfirmation = new TransactionConfirmation(driver);
-  await transactionConfirmation.clickFooterConfirmButton();
+  const transactionConfirmationPage = new TransactionConfirmation(driver);
+  await transactionConfirmationPage.clickFooterConfirmButton();
 };
 
 /**
@@ -64,8 +64,8 @@ export const sendRedesignedTransactionToAccount = async ({
   });
 
   // confirm transaction when user lands on confirm transaction screen
-  const transactionConfirmation = new TransactionConfirmation(driver);
-  await transactionConfirmation.clickFooterConfirmButton();
+  const transactionConfirmationPage = new TransactionConfirmation(driver);
+  await transactionConfirmationPage.clickFooterConfirmButton();
 };
 
 /**
@@ -103,31 +103,12 @@ export const sendRedesignedTransactionWithSnapAccount = async ({
   }
 };
 
-export const validateTransaction = async (
-  driver: Driver,
-  amount: string,
-): Promise<void> => {
+export const validateTransaction = async (driver: Driver, quantity: string) => {
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
   const activityTab = new ActivityTab(driver);
-  await activityTab.goToActivityList();
   await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+
   await activityTab.checkTxAction({ action: 'Sent ETH' });
-  await activityTab.checkTxAmountInActivity(`${amount} ETH`, 1);
-};
-
-export const validateBalanceAndActivity = async (
-  driver: Driver,
-  expectedBalance: string,
-  expectedActivityEntries = 1,
-): Promise<void> => {
-  await new HomePage(driver).checkExpectedBalanceIsDisplayed(expectedBalance);
-
-  const activityTab = new ActivityTab(driver);
-  await activityTab.goToActivityList();
-  await activityTab.checkConfirmedTxNumberDisplayedInActivity(
-    expectedActivityEntries,
-  );
-
-  if (expectedActivityEntries) {
-    await activityTab.checkTxAction({ action: 'Sent ETH' });
-  }
+  await activityTab.checkTxAmountInActivity(`${quantity} ETH`, 1);
 };

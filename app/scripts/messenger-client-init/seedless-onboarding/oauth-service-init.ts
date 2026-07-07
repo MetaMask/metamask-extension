@@ -32,6 +32,8 @@ export const OAuthServiceInit: MessengerClientInitFunction<
       metaMetricsController,
     ),
 
+    trackEvent: metaMetricsController.trackEvent.bind(metaMetricsController),
+
     addEventBeforeMetricsOptIn:
       metaMetricsController.addEventBeforeMetricsOptIn.bind(
         metaMetricsController,

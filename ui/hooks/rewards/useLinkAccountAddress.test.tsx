@@ -2,6 +2,7 @@ import { act } from '@testing-library/react-hooks';
 import React from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   MetaMetricsEventName,
@@ -9,21 +10,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import { OptInStatusDto } from '../../../shared/types/rewards';
 import { useLinkAccountAddress } from './useLinkAccountAddress';
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
-      createEventBuilder,
-    }),
-  };
-});
 
 // Mock useMultichainSelector hook
 jest.mock('../useMultichainSelector', () => ({
@@ -102,6 +88,20 @@ const { getAccountTypeCategory } = jest.requireMock(
   getAccountTypeCategory: jest.Mock;
 };
 
+// MetaMetrics provider container
+const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
+const Container = ({ children }: { children: React.ReactNode }) => (
+  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+    {children}
+  </MetaMetricsContext.Provider>
+);
+
 const mockSoftwareAccounts: InternalAccount[] = [
   {
     id: 'acc-1',
@@ -160,7 +160,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       expect(result.current.isLoading).toBe(false);
@@ -175,7 +175,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkResult: boolean | undefined;
@@ -200,7 +200,7 @@ describe('useLinkAccountAddress', () => {
       );
 
       // Verify events were tracked
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
       expect(events).toContain(
         MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
@@ -211,18 +211,14 @@ describe('useLinkAccountAddress', () => {
       // Verify event properties
       const startedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].name === MetaMetricsEventName.RewardsAccountLinkingStarted,
+          call[0].event === MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
       expect(startedEvent).toBeDefined();
-      expect(startedEvent[0].properties.category).toBe(
-        MetaMetricsEventCategory.Rewards,
-      );
-      expect(startedEvent[0].properties).toEqual(
-        expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'evm',
-        }),
-      );
+      expect(startedEvent[0].category).toBe(MetaMetricsEventCategory.Rewards);
+      expect(startedEvent[0].properties).toEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: 'evm',
+      });
 
       // Verify timestamp was set
       expect(setRewardsAccountLinkedTimestamp).toHaveBeenCalled();
@@ -245,7 +241,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkPromise: Promise<boolean> | undefined;
@@ -285,7 +281,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkResult: boolean | undefined;
@@ -304,7 +300,7 @@ describe('useLinkAccountAddress', () => {
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
 
       // Should not track linking events
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
       expect(events).not.toContain(
         MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
@@ -324,7 +320,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkResult: boolean | undefined;
@@ -342,7 +338,7 @@ describe('useLinkAccountAddress', () => {
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
 
       // Should not track events
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
       expect(events.length).toBe(0);
     });
   });
@@ -363,7 +359,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkResult: boolean | undefined;
@@ -376,7 +372,7 @@ describe('useLinkAccountAddress', () => {
       expect(result.current.isError).toBe(true);
 
       // Verify failure event was tracked
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
       expect(events).toContain(
         MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
@@ -403,7 +399,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkResult: boolean | undefined;
@@ -416,7 +412,7 @@ describe('useLinkAccountAddress', () => {
       expect(result.current.isError).toBe(true);
 
       // Verify failure event was tracked
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
       expect(events).toContain(
         MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
@@ -440,7 +436,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkResult: boolean | undefined;
@@ -456,7 +452,7 @@ describe('useLinkAccountAddress', () => {
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
 
       // Should not track events
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
       expect(events.length).toBe(0);
     });
 
@@ -472,7 +468,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkResult: boolean | undefined;
@@ -496,7 +492,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       await act(async () => {
@@ -505,27 +501,23 @@ describe('useLinkAccountAddress', () => {
 
       const startedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].name === MetaMetricsEventName.RewardsAccountLinkingStarted,
+          call[0].event === MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
       expect(startedEvent).toBeDefined();
-      expect(startedEvent[0].properties).toEqual(
-        expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'evm',
-        }),
-      );
+      expect(startedEvent[0].properties).toEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: 'evm',
+      });
 
       const completedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].name === MetaMetricsEventName.RewardsAccountLinkingCompleted,
+          call[0].event === MetaMetricsEventName.RewardsAccountLinkingCompleted,
       );
       expect(completedEvent).toBeDefined();
-      expect(completedEvent[0].properties).toEqual(
-        expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'evm',
-        }),
-      );
+      expect(completedEvent[0].properties).toEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: 'evm',
+      });
     });
 
     it('tracks failure event with correct account type', async () => {
@@ -543,7 +535,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       await act(async () => {
@@ -552,15 +544,13 @@ describe('useLinkAccountAddress', () => {
 
       const failedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].name === MetaMetricsEventName.RewardsAccountLinkingFailed,
+          call[0].event === MetaMetricsEventName.RewardsAccountLinkingFailed,
       );
       expect(failedEvent).toBeDefined();
-      expect(failedEvent[0].properties).toEqual(
-        expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'evm',
-        }),
-      );
+      expect(failedEvent[0].properties).toEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: 'evm',
+      });
     });
   });
 
@@ -576,7 +566,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       let linkResult: boolean | undefined;
@@ -617,7 +607,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       await act(async () => {
@@ -640,7 +630,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        undefined,
+        Container,
       );
 
       await act(async () => {

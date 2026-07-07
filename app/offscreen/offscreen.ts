@@ -6,7 +6,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import { bootstrapLedger } from './hardware-wallets/ledger-router';
+import initLedger from './hardware-wallets/ledger';
 import initTrezor from './hardware-wallets/trezor';
 import initLattice from './hardware-wallets/lattice';
 import initConnectivityDetection from './connectivity';
@@ -41,7 +41,7 @@ async function init(): Promise<void> {
         reject(new Error('Ledger initialization timed out'));
       }, OFFSCREEN_LEDGER_INIT_TIMEOUT);
     });
-    await Promise.race([bootstrapLedger(), ledgerInitTimeout]);
+    await Promise.race([initLedger(), ledgerInitTimeout]);
   } catch (error) {
     console.error('Ledger initialization failed:', error);
   }

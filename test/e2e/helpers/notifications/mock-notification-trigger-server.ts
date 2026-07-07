@@ -1,10 +1,11 @@
 import { CompletedRequest, Mockttp } from 'mockttp';
-import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
-import { getMockOnChainNotificationsConfig } from '@metamask/notification-services-controller/notification-services/mocks';
+import {
+  getMockOnChainNotificationsConfig,
+  getMockUpdateOnChainNotifications,
+} from '@metamask/notification-services-controller/notification-services/mocks';
 
 const GET_CONFIG_URL = getMockOnChainNotificationsConfig().url;
-const AUTHENTICATED_USER_STORAGE_NOTIFICATION_PREFERENCES_URL =
-  /^https:\/\/user-storage\.(?:dev-api|uat-api|api)\.cx\.metamask\.io\/api\/v1\/preferences\/notifications$/u;
+const UPDATE_CONFIG_URL = getMockUpdateOnChainNotifications().url;
 
 export type NotificationConfig = {
   address: string;
@@ -14,8 +15,6 @@ export type NotificationConfig = {
 export class MockttpNotificationTriggerServer {
   // Store notification configs by address
   private notificationConfigs: Map<string, boolean> = new Map();
-
-  private notificationPreferences: NotificationPreferences | null = null;
 
   readonly getConfig = async (
     request: Pick<CompletedRequest, 'body'>,
@@ -40,6 +39,23 @@ export class MockttpNotificationTriggerServer {
     };
   };
 
+  readonly updateConfig = async (
+    request: Pick<CompletedRequest, 'body'>,
+    statusCode: number = 200,
+  ) => {
+    const requestBody = (await request.body.getJson()) as NotificationConfig[];
+
+    // Save the notification configs
+    requestBody.forEach(({ address, enabled }) => {
+      const normalizedAddress = address.toLowerCase();
+      this.notificationConfigs.set(normalizedAddress, enabled);
+    });
+
+    return {
+      statusCode,
+    };
+  };
+
   setupServer = (server: Mockttp) => {
     server
       .forPost(GET_CONFIG_URL)
@@ -47,32 +63,9 @@ export class MockttpNotificationTriggerServer {
       .thenCallback((request) => this.getConfig(request));
 
     server
-      .forGet(AUTHENTICATED_USER_STORAGE_NOTIFICATION_PREFERENCES_URL)
+      .forPost(UPDATE_CONFIG_URL)
       .always()
-      .thenCallback(() => {
-        if (!this.notificationPreferences) {
-          return {
-            statusCode: 404,
-          };
-        }
-
-        return {
-          statusCode: 200,
-          json: this.notificationPreferences,
-        };
-      });
-
-    server
-      .forPut(AUTHENTICATED_USER_STORAGE_NOTIFICATION_PREFERENCES_URL)
-      .always()
-      .thenCallback(async (request) => {
-        this.notificationPreferences =
-          (await request.body.getJson()) as NotificationPreferences;
-
-        return {
-          statusCode: 200,
-        };
-      });
+      .thenCallback((request) => this.updateConfig(request));
   };
 
   // Helper methods for testing
@@ -84,17 +77,8 @@ export class MockttpNotificationTriggerServer {
     return this.notificationConfigs.get(address.toLowerCase());
   }
 
-  /**
-   * Returns the notification preferences last persisted to authenticated user
-   * storage (via PUT), or null if none have been written yet.
-   */
-  getNotificationPreferences(): NotificationPreferences | null {
-    return this.notificationPreferences;
-  }
-
   clearConfigs() {
     this.notificationConfigs.clear();
-    this.notificationPreferences = null;
   }
 
   reset() {

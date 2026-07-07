@@ -6,7 +6,6 @@ import type {
   TransactionMetaEventPayload,
   TransactionMetricsRequest,
 } from '../../../../shared/types/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import { getBuilderMetrics } from './metrics-builders';
 import { handleSwapPostTransactionMetricHandler } from './swap-post-transaction-metric-handler';
 
@@ -109,13 +108,12 @@ async function trackTransactionEvent({
     transactionMetricsRequest,
   });
 
-  trackEvent(
-    createEventBuilder(eventName)
-      .addCategory(MetaMetricsEventCategory.Transactions)
-      .addProperties(properties)
-      .addSensitiveProperties(sensitiveProperties)
-      .build(),
-  );
+  transactionMetricsRequest.trackEvent({
+    event: eventName,
+    category: MetaMetricsEventCategory.Transactions,
+    properties,
+    sensitiveProperties,
+  });
 }
 
 export const handlePostTransactionBalanceUpdate = async (

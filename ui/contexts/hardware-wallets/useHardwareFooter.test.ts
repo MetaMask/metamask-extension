@@ -41,9 +41,6 @@ jest.mock('./rpcErrorUtils', () => ({
 }));
 
 const mockUseHardwareWalletMetrics = jest.mocked(useHardwareWalletMetrics);
-const HARDWARE_ACCOUNT_ADDRESS = '0x1111111111111111111111111111111111111111';
-const NON_HARDWARE_ACCOUNT_ADDRESS =
-  '0x2222222222222222222222222222222222222222';
 
 describe('useHardwareFooter', () => {
   let mockConnectionState: { status: ConnectionStatus };
@@ -81,7 +78,6 @@ describe('useHardwareFooter', () => {
     (useHardwareWalletConfig as jest.Mock).mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
-      accountAddress: HARDWARE_ACCOUNT_ADDRESS,
       hardwareConnectionPermissionState:
         HardwareConnectionPermissionState.Unknown,
     });
@@ -123,11 +119,9 @@ describe('useHardwareFooter', () => {
   const renderUseHardwareFooter = ({
     currentConfirmation = createConfirmation(TransactionType.simpleSend),
     currentConfirmationId = 'confirmation-id',
-    fromAddress = HARDWARE_ACCOUNT_ADDRESS,
   }: {
     currentConfirmation?: TransactionMeta;
     currentConfirmationId?: string;
-    fromAddress?: string;
   } = {}) =>
     renderHook(
       (props) =>
@@ -140,7 +134,6 @@ describe('useHardwareFooter', () => {
         initialProps: {
           currentConfirmation,
           currentConfirmationId,
-          fromAddress,
         },
       },
     );
@@ -150,23 +143,10 @@ describe('useHardwareFooter', () => {
       (useHardwareWalletConfig as jest.Mock).mockReturnValue({
         isHardwareWalletAccount: false,
         walletType: null,
-        accountAddress: null,
       });
       mockConnectionState.status = ConnectionStatus.Disconnected;
 
       const { result } = renderUseHardwareFooter();
-
-      expect(result.current.walletType).toBeNull();
-      expect(result.current.shouldRunHardwareWalletPreflight).toBe(false);
-      expect(result.current.isHardwareWalletReady).toBe(true);
-    });
-
-    it('returns preflight disabled when selected hardware account does not match confirmation sender', () => {
-      mockConnectionState.status = ConnectionStatus.Disconnected;
-
-      const { result } = renderUseHardwareFooter({
-        fromAddress: NON_HARDWARE_ACCOUNT_ADDRESS,
-      });
 
       expect(result.current.walletType).toBeNull();
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(false);
@@ -212,7 +192,6 @@ describe('useHardwareFooter', () => {
       (useHardwareWalletConfig as jest.Mock).mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Qr,
-        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
         hardwareConnectionPermissionState:
           HardwareConnectionPermissionState.Granted,
       });
@@ -227,7 +206,6 @@ describe('useHardwareFooter', () => {
       (useHardwareWalletConfig as jest.Mock).mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Qr,
-        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
         hardwareConnectionPermissionState:
           HardwareConnectionPermissionState.Prompt,
       });
@@ -242,7 +220,6 @@ describe('useHardwareFooter', () => {
       (useHardwareWalletConfig as jest.Mock).mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Qr,
-        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
         hardwareConnectionPermissionState:
           HardwareConnectionPermissionState.Unknown,
       });
@@ -257,7 +234,6 @@ describe('useHardwareFooter', () => {
       (useHardwareWalletConfig as jest.Mock).mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
-        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
         hardwareConnectionPermissionState:
           HardwareConnectionPermissionState.Granted,
       });
@@ -342,7 +318,6 @@ describe('useHardwareFooter', () => {
         useHardwareFooter({
           currentConfirmation: createConfirmation(TransactionType.simpleSend),
           currentConfirmationId: 'confirmation-id',
-          fromAddress: HARDWARE_ACCOUNT_ADDRESS,
           onUserRejectedHardwareWalletError:
             mockOnUserRejectedHardwareWalletError,
         }),
@@ -364,7 +339,6 @@ describe('useHardwareFooter', () => {
         useHardwareFooter({
           currentConfirmation: createConfirmation(TransactionType.simpleSend),
           currentConfirmationId: 'confirmation-id',
-          fromAddress: HARDWARE_ACCOUNT_ADDRESS,
           onUserRejectedHardwareWalletError:
             mockOnUserRejectedHardwareWalletError,
         }),
@@ -397,7 +371,6 @@ describe('useHardwareFooter', () => {
         rerender({
           currentConfirmation: createConfirmation(TransactionType.simpleSend),
           currentConfirmationId: 'confirmation-2',
-          fromAddress: HARDWARE_ACCOUNT_ADDRESS,
         });
       });
 
@@ -423,7 +396,6 @@ describe('useHardwareFooter', () => {
         rerender({
           currentConfirmation: createConfirmation(TransactionType.simpleSend),
           currentConfirmationId: 'confirmation-id',
-          fromAddress: HARDWARE_ACCOUNT_ADDRESS,
         });
       });
 

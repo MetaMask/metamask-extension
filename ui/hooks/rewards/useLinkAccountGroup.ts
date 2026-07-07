@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useAnalytics } from '../useAnalytics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getInternalAccountsFromGroupById } from '../../selectors/multichain-accounts/account-tree';
 import {
   rewardsGetOptInStatus,
@@ -41,7 +41,7 @@ export const useLinkAccountGroup = (
       : [],
   );
 
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Get accounts for the primary account group
   const { accounts: primaryWalletGroupAccounts } =
@@ -53,14 +53,13 @@ export const useLinkAccountGroup = (
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: getAccountTypeCategory(account),
       };
-      trackEvent(
-        createEventBuilder(event)
-          .addCategory(MetaMetricsEventCategory.Rewards)
-          .addProperties(accountMetricProps)
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Rewards,
+        event,
+        properties: accountMetricProps,
+      });
     },
-    [trackEvent, createEventBuilder],
+    [trackEvent],
   );
 
   const linkAccountGroup = useCallback(async (): Promise<LinkStatusReport> => {

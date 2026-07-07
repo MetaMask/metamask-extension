@@ -7,7 +7,7 @@
  * Based on mobile's MusdConversionAssetListCta component.
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
@@ -33,7 +33,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useMusdConversion,
@@ -89,7 +89,7 @@ export const MusdBuyGetCta = ({
   selectedChainId,
 }: MusdBuyGetCtaProps) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow, educationSeen } = useMusdConversion();
   const { defaultPaymentToken } = useMusdConversionTokens();
   const { openBuyCryptoInPdapp } = useRamps();
@@ -153,12 +153,11 @@ export const MusdBuyGetCta = ({
       clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
     });
 
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.MusdConversionCtaClicked)
-        .addCategory(MetaMetricsEventCategory.Tokens)
-        .addProperties(eventProperties)
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.MusdConversionCtaClicked,
+      category: MetaMetricsEventCategory.Tokens,
+      properties: eventProperties,
+    });
 
     if (variant === BuyGetMusdCtaVariant.BUY) {
       openBuyCryptoInPdapp((selectedChainId as ChainId) ?? undefined);
@@ -183,7 +182,6 @@ export const MusdBuyGetCta = ({
     networkName,
     ctaButtonText,
     educationSeen,
-    createEventBuilder,
     trackEvent,
     openBuyCryptoInPdapp,
     startConversionFlow,

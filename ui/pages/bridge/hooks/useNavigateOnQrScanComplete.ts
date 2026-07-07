@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import {
   getActiveQrCodeScanRequest,
   getLastQrScanCompletedSuccessfully,
@@ -27,6 +28,7 @@ export function useNavigateOnQrScanComplete(): void {
   const lastQrScanCompletedSuccessfully = useSelector(
     getLastQrScanCompletedSuccessfully,
   );
+  const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
   const prevQrScanRequestRef = useRef(activeQrCodeScanRequest);
 
   useEffect(() => {
@@ -45,7 +47,8 @@ export function useNavigateOnQrScanComplete(): void {
       isQrScanCleared &&
       lastQrScanCompletedSuccessfully === true
     ) {
-      navigate(DEFAULT_ROUTE, {
+      const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
+      navigate(to, {
         replace: true,
         state: { stayOnHomePage: true },
       });
@@ -67,5 +70,6 @@ export function useNavigateOnQrScanComplete(): void {
     dispatch,
     lastQrScanCompletedSuccessfully,
     navigate,
+    toastEnabled,
   ]);
 }

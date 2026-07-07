@@ -28,6 +28,10 @@ const Interaction = ({ className, size, color }) => (
   </svg>
 );
 
+Interaction.defaultProps = {
+  className: undefined,
+};
+
 Interaction.propTypes = {
   /**
    * Additional className

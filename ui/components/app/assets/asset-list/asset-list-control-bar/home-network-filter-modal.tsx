@@ -123,7 +123,7 @@ const isIconName = (iconSrc?: string | IconName): iconSrc is IconName =>
 
 const SectionHeader = ({
   children,
-  className = 'px-4 pb-2 pt-4',
+  className = 'px-4 py-2',
 }: {
   children: React.ReactNode;
   className?: string;
@@ -160,7 +160,7 @@ const HomeNetworkFilterRow = ({
         focus={false}
         endAccessory={
           endIconName ? (
-            <Box className="flex items-center justify-center rounded-lg p-1">
+            <Box className="flex items-center justify-center rounded-lg p-1 hover:bg-hover">
               <Icon name={endIconName} size={IconSize.Lg} />
             </Box>
           ) : undefined
@@ -272,7 +272,7 @@ export const NetworkSelectionModal = ({
                 ) : null}
                 {section.title ? (
                   <SectionHeader
-                    className={index > 0 ? 'px-4 pb-2 pt-4' : undefined}
+                    className={index > 0 ? 'px-4 pb-2 pt-4' : 'px-4 py-2'}
                   >
                     {section.title}
                   </SectionHeader>
@@ -284,11 +284,11 @@ export const NetworkSelectionModal = ({
             ))}
           </Box>
           {footerButton ? (
-            <Box className="px-4 pt-4">
+            <Box className="px-4 pt-2">
               <Button
                 data-testid={footerButton.testId}
-                className="h-12 w-full rounded-xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
-                size={ButtonSize.Md}
+                className="h-14 w-full rounded-2xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
+                size={ButtonSize.Lg}
                 variant={ButtonVariant.Secondary}
                 onClick={footerButton.onClick}
               >

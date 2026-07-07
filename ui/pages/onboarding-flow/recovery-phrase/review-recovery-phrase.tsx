@@ -34,7 +34,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getHDEntropyIndex, getFirstTimeFlowType } from '../../../selectors';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
@@ -59,8 +58,7 @@ export default function RecoveryPhrase({
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const { bufferedEndTrace } = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
@@ -95,57 +93,44 @@ export default function RecoveryPhrase({
   ]);
 
   const handleContinue = useCallback(() => {
-    trackEvent(
-      createEventBuilder(
-        MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
-      )
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
 
     navigate({
       pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
       search: nextRouteQueryString ? `?${nextRouteQueryString}` : '',
     });
-  }, [
-    createEventBuilder,
-    hdEntropyIndex,
-    navigate,
-    trackEvent,
-    nextRouteQueryString,
-  ]);
+  }, [hdEntropyIndex, navigate, trackEvent, nextRouteQueryString]);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SrpDefinitionClicked)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          location: 'review_recovery_phrase',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'review_recovery_phrase',
+      },
+    });
     setShowSrpDetailsModal(true);
-  }, [createEventBuilder, trackEvent]);
+  }, [trackEvent]);
 
   const handleRemindLater = useCallback(async () => {
     await dispatch(setSeedPhraseBackedUp(false));
 
-    trackEvent(
-      createEventBuilder(
-        MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
-      )
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
     bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
@@ -161,7 +146,6 @@ export default function RecoveryPhrase({
     hdEntropyIndex,
     isFirefox,
     navigate,
-    createEventBuilder,
     trackEvent,
   ]);
 
@@ -246,17 +230,15 @@ export default function RecoveryPhrase({
           secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
           phraseRevealed={phraseRevealed}
           revealPhrase={() => {
-            trackEvent(
-              createEventBuilder(
+            trackEvent({
+              category: MetaMetricsEventCategory.Onboarding,
+              event:
                 MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
-              )
-                .addCategory(MetaMetricsEventCategory.Onboarding)
-                .addProperties({
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  hd_entropy_index: hdEntropyIndex,
-                })
-                .build(),
-            );
+              properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              },
+            });
             setPhraseRevealed(true);
           }}
         />

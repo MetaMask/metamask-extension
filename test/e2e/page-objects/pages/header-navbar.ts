@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
+import { largeDelayMs } from '../../helpers';
 
 class HeaderNavbar {
   protected driver: Driver;
@@ -18,6 +19,9 @@ class HeaderNavbar {
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
+
+  private readonly firstTimeTurnOnNotificationsButton =
+    '[data-testid="turn-on-notifications-button"]';
 
   private readonly globalMenuButton =
     '[data-testid="account-options-menu-button"]';
@@ -43,13 +47,15 @@ class HeaderNavbar {
 
   private readonly networkPicker = '.mm-picker-network';
 
+  private readonly notificationCounterMenuIcon = {
+    testId: 'notifications-tag-counter__unread-dot',
+  };
+
   private readonly notificationCountOption =
     '[data-testid="global-menu-notification-count"]';
 
   private readonly notificationsButton =
     '[data-testid="notifications-menu-item"]';
-
-  private readonly notificationsPage = '[data-testid="notifications-page"]';
 
   private readonly openAccountDetailsButton =
     '[data-testid="account-list-menu-details"]';
@@ -115,19 +121,22 @@ class HeaderNavbar {
     await this.driver.clickElement(this.globalNetworksMenu);
   }
 
-  async openGlobalMenu(): Promise<void> {
+  async openGlobalMenu({
+    withNotificationCounter = false,
+  } = {}): Promise<void> {
     console.log('Open account options menu');
-    // Use a normal click by default — it is reliable in headless and already
-    // retries on ElementClickInterceptedError. A notification counter badge can
-    // overlap the menu icon and intercept the click; if it persists through those
-    // retries, fall back to a mouse-move click that targets an offset clear of the
-    // badge. We intentionally do NOT wait for the badge to disappear
-    // (assertElementNotPresent), which blocks for the full driver timeout when the
-    // badge is legitimately present (e.g. unread notifications).
-    try {
-      await this.driver.clickElement(this.globalMenuButton);
-    } catch {
+    if (withNotificationCounter) {
+      // To avoid ElementIntercept error because of the notification overlap
       await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
+    } else {
+      // Sometimes the notification counter briefly appears and disappears overlapping the menu icon
+      await this.driver.assertElementNotPresent(
+        this.notificationCounterMenuIcon,
+        {
+          waitAtLeastGuard: largeDelayMs,
+        },
+      );
+      await this.driver.clickElement(this.globalMenuButton);
     }
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
@@ -165,25 +174,26 @@ class HeaderNavbar {
     await this.driver.clickElement(this.contactsButton);
   }
 
-  async navigateToNotificationsPage(): Promise<void> {
-    console.log('Navigate to notifications page');
+  async enableNotifications(): Promise<void> {
+    console.log('Enabling notifications for the first time');
     await this.openGlobalMenu();
     await this.driver.clickElement(this.notificationsButton);
-    await this.driver.waitForSelector(this.notificationsPage);
+    await this.driver.clickElement(this.firstTimeTurnOnNotificationsButton);
   }
 
   async goToNotifications(): Promise<void> {
-    await this.navigateToNotificationsPage();
+    console.log('Click notifications button');
+    await this.driver.clickElement(this.notificationsButton);
   }
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.openGlobalMenu();
+    await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.clickElement(this.notificationsButton);
   }
 
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
-    await this.openGlobalMenu();
+    await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),
@@ -191,7 +201,7 @@ class HeaderNavbar {
   }
 
   async clickNotificationCount(count: number): Promise<void> {
-    await this.openGlobalMenu();
+    await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.clickElement({
       css: this.notificationCountOption,
       text: count.toString(),

@@ -33,11 +33,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../../../selectors';
 import { showModal } from '../../../../../store/actions';
 import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../confirm-turn-on-backup-and-sync-modal';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../../../hooks/useAnalytics';
 
 export const TURN_ON_BACKUP_AND_SYNC_MODAL_NAME = 'TURN_ON_BACKUP_AND_SYNC';
 export const turnOnBackupAndSyncModalTestIds = {
@@ -52,7 +52,7 @@ export function TurnOnBackupAndSyncModal() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
@@ -63,30 +63,28 @@ export function TurnOnBackupAndSyncModal() {
   const { setIsBackupAndSyncFeatureEnabled, error } = useBackupAndSync();
 
   const handleDismissModal = () => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
-        .addCategory(MetaMetricsEventCategory.BackupAndSync)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          feature_name: 'Backup And Sync Carousel Modal',
-          action: 'Modal Dismissed',
-        })
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.ProfileActivityUpdated,
+      category: MetaMetricsEventCategory.BackupAndSync,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        feature_name: 'Backup And Sync Carousel Modal',
+        action: 'Modal Dismissed',
+      },
+    });
     hideModal();
   };
 
   const handleTurnOnBackupAndSync = async () => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
-        .addCategory(MetaMetricsEventCategory.BackupAndSync)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          feature_name: 'Backup And Sync Carousel Modal',
-          action: 'Turned On',
-        })
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.ProfileActivityUpdated,
+      category: MetaMetricsEventCategory.BackupAndSync,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        feature_name: 'Backup And Sync Carousel Modal',
+        action: 'Turned On',
+      },
+    });
 
     if (!isBasicFunctionalityEnabled) {
       dispatch(

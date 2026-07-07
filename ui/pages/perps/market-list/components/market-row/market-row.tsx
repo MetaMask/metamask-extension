@@ -77,8 +77,8 @@ export const MarketRow = ({
 }: MarketRowProps) => {
   const { formatNumber } = useFormatters();
   const displaySymbol = useMemo(
-    () => market.name || getDisplaySymbol(market.symbol),
-    [market.name, market.symbol],
+    () => getDisplaySymbol(market.symbol),
+    [market.symbol],
   );
   const metricValue = useMemo(
     () => getMetricValue(market, displayMetric, formatNumber),

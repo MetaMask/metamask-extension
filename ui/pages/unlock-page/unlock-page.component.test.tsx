@@ -10,25 +10,6 @@ import * as actionsModule from '../../store/actions';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
 import UnlockPage from './unlock-page.component';
 
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
-      createEventBuilder,
-    }),
-  };
-});
-
-jest.mock('../../hooks/useSegmentContext', () => ({
-  useSegmentContext: () => ({ page: { title: 'Unlock' } }),
-}));
-
 const mockLogoElement = document.createElement('svg');
 
 jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
@@ -56,9 +37,6 @@ describe('UnlockPage component (passkey UI)', () => {
   const selectedTestAccountId = 'test-unlock-account-id';
 
   const mockStore = configureMockStore([thunk])({
-    confirmTransaction: {
-      txData: {},
-    },
     metamask: {
       passkeyRecord: null,
       internalAccounts: {

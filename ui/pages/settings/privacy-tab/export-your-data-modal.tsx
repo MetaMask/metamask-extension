@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -28,7 +28,7 @@ import {
   ExportableContentType,
 } from '../../../helpers/utils/export-utils';
 import { captureException } from '../../../../shared/lib/sentry';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { backupUserData } from '../../../store/actions';
 
 type BackupUserDataResponse = {
@@ -45,7 +45,7 @@ export default function ExportYourDataModal({
   onClose,
 }: Readonly<ExportYourDataModalProps>) {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const handleDownload = async () => {
     try {
@@ -58,9 +58,11 @@ export default function ExportYourDataModal({
         ExportableContentType.JSON,
       );
 
-      trackEvent(
-        createEventBuilder('User Data Exported').addCategory('Backup').build(),
-      );
+      await trackEvent({
+        event: 'User Data Exported',
+        category: 'Backup',
+        properties: {},
+      });
     } catch (error) {
       captureException(error);
     }

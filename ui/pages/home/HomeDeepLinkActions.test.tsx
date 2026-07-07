@@ -179,10 +179,11 @@ describe('HomeDeepLinkActions', () => {
     },
   );
 
-  it('dispatches setHomeDeepLinkQrCode for a valid predict deeplink URL', async () => {
+  it('notifies Home to show the predict QR code for a predict deeplink URL', async () => {
     const deeplinkUrl =
       'https://link.metamask.io/predict?marketId=30615&sig_params=marketId&sig=signature&utm_source=twitter';
-    const { Wrapper, store } = createWrapper({
+    const onQrCodeDeepLink = jest.fn();
+    const { Wrapper } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.PredictDeeplinkUrl]: deeplinkUrl,
@@ -190,13 +191,12 @@ describe('HomeDeepLinkActions', () => {
       isNetworkMenuOpen: false,
     });
 
-    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
+      wrapper: Wrapper,
+    });
 
     await waitFor(() => {
-      const qrCode = (
-        store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
-      ).appState.homeDeepLinkQrCode;
-      expect(qrCode).toEqual({
+      expect(onQrCodeDeepLink).toHaveBeenCalledWith({
         deeplinkUrl,
         descriptionKey: 'deepLinkQrPredictDescription',
         titleKey: 'deepLinkQrPredictTitle',
@@ -204,50 +204,9 @@ describe('HomeDeepLinkActions', () => {
     });
   });
 
-  it('dispatches setHomeDeepLinkQrCode for a valid batch sell deeplink URL', async () => {
-    const deeplinkUrl = 'https://link.metamask.io/batch-sell';
-    const { Wrapper, store } = createWrapper({
-      pathname: DEFAULT_ROUTE,
-      search: `?${new URLSearchParams({
-        [HomeQueryParams.BatchSellDeeplinkUrl]: deeplinkUrl,
-      }).toString()}`,
-      isNetworkMenuOpen: false,
-    });
-
-    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
-
-    await waitFor(() => {
-      const qrCode = (
-        store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
-      ).appState.homeDeepLinkQrCode;
-      expect(qrCode).toEqual({
-        deeplinkUrl,
-        descriptionKey: 'deepLinkQrBatchSellDescription',
-        titleKey: 'deepLinkQrBatchSellTitle',
-      });
-    });
-  });
-
-  it('ignores batch sell QR deeplink params that do not point to /batch-sell', () => {
-    const { Wrapper, store } = createWrapper({
-      pathname: DEFAULT_ROUTE,
-      search: `?${new URLSearchParams({
-        [HomeQueryParams.BatchSellDeeplinkUrl]:
-          'https://link.metamask.io/rewards?referral=ABC123',
-      }).toString()}`,
-      isNetworkMenuOpen: false,
-    });
-
-    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
-
-    const qrCode = (
-      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
-    ).appState.homeDeepLinkQrCode;
-    expect(qrCode).toBeNull();
-  });
-
   it('ignores predict QR deeplink params that do not point to /predict', () => {
-    const { Wrapper, store } = createWrapper({
+    const onQrCodeDeepLink = jest.fn();
+    const { Wrapper } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.PredictDeeplinkUrl]:
@@ -256,11 +215,10 @@ describe('HomeDeepLinkActions', () => {
       isNetworkMenuOpen: false,
     });
 
-    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
+      wrapper: Wrapper,
+    });
 
-    const qrCode = (
-      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
-    ).appState.homeDeepLinkQrCode;
-    expect(qrCode).toBeNull();
+    expect(onQrCodeDeepLink).not.toHaveBeenCalled();
   });
 });

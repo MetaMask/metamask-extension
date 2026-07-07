@@ -13,32 +13,12 @@ import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 import { buildSupportLinkWithUserData } from '../../../../../shared/lib/build-support-link';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { openWindow } from '../../../../helpers/utils/window';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getAnalyticsId } from '../../../../selectors/selectors';
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
-  };
-});
-
-jest.mock('../../../../hooks/useSegmentContext', () => ({
-  useSegmentContext: jest.fn(() => ({
-    page: { title: 'Settings' },
-  })),
-}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -55,6 +35,13 @@ jest.mock('../../../../hooks/subscription/useSubscription', () => ({
 
 describe('VisitSupportDataConsentModal', () => {
   const store = configureMockState([thunk])(mockState);
+  const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
   const mockOnClose = jest.fn();
   const mockProfileId = 'test-profile-id';
   const mockCanonicalProfileId = 'test-canonical-profile-id';
@@ -100,7 +87,9 @@ describe('VisitSupportDataConsentModal', () => {
     };
 
     return renderWithProvider(
-      <VisitSupportDataConsentModal {...defaultProps} />,
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <VisitSupportDataConsentModal {...defaultProps} />
+      </MetaMetricsContext.Provider>,
       store,
     );
   };
@@ -130,13 +119,15 @@ describe('VisitSupportDataConsentModal', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.SupportLinkClicked,
-        properties: expect.objectContaining({
-          category: MetaMetricsEventCategory.Settings,
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           url: expectedUrl,
-          [MetaMetricsContextProp.PageTitle]: 'Settings',
-        }),
+        },
       }),
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -156,13 +147,15 @@ describe('VisitSupportDataConsentModal', () => {
     expect(mockOnClose).toHaveBeenCalled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.SupportLinkClicked,
-        properties: expect.objectContaining({
-          category: MetaMetricsEventCategory.Settings,
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           url: expectedUrl,
-          [MetaMetricsContextProp.PageTitle]: 'Settings',
-        }),
+        },
       }),
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -192,13 +185,15 @@ describe('VisitSupportDataConsentModal', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.SupportLinkClicked,
-        properties: expect.objectContaining({
-          category: MetaMetricsEventCategory.Settings,
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           url: expectedUrl,
-          [MetaMetricsContextProp.PageTitle]: 'Settings',
-        }),
+        },
       }),
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -236,13 +231,15 @@ describe('VisitSupportDataConsentModal', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.SupportLinkClicked,
-        properties: expect.objectContaining({
-          category: MetaMetricsEventCategory.Settings,
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           url: expectedUrl,
-          [MetaMetricsContextProp.PageTitle]: 'Settings',
-        }),
+        },
       }),
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
     );
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
@@ -298,11 +295,11 @@ describe('VisitSupportDataConsentModal', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.SupportLinkClicked,
-        properties: expect.objectContaining({
-          category: MetaMetricsEventCategory.Settings,
-          [MetaMetricsContextProp.PageTitle]: 'Settings',
-        }),
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+      }),
+      expect.objectContaining({
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       }),
     );
     expect(openWindow).toHaveBeenCalled();

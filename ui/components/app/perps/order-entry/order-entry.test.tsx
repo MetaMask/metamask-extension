@@ -7,7 +7,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { OrderEntry } from './order-entry';
-import { resetSizeDenominations } from './components/amount-input/size-denomination-store';
 
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
@@ -56,7 +55,6 @@ describe('OrderEntry', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    resetSizeDenominations();
     jest.mocked(submitRequestToBackground).mockImplementation((method) => {
       function immediate<ResolvedValue>(
         value: ResolvedValue,
@@ -173,7 +171,7 @@ describe('OrderEntry', () => {
       expect(input).toHaveValue('1000.00');
     });
 
-    it('shows token conversion when the denomination is toggled to the asset', () => {
+    it('shows token conversion when amount is entered', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       const container = screen.getByTestId('amount-input-field');
@@ -183,11 +181,10 @@ describe('OrderEntry', () => {
         target: { value: '45250' },
       });
 
-      // Toggle the single field into asset denomination to view the equivalent.
-      fireEvent.click(screen.getByTestId('toggle-denomination'));
-
+      const tokenContainer = screen.getByTestId('amount-input-token-field');
+      const tokenInput = tokenContainer.querySelector('input');
       // Amount is treated as position size (TAT-2684 fix), so token = size / price = $45250 / $45250 = 1 BTC
-      expect(input).toHaveValue('1');
+      expect(tokenInput).toHaveValue('1');
     });
   });
 

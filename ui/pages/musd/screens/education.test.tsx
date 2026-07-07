@@ -9,19 +9,34 @@ import configureStore from '../../../store/store';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import MusdEducationScreen from './education';
 
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
+// Mock MetaMetricsContext so we can verify trackEvent calls
+jest.mock('../../../contexts/metametrics', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const _trackEvent = jest.fn().mockResolvedValue(undefined);
+  const ctx = ReactActual.createContext({
+    trackEvent: _trackEvent,
+    bufferedTrace: jest.fn().mockResolvedValue(undefined),
+    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
+    onboardingParentContext: { current: null },
+  });
+  ctx.Provider = (({ children }: { children: React.ReactNode }) =>
+    ReactActual.createElement(
+      ReactActual.Fragment,
+      null,
+      children,
+    )) as unknown as typeof ctx.Provider;
   return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
+    MetaMetricsContext: ctx,
+    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
+      ReactActual.createElement(ReactActual.Fragment, null, children),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __mockTrackEvent: _trackEvent,
   };
 });
+const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __mockTrackEvent: jest.Mock;
+}>('../../../contexts/metametrics');
 
 // Mock useMusdConversion hook
 const mockStartConversionFlow = jest.fn().mockResolvedValue(undefined);
@@ -244,7 +259,7 @@ describe('MusdEducationScreen', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+        event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
         properties: expect.objectContaining({
           location: 'conversion_education_screen',
         }),
@@ -258,7 +273,7 @@ describe('MusdEducationScreen', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
+        event: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
         properties: expect.objectContaining({
           location: 'conversion_education_screen',
         }),

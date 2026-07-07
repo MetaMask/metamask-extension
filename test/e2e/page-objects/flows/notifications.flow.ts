@@ -6,63 +6,27 @@ import SettingsPage from '../pages/settings/settings-page';
 import NotificationDetailsPage from '../pages/notification-details-page';
 
 /**
- * Enables general notifications from the notifications settings page and waits for
- * the preference sections to load. Assumes the notifications settings page is open.
+ * Enables notifications through the global menu and optionally navigates to the notifications settings.
  *
  * @param driver - The webdriver instance used to interact with the browser.
- */
-const enableGeneralNotifications = async (driver: Driver): Promise<void> => {
-  const notificationsSettingsPage = new NotificationsSettingsPage(driver);
-  await notificationsSettingsPage.checkPageIsLoaded();
-  await notificationsSettingsPage.clickNotificationToggle({
-    toggleType: 'general',
-  });
-  await notificationsSettingsPage.waitForNotificationPreferenceSections();
-};
-
-/**
- * Enables notifications through the notifications page (global menu > notifications
- * bell > settings gear). Assumes notifications are currently disabled and leaves the
- * notifications settings page open.
- *
- * @param driver - The webdriver instance used to interact with the browser.
- */
-export const enableNotifications = async (driver: Driver): Promise<void> => {
-  console.log('Enabling notifications from the notifications page');
-  const headerNavbar = new HeaderNavbar(driver);
-  const notificationsListPage = new NotificationsListPage(driver);
-
-  await headerNavbar.navigateToNotificationsPage();
-  await notificationsListPage.goToNotificationsSettings();
-  await enableGeneralNotifications(driver);
-};
-
-/**
- * Enables notifications through the global menu.
- *
- * @param driver - The webdriver instance used to interact with the browser.
- * @param goToNotificationsList - When true, navigates to the notifications list after enabling. Defaults to staying on notifications settings.
+ * @param goToNotificationsSettings - Determines whether to navigate to the notifications settings page after enabling notifications.
  * @returns A promise that resolves when the operation is complete.
  */
 export const enableNotificationsThroughGlobalMenu = async (
   driver: Driver,
-  goToNotificationsList: boolean = false,
+  goToNotificationsSettings: boolean = true,
 ): Promise<void> => {
   console.log('Enabling notifications through global menu');
   const headerNavbar = new HeaderNavbar(driver);
-  const notificationsListPage = new NotificationsListPage(driver);
-  const notificationsSettingsPage = new NotificationsSettingsPage(driver);
-
   await headerNavbar.checkPageIsLoaded();
-  await enableNotifications(driver);
+  await headerNavbar.enableNotifications();
 
-  if (goToNotificationsList) {
-    await headerNavbar.goToNotifications();
+  if (goToNotificationsSettings === true) {
+    // Click to notifications gear icon
+    const notificationsListPage = new NotificationsListPage(driver);
     await notificationsListPage.checkPageIsLoaded();
-    return;
+    await notificationsListPage.goToNotificationsSettings();
   }
-
-  await notificationsSettingsPage.checkPageIsLoaded();
 };
 
 /**
@@ -80,14 +44,14 @@ export const navigateToNotificationSettingsAndClickDisable = async (
   await new NotificationsSettingsPage(driver).disableNotifications();
 };
 /**
- * Navigates to the notifications settings page via the global menu (Settings >
- * Notifications). Use when notifications are already enabled.
+ * Navigate to notifications settings through global menu > settings > notifications settings
  *
- * @param driver - The webdriver instance used to interact with the browser.
+ * @param driver
  */
-export const goToNotificationsSettingsPage = async (
+export const enableNotificationsThroughSettingsPage = async (
   driver: Driver,
-): Promise<void> => {
+) => {
+  console.log('Enabling notifications through Settings Page');
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openSettingsPage();
@@ -96,34 +60,25 @@ export const goToNotificationsSettingsPage = async (
   await settingsPage.checkPageIsLoaded();
   await settingsPage.goToNotificationsSettings();
 
-  await new NotificationsSettingsPage(driver).checkPageIsLoaded();
-};
+  const notificationsSettingsPage = new NotificationsSettingsPage(driver);
+  await notificationsSettingsPage.checkPageIsLoaded();
 
-/**
- * Navigates to the notifications list via the global menu. Use when
- * notifications are already enabled.
- *
- * @param driver - The webdriver instance used to interact with the browser.
- */
-export const goToNotificationsList = async (driver: Driver): Promise<void> => {
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.checkPageIsLoaded();
-  await headerNavbar.goToNotifications();
-  await new NotificationsListPage(driver).checkPageIsLoaded();
-};
+  const isEnabled = await notificationsSettingsPage
+    .checkNotificationState({
+      toggleType: 'general',
+      expectedState: 'enabled',
+    })
+    .then(() => true)
+    .catch(() => false);
 
-/**
- * Navigate to notifications settings through global menu > settings >
- * notifications settings, then enable notifications.
- *
- * @param driver
- */
-export const enableNotificationsThroughSettingsPage = async (
-  driver: Driver,
-) => {
-  console.log('Enabling notifications through Settings Page');
-  await goToNotificationsSettingsPage(driver);
-  await enableGeneralNotifications(driver);
+  if (isEnabled) {
+    console.log('Notifications are already enabled.');
+  } else {
+    console.log('Notifications are not enabled. Enabling now.');
+    await notificationsSettingsPage.clickNotificationToggle({
+      toggleType: 'general',
+    });
+  }
 };
 
 /**

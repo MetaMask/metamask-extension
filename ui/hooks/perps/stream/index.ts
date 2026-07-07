@@ -98,12 +98,6 @@ export {
   type UsePerpsLiveMarketListDataReturn,
 } from './usePerpsLiveMarketListData';
 
-// Asset name resolver hook (symbol -> full asset name)
-export {
-  usePerpsAssetNames,
-  type UsePerpsAssetNamesReturn,
-} from './usePerpsAssetNames';
-
 // Re-export types from @metamask/perps-controller for convenience
 export type {
   PriceUpdate,

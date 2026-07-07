@@ -31,6 +31,9 @@ import { showError, showSuccess } from './utils/showResult';
  * Builder type for the Snap keyring.
  */
 export type SnapKeyringBuilder = {
+  name: 'SnapKeyringBuilder';
+  state: null;
+
   (): SnapKeyring;
   type: typeof SnapKeyring.type;
 };
@@ -68,7 +71,7 @@ export async function showAccountCreationDialog(
   }
 }
 
-export class SnapKeyringImpl implements SnapKeyringCallbacks {
+class SnapKeyringImpl implements SnapKeyringCallbacks {
   readonly #messenger: SnapKeyringBuilderMessenger;
 
   constructor(messenger: SnapKeyringBuilderMessenger) {
@@ -484,8 +487,6 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
   }
 }
 
-export { getSnapKeyringBuilderMessenger } from '../../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
-
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing Snap accounts.
  *
@@ -503,6 +504,7 @@ export function snapKeyringBuilder(messenger: SnapKeyringBuilderMessenger) {
     });
   }) as SnapKeyringBuilder;
 
+  SnapKeyringBuilder.state = null;
   SnapKeyringBuilder.type = SnapKeyring.type;
 
   return SnapKeyringBuilder;

@@ -29,7 +29,7 @@ import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
 import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
 import { MusdOverrideContent } from './musd-override-content';
 
-const MusdBottomContent = () => {
+const MusdBottomContent = ({ hasInput }: { hasInput: boolean }) => {
   const t = useI18nContext();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
@@ -39,9 +39,13 @@ const MusdBottomContent = () => {
   const isResultReady = isQuotesLoading || Boolean(quotes?.length);
   const showResults = isResultReady && !hideResults;
 
+  if (!hasInput && !showResults) {
+    return null;
+  }
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingBottom={4}>
-      <PayWithRow />
+      {hasInput && <PayWithRow />}
       {showResults && (
         <>
           <BridgeFeeRow
@@ -130,11 +134,16 @@ export const MusdConversionInfo = () => {
   }, [defaultPaymentToken, existingPayToken]);
 
   const renderOverrideContent = useCallback(
-    (amountHuman: string) => <MusdOverrideContent amountHuman={amountHuman} />,
+    (amountHuman: string, hasInput: boolean) => (
+      <MusdOverrideContent amountHuman={amountHuman} hasInput={hasInput} />
+    ),
     [],
   );
 
-  const renderBottomContent = useCallback(() => <MusdBottomContent />, []);
+  const renderBottomContent = useCallback(
+    (hasInput: boolean) => <MusdBottomContent hasInput={hasInput} />,
+    [],
+  );
 
   return (
     <CustomAmountInfo

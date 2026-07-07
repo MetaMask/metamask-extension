@@ -33,6 +33,7 @@ const initialState = {
     ...mockState.metamask,
     theme: 'light',
     isMetamaskNotificationsEnabled: true,
+    isFeatureAnnouncementsEnabled: true,
     metamaskNotifications: [],
     internalAccounts: {
       accounts: [

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -27,8 +27,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { useSegmentContext } from '../../../../hooks/useSegmentContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   buildSupportLinkWithUserData,
   type SupportLinkUserData,
@@ -47,8 +46,7 @@ const VisitSupportDataConsentModal = ({
 }: VisitSupportDataConsentModalProps) => {
   const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const segmentContext = useSegmentContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const sessionData = useSelector(selectSessionData);
   const profileId = sessionData?.profile?.profileId;
   const canonicalProfileId = sessionData?.profile?.canonicalProfileId;
@@ -64,33 +62,39 @@ const VisitSupportDataConsentModal = ({
       );
 
       trackEvent(
-        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
+        {
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SupportLinkClicked,
+          properties: {
             url: supportLinkWithUserId,
-            [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-          })
-          .build(),
+          },
+        },
+        {
+          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        },
       );
       openWindow(supportLinkWithUserId);
     },
-    [onClose, trackEvent, createEventBuilder, segmentContext.page?.title],
+    [onClose, trackEvent],
   );
 
   const handleClickNoShare = useCallback(() => {
     onClose();
 
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
+      {
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           url: SUPPORT_LINK,
-          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-        })
-        .build(),
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
     );
     openWindow(SUPPORT_LINK as string);
-  }, [onClose, trackEvent, createEventBuilder, segmentContext.page?.title]);
+  }, [onClose, trackEvent]);
 
   return (
     <Modal

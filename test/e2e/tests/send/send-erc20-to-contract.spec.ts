@@ -67,10 +67,7 @@ describe('Send ERC20 - Contract Warning', function () {
         await tokenOverviewPage.clickSend();
 
         const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient({
-          recipientAddress: contractAddress,
-          validAddress: false,
-        });
+        await sendPage.fillRecipient(contractAddress);
 
         // Verify warning
         const warningText =

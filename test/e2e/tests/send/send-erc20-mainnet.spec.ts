@@ -122,9 +122,9 @@ describe('Send ERC20 - Mainnet', function () {
         await tokenOverviewPage.clickSend();
 
         const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient({
-          recipientAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        });
+        await sendPage.fillRecipient(
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
         await sendPage.fillAmount('10');
         await sendPage.pressContinueButton();
 

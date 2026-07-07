@@ -1,0 +1,34 @@
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import mockStore from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-notifications/metamask-notifications';
+import TurnOnMetamaskNotifications from './turn-on-metamask-notifications';
+
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => mockDispatch,
+}));
+
+describe('TurnOnMetamaskNotifications', () => {
+  beforeEach(() => {
+    mockDispatch.mockClear();
+  });
+
+  it('renders correctly', () => {
+    const { getByText } = renderWithProvider(
+      <MetamaskNotificationsProvider>
+        <TurnOnMetamaskNotifications />
+      </MetamaskNotificationsProvider>,
+      configureMockStore()({
+        ...mockStore,
+      }),
+    );
+    expect(
+      getByText(messages.turnOnMetamaskNotificationsButton.message),
+    ).toBeInTheDocument();
+  });
+});

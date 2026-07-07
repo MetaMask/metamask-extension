@@ -231,7 +231,7 @@ class PerpsStreamManager {
           }
           submitRequestToBackground<PerpsMarketData[]>(
             'perpsGetMarketDataWithPrices',
-            [{ useTerminalApi: true }],
+            [],
           )
             .then((data) => {
               if (!cancelled && !this.markets.hasCachedData()) {

@@ -46,6 +46,10 @@ jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
   PayWithRowSkeleton: () => <div data-testid="pay-with-row-skeleton" />,
 }));
+jest.mock('../../pay-with-pill', () => ({
+  PayWithPill: () => <div data-testid="pay-with-pill" />,
+  PayWithPillSkeleton: () => <div data-testid="pay-with-pill-skeleton" />,
+}));
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
   BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
 }));
@@ -254,12 +258,12 @@ describe('CustomAmountInfo', () => {
       disablePay: false,
     });
     expect(queryByTestId('pay-token-amount')).not.toBeInTheDocument();
-    expect(getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(getByTestId('pay-with-pill')).toBeInTheDocument();
   });
 
   describe('pay with placement', () => {
-    it('renders the bottom pay with row in the empty state', () => {
-      const { getByTestId } = render({
+    it('renders the centered pay with pill in the empty state', () => {
+      const { getByTestId, queryByTestId } = render({
         disablePay: false,
         customAmountHookReturn: {
           ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
@@ -267,11 +271,12 @@ describe('CustomAmountInfo', () => {
         },
       });
 
-      expect(getByTestId('pay-with-row')).toBeInTheDocument();
+      expect(getByTestId('pay-with-pill')).toBeInTheDocument();
+      expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
     });
 
-    it('keeps the bottom pay with row once an amount is entered', () => {
-      const { getByTestId } = render({
+    it('renders the bottom pay with row once an amount is entered', () => {
+      const { getByTestId, queryByTestId } = render({
         disablePay: false,
         customAmountHookReturn: {
           ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
@@ -280,12 +285,7 @@ describe('CustomAmountInfo', () => {
       });
 
       expect(getByTestId('pay-with-row')).toBeInTheDocument();
-    });
-
-    it('does not render the pay with row when disablePay is true', () => {
-      const { queryByTestId } = render({ disablePay: true });
-
-      expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
+      expect(queryByTestId('pay-with-pill')).not.toBeInTheDocument();
     });
   });
 
@@ -337,12 +337,13 @@ describe('CustomAmountInfo', () => {
 
   it('renders the pay with selector when tokens available and disablePay is false', () => {
     const { getByTestId } = render({ disablePay: false });
-    expect(getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(getByTestId('pay-with-pill')).toBeInTheDocument();
   });
 
   it('does not render any pay with selector when no tokens available', () => {
     const { queryByTestId } = render({ availableTokens: [] });
     expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
+    expect(queryByTestId('pay-with-pill')).not.toBeInTheDocument();
   });
 
   describe('percentage buttons', () => {
@@ -484,5 +485,6 @@ describe('CustomAmountInfoSkeleton', () => {
     expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
     expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
     expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
+    expect(getByTestId('pay-with-pill-skeleton')).toBeInTheDocument();
   });
 });

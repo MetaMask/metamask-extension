@@ -23,7 +23,7 @@ import { AssetPill } from '../../../../../simulation-details/asset-pill';
 import {
   formatAmount,
   formatAmountMaxPrecision,
-} from '../../../../../../../../../shared/lib/format-amount';
+} from '../../../../../simulation-details/formatAmount';
 import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
 import { getAmountColors } from '../../../utils';
 

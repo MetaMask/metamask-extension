@@ -221,22 +221,7 @@ describe('setup-initial-state-hooks', () => {
 
       await globalThis.stateHooks.getPersistedState();
 
-      expect(mockGet).toHaveBeenCalledWith({
-        validateVault: false,
-        reportErrors: true,
-      });
-    });
-
-    it('getPersistedState can disable error reporting', async () => {
-      setSelfHref('chrome-extension://abc123/home.html');
-      await importFresh();
-
-      await globalThis.stateHooks.getPersistedState({ reportErrors: false });
-
-      expect(mockGet).toHaveBeenCalledWith({
-        validateVault: false,
-        reportErrors: false,
-      });
+      expect(mockGet).toHaveBeenCalledWith({ validateVault: false });
     });
 
     it('registers getBackupState on globalThis.stateHooks', async () => {

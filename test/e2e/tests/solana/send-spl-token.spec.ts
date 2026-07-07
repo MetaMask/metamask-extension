@@ -311,7 +311,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
+        await sendPage.fillRecipient(commonSolanaAddress);
         await sendPage.fillAmount('0.1');
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
@@ -395,7 +395,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
+        await sendPage.fillRecipient(commonSolanaAddress);
         await sendPage.fillAmount('0.1');
         assert.equal(
           await sendPage.isContinueButtonEnabled(),

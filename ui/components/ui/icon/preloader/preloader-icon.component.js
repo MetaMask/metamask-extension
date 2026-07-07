@@ -43,6 +43,10 @@ const Preloader = ({ className, size }) => (
   </svg>
 );
 
+Preloader.defaultProps = {
+  className: undefined,
+};
+
 Preloader.propTypes = {
   className: PropTypes.string,
   size: PropTypes.number.isRequired,

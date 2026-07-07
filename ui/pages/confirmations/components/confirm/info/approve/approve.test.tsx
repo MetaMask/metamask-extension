@@ -76,21 +76,6 @@ jest.mock('../hooks/useDecodedTransactionData', () => ({
   })),
 }));
 
-jest.mock('../../../../hooks/gas/useIsGaslessSupported', () => ({
-  useIsGaslessSupported: jest.fn(() => ({
-    isSupported: false,
-    isSmartTransaction: false,
-    pending: false,
-  })),
-}));
-
-jest.mock('../../../../hooks/gas/useGasSponsorshipPreference', () => ({
-  useGasSponsorshipPreference: jest.fn(() => ({
-    isSponsorshipOptedOut: false,
-    setSponsorshipOptedOut: jest.fn(),
-  })),
-}));
-
 describe('<ApproveInfo />', () => {
   const middleware = [thunk];
   const mockedAssetDetails = jest.mocked(useAssetDetails);

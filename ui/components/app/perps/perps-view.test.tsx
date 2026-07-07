@@ -76,9 +76,6 @@ jest.mock('../../../hooks/perps/stream', () => {
       account: streamMocks.mockAccountState,
       isInitialLoading: false,
     })),
-    usePerpsAssetNames: jest.fn(() => ({
-      resolveAssetName: (symbol: string) => symbol,
-    })),
   };
 });
 

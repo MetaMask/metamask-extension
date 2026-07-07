@@ -68,9 +68,8 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": "string",
+    "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
-    "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
@@ -105,7 +104,6 @@
     "assetExchangeRates": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
-    "inputPrimaryDenomination": "string",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",
@@ -118,22 +116,13 @@
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object"
   },
-  "BridgeStatusController": {
-    "quoteUpdateStatusStore": "object",
-    "txHistory": "object"
-  },
+  "BridgeStatusController": { "txHistory": "object" },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",
   "ComplianceController": {
     "lastCheckedAt": null,
     "walletComplianceStatusMap": "object"
-  },
-  "ConfigRegistryController": {
-    "configs": "object",
-    "etag": null,
-    "lastFetched": null,
-    "version": null
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
@@ -223,7 +212,6 @@
       "bip122": "object",
       "eip155": "object",
       "solana": "object",
-      "stellar": "object",
       "tron": "object"
     },
     "nativeAssetIdentifiers": "object"
@@ -291,7 +279,6 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
-      "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,
@@ -329,7 +316,6 @@
     "watchEthereumAccountEnabled": "boolean"
   },
   "ProfileMetricsController": "object",
-  "QrSyncController": "object",
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
     "localOverrides": "object",

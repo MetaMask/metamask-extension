@@ -3,7 +3,6 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import type { PerpsMarketData } from '../../../../../components/app/perps/types';
 import { MarketRow } from './market-row';
 
@@ -48,17 +47,8 @@ describe('MarketRow', () => {
       expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
     });
 
-    it('displays the full asset name', () => {
+    it('displays the market symbol', () => {
       renderWithProvider(<MarketRow {...defaultProps} />, mockStore);
-
-      expect(
-        screen.getByText(messages.networkNameBitcoin.message),
-      ).toBeInTheDocument();
-    });
-
-    it('falls back to the ticker when the asset has no name', () => {
-      const market = createMockMarket({ name: '' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
 
       expect(screen.getByText('BTC')).toBeInTheDocument();
     });
@@ -96,14 +86,7 @@ describe('MarketRow', () => {
 
       // Test ID should have colon replaced with dash
       expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
-      // Display should show the full asset name
-      expect(screen.getByText('Tesla')).toBeInTheDocument();
-    });
-
-    it('falls back to the stripped ticker when a HIP-3 asset has no name', () => {
-      const market = createMockMarket({ symbol: 'xyz:TSLA', name: '' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
-
+      // Display symbol should show just the asset name
       expect(screen.getByText('TSLA')).toBeInTheDocument();
     });
   });

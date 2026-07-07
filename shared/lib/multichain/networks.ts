@@ -35,11 +35,6 @@ export type MultichainBlockExplorerFormatUrls = {
    * Format URL of the block explorer for transactions.
    */
   transaction: MultichainBlockExplorerFormatUrl<'txId'>;
-
-  /**
-   * Format URL of the block explorer for assets (optional).
-   */
-  asset?: MultichainBlockExplorerFormatUrl<'asset'>;
 };
 
 /**
@@ -84,21 +79,4 @@ export function formatBlockExplorerTransactionUrl(
   txId: string,
 ): string {
   return urls.transaction.replace('{txId}', txId);
-}
-
-/**
- * Format a URL for assets.
- *
- * @param urls - The group of format URLs for a given block explorer.
- * @param asset - The asset reference to create the URL for.
- * @returns The formatted URL for the given asset, or empty string if not supported.
- */
-export function formatBlockExplorerAssetUrl(
-  urls: MultichainBlockExplorerFormatUrls,
-  asset: string,
-): string {
-  if (!urls.asset) {
-    return '';
-  }
-  return urls.asset.replace('{asset}', asset);
 }

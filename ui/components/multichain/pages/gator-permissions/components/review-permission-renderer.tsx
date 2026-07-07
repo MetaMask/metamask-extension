@@ -316,7 +316,6 @@ function renderElement({
           label={t(element.labelKey)}
           value={translateI18nValue(t, element.getValue(ctx))}
           testId={element.testId}
-          tooltip={element.tooltip ? t(element.tooltip) : undefined}
         />
       );
 

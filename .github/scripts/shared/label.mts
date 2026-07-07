@@ -1,15 +1,12 @@
-import type { GitHub } from '@actions/github/lib/utils';
+import { GitHub } from '@actions/github/lib/utils';
 
 import { retrieveRepo } from './repo.mts';
 
-export const RegressionStage = {
-  Testing: 0,
-  Beta: 1,
-  Production: 2,
-} as const;
-
-export type RegressionStage =
-  (typeof RegressionStage)[keyof typeof RegressionStage];
+export enum RegressionStage {
+  Testing,
+  Beta,
+  Production,
+}
 export interface Label {
   name: string;
   color: string;

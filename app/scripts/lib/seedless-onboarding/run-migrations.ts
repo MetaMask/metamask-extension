@@ -4,8 +4,8 @@ import type {
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerRunMigrationsAction,
 } from '@metamask/seedless-onboarding-controller';
+import type { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -19,7 +19,8 @@ export type RunSeedlessOnboardingMigrationsMessenger = Messenger<
   string,
   | OnboardingControllerGetStateAction
   | SeedlessOnboardingControllerRunMigrationsAction
-  | SeedlessOnboardingControllerGetStateAction,
+  | SeedlessOnboardingControllerGetStateAction
+  | MetaMetricsControllerTrackEventAction,
   never
 >;
 
@@ -56,19 +57,16 @@ export async function runSeedlessOnboardingMigrations(
     );
 
     if (migrationPerformed) {
-      trackEvent(
-        createEventBuilder(
-          MetaMetricsEventName.SeedlessOnboardingMigrationCompleted,
-        )
-          .addCategory(MetaMetricsEventCategory.Background)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            migration_version: messenger.call(
-              'SeedlessOnboardingController:getState',
-            ).migrationVersion,
-          })
-          .build(),
-      );
+      messenger.call('MetaMetricsController:trackEvent', {
+        event: MetaMetricsEventName.SeedlessOnboardingMigrationCompleted,
+        category: MetaMetricsEventCategory.Background,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          migration_version: messenger.call(
+            'SeedlessOnboardingController:getState',
+          ).migrationVersion,
+        },
+      });
     }
   } catch (error) {
     const isError = error instanceof Error;
@@ -76,20 +74,17 @@ export async function runSeedlessOnboardingMigrations(
     const migrationError = isError ? error : new Error(errorMessage);
 
     try {
-      trackEvent(
-        createEventBuilder(
-          MetaMetricsEventName.SeedlessOnboardingMigrationFailed,
-        )
-          .addCategory(MetaMetricsEventCategory.Background)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            migration_version: messenger.call(
-              'SeedlessOnboardingController:getState',
-            ).migrationVersion,
-            error: errorMessage,
-          })
-          .build(),
-      );
+      messenger.call('MetaMetricsController:trackEvent', {
+        event: MetaMetricsEventName.SeedlessOnboardingMigrationFailed,
+        category: MetaMetricsEventCategory.Background,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          migration_version: messenger.call(
+            'SeedlessOnboardingController:getState',
+          ).migrationVersion,
+          error: errorMessage,
+        },
+      });
     } catch (metaMetricsError) {
       log.warn(
         'Failed to track seedless onboarding migration failure',

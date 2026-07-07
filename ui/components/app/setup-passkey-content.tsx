@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -52,7 +53,7 @@ import {
   generatePasskeyPostRegistrationAuthenticationOptions,
   forceUpdateMetamaskState,
 } from '../../store/actions';
-import { useAnalytics } from '../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
@@ -82,7 +83,7 @@ export default function SetupPasskeyContent({
   password,
 }: SetupPasskeyContentProps) {
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext() as (
     key: string,
     substitutions?: string[],
@@ -155,16 +156,15 @@ export default function SetupPasskeyContent({
     }
 
     hasTrackedView.current = true;
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyOnboardingSetup)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          ...baseProperties,
-          status: 'viewed',
-        })
-        .build(),
-    );
-  }, [baseProperties, isPasskeyRegistered, trackEvent, createEventBuilder]);
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.PasskeyOnboardingSetup,
+      properties: {
+        ...baseProperties,
+        status: 'viewed',
+      },
+    });
+  }, [baseProperties, isPasskeyRegistered, trackEvent]);
 
   useEffect(() => {
     if (!isPasskeyRegistered || isEnrollmentInProgress) {
@@ -175,15 +175,14 @@ export default function SetupPasskeyContent({
   }, [goToNextStep, isEnrollmentInProgress, isPasskeyRegistered]);
 
   const handleMaybeLater = () => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyOnboardingSetup)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          ...baseProperties,
-          status: 'skipped',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.PasskeyOnboardingSetup,
+      properties: {
+        ...baseProperties,
+        status: 'skipped',
+      },
+    });
 
     goToNextStep();
   };
@@ -197,15 +196,14 @@ export default function SetupPasskeyContent({
     setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
     setIsEnrollmentInProgress(true);
 
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeySetup)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          ...baseProperties,
-          status: 'started',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.PasskeySetup,
+      properties: {
+        ...baseProperties,
+        status: 'started',
+      },
+    });
 
     try {
       const registrationOptions = await generatePasskeyRegistrationOptions();
@@ -238,19 +236,18 @@ export default function SetupPasskeyContent({
         metamask: newMetamaskState,
       });
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasskeySetup)
-          .addCategory(MetaMetricsEventCategory.Onboarding)
-          .addProperties({
-            ...baseProperties,
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: derivationMethod,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - enrollmentStartedAt,
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.PasskeySetup,
+        properties: {
+          ...baseProperties,
+          status: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: derivationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - enrollmentStartedAt,
+        },
+      });
 
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
@@ -263,19 +260,18 @@ export default function SetupPasskeyContent({
       const durationMs = Date.now() - enrollmentStartedAt;
       if (isPasskeyCeremonySilentError(error)) {
         log.debug('Passkey enrollment ceremony cancelled or timed out', error);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.PasskeySetup)
-            .addCategory(MetaMetricsEventCategory.Onboarding)
-            .addProperties({
-              ...baseProperties,
-              status: 'cancelled',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              current_step: currentStep,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              duration_ms: durationMs,
-            })
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.PasskeySetup,
+          properties: {
+            ...baseProperties,
+            status: 'cancelled',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            current_step: currentStep,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+          },
+        });
 
         if (isMountedRef.current) {
           setRegisterStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
@@ -295,20 +291,19 @@ export default function SetupPasskeyContent({
           extra: { currentStep, durationMs, errorCode },
         },
       );
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasskeySetup)
-          .addCategory(MetaMetricsEventCategory.Onboarding)
-          .addProperties({
-            ...baseProperties,
-            status: 'failed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            error_step: currentStep,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: durationMs,
-            reason: errorCode,
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.PasskeySetup,
+        properties: {
+          ...baseProperties,
+          status: 'failed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_step: currentStep,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: durationMs,
+          reason: errorCode,
+        },
+      });
 
       if (isMountedRef.current) {
         setEnrollmentError(
@@ -330,7 +325,6 @@ export default function SetupPasskeyContent({
     t,
     passkeyMethodLabel,
     trackEvent,
-    createEventBuilder,
     password,
   ]);
 

@@ -6,11 +6,6 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import {
-  formatPerpsFiatUniversal,
-  formatPerpsLiquidationPrice,
-  PERPS_LIQUIDATION_PRICE_FALLBACK,
-} from '../utils/formatPerpsDisplayPrice';
-import {
   UpdateTPSLModalContent,
   type UpdateTPSLSubmitState,
 } from './update-tpsl-modal-content';
@@ -250,82 +245,6 @@ describe('UpdateTPSLModalContent', () => {
         expect(slPercentInput.selectionStart).toBe(0);
         expect(slPercentInput.selectionEnd).toBe(slPercentInput.value.length);
       });
-    });
-  });
-
-  describe('price context block', () => {
-    it('renders entry, current, and liquidation price rows above the take profit section', () => {
-      renderTpslModalContent();
-
-      expect(
-        screen.getByTestId('perps-update-tpsl-price-info'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsEntryPrice.message),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsCurrentPrice.message),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsLiquidationPrice.message),
-      ).toBeInTheDocument();
-    });
-
-    it('formats the entry price with the adaptive perps formatter', () => {
-      renderTpslModalContent();
-
-      expect(
-        screen.getByTestId('perps-update-tpsl-entry-price-value'),
-      ).toHaveTextContent(
-        formatPerpsFiatUniversal(positionWithTPSL.entryPrice),
-      );
-    });
-
-    it('formats the liquidation price with the adaptive perps formatter', () => {
-      renderTpslModalContent();
-
-      expect(
-        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
-      ).toHaveTextContent(
-        formatPerpsLiquidationPrice(positionWithTPSL.liquidationPrice),
-      );
-    });
-
-    it('shows the current price from the live currentPrice prop', () => {
-      renderTpslModalContent({ currentPrice: 2900 });
-
-      expect(
-        screen.getByTestId('perps-update-tpsl-current-price-value'),
-      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
-    });
-
-    it('updates the current price when the live currentPrice prop changes', () => {
-      const { rerender } = renderWithProvider(
-        <TpslContentWithTestFooter {...defaultProps} currentPrice={2900} />,
-        mockStore,
-      );
-
-      expect(
-        screen.getByTestId('perps-update-tpsl-current-price-value'),
-      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
-
-      rerender(
-        <TpslContentWithTestFooter {...defaultProps} currentPrice={3000} />,
-      );
-
-      expect(
-        screen.getByTestId('perps-update-tpsl-current-price-value'),
-      ).toHaveTextContent(formatPerpsFiatUniversal(3000));
-    });
-
-    it('falls back to the placeholder when the liquidation price is invalid', () => {
-      renderTpslModalContent({
-        position: { ...positionWithTPSL, liquidationPrice: '0.00' },
-      });
-
-      expect(
-        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
-      ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
     });
   });
 

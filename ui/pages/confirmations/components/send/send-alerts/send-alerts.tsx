@@ -1,17 +1,21 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSendContext } from '../../../context/send';
 import { useUnreliableNetworkRpc } from '../../../hooks/send/useUnreliableNetworkRpc';
 import { SendAlertModal } from '../send-alert-modal';
 
-export const SendAlerts = () => {
+type SendAlertsProps = {
+  isSmartContractAlertOpen: boolean;
+  onSmartContractClose: () => void;
+  onSmartContractAcknowledge: () => void;
+};
+
+export const SendAlerts = ({
+  isSmartContractAlertOpen,
+  onSmartContractClose,
+  onSmartContractAcknowledge,
+}: SendAlertsProps) => {
   const t = useI18nContext();
   const { chainId } = useSendContext();
   const {
@@ -44,26 +48,25 @@ export const SendAlerts = () => {
     navigateToEditNetwork();
   }, [navigateToEditNetwork]);
 
-  const networkAlerts = useMemo(
-    () => [
-      {
-        key: 'networkUnreliable',
-        title: t('unavailableNetworkConnection'),
-        message: t('unavailableNetworkConnectionDescription', [
-          unreliableNetworkName ?? '',
-        ]),
-        acknowledgeButtonLabel: t('update'),
-      },
-    ],
-    [t, unreliableNetworkName],
-  );
-
   return (
-    <SendAlertModal
-      isOpen={isNetworkAlertOpen}
-      alerts={networkAlerts}
-      onAcknowledge={handleNetworkAcknowledge}
-      onClose={handleNetworkClose}
-    />
+    <>
+      <SendAlertModal
+        isOpen={isNetworkAlertOpen}
+        title={t('unavailableNetworkConnection')}
+        errorMessage={t('unavailableNetworkConnectionDescription', [
+          unreliableNetworkName ?? '',
+        ])}
+        acknowledgeLabel={t('update')}
+        onAcknowledge={handleNetworkAcknowledge}
+        onClose={handleNetworkClose}
+      />
+      <SendAlertModal
+        isOpen={isSmartContractAlertOpen}
+        title={t('smartContractAddress')}
+        errorMessage={t('smartContractAddressWarning')}
+        onAcknowledge={onSmartContractAcknowledge}
+        onClose={onSmartContractClose}
+      />
+    </>
   );
 };

@@ -3,7 +3,6 @@ import { Wallet } from '@metamask/wallet';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
-  MessengerClientApi,
   MessengerClientByName,
   MessengerClientInitFunction,
   MessengerClientInitRequest,
@@ -22,7 +21,7 @@ export type TaggedApiMethod = ((...args: unknown[]) => unknown) & {
 /** Result of initializing messenger clients. */
 export type InitMessengerClientsResult = {
   /** All API methods exposed by the messenger clients. */
-  messengerClientApi: Record<string, MessengerClientApi>;
+  messengerClientApi: Record<string, MessengerClient>;
 
   /** All controllers that provided a memory state key. */
   controllerMemState: Record<string, MessengerClient>;
@@ -66,7 +65,6 @@ export type MessengerClientsToInitialize =
   | 'GeolocationController'
   | 'PerpsController'
   | 'PPOMController'
-  | 'QrSyncController'
   | 'TransactionController'
   | 'TransactionPayController'
   | 'UserStorageController';

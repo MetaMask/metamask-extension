@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import {
   selectIsMetamaskNotificationsEnabled,
+  selectIsFeatureAnnouncementsEnabled,
   getFeatureAnnouncementsReadCount,
   getFeatureAnnouncementsUnreadCount,
   getOnChainMetamaskNotificationsReadCount,
@@ -18,6 +19,10 @@ const useSnapNotificationsCount = () => {
 };
 
 const useFeatureAnnouncementCount = () => {
+  const isFeatureAnnouncementsEnabled = useSelector(
+    selectIsFeatureAnnouncementsEnabled,
+  );
+
   const featureAnnouncementsUnreadCount = useSelector(
     getFeatureAnnouncementsUnreadCount,
   );
@@ -26,7 +31,9 @@ const useFeatureAnnouncementCount = () => {
     getFeatureAnnouncementsReadCount,
   );
 
-  return { featureAnnouncementsUnreadCount, featureAnnouncementsReadCount };
+  return isFeatureAnnouncementsEnabled
+    ? { featureAnnouncementsUnreadCount, featureAnnouncementsReadCount }
+    : { featureAnnouncementsUnreadCount: 0, featureAnnouncementsReadCount: 0 };
 };
 
 const useWalletNotificationCount = () => {

@@ -65,17 +65,11 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
   textVariant?: TextVariant;
 }
 
-/**
- * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
- */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type TagProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TagStyleUtilityProps>;
 
-/**
- * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
- */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type TagComponent = <C extends React.ElementType = 'div'>(

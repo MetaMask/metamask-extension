@@ -28,6 +28,10 @@ const Swap = ({ className, size, color }) => (
   </svg>
 );
 
+Swap.defaultProps = {
+  className: undefined,
+};
+
 Swap.propTypes = {
   /**
    * Additional className

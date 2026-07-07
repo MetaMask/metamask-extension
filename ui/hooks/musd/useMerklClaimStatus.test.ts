@@ -24,19 +24,21 @@ jest.mock('./transaction-amount-utils', () => {
   };
 });
 
-const mockTrackEvent = jest.fn();
-
-jest.mock('../useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../shared/lib/analytics/create-event-builder',
-  );
+jest.mock('../../contexts/metametrics', () => {
+  const React = jest.requireActual('react');
+  const trackEvent = jest.fn().mockResolvedValue(undefined);
   return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
+    MetaMetricsContext: React.createContext({
+      trackEvent,
+      bufferedTrace: jest.fn().mockResolvedValue(undefined),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
     }),
+    mockTrackEvent: trackEvent,
   };
 });
+
+const { mockTrackEvent } = jest.requireMock('../../contexts/metametrics');
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),

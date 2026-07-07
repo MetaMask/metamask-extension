@@ -1,15 +1,18 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../../helpers';
+import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
+  scrollAndConfirmAndAssertConfirm,
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
@@ -36,9 +39,9 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0].toLowerCase() as string;
-        const accountDetailsModal = new AccountDetailsModal(driver);
-        const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
         await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
@@ -56,12 +59,11 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.verifyPersonalSignInfo();
+        await assertInfoValues(driver);
 
-        await confirmation.clickScrollToBottomButton();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await scrollAndConfirmAndAssertConfirm(driver);
 
-        await testDapp.verifyPersonalSignSuccess(publicAddress);
+        await assertVerifiedPersonalMessage(driver, publicAddress);
 
         await assertAccountDetailsMetrics(
           driver,
@@ -124,9 +126,9 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       async ({ driver }) => {
         const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
         const confirmation = new PersonalSignConfirmation(driver);
-        const testDapp = new TestDapp(driver);
-
         await login(driver);
+
+        const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
@@ -156,8 +158,27 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         // Verify the signature
-        await testDapp.verifyPersonalSignSuccess(publicAddress);
+        await testDapp.checkSuccessPersonalSign(publicAddress);
+        await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
       },
     );
   });
 });
+
+async function assertInfoValues(driver: Driver) {
+  const personalSignConfirmation = new PersonalSignConfirmation(driver);
+  personalSignConfirmation.verifyOrigin();
+  personalSignConfirmation.verifyMessage();
+}
+
+async function assertVerifiedPersonalMessage(
+  driver: Driver,
+  publicAddress: string,
+) {
+  const testDapp = new TestDapp(driver);
+  await driver.waitUntilXWindowHandles(2);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+  await testDapp.checkSuccessPersonalSign(publicAddress);
+  await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
+}

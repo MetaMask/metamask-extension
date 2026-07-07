@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
   BlockSize,
@@ -27,6 +26,7 @@ import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import { getIsDefaultAddressEnabled } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
@@ -49,7 +49,7 @@ export const AppHeaderUnlockedContent = ({
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -79,14 +79,13 @@ export const AppHeaderUnlockedContent = ({
   const handleMainMenuToggle = useCallback(() => {
     const isMenuOpen = !accountOptionsMenuOpen;
     if (isMenuOpen) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.NavMainMenuOpened)
-          .addCategory(MetaMetricsEventCategory.Navigation)
-          .addProperties({
-            location: 'Home',
-          })
-          .build(),
-      );
+      trackEvent({
+        event: MetaMetricsEventName.NavMainMenuOpened,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          location: 'Home',
+        },
+      });
     }
 
     setSearchParams((prev) => {
@@ -97,7 +96,7 @@ export const AppHeaderUnlockedContent = ({
       }
       return prev;
     });
-  }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
+  }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
@@ -120,23 +119,22 @@ export const AppHeaderUnlockedContent = ({
                 op: TraceOperation.AccountUi,
               });
               transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
-              trackEvent(
-                createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
-                  .addCategory(MetaMetricsEventCategory.Navigation)
-                  .addProperties({
-                    location: 'Home',
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    pinned_count: accountListStats.pinnedCount,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    hidden_count: accountListStats.hiddenCount,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    total_accounts: accountListStats.totalAccounts,
-                  })
-                  .build(),
-              );
+              trackEvent({
+                event: MetaMetricsEventName.NavAccountMenuOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: 'Home',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  pinned_count: accountListStats.pinnedCount,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  hidden_count: accountListStats.hiddenCount,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  total_accounts: accountListStats.totalAccounts,
+                },
+              });
             }}
             disabled={disableAccountPicker}
             paddingLeft={2}
@@ -176,7 +174,6 @@ export const AppHeaderUnlockedContent = ({
     selectedMultichainAccountId,
     navigate,
     trackEvent,
-    createEventBuilder,
     accountListStats,
   ]);
 

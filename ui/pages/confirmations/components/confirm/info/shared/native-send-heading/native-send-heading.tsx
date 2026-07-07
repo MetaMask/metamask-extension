@@ -22,7 +22,7 @@ import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
 import { selectConversionRateByChainId } from '../../../../../../../selectors';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { formatAmount } from '../../../../../../../../shared/lib/format-amount';
+import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 

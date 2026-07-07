@@ -1,6 +1,6 @@
-import type { GitHub } from '@actions/github/lib/utils';
+import { GitHub } from '@actions/github/lib/utils';
 
-import { LabelableType, type Labelable } from './labelable.mts';
+import { LabelableType, Labelable } from './labelable.mts';
 
 // This function retrieves a pull request on a specific repo
 export async function retrievePullRequest(

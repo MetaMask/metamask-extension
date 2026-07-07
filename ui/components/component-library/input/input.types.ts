@@ -5,9 +5,6 @@ import type {
 
 import { TextVariant } from '../../../helpers/constants/design-system';
 
-/**
- * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
- */
 export enum InputType {
   Text = 'text',
   // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -104,17 +101,11 @@ export interface InputStyleProps extends StyleUtilityProps {
   value?: string | number;
 }
 
-/**
- * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
- */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type InputProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, InputStyleProps>;
 
-/**
- * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
- */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type InputComponent = <C extends React.ElementType = 'input'>(

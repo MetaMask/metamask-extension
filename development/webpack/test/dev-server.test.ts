@@ -2,26 +2,27 @@ import { describe, it, afterEach, mock } from 'node:test';
 import assert from 'node:assert';
 import type { Stats, Compilation, Compiler } from 'webpack';
 import {
-  getDevServerOptions,
+  DEV_SERVER_OPTIONS,
   injectEntryScripts,
   logWatchBuildStats,
   suppressDevServerInfoLogs,
 } from '../utils/dev-server';
-import { setupUiClient } from '../utils/dev-server/setup-ui-client';
-import { setupBackgroundClient } from '../utils/dev-server/setup-background-client';
+import {
+  getDevServerClientEntry,
+  setupUiReload,
+} from '../utils/dev-server/ui-reload';
+import { setupBackgroundReload } from '../utils/dev-server/background-reload';
 import {
   closeSocket,
   connectToDevServer,
 } from '../utils/dev-server/connect-to-dev-server';
 import {
-  BACKGROUND_CLIENT_ENTRY_NAME,
-  BACKGROUND_UPDATE_MESSAGE_TYPE,
-  UI_UPDATE_MESSAGE_TYPE,
-} from '../utils/dev-server/protocol';
-import {
-  createAnnouncer,
-  getClientRequest,
-} from '../utils/dev-server/websocket';
+  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+  BACKGROUND_RELOAD_MESSAGE_TYPE,
+  UI_RELOAD_CLIENT_ENTRY_NAME,
+  UI_RELOAD_MESSAGE_TYPE,
+} from '../utils/dev-server/reload-protocol';
+import { createAnnouncer, getClientEntry } from '../utils/dev-server/websocket';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 
 type EntryPluginCall = {
@@ -32,17 +33,6 @@ type EntryPluginCall = {
 };
 
 type DoneCallback = Parameters<Compiler['hooks']['done']['tap']>[1];
-type ReactRefreshRule = {
-  test?: RegExp;
-  include?: unknown;
-  enforce: string;
-  use: {
-    loader: string;
-    options: {
-      clientRequest: string;
-    };
-  };
-};
 
 function createCompiler({
   plugins = [],
@@ -85,7 +75,7 @@ function createCompiler({
 
   const compiler = {
     context: '/test/context',
-    options: { plugins, module: { rules: [] } },
+    options: { plugins },
     hooks: {
       done: {
         tap: mock.fn((_name, callback) => {
@@ -106,14 +96,6 @@ function createCompiler({
       return doneCallback;
     },
   };
-}
-
-function getOnlyModuleRule(compiler: Compiler): ReactRefreshRule {
-  const { rules } = compiler.options.module;
-  assert.strictEqual(rules.length, 1);
-  const [rule] = rules;
-  assert(rule && typeof rule === 'object' && !Array.isArray(rule));
-  return rule as ReactRefreshRule;
 }
 
 function createManifestPlugin({
@@ -267,16 +249,13 @@ class FakeWebSocket {
   }
 }
 
-function withFakeWebSocket(
-  callback: () => void,
-  webSocketImplementation: unknown = FakeWebSocket,
-) {
+function withFakeWebSocket(callback: () => void) {
   const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'WebSocket');
   FakeWebSocket.sockets = [];
   Object.defineProperty(globalThis, 'WebSocket', {
     configurable: true,
     writable: true,
-    value: webSocketImplementation,
+    value: FakeWebSocket,
   });
   try {
     callback();
@@ -293,57 +272,11 @@ function withFakeWebSocket(
 describe('./utils/dev-server', () => {
   afterEach(() => mock.restoreAll());
 
-  describe('getDevServerOptions', () => {
+  describe('DEV_SERVER_OPTIONS', () => {
     it('disables built-in live reload and client injection', () => {
-      const devServerOptions = getDevServerOptions({
-        uiClientRule: { include: '/test/context/scripts/load/ui.ts' },
-      });
-
-      assert.strictEqual(devServerOptions.hot, false);
-      assert.strictEqual(devServerOptions.liveReload, false);
-      assert.strictEqual(devServerOptions.client, false);
-    });
-
-    it('registers dev-server clients from the static middleware config', () => {
-      const devServerOptions = getDevServerOptions({
-        uiClientRule: { include: '/test/context/scripts/load/ui.ts' },
-      });
-      const manifestPlugin = createManifestPlugin({
-        serviceWorkerEntryName: 'service-worker',
-      });
-      const { compiler, entryPluginCalls } = createCompiler({
-        plugins: [manifestPlugin],
-      });
-      const { devServer } = createDevServer();
-      const { setupMiddlewares } = devServerOptions;
-      assert(setupMiddlewares, 'setupMiddlewares should be set');
-      const middlewares: Parameters<
-        NonNullable<typeof devServerOptions.setupMiddlewares>
-      >[0] = [];
-
-      const result = setupMiddlewares(middlewares, {
-        ...devServer,
-        compiler,
-      } as never);
-
-      assert.strictEqual(result, middlewares);
-      const uiClientRule = getOnlyModuleRule(compiler);
-      assert.strictEqual(
-        uiClientRule.include,
-        '/test/context/scripts/load/ui.ts',
-      );
-      assert.match(
-        uiClientRule.use.options.clientRequest,
-        /ui-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
-      );
-      assert.strictEqual(entryPluginCalls.length, 1);
-      assert.match(
-        entryPluginCalls[0].entry,
-        /background-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
-      );
-      assert.deepStrictEqual(entryPluginCalls[0].options, {
-        name: 'service-worker',
-      });
+      assert.strictEqual(DEV_SERVER_OPTIONS.hot, false);
+      assert.strictEqual(DEV_SERVER_OPTIONS.liveReload, false);
+      assert.strictEqual(DEV_SERVER_OPTIONS.client, false);
     });
   });
 
@@ -421,46 +354,34 @@ describe('./utils/dev-server', () => {
     });
   });
 
-  describe('setupUiClient', () => {
-    it('prepends the UI client to the UI entry', () => {
+  describe('setupUiReload', () => {
+    it('registers the webpack-dev-server client and UI reload client in the same entrypoint', () => {
       const { compiler, entryPluginCalls } = createCompiler();
       const { devServer } = createDevServer({ host: 'localhost', port: 24680 });
 
-      setupUiClient(devServer as never, [compiler], {
-        rule: { include: '/test/context/scripts/load/ui.ts' },
-      });
+      setupUiReload(devServer as never, [compiler]);
 
-      assert.strictEqual(entryPluginCalls.length, 0);
-      const rule = getOnlyModuleRule(compiler);
-      assert.strictEqual(rule.test, undefined);
-      assert.strictEqual(rule.include, '/test/context/scripts/load/ui.ts');
-      assert.strictEqual(rule.enforce, 'pre');
-      assert.match(
-        rule.use.loader,
-        /development[\\/]webpack[\\/]utils[\\/]loaders[\\/]reactRefreshLoader/u,
+      assert.strictEqual(entryPluginCalls.length, 2);
+      assert.deepStrictEqual(entryPluginCalls[0].options, {
+        name: UI_RELOAD_CLIENT_ENTRY_NAME,
+        chunkLoading: false,
+      });
+      assert.strictEqual(
+        entryPluginCalls[0].entry,
+        'webpack-dev-server/client/index?protocol=ws&hostname=localhost&port=24680&hot=false&live-reload=false',
       );
+      assert.deepStrictEqual(entryPluginCalls[1].options, {
+        name: UI_RELOAD_CLIENT_ENTRY_NAME,
+      });
       assert.match(
-        rule.use.options.clientRequest,
-        /development[\\/]webpack[\\/]utils[\\/]dev-server[\\/]ui-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
+        entryPluginCalls[1].entry,
+        /development[\\/]webpack[\\/]utils[\\/]dev-server[\\/]ui-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A24680%2Fws/u,
       );
     });
   });
 
-  describe('setupBackgroundClient', () => {
-    it('skips compilers without the manifest plugin', () => {
-      const { compiler, entryPluginCalls, getDoneCallback } = createCompiler();
-      const { devServer } = createDevServer();
-
-      setupBackgroundClient(devServer as never, [compiler]);
-
-      assert.strictEqual(entryPluginCalls.length, 0);
-      assert.throws(
-        () => getDoneCallback(),
-        /done callback should be registered/u,
-      );
-    });
-
-    it('merges the background client into the MV3 service worker entry', () => {
+  describe('setupBackgroundReload', () => {
+    it('merges the background reload client into the MV3 service worker entry', () => {
       const manifestPlugin = createManifestPlugin({
         serviceWorkerEntryName: 'service-worker',
       });
@@ -469,7 +390,7 @@ describe('./utils/dev-server', () => {
       });
       const { devServer } = createDevServer();
 
-      setupBackgroundClient(devServer as never, [compiler]);
+      setupBackgroundReload(devServer as never, [compiler]);
 
       assert.strictEqual(entryPluginCalls.length, 1);
       assert.deepStrictEqual(entryPluginCalls[0].options, {
@@ -477,22 +398,22 @@ describe('./utils/dev-server', () => {
       });
       assert.match(
         entryPluginCalls[0].entry,
-        /background-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
+        /background-reload-client\.ts\?url=ws%3A%2F%2Flocalhost%3A12345%2Fws/u,
       );
     });
 
-    it('registers a standalone background client entry for MV2', () => {
+    it('registers a standalone background reload client entry for MV2', () => {
       const manifestPlugin = createManifestPlugin();
       const { compiler, entryPluginCalls } = createCompiler({
         plugins: [manifestPlugin],
       });
       const { devServer } = createDevServer();
 
-      setupBackgroundClient(devServer as never, [compiler]);
+      setupBackgroundReload(devServer as never, [compiler]);
 
       assert.strictEqual(entryPluginCalls.length, 1);
       assert.deepStrictEqual(entryPluginCalls[0].options, {
-        name: BACKGROUND_CLIENT_ENTRY_NAME,
+        name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
         chunkLoading: false,
       });
     });
@@ -507,7 +428,7 @@ describe('./utils/dev-server', () => {
       });
       const { devServer, sentMessages } = createDevServer();
 
-      setupBackgroundClient(devServer as never, [compiler]);
+      setupBackgroundReload(devServer as never, [compiler]);
       const done = getDoneCallback();
 
       done(
@@ -532,11 +453,11 @@ describe('./utils/dev-server', () => {
       assert.deepStrictEqual(
         sentMessages.map(({ type }) => type),
         [
-          BACKGROUND_UPDATE_MESSAGE_TYPE,
-          UI_UPDATE_MESSAGE_TYPE,
-          BACKGROUND_UPDATE_MESSAGE_TYPE,
-          UI_UPDATE_MESSAGE_TYPE,
-          BACKGROUND_UPDATE_MESSAGE_TYPE,
+          BACKGROUND_RELOAD_MESSAGE_TYPE,
+          UI_RELOAD_MESSAGE_TYPE,
+          BACKGROUND_RELOAD_MESSAGE_TYPE,
+          UI_RELOAD_MESSAGE_TYPE,
+          BACKGROUND_RELOAD_MESSAGE_TYPE,
         ],
       );
       assert.strictEqual(sentMessages[1].data, 'ui-a');
@@ -544,7 +465,7 @@ describe('./utils/dev-server', () => {
       assert.notStrictEqual(sentMessages[0].data, sentMessages[4].data);
     });
 
-    it('does not announce update messages for failed builds', () => {
+    it('does not announce reload messages for failed builds', () => {
       const manifestPlugin = createManifestPlugin({
         serviceWorkerEntryName: 'service-worker',
       });
@@ -553,28 +474,28 @@ describe('./utils/dev-server', () => {
       });
       const { devServer, sentMessages } = createDevServer();
 
-      setupBackgroundClient(devServer as never, [compiler]);
+      setupBackgroundReload(devServer as never, [compiler]);
       getDoneCallback()(createStats({ hasErrors: true }));
 
       assert.deepStrictEqual(sentMessages, []);
     });
   });
 
-  describe('getClientRequest', () => {
-    it('embeds the resolved dev-server WebSocket URL into the client request query', () => {
+  describe('getClientEntry', () => {
+    it('embeds the resolved dev-server WebSocket URL into the client entry query', () => {
       const { devServer } = createDevServer({
         host: '127.0.0.1',
         port: 35729,
       });
 
-      const request = getClientRequest(
+      const entry = getClientEntry(
         devServer as never,
-        'background-client.ts',
+        'background-reload-client.ts',
       );
 
       assert.match(
-        request,
-        /background-client\.ts\?url=ws%3A%2F%2F127\.0\.0\.1%3A35729%2Fws$/u,
+        entry,
+        /background-reload-client\.ts\?url=ws%3A%2F%2F127\.0\.0\.1%3A35729%2Fws$/u,
       );
     });
   });
@@ -631,36 +552,6 @@ describe('./utils/dev-server', () => {
   });
 
   describe('connectToDevServer', () => {
-    it('reconnects with backoff when WebSocket construction throws', () => {
-      class ThrowingWebSocket {
-        constructor() {
-          throw new Error('connection failed');
-        }
-      }
-
-      withFakeWebSocket(() => {
-        const reconnects: (() => void)[] = [];
-        const { mock: setTimeoutMock } = mock.method(
-          globalThis,
-          'setTimeout',
-          (callback: () => void, delay?: number) => {
-            reconnects.push(callback);
-            return undefined as unknown as ReturnType<typeof setTimeout>;
-          },
-        );
-
-        connectToDevServer({
-          url: 'ws://localhost:12345/ws',
-          onMessage: () => undefined,
-        });
-        reconnects[0]();
-
-        assert.strictEqual(setTimeoutMock.callCount(), 2);
-        assert.strictEqual(setTimeoutMock.calls[0].arguments[1], 200);
-        assert.strictEqual(setTimeoutMock.calls[1].arguments[1], 400);
-      }, ThrowingWebSocket);
-    });
-
     it('dispatches parsed dev-server messages and ignores invalid messages', () => {
       withFakeWebSocket(() => {
         const { mock: consoleWarnMock } = mock.method(
@@ -674,16 +565,17 @@ describe('./utils/dev-server', () => {
           socket: FakeWebSocket;
         }[] = [];
 
-        connectToDevServer({
-          url: 'ws://localhost:12345/ws',
-          onMessage: (type, data, socket) => {
+        connectToDevServer(
+          'ws://localhost:12345/ws',
+          () => false,
+          (type, data, socket) => {
             messages.push({
               type,
               data,
               socket: socket as unknown as FakeWebSocket,
             });
           },
-        });
+        );
 
         const socket = FakeWebSocket.sockets[0];
         socket.dispatch('message', {
@@ -713,37 +605,6 @@ describe('./utils/dev-server', () => {
       });
     });
 
-    it('ignores messages after the client is done', () => {
-      withFakeWebSocket(() => {
-        const { mock: consoleWarnMock } = mock.method(
-          console,
-          'warn',
-          () => undefined,
-        );
-        const onMessage = mock.fn();
-        let done = true;
-
-        connectToDevServer({
-          url: 'ws://localhost:12345/ws',
-          isDone: () => done,
-          onMessage,
-        });
-
-        const socket = FakeWebSocket.sockets[0];
-        socket.dispatch('message', {
-          data: JSON.stringify({ type: 'ignored' }),
-        });
-        done = false;
-        socket.dispatch('message', {
-          data: JSON.stringify({ type: 'accepted' }),
-        });
-
-        assert.strictEqual(onMessage.mock.callCount(), 1);
-        assert.strictEqual(onMessage.mock.calls[0].arguments[0], 'accepted');
-        assert.strictEqual(consoleWarnMock.callCount(), 0);
-      });
-    });
-
     it('reconnects with backoff until the client is done', () => {
       withFakeWebSocket(() => {
         const reconnects: (() => void)[] = [];
@@ -757,11 +618,11 @@ describe('./utils/dev-server', () => {
           },
         );
 
-        connectToDevServer({
-          url: 'ws://localhost:12345/ws',
-          isDone: () => done,
-          onMessage: () => undefined,
-        });
+        connectToDevServer(
+          'ws://localhost:12345/ws',
+          () => done,
+          () => undefined,
+        );
 
         FakeWebSocket.sockets[0].dispatch('close');
         assert.strictEqual(setTimeoutMock.callCount(), 1);
@@ -776,34 +637,6 @@ describe('./utils/dev-server', () => {
       });
     });
 
-    it('resets reconnect backoff after a socket opens', () => {
-      withFakeWebSocket(() => {
-        const reconnects: (() => void)[] = [];
-        const { mock: setTimeoutMock } = mock.method(
-          globalThis,
-          'setTimeout',
-          (callback: () => void, delay?: number) => {
-            reconnects.push(callback);
-            return undefined as unknown as ReturnType<typeof setTimeout>;
-          },
-        );
-
-        connectToDevServer({
-          url: 'ws://localhost:12345/ws',
-          onMessage: () => undefined,
-        });
-
-        FakeWebSocket.sockets[0].dispatch('close');
-        reconnects[0]();
-        FakeWebSocket.sockets[1].dispatch('open');
-        FakeWebSocket.sockets[1].dispatch('close');
-
-        assert.strictEqual(setTimeoutMock.callCount(), 2);
-        assert.strictEqual(setTimeoutMock.calls[0].arguments[1], 200);
-        assert.strictEqual(setTimeoutMock.calls[1].arguments[1], 200);
-      });
-    });
-
     it('attaches listeners once per WebSocket when reconnecting', () => {
       withFakeWebSocket(() => {
         const reconnects: (() => void)[] = [];
@@ -813,10 +646,11 @@ describe('./utils/dev-server', () => {
           return undefined as unknown as ReturnType<typeof setTimeout>;
         });
 
-        connectToDevServer({
-          url: 'ws://localhost:12345/ws',
-          onMessage: (type) => messages.push(type),
-        });
+        connectToDevServer(
+          'ws://localhost:12345/ws',
+          () => false,
+          (type) => messages.push(type),
+        );
 
         const firstSocket = FakeWebSocket.sockets[0];
         assert.strictEqual(firstSocket.listeners.get('open')?.length, 1);
@@ -928,42 +762,6 @@ describe('./utils/dev-server', () => {
       fallback();
       await closePromise;
     });
-
-    it('resolves when closing the socket throws', async () => {
-      let closeListener: (() => void) | undefined;
-      const socket = {
-        addEventListener: mock.fn(
-          (
-            type: string,
-            listener: () => void,
-            options?: AddEventListenerOptions,
-          ) => {
-            assert.strictEqual(type, 'close');
-            assert.deepStrictEqual(options, { once: true });
-            closeListener = listener;
-          },
-        ),
-        close: mock.fn(() => {
-          throw new Error('close failed');
-        }),
-      };
-      const { mock: clearTimeoutMock } = mock.method(
-        globalThis,
-        'clearTimeout',
-        () => undefined,
-      );
-      mock.method(
-        globalThis,
-        'setTimeout',
-        () => 1 as unknown as ReturnType<typeof setTimeout>,
-      );
-
-      await closeSocket(socket as unknown as WebSocket);
-
-      assert(closeListener, 'close listener should be registered before close');
-      assert.strictEqual(socket.close.mock.callCount(), 1);
-      assert.strictEqual(clearTimeoutMock.callCount(), 1);
-    });
   });
 
   describe('logWatchBuildStats', () => {
@@ -1057,6 +855,73 @@ describe('./utils/dev-server', () => {
 
       assert.strictEqual(status.mock.callCount(), 1);
       assert.deepStrictEqual(calls, ['status', error, 'test message']);
+    });
+  });
+
+  describe('getDevServerClientEntry', () => {
+    const parse = (url: string) => {
+      const [base, query] = url.split('?');
+      return { base, params: new URLSearchParams(query) };
+    };
+
+    it('returns the webpack-dev-server client base path', () => {
+      const { base } = parse(getDevServerClientEntry({}));
+      assert.strictEqual(base, 'webpack-dev-server/client/index');
+    });
+
+    it('always sets protocol=ws (extension pages cannot auto-detect WS protocol)', () => {
+      const { params } = parse(getDevServerClientEntry({}));
+      assert.strictEqual(params.get('protocol'), 'ws');
+    });
+
+    it('omits hostname/port/hot/live-reload when the corresponding fields are unset', () => {
+      const { params } = parse(getDevServerClientEntry({}));
+      assert.strictEqual(params.has('hostname'), false);
+      assert.strictEqual(params.has('port'), false);
+      assert.strictEqual(params.has('hot'), false);
+      assert.strictEqual(params.has('live-reload'), false);
+    });
+
+    it('maps `host` to the `hostname` param', () => {
+      const { params } = parse(getDevServerClientEntry({ host: 'localhost' }));
+      assert.strictEqual(params.get('hostname'), 'localhost');
+    });
+
+    it('forwards a numeric port as a string', () => {
+      const { params } = parse(getDevServerClientEntry({ port: 12345 }));
+      assert.strictEqual(params.get('port'), '12345');
+    });
+
+    it("forwards `port: 'auto'` as the string 'auto'", () => {
+      const { params } = parse(getDevServerClientEntry({ port: 'auto' }));
+      assert.strictEqual(params.get('port'), 'auto');
+    });
+
+    it('forwards `hot` as a string', () => {
+      const hotTrue = parse(getDevServerClientEntry({ hot: true }));
+      assert.strictEqual(hotTrue.params.get('hot'), 'true');
+
+      const hotFalse = parse(getDevServerClientEntry({ hot: false }));
+      assert.strictEqual(hotFalse.params.get('hot'), 'false');
+    });
+
+    it('maps `liveReload` to the `live-reload` param', () => {
+      const { params } = parse(getDevServerClientEntry({ liveReload: true }));
+      assert.strictEqual(params.get('live-reload'), 'true');
+      assert.strictEqual(params.has('liveReload'), false);
+    });
+
+    it('combines all fields into a single query string', () => {
+      const url = getDevServerClientEntry({
+        host: 'localhost',
+        port: 8080,
+        hot: false,
+        liveReload: true,
+      });
+      assert.strictEqual(
+        url,
+        'webpack-dev-server/client/index?protocol=ws&hostname=localhost&port=8080&hot=false&live-reload=true',
+      );
     });
   });
 });

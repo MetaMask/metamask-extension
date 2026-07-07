@@ -1,6 +1,6 @@
-import type { GitHub } from '@actions/github/lib/utils';
+import { GitHub } from '@actions/github/lib/utils';
 
-import { LabelableType, type Labelable } from './labelable.mts';
+import { LabelableType, Labelable } from './labelable.mts';
 import { retrieveRepo } from './repo.mts';
 
 interface RawIssue {

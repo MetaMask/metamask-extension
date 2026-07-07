@@ -1269,7 +1269,7 @@
     "del>p-map>aggregate-error": {
       "packages": {
         "del>p-map>aggregate-error>clean-stack": true,
-        "@testing-library/jest-dom>redent>indent-string": true
+        "prettier-eslint>indent-string": true
       }
     },
     "eslint>ajv": {

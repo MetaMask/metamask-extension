@@ -128,19 +128,19 @@ describe('PersonalSign Confirmation', () => {
     await waitFor(() => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackAnalyticsEvent',
+          (call) => call[0] === 'trackMetaMetricsEvent',
         );
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackAnalyticsEvent',
+        'trackMetaMetricsEvent',
       );
     });
 
     expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: MetaMetricsEventName.AccountDetailsOpened,
+          category: MetaMetricsEventCategory.Confirmations,
+          event: MetaMetricsEventName.AccountDetailsOpened,
           properties: {
-            category: MetaMetricsEventCategory.Confirmations,
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

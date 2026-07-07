@@ -26,7 +26,6 @@ import { isWebHidAvailable, isWebUsbAvailable } from './webConnectionUtils';
 export type HardwareWalletConfigContextType = {
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
-  accountAddress: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
@@ -48,12 +47,6 @@ export type HardwareWalletActionsContextType = {
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
   ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
-  /**
-   * WORKAROUND: Trezor-specific flag to suppress WebUSB disconnect teardown
-   * during signing. See `isSigningInProgressRef` in `HardwareWalletStateManager`
-   * for full explanation.
-   */
-  setSigningInProgress: (value: boolean) => void;
 };
 
 /**
@@ -63,7 +56,6 @@ export type HardwareWalletContextType = {
   // State (may cause rerenders)
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
-  accountAddress: string | null;
   connectionState: HardwareWalletConnectionState;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
@@ -170,13 +162,11 @@ export const HardwareWalletProvider = ({
     connectionState,
     walletType,
     isHardwareWalletAccount,
-    accountAddress,
   } = state;
 
   const {
     setHardwareConnectionPermissionState,
     setConnectionState,
-    resetConnectionRefs,
     resetAutoConnectState,
     setAutoConnected,
   } = setters;
@@ -215,10 +205,6 @@ export const HardwareWalletProvider = ({
     updateConnectionState(ConnectionState.ready());
   }, [updateConnectionState]);
 
-  const setSigningInProgress = useCallback((value: boolean) => {
-    refs.isSigningInProgressRef.current = value;
-  }, []);
-
   const stableActionsRef = useRef({
     connect,
     disconnect,
@@ -227,7 +213,6 @@ export const HardwareWalletProvider = ({
     checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
     requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
     ensureDeviceReady,
-    setSigningInProgress,
   });
 
   // Update the ref when dependencies change
@@ -239,7 +224,6 @@ export const HardwareWalletProvider = ({
     checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
     requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
     ensureDeviceReady,
-    setSigningInProgress,
   };
 
   useHardwareWalletAutoConnect({
@@ -274,18 +258,17 @@ export const HardwareWalletProvider = ({
       refs.adapterRef.current = null;
     }
     updateConnectionState(ConnectionState.disconnected());
-    resetConnectionRefs();
-    resetAutoConnectState();
+    refs.isConnectingRef.current = false;
+    refs.currentConnectionIdRef.current = null;
+    refs.hasAutoConnectedRef.current = false;
+    refs.lastConnectedAccountRef.current = null;
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resetAutoConnectState, resetConnectionRefs, updateConnectionState]);
+  }, [updateConnectionState]);
 
   // Reset when leaving hardware wallet account
   useEffect(() => {
-    if (
-      !isHardwareWalletAccount &&
-      (refs.adapterRef.current || refs.isSigningInProgressRef.current)
-    ) {
+    if (!isHardwareWalletAccount && refs.adapterRef.current) {
       resetHardwareWalletConnection();
     }
     // eslint-disable-next-line react-compiler/react-compiler
@@ -320,7 +303,6 @@ export const HardwareWalletProvider = ({
       // State
       isHardwareWalletAccount,
       walletType,
-      accountAddress,
       connectionState,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
@@ -340,7 +322,6 @@ export const HardwareWalletProvider = ({
     [
       isHardwareWalletAccount,
       walletType,
-      accountAddress,
       connectionState,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
@@ -354,7 +335,6 @@ export const HardwareWalletProvider = ({
     () => ({
       isHardwareWalletAccount,
       walletType,
-      accountAddress,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
@@ -362,7 +342,6 @@ export const HardwareWalletProvider = ({
     [
       isHardwareWalletAccount,
       walletType,
-      accountAddress,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
@@ -387,7 +366,6 @@ export const HardwareWalletProvider = ({
       requestHardwareWalletPermission:
         stableActionsRef.current.requestHardwareWalletPermission,
       ensureDeviceReady: stableActionsRef.current.ensureDeviceReady,
-      setSigningInProgress: stableActionsRef.current.setSigningInProgress,
     }),
     // Actions are stable, so this memo only runs once
     [],

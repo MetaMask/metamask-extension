@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
@@ -12,7 +12,7 @@ import {
   setShowDefaultAddress,
   setDefaultAddressScope,
 } from '../../../store/actions';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -27,7 +27,7 @@ import { PREFERENCES_ITEMS } from '../search-config';
 export const ShowDefaultAddressItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
@@ -44,18 +44,17 @@ export const ShowDefaultAddressItem = () => {
     enabled: boolean,
     scope: DefaultAddressScope,
   ) => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          /* eslint-disable @typescript-eslint/naming-convention */
-          show_default_address: enabled,
-          default_address_network: scope,
-          /* eslint-enable @typescript-eslint/naming-convention */
-          location: 'Settings Page',
-        })
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.SettingsUpdated,
+      category: MetaMetricsEventCategory.Settings,
+      properties: {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        show_default_address: enabled,
+        default_address_network: scope,
+        /* eslint-enable @typescript-eslint/naming-convention */
+        location: 'Settings Page',
+      },
+    });
   };
 
   const handleToggle = (value: boolean) => {

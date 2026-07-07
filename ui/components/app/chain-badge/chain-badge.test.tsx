@@ -46,41 +46,11 @@ describe('ChainBadge', () => {
     mockGetImage.mockReturnValue(undefined);
 
     const { getByText } = render(
-      <ChainBadge chainId="0x12345">
+      <ChainBadge chainId="0xunknown">
         <div>Unknown Chain Content</div>
       </ChainBadge>,
     );
 
     expect(getByText('Unknown Chain Content')).toBeInTheDocument();
-  });
-
-  it('resolves the image with the CAIP id for an EVM CAIP-2 chainId', () => {
-    mockGetImage.mockReturnValue('https://example.com/ethereum.png');
-
-    const { getByRole } = render(
-      <ChainBadge chainId="eip155:1">
-        <div>Content</div>
-      </ChainBadge>,
-    );
-
-    expect(mockGetImage).toHaveBeenCalledWith(CHAIN_IDS.MAINNET);
-    expect(getByRole('img')).toHaveAttribute(
-      'src',
-      'https://example.com/ethereum.png',
-    );
-  });
-
-  it('resolves the image with the CAIP id for a non-EVM (Solana) chainId', () => {
-    const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-    mockGetImage.mockReturnValue('https://example.com/solana.png');
-
-    const { getByText } = render(
-      <ChainBadge chainId={solanaChainId}>
-        <div>Solana Content</div>
-      </ChainBadge>,
-    );
-
-    expect(mockGetImage).toHaveBeenCalledWith(solanaChainId);
-    expect(getByText('Solana Content')).toBeInTheDocument();
   });
 });

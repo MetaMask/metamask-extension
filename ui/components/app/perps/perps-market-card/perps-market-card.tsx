@@ -23,8 +23,6 @@ const CARD_STYLES =
 
 export type PerpsMarketCardProps = {
   symbol: string;
-  /** Full asset name (e.g. 'Bitcoin'); falls back to the ticker when omitted */
-  name?: string;
   price: string;
   change24hPercent: string;
   volume?: string;
@@ -35,7 +33,6 @@ export type PerpsMarketCardProps = {
 
 export const PerpsMarketCard = ({
   symbol,
-  name,
   price,
   change24hPercent,
   volume,
@@ -43,7 +40,7 @@ export const PerpsMarketCard = ({
   onClick,
   'data-testid': testId,
 }: PerpsMarketCardProps) => {
-  const displaySymbol = name || getDisplayName(symbol);
+  const displaySymbol = getDisplayName(symbol);
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);
   const changeColor = getChangeColor(displayChange24hPercent);
 

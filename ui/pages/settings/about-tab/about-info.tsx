@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import {
   Box,
   Text,
@@ -12,8 +12,7 @@ import {
 
 import { Tag } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useSegmentContext } from '../../../hooks/useSegmentContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../../shared/lib/build-types';
 import {
@@ -27,8 +26,7 @@ import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function AboutInfo(): React.ReactElement {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const segmentContext = useSegmentContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const {
     value: isVisitSupportDataConsentModalOpen,
@@ -39,15 +37,18 @@ export default function AboutInfo(): React.ReactElement {
 
   const handleContactUsClick = useCallback(() => {
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
+      {
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           url: SUPPORT_LINK,
-          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-        })
-        .build(),
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
     );
-  }, [createEventBuilder, segmentContext.page?.title, trackEvent]);
+  }, [trackEvent]);
 
   function renderInfoLinks(): React.ReactElement {
     const privacyUrl = 'https://metamask.io/privacy.html';

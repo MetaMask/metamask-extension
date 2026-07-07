@@ -13,7 +13,6 @@
   },
   "untilOnboardingComplete": [
     "accounts.api.cx.metamask.io",
-    "acl.execution.metamask.io",
     "token.api.cx.metamask.io",
     "static.cx.metamask.io",
     "accounts.google.com",

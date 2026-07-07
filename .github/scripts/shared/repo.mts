@@ -1,4 +1,4 @@
-import type { GitHub } from '@actions/github/lib/utils';
+import { GitHub } from '@actions/github/lib/utils';
 
 // This function retrieves the repo
 export async function retrieveRepo(

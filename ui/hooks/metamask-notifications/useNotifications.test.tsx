@@ -5,10 +5,10 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
 import * as actions from '../../store/actions';
+import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   useCreateNotifications,
   useDisableNotifications,
-  useEnableNotifications,
 } from './useNotifications';
 
 const middlewares = [thunk];
@@ -22,7 +22,6 @@ jest.mock('../../store/actions', () => ({
   markMetamaskNotificationsAsRead: jest.fn(),
   showLoadingIndication: jest.fn(),
   hideLoadingIndication: jest.fn(),
-  enableMetamaskNotifications: jest.fn(() => jest.fn()),
   disableMetamaskNotifications: jest.fn(),
 }));
 
@@ -34,8 +33,6 @@ describe('useNotifications', () => {
       metamask: {
         isMetamaskNotificationsEnabled: false,
         isBackupAndSyncEnabled: false,
-        isFeatureAnnouncementsEnabled: false,
-        dataCollectionForMarketing: true,
         internalAccounts: {
           accounts: [
             {
@@ -67,7 +64,11 @@ describe('useNotifications', () => {
   it('should create notifications', async () => {
     const { result } = renderHook(() => useCreateNotifications(), {
       wrapper: ({ children }: React.PropsWithChildren) => (
-        <Provider store={store}>{children}</Provider>
+        <Provider store={store}>
+          <MetamaskNotificationsProvider>
+            {children}
+          </MetamaskNotificationsProvider>
+        </Provider>
       ),
     });
 
@@ -90,22 +91,5 @@ describe('useNotifications', () => {
     });
 
     expect(actions.disableMetamaskNotifications).toHaveBeenCalled();
-  });
-
-  it('should enable notifications with AUS marketing initialization options', async () => {
-    const { result } = renderHook(() => useEnableNotifications(), {
-      wrapper: ({ children }: React.PropsWithChildren) => (
-        <Provider store={store}>{children}</Provider>
-      ),
-    });
-
-    await act(async () => {
-      await result.current.enableNotifications();
-    });
-
-    expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith({
-      hasMarketingConsent: true,
-      productAnnouncementEnabled: false,
-    });
   });
 });

@@ -47,9 +47,7 @@ export async function getAnalyticsState(): Promise<AnalyticsParticipation> {
   }
 
   try {
-    const persistedState = await globalThis.stateHooks.getPersistedState({
-      reportErrors: false,
-    });
+    const persistedState = await globalThis.stateHooks.getPersistedState();
     return getAnalyticsStateFromPersistedState(persistedState);
   } catch (error) {
     log('Error retrieving persisted state, falling back to backup', error);

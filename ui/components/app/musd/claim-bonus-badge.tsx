@@ -5,13 +5,13 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { Hex } from '@metamask/utils';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 import { useMerklClaim } from './hooks/useMerklClaim';
@@ -42,7 +42,7 @@ export const ClaimBonusBadge = ({
   hasClaimedBefore: boolean;
 }) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hasFiredCtaDisplayedEvent = useRef(false);
 
   // Get network name for analytics
@@ -85,12 +85,11 @@ export const ClaimBonusBadge = ({
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.MusdClaimBonusCtaDisplayed)
-        .addCategory(MetaMetricsEventCategory.MusdConversion)
-        .addProperties(impressionProperties)
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: impressionProperties,
+    });
   }, [
     assetSymbol,
     bonusAmountRange,
@@ -102,7 +101,6 @@ export const ClaimBonusBadge = ({
     label,
     analyticsLocation,
     networkName,
-    createEventBuilder,
     trackEvent,
   ]);
 
@@ -121,24 +119,15 @@ export const ClaimBonusBadge = ({
       /* eslint-enable @typescript-eslint/naming-convention */
 
       // Track claim bonus button click
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.MusdClaimBonusButtonClicked)
-          .addCategory(MetaMetricsEventCategory.MusdConversion)
-          .addProperties(eventProperties)
-          .build(),
-      );
+      trackEvent({
+        event: MetaMetricsEventName.MusdClaimBonusButtonClicked,
+        category: MetaMetricsEventCategory.MusdConversion,
+        properties: eventProperties,
+      });
 
       claimRewards();
     },
-    [
-      claimRewards,
-      createEventBuilder,
-      trackEvent,
-      label,
-      chainId,
-      networkName,
-      analyticsLocation,
-    ],
+    [claimRewards, trackEvent, label, chainId, networkName, analyticsLocation],
   );
 
   if (isClaimInFlight || isClaiming) {

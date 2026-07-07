@@ -37,9 +37,6 @@ import {
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { UIMetricsEventPayload } from '../../../contexts/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
-import type { MetaMetricsEventOptions } from '../../../../shared/constants/metametrics';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import {
   setFirstTimeFlowType,
@@ -201,43 +198,25 @@ export default function OnboardingWelcome() {
     isPasskeyFeatureAvailable,
   ]);
 
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
-    useContext(MetaMetricsContext);
-
-  const trackLegacyEventForAction = useCallback(
-    async (
-      payload: UIMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ): Promise<void> => {
-      trackEvent(
-        createEventBuilder(payload.event)
-          .addProperties({
-            ...payload.properties,
-            ...(payload.category === undefined
-              ? {}
-              : { category: payload.category }),
-          })
-          .addSensitiveProperties(payload.sensitiveProperties)
-          .build(options),
-      );
-    },
-    [createEventBuilder, trackEvent],
-  );
+  const {
+    trackEvent,
+    bufferedTrace,
+    bufferedEndTrace,
+    onboardingParentContext,
+  } = useContext(MetaMetricsContext);
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
     setNewAccountCreationInProgress(true);
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.WalletSetupStarted)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountTypeForMetrics,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupStarted,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
+    });
     bufferedTrace?.({
       name: TraceName.OnboardingNewSrpCreateWallet,
       op: TraceOperation.OnboardingUserJourney,
@@ -248,7 +227,6 @@ export default function OnboardingWelcome() {
   }, [
     dispatch,
     navigate,
-    createEventBuilder,
     trackEvent,
     onboardingParentContext,
     bufferedTrace,
@@ -258,15 +236,14 @@ export default function OnboardingWelcome() {
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.WalletImportStarted)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountTypeForMetrics,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImportStarted,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
+    });
     bufferedTrace?.({
       name: TraceName.OnboardingExistingSrpImport,
       op: TraceOperation.OnboardingUserJourney,
@@ -277,7 +254,6 @@ export default function OnboardingWelcome() {
   }, [
     dispatch,
     navigate,
-    createEventBuilder,
     trackEvent,
     onboardingParentContext,
     bufferedTrace,
@@ -298,7 +274,7 @@ export default function OnboardingWelcome() {
             socialConnectionType as AuthConnection,
             bufferedTrace,
             bufferedEndTrace,
-            trackLegacyEventForAction,
+            trackEvent,
           ),
         );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
@@ -312,7 +288,7 @@ export default function OnboardingWelcome() {
       onboardingParentContext,
       bufferedTrace,
       bufferedEndTrace,
-      trackLegacyEventForAction,
+      trackEvent,
     ],
   );
 
@@ -350,21 +326,20 @@ export default function OnboardingWelcome() {
           errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR;
 
         if (isLikelyOutdatedApp) {
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.SocialLoginFailed)
-              .addCategory(MetaMetricsEventCategory.Onboarding)
-              .addProperties({
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                account_type: `${MetaMetricsEventAccountType.Default}_${loginType}`,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                is_rehydration: 'unknown',
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                failure_type: 'outdated_app',
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                error_category: 'telegram_app',
-              })
-              .build(),
-          );
+          trackEvent({
+            category: MetaMetricsEventCategory.Onboarding,
+            event: MetaMetricsEventName.SocialLoginFailed,
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: `${MetaMetricsEventAccountType.Default}_${loginType}`,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              is_rehydration: 'unknown',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              failure_type: 'outdated_app',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              error_category: 'telegram_app',
+            },
+          });
           setLoginError(LOGIN_ERROR.TELEGRAM_OUTDATED);
           return;
         }
@@ -377,7 +352,7 @@ export default function OnboardingWelcome() {
 
       setLoginError(LOGIN_ERROR.GENERIC);
     },
-    [bufferedEndTrace, createEventBuilder, trackEvent],
+    [bufferedEndTrace, trackEvent],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -387,29 +362,27 @@ export default function OnboardingWelcome() {
       // here, we cannot use the selector yet because the social login flow is not complete and the state is not updated yet
       const accountTypeForSocialLoginMetrics = `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`;
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.WalletSetupStarted)
-          .addCategory(MetaMetricsEventCategory.Onboarding)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountTypeForSocialLoginMetrics,
-          })
-          .build(),
-      );
+      await trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletSetupStarted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForSocialLoginMetrics,
+        },
+      });
 
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
         // Track wallet setup completed for social login users
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.SocialLoginCompleted)
-            .addCategory(MetaMetricsEventCategory.Onboarding)
-            .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: accountTypeForSocialLoginMetrics,
-            })
-            .build(),
-        );
+        await trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.SocialLoginCompleted,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountTypeForSocialLoginMetrics,
+          },
+        });
         if (isNewUser) {
           bufferedTrace?.({
             name: TraceName.OnboardingNewSocialCreateWallet,
@@ -431,7 +404,6 @@ export default function OnboardingWelcome() {
     [
       dispatch,
       handleSocialLogin,
-      createEventBuilder,
       trackEvent,
       navigate,
       onboardingParentContext,
@@ -447,29 +419,27 @@ export default function OnboardingWelcome() {
       // here, we cannot use the selector yet because the social login flow is not complete and the state is not updated yet
       const accountTypeForSocialLoginMetrics = `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`;
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.WalletImportStarted)
-          .addCategory(MetaMetricsEventCategory.Onboarding)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountTypeForSocialLoginMetrics,
-          })
-          .build(),
-      );
+      await trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletImportStarted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForSocialLoginMetrics,
+        },
+      });
 
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
         // Track wallet login completed for existing social login users
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.SocialLoginCompleted)
-            .addCategory(MetaMetricsEventCategory.Onboarding)
-            .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: accountTypeForSocialLoginMetrics,
-            })
-            .build(),
-        );
+        await trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.SocialLoginCompleted,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountTypeForSocialLoginMetrics,
+          },
+        });
 
         if (isNewUser) {
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
@@ -491,7 +461,6 @@ export default function OnboardingWelcome() {
     },
     [
       handleSocialLogin,
-      createEventBuilder,
       trackEvent,
       navigate,
       onboardingParentContext,

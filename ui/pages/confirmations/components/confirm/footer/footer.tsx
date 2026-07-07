@@ -289,7 +289,6 @@ const Footer = () => {
   } = useHardwareFooter({
     currentConfirmation,
     currentConfirmationId,
-    fromAddress,
     onUserRejectedHardwareWalletError,
   });
 

@@ -7,8 +7,9 @@ import {
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { ChainId } from '@metamask/controller-utils';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import {
   AvatarNetwork,
   Box,
@@ -28,11 +29,12 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { AdditionalNetworksInfo } from '../../components/multichain/network-manager/components/additional-networks-info';
+import { useNetworkChangeHandlers } from '../../components/multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../components/multichain/network-manager/hooks/useNetworkItemCallbacks';
 import { NetworkListItem } from '../../components/multichain/network-list-item';
 import ToggleButton from '../../components/ui/toggle-button';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useAnalytics } from '../../hooks/useAnalytics';
 import { useIsNetworkGasSponsored } from '../../hooks/useIsNetworkGasSponsored';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
 import { getSelectedMultichainNetworkChainId } from '../../selectors/multichain/networks';
@@ -62,7 +64,6 @@ import {
 } from '../../../shared/lib/network.utils';
 import { useNetworkManagerState } from '../../components/multichain/network-manager/hooks/useNetworkManagerState';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
-import { NoSearchResult } from './no-search-result';
 
 const filterNetworks = <
   NetworkRecord extends {
@@ -96,23 +97,22 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
       network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
 
-  const handleAddNetwork = async () => {
-    await dispatch(addNetwork(network, { setActive: false }));
-    dispatch(
-      setEditedNetwork({
-        chainId: network.chainId,
-        nickname: network.name,
-        editCompleted: true,
-        newNetwork: true,
-      }),
-    );
-  };
-
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Start}
+      onClick={async () => {
+        await dispatch(addNetwork(network, { setActive: false }));
+        dispatch(
+          setEditedNetwork({
+            chainId: network.chainId,
+            nickname: network.name,
+            editCompleted: true,
+            newNetwork: true,
+          }),
+        );
+      }}
       paddingTop={4}
       paddingBottom={4}
       gap={4}
@@ -151,7 +151,6 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
         data-testid="test-add-button"
         className="ml-auto"
         ariaLabel={t('addNetwork')}
-        onClick={handleAddNetwork}
       />
     </Box>
   );
@@ -161,18 +160,17 @@ const SectionDivider = () => <Box className="mx-4 border-t border-muted" />;
 
 type NetworksPageListProps = {
   searchQuery: string;
-  onAddCustomNetwork: () => void;
   footerContent?: React.ReactNode;
 };
 
 export const NetworksPageList = ({
   searchQuery,
-  onAddCustomNetwork,
   footerContent,
 }: NetworksPageListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const [, setSearchParams] = useSearchParams();
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -190,6 +188,7 @@ export const NetworksPageList = ({
     });
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
     useNetworkItemCallbacks();
+  const { handleNetworkChange } = useNetworkChangeHandlers();
 
   const orderedNetworks = useMemo(
     () =>
@@ -242,12 +241,6 @@ export const NetworksPageList = ({
       ),
     [currentMultichainChainId, testNetworks],
   );
-  const showNoSearchResults =
-    searchQuery.trim().length > 0 &&
-    defaultNetworks.length === 0 &&
-    customNetworks.length === 0 &&
-    sortedTestNetworks.length === 0 &&
-    featuredNetworksNotYetEnabled.length === 0;
 
   const renderNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
@@ -273,18 +266,24 @@ export const NetworksPageList = ({
                   .defaultRpcEndpoint
               : undefined
           }
-          onClick={() => undefined}
+          onClick={() => handleNetworkChange(network.chainId)}
           onDeleteClick={onDelete}
           deleteMenuLabel={onDeleteMenuLabel}
           onEditClick={onEdit}
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}
           disabled={!isNetworkEnabled(network)}
-          notSelectable
+          notSelectable={false}
         />
       );
     },
-    [evmNetworks, getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled],
+    [
+      evmNetworks,
+      getItemCallbacks,
+      handleNetworkChange,
+      hasMultiRpcOptions,
+      isNetworkEnabled,
+    ],
   );
 
   const handleToggleTestNetworks = useCallback(
@@ -295,16 +294,15 @@ export const NetworksPageList = ({
 
       const newValue = !value;
       dispatch(setShowTestNetworks(newValue));
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
-          .addCategory(MetaMetricsEventCategory.Network)
-          .addProperties({
-            value: newValue,
-          })
-          .build(),
-      );
+      trackEvent({
+        event: MetaMetricsEventName.TestNetworksDisplayed,
+        category: MetaMetricsEventCategory.Network,
+        properties: {
+          value: newValue,
+        },
+      });
     },
-    [currentlyOnTestnet, dispatch, trackEvent, createEventBuilder],
+    [currentlyOnTestnet, dispatch, trackEvent],
   );
 
   return (
@@ -312,9 +310,7 @@ export const NetworksPageList = ({
       className="flex h-full min-h-0 w-full flex-col"
       data-testid="networks-page-list"
     >
-      <Box className="flex-1 overflow-y-auto">
-        {showNoSearchResults ? <NoSearchResult /> : null}
-
+      <Box className="flex-1 overflow-y-auto pt-2">
         {defaultNetworks.length > 0 ? (
           <Box
             padding={4}
@@ -328,7 +324,7 @@ export const NetworksPageList = ({
           </Box>
         ) : null}
 
-        <Box className="pb-2">{defaultNetworks.map(renderNetworkListItem)}</Box>
+        <Box>{defaultNetworks.map(renderNetworkListItem)}</Box>
 
         {customNetworks.length > 0 ? (
           <>
@@ -346,7 +342,7 @@ export const NetworksPageList = ({
           </>
         ) : null}
 
-        <Box className="pb-2">{customNetworks.map(renderNetworkListItem)}</Box>
+        <Box>{customNetworks.map(renderNetworkListItem)}</Box>
 
         {sortedTestNetworks.length > 0 ? (
           <>
@@ -374,16 +370,14 @@ export const NetworksPageList = ({
         ) : null}
 
         {showTestnets || currentlyOnTestnet ? (
-          <Box className="pb-2">
-            {sortedTestNetworks.map(renderNetworkListItem)}
-          </Box>
+          <>{sortedTestNetworks.map(renderNetworkListItem)}</>
         ) : null}
 
         {featuredNetworksNotYetEnabled.length > 0 ? (
           <>
             <SectionDivider />
             <AdditionalNetworksInfo />
-            <Box className="pb-2">
+            <Box>
               {featuredNetworksNotYetEnabled.map((network) => (
                 <AdditionalNetworkRow key={network.chainId} network={network} />
               ))}
@@ -397,7 +391,7 @@ export const NetworksPageList = ({
         <Button
           className="w-full"
           variant={ButtonVariant.Secondary}
-          onClick={onAddCustomNetwork}
+          onClick={() => setSearchParams({ view: 'add' })}
           data-testid="networks-page-add-custom-network-button"
         >
           {t('addACustomNetwork')}

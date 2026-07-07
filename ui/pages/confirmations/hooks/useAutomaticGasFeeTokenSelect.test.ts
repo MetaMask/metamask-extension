@@ -10,7 +10,6 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { forceUpdateMetamaskState } from '../../../store/actions';
-import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../test/data/confirmations/gas';
 import { useAutomaticGasFeeTokenSelect } from './useAutomaticGasFeeTokenSelect';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
@@ -189,18 +188,11 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
     expect(mockUpdateTransactionEventFragment).not.toHaveBeenCalled();
 
+    const transactionMeta = state.metamask
+      .transactions[0] as unknown as TransactionMeta;
+
     act(() => {
-      store.dispatch({
-        type: UPDATE_METAMASK_STATE,
-        value: {
-          transactions: [
-            {
-              ...(state.metamask.transactions[0] as unknown as TransactionMeta),
-              selectedGasFeeToken: undefined,
-            },
-          ],
-        },
-      });
+      transactionMeta.selectedGasFeeToken = undefined;
     });
 
     rerender();

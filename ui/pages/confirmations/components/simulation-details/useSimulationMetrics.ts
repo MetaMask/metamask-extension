@@ -4,7 +4,7 @@ import {
   SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import {
@@ -13,7 +13,7 @@ import {
   useDisplayNames,
 } from '../../../../hooks/useDisplayName';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -82,16 +82,12 @@ export function useSimulationMetrics({
 
   const displayNames = useDisplayNames(displayNameRequests);
 
-  const displayNamesByAddress = useMemo(
-    () =>
-      displayNames.reduce(
-        (acc, displayNameResponse, index) => ({
-          ...acc,
-          [balanceChanges[index].asset.address ?? '']: displayNameResponse,
-        }),
-        {} as { [address: string]: UseDisplayNameResponse },
-      ),
-    [balanceChanges, displayNames],
+  const displayNamesByAddress = displayNames.reduce(
+    (acc, displayNameResponse, index) => ({
+      ...acc,
+      [balanceChanges[index].asset.address ?? '']: displayNameResponse,
+    }),
+    {} as { [address: string]: UseDisplayNameResponse },
   );
 
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -157,68 +153,42 @@ function useIncompleteAssetEvent(
     [address: string]: UseDisplayNameResponse | undefined;
   },
 ) {
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [processedAssets, setProcessedAssets] = useState<string[]>([]);
 
-  useEffect(() => {
-    const assetsToTrack: {
-      assetAddress: string;
-      change: BalanceChange;
-      displayName: UseDisplayNameResponse | undefined;
-    }[] = [];
+  for (const change of balanceChanges) {
+    const assetAddress = change.asset.address ?? '';
+    const displayName = displayNamesByAddress[assetAddress];
 
-    for (const change of balanceChanges) {
-      const assetAddress = change.asset.address ?? '';
-      const displayName = displayNamesByAddress[assetAddress];
+    const isIncomplete =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      (change.asset.address && !change.fiatAmount) ||
+      getPetnameType(change, displayName) === PetnameType.Unknown;
 
-      const isIncomplete =
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        (change.asset.address && !change.fiatAmount) ||
-        getPetnameType(change, displayName) === PetnameType.Unknown;
+    const isProcessed = processedAssets.includes(assetAddress);
 
-      if (!isIncomplete || processedAssets.includes(assetAddress)) {
-        continue;
-      }
-
-      assetsToTrack.push({ assetAddress, change, displayName });
+    if (!isIncomplete || isProcessed) {
+      continue;
     }
 
-    if (assetsToTrack.length === 0) {
-      return;
-    }
+    trackEvent({
+      event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
+      category: MetaMetricsEventCategory.Transactions,
+      properties: {
+        asset_address: change.asset.address,
+        asset_petname: getPetnameType(change, displayName),
+        asset_symbol: displayName?.contractDisplayName,
+        asset_type: getAssetType(change.asset.standard),
+        fiat_conversion_available: change.fiatAmount
+          ? FiatType.Available
+          : FiatType.NotAvailable,
+        location: 'confirmation',
+      },
+    });
 
-    for (const { change, displayName } of assetsToTrack) {
-      trackEvent(
-        createEventBuilder(
-          MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-        )
-          .addCategory(MetaMetricsEventCategory.Transactions)
-          .addProperties({
-            asset_address: change.asset.address,
-            asset_petname: getPetnameType(change, displayName),
-            asset_symbol: displayName?.contractDisplayName,
-            asset_type: getAssetType(change.asset.standard),
-            fiat_conversion_available: change.fiatAmount
-              ? FiatType.Available
-              : FiatType.NotAvailable,
-            location: 'confirmation',
-          })
-          .build(),
-      );
-    }
-
-    setProcessedAssets((currentProcessed) => [
-      ...currentProcessed,
-      ...assetsToTrack.map(({ assetAddress }) => assetAddress),
-    ]);
-  }, [
-    balanceChanges,
-    createEventBuilder,
-    displayNamesByAddress,
-    processedAssets,
-    trackEvent,
-  ]);
+    setProcessedAssets([...processedAssets, assetAddress]);
+  }
 }
 
 /** Placeholder used in metrics when asset has no contract address (e.g. native). */

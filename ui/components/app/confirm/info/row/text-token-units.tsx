@@ -5,7 +5,7 @@ import { calcTokenAmount } from '../../../../../../shared/lib/transactions-contr
 import {
   formatAmount,
   formatAmountMaxPrecision,
-} from '../../../../../../shared/lib/format-amount';
+} from '../../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { shortenString } from '../../../../../helpers/utils/util';
 import { ConfirmInfoRowText } from './text';
 

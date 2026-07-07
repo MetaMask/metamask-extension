@@ -58,10 +58,6 @@ type RawPayExtendedFlag = {
   };
 };
 
-type HardwareWalletConfig = {
-  enabled?: boolean;
-};
-
 const selectConfirmationsPayDappsFlag = createSelector(
   getRemoteFeatureFlags,
   (flags) =>
@@ -112,18 +108,6 @@ const selectPayExtendedFlag = createSelector(
         confirmations_pay_extended?: RawPayExtendedFlag;
       }
     ).confirmations_pay_extended,
-  /* eslint-enable @typescript-eslint/naming-convention */
-);
-
-const selectPayHardwareFlag = createSelector(
-  getRemoteFeatureFlags,
-  /* eslint-disable @typescript-eslint/naming-convention */
-  (flags) =>
-    (
-      flags as unknown as {
-        confirmations_pay_hardware?: HardwareWalletConfig;
-      }
-    ).confirmations_pay_hardware,
   /* eslint-enable @typescript-eslint/naming-convention */
 );
 
@@ -209,11 +193,6 @@ export const selectEnforcedSimulationsSlippage = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags): number =>
     getEnforcedSimulationsSlippage({ remoteFeatureFlags }),
-);
-
-export const selectIsPayHardwareEnabled = createSelector(
-  selectPayHardwareFlag,
-  (flag): boolean => flag?.enabled ?? false,
 );
 
 function getPreferredTokensForTransaction(

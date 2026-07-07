@@ -207,34 +207,6 @@ class NetworkManager {
     });
     console.log(`${tabName} tab is properly selected`);
   }
-
-  async openNetworkAndSelectNetwork(
-    tabName: string,
-    networkName: string,
-  ): Promise<void> {
-    console.log(
-      `Opening network manager and selecting ${networkName} on ${tabName} tab`,
-    );
-    await this.openNetworkManager();
-    await this.selectTab(tabName);
-    if (networkName.startsWith('eip155:')) {
-      await this.selectNetworkByChainId(networkName);
-    } else {
-      await this.selectNetworkByNameWithWait(networkName);
-    }
-  }
-
-  async openNetworkAndDeleteNetwork(
-    tabName: string,
-    networkName: string,
-  ): Promise<void> {
-    console.log(
-      `Opening network manager and deleting ${networkName} on ${tabName} tab`,
-    );
-    await this.openNetworkManager();
-    await this.selectTab(tabName);
-    await this.deleteNetworkByChainId(networkName as `0x${string}`);
-  }
 }
 
 export default NetworkManager;

@@ -3,6 +3,7 @@ import { NameType } from '@metamask/name-controller';
 import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -14,21 +15,6 @@ import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import Name from './name';
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
-  };
-});
 
 jest.mock('../../../hooks/useDisplayName');
 
@@ -217,6 +203,14 @@ describe('Name', () => {
     ])(
       'sends displayed event with %s name',
       async (_: string, value: string, hasPetname: boolean) => {
+        const trackEventMock = jest.fn();
+        const mockMetaMetricsContext = {
+          trackEvent: trackEventMock,
+          bufferedTrace: jest.fn(),
+          bufferedEndTrace: jest.fn(),
+          onboardingParentContext: { current: null },
+        };
+
         useDisplayNameMock.mockReturnValue({
           name: hasPetname ? SAVED_NAME_MOCK : null,
           hasPetname,
@@ -231,28 +225,28 @@ describe('Name', () => {
         });
 
         renderWithProvider(
-          <Name
-            type={NameType.ETHEREUM_ADDRESS}
-            value={value}
-            variation={VARIATION_MOCK}
-          />,
+          <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+            <Name
+              type={NameType.ETHEREUM_ADDRESS}
+              value={value}
+              variation={VARIATION_MOCK}
+            />
+          </MetaMetricsContext.Provider>,
           store,
         );
 
-        expect(mockTrackEvent).toHaveBeenCalledWith(
-          expect.objectContaining({
-            name: MetaMetricsEventName.PetnameDisplayed,
-            properties: expect.objectContaining({
-              category: MetaMetricsEventCategory.Petnames,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              petname_category: NameType.ETHEREUM_ADDRESS,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              has_petname: hasPetname,
-            }),
-          }),
-        );
+        expect(trackEventMock).toHaveBeenCalledWith({
+          event: MetaMetricsEventName.PetnameDisplayed,
+          category: MetaMetricsEventCategory.Petnames,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_petname: hasPetname,
+          },
+        });
       },
     );
   });

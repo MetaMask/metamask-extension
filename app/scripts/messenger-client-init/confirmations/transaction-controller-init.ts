@@ -1,7 +1,6 @@
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
-  getAccountAddressRelationship,
   SavedGasFees,
   TransactionController,
   TransactionControllerMessenger,
@@ -43,11 +42,6 @@ const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
   TransactionType.perpsRelayDeposit,
   TransactionType.predictRelayDeposit,
 ];
-type CheckFirstTimeInteractionRequest = {
-  from: string;
-  to: string;
-  chainId: number;
-};
 
 export const TransactionControllerInit: MessengerClientInitFunction<
   TransactionController,
@@ -107,22 +101,6 @@ export const TransactionControllerInit: MessengerClientInitFunction<
   return { messengerClient, api, memStateKey: 'TxController' };
 };
 
-/**
- * Returns whether the sender has no prior on-chain interaction with `to` on `chainId`,
- * or `undefined` when the relationship cannot be determined.
- * @param request
- */
-async function checkFirstTimeInteraction(
-  request: CheckFirstTimeInteractionRequest,
-): Promise<boolean | undefined> {
-  try {
-    const result = await getAccountAddressRelationship(request);
-    return result.count === undefined ? undefined : result.count === 0;
-  } catch {
-    return undefined;
-  }
-}
-
 function getApi(
   messengerClient: TransactionController,
 ): MessengerClientInitResult<TransactionController>['api'] {
@@ -145,7 +123,6 @@ function getApi(
       messengerClient.updateSelectedGasFeeToken.bind(messengerClient),
     updateTransactionGasFees:
       messengerClient.updateTransactionGasFees.bind(messengerClient),
-    checkFirstTimeInteraction,
   };
 }
 

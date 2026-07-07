@@ -23,6 +23,10 @@ const Send = ({ className, size, color }) => (
   </svg>
 );
 
+Send.defaultProps = {
+  className: undefined,
+};
+
 Send.propTypes = {
   /**
    * Additional className

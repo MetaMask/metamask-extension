@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
 } from '../../../store/store';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -51,7 +51,7 @@ export const createToggleItem = (
   const ToggleItem = () => {
     const t = useI18nContext();
     const dispatch = useDispatch();
-    const { trackEvent, createEventBuilder } = useAnalytics();
+    const { trackEvent } = useContext(MetaMetricsContext);
     const value = useSelector(config.selector);
     const disabled = useSelector(config.disabledSelector ?? selectAlwaysFalse);
 
@@ -59,21 +59,19 @@ export const createToggleItem = (
       const newValue = !currentValue;
 
       if (config.trackEvent) {
-        trackEvent(
-          createEventBuilder(config.trackEvent.event)
-            .addCategory(MetaMetricsEventCategory.Settings)
-            .addProperties(config.trackEvent.properties(newValue))
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: config.trackEvent.event,
+          properties: config.trackEvent.properties(newValue),
+        });
       } else if (config.trackEventProperty) {
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.SettingsUpdated)
-            .addCategory(MetaMetricsEventCategory.Settings)
-            .addProperties({
-              [config.trackEventProperty]: newValue,
-            })
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            [config.trackEventProperty]: newValue,
+          },
+        });
       }
 
       const result = config.action(newValue);

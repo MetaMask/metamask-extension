@@ -5,7 +5,6 @@ import {
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { isCorrectDeveloperTransactionType } from '../../../shared/lib/confirmation.utils';
 import { isFirefoxBrowser } from '../../../shared/lib/browser-runtime.utils';
-import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { isSignatureTransactionType } from '../../pages/confirmations/utils';
 import {
   useHardwareWalletActions,
@@ -27,7 +26,6 @@ import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 type UseHardwareFooterArgs = {
   currentConfirmation?: TransactionMeta;
   currentConfirmationId?: string;
-  fromAddress?: string;
   onUserRejectedHardwareWalletError: () => Promise<void>;
 };
 
@@ -69,18 +67,13 @@ type UseHardwareFooterResult = {
 export const useHardwareFooter = ({
   currentConfirmation,
   currentConfirmationId,
-  fromAddress,
   onUserRejectedHardwareWalletError,
 }: UseHardwareFooterArgs): UseHardwareFooterResult => {
   const { trackConnectCtaClicked } = useHardwareWalletMetrics();
   const inE2e =
     process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
   const { connectionState } = useHardwareWalletState();
-  const {
-    accountAddress,
-    isHardwareWalletAccount: isSelectedHardwareWalletAccount,
-    walletType: selectedWalletType,
-  } = useHardwareWalletConfig();
+  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { showErrorModal } = useHardwareWalletError();
   const [hasPreflightSucceeded, setHasPreflightSucceeded] = useState(false);
@@ -89,15 +82,6 @@ export const useHardwareFooter = ({
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
     currentConfirmation?.type,
   );
-
-  const isHardwareWalletAccount =
-    isSelectedHardwareWalletAccount &&
-    Boolean(
-      accountAddress &&
-      fromAddress &&
-      isEqualCaseInsensitive(accountAddress, fromAddress),
-    );
-  const walletType = isHardwareWalletAccount ? selectedWalletType : null;
 
   const shouldRunHardwareWalletPreflight =
     !inE2e &&

@@ -121,7 +121,11 @@ describe('getNotificationWalletGroups', () => {
       }),
     ];
 
-    const result = getNotificationWalletGroups(accountGroups);
+    const result = getNotificationWalletGroups(accountGroups, [
+      '0x1111111111111111111111111111111111111111',
+      '0x2222222222222222222222222222222222222222',
+      '0x3333333333333333333333333333333333333333',
+    ]);
 
     expect(result).toStrictEqual<NotificationWalletGroup[]>([
       {
@@ -154,23 +158,26 @@ describe('getNotificationWalletGroups', () => {
     ]);
   });
 
-  it('returns an empty list when there are no notification-eligible accounts', () => {
+  it('returns an empty list when there are no notification addresses', () => {
     expect(
-      getNotificationWalletGroups([
-        createAccountGroup({
-          id: 'entropy:wallet-1/0',
-          walletId: 'entropy:wallet-1',
-          walletName: 'Wallet 1',
-          accountName: 'Account 1',
-          accounts: [
-            createAccount({
-              id: 'account-1-solana',
-              address: 'SolanaAddress111111111111111111111111111111',
-              type: 'solana:data-account',
-            }),
-          ],
-        }),
-      ]),
+      getNotificationWalletGroups(
+        [
+          createAccountGroup({
+            id: 'entropy:wallet-1/0',
+            walletId: 'entropy:wallet-1',
+            walletName: 'Wallet 1',
+            accountName: 'Account 1',
+            accounts: [
+              createAccount({
+                id: 'account-1-evm',
+                address: '0x1111111111111111111111111111111111111111',
+                type: 'eip155:eoa',
+              }),
+            ],
+          }),
+        ],
+        [],
+      ),
     ).toStrictEqual([]);
   });
 });

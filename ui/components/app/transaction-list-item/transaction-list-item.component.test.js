@@ -47,19 +47,6 @@ jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
   useShouldShowSpeedUp: jest.fn(),
 }));
 
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: jest.fn(),
-      createEventBuilder,
-    }),
-  };
-});
-
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
@@ -369,7 +356,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      'Swap USDC to UNISigningCancel',
+      '?Swap USDC to UNISigningCancel',
     );
     expect(getByText(messages.signing.message)).toBeInTheDocument();
   });
@@ -381,7 +368,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      'Swap USDC to UNIConfirmed-2 USDC',
+      '?Swap USDC to UNIConfirmed-2 USDC',
     );
   });
 
@@ -400,7 +387,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      'Swap USDC to UNIFailed-2 USDC',
+      '?Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText(messages.failed.message)).toBeInTheDocument();
   });

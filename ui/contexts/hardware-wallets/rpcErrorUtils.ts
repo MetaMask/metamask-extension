@@ -27,7 +27,6 @@ import {
 } from '@metamask/superstruct';
 import { KeyringControllerError } from '@metamask/keyring-controller';
 import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../../shared/constants/hardware-wallets';
-import { extractMessageFromUnknownError } from '../../../shared/lib/error';
 import { HardwareWalletType } from './types';
 import { createHardwareWalletError } from './errors';
 
@@ -474,7 +473,43 @@ export function isTrezorDesktopConnectionMissingError(error: unknown): boolean {
   );
 }
 
-export { extractMessageFromUnknownError };
+/**
+ * Extract an error message from an unknown value without depending on the
+ * later generic helper in this file.
+ *
+ * @param error - The error to inspect
+ * @returns The error message string
+ */
+export function extractMessageFromUnknownError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'object' && error !== null) {
+    const errorLike = error as { message?: unknown };
+    const { message } = errorLike;
+    if (typeof message === 'string') {
+      return message;
+    }
+    if (
+      typeof message === 'number' ||
+      typeof message === 'boolean' ||
+      typeof message === 'bigint'
+    ) {
+      return String(message);
+    }
+
+    try {
+      return JSON.stringify(error, (_key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      );
+    } catch {
+      return String(error);
+    }
+  }
+
+  return String(error);
+}
 
 /**
  * Check whether an error's message/stack contains user-cancel text.

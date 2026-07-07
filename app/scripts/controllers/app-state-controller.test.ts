@@ -461,16 +461,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setPerpsTabBadgeSeen', () => {
-    it('updates whether the Perps tab New badge has been seen', async () => {
-      await withController(({ controller }) => {
-        controller.setPerpsTabBadgeSeen(true);
-
-        expect(controller.state.perpsTabBadgeSeen).toStrictEqual(true);
-      });
-    });
-  });
-
   describe('setOnboardingDate', () => {
     it('set the onboardingDate', async () => {
       await withController(({ controller }) => {
@@ -856,7 +846,6 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
-              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -944,7 +933,6 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
-              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -1022,7 +1010,6 @@ describe('AppStateController', () => {
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
-              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -1109,7 +1096,6 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
-              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",

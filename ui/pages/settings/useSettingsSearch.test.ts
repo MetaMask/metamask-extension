@@ -7,24 +7,10 @@ jest.mock('../../../shared/lib/passkey', () => ({
 
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, substitutions?: string[]) => {
-    const translations: Record<string, string> = {
-      notifications: 'Notifications',
-      notificationsSettingsWalletActivityTitle: 'Wallet activity',
-      privacy: 'Privacy',
-      thirdPartyApis: 'Third-party APIs',
-      ipfsGateway: 'IPFS gateway',
-      assets: 'Assets',
-      preferencesAndDisplay: 'Preferences and display',
-      theme: 'Theme',
-      language: 'Language',
-      localCurrency: 'Local currency',
-      autoDetectTokens: 'Auto-detect tokens',
-    };
-
     if (substitutions?.length) {
       return `${key}(${substitutions.join(',')})`;
     }
-    return translations[key] ?? key;
+    return key;
   },
 }));
 
@@ -44,29 +30,7 @@ jest.mock('./settings-registry', () => ({
       iconName: 'Customize',
       component: () => null,
     },
-    {
-      id: 'notifications',
-      path: '/settings/notifications',
-      labelKey: 'notifications',
-      iconName: 'Notification',
-      component: () => null,
-    },
-    {
-      id: 'privacy',
-      path: '/settings/privacy',
-      labelKey: 'privacy',
-      iconName: 'Lock',
-      component: () => null,
-    },
   ],
-  SETTINGS_ROUTES: {
-    '/settings/notifications/wallet-activity': {
-      labelKey: 'notificationsSettingsWalletActivityTitle',
-    },
-    '/settings/privacy/third-party-apis': {
-      labelKey: 'thirdPartyApis',
-    },
-  },
 }));
 
 jest.mock('./search-config', () => ({
@@ -81,31 +45,6 @@ jest.mock('./search-config', () => ({
         { id: 'theme', titleKey: 'theme' },
         { id: 'language', titleKey: 'language' },
         { id: 'local-currency', titleKey: 'localCurrency' },
-      ],
-    },
-    {
-      tabId: 'notifications',
-      items: [{ id: 'allow-notifications', titleKey: 'notifications' }],
-      subPages: [
-        {
-          path: '/settings/notifications/wallet-activity',
-          items: [
-            {
-              id: 'wallet-activity',
-              titleKey: 'notificationsSettingsWalletActivityTitle',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      tabId: 'privacy',
-      items: [{ id: 'third-party-apis', titleKey: 'thirdPartyApis' }],
-      subPages: [
-        {
-          path: '/settings/privacy/third-party-apis',
-          items: [{ id: 'ipfs-gateway', titleKey: 'ipfsGateway' }],
-        },
       ],
     },
   ],
@@ -139,36 +78,5 @@ describe('useSettingsSearch', () => {
   it('returns empty array for non-matching queries', () => {
     const { result } = renderHook(() => useSettingsSearch('xyznonexistent'));
     expect(result.current).toEqual([]);
-  });
-
-  it('returns notification sub-pages when the query matches the parent tab label', () => {
-    const { result } = renderHook(() => useSettingsSearch('notif'));
-
-    const walletActivity = result.current.find(
-      (item) => item.settingId === 'wallet-activity',
-    );
-    expect(walletActivity).toEqual(
-      expect.objectContaining({
-        settingId: 'wallet-activity',
-        parentTabLabelKey: 'notifications',
-        tabRoute: '/settings/notifications/wallet-activity',
-        titleKey: 'notificationsSettingsWalletActivityTitle',
-      }),
-    );
-  });
-
-  it('returns privacy sub-pages when the query matches the parent tab label', () => {
-    const { result } = renderHook(() => useSettingsSearch('priv'));
-
-    const ipfsGateway = result.current.find(
-      (item) => item.settingId === 'ipfs-gateway',
-    );
-    expect(ipfsGateway).toEqual(
-      expect.objectContaining({
-        settingId: 'ipfs-gateway',
-        parentTabLabelKey: 'privacy',
-        tabRoute: '/settings/privacy/third-party-apis',
-      }),
-    );
   });
 });

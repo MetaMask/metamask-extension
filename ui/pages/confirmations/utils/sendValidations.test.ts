@@ -3,24 +3,26 @@
 // @ts-ignore
 import { confusables } from 'unicode-confusables';
 
-import {
-  isSolanaAddress,
-  isStellarAddress,
-} from '../../../../shared/lib/multichain/accounts';
+import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
+import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 
 import {
   findConfusablesInRecipient,
   validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
-  validateStellarAddress,
 } from './sendValidations';
 
 jest.mock('unicode-confusables');
 jest.mock('../../../../shared/lib/multichain/accounts');
+jest.mock('../../../store/actions', () => ({
+  getTokenStandardAndDetailsByChain: jest.fn(),
+}));
 
 const mockIsSolanaAddress = jest.mocked(isSolanaAddress);
-const mockIsStellarAddress = jest.mocked(isStellarAddress);
+const mockGetTokenStandardAndDetailsByChain = jest.mocked(
+  getTokenStandardAndDetailsByChain,
+);
 
 describe('SendValidations', () => {
   describe('findConfusablesInRecipient', () => {
@@ -99,28 +101,60 @@ describe('SendValidations', () => {
   });
 
   describe('validateEvmHexAddress', () => {
-    it('validates valid hex address successfully', () => {
+    it('validates valid hex address successfully', async () => {
       expect(
-        validateEvmHexAddress('0x1234567890123456789012345678901234567890'),
+        await validateEvmHexAddress(
+          '0x1234567890123456789012345678901234567890',
+        ),
       ).toEqual({});
     });
 
-    it('rejects burn address', () => {
+    it('rejects burn address', async () => {
       expect(
-        validateEvmHexAddress('0x0000000000000000000000000000000000000000'),
+        await validateEvmHexAddress(
+          '0x0000000000000000000000000000000000000000',
+        ),
       ).toEqual({
         error: 'invalidAddress',
       });
     });
 
-    it('rejects when sending to the same asset contract address', () => {
+    it('rejects ERC721 token address with allowAcknowledge', async () => {
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        standard: 'ERC721',
+      });
+
       expect(
-        validateEvmHexAddress(
+        await validateEvmHexAddress(
           '0x1234567890123456789012345678901234567890',
-          '0x1234567890123456789012345678901234567890',
+          '0x1',
         ),
       ).toEqual({
-        error: 'contractAddressError',
+        error: 'tokenContractError',
+        allowAcknowledge: true,
+      });
+
+      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
+        '0x1234567890123456789012345678901234567890',
+        undefined,
+        undefined,
+        '0x1',
+      );
+    });
+
+    it('rejects ERC20 token address with allowAcknowledge', async () => {
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        standard: 'ERC20',
+      });
+
+      expect(
+        await validateEvmHexAddress(
+          '0x1234567890123456789012345678901234567890',
+          '0x1',
+        ),
+      ).toEqual({
+        error: 'tokenContractError',
+        allowAcknowledge: true,
       });
     });
   });
@@ -163,25 +197,6 @@ describe('SendValidations', () => {
     it('returns error for invalid Bitcoin address', async () => {
       const invalidAddress = 'invalid-address';
       expect(validateBtcAddress(invalidAddress)).toEqual({
-        error: 'invalidAddress',
-      });
-    });
-  });
-
-  describe('validateStellarAddress', () => {
-    beforeEach(() => {
-      mockIsStellarAddress.mockReturnValue(true);
-    });
-
-    it('returns success for valid Stellar account id format', () => {
-      const validAddress = `G${'A'.repeat(55)}`;
-      expect(validateStellarAddress(validAddress)).toEqual({});
-    });
-
-    it('returns error for invalid Stellar address', () => {
-      mockIsStellarAddress.mockReturnValue(false);
-
-      expect(validateStellarAddress('not-a-stellar-address')).toEqual({
         error: 'invalidAddress',
       });
     });

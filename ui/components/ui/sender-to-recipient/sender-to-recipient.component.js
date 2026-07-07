@@ -112,8 +112,8 @@ export default function SenderToRecipient({
   addressOnly,
   senderName,
   recipientAddress,
-  variant = DEFAULT_VARIANT,
-  warnUserOnAccountMismatch = true,
+  variant,
+  warnUserOnAccountMismatch,
   chainId,
 }) {
   const t = useI18nContext();
@@ -148,6 +148,11 @@ export default function SenderToRecipient({
     </div>
   );
 }
+
+SenderToRecipient.defaultProps = {
+  variant: DEFAULT_VARIANT,
+  warnUserOnAccountMismatch: true,
+};
 
 SenderToRecipient.propTypes = {
   senderName: PropTypes.string,

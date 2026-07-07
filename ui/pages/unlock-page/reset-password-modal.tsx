@@ -18,8 +18,6 @@ import {
   IconColor,
   TextButton,
 } from '@metamask/design-system-react';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   Modal,
@@ -42,6 +40,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useBoolean } from '../../hooks/useBoolean';
 import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
 
@@ -53,8 +52,7 @@ export default function ResetPasswordModal({
   onClose: () => void;
 }) {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const segmentContext = useSegmentContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const { value: resetWallet, toggle: handleResetWallet } = useBoolean();
   const navigate = useNavigate();
@@ -75,16 +73,15 @@ export default function ResetPasswordModal({
   };
 
   const handleRestoreWallet = async () => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.ResetWallet)
-        .addCategory(MetaMetricsEventCategory.Accounts)
-        .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: isSocialLoginFlow ? 'social' : 'metamask',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.ResetWallet,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
+    });
 
     await dispatch(markPasswordForgotten());
 
@@ -97,13 +94,16 @@ export default function ResetPasswordModal({
 
   const handleContactSupportTrackEvent = () => {
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
+      {
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           url: SUPPORT_LINK,
-          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-        })
-        .build(),
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
     );
   };
 

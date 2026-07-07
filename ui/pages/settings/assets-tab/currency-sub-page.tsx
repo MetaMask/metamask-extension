@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -12,10 +14,8 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setCurrentCurrency } from '../../../store/actions';
 import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -36,20 +36,19 @@ const currencyOptions = sortedCurrencies.map(({ code, name }) => ({
 const CurrencySubPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currentCurrency = useSelector(getCurrentCurrency).toLowerCase();
 
   const handleSelect = (value: string) => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.CurrentCurrency)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          current_currency: value,
-          location: 'settings-page',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.CurrentCurrency,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        current_currency: value,
+        location: 'settings-page',
+      },
+    });
     dispatch(setCurrentCurrency(value));
     navigate(PREFERENCES_AND_DISPLAY_ROUTE);
   };

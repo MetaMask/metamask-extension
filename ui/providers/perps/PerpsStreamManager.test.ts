@@ -270,10 +270,6 @@ describe('PerpsStreamManager', () => {
         // Advance past WS grace period to trigger REST fallback
         await jest.advanceTimersByTimeAsync(3_000);
 
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsGetMarketDataWithPrices',
-          [{ useTerminalApi: true }],
-        );
         expect(onData).toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           '[PerpsStreamManager] Failed to fetch markets',

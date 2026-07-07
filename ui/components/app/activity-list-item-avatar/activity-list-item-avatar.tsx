@@ -6,8 +6,7 @@ import {
   AvatarToken,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import type { CaipAssetType } from '@metamask/utils';
-import { getCaipAssetImageUrl } from '../../../../shared/lib/asset-utils';
+import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 
 export type ActivityListItemAvatarTokens = readonly (string | undefined)[];
 
@@ -16,15 +15,40 @@ const fallbackText = '?';
 const sanitizeTokens = (tokens: ActivityListItemAvatarTokens): string[] =>
   tokens.filter((token): token is string => Boolean(token));
 
+const getTokenAvatarData = (assetId: string) => {
+  try {
+    const [chainId] = assetId.split('/');
+
+    if (!chainId) {
+      throw new Error('Invalid asset id');
+    }
+
+    return {
+      name: fallbackText,
+      src: getAssetImageUrl(
+        assetId as `${string}:${string}/${string}:${string}`,
+        chainId as `${string}:${string}`,
+      ),
+    };
+  } catch {
+    return {
+      name: fallbackText,
+      src: undefined,
+    };
+  }
+};
+
 const ActivityTokenAvatar = ({
   assetId,
   className,
 }: Readonly<{ assetId: string; className?: string }>) => {
+  const { name, src } = getTokenAvatarData(assetId);
+
   return (
     <AvatarToken
       size={AvatarTokenSize.Md}
-      name={fallbackText}
-      src={getCaipAssetImageUrl(assetId as CaipAssetType)}
+      name={name}
+      src={src}
       className={classnames(className)}
       imageProps={{ className: 'bg-alternative' }}
       data-testid="activity-list-item-avatar-token"

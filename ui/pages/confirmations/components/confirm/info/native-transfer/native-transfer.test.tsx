@@ -32,21 +32,6 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
 }));
 
-jest.mock('../../../../hooks/gas/useIsGaslessSupported', () => ({
-  useIsGaslessSupported: jest.fn(() => ({
-    isSupported: false,
-    isSmartTransaction: false,
-    pending: false,
-  })),
-}));
-
-jest.mock('../../../../hooks/gas/useGasSponsorshipPreference', () => ({
-  useGasSponsorshipPreference: jest.fn(() => ({
-    isSponsorshipOptedOut: false,
-    setSponsorshipOptedOut: jest.fn(),
-  })),
-}));
-
 describe('NativeTransferInfo', () => {
   it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});

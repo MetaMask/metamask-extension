@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { FormTextField } from '../../../components/component-library';
@@ -15,7 +15,7 @@ import {
 } from '../../../../shared/constants/network';
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { THIRD_PARTY_API_ITEMS } from '../search-config';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -24,7 +24,7 @@ import {
 export const IpfsGatewayItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const ipfsGatewayFromState = useSelector(
     (state: MetaMaskReduxState) => state.metamask.ipfsGateway,
@@ -63,15 +63,14 @@ export const IpfsGatewayItem = () => {
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;
 
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          use_ipfs_gateway: newValue,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        use_ipfs_gateway: newValue,
+      },
+    });
 
     if (currentValue) {
       dispatch(setIsIpfsGatewayEnabled(false));

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Hex } from '@metamask/utils';
 
 import {
@@ -7,7 +7,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { parseTokenDetailDecimals, TokenDetailsERC20 } from '../utils/token';
 
 /**
@@ -24,7 +24,7 @@ const useTrackERC20WithoutDecimalInformation = (
   tokenDetails?: TokenDetailsERC20,
   metricLocation = MetaMetricsEventLocation.SignatureConfirmation,
 ) => {
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hasTracked = useRef(false);
 
   useEffect(() => {
@@ -43,38 +43,28 @@ const useTrackERC20WithoutDecimalInformation = (
 
     const parsedDecimals = parseTokenDetailDecimals(decimals);
     if (parsedDecimals === undefined) {
-      trackEvent(
-        createEventBuilder(
-          MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-        )
-          .addCategory(MetaMetricsEventCategory.Confirmations)
-          .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_decimals_available: 'not_available',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            asset_address: tokenAddress,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            asset_type: TokenStandard.ERC20,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainId,
-            location: metricLocation,
-          })
-          .build(),
-      );
+      trackEvent({
+        event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
+        category: MetaMetricsEventCategory.Confirmations,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_decimals_available: 'not_available',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_address: tokenAddress,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_type: TokenStandard.ERC20,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          location: metricLocation,
+        },
+      });
       hasTracked.current = true;
     }
-  }, [
-    chainId,
-    createEventBuilder,
-    metricLocation,
-    tokenAddress,
-    tokenDetails,
-    trackEvent,
-  ]);
+  }, [tokenDetails, chainId, metricLocation, tokenAddress, trackEvent]);
 };
 
 export default useTrackERC20WithoutDecimalInformation;

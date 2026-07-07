@@ -109,7 +109,6 @@ describe('swcLoader', () => {
         const swcConfig: SwcConfig = {
           browsersListQuery: '',
           isDevelopment,
-          refresh: false,
         };
 
         const loader = getSwcLoader(syntax, enableJsx, {}, swcConfig);
@@ -124,7 +123,6 @@ describe('swcLoader', () => {
         });
         assert.deepStrictEqual(loader.options.jsc.transform.react, {
           development: isDevelopment,
-          refresh: false,
         });
       });
     }

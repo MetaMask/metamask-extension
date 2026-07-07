@@ -1,29 +1,12 @@
 import React from 'react';
-import { act, waitFor } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import configureMockStore from 'redux-mock-store';
 
 import mockState from '../../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-helpers';
-import { MetaMetricsEventName } from '../../../../../../../../../shared/constants/metametrics';
-import * as actions from '../../../../../../../../store/actions';
-import { memoizedGetTokenStandardAndDetailsByChain } from '../../../../../../utils/token';
+import { MetaMetricsContext } from '../../../../../../../../contexts/metametrics';
 import PermitSimulationValueDisplay from './value-display';
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../../../../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../../../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
-  };
-});
 
 jest.mock('../../../../../../../../store/actions', () => {
   return {
@@ -39,11 +22,6 @@ jest.mock('../../../../../../../../store/actions', () => {
 const UNLIMITED_THRESHOLD = '1'.padEnd(15 + 4 + 1, '0');
 
 describe('PermitSimulationValueDisplay', () => {
-  beforeEach(() => {
-    mockTrackEvent.mockClear();
-    memoizedGetTokenStandardAndDetailsByChain.cache.clear?.();
-  });
-
   it('renders component correctly', async () => {
     const mockStore = configureMockStore([])(mockState);
 
@@ -64,44 +42,49 @@ describe('PermitSimulationValueDisplay', () => {
 
   it('should invoke method to track missing decimal information for ERC20 tokens', async () => {
     const mockStore = configureMockStore([])(mockState);
-    const tokenDetailsWithoutDecimals = { standard: 'ERC20' };
-    jest
-      .mocked(actions.getTokenStandardAndDetailsByChain)
-      .mockResolvedValueOnce(tokenDetailsWithoutDecimals);
-    jest
-      .mocked(actions.getTokenStandardAndDetails)
-      .mockResolvedValueOnce(tokenDetailsWithoutDecimals);
+    const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
 
     await act(async () => {
       renderWithProvider(
-        <PermitSimulationValueDisplay
-          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-          value="4321"
-          chainId="0x1"
-        />,
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PermitSimulationValueDisplay
+            tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            value="4321"
+            chainId="0x1"
+          />
+        </MetaMetricsContext.Provider>,
         mockStore,
       );
     });
 
-    await waitFor(() => {
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-        }),
-      );
-    });
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
   });
 
   it('renders unlimited if value at threshold', async () => {
     const mockStore = configureMockStore([])(mockState);
 
     const { getByText } = renderWithProvider(
-      <PermitSimulationValueDisplay
-        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        value={UNLIMITED_THRESHOLD}
-        chainId="0x1"
-        canDisplayValueAsUnlimited
-      />,
+      <MetaMetricsContext.Provider
+        value={{
+          trackEvent: jest.fn(),
+          bufferedTrace: jest.fn(),
+          bufferedEndTrace: jest.fn(),
+          onboardingParentContext: { current: null },
+        }}
+      >
+        <PermitSimulationValueDisplay
+          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+          value={UNLIMITED_THRESHOLD}
+          chainId="0x1"
+          canDisplayValueAsUnlimited
+        />
+      </MetaMetricsContext.Provider>,
       mockStore,
     );
 
@@ -116,12 +99,21 @@ describe('PermitSimulationValueDisplay', () => {
     const mockStore = configureMockStore([])(mockState);
 
     const { getByText } = renderWithProvider(
-      <PermitSimulationValueDisplay
-        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        value={`${UNLIMITED_THRESHOLD.slice(0, -1)}1`}
-        chainId="0x1"
-        canDisplayValueAsUnlimited
-      />,
+      <MetaMetricsContext.Provider
+        value={{
+          trackEvent: jest.fn(),
+          bufferedTrace: jest.fn(),
+          bufferedEndTrace: jest.fn(),
+          onboardingParentContext: { current: null },
+        }}
+      >
+        <PermitSimulationValueDisplay
+          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+          value={`${UNLIMITED_THRESHOLD.slice(0, -1)}1`}
+          chainId="0x1"
+          canDisplayValueAsUnlimited
+        />
+      </MetaMetricsContext.Provider>,
       mockStore,
     );
 
@@ -136,12 +128,21 @@ describe('PermitSimulationValueDisplay', () => {
     const mockStore = configureMockStore([])(mockState);
 
     const { queryByText } = renderWithProvider(
-      <PermitSimulationValueDisplay
-        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        value={UNLIMITED_THRESHOLD.slice(0, -1)}
-        chainId="0x1"
-        canDisplayValueAsUnlimited
-      />,
+      <MetaMetricsContext.Provider
+        value={{
+          trackEvent: jest.fn(),
+          bufferedTrace: jest.fn(),
+          bufferedEndTrace: jest.fn(),
+          onboardingParentContext: { current: null },
+        }}
+      >
+        <PermitSimulationValueDisplay
+          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+          value={UNLIMITED_THRESHOLD.slice(0, -1)}
+          chainId="0x1"
+          canDisplayValueAsUnlimited
+        />
+      </MetaMetricsContext.Provider>,
       mockStore,
     );
 

@@ -66,14 +66,11 @@ jest.mock('../../../../../components/component-library', () => ({
   ButtonBase: ({
     children,
     onClick,
-    startIconName,
   }: {
     children: React.ReactNode;
     onClick: () => void;
-    startIconName?: string;
   }) => (
     <button data-testid="send-network-filter-toggle" onClick={onClick}>
-      {startIconName ? <div data-testid={`icon-${startIconName}`} /> : null}
       {children}
     </button>
   ),
@@ -118,16 +115,11 @@ jest.mock('../../../../../components/component-library', () => ({
   AvatarNetwork: ({ name, src }: { name: string; src: string }) => (
     <div data-testid="avatar-network" data-name={name} data-src={src} />
   ),
-  ButtonBaseSize: { Md: 'md', Sm: 'sm' },
+  ButtonBaseSize: { Md: 'md' },
   ButtonIconSize: { Sm: 'sm' },
   ModalContentSize: { Md: 'md' },
-  IconName: {
-    ArrowDown: 'arrow-down',
-    Filter: 'filter',
-    Global: 'global',
-    Close: 'close',
-  },
-  IconSize: { Sm: 'sm', Md: 'md', Xl: 'xl' },
+  IconName: { ArrowDown: 'arrow-down', Global: 'global', Close: 'close' },
+  IconSize: { Sm: 'sm', Xl: 'xl' },
   AvatarNetworkSize: { Sm: 'sm' },
 }));
 jest.mock('../../../../../components/multichain', () => ({
@@ -229,7 +221,7 @@ describe('NetworkFilter', () => {
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
     expect(getByText(messages.allNetworks.message)).toBeInTheDocument();
-    expect(getByTestId('icon-filter')).toBeInTheDocument();
+    expect(getByTestId('icon-global')).toBeInTheDocument();
   });
 
   it('renders filter button with selected network name', () => {
@@ -244,7 +236,7 @@ describe('NetworkFilter', () => {
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
     expect(getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
-    expect(getByTestId('icon-filter')).toBeInTheDocument();
+    expect(getByTestId('avatar-network')).toBeInTheDocument();
   });
 
   it('opens modal when filter button is clicked', () => {

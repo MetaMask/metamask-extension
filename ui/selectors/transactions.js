@@ -23,6 +23,7 @@ import {
 } from '../../shared/lib/selectors/networks';
 
 import {
+  createDeepEqualSelector,
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
@@ -107,38 +108,47 @@ export const getCurrentNetworkTransactions = (state) => {
   return getTransactionsByChainId(state, providerConfig.chainId);
 };
 
-export const incomingTxListSelectorAllChains = createSelector(
-  getTransactions,
-  getSelectedInternalAccount,
-  (allNetworkTransactions, { address: selectedAddress }) =>
-    allNetworkTransactions.filter(
+export const incomingTxListSelectorAllChains = createDeepEqualSelector(
+  (state) => {
+    const allNetworkTransactions = getTransactions(state);
+    const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+    return allNetworkTransactions.filter(
       (tx) =>
         tx.type === TransactionType.incoming &&
         tx.txParams.to === selectedAddress,
-    ),
+    );
+  },
+  (transactions) => transactions,
 );
 
-export const getApprovedAndSignedTransactions = createSelector(
-  getTransactions,
-  // Fetch transactions across all networks to address a nonce management limitation.
-  // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
-  (transactions) =>
-    transactions.filter((transaction) =>
+export const getApprovedAndSignedTransactions = createDeepEqualSelector(
+  (state) => {
+    // Fetch transactions across all networks to address a nonce management limitation.
+    // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
+    const transactions = getTransactions(state);
+
+    return transactions.filter((transaction) =>
       [TransactionStatus.approved, TransactionStatus.signed].includes(
         transaction.status,
       ),
-    ),
+    );
+  },
+  (transactions) => transactions,
 );
 
-export const incomingTxListSelector = createSelector(
-  getCurrentNetworkTransactions,
-  getSelectedInternalAccount,
-  (currentNetworkTransactions, { address: selectedAddress }) =>
-    currentNetworkTransactions.filter(
+export const incomingTxListSelector = createDeepEqualSelector(
+  (state) => {
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+    const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+    return currentNetworkTransactions.filter(
       (tx) =>
         tx.type === TransactionType.incoming &&
         tx.txParams.to === selectedAddress,
-    ),
+    );
+  },
+  (transactions) => transactions,
 );
 
 export const unapprovedPersonalMsgsSelector = (state) =>
@@ -154,7 +164,7 @@ export const unapprovedTypedMessagesSelector = (state) =>
 export const smartTransactionsListSelector = createSelector(
   getSelectedInternalAccount,
   (state) => state.metamask.smartTransactionsState?.smartTransactions,
-  getCurrentChainIdSafe,
+  getCurrentChainId,
   (selectedInternalAccount, smartTransactions, chainId) => {
     // The statuses listed below are allowed in the Activity list for Smart Swaps.
     // SUCCESS and REVERTED statuses are excluded because smart transactions with
@@ -759,11 +769,6 @@ function getProviderConfigSafe(state) {
   } catch {
     return null;
   }
-}
-
-function getCurrentChainIdSafe(state) {
-  const providerConfig = getProviderConfigSafe(state);
-  return providerConfig?.chainId;
 }
 
 const selectIsTransactionTypeRedesigned = createSelector(

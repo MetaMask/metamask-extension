@@ -7,6 +7,7 @@ import { createSelector } from 'reselect';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { getExtensionSkipTransactionStatusPage } from '../../shared/lib/selectors/smart-transactions';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import type { MetaMaskReduxState } from '../store/store';
 import {
@@ -349,10 +350,14 @@ const getExtensionTransactionToastEnabled = createSelector(
 
 export const selectToastImplementation = createSelector(
   getExtensionTransactionToastEnabled,
-  (isEventBased): 'messenger' | 'redux' => {
+  getExtensionSkipTransactionStatusPage,
+  (isEventBased, isSmartTxEnabled): 'messenger' | 'redux' | undefined => {
     if (isEventBased) {
       return 'messenger';
     }
-    return 'redux';
+    if (isSmartTxEnabled) {
+      return 'redux';
+    }
+    return undefined;
   },
 );

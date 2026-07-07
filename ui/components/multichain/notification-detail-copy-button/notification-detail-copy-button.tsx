@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -52,7 +52,7 @@ export const NotificationDetailCopyButton = ({
   // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
   const tooltipTitle = tooltipText;
@@ -74,23 +74,22 @@ export const NotificationDetailCopyButton = ({
         return undefined;
       };
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
-          .addCategory(MetaMetricsEventCategory.NotificationInteraction)
-          .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            notification_id: notification.id,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            notification_type: notification.type,
-            ...otherNotificationProperties(),
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            clicked_item: 'tx_id',
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationInteraction,
+        event: MetaMetricsEventName.NotificationDetailClicked,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          notification_id: notification.id,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          notification_type: notification.type,
+          ...otherNotificationProperties(),
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          clicked_item: 'tx_id',
+        },
+      });
     }
   };
 

@@ -17,8 +17,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { createEventBuilder } from '../../../../../shared/lib/analytics/create-event-builder';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { BalanceChange } from './types';
 import {
@@ -30,16 +28,6 @@ import {
   useSimulationMetrics,
 } from './useSimulationMetrics';
 import { useLoadingTime } from './useLoadingTime';
-
-jest.mock('../../../../hooks/useAnalytics', () => {
-  const { createEventBuilder: actualCreateEventBuilder } = jest.requireActual(
-    '../../../../../shared/lib/analytics/create-event-builder',
-  );
-  return {
-    useAnalytics: jest.fn(),
-    createEventBuilder: actualCreateEventBuilder,
-  };
-});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -95,7 +83,6 @@ describe('useSimulationMetrics', () => {
   const useTransactionEventFragmentMock = jest.mocked(
     useTransactionEventFragment,
   );
-  const useAnalyticsMock = jest.mocked(useAnalytics);
 
   const useStateMock = jest.mocked(useState);
   const useEffectMock = jest.mocked(useEffect);
@@ -159,11 +146,8 @@ describe('useSimulationMetrics', () => {
     ]) as any);
 
     useEffectMock.mockImplementation((fn) => fn());
-    useAnalyticsMock.mockReturnValue({
-      trackEvent: trackEventMock,
-      createEventBuilder,
-    });
     useContextMock.mockReturnValue({
+      trackEvent: trackEventMock,
       bufferedTrace: jest.fn(),
       bufferedEndTrace: jest.fn(),
       onboardingParentContext: { current: null },
@@ -756,21 +740,18 @@ describe('useSimulationMetrics', () => {
       );
 
       expect(trackEventMock).toHaveBeenCalledTimes(1);
-      expect(trackEventMock).toHaveBeenCalledWith(
-        createEventBuilder(
-          MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-        )
-          .addCategory(MetaMetricsEventCategory.Transactions)
-          .addProperties({
-            asset_address: ADDRESS_MOCK,
-            asset_petname: PetnameType.Unknown,
-            asset_symbol: undefined,
-            asset_type: AssetType.ERC20,
-            fiat_conversion_available: FiatType.Available,
-            location: 'confirmation',
-          })
-          .build(),
-      );
+      expect(trackEventMock).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
+        properties: {
+          asset_address: ADDRESS_MOCK,
+          asset_petname: PetnameType.Unknown,
+          asset_symbol: undefined,
+          asset_type: AssetType.ERC20,
+          fiat_conversion_available: FiatType.Available,
+          location: 'confirmation',
+        },
+      });
     });
 
     it('if fiat amount not available', () => {
@@ -788,21 +769,18 @@ describe('useSimulationMetrics', () => {
       );
 
       expect(trackEventMock).toHaveBeenCalledTimes(1);
-      expect(trackEventMock).toHaveBeenCalledWith(
-        createEventBuilder(
-          MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-        )
-          .addCategory(MetaMetricsEventCategory.Transactions)
-          .addProperties({
-            asset_address: ADDRESS_MOCK,
-            asset_petname: PetnameType.Saved,
-            asset_symbol: SYMBOL_MOCK,
-            asset_type: AssetType.ERC20,
-            fiat_conversion_available: FiatType.NotAvailable,
-            location: 'confirmation',
-          })
-          .build(),
-      );
+      expect(trackEventMock).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
+        properties: {
+          asset_address: ADDRESS_MOCK,
+          asset_petname: PetnameType.Saved,
+          asset_symbol: SYMBOL_MOCK,
+          asset_type: AssetType.ERC20,
+          fiat_conversion_available: FiatType.NotAvailable,
+          location: 'confirmation',
+        },
+      });
     });
   });
 

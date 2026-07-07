@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -22,7 +22,6 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
@@ -43,6 +42,7 @@ import {
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -84,7 +84,7 @@ export default function PasskeyRegisterSubPage() {
   const passkeyMethodSpecificLabel = t(
     getPasskeyAuthMethodKey({ specific: true }),
   );
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
 
   const fromSidepanel =
@@ -149,14 +149,13 @@ export default function PasskeyRegisterSubPage() {
 
     const enrollmentStartedAt = Date.now();
     let currentStep = 'register';
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeySetup)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          status: 'started',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.PasskeySetup,
+      properties: {
+        status: 'started',
+      },
+    });
 
     let registrationSucceeded = false;
 
@@ -190,18 +189,17 @@ export default function PasskeyRegisterSubPage() {
       const derivationMethod = getPasskeyDerivationMethod({
         metamask: newMetamaskState,
       });
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasskeySetup)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: derivationMethod,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - enrollmentStartedAt,
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeySetup,
+        properties: {
+          status: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: derivationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - enrollmentStartedAt,
+        },
+      });
 
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
@@ -212,35 +210,33 @@ export default function PasskeyRegisterSubPage() {
           duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
         },
       );
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            /* eslint-disable @typescript-eslint/naming-convention */
-            settings_group: 'security_privacy',
-            settings_type: 'passkey',
-            old_value: false,
-            new_value: true,
-            /* eslint-enable @typescript-eslint/naming-convention */
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SettingsUpdated,
+        properties: {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_group: 'security_privacy',
+          settings_type: 'passkey',
+          old_value: false,
+          new_value: true,
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+      });
       goToSettings();
     } catch (error) {
       const durationMs = Date.now() - enrollmentStartedAt;
       if (isPasskeyCeremonySilentError(error)) {
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.PasskeySetup)
-            .addCategory(MetaMetricsEventCategory.Settings)
-            .addProperties({
-              status: 'cancelled',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              current_step: currentStep,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              duration_ms: durationMs,
-            })
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeySetup,
+          properties: {
+            status: 'cancelled',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            current_step: currentStep,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+          },
+        });
         log.debug(
           'Settings passkey enrollment ceremony cancelled or timed out',
           error,
@@ -257,19 +253,18 @@ export default function PasskeyRegisterSubPage() {
           extra: { currentStep, durationMs, errorCode },
         },
       );
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasskeySetup)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            status: 'failed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            error_step: currentStep,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: durationMs,
-            reason: errorCode,
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeySetup,
+        properties: {
+          status: 'failed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_step: currentStep,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: durationMs,
+          reason: errorCode,
+        },
+      });
       setEnrollmentError(
         translatePasskeyError(error, t, passkeyMethodLabel) ??
           (registrationSucceeded

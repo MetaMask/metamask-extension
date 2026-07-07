@@ -11,6 +11,7 @@ import {
   SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG,
   DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS,
 } from '../../constants/smartTransactions';
+import { getBooleanFeatureFlag } from '../remote-feature-flag-utils';
 import { isProduction } from '../environment';
 import { accountSupportsSmartTx } from './keyring';
 import {
@@ -250,4 +251,15 @@ export const getGaslessBridgeWith7702EnabledForChain = (
 ): boolean => {
   const featureFlags = getSmartTransactionsFeatureFlagsForChain(state, chainId);
   return featureFlags?.gaslessBridgeWith7702Enabled ?? false;
+};
+
+export const getExtensionSkipTransactionStatusPage = (
+  state: SmartTransactionsState,
+) => {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+
+  return getBooleanFeatureFlag(
+    remoteFeatureFlags?.extensionSkipTransactionStatusPage,
+    false,
+  );
 };

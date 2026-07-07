@@ -45,7 +45,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
   selectedGasFeeToken,
   txParamsOriginal,
   isGasFeeSponsored,
-  isExternalSign,
   simulationFails,
   userFeeLevel = UserFeeLevel.MEDIUM,
   excludeNativeTokenForFee,
@@ -63,7 +62,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
   simulationData?: SimulationData;
   txParamsOriginal?: TransactionParams;
   isGasFeeSponsored?: boolean;
-  isExternalSign?: boolean;
   simulationFails?: SimulationError;
   userFeeLevel?: UserFeeLevel;
   excludeNativeTokenForFee?: boolean;
@@ -213,7 +211,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
     userFeeLevel,
     verifiedOnBlockchain: false,
     isGasFeeSponsored,
-    isExternalSign,
     simulationFails,
     excludeNativeTokenForFee,
   } as SignatureRequestType;

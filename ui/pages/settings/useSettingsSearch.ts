@@ -75,11 +75,10 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
       location: 0,
       distance: 100,
       minMatchCharLength: 1,
-      keys: ['tabLabelKey', 'titleKey', 'parentTabLabelKey'],
+      keys: ['tabLabelKey', 'titleKey'],
       getFn: (item, path) => {
         const key = Array.isArray(path) ? path[0] : path;
-        const labelKey = item[key as keyof SettingsSearchResult];
-        return typeof labelKey === 'string' ? t(labelKey) : '';
+        return t(item[key as 'tabLabelKey' | 'titleKey']);
       },
     });
   }, [t]);

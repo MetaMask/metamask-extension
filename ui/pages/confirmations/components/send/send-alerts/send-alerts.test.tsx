@@ -15,6 +15,12 @@ describe('SendAlerts', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockStore = configureStore(mockState);
 
+  const defaultProps = {
+    isSmartContractAlertOpen: false,
+    onSmartContractClose: jest.fn(),
+    onSmartContractAcknowledge: jest.fn(),
+  };
+
   const mockNavigateToEditNetwork = jest.fn();
 
   const mockUnreliableNetworkRpc = (
@@ -32,7 +38,11 @@ describe('SendAlerts', () => {
       });
   };
 
-  const renderComponent = () => renderWithProvider(<SendAlerts />, mockStore);
+  const renderComponent = (propOverrides = {}) =>
+    renderWithProvider(
+      <SendAlerts {...defaultProps} {...propOverrides} />,
+      mockStore,
+    );
 
   beforeEach(() => {
     mockUseI18nContext.mockReturnValue(
@@ -50,7 +60,7 @@ describe('SendAlerts', () => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing when network alert is not open', () => {
+  it('renders nothing when neither alert is open', () => {
     mockUnreliableNetworkRpc();
     const { queryByTestId } = renderComponent();
 
@@ -94,5 +104,36 @@ describe('SendAlerts', () => {
     fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
 
     expect(mockNavigateToEditNetwork).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders the smart contract alert when controlled prop is true', () => {
+    mockUnreliableNetworkRpc();
+    const { getByTestId } = renderComponent({
+      isSmartContractAlertOpen: true,
+    });
+
+    expect(getByTestId('send-alert-modal-message')).toHaveTextContent(
+      'SMARTCONTRACTADDRESSWARNING',
+    );
+    expect(
+      getByTestId('send-alert-modal-acknowledge-button'),
+    ).toHaveTextContent('IUNDERSTAND');
+  });
+
+  it('forwards smart contract alert acknowledge and close callbacks', () => {
+    mockUnreliableNetworkRpc();
+    const onSmartContractAcknowledge = jest.fn();
+    const onSmartContractClose = jest.fn();
+    const { getByTestId } = renderComponent({
+      isSmartContractAlertOpen: true,
+      onSmartContractAcknowledge,
+      onSmartContractClose,
+    });
+
+    fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+    expect(onSmartContractAcknowledge).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(getByTestId('send-alert-modal-cancel-button'));
+    expect(onSmartContractClose).toHaveBeenCalledTimes(1);
   });
 });

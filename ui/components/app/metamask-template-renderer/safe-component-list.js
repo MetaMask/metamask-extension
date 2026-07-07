@@ -1,4 +1,5 @@
 import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
+import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
 import {
   AvatarIcon,
   BannerAlert,
@@ -120,6 +121,7 @@ export const safeComponentList = {
   Tooltip,
   TruncatedDefinitionList,
   Typography,
+  SmartTransactionStatusPage,
   UrlIcon,
   CreateSnapAccount,
   RemoveSnapAccount,

@@ -19,7 +19,6 @@ const createDiscountedQuoteWithoutApproval = (): QuoteResponse[] =>
           amount: '1000000000000000000',
           quoteBpsFee: 50,
           baseBpsFee: 87.5,
-          discountType: 'vip',
         },
       },
     },

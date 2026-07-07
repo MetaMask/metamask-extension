@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -17,7 +17,6 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
@@ -32,6 +31,7 @@ import {
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -45,7 +45,7 @@ export default function PasskeyTurnOffSubPage() {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
 
   const [walletPassword, setWalletPassword] = useState('');
@@ -87,64 +87,60 @@ export default function PasskeyTurnOffSubPage() {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         verification_method: 'password',
       };
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            ...baseProperties,
-            status: 'started',
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOff,
+        properties: {
+          ...baseProperties,
+          status: 'started',
+        },
+      });
       try {
         await removePasskeyWithPasswordVerification(walletPassword);
         await forceUpdateMetamaskState(dispatch);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
-            .addCategory(MetaMetricsEventCategory.Settings)
-            .addProperties({
-              ...baseProperties,
-              status: 'completed',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              duration_ms: Date.now() - startedAt,
-            })
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeyTurnOff,
+          properties: {
+            ...baseProperties,
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+          },
+        });
         toast.success(
           <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
           {
             duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
           },
         );
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.SettingsUpdated)
-            .addCategory(MetaMetricsEventCategory.Settings)
-            .addProperties({
-              /* eslint-disable @typescript-eslint/naming-convention */
-              settings_group: 'security_privacy',
-              settings_type: 'passkey',
-              old_value: true,
-              new_value: false,
-              /* eslint-enable @typescript-eslint/naming-convention */
-            })
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'passkey',
+            old_value: true,
+            new_value: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          },
+        });
         goToSettings();
       } catch (error: unknown) {
         const durationMs = Date.now() - startedAt;
         const errorCode = getPasskeyErrorCode(error);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
-            .addCategory(MetaMetricsEventCategory.Settings)
-            .addProperties({
-              ...baseProperties,
-              status: 'failed',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              duration_ms: durationMs,
-              reason: errorCode,
-            })
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeyTurnOff,
+          properties: {
+            ...baseProperties,
+            status: 'failed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          },
+        });
         captureException(
           createSentryError('Passkey turn off in settings failed', error),
           { extra: { verificationMethod: 'password', durationMs, errorCode } },

@@ -8,7 +8,7 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../store/background-connection';
-import { trackAnalyticsEvent } from '../store/actions';
+import { trackMetaMetricsEvent } from '../store/actions';
 import { MetaMetricsContext, MetaMetricsProvider } from './metametrics';
 
 jest.mock('../hooks/useSegmentContext', () => ({
@@ -16,7 +16,7 @@ jest.mock('../hooks/useSegmentContext', () => ({
 }));
 
 jest.mock('../store/actions', () => ({
-  trackAnalyticsEvent: jest.fn().mockResolvedValue(undefined),
+  trackMetaMetricsEvent: jest.fn(),
   trackMetaMetricsPage: jest.fn(),
 }));
 
@@ -76,7 +76,7 @@ const renderProvider = ({
 };
 
 describe('MetaMetricsProvider', () => {
-  const mockedTrackAnalyticsEvent = jest.mocked(trackAnalyticsEvent);
+  const mockedTrackMetaMetricsEvent = jest.mocked(trackMetaMetricsEvent);
   const mockedSubmitRequestToBackground = jest.mocked(
     submitRequestToBackground,
   );
@@ -109,7 +109,7 @@ describe('MetaMetricsProvider', () => {
       );
     });
 
-    expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
+    expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
   });
 
   it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
@@ -125,14 +125,12 @@ describe('MetaMetricsProvider', () => {
     });
 
     await waitFor(() => {
-      expect(mockedTrackAnalyticsEvent).toHaveBeenCalledWith(
+      expect(mockedTrackMetaMetricsEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: expect.objectContaining({
-            category: MetaMetricsEventCategory.Onboarding,
-          }),
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         }),
-        expect.anything(),
+        undefined,
       );
     });
 
@@ -152,14 +150,12 @@ describe('MetaMetricsProvider', () => {
     });
 
     await waitFor(() => {
-      expect(mockedTrackAnalyticsEvent).toHaveBeenCalledWith(
+      expect(mockedTrackMetaMetricsEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: MetaMetricsEventName.MetricsOptOut,
-          properties: expect.objectContaining({
-            category: MetaMetricsEventCategory.Onboarding,
-          }),
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.MetricsOptOut,
         }),
-        expect.anything(),
+        undefined,
       );
     });
 
@@ -182,7 +178,7 @@ describe('MetaMetricsProvider', () => {
       await Promise.resolve();
     });
 
-    expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
+    expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
     expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 });

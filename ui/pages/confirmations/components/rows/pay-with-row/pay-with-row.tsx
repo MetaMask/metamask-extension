@@ -122,7 +122,7 @@ export function PayWithRow({
   } = usePayWithToken();
 
   if (!displayToken) {
-    return <PayWithRowSkeleton />;
+    return isPerpsWithdraw ? <PayWithRowSkeleton /> : null;
   }
 
   return (

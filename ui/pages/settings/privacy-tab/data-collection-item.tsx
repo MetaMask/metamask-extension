@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -17,7 +17,7 @@ import {
 } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -27,7 +27,7 @@ import {
 export const DataCollectionToggleItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
@@ -68,18 +68,17 @@ export const DataCollectionToggleItem = () => {
 
     dispatch(setDataCollectionForMarketing(newValue));
 
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          /* eslint-disable @typescript-eslint/naming-convention */
-          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-          [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
-          /* eslint-enable @typescript-eslint/naming-convention */
-          location: 'Settings',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+      properties: {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+        [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
+        /* eslint-enable @typescript-eslint/naming-convention */
+        location: 'Settings',
+      },
+    });
   };
 
   const description = socialLoginEnabled

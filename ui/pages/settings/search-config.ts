@@ -1,11 +1,4 @@
-import {
-  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
-  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
-  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-  THIRD_PARTY_APIS_ROUTE,
-} from '../../helpers/constants/routes';
-import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+import { THIRD_PARTY_APIS_ROUTE } from '../../helpers/constants/routes';
 
 export type SearchItemMeta = {
   readonly id: string;
@@ -104,13 +97,7 @@ export const EXPERIMENTAL_ITEMS = {
 
 export const NOTIFICATIONS_ITEMS = {
   'allow-notifications': 'notifications',
-} as const;
-
-export const NOTIFICATIONS_SECTION_ITEMS = {
-  'wallet-activity': 'notificationsSettingsWalletActivityTitle',
-  perps: 'notificationsSettingsPerpsTitle',
-  marketing: 'notificationsSettingsMarketingTitle',
-  'agentic-cli': 'notificationsSettingsAgenticCliTitle',
+  'account-activity': 'accountActivity',
 } as const;
 
 export const DEVELOPER_TOOLS_ITEMS = {
@@ -123,10 +110,6 @@ export const ABOUT_ITEMS = {
   'privacy-policy': 'privacyMsg',
   'support-center': 'supportCenter',
   'contact-us': 'contactUs',
-} as const;
-
-export const ADD_DEVICE_ITEMS = {
-  'add-device': 'addDevice',
 } as const;
 
 // ── Registry (auto-derived) ─────────────────────────────────────────────
@@ -157,44 +140,10 @@ export const SETTINGS_SEARCH_CONFIG: TabSearchConfig[] = [
     items: createSearchItemMeta(BACKUP_AND_SYNC_ITEMS),
   },
   { tabId: 'experimental', items: createSearchItemMeta(EXPERIMENTAL_ITEMS) },
-  {
-    tabId: 'notifications',
-    items: createSearchItemMeta(NOTIFICATIONS_ITEMS),
-    subPages: [
-      {
-        path: NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-        items: createSearchItemMeta({
-          'wallet-activity': NOTIFICATIONS_SECTION_ITEMS['wallet-activity'],
-        }),
-      },
-      ...(getIsPerpsIncludedInBuild()
-        ? [
-            {
-              path: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
-              items: createSearchItemMeta({
-                perps: NOTIFICATIONS_SECTION_ITEMS.perps,
-              }),
-            },
-          ]
-        : []),
-      {
-        path: NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
-        items: createSearchItemMeta({
-          marketing: NOTIFICATIONS_SECTION_ITEMS.marketing,
-        }),
-      },
-      {
-        path: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-        items: createSearchItemMeta({
-          'agentic-cli': NOTIFICATIONS_SECTION_ITEMS['agentic-cli'],
-        }),
-      },
-    ],
-  },
+  { tabId: 'notifications', items: createSearchItemMeta(NOTIFICATIONS_ITEMS) },
   {
     tabId: 'developer-tools',
     items: createSearchItemMeta(DEVELOPER_TOOLS_ITEMS),
   },
   { tabId: 'about-us', items: createSearchItemMeta(ABOUT_ITEMS) },
-  { tabId: 'add-device', items: createSearchItemMeta(ADD_DEVICE_ITEMS) },
 ];

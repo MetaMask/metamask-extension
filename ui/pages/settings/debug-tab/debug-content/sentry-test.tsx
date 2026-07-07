@@ -1,5 +1,4 @@
 import React, { useState, useCallback, ReactElement } from 'react';
-import { flushSync } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -20,7 +19,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 
-import { setCurrentLocale } from '../../../../store/actions';
+import {
+  forceUpdateMetamaskState,
+  setCurrentLocale,
+} from '../../../../store/actions';
 import { FALLBACK_LOCALE, fetchLocale } from '../../../../../shared/lib/i18n';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
 
@@ -186,15 +188,14 @@ function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
   const dispatch = useDispatch();
   const handleClick = async () => {
     const localeMessages = await fetchLocale(currentLocale);
-    flushSync(() => {
-      dispatch(
-        setCurrentLocale(currentLocale, {
-          ...localeMessages,
-          // @ts-expect-error - remove a language string in this page to trigger a page crash
-          debug: undefined,
-        }),
-      );
-    });
+    await dispatch(
+      setCurrentLocale(currentLocale, {
+        ...localeMessages,
+        // @ts-expect-error - remove a language string in this page to trigger a page crash
+        debug: undefined,
+      }),
+    );
+    await forceUpdateMetamaskState(dispatch);
   };
 
   return (

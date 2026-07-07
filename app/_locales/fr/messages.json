@@ -82,6 +82,12 @@
   "account": {
     "message": "Compte"
   },
+  "accountActivity": {
+    "message": "Activité du compte"
+  },
+  "accountActivityText": {
+    "message": "Sélectionnez les comptes pour lesquels vous souhaitez recevoir des notifications :"
+  },
   "accountAlreadyExistsLogin": {
     "message": "Se connecter"
   },
@@ -1578,6 +1584,9 @@
   "back": {
     "message": "Retour"
   },
+  "backToHome": {
+    "message": "Retour à la page d’accueil"
+  },
   "backUpIncomplete": {
     "message": "Sauvegarde incomplète"
   },
@@ -2413,6 +2422,9 @@
     "message": "Fermer $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
+  "closeWindowAnytime": {
+    "message": "Vous pouvez fermer cette fenêtre à tout moment."
+  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2978,6 +2990,12 @@
   },
   "customerSupport": {
     "message": "assistance à la clientèle"
+  },
+  "customizeYourNotifications": {
+    "message": "Personnalisez vos notifications"
+  },
+  "customizeYourNotificationsText": {
+    "message": "Activez les types de notifications que vous souhaitez recevoir :"
   },
   "dappConnections": {
     "message": "Connexions aux dapps"
@@ -4396,6 +4414,9 @@
   "imported": {
     "message": "Importés",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "includes": {
+    "message": "Comprend"
   },
   "includesXTransactions": {
     "message": "Inclut $1 transactions"
@@ -5854,6 +5875,9 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Un problème est survenu, veuillez réessayer."
+  },
+  "notificationsSettingsPageAllowNotifications": {
+    "message": "Restez au courant de ce qui se passe dans votre portefeuille grâce aux notifications. Pour activer les notifications, nous utilisons un profil pour synchroniser certains paramètres entre vos appareils. $1 nous protégeons vos données personnelles lorsque vous utilisez cette fonctionnalité."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Découvrir comment"
@@ -7516,6 +7540,9 @@
   },
   "proceedWithTransaction": {
     "message": "Je veux tout de même continuer"
+  },
+  "productAnnouncements": {
+    "message": "Annonces de produits"
   },
   "provide": {
     "message": "Fournir"
@@ -9270,6 +9297,24 @@
   "smartSwapsErrorUnavailable": {
     "message": "Les contrats de swap intelligents sont temporairement indisponibles."
   },
+  "smartTransactionCancelled": {
+    "message": "Votre transaction a été annulée"
+  },
+  "smartTransactionCancelledDescription": {
+    "message": "Votre transaction n’a pas pu être finalisée, elle a donc été annulée pour vous éviter de payer inutilement des frais de gaz."
+  },
+  "smartTransactionError": {
+    "message": "Votre transaction a échoué"
+  },
+  "smartTransactionErrorDescription": {
+    "message": "Des changements soudains sur le marché peuvent entraîner des échecs de transaction. Si le problème persiste, contactez le service d’assistance à la clientèle de MetaMask."
+  },
+  "smartTransactionPending": {
+    "message": "Votre transaction a été soumise"
+  },
+  "smartTransactionSuccess": {
+    "message": "Votre transaction a été finalisée"
+  },
   "smartTransactions": {
     "message": "Transactions intelligentes"
   },
@@ -10236,6 +10281,9 @@
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"
   },
+  "tokenContractError": {
+    "message": "Cette adresse est une adresse de contrat de jetons. Si vous envoyez des jetons à cette adresse, vous les perdrez."
+  },
   "tokenContractWarning": {
     "message": "Avertissement concernant le contrat de jetons"
   },
@@ -10491,8 +10539,29 @@
   "turnOn": {
     "message": "Activer"
   },
+  "turnOnMetamaskNotifications": {
+    "message": "Activer les notifications"
+  },
+  "turnOnMetamaskNotificationsButton": {
+    "message": "Activer"
+  },
   "turnOnMetamaskNotificationsError": {
     "message": "Une erreur s’est produite lors de la création des notifications. Veuillez réessayer plus tard."
+  },
+  "turnOnMetamaskNotificationsMessageFirst": {
+    "message": "Restez au courant de ce qui se passe dans votre portefeuille grâce aux notifications."
+  },
+  "turnOnMetamaskNotificationsMessagePrivacyBold": {
+    "message": "paramètres de notification."
+  },
+  "turnOnMetamaskNotificationsMessagePrivacyLink": {
+    "message": "Découvrez comment nous protégeons vos données personnelles lorsque vous utilisez cette fonctionnalité."
+  },
+  "turnOnMetamaskNotificationsMessageSecond": {
+    "message": "Pour activer les notifications du portefeuille, nous utilisons un profil pour synchroniser certains paramètres entre vos appareils. $1"
+  },
+  "turnOnMetamaskNotificationsMessageThird": {
+    "message": "Vous pouvez désactiver les notifications à tout moment dans les $1"
   },
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"
@@ -10704,6 +10773,9 @@
   "view": {
     "message": "Affichez"
   },
+  "viewActivity": {
+    "message": "Voir l’activité"
+  },
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
@@ -10730,6 +10802,9 @@
   },
   "viewTokenDetails": {
     "message": "Afficher les détails du jeton"
+  },
+  "viewTransaction": {
+    "message": "Voir la transaction"
   },
   "viewinExplorer": {
     "message": "Voir $1 dans l’explorateur",

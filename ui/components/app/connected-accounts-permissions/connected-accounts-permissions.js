@@ -34,7 +34,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
     setExpanded((_expanded) => !_expanded);
   };
 
-  if (!permissions?.length) {
+  if (!permissions.length) {
     return null;
   }
 
@@ -78,7 +78,6 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
             'connected-accounts-permissions__list-container-expanded',
           )}
           marginTop={4}
-          data-testid="connected-accounts-permissions-list"
         >
           <Text as="h6" variant={TextVariant.bodySm}>
             {t('authorizedPermissions')}:
@@ -110,6 +109,10 @@ ConnectedAccountsPermissions.propTypes = {
       key: PropTypes.string.isRequired,
     }),
   ),
+};
+
+ConnectedAccountsPermissions.defaultProps = {
+  permissions: [],
 };
 
 ConnectedAccountsPermissions.displayName = 'ConnectedAccountsPermissions';

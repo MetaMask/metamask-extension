@@ -26,12 +26,6 @@ import { SHIELD_ERROR } from '../../../../shared/lib/shield';
 import { SubscriptionService } from './subscription-service';
 import { SubscriptionServiceMessenger } from './types';
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
-  trackEvent: jest.fn(),
-}));
-
 type Actions = MessengerActions<SubscriptionServiceMessenger>;
 
 type Events = MessengerEvents<SubscriptionServiceMessenger>;
@@ -93,6 +87,7 @@ const mockGetSubscriptions = jest.fn();
 const mockGetNetworkControllerState = jest.fn();
 const mockGetRemoteFeatureFlagState = jest.fn();
 const mockGetAppStateControllerState = jest.fn();
+const mockGetMetaMetricsControllerState = jest.fn();
 const mockGetSubscriptionControllerState = jest.fn();
 const mockGetKeyringControllerState = jest.fn();
 const mockGetRewardSeasonMetadata = jest.fn();
@@ -145,6 +140,10 @@ rootMessenger.registerActionHandler(
 rootMessenger.registerActionHandler(
   'AppStateController:getState',
   mockGetAppStateControllerState,
+);
+rootMessenger.registerActionHandler(
+  'MetaMetricsController:trackEvent',
+  mockGetMetaMetricsControllerState,
 );
 rootMessenger.registerActionHandler(
   'SubscriptionController:getState',
@@ -205,6 +204,7 @@ rootMessenger.delegate({
     'AppStateController:getState',
     'AppStateController:setPendingRedirectRoute',
     'AppStateController:setShieldSubscriptionError',
+    'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
     'KeyringController:getState',
     'RewardsController:getHasAccountOptedIn',

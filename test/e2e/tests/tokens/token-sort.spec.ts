@@ -66,7 +66,7 @@ describe('Token List Sorting', function () {
         );
         await tokensTab.dismissTokenImportedMessage();
 
-        await tokensTab.checkTokenExistsInList(customTokenSymbol);
+        await tokensTab.checkTokenExistsInList('Ethereum');
         await tokensTab.sortTokenList('alphabetically');
         await tokensTab.checkTokenPositionInList({
           position: 1,

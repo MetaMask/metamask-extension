@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import {
   Box,
   Icon,
@@ -28,7 +28,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
@@ -46,7 +46,7 @@ const AddFundsModal = ({
 }) => {
   const t = useI18nContext();
   const { openBuyCryptoInPdapp } = useRamps();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const buyableChains = useSelector(getBuyableChains);
 
@@ -66,48 +66,39 @@ const AddFundsModal = ({
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          location: 'Transaction Shield',
-          text: 'Buy',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: chainId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: token.symbol,
-        })
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'Transaction Shield',
+        text: 'Buy',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_symbol: token.symbol,
+      },
+    });
     onClose();
-  }, [
-    chainId,
-    onClose,
-    openBuyCryptoInPdapp,
-    token.symbol,
-    createEventBuilder,
-    trackEvent,
-  ]);
+  }, [chainId, onClose, openBuyCryptoInPdapp, token.symbol, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavReceiveButtonClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          text: 'Receive',
-          location: 'Transaction Shield',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: chainId,
-        })
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.NavReceiveButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Receive',
+        location: 'Transaction Shield',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+      },
+    });
 
     setShowReceiveModal(true);
-  }, [chainId, createEventBuilder, trackEvent]);
+  }, [chainId, trackEvent]);
 
   const handleSwapOnClick = useCallback(async () => {
     openBridgeExperience(MetaMetricsSwapsEventSource.TransactionShield, {

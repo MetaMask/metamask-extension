@@ -118,7 +118,7 @@ import {
 import { requestRepair } from './lib/repair';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
+import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
 import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
@@ -487,10 +487,12 @@ function maybeDetectPhishing(theController) {
       // Helper function to track phishing page metrics
       const trackPhishingMetrics = () => {
         if (!isFirefox) {
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.PhishingPageDisplayed)
-              .addCategory(MetaMetricsEventCategory.Phishing)
-              .addProperties({
+          theController.metaMetricsController.trackEvent(
+            {
+              // should we differentiate between background redirection and content script redirection?
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
                 url: blockedUrl,
                 referrer: {
                   url: blockedUrl,
@@ -499,10 +501,11 @@ function maybeDetectPhishing(theController) {
                 requestDomain: blockedRequestResponse.result
                   ? hostname
                   : undefined,
-              })
-              .build({
-                excludeMetaMetricsId: true,
-              }),
+              },
+            },
+            {
+              excludeMetaMetricsId: true,
+            },
           );
         }
       };
@@ -816,9 +819,12 @@ async function initialize(backup) {
 
   if (isManifestV3) {
     addOffscreenConnectivityListener((isOnline) => {
-      if (connectivityReady && controller.connectivityAdapter) {
+      if (
+        connectivityReady &&
+        controller.messengerClientApi.setConnectivityStatus
+      ) {
         const status = isOnline ? 'online' : 'offline';
-        controller.connectivityAdapter.setStatus(status);
+        controller.messengerClientApi.setConnectivityStatus(status);
       } else {
         // Queue until controller is ready
         pendingConnectivityStatus = isOnline;
@@ -891,13 +897,13 @@ async function initialize(backup) {
     connectivityReady = true;
     if (pendingConnectivityStatus !== null) {
       const status = pendingConnectivityStatus ? 'online' : 'offline';
-      controller.connectivityAdapter.setStatus(status);
+      controller.messengerClientApi.setConnectivityStatus(status);
     }
   } else {
     // MV2: Background page has access to window events
     const updateConnectivity = (isOnline) => {
       const status = isOnline ? 'online' : 'offline';
-      controller.connectivityAdapter.setStatus(status);
+      controller.messengerClientApi.setConnectivityStatus(status);
     };
     updateConnectivity(globalThis.navigator.onLine);
     globalThis.addEventListener('online', () => updateConnectivity(true));
@@ -916,7 +922,9 @@ async function initialize(backup) {
     .on('navigate', async ({ url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
-        trackEvent(createEvent({ signature: parsed.signature, url }));
+        await controller.metaMetricsController.trackEvent(
+          createEvent({ signature: parsed.signature, url }),
+        );
       }
     })
     .on('error', (error) => sentry?.captureException(error))
@@ -1296,21 +1304,23 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
 
   const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
 
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.DappViewed)
-      .addCategory(MetaMetricsEventCategory.InpageProvider)
-      .addProperties({
+  controller.metaMetricsController.trackEvent(
+    {
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.InpageProvider,
+      referrer: {
+        url: origin,
+      },
+      properties: {
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
         ...iframeProps,
-      })
-      .build({
-        referrer: {
-          url: origin,
-        },
-        excludeMetaMetricsId: true,
-      }),
+      },
+    },
+    {
+      excludeMetaMetricsId: true,
+    },
   );
 }
 
@@ -1743,12 +1753,15 @@ export function setupController(
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.PortStreamChunked)
-            .addCategory(MetaMetricsEventCategory.PortStream)
-            .addProperties({ chunkSize })
-            .build(),
-        );
+        /**
+         * @type {MetamaskController}
+         */
+        const theController = controller;
+        theController.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PortStreamChunked,
+          category: MetaMetricsEventCategory.PortStream,
+          properties: { chunkSize },
+        });
       };
       remotePort.onDisconnect.addListener(() =>
         portStream.off('message-too-large', handleMessageTooLarge),
@@ -2121,7 +2134,7 @@ export function setupController(
       REJECT_NOTIFICATION_CLOSE,
     );
 
-    controller.legacyBackgroundApiService.rejectAllPendingApprovals();
+    controller.rejectAllPendingApprovals();
   }
 }
 
@@ -2205,12 +2218,7 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     optedIn === true &&
     analyticsId
   ) {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.AppInstalled)
-        .addCategory(MetaMetricsEventCategory.App)
-        .addProperties(eventProperties)
-        .build(),
-    );
+    controller.metaMetricsController.trackEvent(appInstalledEvent);
   } else {
     // Onboarding is incomplete, or the user opted in without an analytics ID yet,
     // so we queue the metrics event for possible submission later.

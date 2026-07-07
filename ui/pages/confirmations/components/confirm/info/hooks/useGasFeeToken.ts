@@ -18,7 +18,7 @@ import {
   getShouldShowFiat,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
-import { formatAmount } from '../../../../../../../shared/lib/format-amount';
+import { formatAmount } from '../../../simulation-details/formatAmount';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useFeeCalculations } from './useFeeCalculations';
 import { useNativeCurrencySymbol } from './useNativeCurrencySymbol';

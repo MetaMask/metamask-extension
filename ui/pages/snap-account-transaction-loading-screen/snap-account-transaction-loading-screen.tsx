@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useAnalytics } from '../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -17,31 +17,27 @@ const SnapAccountTransactionLoadingScreen = ({
   internalAccount: InternalAccount;
 }) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const snapsMetadata = useSelector(getSnapsMetadata);
   const snapId = internalAccount?.metadata.snap?.id;
   const snapName = snapId ? getSnapName(snapsMetadata)(snapId) : undefined;
 
   useEffect(() => {
-    trackEvent(
-      createEventBuilder(
-        MetaMetricsEventName.SnapAccountTransactionLoadingViewed,
-      )
-        .addCategory(MetaMetricsEventCategory.Transactions)
-        .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_id: snapId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_name: snapName,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Snap,
-        })
-        .build(),
-    );
-    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only track on initial render
+    trackEvent({
+      event: MetaMetricsEventName.SnapAccountTransactionLoadingViewed,
+      category: MetaMetricsEventCategory.Transactions,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_id: snapId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_name: snapName,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: MetaMetricsEventAccountType.Snap,
+      },
+    });
   }, []);
 
   return <span>{t('loadingScreenSnapMessage')}</span>;

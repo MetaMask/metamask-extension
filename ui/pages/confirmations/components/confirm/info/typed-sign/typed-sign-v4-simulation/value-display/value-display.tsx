@@ -27,7 +27,7 @@ import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-di
 import {
   formatAmount,
   formatAmountMaxPrecision,
-} from '../../../../../../../../../shared/lib/format-amount';
+} from '../../../../../simulation-details/formatAmount';
 import { DAI_CONTRACT_ADDRESS } from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
 import { isSpendingCapUnlimited } from '../../../approve/hooks/use-approve-token-simulation';

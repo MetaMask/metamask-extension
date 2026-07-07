@@ -170,7 +170,7 @@ function renderElement(
         <ConfirmInfoRow
           key={index}
           label={t(element.labelKey)}
-          tooltip={element.tooltip ? t(element.tooltip) : undefined}
+          tooltip={element.tooltip}
         >
           <Text variant={TextVariant.BodyMd}>
             {translateI18nValue(t, element.getValue(ctx))}

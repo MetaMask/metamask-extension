@@ -1,0 +1,23 @@
+.smart-transaction-status-page {
+  text-align: center;
+
+  @media screen and (min-width: 768px) {
+    max-width: 640px;
+    margin: auto auto 16px auto;
+    overflow: hidden;
+  }
+
+  &__description {
+    @media screen and (min-width: 768px) {
+      max-width: 480px;
+    }
+  }
+
+  &__footer {
+    grid-area: footer;
+  }
+
+  &__countdown {
+    width: 25px;
+  }
+}

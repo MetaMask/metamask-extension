@@ -73,7 +73,7 @@ export function fetchMarketInfos(cacheKey: string): Promise<MarketInfo[]> {
   if (!entry.inflight) {
     entry.inflight = submitRequestToBackground<MarketInfo[]>(
       'perpsGetMarkets',
-      [{ useTerminalApi: true }],
+      [{}],
     )
       .then((infos) => {
         const validated = Array.isArray(infos) ? infos : [];

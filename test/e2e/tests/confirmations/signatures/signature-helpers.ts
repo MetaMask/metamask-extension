@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
 import { getEventPayloads } from '../../../helpers';
-import { MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   BlockaidReason,
@@ -204,10 +203,11 @@ function assertSignatureRequestedMetrics(
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
 ) {
-  assertEventPropertiesMatch(events, 'Signature Requested', {
-    ...signatureEventProperty,
-    ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
-  });
+  assertEventPropertiesMatch(
+    events,
+    'Signature Requested',
+    signatureEventProperty,
+  );
 
   if (withAnonEvents) {
     assertEventPropertiesMatch(events, 'Signature Requested Anon', {
@@ -252,10 +252,11 @@ export async function assertSignatureConfirmedMetrics({
     withAnonEvents,
   );
 
-  assertEventPropertiesMatch(events, 'Signature Approved', {
-    ...signatureEventProperty,
-    ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
-  });
+  assertEventPropertiesMatch(
+    events,
+    'Signature Approved',
+    signatureEventProperty,
+  );
 
   if (withAnonEvents) {
     assertEventPropertiesMatch(events, 'Signature Approved Anon', {
@@ -324,7 +325,6 @@ export async function assertSignatureRejectedMetrics({
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: 0,
     ...expectedProps,
-    ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
   });
 
   if (withAnonEvents) {
@@ -359,7 +359,6 @@ export async function assertAccountDetailsMetrics(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: 0,
-    ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
   });
 }
 
