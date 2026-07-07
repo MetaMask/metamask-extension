@@ -50,4 +50,5 @@ export const QR_SYNC_ERROR_PHASE_OVERRIDES: Partial<
   Record<QrSyncErrorCode, QrSyncPhase>
 > = {
   [QrSyncErrorCodes.QR_EXPIRED]: QR_SYNC_PHASES.DISPLAYING_QR,
+  [QrSyncErrorCodes.OTP_EXPIRED]: QR_SYNC_PHASES.AWAITING_OTP_INPUT,
 };
