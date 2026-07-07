@@ -20,6 +20,7 @@ import { sortBalanceChanges } from './sortBalanceChanges';
  * @param props.balanceChanges
  * @param props.testId
  * @param props.labelColor
+ * @param props.labelChildren
  * @returns
  */
 export const BalanceChangeList = ({
@@ -27,11 +28,13 @@ export const BalanceChangeList = ({
   balanceChanges,
   testId,
   labelColor,
+  labelChildren,
 }: {
   heading: string;
   balanceChanges: BalanceChange[];
   testId?: string;
   labelColor?: TextColor;
+  labelChildren?: React.ReactNode;
 }) => {
   const { currentConfirmation } = useConfirmContext();
   const sortedBalanceChanges = useMemo(() => {
@@ -75,6 +78,7 @@ export const BalanceChangeList = ({
             balanceChange={balanceChange}
             showFiat={!showFiatTotal && !balanceChange.isUnlimitedApproval}
             labelColor={labelColor}
+            labelChildren={index === 0 ? labelChildren : undefined}
           />
         ))}
       </Box>
