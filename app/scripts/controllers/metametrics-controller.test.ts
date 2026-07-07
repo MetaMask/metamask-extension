@@ -2126,7 +2126,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.HasMarketingConsent]: false,
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-          [MetaMetricsUserTrait.ProfileId]: undefined,
+          [MetaMetricsUserTrait.CanonicalProfileId]: undefined,
           [MetaMetricsUserTrait.AccountType]: 'metamask',
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
@@ -2399,7 +2399,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
-          [MetaMetricsUserTrait.ProfileId]: 'profileId',
+          [MetaMetricsUserTrait.CanonicalProfileId]: 'profileId',
           [MetaMetricsUserTrait.AccountType]: 'imported',
         });
       });
