@@ -4397,9 +4397,6 @@
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Kabilang ang"
-  },
   "includesXTransactions": {
     "message": "Kabilang ang $1 (na) transaksyon"
   },
@@ -10494,29 +10491,8 @@
   "turnOn": {
     "message": "I-on"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "I-on ang mga notipikasyon"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "I-on"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Nagkaroon ng error sa paglikha ng mga notipikasyon. Pakisubukan muli mamaya."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet gamit ang mga notification."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "mga setting ng notipikasyon."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Matuto kung paano namin pinoprotektahan ang iyong privacy habang ginagamit ang feature na ito."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Para magamit ang mga notipikasyon sa wallet, gumagamit kami ng profile para i-sync ang ilang mga setting sa iyong mga device. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Puwede mong i-off ang mga notipikasyon anumang oras sa $1"
   },
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"

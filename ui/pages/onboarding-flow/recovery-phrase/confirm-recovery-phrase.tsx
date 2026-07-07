@@ -28,6 +28,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -84,7 +85,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const isFirefox = useIsFirefox();
   const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
     useOnboardingSearchParams();
-  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
@@ -157,14 +159,17 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   const handleConfirmedPhrase = useCallback(() => {
     dispatch(setSeedPhraseBackedUp(true));
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
     bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
@@ -182,6 +187,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     hdEntropyIndex,
     isFirefox,
     navigate,
+    createEventBuilder,
     trackEvent,
     isFromReminder,
     nextRouteQueryString,
