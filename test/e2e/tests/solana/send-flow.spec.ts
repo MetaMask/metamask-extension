@@ -11,6 +11,7 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { buildSolanaTestSpecificMock } from './common-solana';
+import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 const solSendAmountFiatValue = '$11.28';
@@ -54,7 +55,7 @@ describe('Send flow', function (this: Suite) {
     this.timeout(120000);
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildSolanaPositiveBalanceFixture(),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock({
           mockGetTransactionSuccess: true,
@@ -106,7 +107,7 @@ describe('Send flow', function (this: Suite) {
     this.timeout(120000);
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildSolanaPositiveBalanceFixture(),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock({
           mockGetTransactionFailed: true,
