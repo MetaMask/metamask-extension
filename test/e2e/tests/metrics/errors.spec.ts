@@ -116,9 +116,9 @@ const removedBackgroundFields = [
   'PreferencesController.preferences.avatarType',
 ];
 
-const removedBackgroundOnlyFields = [
+const removedSnapRegistryCacheFields = [
   // Snap registry cache fields depend on whether the initial registry fetch
-  // has completed before the background Sentry capture.
+  // has completed before the Sentry capture.
   'SnapRegistryController.database',
   'SnapRegistryController.lastUpdated',
   'SnapRegistryController.signature',
@@ -129,7 +129,10 @@ const ignoredConsoleErrors = [
   "Cannot read properties of undefined (reading 'version')",
 ];
 
-const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
+const removedUiFields = [
+  ...removedBackgroundFields,
+  ...removedSnapRegistryCacheFields,
+].map(backgroundToUiField);
 
 const WAIT_FOR_SENTRY_MS = 10000;
 
@@ -149,7 +152,7 @@ function transformBackgroundState(
   }
   for (const field of [
     ...removedBackgroundFields,
-    ...removedBackgroundOnlyFields,
+    ...removedSnapRegistryCacheFields,
   ]) {
     if (has(clonedData, field)) {
       unset(clonedData, field);

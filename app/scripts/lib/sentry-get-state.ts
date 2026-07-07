@@ -110,7 +110,9 @@ function getAnalyticsStateFromPersistedState(
 function getAnalyticsStateFromBackupState(
   backupState: Backup | null,
 ): Exclude<AnalyticsParticipation, null> {
-  return getAnalyticsStateFromControllerState(backupState) ?? getDefaultOptOutState();
+  return (
+    getAnalyticsStateFromControllerState(backupState) ?? getDefaultOptOutState()
+  );
 }
 
 function getAnalyticsStateFromUIState(
@@ -169,7 +171,9 @@ function getControllerState<TControllerState>(
   return isRecord(state) ? (state as TControllerState) : undefined;
 }
 
-function hasAnalyticsFields(value: unknown): value is AnalyticsState & MetaMetricsState {
+function hasAnalyticsFields(
+  value: unknown,
+): value is AnalyticsState & MetaMetricsState {
   return (
     isRecord(value) &&
     ('analyticsId' in value ||

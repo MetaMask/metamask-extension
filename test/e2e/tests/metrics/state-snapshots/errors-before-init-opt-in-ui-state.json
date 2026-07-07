@@ -282,12 +282,7 @@
       "unencryptedSnapStates": "object"
     },
     "SnapInterfaceController": { "interfaces": "object" },
-    "SnapRegistryController": {
-      "database": "object",
-      "databaseUnavailable": "boolean",
-      "lastUpdated": "number",
-      "signature": "string"
-    },
+    "SnapRegistryController": { "databaseUnavailable": "boolean" },
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
     "TokenBalancesController": { "tokenBalances": "object" },
