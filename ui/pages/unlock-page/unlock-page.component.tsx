@@ -7,6 +7,7 @@ import React, {
   FormEvent,
   ChangeEvent,
   MutableRefObject,
+  useCallback,
   useContext,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -55,6 +56,8 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { I18nContext } from '../../contexts/i18n';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
@@ -863,13 +866,48 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
 
 function UnlockPage(props: React.PropsWithChildren<Record<string, unknown>>) {
   const t = useContext(I18nContext);
-  const { trackEvent, bufferedTrace, bufferedEndTrace } =
-    useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
+  const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
+
+  const trackEventForUnlock = useCallback(
+    (
+      payload: {
+        category: string;
+        event: string;
+        properties?: Record<string, unknown>;
+      },
+      options?: {
+        contextPropsIntoEventProperties?: string | string[];
+      },
+    ) => {
+      const contextFields = options?.contextPropsIntoEventProperties;
+      let fields: string[] = [];
+      if (contextFields) {
+        fields = Array.isArray(contextFields) ? contextFields : [contextFields];
+      }
+      const properties = {
+        ...(payload.properties ?? {}),
+        ...(fields.includes(MetaMetricsContextProp.PageTitle)
+          ? { [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title }
+          : {}),
+      };
+
+      trackEvent(
+        createEventBuilder(payload.event)
+          .addCategory(payload.category)
+          .addProperties(properties)
+          .build(),
+      );
+    },
+    [segmentContext.page?.title, trackEvent, createEventBuilder],
+  );
+
   return (
     <UnlockPageBase
       {...(props as unknown as UnlockPageProps)}
       t={t}
-      trackEvent={trackEvent as UnlockPageContext['trackEvent']}
+      trackEvent={trackEventForUnlock as UnlockPageContext['trackEvent']}
       bufferedTrace={bufferedTrace as UnlockPageContext['bufferedTrace']}
       bufferedEndTrace={
         bufferedEndTrace as UnlockPageContext['bufferedEndTrace']

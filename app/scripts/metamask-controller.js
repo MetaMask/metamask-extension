@@ -437,6 +437,7 @@ import { UserOperationControllerInit } from './messenger-client-init/confirmatio
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
+import { QrSyncControllerInit } from './messenger-client-init/qr-sync-controller-init';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
@@ -725,6 +726,7 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
+      QrSyncController: QrSyncControllerInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
       ConfigRegistryController: ConfigRegistryControllerInit,
@@ -867,6 +869,7 @@ export default class MetamaskController extends EventEmitter {
     this.announcementController = messengerClientsByName.AnnouncementController;
     this.accountOrderController = messengerClientsByName.AccountOrderController;
     this.rewardsController = messengerClientsByName.RewardsController;
+    this.qrSyncController = messengerClientsByName.QrSyncController;
     this.claimsController = messengerClientsByName.ClaimsController;
     this.claimsService = messengerClientsByName.ClaimsService;
     this.profileMetricsController =

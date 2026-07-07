@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -1208,9 +1209,10 @@ export async function mockBridgeGetTronQuoteEmpty(
 }
 
 /**
- * Mocks the accounts API v2 supportedNetworks to include Tron so the
- * AccountsApiDataSource handles Tron balances via the v5 API instead of
- * the Snap polling path.
+ * Mocks the accounts API v2 supportedNetworks (**EVM only**).
+ *
+ * Tron balances in these E2E flows come from mocked Tron RPC
+ * (`mockTronGetAccount` and related mocks in this file), not Accounts API v5.
  *
  * @param mockServer
  */
@@ -1221,65 +1223,36 @@ export async function mockAccountsApiV2WithTron(
     .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
-      fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
-        TRON_CHAIN_ID,
-      ],
+      fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
       partialSupport: { balances: [42220, 43114] },
     });
 }
 
 /**
- * Mocks the accounts API v5 multiaccount balances with TRX for the Tron
- * wallet address. The AccountsApiDataSource maps by address (not account
- * UUID), so this works regardless of which runtime account ID the Snap creates.
+ * Mocks the accounts API v5 multiaccount balances (**EVM only**).
+ *
+ * Seeds localhost ETH for login balance validation. Tron TRX/TRC20 balances
+ * come from Tron RPC mocks, not Accounts API v5.
  *
  * @param mockServer
- * @param mockZeroBalance
+ * @param _mockZeroBalance - Unused; Tron zero/non-zero balances use RPC mocks.
  */
 export async function mockAccountsApiV5WithTron(
   mockServer: Mockttp,
-  mockZeroBalance?: boolean,
+  _mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint> {
-  const trxAmount = mockZeroBalance ? '0' : String(TRX_BALANCE / SUN_PER_TRX);
-  const balances = mockZeroBalance
-    ? [
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/slip44:195`,
-          balance: '0',
-        },
-      ]
-    : [
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/slip44:195`,
-          balance: trxAmount,
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6`,
-          balance: '3156454.956836360132407885', // HTX decimals=18
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
-          balance: '2.804595', // USDT decimals=6
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz`,
-          balance: '0.289757448699320931', // USDD decimals=18
-        },
-      ];
+  const balances = [
+    {
+      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+      assetId: 'eip155:1337/slip44:1',
+      balance: '25',
+    },
+    {
+      accountId: `eip155:1:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+      assetId: 'eip155:1/slip44:60',
+      balance: '25',
+    },
+  ];
 
   return mockServer
     .forGet(
