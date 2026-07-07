@@ -63,11 +63,26 @@ describe('BatchTrackingStrategy', () => {
   });
 
   describe('processStatusUpdated (failed)', () => {
-    it('blocks failed before batch is identified', () => {
+    it('blocks failed before batch is identified when the tx was never tracked', () => {
       const result = strategy.processStatusUpdated(
         createTxMeta({ status: TransactionStatus.failed }),
       );
       expect(result.action).toBeNull();
+    });
+
+    it('dispatches TransactionFailed before batch is identified when the tx was tracked', () => {
+      // The tx is observed first via an initial status update (e.g. unapproved
+      // on creation), so a subsequent failure is the current flow failing —
+      // not a stale leftover — and must surface instead of leaving the UI stuck.
+      strategy.processStatusUpdated(
+        createTxMeta({ status: TransactionStatus.unapproved }),
+      );
+      const result = strategy.processStatusUpdated(
+        createTxMeta({ status: TransactionStatus.failed }),
+      );
+      expect(result.action).toEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
     });
 
     it('dispatches TransactionFailed after batch is identified (same batch)', () => {
@@ -95,9 +110,19 @@ describe('BatchTrackingStrategy', () => {
   });
 
   describe('processRejected', () => {
-    it('blocks rejection before batch is identified', () => {
+    it('blocks rejection before batch is identified when the tx was never tracked', () => {
       const result = strategy.processRejected(createTxMeta());
       expect(result.action).toBeNull();
+    });
+
+    it('dispatches TransactionRejected before batch is identified when the tx was tracked', () => {
+      strategy.processStatusUpdated(
+        createTxMeta({ status: TransactionStatus.unapproved }),
+      );
+      const result = strategy.processRejected(createTxMeta());
+      expect(result.action).toEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
     });
 
     it('dispatches TransactionRejected after batch identified (same batch)', () => {
@@ -122,11 +147,23 @@ describe('BatchTrackingStrategy', () => {
   });
 
   describe('processFinished', () => {
-    it('blocks rejected before batch is identified', () => {
+    it('blocks rejected (finished) before batch is identified when the tx was never tracked', () => {
       const result = strategy.processFinished(
         createTxMeta({ status: TransactionStatus.rejected }),
       );
       expect(result.action).toBeNull();
+    });
+
+    it('dispatches TransactionRejected (finished) before batch is identified when the tx was tracked', () => {
+      strategy.processStatusUpdated(
+        createTxMeta({ status: TransactionStatus.unapproved }),
+      );
+      const result = strategy.processFinished(
+        createTxMeta({ status: TransactionStatus.rejected }),
+      );
+      expect(result.action).toEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
     });
 
     it('dispatches TransactionRejected after batch identified (same batch)', () => {
