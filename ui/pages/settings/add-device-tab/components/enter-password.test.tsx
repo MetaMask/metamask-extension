@@ -22,7 +22,7 @@ describe('EnterPassword', () => {
   });
 
   it('renders the heading and description', () => {
-    renderWithLocalization(<EnterPassword onContinue={jest.fn()} />);
+    renderWithLocalization(<EnterPassword onPasswordChange={jest.fn()} />);
 
     expect(
       screen.getByText(messages.enter_your_password.message),
@@ -34,22 +34,26 @@ describe('EnterPassword', () => {
 
   it('continues to the AddWallets step when the password is correct', async () => {
     mockVerifyPassword.mockResolvedValue(true);
-    const onContinue = jest.fn();
-    renderWithLocalization(<EnterPassword onContinue={onContinue} />);
+    const onPasswordChange = jest.fn();
+    renderWithLocalization(
+      <EnterPassword onPasswordChange={onPasswordChange} />,
+    );
 
     fireEvent.change(getPasswordInput(), { target: { value: 'correct' } });
     fireEvent.click(screen.getByText(messages.continue.message));
 
     await waitFor(() => {
-      expect(onContinue).toHaveBeenCalledWith(AddDeviceSettingsStep.AddWallets);
+      expect(onPasswordChange).toHaveBeenCalledWith('correct');
     });
     expect(mockVerifyPassword).toHaveBeenCalledWith('correct');
   });
 
   it('shows an error and does not continue when the password is incorrect', async () => {
     mockVerifyPassword.mockRejectedValue(new Error('wrong password'));
-    const onContinue = jest.fn();
-    renderWithLocalization(<EnterPassword onContinue={onContinue} />);
+    const onPasswordChange = jest.fn();
+    renderWithLocalization(
+      <EnterPassword onPasswordChange={onPasswordChange} />,
+    );
 
     fireEvent.change(getPasswordInput(), { target: { value: 'wrong' } });
     fireEvent.click(screen.getByText(messages.continue.message));
@@ -57,6 +61,6 @@ describe('EnterPassword', () => {
     expect(
       await screen.findByText(messages.unlockPageIncorrectPassword.message),
     ).toBeInTheDocument();
-    expect(onContinue).not.toHaveBeenCalled();
+    expect(onPasswordChange).not.toHaveBeenCalled();
   });
 });
