@@ -18,11 +18,12 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+      - name: Checkout .github/ directory
+        uses: actions/checkout@v7
         with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
+          sparse-checkout: |
+            .github
+          sparse-checkout-cone-mode: false
 
       - name: Get access token
         id: get-token
@@ -34,8 +35,18 @@ jobs:
             members: read
             pull_requests: write
 
+        # This is effectively `node .github/scripts/check-template-and-add-labels.mts`.
+        # github-script supplies the authenticated github/context/core objects so
+        # we do not have to install @actions packages at runtime.
       - name: Check template and add labels
         id: check-template-and-add-labels
-        env:
-          LABEL_TOKEN: ${{ steps.get-token.outputs.token }}
-        run: npm run check-template-and-add-labels
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ steps.get-token.outputs.token }}
+          script: |
+            const { join } = await import('node:path');
+            const { pathToFileURL } = await import('node:url');
+            const scriptPath = join(process.env.GITHUB_WORKSPACE, '.github/scripts/check-template-and-add-labels.mts');
+            const { main } = await import(pathToFileURL(scriptPath).href);
+
+            await main({ github, context, core });

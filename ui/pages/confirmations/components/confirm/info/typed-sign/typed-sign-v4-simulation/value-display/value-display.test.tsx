@@ -5,6 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-helpers';
+import { MetaMetricsEventName } from '../../../../../../../../../shared/constants/metametrics';
 import * as actions from '../../../../../../../../store/actions';
 import { memoizedGetTokenStandardAndDetailsByChain } from '../../../../../../utils/token';
 import PermitSimulationValueDisplay from './value-display';
@@ -83,7 +84,11 @@ describe('PermitSimulationValueDisplay', () => {
     });
 
     await waitFor(() => {
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
+        }),
+      );
     });
   });
 
