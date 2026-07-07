@@ -210,7 +210,6 @@ export class QrSyncController extends BaseController<
       state.qrSyncError = null;
       state.qrSyncUpdatedAt = Date.now();
     });
-    console.log('QR Sync: exportData', exportData);
     await this.#sendSyncData({ deadline, data: exportData });
   }
 

@@ -59,7 +59,6 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
         ),
       ),
     ];
-    console.log('selectedWalletIds', selectedWalletIds);
 
     await onAddWallets({
       selectedAccountGroupIds: selectedAccountGroups,
