@@ -206,7 +206,7 @@ describe('PayWithRow', () => {
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
   });
 
-  it('returns null when no display token available', () => {
+  it('renders skeleton when no display token available', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
       setPayToken: jest.fn(),
@@ -215,9 +215,9 @@ describe('PayWithRow', () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
 
     const store = mockStore(getMockState());
-    const { container } = renderWithProvider(<PayWithRow />, store);
+    renderWithProvider(<PayWithRow />, store);
 
-    expect(container.firstChild).toBeNull();
+    expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
   });
 
   it('falls back to first required token when no pay token', () => {
