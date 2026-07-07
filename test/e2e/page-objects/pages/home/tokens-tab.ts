@@ -114,7 +114,7 @@ class TokensTab extends HomePage {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
 
-  private tokenManagementSearchToggle(tokenName: string): string {
+  private tokenManagementSearchToggleControl(tokenName: string): string {
     const assetId = SEARCH_TOKEN_ASSET_IDS[tokenName.toUpperCase()];
 
     if (!assetId) {
@@ -123,7 +123,7 @@ class TokensTab extends HomePage {
       );
     }
 
-    return `[data-testid="token-management-cell-search-${assetId.toLowerCase()}-toggle"]`;
+    return `[data-testid="token-management-cell-search-${assetId.toLowerCase()}-toggle-control"]`;
   }
 
   private readonly tokenManagementAddCustomTokenButton =
@@ -231,29 +231,13 @@ class TokensTab extends HomePage {
     await this.driver.clickElementSafe(this.lowValueAssetsToggle);
   }
 
-  private async clickTokenManagementToggle(toggleSelector: string) {
-    await this.driver.waitForSelector(toggleSelector);
-    const toggle = await this.driver.findElement(toggleSelector);
-    if ((await toggle.getAttribute('value')) === 'true') {
-      return;
-    }
-
-    await this.driver.executeScript((rawSelector: string | string[]) => {
-      const selector = Array.isArray(rawSelector)
-        ? rawSelector[0]
-        : rawSelector;
-      const input = document.querySelector(selector);
-      const control = input?.closest('label');
-
-      if (!(control instanceof HTMLElement)) {
-        throw new Error(
-          `Token management toggle control not found: ${selector}`,
-        );
-      }
-
-      control.click();
-    }, toggleSelector);
-    await this.driver.delay(1000);
+  private async clickTokenManagementToggle(toggleControlSelector: string) {
+    await this.driver.clickElementSafe(
+      `${toggleControlSelector} .toggle-button--off`,
+    );
+    await this.driver.waitForSelector(
+      `${toggleControlSelector} .toggle-button--on`,
+    );
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
@@ -380,8 +364,6 @@ class TokensTab extends HomePage {
       `[data-testid="network-list-item-${chainId}"]`,
     );
 
-    // on chrome the test is going to fast so this can fail without a wait
-    await this.driver.delay(1000);
     await this.driver.waitForSelector(this.customTokenImportAddressInput);
 
     await this.driver.fill(this.customTokenImportAddressInput, tokenAddress);
@@ -437,8 +419,8 @@ class TokensTab extends HomePage {
       this.tokenManagementSearchInput,
       tokenName,
     );
-    const toggle = this.tokenManagementSearchToggle(tokenName);
-    await this.clickTokenManagementToggle(toggle);
+    const toggleControl = this.tokenManagementSearchToggleControl(tokenName);
+    await this.clickTokenManagementToggle(toggleControl);
     await this.returnFromTokenManagementToHome();
   }
 
@@ -455,8 +437,8 @@ class TokensTab extends HomePage {
 
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenManagementSearchInput, name);
-      const toggle = this.tokenManagementSearchToggle(name);
-      await this.clickTokenManagementToggle(toggle);
+      const toggleControl = this.tokenManagementSearchToggleControl(name);
+      await this.clickTokenManagementToggle(toggleControl);
     }
     await this.returnFromTokenManagementToHome();
   }
