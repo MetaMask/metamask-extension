@@ -33,6 +33,7 @@ import {
   type MetaMetricsEventOptions,
   type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
+import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import {
   getAnalyticsId,
@@ -40,7 +41,7 @@ import {
   getOptedIn,
 } from '../selectors';
 import { submitRequestToBackground } from '../store/background-connection';
-import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
+import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
 import type {
   TraceName,
   TraceRequest,
@@ -187,11 +188,33 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         canTrackImmediately ||
         payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
       ) {
-        // If metrics are enabled, track immediately
-        trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
+        let builder = createEventBuilder(fullPayload.event);
+        if (fullPayload.category) {
+          builder = builder.addCategory(fullPayload.category);
+        }
+        if (fullPayload.properties) {
+          builder = builder.addProperties(fullPayload.properties);
+        }
+        if (fullPayload.sensitiveProperties) {
+          builder = builder.addSensitiveProperties(
+            fullPayload.sensitiveProperties,
+          );
+        }
+
+        const trackOptions = {
+          environmentType: fullPayload.environmentType,
+          page: fullPayload.page,
+          referrer: fullPayload.referrer,
+          excludeMetaMetricsId: options?.excludeMetaMetricsId,
+          matomoEvent: options?.matomoEvent,
+        } satisfies Parameters<typeof trackAnalyticsEvent>[1];
+
+        const built = builder.build();
+
+        trackAnalyticsEvent(built, trackOptions);
       } else if (canMaybeTrackLater) {
         await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          fullPayload,
+          fullPayload as MetaMetricsEventPayload,
         ]);
       }
     },

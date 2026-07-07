@@ -1,5 +1,4 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -12,12 +11,14 @@ import {
   mockTronApis,
   TRON_RECIPIENT_ADDRESS,
 } from '../tron/mocks/common-tron';
+import { buildTronFixtures } from '../tron/unified-tron-assets';
 
 describe('Send Tron', function () {
   it('it should be possible to send TRX', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildTronFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
       },
@@ -42,7 +43,9 @@ describe('Send Tron', function () {
         await sendPage.selectToken('tron:728126428', 'TRX');
 
         // Wait for the send page to load
-        await sendPage.fillRecipient(TRON_RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({
+          recipientAddress: TRON_RECIPIENT_ADDRESS,
+        });
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
         await snapTransactionConfirmation.checkPageIsLoaded();

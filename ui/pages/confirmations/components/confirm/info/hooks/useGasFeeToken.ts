@@ -18,7 +18,7 @@ import {
   getShouldShowFiat,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
-import { formatAmount } from '../../../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../../../shared/lib/format-amount';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useFeeCalculations } from './useFeeCalculations';
 import { useNativeCurrencySymbol } from './useNativeCurrencySymbol';
@@ -180,7 +180,7 @@ function useFiatTokenValue(
     return fallbackFiatValue ?? '';
   }
 
-  const fiatAmount = nativeEth.times(conversionRate);
+  const fiatAmount = nativeEth.times(String(conversionRate));
 
   if (fiatAmount.lt(new BigNumber(0.01)) && fiatAmount.gt(new BigNumber(0))) {
     return `< ${fiatFormatter(0.01)}`;

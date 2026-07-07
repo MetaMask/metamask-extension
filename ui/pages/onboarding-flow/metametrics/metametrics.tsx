@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
@@ -35,15 +35,14 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -57,8 +56,6 @@ type MetametricsCheckboxOptionProps = Readonly<{
   containerClassName: string;
   isInteractive?: boolean;
 }>;
-
-const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const stopClickPropagation = (e: React.MouseEvent) => {
   e.stopPropagation();
@@ -123,6 +120,7 @@ export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isFirefox = useIsFirefox();
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
@@ -154,7 +152,7 @@ export default function OnboardingMetametrics() {
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   let nextRouteByBrowser = useSelector(
     getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
@@ -183,21 +181,23 @@ export default function OnboardingMetametrics() {
       }
 
       if (isParticipateInMetaMetricsChecked) {
-        await trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AppInstalled,
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.AppInstalled)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .build(),
+        );
 
-        await trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: {
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-            [MetaMetricsUserTrait.HasMarketingConsent]:
-              isDataCollectionForMarketingChecked,
-            location: 'onboarding_metametrics',
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .addProperties({
+              [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+              [MetaMetricsUserTrait.HasMarketingConsent]:
+                isDataCollectionForMarketingChecked,
+              location: 'onboarding_metametrics',
+            })
+            .build(),
+        );
 
         dispatch(
           setDataCollectionForMarketing(isDataCollectionForMarketingChecked),

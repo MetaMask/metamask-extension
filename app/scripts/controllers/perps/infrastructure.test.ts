@@ -89,6 +89,98 @@ describe('createPerpsInfrastructure', () => {
     expect(infrastructure.cacheInvalidator).toBeDefined();
     expect(infrastructure.diskCache).toBeDefined();
     expect(infrastructure.rewards).toBeDefined();
+    expect(infrastructure.terminalApiUrl).toBeDefined();
+  });
+
+  describe('terminalApiUrl', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    it('returns dev URL for development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns dev URL for testing environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'testing';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for beta build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'beta';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns prd URL for production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns prd URL for release-candidate environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'release-candidate';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for staging environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for pull-request environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'pull-request';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for flask build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'flask';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for experimental build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'experimental';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
   });
 
   describe('metrics', () => {

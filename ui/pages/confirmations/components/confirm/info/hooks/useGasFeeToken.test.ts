@@ -268,6 +268,20 @@ describe('useGasFeeToken', () => {
     expect(result.current.amountFiat).toBe('< $0.01');
   });
 
+  it('does not throw when conversionRate has more than 15 significant digits', () => {
+    const state = getState({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      currencyRates: { ETH: { conversionRate: 0.07086574003221964 } },
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useGasFeeToken({ tokenAddress: GAS_FEE_TOKEN_MOCK.tokenAddress }),
+      state,
+    );
+
+    expect(result.current.amountFiat).not.toBeUndefined();
+  });
+
   describe('useSelectedGasFeeToken', () => {
     it('returns selected gas fee token', () => {
       const result = runUseSelectedGasFeeTokenHook();
