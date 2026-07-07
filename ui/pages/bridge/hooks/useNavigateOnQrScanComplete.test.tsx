@@ -3,7 +3,13 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as bridgeActions from '../../../ducks/bridge/actions';
+import {
+  AWAITING_SIGNATURES_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useNavigateOnQrScanComplete } from './useNavigateOnQrScanComplete';
+
+const BRIDGE_AWAITING_SIGNATURES_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
 
 const mockUseNavigate = jest.fn();
 const mockNavigateToActivityPage = jest.fn();
@@ -78,6 +84,7 @@ describe('useNavigateOnQrScanComplete', () => {
     const { rerender } = renderHookWithProvider(
       () => useNavigateOnQrScanComplete(),
       store,
+      BRIDGE_AWAITING_SIGNATURES_PATH,
     );
 
     await act(async () => {
@@ -119,6 +126,7 @@ describe('useNavigateOnQrScanComplete', () => {
     const { rerender } = renderHookWithProvider(
       () => useNavigateOnQrScanComplete(),
       store,
+      BRIDGE_AWAITING_SIGNATURES_PATH,
     );
 
     await act(async () => {
@@ -152,6 +160,7 @@ describe('useNavigateOnQrScanComplete', () => {
     const { rerender } = renderHookWithProvider(
       () => useNavigateOnQrScanComplete(),
       createBridgeMockStore(),
+      BRIDGE_AWAITING_SIGNATURES_PATH,
     );
 
     const setWasTxDeclinedSpy = jest.spyOn(bridgeActions, 'setWasTxDeclined');
@@ -207,6 +216,42 @@ describe('useNavigateOnQrScanComplete', () => {
 
     expect(mockNavigateToActivityPage).not.toHaveBeenCalled();
     expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+  });
+
+  it('does not navigate when a SIGN request completes on a non-bridge route (e.g. send/sign confirmation flow)', async () => {
+    const store = createBridgeMockStore({
+      metamaskStateOverrides: {
+        activeQrCodeScanRequest: mockQrScanRequest,
+        lastQrScanCompletedSuccessfully: null,
+      },
+    });
+
+    mockUseSelectorOverrides = {
+      getActiveQrCodeScanRequest: mockQrScanRequest,
+      getLastQrScanCompletedSuccessfully: null,
+    };
+    // Render on a non-bridge route (default pathname '/').
+    const { rerender } = renderHookWithProvider(
+      () => useNavigateOnQrScanComplete(),
+      store,
+    );
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+
+    mockUseSelectorOverrides = {
+      getActiveQrCodeScanRequest: null,
+      getLastQrScanCompletedSuccessfully: true,
+    };
+    await act(async () => {
+      rerender();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
+
+    expect(mockNavigateToActivityPage).not.toHaveBeenCalled();
+    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+    expect(mockNavigateToBridgePage).not.toHaveBeenCalled();
   });
 
   it('does not navigate when QR scan request is always null', () => {
