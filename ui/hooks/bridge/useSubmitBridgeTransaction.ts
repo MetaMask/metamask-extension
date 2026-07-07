@@ -6,7 +6,6 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { useNavigate } from 'react-router-dom';
 import { getExtensionSkipTransactionStatusPage } from '../../../shared/lib/selectors/smart-transactions';
 import {
   isHardwareWallet,
@@ -35,7 +34,6 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { useBridgeNavigation } from './useBridgeNavigation';
@@ -56,9 +54,12 @@ export const isApprovalTxError = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const navigate = useNavigate();
-  const { navigateToBridgePage, navigateToHwSigningPage } =
-    useBridgeNavigation();
+  const {
+    navigateToBridgePage,
+    navigateToHwSigningPage,
+    navigateToActivityPage,
+    navigateToDefaultRoute,
+  } = useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -171,12 +172,14 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
     if (!isQrHardwareWallet) {
-      navigate(to, {
-        state: { stayOnHomePage: true },
-        replace: true,
-      });
+      if (toastEnabled) {
+        // Match the QR completion path: dispatch resetBridgeController and
+        // clear bridge navigation state so a later bridge entry starts clean.
+        navigateToDefaultRoute().catch(() => undefined);
+      } else {
+        navigateToActivityPage();
+      }
     }
   };
 

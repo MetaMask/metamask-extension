@@ -19,6 +19,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
+import * as smartTxSelectors from '../../../shared/lib/selectors/smart-transactions';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import * as sentry from '../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
@@ -234,7 +235,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
+                "token": null,
               },
             },
           ],
@@ -287,7 +290,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
+                "token": null,
               },
             },
           ],
@@ -298,6 +303,49 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitTxSpy).toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
+    });
+
+    it('dispatches resetBridgeController and navigates to default route when transaction status page is skipped', async () => {
+      const store = makeMockStore();
+      const skipStatusPageSpy = jest
+        .spyOn(smartTxSelectors, 'getExtensionSkipTransactionStatusPage')
+        .mockReturnValue(true);
+      const resetBridgeControllerSpy = jest
+        .spyOn(bridgeActions, 'resetBridgeController')
+        .mockReturnValue(async () => undefined);
+
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      try {
+        await act(async () => {
+          await result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          );
+        });
+
+        expect(resetBridgeControllerSpy).toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+          expect.objectContaining({
+            state: expect.objectContaining({
+              bridgeState: null,
+              stayOnHomePage: true,
+              token: null,
+            }),
+          }),
+        );
+        expect(mockUseNavigate).not.toHaveBeenCalledWith(
+          `${DEFAULT_ROUTE}?tab=activity`,
+          expect.anything(),
+        );
+      } finally {
+        skipStatusPageSpy.mockRestore();
+        resetBridgeControllerSpy.mockRestore();
+      }
     });
 
     it('routes to awaiting signatures for hardware wallets', async () => {
@@ -338,7 +386,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
+                "bridgeState": null,
                 "stayOnHomePage": true,
+                "token": null,
               },
             },
           ],
@@ -414,15 +464,14 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=activity`, {
+        replace: true,
+        state: {
+          bridgeState: null,
+          stayOnHomePage: true,
+          token: null,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
@@ -457,15 +506,14 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=activity`, {
+        replace: true,
+        state: {
+          bridgeState: null,
+          stayOnHomePage: true,
+          token: null,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
       expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
@@ -517,7 +565,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         {
           replace: true,
           state: {
+            bridgeState: null,
             stayOnHomePage: true,
+            token: null,
           },
         },
       );
