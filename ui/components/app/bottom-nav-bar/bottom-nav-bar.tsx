@@ -123,7 +123,7 @@ export function BottomNavBar() {
       />
       <NavTab
         isActive={isActivity}
-        icon={IconName.Activity}
+        icon={isActivity ? IconName.ClockFilled : IconName.Clock}
         label={t('activity')}
         onClick={handleActivityClick}
         data-testid="bottom-nav-activity"
