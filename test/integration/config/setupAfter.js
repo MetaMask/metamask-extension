@@ -47,3 +47,7 @@ jest.mock(
     CustomAmountInfoSkeleton: () => null,
   }),
 );
+
+jest.mock('../../../ui/components/component-library/lottie-animation', () => ({
+  LottieAnimation: () => null,
+}));
