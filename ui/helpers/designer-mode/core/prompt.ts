@@ -62,7 +62,11 @@ export function formatAgentPrompt(
     lines.push('');
   }
 
-  if (info.textContent) {
+  // When the designer edited the text inline, the changeset already carries
+  // `__textContent: old → new`; printing the original here as well would
+  // contradict it.
+  const textEdited = changeset.some((e) => e.property === '__textContent');
+  if (info.textContent && !textEdited) {
     lines.push('Text Content');
     lines.push(`  "${info.textContent}"`);
     lines.push('');

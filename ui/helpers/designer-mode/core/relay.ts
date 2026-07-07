@@ -12,15 +12,20 @@ export class RelayClient {
   }
 
   async sendMessage(prompt: string): Promise<void> {
-    await fetch(`${this.baseUrl}/api/message`, {
+    const response = await fetch(`${this.baseUrl}/api/message`, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: prompt,
     });
+    if (!response.ok) {
+      // e.g. 400 (bad envelope) or 413 (body too large) from the relay —
+      // don't start polling for a reply that will never come.
+      throw new Error(`relay rejected message (${response.status})`);
+    }
     this.startPolling();
   }
 
-  onResponse(cb: (response: string) => void) {
+  onResponse(cb: ((response: string) => void) | null) {
     this.onResponseCallback = cb;
   }
 

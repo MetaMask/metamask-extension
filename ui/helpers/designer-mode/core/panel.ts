@@ -746,6 +746,9 @@ const PANEL_CSS = css`
   }
 `;
 
+/** Upper bound on the chat thread length (oldest messages are dropped). */
+const MAX_CHAT_MESSAGES = 50;
+
 /* ── Types ── */
 type EditState = { original: string; current: string };
 type ChatMessage = { type: 'sent' | 'agent' | 'status'; text: string };
@@ -798,12 +801,21 @@ export class PanelController {
 
   private healthInterval: ReturnType<typeof setInterval> | null = null;
 
+  /** True after unmount(); guards async callbacks against touching a dead panel. */
+  private destroyed = false;
+
+  /** Removes the document-level listeners of an in-progress header drag. */
+  private activeDragCleanup: (() => void) | null = null;
+
+  private copyFeedbackTimer: ReturnType<typeof setTimeout> | null = null;
+
   constructor(relay: RelayClient, options: PanelOptions) {
     this.relay = relay;
     this.options = options;
   }
 
   mount(container: Element) {
+    this.destroyed = false;
     this.host = document.createElement('div');
     this.host.className = 'dm-panel';
     this.host.setAttribute('data-designer-mode', 'panel');
@@ -818,8 +830,11 @@ export class PanelController {
     container.appendChild(this.host);
 
     this.relay.onResponse((r: string) => {
+      if (this.destroyed) {
+        return;
+      }
       this.agentWorking = false;
-      this.chatMessages.push({ type: 'agent', text: r });
+      this.pushChatMessage({ type: 'agent', text: r });
       this.render();
     });
 
@@ -869,6 +884,11 @@ export class PanelController {
     this.info = null;
     this.selectedEl = null;
     this.isLocked = false;
+    // Discard pending edits — with no selection they could neither be shown
+    // correctly nor sent (sendToAgent requires info), so a stale banner would
+    // just be misleading.
+    this.editLog.clear();
+    this.editLogStrings = [];
     this.isVisible = true;
     this.render();
   }
@@ -886,6 +906,7 @@ export class PanelController {
     if (info.textContent) {
       snap.__textContent = info.textContent;
     }
+    snap.__classes = info.classes.join(' ');
     this.originalSnapshot = snap;
     this.editLog.clear();
     this.editLogStrings = [];
@@ -897,6 +918,11 @@ export class PanelController {
     if (this.isLocked) {
       return;
     } // don't override locked panel with hover
+    if (this.selectedEl === el && this.isVisible) {
+      // Same element as the last hover — mousemove fires continuously, and a
+      // full Shadow-DOM rebuild per event is pure churn.
+      return;
+    }
     this.info = info;
     this.selectedEl = el;
     this.isVisible = true;
@@ -964,10 +990,23 @@ export class PanelController {
   }
 
   unmount() {
+    this.destroyed = true;
     if (this.healthInterval) {
       clearInterval(this.healthInterval);
+      this.healthInterval = null;
     }
+    if (this.copyFeedbackTimer) {
+      clearTimeout(this.copyFeedbackTimer);
+      this.copyFeedbackTimer = null;
+    }
+    this.endDrag();
+    this.relay.stopPolling();
+    this.relay.onResponse(null);
     this.host?.remove();
+    this.host = null;
+    this.shadow = null;
+    this.info = null;
+    this.selectedEl = null;
   }
 
   /* ── Private ── */
@@ -978,10 +1017,35 @@ export class PanelController {
     );
   }
 
+  /**
+   * Cap the chat thread so a long session doesn't grow the DOM unboundedly.
+   * @param msg
+   */
+  private pushChatMessage(msg: ChatMessage) {
+    this.chatMessages.push(msg);
+    if (this.chatMessages.length > MAX_CHAT_MESSAGES) {
+      this.chatMessages.splice(0, this.chatMessages.length - MAX_CHAT_MESSAGES);
+    }
+  }
+
   private async checkHealth() {
     const prev = this.relayStatus;
-    this.relayStatus = await this.relay.checkHealth();
+    const status = await this.relay.checkHealth();
+    if (this.destroyed) {
+      return;
+    }
+    this.relayStatus = status;
     if (this.relayStatus !== prev) {
+      // Skip the rebuild while the user is typing in the panel — a full
+      // re-render would destroy the focused input mid-edit. The status dot
+      // catches up on the next render.
+      const active = this.shadow?.activeElement;
+      if (
+        active instanceof HTMLInputElement ||
+        active instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
       this.render();
     }
   }
@@ -991,12 +1055,24 @@ export class PanelController {
       return;
     }
     if (message) {
-      this.chatMessages.push({ type: 'sent', text: message });
+      this.pushChatMessage({ type: 'sent', text: message });
     }
     this.agentWorking = true;
     this.render();
     const prompt = formatAgentPrompt(this.info, this.getChangeset(), message);
-    await this.relay.sendMessage(prompt);
+    try {
+      await this.relay.sendMessage(prompt);
+    } catch {
+      if (this.destroyed) {
+        return;
+      }
+      this.agentWorking = false;
+      this.pushChatMessage({
+        type: 'status',
+        text: 'Could not reach the relay — is the designer-mode server running?',
+      });
+      this.render();
+    }
   }
 
   private getAllStyles(): Record<string, string> {
@@ -1044,14 +1120,16 @@ export class PanelController {
   /* ── Render ── */
 
   private render() {
-    if (!this.shadow) {
+    if (!this.shadow || this.destroyed) {
       return;
     }
     const old = this.shadow.querySelector('.panel');
-    const prevScroll = old ? old.scrollTop : 0;
+    // `.body` is the scroll container (overflow-y: auto), not `.panel`.
+    const prevScroll = old?.querySelector('.body')?.scrollTop ?? 0;
     if (old) {
       old.remove();
     }
+    this.endDrag(); // the dragged panel node is gone; drop its listeners
 
     if (!this.isVisible) {
       return;
@@ -1079,9 +1157,10 @@ export class PanelController {
 
     this.shadow.appendChild(panel);
     if (prevScroll) {
-      requestAnimationFrame(() => {
-        panel.scrollTop = prevScroll;
-      });
+      const newBody = panel.querySelector('.body');
+      if (newBody) {
+        newBody.scrollTop = prevScroll;
+      }
     }
     this.setupDrag(panel);
   }
@@ -1114,7 +1193,11 @@ export class PanelController {
         .then(() => {
           copyBtn.textContent = '✓ Copied';
           copyBtn.classList.add('copied');
-          setTimeout(() => {
+          if (this.copyFeedbackTimer) {
+            clearTimeout(this.copyFeedbackTimer);
+          }
+          this.copyFeedbackTimer = setTimeout(() => {
+            this.copyFeedbackTimer = null;
             copyBtn.textContent = 'Copy for AI';
             copyBtn.classList.remove('copied');
           }, 2000);
@@ -1275,17 +1358,26 @@ export class PanelController {
     return this.buildSection('Text Content', '✏', true, (body) => {
       const ta = document.createElement('textarea');
       ta.className = 'text-input';
-      ta.value = this.info?.textContent ?? '';
+      // Show the edited value across re-renders, not the original snapshot.
+      ta.value =
+        this.editLog.get('__textContent')?.current ??
+        this.info?.textContent ??
+        '';
       ta.rows = 2;
       ta.oninput = () => {
         if (this.selectedEl) {
           this.recordEdit('__textContent', ta.value, this.selectedEl);
-          // update text in DOM
+          // Reflect the edit in the DOM: put the new text in the first text
+          // node and blank the rest, so the element's direct text matches the
+          // input even when it was split across several text nodes.
           const textNodes = Array.from(this.selectedEl.childNodes).filter(
             (n) => n.nodeType === Node.TEXT_NODE,
           );
           if (textNodes.length > 0) {
             textNodes[0].textContent = ta.value;
+            for (const node of textNodes.slice(1)) {
+              node.textContent = '';
+            }
           }
         }
       };
@@ -1504,13 +1596,18 @@ export class PanelController {
         body.appendChild(this.makePropRowFull('Opacity', 'opacity', op));
       }
 
-      // Border
+      // Border — edit the `border` shorthand: the displayed value is composite
+      // ("1px solid rgb(…)"), which would be invalid if written to border-width.
       const bw = this.getVal('border-width');
       const bs = this.getVal('border-style');
       const bc = this.getVal('border-color');
       if (bw && bw !== '0px') {
         body.appendChild(
-          this.makePropRowFull('Border', 'border-width', `${bw} ${bs} ${bc}`),
+          this.makePropRowFull(
+            'Border',
+            'border',
+            this.getVal('border') || `${bw} ${bs} ${bc}`,
+          ),
         );
       }
 
@@ -1589,22 +1686,35 @@ export class PanelController {
     });
   }
 
+  /**
+   * Add or remove a class on the selected element, keeping `info.classes` and
+   * the changeset in sync — otherwise class edits would mutate the page but be
+   * invisible in the pending-edits banner and the agent prompt.
+   * @param action
+   * @param cls
+   */
+  private applyClassEdit(action: 'add' | 'remove', cls: string) {
+    if (!this.selectedEl) {
+      return;
+    }
+    this.selectedEl.classList[action](cls);
+    if (this.info) {
+      this.info.classes = Array.from(this.selectedEl.classList);
+    }
+    this.recordEdit(
+      '__classes',
+      Array.from(this.selectedEl.classList).join(' '),
+      this.selectedEl,
+    );
+    this.render();
+  }
+
   /* ── Design Tokens ── */
   private renderTokensSection(tokens: string[]): HTMLElement {
     return this.buildSection('Design Tokens', '◆', false, (body) => {
       this.buildEditablePillList(body, tokens, {
-        onRemove: (token) => {
-          if (this.selectedEl) {
-            this.selectedEl.classList.remove(token);
-          }
-          this.render();
-        },
-        onAdd: (token) => {
-          if (this.selectedEl) {
-            this.selectedEl.classList.add(token);
-          }
-          this.render();
-        },
+        onRemove: (token) => this.applyClassEdit('remove', token),
+        onAdd: (token) => this.applyClassEdit('add', token),
       });
     });
   }
@@ -1614,18 +1724,8 @@ export class PanelController {
     return this.buildSection('Classes', '{ }', false, (body) => {
       const classes = this.info?.classes ?? [];
       this.buildEditablePillList(body, classes, {
-        onRemove: (cls) => {
-          if (this.selectedEl) {
-            this.selectedEl.classList.remove(cls);
-          }
-          this.render();
-        },
-        onAdd: (cls) => {
-          if (this.selectedEl) {
-            this.selectedEl.classList.add(cls);
-          }
-          this.render();
-        },
+        onRemove: (cls) => this.applyClassEdit('remove', cls),
+        onAdd: (cls) => this.applyClassEdit('add', cls),
       });
     });
   }
@@ -2003,50 +2103,60 @@ export class PanelController {
   }
 
   /* ── Drag ── */
+
+  /**
+   * Header-drag for the panel. Document-level mousemove/mouseup listeners are
+   * attached only for the duration of a drag (mousedown → mouseup) — attaching
+   * them unconditionally here would leak a pair per render() call, since render
+   * replaces the panel node but document listeners survive it.
+   * @param panel
+   */
   private setupDrag(panel: HTMLElement) {
-    const header = panel.querySelector('.header') as HTMLElement;
-    if (!header) {
+    const header = panel.querySelector('.header');
+    if (!(header instanceof HTMLElement)) {
       return;
     }
-    let dragging = false;
-    let startX = 0;
-    let startY = 0;
-
     header.onmousedown = (e) => {
       if ((e.target as HTMLElement).closest('button')) {
         return;
       }
-      dragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
       e.preventDefault();
-    };
-    const onMove = (e: MouseEvent) => {
-      if (!dragging) {
-        return;
-      }
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      const dirX = this.anchor.h === 'right' ? -1 : 1;
-      const dirY = this.anchor.v === 'bottom' ? -1 : 1;
-      this.anchor.x = Math.max(
-        0,
-        Math.min(window.innerWidth - 340, this.anchor.x + dx * dirX),
-      );
-      this.anchor.y = Math.max(
-        0,
-        Math.min(window.innerHeight - 100, this.anchor.y + dy * dirY),
-      );
-      panel.style[this.anchor.h] = `${this.anchor.x}px`;
-      panel.style[this.anchor.v] = `${this.anchor.y}px`;
-      startX = e.clientX;
-      startY = e.clientY;
-    };
-    const onUp = () => {
-      dragging = false;
-    };
+      let startX = e.clientX;
+      let startY = e.clientY;
 
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
+      const onMove = (ev: MouseEvent) => {
+        const dx = ev.clientX - startX;
+        const dy = ev.clientY - startY;
+        const dirX = this.anchor.h === 'right' ? -1 : 1;
+        const dirY = this.anchor.v === 'bottom' ? -1 : 1;
+        this.anchor.x = Math.max(
+          0,
+          Math.min(window.innerWidth - 340, this.anchor.x + dx * dirX),
+        );
+        this.anchor.y = Math.max(
+          0,
+          Math.min(window.innerHeight - 100, this.anchor.y + dy * dirY),
+        );
+        panel.style[this.anchor.h] = `${this.anchor.x}px`;
+        panel.style[this.anchor.v] = `${this.anchor.y}px`;
+        startX = ev.clientX;
+        startY = ev.clientY;
+      };
+      const onUp = () => this.endDrag();
+
+      this.endDrag(); // defensive: never stack two active drags
+      this.activeDragCleanup = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    };
+  }
+
+  /** Remove the document-level listeners of an in-progress drag, if any. */
+  private endDrag() {
+    this.activeDragCleanup?.();
+    this.activeDragCleanup = null;
   }
 }

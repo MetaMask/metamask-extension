@@ -7,7 +7,6 @@ import { OverlayController } from './overlay';
 import { PanelController } from './panel';
 import { ToggleController } from './toggle';
 import { RelayClient } from './relay';
-import { detectFramework } from './utils';
 import { createAdapter } from './detect';
 
 export class DesignerModeCore {
@@ -138,8 +137,7 @@ export class DesignerModeCore {
   }
 
   static async autoInit(options: DesignerModeOptions = {}) {
-    const framework = await detectFramework();
-    const adapter = createAdapter(framework);
+    const adapter = createAdapter();
     const core = new DesignerModeCore({ ...options, adapter });
     core.mount();
     return core;

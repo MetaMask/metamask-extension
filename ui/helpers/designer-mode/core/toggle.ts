@@ -9,6 +9,9 @@ export class ToggleController {
 
   private pos = { right: 20, bottom: 20 };
 
+  /** Removes the document-level listeners of an in-progress drag. */
+  private activeDragCleanup: (() => void) | null = null;
+
   mount(container: Element) {
     this.btn = document.createElement('button');
     this.btn.className = 'dm-toggle';
@@ -73,68 +76,74 @@ export class ToggleController {
     container.appendChild(this.btn);
   }
 
+  /**
+   * Drag-to-move for the FAB. Document-level listeners are attached only for
+   * the duration of a drag (mousedown → mouseup) so nothing leaks past
+   * unmount().
+   */
   private setupDrag() {
     if (!this.btn) {
       return;
     }
-    let dragging = false;
-    let didDrag = false;
-    let startX = 0;
-    let startY = 0;
-
     this.btn.onmousedown = (e) => {
-      dragging = true;
-      didDrag = false;
-      startX = e.clientX;
-      startY = e.clientY;
+      e.preventDefault();
+      let didDrag = false;
+      let startX = e.clientX;
+      let startY = e.clientY;
       if (this.btn) {
         this.btn.style.cursor = 'grabbing';
       }
-      e.preventDefault();
-    };
 
-    const onMove = (e: MouseEvent) => {
-      if (!dragging || !this.btn) {
-        return;
-      }
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      if (!didDrag && Math.abs(dx) < 4 && Math.abs(dy) < 4) {
-        return;
-      }
-      didDrag = true;
+      const onMove = (ev: MouseEvent) => {
+        if (!this.btn) {
+          return;
+        }
+        const dx = ev.clientX - startX;
+        const dy = ev.clientY - startY;
+        if (!didDrag && Math.abs(dx) < 4 && Math.abs(dy) < 4) {
+          return;
+        }
+        didDrag = true;
 
-      this.pos = {
-        right: Math.max(
-          0,
-          Math.min(window.innerWidth - 44, this.pos.right - dx),
-        ),
-        bottom: Math.max(
-          0,
-          Math.min(window.innerHeight - 44, this.pos.bottom - dy),
-        ),
+        this.pos = {
+          right: Math.max(
+            0,
+            Math.min(window.innerWidth - 44, this.pos.right - dx),
+          ),
+          bottom: Math.max(
+            0,
+            Math.min(window.innerHeight - 44, this.pos.bottom - dy),
+          ),
+        };
+        this.btn.style.right = `${this.pos.right}px`;
+        this.btn.style.bottom = `${this.pos.bottom}px`;
+        startX = ev.clientX;
+        startY = ev.clientY;
       };
-      this.btn.style.right = `${this.pos.right}px`;
-      this.btn.style.bottom = `${this.pos.bottom}px`;
-      startX = e.clientX;
-      startY = e.clientY;
-    };
 
-    const onUp = () => {
-      if (!dragging) {
-        return;
-      }
-      dragging = false;
-      if (this.btn) {
-        this.btn.style.cursor = 'grab';
-      }
-      if (!didDrag) {
-        this.onToggle?.();
-      }
-    };
+      const onUp = () => {
+        this.endDrag();
+        if (this.btn) {
+          this.btn.style.cursor = 'grab';
+        }
+        if (!didDrag) {
+          this.onToggle?.();
+        }
+      };
 
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
+      this.endDrag(); // defensive: never stack two active drags
+      this.activeDragCleanup = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    };
+  }
+
+  private endDrag() {
+    this.activeDragCleanup?.();
+    this.activeDragCleanup = null;
   }
 
   setActive(active: boolean) {
@@ -153,6 +162,9 @@ export class ToggleController {
   }
 
   unmount() {
+    this.endDrag();
     this.btn?.remove();
+    this.btn = null;
+    this.label = null;
   }
 }

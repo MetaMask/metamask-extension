@@ -194,6 +194,18 @@ export class OverlayController {
   }
 
   private handleKeyDown(e: KeyboardEvent) {
+    // Don't hijack keystrokes while the user is typing — e.g. `c` or Escape in
+    // the panel's message box (the event target is the shadow host, which
+    // shouldIgnore matches) or in any page input.
+    const target = e.target as HTMLElement;
+    if (
+      this.shouldIgnore(target) ||
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target.isContentEditable
+    ) {
+      return;
+    }
     if (e.key === 'Escape') {
       this.unlock();
     }

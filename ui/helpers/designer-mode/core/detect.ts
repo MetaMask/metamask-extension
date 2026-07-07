@@ -1,10 +1,12 @@
-import type { Framework, InspectorAdapter } from './types';
+import type { InspectorAdapter } from './types';
 import { buildFallbackInfo } from './utils';
 
-export function createAdapter(framework: Framework): InspectorAdapter {
-  // Lazy import to avoid bundling all adapters
-  // In practice, the user imports the specific adapter they need
-  // This is used for auto-detection in the extension / auto-init
+/**
+ * DOM-only fallback adapter, used by `DesignerModeCore.autoInit` when no
+ * framework-specific adapter is wired up. The extension entry point
+ * (`initDesignerMode`) uses `ReactInspectorAdapter` directly instead.
+ */
+export function createAdapter(): InspectorAdapter {
   return {
     getComponentInfo(el: HTMLElement) {
       return buildFallbackInfo(el);

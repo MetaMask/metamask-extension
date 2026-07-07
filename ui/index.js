@@ -252,7 +252,10 @@ async function startApp(metamaskState, opts) {
   // Designer Mode — dev-only visual inspector, gated behind the DESIGNER_MODE
   // build flag. The dynamic import is dead-code-eliminated when the flag is off,
   // so the inspector never ships in normal builds. See docs/designer-mode.md.
-  if (process.env.DESIGNER_MODE === true) {
+  // The flag is inlined as boolean `true` by the webpack build's coercion and
+  // as the string 'true' elsewhere — accept both so the gate can't silently
+  // no-op (matches the truthy-check convention used for other flags).
+  if (process.env.DESIGNER_MODE === true || process.env.DESIGNER_MODE === 'true') {
     log.warn('[designer-mode] flag on — loading inspector…');
     import('./helpers/designer-mode')
       .then(({ initDesignerMode }) => {
