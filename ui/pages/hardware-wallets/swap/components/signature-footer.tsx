@@ -11,6 +11,8 @@ import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-sta
 import { getQrScanButtonLabelKey } from '../hardware-wallet-signatures.utils';
 import type { SignatureFooterProps } from './signature-footer.types';
 
+const FOOTER_STYLE = { width: '100%', marginTop: 'auto' } as const;
+
 /**
  * Pure presentational footer for the hardware wallet signing-progress screen.
  *
@@ -29,7 +31,7 @@ import type { SignatureFooterProps } from './signature-footer.types';
  * @param props.handleCancel - Called when the user clicks cancel.
  * @param props.handleOpenQrSigningPage - Called when the user clicks "Scan signature" (inline QR flow).
  */
-export default function SignatureFooter({
+function signatureFooter({
   isRetryable,
   isRetrying,
   showStuckRetryButton,
@@ -47,7 +49,7 @@ export default function SignatureFooter({
       className="hardware-wallet-signatures__footer"
       flexDirection={BoxFlexDirection.Column}
       gap={4}
-      style={{ width: '100%', marginTop: 'auto' }}
+      style={FOOTER_STYLE}
       padding={4}
     >
       {isRetryable && (
@@ -72,7 +74,7 @@ export default function SignatureFooter({
           onClick={handleRetry}
           data-testid="hardware-wallet-signatures__resend-button"
         >
-          {t('bridgeHwResendTransaction')}
+          {t('hardwareResendTransaction')}
         </Button>
       )}
       {showInlineQrCode && !isRetryable && (
@@ -98,3 +100,5 @@ export default function SignatureFooter({
     </Box>
   );
 }
+
+export default React.memo(signatureFooter);

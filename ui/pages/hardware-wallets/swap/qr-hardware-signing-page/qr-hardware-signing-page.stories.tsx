@@ -24,7 +24,7 @@ type Story = StoryObj<typeof QrHardwareSigningPage>;
 // Titles mirror the output of `getQrHardwareSigningPageTitle` in
 // ../hardware-wallet-signatures.utils.ts (single-confirmation flow: "Step 1 of
 // 2"; two-confirmation final step: "Step 3 of 4"), using the locale strings
-// `bridgeQrHardwareSignDisplayStepTitle` so the story visually matches what
+// `qrHardwareSignDisplayStepTitle` so the story visually matches what
 // production renders.
 export const DisplayQrCode: Story = {
   args: {

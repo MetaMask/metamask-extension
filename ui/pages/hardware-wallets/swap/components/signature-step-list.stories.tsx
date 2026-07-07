@@ -41,8 +41,8 @@ type Story = StoryObj<typeof SignatureStepList>;
 // Labels and descriptions mirror the output of `getStepLabels` and
 // `getStepDescriptions` in ../hardware-wallet-signatures.utils.ts, with
 // realistic placeholder values substituted into the locale strings
-// (`bridgeHwApproveAmount` "Approve $1 $2" → "Approve 1.5 USDC",
-//  `bridgeHwSpender` "Spender: $1" → "Spender: 0xabcde...12345", etc.)
+// (`hardwareApproveAmount` "Approve $1 $2" → "Approve 1.5 USDC",
+//  `hardwareSpender` "Spender: $1" → "Spender: 0xabcde...12345", etc.)
 // so the stories visually match what production renders.
 const FROM_AMOUNT = '1.5';
 const FROM_SYMBOL = 'USDC';

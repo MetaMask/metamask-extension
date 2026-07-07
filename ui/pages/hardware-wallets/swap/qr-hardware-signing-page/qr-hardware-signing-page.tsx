@@ -25,6 +25,11 @@ import {
   type QrHardwareSigningPageProps,
 } from './qr-hardware-signing-page.types';
 
+// Reader requires setErrorTitle/setErrorActive callbacks but this integration
+// surfaces scan errors via onScanSuccess's failure path (the parent swap hook
+// handles rejection state). The noops are stable references to avoid re-renders.
+const NOOP = (): void => undefined;
+
 export const QrHardwareSigningPage = ({
   title,
   phase,
@@ -82,12 +87,12 @@ export const QrHardwareSigningPage = ({
             <Reader
               key={requestId}
               cancelQRHardwareSignRequest={onCancel}
-              submitQRHardwareSignature={async (response) => {
-                await onScanSuccess(response);
-              }}
+              submitQRHardwareSignature={async (response) =>
+                onScanSuccess(response)
+              }
               requestId={requestId}
-              setErrorTitle={() => undefined}
-              setErrorActive={() => undefined}
+              setErrorTitle={NOOP}
+              setErrorActive={NOOP}
             />
           ) : (
             <QrSignatureCode key={requestId} payload={payload} />
