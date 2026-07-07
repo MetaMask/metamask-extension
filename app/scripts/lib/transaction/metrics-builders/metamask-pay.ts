@@ -168,7 +168,9 @@ function addPayTypeProperties(
   transaction: TransactionMeta,
   transactionMetricsRequest: Pick<
     TransactionMetricsRequest,
-    'getFeatureFlags' | 'getTransactionPayData' | 'getTransactionUIMetricsFragment'
+    | 'getFeatureFlags'
+    | 'getTransactionPayData'
+    | 'getTransactionUIMetricsFragment'
   >,
 ) {
   const { id: transactionId, metamaskPay } = transaction;
@@ -181,8 +183,9 @@ function addPayTypeProperties(
   // fragment. Read them from the parent here so they ride along to the
   // executed child transactions whose events are actually emitted.
   const fragmentProperties =
-    transactionMetricsRequest.getTransactionUIMetricsFragment(transactionId)
-      ?.properties;
+    transactionMetricsRequest.getTransactionUIMetricsFragment(
+      transactionId,
+    )?.properties;
 
   const prefilledAmount = fragmentProperties?.mm_pay_prefilled_amount;
 

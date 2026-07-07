@@ -213,9 +213,13 @@ describe('getMetaMaskPayProperties', () => {
         transactionMetricsRequest: {
           ...base.transactionMetricsRequest,
           getFeatureFlags: jest.fn().mockReturnValue(flags),
-          getTransactionUIMetricsFragment: jest.fn().mockReturnValue(
-            fragmentProperties ? { properties: fragmentProperties } : undefined,
-          ),
+          getTransactionUIMetricsFragment: jest
+            .fn()
+            .mockReturnValue(
+              fragmentProperties
+                ? { properties: fragmentProperties }
+                : undefined,
+            ),
         },
       });
     }
