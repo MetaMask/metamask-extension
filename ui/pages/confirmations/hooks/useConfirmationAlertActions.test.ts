@@ -40,6 +40,7 @@ describe('useConfirmationAlertActions', () => {
 
     jest.mocked(useRamps).mockReturnValue({
       openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+      getBuyURI: jest.fn(),
     } as ReturnType<typeof useRamps>);
 
     useGasFeeModalContextMock.mockReturnValue({
