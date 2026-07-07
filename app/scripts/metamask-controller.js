@@ -7462,7 +7462,12 @@ export default class MetamaskController extends EventEmitter {
           getVersion: () => {
             return process.env.METAMASK_VERSION;
           },
-          getMessenger: ({ actions, events }) => this.controllerMessenger.buildChild({ namespace: origin, actions, events }),
+          getMessenger: ({ actions, events }) =>
+            this.controllerMessenger.buildChild({
+              namespace: origin,
+              actions,
+              events,
+            }),
           trackError: (error) => {
             // `captureException` imported from `@sentry/browser` does not seem to
             // work in E2E tests. This is a workaround which works in both E2E
