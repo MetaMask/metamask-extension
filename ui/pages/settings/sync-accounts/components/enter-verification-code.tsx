@@ -12,9 +12,14 @@ import {
   TextButton,
 } from '@metamask/design-system-react';
 import log from 'loglevel';
+import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
+import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
+import {
+  MWP_SESSION_REQUEST_EXPIRY_SECONDS,
+  QrSyncErrorCodes,
+} from '../../../../../shared/constants/qr-sync';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
@@ -29,6 +34,9 @@ type EnterVerificationCodeProps = {
 
 const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
+  const qrSyncError = useSelector(selectQrSyncError);
+  const hasMaxedOutAttempts =
+    qrSyncError?.code === QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED;
   const [isError, setIsError] = useState(false);
   const [code, setCode] = useState<string[]>(createEmptyCode);
   const [secondsLeft, setSecondsLeft] = useState(
@@ -181,6 +189,15 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
     [],
   );
 
+  let errorMessage: string | null = null;
+  if (isExpired) {
+    errorMessage = t('enter_verification_code_expired');
+  } else if (hasMaxedOutAttempts) {
+    errorMessage = t('enter_verification_code_max_attempts');
+  } else if (isError) {
+    errorMessage = t('enter_verification_code_error');
+  }
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={6} className="flex-1">
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -222,7 +239,7 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
             aria-label={`${t('enter_verification_code')} ${index + 1}`}
             maxLength={1}
             autoFocus={index === 0}
-            isDisabled={isExpired}
+            isDisabled={isExpired || hasMaxedOutAttempts}
             className="w-12 h-[54px] rounded-lg border border-muted bg-default text-center text-l-medium"
           />
         ))}
@@ -232,16 +249,15 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
         alignItems={BoxAlignItems.Center}
         gap={1}
       >
-        {!isExpired && (
+        {!isExpired && !hasMaxedOutAttempts && (
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('enter_verification_code_expires_in', [secondsLeft])}
           </Text>
         )}
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-          {isError && !isExpired && t('enter_verification_code_error')}
-          {isExpired && t('enter_verification_code_expired')}
+          {errorMessage}
         </Text>
-        {(isExpired || isError) && (
+        {errorMessage && (
           <TextButton onClick={onRestart}>
             {t('start_with_new_qr_code')}
           </TextButton>

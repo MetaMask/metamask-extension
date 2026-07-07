@@ -3785,6 +3785,9 @@
     "message": "Expires in $1s",
     "description": "$1 is the number of seconds remaining before the verification code expires"
   },
+  "enter_verification_code_max_attempts": {
+    "message": "Too many incorrect attempts. Start with a new QR code."
+  },
   "enter_your_password": {
     "message": "Enter your password"
   },

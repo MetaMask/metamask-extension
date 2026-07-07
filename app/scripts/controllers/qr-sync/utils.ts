@@ -42,9 +42,7 @@ export function isQrExpiredError(error: unknown): boolean {
   }
 
   const { code, name } = error as { code?: unknown; name?: unknown };
-  return (
-    code === MWP_REQUEST_EXPIRED_CODE || name === MWP_REQUEST_EXPIRED_CODE
-  );
+  return code === MWP_REQUEST_EXPIRED_CODE || name === MWP_REQUEST_EXPIRED_CODE;
 }
 
 /**

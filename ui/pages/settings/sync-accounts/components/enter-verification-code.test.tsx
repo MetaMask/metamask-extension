@@ -1,9 +1,15 @@
 import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import { renderWithLocalization } from '../../../../../test/lib/render-helpers-navigate';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
+import {
+  MWP_SESSION_REQUEST_EXPIRY_SECONDS,
+  QrSyncErrorCodes,
+} from '../../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import EnterVerificationCode from './enter-verification-code';
 
@@ -13,8 +19,27 @@ jest.mock('../../../../store/background-connection', () => ({
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
-const renderComponent = (onRestart: () => void = jest.fn()) =>
-  renderWithLocalization(<EnterVerificationCode onRestart={onRestart} />);
+type QrSyncError = {
+  code: (typeof QrSyncErrorCodes)[keyof typeof QrSyncErrorCodes];
+  message: string;
+};
+
+const renderComponent = (
+  onRestart: () => void = jest.fn(),
+  qrSyncError: QrSyncError | null = null,
+) => {
+  const store = configureMockStore([thunk])({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      qrSyncError,
+    },
+  });
+  return renderWithProvider(
+    <EnterVerificationCode onRestart={onRestart} />,
+    store,
+  );
+};
 
 const getInputs = () =>
   Array.from(document.querySelectorAll('input')) as HTMLInputElement[];
@@ -87,6 +112,23 @@ describe('EnterVerificationCode', () => {
     fireEvent.click(screen.getByText(messages.start_with_new_qr_code.message));
 
     expect(onRestart).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the max-attempts message, restart button and disables the inputs', () => {
+    renderComponent(jest.fn(), {
+      code: QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
+      message: 'Too many attempts.',
+    });
+
+    expect(
+      screen.getByText(messages.enter_verification_code_max_attempts.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.start_with_new_qr_code.message),
+    ).toBeInTheDocument();
+    getInputs().forEach((input) => {
+      expect(input).toBeDisabled();
+    });
   });
 
   it('shows the expired message and restart button after the timer runs out', () => {

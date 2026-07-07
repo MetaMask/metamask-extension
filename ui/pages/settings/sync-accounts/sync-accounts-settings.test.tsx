@@ -218,6 +218,23 @@ describe('SyncAccountsSettings', () => {
     expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
   });
 
+  it('renders EnterVerificationCode when the phase is failed with an OTP_ATTEMPTS_EXCEEDED error', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+        qrSyncError: {
+          code: QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
+          message: 'Too many attempts.',
+        },
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
+    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+  });
+
   it('renders SyncError when the phase is failed with a non-overridden error', () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
