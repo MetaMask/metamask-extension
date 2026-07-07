@@ -62,7 +62,7 @@ describe('useNavigateOnQrScanComplete', () => {
     mockNavigateToDefaultRoute.mockResolvedValue(undefined);
   });
 
-  it('navigates to activity tab when QR scan completes successfully (active → null, lastQrScanCompletedSuccessfully true)', async () => {
+  it('navigates to default route when QR scan completes successfully (active → null, lastQrScanCompletedSuccessfully true)', async () => {
     const store = createBridgeMockStore({
       metamaskStateOverrides: {
         activeQrCodeScanRequest: mockQrScanRequest,

@@ -82,12 +82,6 @@
   "account": {
     "message": "Account"
   },
-  "accountActivity": {
-    "message": "Account activity"
-  },
-  "accountActivityText": {
-    "message": "Select the accounts you want to be notified about:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Log in"
   },
@@ -1106,6 +1100,9 @@
   "addCustomToken": {
     "message": "Add a custom token"
   },
+  "addDevice": {
+    "message": "Sync with mobile"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1133,6 +1130,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addFromChainlist": {
+    "message": "Add from Chainlist"
   },
   "addFunds": {
     "message": "Add funds"
@@ -1188,6 +1188,62 @@
   },
   "addWallet": {
     "message": "Add wallet"
+  },
+  "add_device_success_desc_imported_plural": {
+    "message": "$1 imported accounts were synced to your phone.",
+    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
+  },
+  "add_device_success_desc_imported_singular": {
+    "message": "1 imported account was synced to your phone.",
+    "description": "Used when a single imported account was synced"
+  },
+  "add_device_success_desc_wallet_plural": {
+    "message": "$1 wallets were synced to your phone.",
+    "description": "$1 is the number of wallets. Used when only wallets were synced"
+  },
+  "add_device_success_desc_wallet_plural_imported_plural": {
+    "message": "$1 wallets and $2 imported accounts were synced to your phone.",
+    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
+  },
+  "add_device_success_desc_wallet_plural_imported_singular": {
+    "message": "$1 wallets and 1 imported account were synced to your phone.",
+    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
+  },
+  "add_device_success_desc_wallet_singular": {
+    "message": "1 wallet was synced to your phone.",
+    "description": "Used when a single wallet was synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_plural": {
+    "message": "1 wallet and $1 imported accounts were synced to your phone.",
+    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_singular": {
+    "message": "1 wallet and 1 imported account were synced to your phone.",
+    "description": "Used when a single wallet and a single imported account were synced"
+  },
+  "add_device_success_title": {
+    "message": "Device paired"
+  },
+  "add_device_syncing_desc": {
+    "message": "Sending your selected accounts to your phone."
+  },
+  "add_device_syncing_title": {
+    "message": "Importing accounts"
+  },
+  "add_device_validating_desc": {
+    "message": "Establishing a secure, encrypted connection with your phone."
+  },
+  "add_device_validating_title": {
+    "message": "Pairing devices"
+  },
+  "add_wallets": {
+    "message": "Choose what to sync"
+  },
+  "add_wallets_desc": {
+    "message": "Pick the wallets and accounts to import to your phone. You can change this later."
+  },
+  "added": {
+    "message": "Added"
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
@@ -1643,9 +1699,6 @@
   "back": {
     "message": "Back"
   },
-  "backToHome": {
-    "message": "Back to home"
-  },
   "backUpIncomplete": {
     "message": "Back up incomplete"
   },
@@ -1958,6 +2011,12 @@
     "message": "Bridge details",
     "description": "Title for the modal showing details about a bridge transaction."
   },
+  "bridgeDiscountBadgeDao": {
+    "message": "DAO"
+  },
+  "bridgeDiscountBadgePromo": {
+    "message": "Promo"
+  },
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
@@ -1969,6 +2028,9 @@
   },
   "bridgeFee": {
     "message": "Bridge fee"
+  },
+  "bridgeFeeDisclaimer": {
+    "message": "Includes $1% MetaMask fee"
   },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 to $3",
@@ -2424,6 +2486,10 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "chainlistNetworkDetails": {
+    "message": "Symbol: $1 · ID: $2",
+    "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
   "changeInSettings": {
     "message": "Change in Settings"
   },
@@ -2480,9 +2546,6 @@
   "closeSlide": {
     "message": "Close $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeWindowAnytime": {
-    "message": "You may close this window anytime."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -3050,12 +3113,6 @@
   "customerSupport": {
     "message": "customer support"
   },
-  "customizeYourNotifications": {
-    "message": "Customize your notifications"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Turn on the types of notifications you want to receive:"
-  },
   "dappConnections": {
     "message": "Dapp Connections"
   },
@@ -3143,6 +3200,12 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLinkQrBatchSellDescription": {
+    "message": "Batch sell is available on MetaMask mobile. Scan this code with your mobile device to use it."
+  },
+  "deepLinkQrBatchSellTitle": {
+    "message": "Open batch sell on mobile"
+  },
   "deepLinkQrPredictDescription": {
     "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
   },
@@ -3197,6 +3260,9 @@
   },
   "deepLink_theAssetPage": {
     "message": "the asset page"
+  },
+  "deepLink_theBatchSellPage": {
+    "message": "the batch sell page"
   },
   "deepLink_theBuyPage": {
     "message": "the buy page"
@@ -3682,6 +3748,28 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
   },
+  "enter_verification_code": {
+    "message": "Enter verification code"
+  },
+  "enter_verification_code_desc": {
+    "message": "For security, enter the code shown in the MetaMask app on your device."
+  },
+  "enter_verification_code_error": {
+    "message": "Incorrect code. Please try again."
+  },
+  "enter_verification_code_expired": {
+    "message": "Verification code expired"
+  },
+  "enter_verification_code_expires_in": {
+    "message": "Expires in $1s",
+    "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_your_password": {
+    "message": "Enter your password"
+  },
+  "enter_your_password_desc": {
+    "message": "For account security, enter your password to view the QR code."
+  },
   "enteredMalicious": {
     "message": "The Address You Entered"
   },
@@ -3976,6 +4064,12 @@
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
   },
+  "gasSponsorshipModalTitle": {
+    "message": "Network fee"
+  },
+  "gasSponsorshipOptOutTooltip": {
+    "message": "MetaMask covers the network fee for this transaction. This includes a one-time smart account activation."
+  },
   "gasSponsorshipReserveBalanceWarning": {
     "message": "This specific network requires maintaining a reserve of $1 $2 in your account.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
@@ -4135,6 +4229,9 @@
   },
   "generalDescription": {
     "message": "Sync settings across devices, select network preferences, and track token data"
+  },
+  "generateNewQrCode": {
+    "message": "Generate new QR code"
   },
   "genericExplorerView": {
     "message": "View account on $1"
@@ -4393,6 +4490,10 @@
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
   },
+  "home": {
+    "message": "Home",
+    "description": "Label for the Home tab in the bottom navigation bar"
+  },
   "honeypotDescription": {
     "message": "This token might pose a honeypot risk. It is advised to conduct due diligence before interacting to prevent any potential financial loss."
   },
@@ -4503,8 +4604,8 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Includes"
+  "includesSmartAccountActivation": {
+    "message": "Includes smart account activation"
   },
   "includesXTransactions": {
     "message": "Includes $1 transactions"
@@ -5019,7 +5120,7 @@
     "message": "MetaMask fee"
   },
   "metamaskNotificationsAreOff": {
-    "message": "Wallet notifications are currently not active."
+    "message": "Turn on notifications"
   },
   "metamaskSwap": {
     "message": "MetaMask Swap"
@@ -5075,7 +5176,7 @@
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
   },
   "mmFee": {
-    "message": "$1% MM fee."
+    "message": "$1% MetaMask fee"
   },
   "month": {
     "message": "month"
@@ -5907,6 +6008,9 @@
   "notificationItemUnStakingRequested": {
     "message": "Unstaking requested"
   },
+  "notificationSettings": {
+    "message": "Notification settings"
+  },
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -5961,14 +6065,65 @@
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "CLI connection requests, approvals, and session updates for Agentic"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Agentic CLI"
+  },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
   },
+  "notificationsSettingsDeselectAll": {
+    "message": "Deselect all"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "In-app"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "Product updates, feature announcements, and new releases"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "Updates and rewards"
+  },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1 we protect your privacy while using this feature."
+    "message": "Choose what you're notified about and how."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "Perps position changes, liquidations, funding rates, and margin updates"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "Trading activity"
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "Push"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "Accounts"
+  },
+  "notificationsSettingsSelectAccountsDescription": {
+    "message": "Choose which accounts you'd like to get notifications for."
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "In-app"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "Off"
+  },
+  "notificationsSettingsStatusPush": {
+    "message": "Push"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "Buys, sells, transfers, swaps and rewards"
+  },
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "Wallet activity"
   },
   "numberOfTokens": {
     "message": "Number of tokens"
@@ -6811,6 +6966,9 @@
   "perpsCrossMarginNotSupportedTitle": {
     "message": "Cross margin not supported"
   },
+  "perpsCurrentPrice": {
+    "message": "Current price"
+  },
   "perpsDateToday": {
     "message": "Today"
   },
@@ -7069,6 +7227,10 @@
   },
   "perpsOrders": {
     "message": "Orders"
+  },
+  "perpsPerpMarketSubtitle": {
+    "message": "$1-$2 perp",
+    "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
   },
   "perpsPnl": {
     "message": "P&L"
@@ -7655,9 +7817,6 @@
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
   },
-  "productAnnouncements": {
-    "message": "Product announcements"
-  },
   "provide": {
     "message": "Provide"
   },
@@ -7846,6 +8005,16 @@
   "qrCameraAccessNeededTitle": {
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
+  },
+  "qrCodeExpired": {
+    "message": "QR code expired"
+  },
+  "qrCodeExpiresIn": {
+    "message": "Expires in $1s",
+    "description": "$1 is the number of seconds remaining before the QR code expires"
+  },
+  "qrCodeScanError": {
+    "message": "Something went wrong scanning the QR code. Generate a new one to try again."
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
@@ -8336,6 +8505,9 @@
   "scanQrCode": {
     "message": "Scan QR code"
   },
+  "scan_qr_code_desc": {
+    "message": "Scan this with the MetaMask app on the device you want to add."
+  },
   "scrollDown": {
     "message": "Scroll down"
   },
@@ -8347,6 +8519,9 @@
   },
   "searchForAnAssetToSend": {
     "message": "Search for an asset to send"
+  },
+  "searchNetworkNameOrChainId": {
+    "message": "Search network name or chain ID"
   },
   "searchNetworks": {
     "message": "Search networks"
@@ -8507,6 +8682,13 @@
   },
   "send": {
     "message": "Send"
+  },
+  "sendAlertNewAddressMessage": {
+    "message": "You're sending to this address for the first time. Make sure that it's correct before you continue: $1",
+    "description": "$1 is the recipient address"
+  },
+  "sendAlertNewAddressTitle": {
+    "message": "New address"
   },
   "sendBugReport": {
     "message": "Send us a bug report."
@@ -9422,24 +9604,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
   },
-  "smartTransactionCancelled": {
-    "message": "Your transaction was canceled"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Your transaction couldn't be completed, so it was canceled to save you from paying unnecessary gas fees."
-  },
-  "smartTransactionError": {
-    "message": "Your transaction failed"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
-  },
-  "smartTransactionPending": {
-    "message": "Your transaction was submitted"
-  },
-  "smartTransactionSuccess": {
-    "message": "Your transaction is complete"
-  },
   "smartTransactions": {
     "message": "Smart Transactions"
   },
@@ -9844,6 +10008,9 @@
   },
   "standardAccountLabel": {
     "message": "Standard account"
+  },
+  "start_with_new_qr_code": {
+    "message": "Start with a new QR code"
   },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
@@ -10406,9 +10573,6 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
-  "tokenContractError": {
-    "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
-  },
   "tokenContractWarning": {
     "message": "Token contract warning"
   },
@@ -10668,29 +10832,8 @@
   "turnOn": {
     "message": "Turn on"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Turn on notifications"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Turn on"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "There was an error in creating the notifications. Please try again later."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Stay in the loop on what's happening in your wallet with notifications."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "notifications settings."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Learn how we protect your privacy while using this feature."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "To use wallet notifications, we use a profile to sync some settings across your devices. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "You can turn off notifications at any time in the $1"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
@@ -10902,9 +11045,6 @@
   "view": {
     "message": "View"
   },
-  "viewActivity": {
-    "message": "View activity"
-  },
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
@@ -10931,9 +11071,6 @@
   },
   "viewTokenDetails": {
     "message": "View token details"
-  },
-  "viewTransaction": {
-    "message": "View transaction"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",
