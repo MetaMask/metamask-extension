@@ -295,21 +295,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
   },
-  QrSyncController: {
-    qrSyncPhase: true,
-    qrSyncConnectionStatus: true,
-    qrSyncSessionId: false,
-    qrSyncCreatedAt: false,
-    qrSyncUpdatedAt: false,
-    qrSyncQrPayload: false,
-    syncOffer: false,
-    qrSyncSelectedAccountIds: false,
-    qrSyncImportedAccountIds: false,
-    qrSyncError: {
-      code: true,
-      message: true,
-    },
-  },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
