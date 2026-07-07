@@ -160,6 +160,9 @@ async function withFixtures(options, testSuite) {
     title,
     ignoredConsoleErrors = [],
     disableServerMochaToBackground = false,
+    afterLocalNodesStart = async function () {
+      // do nothing.
+    },
     testSpecificMock = function () {
       // do nothing.
     },
@@ -236,6 +239,8 @@ async function withFixtures(options, testSuite) {
           );
       }
     }
+
+    await afterLocalNodesStart({ localNodes });
 
     let contractRegistry;
     let seeder;
