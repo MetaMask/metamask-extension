@@ -1,4 +1,5 @@
 import { XlmScope } from '@metamask/keyring-api';
+import { BigNumber } from 'bignumber.js';
 
 /**
  * CAIP asset IDs for native assets on chains that expose a protocol-level
@@ -24,11 +25,12 @@ function isValidNumberString(value?: string): boolean {
   if (value === undefined) {
     return false;
   }
-  const parsed = Number.parseFloat(value);
-  if (!Number.isFinite(parsed) || parsed < 0) {
+  try {
+    const parsed = new BigNumber(value);
+    return parsed.isFinite() && !parsed.isNegative();
+  } catch {
     return false;
   }
-  return true;
 }
 
 /**
@@ -48,13 +50,13 @@ export function computeBaseReserve({
   assetId: string;
   assetMetadata?: AssetMetadata;
 }): string | undefined {
-  const isAssetSupportBaseReserve = isSupportBaseReserve(assetId);
+  if (!isSupportBaseReserve(assetId)) {
+    return undefined;
+  }
 
-  return isAssetSupportBaseReserve
-    ? isValidNumberString(assetMetadata?.baseReserve)
-      ? assetMetadata?.baseReserve
-      : '0'
-    : undefined;
+  return isValidNumberString(assetMetadata?.baseReserve)
+    ? assetMetadata?.baseReserve
+    : '0';
 }
 
 /**
@@ -63,19 +65,15 @@ export function computeBaseReserve({
  *
  * @param totalBalance - The total balance of the asset.
  * @param baseReserve - The base reserve of the asset.
- * @returns The spendable balance as a number.
+ * @returns The spendable balance as a string.
  */
 export function computeSpendableBalance(
   totalBalance: string,
   baseReserve: string,
-): number {
-  const total = Number.parseFloat(totalBalance);
-  const reserved = Number.parseFloat(baseReserve);
-  const spendable = Math.max(
-    0,
-    (Number.isFinite(total) ? total : 0) -
-      (Number.isFinite(reserved) ? reserved : 0),
-  );
+): string {
+  const total = new BigNumber(totalBalance);
+  const reserved = new BigNumber(baseReserve);
+  const spendable = total.minus(reserved).toString();
   return spendable;
 }
 
