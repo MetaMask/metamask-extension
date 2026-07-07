@@ -1,3 +1,5 @@
+/* eslint-disable jest/require-top-level-describe -- file-wide reselect dev mode hooks */
+import { setGlobalDevModeChecks } from 'reselect';
 import { ApprovalType } from '@metamask/controller-utils';
 import { KnownCaipNamespace } from '@metamask/utils';
 import {
@@ -63,6 +65,14 @@ jest.mock('./multichain/networks', () => ({
     return state.metamask.selectedMultichainNetworkChainId;
   }),
 }));
+
+beforeAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
+});
+
+afterAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'once' });
+});
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
@@ -4859,5 +4869,115 @@ describe('snap selectors', () => {
     expect(
       selectors.getThirdPartyNotifySnaps(snapState).map(({ id }) => id),
     ).toStrictEqual(['npm:bar']);
+  });
+});
+
+describe('getUnconnectedAccounts', () => {
+  const origin = 'https://test.dapp';
+  const connectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+  const stateWithConnectedAccount = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      subjects: {
+        [origin]: {
+          permissions: {
+            'endowment:caip25': {
+              caveats: [
+                {
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [`eip155:1:${connectedAddress}`],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+              invoker: origin,
+              parentCapability: 'endowment:caip25',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  it('returns accounts that are not connected to the active dapp', () => {
+    const result = selectors.getUnconnectedAccounts(
+      stateWithConnectedAccount,
+      origin,
+    );
+    const resultAddresses = result.map((account) => account.address);
+    expect(resultAddresses).not.toContain(connectedAddress);
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('returns all accounts when no accounts are connected to the dapp', () => {
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const result = selectors.getUnconnectedAccounts(mockState, origin);
+    expect(result).toHaveLength(allAccounts.length);
+  });
+
+  it('returns an empty array when all accounts are connected', () => {
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const allAddresses = allAccounts.map((a) => a.address);
+
+    const stateWithAllConnected = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        subjects: {
+          [origin]: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: allAddresses.map(
+                            (addr) => `eip155:1:${addr}`,
+                          ),
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                invoker: origin,
+                parentCapability: 'endowment:caip25',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const result = selectors.getUnconnectedAccounts(
+      stateWithAllConnected,
+      origin,
+    );
+    expect(result).toStrictEqual([]);
+  });
+
+  it('does not include the connected account in the result', () => {
+    const result = selectors.getUnconnectedAccounts(
+      stateWithConnectedAccount,
+      origin,
+    );
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(
+      stateWithConnectedAccount,
+    );
+    expect(result).toHaveLength(allAccounts.length - 1);
+    expect(result.some((account) => account.address === connectedAddress)).toBe(
+      false,
+    );
   });
 });

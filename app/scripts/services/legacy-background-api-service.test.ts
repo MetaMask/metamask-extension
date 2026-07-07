@@ -21,9 +21,17 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
+import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../shared/constants/app';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
@@ -757,6 +765,70 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('removePermissionsFor', () => {
+    const subjects = { 'test.com': ['eth_accounts'] as [string] };
+
+    it('revokes the given permissions for the given subjects', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const revokePermissions = jest.fn();
+        rootMessenger.registerActionHandler(
+          'PermissionController:revokePermissions',
+          revokePermissions,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:removePermissionsFor',
+          subjects,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PermissionController:revokePermissions',
+          subjects,
+        );
+        expect(revokePermissions).toHaveBeenCalledWith(subjects);
+      });
+    });
+
+    it('does not propagate a PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PermissionController:revokePermissions',
+          jest.fn(() => {
+            throw new PermissionsRequestNotFoundError('123');
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermissionsFor',
+            subjects,
+          ),
+        ).not.toThrow();
+      });
+    });
+
+    it('propagates an error other than PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('some other error');
+        rootMessenger.registerActionHandler(
+          'PermissionController:revokePermissions',
+          jest.fn(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermissionsFor',
+            subjects,
+          ),
+        ).toThrow(error);
+      });
+    });
+  });
+
   describe('importAccountWithStrategy', () => {
     it('imports an account without social login', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -859,10 +931,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:getState',
           jest.fn().mockReturnValue({ migrationVersion: 0 }),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:trackEvent',
-          jest.fn(),
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -1151,6 +1219,50 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('setAccountLabel', () => {
+    it('sets the account name for the account at the given address', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const setAccountNameHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue({ id: 'account-id' }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setAccountName',
+          setAccountNameHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:setAccountLabel',
+          '0x123',
+          'New Label',
+        );
+
+        expect(setAccountNameHandler).toHaveBeenCalledWith(
+          'account-id',
+          'New Label',
+        );
+      });
+    });
+
+    it('throws if no account is found for the given address', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue(undefined),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setAccountLabel',
+            '0x123',
+            'New Label',
+          ),
+        ).toThrow('No account found for address: 0x123');
+      });
+    });
+  });
+
   describe('exportAccount', () => {
     it('verifies the password and returns the private key', async () => {
       const address = '0xAddress';
@@ -1224,6 +1336,223 @@ describe('LegacyBackgroundApiService', () => {
           password,
         );
         expect(exportAccountHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('upsertTransactionUIMetricsFragment', () => {
+    it('does nothing if the transaction id is missing', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          '',
+          { properties: { foo: 'bar' } },
+        );
+
+        expect(callSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    it('does nothing if the payload is missing', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          'transaction-id',
+          undefined as never,
+        );
+
+        expect(callSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    it('updates the fragment if it already exists', async () => {
+      const transactionId = 'transaction-id';
+      const fragmentId = `transaction-ui-${transactionId}`;
+      const payload = { properties: { foo: 'bar' } };
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const getEventFragmentByIdHandler = jest
+          .fn()
+          .mockReturnValue({ id: fragmentId });
+        const updateEventFragmentHandler = jest.fn();
+        const createEventFragmentHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          getEventFragmentByIdHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:updateEventFragment',
+          updateEventFragmentHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:createEventFragment',
+          createEventFragmentHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          transactionId,
+          payload,
+        );
+
+        expect(getEventFragmentByIdHandler).toHaveBeenCalledWith(fragmentId);
+        expect(callSpy).toHaveBeenCalledWith(
+          'MetaMetricsController:updateEventFragment',
+          fragmentId,
+          payload,
+        );
+        expect(createEventFragmentHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('creates the fragment if it does not exist', async () => {
+      const transactionId = 'transaction-id';
+      const fragmentId = `transaction-ui-${transactionId}`;
+      const payload = {
+        properties: { foo: 'bar' },
+        sensitiveProperties: { secret: 'baz' },
+      };
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const getEventFragmentByIdHandler = jest
+          .fn()
+          .mockReturnValue(undefined);
+        const updateEventFragmentHandler = jest.fn();
+        const createEventFragmentHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          getEventFragmentByIdHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:updateEventFragment',
+          updateEventFragmentHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:createEventFragment',
+          createEventFragmentHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          transactionId,
+          payload,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'MetaMetricsController:createEventFragment',
+          {
+            uniqueIdentifier: fragmentId,
+            successEvent: 'Transaction Fragment Created',
+            category: MetaMetricsEventCategory.Transactions,
+            canDeleteIfAbandoned: true,
+            properties: payload.properties,
+            sensitiveProperties: payload.sensitiveProperties,
+          },
+        );
+        expect(updateEventFragmentHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('defaults properties and sensitiveProperties to empty objects when creating', async () => {
+      const transactionId = 'transaction-id';
+      const fragmentId = `transaction-ui-${transactionId}`;
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          jest.fn().mockReturnValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:createEventFragment',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+          transactionId,
+          { category: MetaMetricsEventCategory.Transactions },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'MetaMetricsController:createEventFragment',
+          expect.objectContaining({
+            uniqueIdentifier: fragmentId,
+            properties: {},
+            sensitiveProperties: {},
+          }),
+        );
+      });
+    });
+  });
+
+  describe('setSelectedInternalAccount', () => {
+    it('sets the selected account when the account exists', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccount',
+          jest.fn().mockReturnValue({ id: 'mock-id' }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:setSelectedInternalAccount',
+          'mock-id',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:getAccount',
+          'mock-id',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:setSelectedAccount',
+          'mock-id',
+        );
+      });
+    });
+
+    it('does not set the selected account when the account does not exist', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccount',
+          jest.fn().mockReturnValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:setSelectedInternalAccount',
+          'mock-id',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:getAccount',
+          'mock-id',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AccountsController:setSelectedAccount',
+          'mock-id',
+        );
       });
     });
   });
@@ -2361,6 +2690,390 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('rejectPendingApproval', () => {
+    it('rejects the approval request with a JSON-RPC error', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectPendingApproval',
+          'DUMMY_ID',
+          { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:rejectRequest',
+          'DUMMY_ID',
+          expect.objectContaining({
+            code: 1,
+            message: 'DUMMY_MESSAGE',
+            data: 'DUMMY_DATA',
+          }),
+        );
+      });
+    });
+
+    it('does not propagate ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new ApprovalRequestNotFoundError('123');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:rejectPendingApproval',
+            'DUMMY_ID',
+            { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+          ),
+        ).not.toThrow(error);
+      });
+    });
+
+    it('propagates errors other than ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('boom');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:rejectPendingApproval',
+            'DUMMY_ID',
+            { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+          ),
+        ).toThrow(error);
+      });
+    });
+  });
+
+  describe('rejectAllPendingApprovals', () => {
+    it('accepts snap dialog approvals with null and deletes their interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const acceptRequestHandler = jest.fn();
+        const deleteInterfaceHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogAlert,
+                requestData: { id: 'interface-1' },
+              },
+              '2': {
+                id: '2',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogPrompt,
+                requestData: { id: 'interface-2' },
+              },
+              '3': {
+                id: '3',
+                origin: 'npm:@metamask/snap',
+                type: DIALOG_APPROVAL_TYPES.default,
+                requestData: { id: 'interface-3' },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          acceptRequestHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          deleteInterfaceHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '2',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '3',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-1',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-2',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-3',
+        );
+      });
+    });
+
+    it('accepts snap confirmation approvals with false and deletes their interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogConfirmation,
+                requestData: { id: 'interface-1' },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-1',
+        );
+      });
+    });
+
+    it('accepts snap account confirmations with false without deleting an interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const deleteInterfaceHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+                requestData: {},
+              },
+              '2': {
+                id: '2',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+                requestData: {},
+              },
+              '3': {
+                id: '3',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+                requestData: {},
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          deleteInterfaceHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '2',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '3',
+          false,
+        );
+        expect(deleteInterfaceHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('rejects all other approvals with a user-rejected-request error', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'https://example.com',
+                type: ApprovalType.Transaction,
+                requestData: {},
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:rejectRequest',
+          '1',
+          providerErrors.userRejectedRequest({
+            data: {
+              cause: 'rejectAllApprovals',
+            },
+          }),
+        );
+      });
+    });
+
+    it('does nothing when there are no pending approvals', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const acceptRequestHandler = jest.fn();
+        const rejectRequestHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({ pendingApprovals: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          acceptRequestHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          rejectRequestHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(acceptRequestHandler).not.toHaveBeenCalled();
+        expect(rejectRequestHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('acceptPermissionsRequest', () => {
+    it('accepts the permissions request', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const acceptPermissionsRequestHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'PermissionController:acceptPermissionsRequest',
+          acceptPermissionsRequestHandler,
+        );
+
+        const request = {
+          metadata: { id: 'DUMMY_ID', origin: 'https://example.com' },
+          permissions: {},
+        };
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:acceptPermissionsRequest',
+          request,
+        );
+
+        expect(acceptPermissionsRequestHandler).toHaveBeenCalledWith(request);
+      });
+    });
+
+    it('does not propagate PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new PermissionsRequestNotFoundError('123');
+        rootMessenger.registerActionHandler(
+          'PermissionController:acceptPermissionsRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:acceptPermissionsRequest',
+            {
+              metadata: { id: 'DUMMY_ID', origin: 'https://example.com' },
+              permissions: {},
+            },
+          ),
+        ).not.toThrow(error);
+      });
+    });
+
+    it('propagates errors other than PermissionsRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('Test error');
+        rootMessenger.registerActionHandler(
+          'PermissionController:acceptPermissionsRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:acceptPermissionsRequest',
+            {
+              metadata: { id: 'DUMMY_ID', origin: 'https://example.com' },
+              permissions: {},
+            },
+          ),
+        ).toThrow(error);
+      });
+    });
+  });
 });
 
 /**
@@ -2429,6 +3142,8 @@ function getMessenger(
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
+      'ApprovalController:acceptRequest',
+      'SnapInterfaceController:deleteInterface',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
       'ApprovalController:rejectRequest',
@@ -2440,18 +3155,20 @@ function getMessenger(
       'OnboardingController:getIsSocialLoginFlow',
       'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
+      'AccountsController:getAccount',
       'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:rejectPermissionsRequest',
+      'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
-      'MetaMetricsController:trackEvent',
       'KeyringController:verifyPassword',
       'KeyringController:exportAccount',
       'KeyringController:changePassword',
@@ -2477,6 +3194,10 @@ function getMessenger(
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
+      'MetaMetricsController:trackEvent',
+      'MetaMetricsController:getEventFragmentById',
+      'MetaMetricsController:updateEventFragment',
+      'MetaMetricsController:createEventFragment',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
       'TransactionController:updateEditableParams',
@@ -2484,6 +3205,7 @@ function getMessenger(
       'TransactionController:isAtomicBatchSupported',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
+      'PermissionController:acceptPermissionsRequest',
     ],
   });
 
