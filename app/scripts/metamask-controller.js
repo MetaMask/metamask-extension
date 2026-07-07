@@ -3095,11 +3095,10 @@ export default class MetamaskController extends EventEmitter {
         'MultichainAccountService:createNextMultichainAccountGroup',
       ),
 
-      alignMultichainWallets: async () => {
-        if (this.multichainAccountService) {
-          await this.multichainAccountService.alignWallets();
-        }
-      },
+      alignMultichainWallets: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:alignWallets',
+      ),
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
