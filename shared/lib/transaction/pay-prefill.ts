@@ -1,4 +1,4 @@
-const PAY_EXTENDED_FEATURE_FLAG = 'confirmations_pay_extended';
+export const PAY_EXTENDED_FEATURE_FLAG = 'confirmations_pay_extended';
 
 export type PayPrefilledAmountConfig = {
   enabled?: boolean;
