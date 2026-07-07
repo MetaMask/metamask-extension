@@ -14,11 +14,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
-import type { SyncAccountsRequest } from '../types';
+import type { AddDeviceSyncRequest } from '../types';
 import { WalletSelectionList } from './wallet-selection-list';
 
 type AddWalletsProps = {
-  onAddWallets: (syncRequest: SyncAccountsRequest) => Promise<void>;
+  onAddWallets: (syncRequest: AddDeviceSyncRequest) => Promise<void>;
 };
 
 const AddWallets = ({ onAddWallets }: AddWalletsProps) => {

@@ -8,6 +8,11 @@ import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
 } from '../../../../shared/lib/feature-flags';
+import {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+} from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 
 export const DeFiPositionsControllerInit: MessengerClientInitFunction<
   DeFiPositionsController,
@@ -41,10 +46,36 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
         completedOnboarding && useExternalServices && assetsDefiPositionsEnabled
       );
     },
-    trackEvent: initMessenger.call.bind(
-      initMessenger,
-      'MetaMetricsController:trackEvent',
-    ),
+    trackEvent: (
+      payload: MetaMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ) => {
+      trackEvent(
+        createEventBuilder(payload.event)
+          .addProperties({
+            ...payload.properties,
+            ...(payload.category === undefined
+              ? {}
+              : { category: payload.category }),
+            ...(payload.revenue === undefined
+              ? {}
+              : { revenue: payload.revenue }),
+            ...(payload.value === undefined ? {} : { value: payload.value }),
+            ...(payload.currency === undefined
+              ? {}
+              : { currency: payload.currency }),
+          })
+          .addSensitiveProperties(payload.sensitiveProperties)
+          .build({
+            environmentType: payload.environmentType,
+            page: payload.page,
+            referrer: payload.referrer,
+            excludeMetaMetricsId: options?.excludeMetaMetricsId,
+            matomoEvent: options?.matomoEvent,
+          }),
+        options,
+      );
+    },
   });
 
   return {

@@ -11,7 +11,7 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import SyncAccountsSettings from './sync-accounts-settings';
 
@@ -24,7 +24,7 @@ const SyncAccountsTab = () => {
       'QrSyncController:resetState',
       [],
     ]).catch(() => undefined);
-    navigate(DEFAULT_ROUTE);
+    navigate(SETTINGS_ROUTE, { replace: true });
   };
 
   return (
