@@ -71,6 +71,12 @@ export function computeSpendableBalance(
   totalBalance: string,
   baseReserve: string,
 ): string {
+  if (!isValidNumberString(totalBalance)) {
+    throw new Error(`total balance is not a number: ${totalBalance}`);
+  }
+  if (!isValidNumberString(baseReserve)) {
+    throw new Error(`base reserve is not a number: ${baseReserve}`);
+  }
   const total = new BigNumber(totalBalance);
   const reserved = new BigNumber(baseReserve);
   const spendable = total.minus(reserved).toString();

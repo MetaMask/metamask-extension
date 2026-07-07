@@ -9853,6 +9853,18 @@
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
   },
+  "spendableBalance": {
+    "message": "Spendable"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "Reserved (locked)"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "Value"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "Total balance"
+  },
   "spender": {
     "message": "Spender"
   },

@@ -7,6 +7,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import React, { useMemo } from 'react';
+import { BigNumber } from 'bignumber.js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { computeSpendableBalance } from '../../../../shared/lib/multichain/spendable-balance';
@@ -37,7 +38,10 @@ export function SpendableBalanceSection({
   const formatFiat = useFiatFormatter();
 
   const { totalDisplay, spendableDisplay, reservedDisplay } = useMemo(() => {
-    const spendable = computeSpendableBalance(totalBalance, baseReserve);
+    const spendable = BigNumber.max(
+      '0',
+      computeSpendableBalance(totalBalance, baseReserve),
+    ).toString();
 
     return {
       totalDisplay: `${totalBalance} ${symbol}`,
