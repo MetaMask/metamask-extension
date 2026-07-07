@@ -10,7 +10,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
-import { isErrorStepStatus, getStepLabelColor } from '../hardware-wallet-signatures.utils';
+import {
+  isErrorStepStatus,
+  getStepLabelColor,
+} from '../hardware-wallet-signatures.utils';
 import { SignatureStepStatus, type QrHardwareSignRequest } from '../types';
 import SignatureStatusIcon from '../signature-status-icon';
 import QrSignatureCode from '../qr-signature-code';
@@ -95,7 +98,10 @@ export default function SignatureStepList({
               {firstStepLabel}
             </Text>
             {firstStepDescription && (
-              <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
+              <Text
+                color={TextColor.TextAlternative}
+                variant={TextVariant.BodyMd}
+              >
                 {firstStepDescription}
               </Text>
             )}
@@ -126,7 +132,10 @@ export default function SignatureStepList({
             {finalStepLabel}
           </Text>
           {finalStepDescription && (
-            <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
+            <Text
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodyMd}
+            >
               {finalStepDescription}
             </Text>
           )}

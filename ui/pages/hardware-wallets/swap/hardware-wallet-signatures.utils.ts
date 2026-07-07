@@ -1,5 +1,6 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { TextColor } from '@metamask/design-system-react';
 import { shortenAddress } from '../../../helpers/utils/util';
 import type { useI18nContext } from '../../../hooks/useI18nContext';
 import { rejectPendingApproval } from '../../../store/actions';
@@ -13,6 +14,42 @@ import {
   type BridgeTxHistory,
   type QrHardwareSignRequest,
 } from './types';
+
+/**
+ * Checks whether a signature step display status represents an error
+ * (rejected, failed, or disconnected).
+ *
+ * @param status - The signature step display status to check.
+ * @returns True when the status is Rejected, Failed, or Disconnected.
+ */
+export const isErrorStepStatus = (status: SignatureStepStatus): boolean =>
+  status === SignatureStepStatus.Rejected ||
+  status === SignatureStepStatus.Failed ||
+  status === SignatureStepStatus.Disconnected;
+
+/**
+ * Returns a design-system text color suitable for a signature-step label
+ * based on whether the step is in an error state.
+ *
+ * @param stepStatus - The display status of the step.
+ * @returns TextColor.ErrorDefault for error states, TextColor.TextDefault otherwise.
+ */
+export function getStepLabelColor(stepStatus: SignatureStepStatus): TextColor {
+  return isErrorStepStatus(stepStatus)
+    ? TextColor.ErrorDefault
+    : TextColor.TextDefault;
+}
+
+/**
+ * Returns the localization key for the QR scan button label.
+ *
+ * @param isFinalSignature - Whether this is the final signing step.
+ * @returns The i18n key for the scan button label.
+ */
+export const getQrScanButtonLabelKey = (isFinalSignature: boolean): string =>
+  isFinalSignature
+    ? 'bridgeQrHardwareScanSignatureFinal'
+    : 'bridgeQrHardwareScanSignatureNext';
 
 /**
  * Type guard that checks whether an unknown value is a valid QR hardware
