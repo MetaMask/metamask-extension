@@ -1,12 +1,19 @@
-import {
+import type {
   AnalyticsController,
-  type AnalyticsControllerMessenger,
-  type AnalyticsControllerState,
+  AnalyticsControllerMessenger,
+  AnalyticsControllerState,
 } from '@metamask/analytics-controller';
 import { generateMetaMetricsId } from '../../../shared/lib/generate-metametrics-id';
-import { configureAnalytics } from '../controllers/analytics';
+import {
+  configureAnalytics,
+  getProfileIdentityProperties,
+} from '../controllers/analytics/analytics';
 import type { AnalyticsMessenger } from '../controllers/analytics/analytics-messenger';
-import { createPlatformAdapter } from '../controllers/analytics/platform-adapter';
+import {
+  createEnrichmentContext,
+  createPlatformAdapter,
+} from '../controllers/analytics/platform-adapter';
+import { configureOptOutSegmentEnrichment } from '../lib/segment/custom-segment-tracking';
 import { MessengerClientInitFunction } from './types';
 
 /**
@@ -33,9 +40,20 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
     generateMetaMetricsId();
   persisted.optedIn = persisted.optedIn === true;
 
+  const version = process.env.METAMASK_VERSION as string;
+  const environment = process.env.METAMASK_ENVIRONMENT as string;
+  const appVersion =
+    environment === 'production' ? version : `${version}-${environment}`;
+  const enrichmentContext = createEnrichmentContext(
+    initMessenger,
+    appVersion,
+    getProfileIdentityProperties,
+  );
+  configureOptOutSegmentEnrichment(enrichmentContext);
+
   const controller = new AnalyticsController({
     messenger: controllerMessenger,
-    platformAdapter: createPlatformAdapter(),
+    platformAdapter: createPlatformAdapter(enrichmentContext),
     state: persisted as AnalyticsControllerState,
     isAnonymousEventsFeatureEnabled: true,
     isEventQueuePersistenceEnabled: true,
@@ -44,8 +62,6 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
 
   configureAnalytics({
     messenger: initMessenger,
-    version: process.env.METAMASK_VERSION as string,
-    environment: process.env.METAMASK_ENVIRONMENT as string,
   });
 
   return { messengerClient: controller };
