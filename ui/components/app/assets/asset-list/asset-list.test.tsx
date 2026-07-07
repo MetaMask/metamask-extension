@@ -30,9 +30,26 @@ const LINK_CONTRACT = '0x514910771AF9Ca656af840dff83E8264EcF986CA';
 const WBTC_CONTRACT = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599';
 
 const mockOnClickAsset = jest.fn();
-const mockTrackEvent = jest.fn();
 const mockShouldShowBuyGetMusdCta = jest.fn();
 const mockHasConvertibleTokensByChainId = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const mockTrackEvent = jest.fn();
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder: jest.requireActual(
+        '../../../../../shared/lib/analytics/create-event-builder',
+      ).createEventBuilder,
+      trackEvent: mockTrackEvent,
+    }),
+    mockTrackEvent,
+  };
+});
+
+const getMockTrackEvent = () =>
+  jest.requireMock('../../../../hooks/useAnalytics')
+    .mockTrackEvent as jest.Mock;
 
 const mockUseMusdBalance = jest.fn();
 const mockUseMusdNetworkFilter = jest.fn();
@@ -207,8 +224,6 @@ const renderAssetList = ({
     <AssetList onClickAsset={onClickAsset} showTokensLinks={showTokensLinks} />,
     store,
     '/',
-    undefined,
-    () => mockTrackEvent,
   );
 };
 
@@ -216,7 +231,7 @@ describe('AssetList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockOnClickAsset.mockClear();
-    mockTrackEvent.mockClear();
+    getMockTrackEvent().mockClear();
     mockShouldShowBuyGetMusdCta.mockClear();
     mockHasConvertibleTokensByChainId.mockReset();
 
@@ -384,16 +399,19 @@ describe('AssetList', () => {
           USDC_CONTRACT,
         );
         expect(trace).toHaveBeenCalledWith({ name: 'Asset Details' });
-        expect(mockTrackEvent).toHaveBeenCalledWith({
-          event: MetaMetricsEventName.TokenScreenOpened,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: 'ETH',
-            location: 'Home',
-          },
-        });
+        expect(getMockTrackEvent()).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.TokenScreenOpened,
+            properties: {
+              category: MetaMetricsEventCategory.Navigation,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: 'ETH',
+              location: 'Home',
+            },
+            sensitiveProperties: {},
+          }),
+        );
       });
     });
   });
