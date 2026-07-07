@@ -37,7 +37,7 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
   qrSyncQrPayload: {
     persist: false,
     includeInDebugSnapshot: false,
-    usedInUi: false,
+    usedInUi: true,
     includeInStateLogs: false,
   },
   syncOffer: {
@@ -54,9 +54,9 @@ export const controllerMetadata: StateMetadata<QrSyncControllerState> = {
   },
   qrSyncError: {
     persist: false,
-    includeInDebugSnapshot: true,
+    includeInDebugSnapshot: false,
     usedInUi: true,
-    includeInStateLogs: true,
+    includeInStateLogs: false,
   },
 };
 
@@ -82,3 +82,8 @@ export function getDefaultQrSyncControllerState(): QrSyncControllerState {
     qrSyncError: null,
   };
 }
+
+/** Flat state keys excluded from downloaded state logs. */
+export const QR_SYNC_STATE_LOG_KEYS = Object.keys(
+  getDefaultQrSyncControllerState(),
+) as (keyof QrSyncControllerState)[];

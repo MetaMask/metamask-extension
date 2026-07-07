@@ -5,6 +5,7 @@ import type {
 import {
   base64ToBytes,
   bytesToBase64,
+  bytesToHex,
   bytesToString,
   stringToBytes,
 } from '@metamask/utils';
@@ -20,7 +21,8 @@ export class KeyManager implements IKeyManager {
   }
 
   validatePeerKey(key: Uint8Array): void {
-    PublicKey.fromHex(Buffer.from(key).toString('hex'));
+    const keyHex = bytesToHex(key);
+    PublicKey.fromHex(keyHex);
   }
 
   async encrypt(
