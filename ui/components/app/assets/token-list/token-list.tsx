@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,
@@ -50,7 +44,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import {
   isEvmChainId,
@@ -208,7 +202,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [isLowValueAssetsExpanded, setIsLowValueAssetsExpanded] = useState(
     getInitialLowValueAssetsExpanded,
   );
@@ -365,19 +359,20 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     onTokenClick(token.chainId, tokenAddress, routeAssetId);
 
     // Track event: token details
-    trackEvent({
-      category: MetaMetricsEventCategory.Tokens,
-      event: MetaMetricsEventName.TokenDetailsOpened,
-      properties: {
-        location: 'Home',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: token.symbol ?? 'unknown',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: token.chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.Tokens)
+        .addProperties({
+          location: 'Home',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: token.symbol ?? 'unknown',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: token.chainId,
+        })
+        .build(),
+    );
   };
 
   const handleLowValueAssetsToggle = useCallback(() => {
@@ -385,15 +380,21 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     setIsLowValueAssetsExpanded(nextIsExpanded);
     setLowValueAssetsExpandedSessionValue(nextIsExpanded);
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.LowValueAssetsToggled,
-      properties: {
-        state: nextIsExpanded ? 'expanded' : 'collapsed',
-        count: lowValueAssetCount,
-      },
-    });
-  }, [isLowValueAssetsExpanded, lowValueAssetCount, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.LowValueAssetsToggled)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
+          state: nextIsExpanded ? 'expanded' : 'collapsed',
+          count: lowValueAssetCount,
+        })
+        .build(),
+    );
+  }, [
+    createEventBuilder,
+    isLowValueAssetsExpanded,
+    lowValueAssetCount,
+    trackEvent,
+  ]);
 
   const renderTokenCell = (token: TokenWithFiatAmount) => {
     const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
