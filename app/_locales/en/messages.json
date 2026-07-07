@@ -4894,6 +4894,54 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Please open it on your Ledger device to continue"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "Ethereum app is closed"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Ledger device found"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Please unlock your Ledger device to continue"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger is locked"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Install and open the Ethereum app"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepPlugIn": {
+    "message": "Plug your Ledger into the computer"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepRetry": {
+    "message": "Try connecting again"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Unlock your Ledger device"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Device not found"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Please disconnect and reconnect your device"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger is unresponsive"
+  },
+  "ledgerConnectionStatusGenericErrorDescription": {
+    "message": "Check that your Ledger device is set up with the Secret Recovery Phrase or private key for the selected account"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Something went wrong"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Hold on while we search for it..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Looking for your device"
+  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
   },
