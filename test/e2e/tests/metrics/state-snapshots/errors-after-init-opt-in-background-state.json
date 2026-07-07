@@ -329,6 +329,7 @@
     "watchEthereumAccountEnabled": "boolean"
   },
   "ProfileMetricsController": "object",
+  "QrSyncController": "object",
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
     "localOverrides": "object",

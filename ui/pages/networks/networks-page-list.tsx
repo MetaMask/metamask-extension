@@ -7,7 +7,7 @@ import {
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { ChainId } from '@metamask/controller-utils';
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AvatarNetwork,
@@ -31,8 +31,8 @@ import { AdditionalNetworksInfo } from '../../components/multichain/network-mana
 import { useNetworkItemCallbacks } from '../../components/multichain/network-manager/hooks/useNetworkItemCallbacks';
 import { NetworkListItem } from '../../components/multichain/network-list-item';
 import ToggleButton from '../../components/ui/toggle-button';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { useIsNetworkGasSponsored } from '../../hooks/useIsNetworkGasSponsored';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
 import { getSelectedMultichainNetworkChainId } from '../../selectors/multichain/networks';
@@ -172,7 +172,7 @@ export const NetworksPageList = ({
 }: NetworksPageListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -295,15 +295,16 @@ export const NetworksPageList = ({
 
       const newValue = !value;
       dispatch(setShowTestNetworks(newValue));
-      trackEvent({
-        event: MetaMetricsEventName.TestNetworksDisplayed,
-        category: MetaMetricsEventCategory.Network,
-        properties: {
-          value: newValue,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            value: newValue,
+          })
+          .build(),
+      );
     },
-    [currentlyOnTestnet, dispatch, trackEvent],
+    [currentlyOnTestnet, dispatch, trackEvent, createEventBuilder],
   );
 
   return (

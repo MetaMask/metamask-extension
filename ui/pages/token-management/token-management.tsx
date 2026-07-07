@@ -58,6 +58,7 @@ import {
   addImportedTokens,
   hideAsset,
   ignoreTokens as ignoreTokensAction,
+  importCustomAssetsBatch,
   multichainAddAssets,
   multichainIgnoreAssets,
   showModal,
@@ -215,6 +216,23 @@ const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
 
   return properties;
 };
+
+const importEvmSearchResultToUnifiedAssets = (
+  accountId: string,
+  payload: SearchResultImportPayload,
+) =>
+  importCustomAssetsBatch(
+    accountId,
+    [{ assetId: payload.assetId, isHidden: false }],
+    {
+      [payload.assetId]: {
+        address: payload.assetReference,
+        symbol: payload.symbol,
+        name: payload.name,
+        decimals: payload.decimals,
+      },
+    },
+  );
 
 const normalizeToHexChainId = (chainId: string): string => {
   if (!chainId.startsWith('eip155:')) {
@@ -795,8 +813,6 @@ export const TokenManagementPage = () => {
   }, [commitStagedHides]);
 
   const networkFilterLabel = useNetworkFilterButtonLabel();
-  const isSingleNetworkFilterSelected =
-    allEnabledNetworksForAllNamespaces.length === 1;
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -1038,7 +1054,14 @@ export const TokenManagementPage = () => {
               ),
             ),
             ...(isAssetsUnifiedStateInBuild
-              ? [dispatch(addCustomAsset(evmAccount.id, payload.assetId))]
+              ? [
+                  dispatch(
+                    importEvmSearchResultToUnifiedAssets(
+                      evmAccount.id,
+                      payload,
+                    ),
+                  ),
+                ]
               : []),
           ]);
 
@@ -1505,22 +1528,13 @@ export const TokenManagementPage = () => {
           data-testid="token-management-network-filter"
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          startIconProps={{ size: IconSize.Md }}
-          className={`rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed ${
-            isSingleNetworkFilterSelected
-              ? 'text-primary-default'
-              : 'text-default'
-          }`}
+          className="bg-default text-default border border-muted"
           onClick={handleOpenNetworkFilter}
         >
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            color={
-              isSingleNetworkFilterSelected
-                ? TextColor.PrimaryDefault
-                : TextColor.TextDefault
-            }
+            color={TextColor.TextDefault}
             ellipsis
           >
             {networkFilterLabel}
