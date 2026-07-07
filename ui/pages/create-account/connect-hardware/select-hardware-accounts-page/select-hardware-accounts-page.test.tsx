@@ -569,7 +569,9 @@ describe('SelectHardwareAccountsPage', () => {
     });
 
     it('clears account selection when confirming a new HD path', async () => {
-      mockConnectHardware.mockResolvedValue(createMockRawHardwareAccounts(1, 0));
+      mockConnectHardware.mockResolvedValue(
+        createMockRawHardwareAccounts(1, 0),
+      );
       renderPage();
 
       fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
@@ -627,7 +629,9 @@ describe('SelectHardwareAccountsPage', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByRole('checkbox', { name: 'Account 3' })).toBeInTheDocument();
+        expect(
+          screen.getByRole('checkbox', { name: 'Account 3' }),
+        ).toBeInTheDocument();
       });
     });
 

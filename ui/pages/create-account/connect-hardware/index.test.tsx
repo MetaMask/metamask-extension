@@ -1016,7 +1016,9 @@ describe('ConnectHardwareForm', () => {
         screen.getByTestId('select-hardware-accounts-page-settings-button'),
       );
       fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
-      fireEvent.click(screen.getByTestId('select-hd-path-page-continue-button'));
+      fireEvent.click(
+        screen.getByTestId('select-hd-path-page-continue-button'),
+      );
 
       fireEvent.click(
         screen.getByTestId('select-hardware-accounts-page-back-button'),
