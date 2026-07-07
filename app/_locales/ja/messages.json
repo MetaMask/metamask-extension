@@ -4401,9 +4401,6 @@
     "message": "インポートされました",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "込み"
-  },
   "includesXTransactions": {
     "message": "$1件のトランザクションを含む"
   },
@@ -10498,29 +10495,8 @@
   "turnOn": {
     "message": "オンにする"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "通知をオンにする"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "オンにする"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "通知の作成中にエラーが発生しました。後でもう一度お試しください。"
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "通知を使えば、ウォレットで何が起きているか常に把握できます。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "通知設定。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "この機能を使用する際に当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください。"
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "ウォレット通知を使用するために、プロファイルを使用して一部の設定をデバイス間で同期します。$1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "通知は$1でいつでもオフにできます"
   },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
