@@ -79,14 +79,21 @@ describe('getNetworkConnectionBannerControllerMessenger', () => {
       getNetworkConnectionBannerControllerMessenger(messenger);
     const controller = new NetworkConnectionBannerController({
       messenger: controllerMessenger,
+      infuraProjectId: 'test-infura-project-id',
     });
 
-    // `start` runs the initial evaluation, which calls the peer controllers'
-    // getState actions through the controller messenger. This throws if the
-    // actions were not delegated to the controller messenger.
-    expect(() =>
-      messenger.call('NetworkConnectionBannerController:start'),
-    ).not.toThrow();
+    // Opening the UI on an unlocked wallet starts the initial evaluation,
+    // which calls the peer controllers' getState actions through the
+    // controller messenger. This throws if the events or actions were not
+    // delegated to the controller messenger.
+    expect(() => {
+      messenger.publish(
+        'ClientController:stateChanged',
+        { isUiOpen: true } as never,
+        [],
+      );
+      messenger.publish('KeyringController:unlock');
+    }).not.toThrow();
 
     expect(getConnectivityControllerState).toHaveBeenCalled();
     expect(getNetworkControllerState).toHaveBeenCalled();
@@ -104,6 +111,9 @@ describe('getNetworkConnectionBannerControllerMessenger', () => {
     const networkListener = jest.fn();
     const enablementListener = jest.fn();
     const connectivityListener = jest.fn();
+    const clientListener = jest.fn();
+    const unlockListener = jest.fn();
+    const lockListener = jest.fn();
     controllerMessenger.subscribe(
       'NetworkController:stateChange',
       networkListener,
@@ -116,6 +126,12 @@ describe('getNetworkConnectionBannerControllerMessenger', () => {
       'ConnectivityController:stateChange',
       connectivityListener,
     );
+    controllerMessenger.subscribe(
+      'ClientController:stateChanged',
+      clientListener,
+    );
+    controllerMessenger.subscribe('KeyringController:unlock', unlockListener);
+    controllerMessenger.subscribe('KeyringController:lock', lockListener);
 
     messenger.publish(
       'NetworkController:stateChange',
@@ -132,9 +148,19 @@ describe('getNetworkConnectionBannerControllerMessenger', () => {
       { connectivityStatus: 'offline' } as never,
       [],
     );
+    messenger.publish(
+      'ClientController:stateChanged',
+      { isUiOpen: true } as never,
+      [],
+    );
+    messenger.publish('KeyringController:unlock');
+    messenger.publish('KeyringController:lock');
 
     expect(networkListener).toHaveBeenCalled();
     expect(enablementListener).toHaveBeenCalled();
     expect(connectivityListener).toHaveBeenCalled();
+    expect(clientListener).toHaveBeenCalled();
+    expect(unlockListener).toHaveBeenCalled();
+    expect(lockListener).toHaveBeenCalled();
   });
 });

@@ -29,6 +29,7 @@ export function getNetworkConnectionBannerControllerMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkConfigurationByChainId',
       'NetworkController:updateNetwork',
+      'NetworkController:setActiveNetwork',
       'NetworkEnablementController:getState',
       'ConnectivityController:getState',
     ],
@@ -36,6 +37,9 @@ export function getNetworkConnectionBannerControllerMessenger(
       'NetworkController:stateChange',
       'NetworkEnablementController:stateChange',
       'ConnectivityController:stateChange',
+      'ClientController:stateChanged',
+      'KeyringController:unlock',
+      'KeyringController:lock',
     ],
   });
   return controllerMessenger;

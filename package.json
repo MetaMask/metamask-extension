@@ -161,8 +161,8 @@
   },
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
-    "@metamask/connectivity-controller": "npm:@metamask-previews/connectivity-controller@0.2.0-preview-bd4161b27",
-    "@metamask/network-connection-banner-controller": "npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-bd4161b27",
+    "@metamask/connectivity-controller": "npm:@metamask-previews/connectivity-controller@0.2.0-preview-c4108f3eb",
+    "@metamask/network-connection-banner-controller": "npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-c4108f3eb",
     "@metamask/messenger": "^2.0.0",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",

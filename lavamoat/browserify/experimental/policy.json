@@ -1995,18 +1995,16 @@
     },
     "@metamask/network-connection-banner-controller": {
       "globals": {
-        "URL": true,
         "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/client-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/network-controller": true,
         "@metamask/network-enablement-controller": true,
         "@metamask/utils": true,
-        "ip-regex": true,
-        "@metamask/network-connection-banner-controller>psl": true,
         "reselect": true
       }
     },
