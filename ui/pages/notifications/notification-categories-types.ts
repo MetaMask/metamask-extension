@@ -4,6 +4,7 @@ export enum NotificationCategoryId {
   Perps = 'perps',
   SocialAI = 'socialAI',
   Marketing = 'marketing',
+  AgenticCli = 'agenticCli',
 }
 
 /**

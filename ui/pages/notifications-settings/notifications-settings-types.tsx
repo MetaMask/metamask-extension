@@ -11,6 +11,9 @@ import {
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+import { useNotificationCategories } from '../../hooks/metamask-notifications/useNotificationCategories';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+import { NotificationCategoryId, type NotificationCategoryMetadata } from '../notifications/notification-categories-types';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsSelectItem } from '../settings/shared';
 import { getNotificationsSettingsSectionRoute } from './notifications-settings-routes';
@@ -49,52 +52,42 @@ const getStatusText = (
     : t('notificationsSettingsStatusOff');
 };
 
+const getIconNameFromCategoryIcon = (icon: string): IconName =>
+  (IconName as unknown as Record<string, IconName>)[icon] ?? IconName.Setting;
+
+/**
+ * Builds the section list for the notifications settings screen from the BE
+ * category catalog. A section is omitted until its category has loaded
+ * (`categories` starts empty while the fetch is in flight).
+ *
+ * @param categories - The fetched BE notification category catalog.
+ * @returns The section configs to render, in display order.
+ */
 export const getNotificationsSettingsSectionConfigs = (
-  t: ReturnType<typeof useI18nContext>,
-): NotificationsSettingsSectionConfig[] => {
-  const nextSections: NotificationsSettingsSectionConfig[] = [
-    {
-      type: 'walletActivity',
-      title: t('notificationsSettingsWalletActivityTitle'),
-      description: t('notificationsSettingsWalletActivityDescription'),
-      iconName: IconName.Clock,
-    },
-  ];
-
-  if (getIsPerpsIncludedInBuild()) {
-    nextSections.push({
-      type: 'perps',
-      title: t('notificationsSettingsPerpsTitle'),
-      description: t('notificationsSettingsPerpsDescription'),
-      iconName: IconName.Candlestick,
-    });
-  }
-
-  nextSections.push({
-    type: 'marketing',
-    title: t('notificationsSettingsMarketingTitle'),
-    description: t('notificationsSettingsMarketingDescription'),
-    iconName: IconName.Campaign,
-  });
-
-  nextSections.push({
-    type: 'agenticCli',
-    title: t('notificationsSettingsAgenticCliTitle'),
-    description: t('notificationsSettingsAgenticCliDescription'),
-    iconName: IconName.Code,
-  });
-
-  return nextSections;
-};
+  categories: NotificationCategoryMetadata[],
+): NotificationsSettingsSectionConfig[] =>
+  categories
+    .filter(
+      (category) =>
+        category.id !== NotificationCategoryId.Perps ||
+        getIsPerpsIncludedInBuild(),
+    )
+    .map((category) => ({
+      type: category.id as unknown as NotificationsSettingsSectionType,
+      title: category.label,
+      description: category.description,
+      iconName: getIconNameFromCategoryIcon(category.icon),
+    }));
 
 export function NotificationsSettingsTypes({
   preferences,
 }: NotificationsSettingsTypesProps) {
   const t = useI18nContext();
+  const { categories } = useNotificationCategories();
 
   const sections = useMemo<NotificationsSettingsSectionConfig[]>(
-    () => getNotificationsSettingsSectionConfigs(t),
-    [t],
+    () => getNotificationsSettingsSectionConfigs(categories),
+    [categories],
   );
 
   return (

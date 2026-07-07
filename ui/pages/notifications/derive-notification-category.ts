@@ -40,6 +40,7 @@ const PLATFORM_NOTIFICATION_TYPE_TO_CATEGORY: Record<
   [NotificationCategoryId.Perps]: NotificationCategoryId.Perps,
   [NotificationCategoryId.SocialAI]: NotificationCategoryId.SocialAI,
   [NotificationCategoryId.Marketing]: NotificationCategoryId.Marketing,
+  [NotificationCategoryId.AgenticCli]: NotificationCategoryId.AgenticCli,
 };
 
 export function deriveNotificationCategory(

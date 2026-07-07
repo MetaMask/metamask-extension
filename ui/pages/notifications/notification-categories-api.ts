@@ -30,7 +30,14 @@ const CATEGORIES_BY_LOCALE: Record<string, NotificationCategoryMetadata[]> = {
       label: 'Updates and rewards',
       description:
         'Product updates, feature announcements, and new rewards campaigns',
-      icon: 'Megaphone',
+      icon: 'Campaign',
+    },
+    {
+      id: NotificationCategoryId.AgenticCli,
+      label: 'Agentic CLI',
+      description:
+        'CLI connection requests, approvals, and session updates for Agentic',
+      icon: 'Code',
     },
   ],
 };
