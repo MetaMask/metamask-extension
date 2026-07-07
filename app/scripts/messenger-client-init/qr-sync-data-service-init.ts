@@ -20,5 +20,6 @@ export const QrSyncDataServiceInit: MessengerClientInitFunction<
   return {
     messengerClient,
     persistedStateKey: null,
+    memStateKey: null,
   };
 };
