@@ -14,7 +14,6 @@ const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
-  LOCAL_NODE_ACCOUNT,
 } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
@@ -1591,18 +1590,12 @@ async function setupMocking(
 
       const balances = [];
       for (const id of accountIds) {
-        const parts = id.split(':');
-        if (parts[0] !== 'eip155' || parts.length < 3) {
+        if (!id.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) {
           continue;
         }
+        const parts = id.split(':');
         const chainRef = parts[1];
-        const accountAddress = parts.slice(2).join(':').toLowerCase();
-        const isKnownFundedTestAccount =
-          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
-          accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
-        // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
-        // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
-        let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
+        let nativeBalance = '25';
         if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
         } else if (chainRef === '1337' && localhostNativeOverride !== null) {
@@ -2056,12 +2049,7 @@ async function setupMocking(
    * @returns {string[]} privacy report for the current test suite.
    */
   function getPrivacyReport() {
-    return [...privacyReport]
-      .filter(
-        (host) =>
-          typeof host === 'string' && host.length > 0 && host !== 'null',
-      )
-      .sort();
+    return [...privacyReport].sort();
   }
 
   /**
@@ -2084,7 +2072,7 @@ async function setupMocking(
     const privateHosts = new Set();
 
     for (const { pattern, host: privateHost } of privateHostMatchers) {
-      if (privateHost && request.headers.host?.match(pattern)) {
+      if (request.headers.host.match(pattern)) {
         privateHosts.add(privateHost);
       }
     }
@@ -2114,7 +2102,6 @@ async function setupMocking(
     }
 
     if (
-      request.headers.host &&
       request.headers.host.match(browserAPIRequestDomains) === null &&
       !portfolioRequestsMatcher(request)
     ) {

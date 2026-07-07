@@ -235,35 +235,13 @@ async function mockHistoricalPrices(mockServer: Mockttp) {
 const MUSD_ASSET_ID =
   'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
 
-const DEFAULT_BRIDGE_ACCOUNT_ID = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
-
-const BRIDGE_MAINNET_DAI_ASSET_ID =
-  'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f';
-
-const BRIDGE_MAINNET_USDC_ASSET_ID =
-  'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
-
-/** Matches `with100Usdc100Usdt50Dai.json` Anvil load state used by bridge fixtures. */
-const getBridgeAssetsControllerBalances = () => ({
-  [DEFAULT_BRIDGE_ACCOUNT_ID]: {
+const BRIDGE_ASSETS_CONTROLLER_BALANCES = {
+  'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
     'eip155:1/slip44:60': { amount: '25' },
     'eip155:59144/slip44:60': { amount: '25' },
     'eip155:42161/slip44:60': { amount: '25' },
-    [BRIDGE_MAINNET_DAI_ASSET_ID]: { amount: '50' },
-    [BRIDGE_MAINNET_USDC_ASSET_ID]: { amount: '100' },
-    [MUSD_ASSET_ID]: { amount: '100' },
   },
-});
-
-const getBridgeUnifiedEvmAccountsApiBalances = (mainnetNativeEthHuman: string) =>
-  ({
-    mainnetNativeEthHuman,
-    mainnetAdditionalBalances: [
-      { assetId: BRIDGE_MAINNET_DAI_ASSET_ID, balance: '50' },
-      { assetId: BRIDGE_MAINNET_USDC_ASSET_ID, balance: '100' },
-      { assetId: MUSD_ASSET_ID, balance: '100' },
-    ],
-  }) as const;
+};
 
 /**
  * Overrides the popular and search token endpoints so the MUSD token includes
@@ -1374,7 +1352,7 @@ export const getBridgeFixtures = ({
       },
     })
     .withAssetsController({
-      assetsBalance: getBridgeAssetsControllerBalances(),
+      assetsBalance: BRIDGE_ASSETS_CONTROLLER_BALANCES,
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
@@ -1452,9 +1430,9 @@ export const getBridgeFixtures = ({
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    unifiedEvmAccountsApiBalances: getBridgeUnifiedEvmAccountsApiBalances(
-      String(225730.11 / ETH_CONVERSION_RATE_USD),
-    ),
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225730.11 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1710,7 +1688,7 @@ export const getBridgeL2Fixtures = (
       },
     })
     .withAssetsController({
-      assetsBalance: getBridgeAssetsControllerBalances(),
+      assetsBalance: BRIDGE_ASSETS_CONTROLLER_BALANCES,
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
@@ -1764,9 +1742,9 @@ export const getBridgeL2Fixtures = (
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    unifiedEvmAccountsApiBalances: getBridgeUnifiedEvmAccountsApiBalances(
-      String(225750 / ETH_CONVERSION_RATE_USD),
-    ),
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225750 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1884,7 +1862,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
       },
     })
     .withAssetsController({
-      assetsBalance: getBridgeAssetsControllerBalances(),
+      assetsBalance: BRIDGE_ASSETS_CONTROLLER_BALANCES,
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
@@ -1929,9 +1907,6 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    unifiedEvmAccountsApiBalances: getBridgeUnifiedEvmAccountsApiBalances(
-      String(225730.11 / ETH_CONVERSION_RATE_USD),
-    ),
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -2022,7 +1997,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
       },
     })
     .withAssetsController({
-      assetsBalance: getBridgeAssetsControllerBalances(),
+      assetsBalance: BRIDGE_ASSETS_CONTROLLER_BALANCES,
       assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
@@ -2084,9 +2059,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    unifiedEvmAccountsApiBalances: getBridgeUnifiedEvmAccountsApiBalances(
-      String(225730.11 / ETH_CONVERSION_RATE_USD),
-    ),
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
