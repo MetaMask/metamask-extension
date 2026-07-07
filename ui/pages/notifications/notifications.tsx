@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -32,8 +32,10 @@ import {
   getNotificationPreferences,
 } from '../../store/actions';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { NotificationCategoryId } from './notification-categories-types';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NotificationsCategory } from './notifications-category';
+import { deriveNotificationCategory } from './derive-notification-category';
 
 const useFeatureAnnouncementsEnabled = () => {
   const dispatch = useDispatch();
@@ -155,6 +157,19 @@ export const filterNotifications = (
   return notifications;
 };
 
+export const filterNotificationsByCategory = (
+  category: NotificationCategoryId,
+  notifications: INotification[],
+) => {
+  if (category === NotificationCategoryId.All) {
+    return notifications;
+  }
+
+  return notifications.filter(
+    (notification) => deriveNotificationCategory(notification) === category,
+  );
+};
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
@@ -177,11 +192,17 @@ export default function Notifications() {
   const { isLoading, error } = useMetamaskNotificationsContext();
 
   const activeTab = TAB_KEYS.ALL;
+  const [selectedCategory, setSelectedCategory] =
+    useState<NotificationCategoryId>(NotificationCategoryId.All);
   const combinedNotifications = useCombinedNotifications();
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
-    () => filterNotifications(activeTab, combinedNotifications),
-    [activeTab, combinedNotifications],
+    () =>
+      filterNotificationsByCategory(
+        selectedCategory,
+        filterNotifications(activeTab, combinedNotifications),
+      ),
+    [activeTab, selectedCategory, combinedNotifications],
   );
 
   useEffect(() => {
@@ -220,11 +241,7 @@ export default function Notifications() {
         {t('notifications')}
       </Header>
       <Content padding={0}>
-        <NotificationsCategory
-          onSelect={() => {
-            // TODO: filter the notifications list by the selected category
-          }}
-        />
+        <NotificationsCategory onSelect={setSelectedCategory} />
 
         <NotificationsList
           activeTab={activeTab}

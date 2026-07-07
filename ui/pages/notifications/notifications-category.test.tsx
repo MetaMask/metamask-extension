@@ -1,0 +1,103 @@
+import React from 'react';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
+import {
+  NotificationCategoryId,
+  type NotificationCategoryMetadata,
+} from './notification-categories-types';
+import {
+  NotificationsCategory,
+  NOTIFICATIONS_CATEGORY_TEST_IDS,
+} from './notifications-category';
+import { fetchNotificationCategories } from './notification-categories-api';
+
+jest.mock('./notification-categories-api');
+
+const mockFetchNotificationCategories = jest.mocked(
+  fetchNotificationCategories,
+);
+
+const MOCK_CATEGORIES: NotificationCategoryMetadata[] = [
+  {
+    id: NotificationCategoryId.WalletActivity,
+    label: 'Wallet activity',
+    description: 'Buys, sells, transfers, and swaps',
+    icon: 'Clock',
+  },
+  {
+    id: NotificationCategoryId.Perps,
+    label: 'Trading activity',
+    description: 'Perps position changes',
+    icon: 'Candlestick',
+  },
+  {
+    id: NotificationCategoryId.SocialAI,
+    label: 'Trading signals',
+    description: 'Updates from traders you follow',
+    icon: 'Flash',
+  },
+  {
+    id: NotificationCategoryId.Marketing,
+    label: 'Updates and rewards',
+    description: 'Product updates and rewards campaigns',
+    icon: 'Megaphone',
+  },
+];
+
+const buildState = (isNotificationServicesEnabled: boolean) => ({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    isNotificationServicesEnabled,
+  },
+});
+
+describe('NotificationsCategory', () => {
+  beforeEach(() => {
+    mockFetchNotificationCategories.mockResolvedValue(MOCK_CATEGORIES);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('only renders the All tab when notifications are disabled', async () => {
+    const store = configureStore(buildState(false));
+    const { getByTestId, findByText, queryByText } = renderWithProvider(
+      <NotificationsCategory onSelect={jest.fn()} />,
+      store,
+    );
+
+    expect(getByTestId(NOTIFICATIONS_CATEGORY_TEST_IDS.ALL)).toBeInTheDocument();
+    await findByText('All');
+    expect(queryByText('Wallet activity')).not.toBeInTheDocument();
+  });
+
+  it('renders BE-driven category tabs when notifications are enabled', async () => {
+    const store = configureStore(buildState(true));
+    const { findByText } = renderWithProvider(
+      <NotificationsCategory onSelect={jest.fn()} />,
+      store,
+    );
+
+    expect(await findByText('Wallet activity')).toBeInTheDocument();
+    expect(await findByText('Trading activity')).toBeInTheDocument();
+    expect(await findByText('Trading signals')).toBeInTheDocument();
+    expect(await findByText('Updates and rewards')).toBeInTheDocument();
+  });
+
+  it('calls onSelect with the tapped category id', async () => {
+    const store = configureStore(buildState(true));
+    const onSelect = jest.fn();
+    const { findByText } = renderWithProvider(
+      <NotificationsCategory onSelect={onSelect} />,
+      store,
+    );
+
+    fireEvent.click(await findByText('Trading activity'));
+
+    expect(onSelect).toHaveBeenCalledWith(NotificationCategoryId.Perps);
+  });
+});

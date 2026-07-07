@@ -1,24 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useNotificationCategories } from '../../hooks/metamask-notifications/useNotificationCategories';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { FilterTabBar, type FilterTab } from '../../components/ui/filter-tab-bar';
-
-/**
- * Identifiers for the notification categories surfaced in the category tab bar.
- */
-export enum NotificationCategoryId {
-  All = 'all',
-  WalletActivity = 'wallet-activity',
-  Perps = 'perps',
-  Marketing = 'marketing',
-}
+import { NotificationCategoryId } from './notification-categories-types';
 
 export const NOTIFICATIONS_CATEGORY_TEST_IDS = {
   ALL: 'notifications-category-all',
-  WALLET_ACTIVITY: 'notifications-category-wallet-activity',
-  PERPS: 'notifications-category-perps',
-  MARKETING: 'notifications-category-marketing',
 } as const;
 
 type NotificationsCategoryProps = {
@@ -27,13 +16,9 @@ type NotificationsCategoryProps = {
 };
 
 /**
- * Horizontally scrollable category filter for the notifications list. The
- * activity-related categories only appear when MetaMask notifications are
- * enabled.
- *
- * NOTE: the mobile app also exposes a "Trading Signals" (social) category gated
- * on a social-leaderboard feature flag. The extension has no equivalent flag
- * yet, so that category is intentionally omitted here.
+ * Horizontally scrollable category filter for the notifications list. Tabs
+ * (besides "All") are driven entirely by the BE notification-categories
+ * catalog and only appear when MetaMask notifications are enabled.
  *
  * @param props - The component props.
  * @param props.onSelect - Called with the selected category when a tab is picked.
@@ -46,6 +31,7 @@ export const NotificationsCategory = ({
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
+  const { categories } = useNotificationCategories();
   const [selectedCategory, setSelectedCategory] =
     useState<NotificationCategoryId>(NotificationCategoryId.All);
 
@@ -60,26 +46,16 @@ export const NotificationsCategory = ({
 
     if (isMetamaskNotificationsEnabled) {
       items.push(
-        {
-          key: NotificationCategoryId.WalletActivity,
-          label: t('notificationCategoryWalletActivity'),
-          testId: NOTIFICATIONS_CATEGORY_TEST_IDS.WALLET_ACTIVITY,
-        },
-        {
-          key: NotificationCategoryId.Perps,
-          label: t('notificationCategoryPerps'),
-          testId: NOTIFICATIONS_CATEGORY_TEST_IDS.PERPS,
-        },
-        {
-          key: NotificationCategoryId.Marketing,
-          label: t('notificationCategoryMarketing'),
-          testId: NOTIFICATIONS_CATEGORY_TEST_IDS.MARKETING,
-        },
+        ...categories.map((category) => ({
+          key: category.id,
+          label: category.label,
+          testId: `notifications-category-${category.id}`,
+        })),
       );
     }
 
     return items;
-  }, [isMetamaskNotificationsEnabled, t]);
+  }, [categories, isMetamaskNotificationsEnabled, t]);
 
   const handleSelect = (key: string) => {
     const category = key as NotificationCategoryId;
@@ -92,6 +68,7 @@ export const NotificationsCategory = ({
       tabs={tabs}
       selectedKey={selectedCategory}
       onSelect={handleSelect}
+      className="flex-shrink-0"
     />
   );
 };
