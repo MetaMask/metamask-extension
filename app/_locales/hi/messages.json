@@ -4397,9 +4397,6 @@
     "message": "इम्पोर्ट किया गया",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "शामिल है"
-  },
   "includesXTransactions": {
     "message": "इसमें $1 का ट्रांसेक्शन शामिल है"
   },
@@ -10494,29 +10491,8 @@
   "turnOn": {
     "message": "चालू करें"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "सूचनाएँ चालू करें"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "चालू करें"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "नोटिफिकेशंस बनाने में गड़बड़ी हुई। कृपया बाद में फिर से प्रयास करें।"
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "नोटिफिकेशंस के साथ आपके वॉलेट में क्या हो रहा है, इसकी जानकारी रखें।"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "नोटिफिकेशंस सेटिंग्स।"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "जानें कि इस फीचर का उपयोग करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "वॉलेट नोटिफिकेशंस का उपयोग करने के लिए, हम आपके डिवाइस में कुछ सेटिंग्स को सिंक करने के लिए एक प्रोफ़ाइल का उपयोग करते हैं। $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "आप किसी भी समय $1 में नोटिफिकेशंस बंद कर सकते हैं"
   },
   "turnOnTokenDetection": {
     "message": "एडवांस्ड टोकन डिटेक्शन चालू करें"

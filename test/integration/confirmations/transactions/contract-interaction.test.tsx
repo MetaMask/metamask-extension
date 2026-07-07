@@ -219,20 +219,21 @@ describe('Contract Interaction Confirmation', () => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category === MetaMetricsEventCategory.Confirmations,
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.properties?.category ===
+              MetaMetricsEventCategory.Confirmations,
         );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
+        'trackAnalyticsEvent',
       );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            category: MetaMetricsEventCategory.Confirmations,
-            event: MetaMetricsEventName.AccountDetailsOpened,
+            name: MetaMetricsEventName.AccountDetailsOpened,
             properties: {
+              category: MetaMetricsEventCategory.Confirmations,
               action: 'Confirm Screen',
               location: MetaMetricsEventLocation.Transaction,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

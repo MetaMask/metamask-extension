@@ -4,6 +4,7 @@ import React, {
   useState,
   useContext,
   useMemo,
+  useCallback,
 } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -60,6 +61,9 @@ import {
   getFirstTimeFlowTypeRouteAfterUnlock,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import type { UIMetricsEventPayload } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import type { MetaMetricsEventOptions } from '../../../shared/constants/metametrics';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
@@ -123,8 +127,29 @@ export default function OnboardingFlow() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const { isFromReminder, isFromSettingsSecurity } =
     useOnboardingSearchParams();
-  const { bufferedTrace, onboardingParentContext, trackEvent } =
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { bufferedTrace, onboardingParentContext } =
     useContext(MetaMetricsContext);
+
+  const trackLegacyEventForAction = useCallback(
+    async (
+      payload: UIMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ): Promise<void> => {
+      trackEvent(
+        createEventBuilder(payload.event)
+          .addProperties({
+            ...payload.properties,
+            ...(payload.category === undefined
+              ? {}
+              : { category: payload.category }),
+          })
+          .addSensitiveProperties(payload.sensitiveProperties)
+          .build(options),
+      );
+    },
+    [createEventBuilder, trackEvent],
+  );
   const isUnlocked = useSelector(getIsUnlocked);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
@@ -260,7 +285,10 @@ export default function OnboardingFlow() {
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
         retrievedSecretRecoveryPhrase = await dispatch(
-          restoreSocialBackupAndGetSeedPhrase(password, trackEvent),
+          restoreSocialBackupAndGetSeedPhrase(
+            password,
+            trackLegacyEventForAction,
+          ),
         );
       } else {
         retrievedSecretRecoveryPhrase = await dispatch(

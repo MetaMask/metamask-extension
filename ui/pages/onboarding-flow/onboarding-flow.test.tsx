@@ -36,6 +36,21 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/envir
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import OnboardingFlow from './onboarding-flow';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
+
 // Mock mmLazy to return a synchronous component instead of React.lazy.
 // React 17's lazy resolution fires a state update after test cleanup unmounts
 // the tree, producing a spurious "state update on unmounted component" warning.

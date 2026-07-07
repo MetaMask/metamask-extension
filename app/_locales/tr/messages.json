@@ -4401,9 +4401,6 @@
     "message": "İçe aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Şunu içerir:"
-  },
   "includesXTransactions": {
     "message": "$1 işlem içerir"
   },
@@ -10502,29 +10499,8 @@
   "turnOn": {
     "message": "Aç"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Bildirimleri aç"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Aç"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Bildirimler oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Bildirimler ile cüzdanınızda neler olduğundan haberdar olun."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "bildirim ayarları."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Bu özelliği kullanırken gizliliğinizi nasıl koruduğumuzu öğrenin."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Cüzdan bildirimlerini kullanmak için cihazlarınız genelinde bazı ayarları senkronize etmek üzere bir profil kullanırız. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Bildirimleri dilediğiniz zaman $1 kısmında kapatabilirsiniz"
   },
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
