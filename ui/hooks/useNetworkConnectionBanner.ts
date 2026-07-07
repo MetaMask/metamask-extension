@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Hex, hexToNumber } from '@metamask/utils';
+import { hexToNumber } from '@metamask/utils';
 import { getNetworkConnectionBanner } from '../selectors/selectors';
 import type { RouteMessengerInstance } from '../pages/home/messenger';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
@@ -19,7 +18,6 @@ type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
   trackNetworkBannerEvent: (event: {
     bannerType: 'degraded' | 'unavailable';
     eventName: string;
-    networkClientId: string;
   }) => void;
   /**
    * Switch the default RPC endpoint to Infura for the current failed network.
@@ -37,45 +35,25 @@ export const useNetworkConnectionBanner =
     const networkConnectionBannerState = useSelector(
       getNetworkConnectionBanner,
     );
-    const networkConfigurationsByChainId = useSelector(
-      getNetworkConfigurationsByChainId,
-    );
 
     const trackNetworkBannerEvent = useCallback(
       async ({
         bannerType,
         eventName,
-        networkClientId,
       }: {
         bannerType: 'degraded' | 'unavailable';
         eventName: string;
-        networkClientId: string;
       }) => {
-        try {
-          let foundNetwork: { chainId: Hex; url: string } | undefined;
-          for (const networkConfiguration of Object.values(
-            networkConfigurationsByChainId,
-          )) {
-            const rpcEndpoint = networkConfiguration.rpcEndpoints.find(
-              (endpoint) => endpoint.networkClientId === networkClientId,
-            );
-            if (rpcEndpoint) {
-              foundNetwork = {
-                chainId: networkConfiguration.chainId,
-                url: rpcEndpoint.url,
-              };
-              break;
-            }
-          }
-          if (!foundNetwork) {
-            console.warn(
-              `RPC endpoint not found for network client ID: ${networkClientId}`,
-            );
-            return;
-          }
+        if (
+          networkConnectionBannerState.status !== 'degraded' &&
+          networkConnectionBannerState.status !== 'unavailable'
+        ) {
+          return;
+        }
+        const { chainId, rpcUrl } = networkConnectionBannerState;
 
-          const rpcUrl = foundNetwork.url;
-          const chainIdAsDecimal = hexToNumber(foundNetwork.chainId);
+        try {
+          const chainIdAsDecimal = hexToNumber(chainId);
           const isPublic = await submitRequestToBackground<boolean>(
             'isPublicEndpointUrl',
             [rpcUrl],
@@ -101,7 +79,7 @@ export const useNetworkConnectionBanner =
           console.error('Failed to track network banner event:', error);
         }
       },
-      [networkConfigurationsByChainId, trackEvent, createEventBuilder],
+      [networkConnectionBannerState, trackEvent, createEventBuilder],
     );
 
     // Fire the banner-shown analytics when the banner transitions to a
@@ -116,7 +94,7 @@ export const useNetworkConnectionBanner =
         lastReportedKeyRef.current = null;
         return;
       }
-      const key = `${networkConnectionBannerState.status}:${networkConnectionBannerState.networkClientId}`;
+      const key = `${networkConnectionBannerState.status}:${networkConnectionBannerState.chainId}:${networkConnectionBannerState.rpcUrl}`;
       if (lastReportedKeyRef.current === key) {
         return;
       }
@@ -124,7 +102,6 @@ export const useNetworkConnectionBanner =
       trackNetworkBannerEvent({
         bannerType: networkConnectionBannerState.status,
         eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
-        networkClientId: networkConnectionBannerState.networkClientId,
       });
     }, [networkConnectionBannerState, trackNetworkBannerEvent]);
 
@@ -136,9 +113,8 @@ export const useNetworkConnectionBanner =
         return;
       }
 
-      const { chainId, switchableInfuraNetworkClientId } =
-        networkConnectionBannerState;
-      if (!switchableInfuraNetworkClientId) {
+      const { chainId, canSwitchToInfura } = networkConnectionBannerState;
+      if (!canSwitchToInfura) {
         return;
       }
 

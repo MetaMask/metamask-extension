@@ -43,10 +43,10 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
         networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
+        rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
         chainId: '0x1',
         isInfuraEndpoint: false,
-        switchableInfuraNetworkClientId: null,
+        canSwitchToInfura: false,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -69,10 +69,10 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
         networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
+        rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
         chainId: '0x1',
         isInfuraEndpoint: true,
-        switchableInfuraNetworkClientId: null,
+        canSwitchToInfura: false,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -96,10 +96,10 @@ describe('NetworkConnectionBanner', () => {
         mockUseNetworkConnectionBanner.mockReturnValue({
           status: 'degraded',
           networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
+          rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
           chainId: '0x1',
           isInfuraEndpoint: false,
-          switchableInfuraNetworkClientId: null,
+          canSwitchToInfura: false,
           trackNetworkBannerEvent: jest.fn(),
           switchToInfura: jest.fn(),
         });
@@ -123,10 +123,10 @@ describe('NetworkConnectionBanner', () => {
         mockUseNetworkConnectionBanner.mockReturnValue({
           status: 'degraded',
           networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
+          rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
           chainId: '0x1',
           isInfuraEndpoint: false,
-          switchableInfuraNetworkClientId: null,
+          canSwitchToInfura: false,
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
           switchToInfura: jest.fn(),
         });
@@ -142,7 +142,6 @@ describe('NetworkConnectionBanner', () => {
           bannerType: 'degraded',
           eventName:
             MetaMetricsEventName.NetworkConnectionBannerUpdateRpcClicked,
-          networkClientId: 'mainnet',
         });
       });
     });
@@ -153,10 +152,10 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
         networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
+        rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
         chainId: '0x1',
         isInfuraEndpoint: false,
-        switchableInfuraNetworkClientId: null,
+        canSwitchToInfura: false,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -184,10 +183,10 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
         networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
+        rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
         chainId: '0x1',
         isInfuraEndpoint: true,
-        switchableInfuraNetworkClientId: null,
+        canSwitchToInfura: false,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -216,10 +215,10 @@ describe('NetworkConnectionBanner', () => {
         mockUseNetworkConnectionBanner.mockReturnValue({
           status: 'unavailable',
           networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
+          rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
           chainId: '0x1',
           isInfuraEndpoint: false,
-          switchableInfuraNetworkClientId: null,
+          canSwitchToInfura: false,
           trackNetworkBannerEvent: jest.fn(),
           switchToInfura: jest.fn(),
         });
@@ -243,10 +242,10 @@ describe('NetworkConnectionBanner', () => {
         mockUseNetworkConnectionBanner.mockReturnValue({
           status: 'unavailable',
           networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
+          rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
           chainId: '0x1',
           isInfuraEndpoint: false,
-          switchableInfuraNetworkClientId: null,
+          canSwitchToInfura: false,
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
           switchToInfura: jest.fn(),
         });
@@ -262,7 +261,6 @@ describe('NetworkConnectionBanner', () => {
           bannerType: 'unavailable',
           eventName:
             MetaMetricsEventName.NetworkConnectionBannerUpdateRpcClicked,
-          networkClientId: 'mainnet',
         });
       });
     });
@@ -292,10 +290,10 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
         networkName: 'Arbitrum One',
-        networkClientId: 'custom-arbitrum',
+        rpcUrl: 'https://arb1.arbitrum.io/rpc',
         chainId: '0xa4b1',
         isInfuraEndpoint: false,
-        switchableInfuraNetworkClientId: 'arbitrum-infura',
+        canSwitchToInfura: true,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: switchToInfuraMock,
       });
@@ -317,10 +315,10 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
         networkName: 'Arbitrum One',
-        networkClientId: 'custom-arbitrum',
+        rpcUrl: 'https://arb1.arbitrum.io/rpc',
         chainId: '0xa4b1',
         isInfuraEndpoint: false,
-        switchableInfuraNetworkClientId: 'arbitrum-infura',
+        canSwitchToInfura: true,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: switchToInfuraMock,
       });
@@ -345,10 +343,10 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
         networkName: 'Arbitrum One',
-        networkClientId: 'custom-arbitrum',
+        rpcUrl: 'https://arb1.arbitrum.io/rpc',
         chainId: '0xa4b1',
         isInfuraEndpoint: false,
-        switchableInfuraNetworkClientId: 'arbitrum-infura',
+        canSwitchToInfura: true,
         trackNetworkBannerEvent: trackNetworkBannerEventMock,
         switchToInfura: switchToInfuraMock,
       });
@@ -365,7 +363,6 @@ describe('NetworkConnectionBanner', () => {
         bannerType: 'degraded',
         eventName:
           MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
-        networkClientId: 'custom-arbitrum',
       });
     });
 
@@ -375,10 +372,10 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
         networkName: 'Arbitrum One',
-        networkClientId: 'custom-arbitrum',
+        rpcUrl: 'https://arb1.arbitrum.io/rpc',
         chainId: '0xa4b1',
         isInfuraEndpoint: false,
-        switchableInfuraNetworkClientId: 'arbitrum-infura',
+        canSwitchToInfura: true,
         trackNetworkBannerEvent: trackNetworkBannerEventMock,
         switchToInfura: switchToInfuraMock,
       });
@@ -397,7 +394,6 @@ describe('NetworkConnectionBanner', () => {
         bannerType: 'unavailable',
         eventName:
           MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
-        networkClientId: 'custom-arbitrum',
       });
     });
   });

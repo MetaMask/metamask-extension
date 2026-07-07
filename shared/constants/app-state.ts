@@ -1,4 +1,3 @@
-import { NetworkClientId } from '@metamask/network-controller';
 import type { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
 import { MetaMetricsEventName } from './metametrics';
@@ -67,13 +66,14 @@ export type NetworkConnectionBanner =
   | {
       status: 'degraded' | 'unavailable';
       networkName: string;
-      networkClientId: NetworkClientId;
       chainId: Hex;
+      /** The URL of the failing default RPC endpoint. */
+      rpcUrl: string;
       isInfuraEndpoint: boolean;
       /**
-       * The networkClientId of an Infura endpoint on the same chain that the
-       * user can switch to. `null` when the failing endpoint is already
-       * Infura or when no Infura alternative exists.
+       * Whether the chain has an Infura endpoint the user can switch to.
+       * False when the failing endpoint is already Infura or when no Infura
+       * alternative exists.
        */
-      switchableInfuraNetworkClientId: NetworkClientId | null;
+      canSwitchToInfura: boolean;
     };

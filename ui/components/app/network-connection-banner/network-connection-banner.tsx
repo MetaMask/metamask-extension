@@ -141,8 +141,7 @@ const getBannerContent = (
   const verticalAdjustment = '0.25em';
 
   // Check if we have an Infura endpoint available to switch to
-  const hasInfuraEndpoint =
-    networkConnectionBanner.switchableInfuraNetworkClientId !== null;
+  const hasInfuraEndpoint = networkConnectionBanner.canSwitchToInfura;
 
   if (networkConnectionBanner.status === 'degraded') {
     const primaryMessage = (
@@ -245,7 +244,6 @@ export const NetworkConnectionBanner = () => {
       networkConnectionBanner.trackNetworkBannerEvent({
         bannerType: networkConnectionBanner.status,
         eventName: MetaMetricsEventName.NetworkConnectionBannerUpdateRpcClicked,
-        networkClientId: networkConnectionBanner.networkClientId,
       });
 
       dispatch(
@@ -267,7 +265,6 @@ export const NetworkConnectionBanner = () => {
         bannerType: networkConnectionBanner.status,
         eventName:
           MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
-        networkClientId: networkConnectionBanner.networkClientId,
       });
 
       await networkConnectionBanner.switchToInfura();

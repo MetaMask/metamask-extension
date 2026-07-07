@@ -3975,10 +3975,10 @@ export const getNetworkConnectionBanner = createSelector(
     return {
       status,
       networkName: network.name,
-      networkClientId: network.networkClientId,
       chainId: network.chainId,
+      rpcUrl: network.rpcUrl,
       isInfuraEndpoint: network.isInfuraEndpoint,
-      switchableInfuraNetworkClientId: network.switchableInfuraNetworkClientId,
+      canSwitchToInfura: network.switchableInfuraNetworkClientId !== null,
     };
   },
 );
