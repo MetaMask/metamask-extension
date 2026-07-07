@@ -116,6 +116,14 @@ const removedBackgroundFields = [
   'PreferencesController.preferences.avatarType',
 ];
 
+const removedBackgroundOnlyFields = [
+  // Snap registry cache fields depend on whether the initial registry fetch
+  // has completed before the background Sentry capture.
+  'SnapRegistryController.database',
+  'SnapRegistryController.lastUpdated',
+  'SnapRegistryController.signature',
+];
+
 const ignoredConsoleErrors = [
   // The UI logs the expected error
   "Cannot read properties of undefined (reading 'version')",
@@ -139,7 +147,10 @@ function transformBackgroundState(
       set(clonedData, field, typeof get(clonedData, field));
     }
   }
-  for (const field of removedBackgroundFields) {
+  for (const field of [
+    ...removedBackgroundFields,
+    ...removedBackgroundOnlyFields,
+  ]) {
     if (has(clonedData, field)) {
       unset(clonedData, field);
     }

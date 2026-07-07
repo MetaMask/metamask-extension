@@ -43,7 +43,10 @@ export async function getAnalyticsState(): Promise<AnalyticsParticipation> {
   const appState = getState();
 
   if (appState.state || appState.persistedState) {
-    return getAnalyticsStateFromAppState(appState);
+    const analyticsState = getAnalyticsStateFromAppState(appState);
+    if (analyticsState) {
+      return analyticsState;
+    }
   }
 
   try {
@@ -97,7 +100,7 @@ function getAnalyticsStateFromPersistedState(
   const data = (
     persistedState as { data?: Record<string, unknown> } | undefined
   )?.data;
-  return getAnalyticsStateFromControllerState(data);
+  return getAnalyticsStateFromControllerState(data) ?? getDefaultOptOutState();
 }
 
 /**
@@ -107,12 +110,16 @@ function getAnalyticsStateFromPersistedState(
 function getAnalyticsStateFromBackupState(
   backupState: Backup | null,
 ): Exclude<AnalyticsParticipation, null> {
-  return getAnalyticsStateFromControllerState(backupState);
+  return getAnalyticsStateFromControllerState(backupState) ?? getDefaultOptOutState();
 }
 
 function getAnalyticsStateFromUIState(
   metamaskState: unknown,
-): Exclude<AnalyticsParticipation, null> {
+): AnalyticsParticipation {
+  if (!hasAnalyticsFields(metamaskState)) {
+    return null;
+  }
+
   const { analyticsId, completedMetaMetricsOnboarding, optedIn } =
     metamaskState as AnalyticsState & MetaMetricsState;
 
@@ -125,7 +132,7 @@ function getAnalyticsStateFromUIState(
 
 function getAnalyticsStateFromControllerState(
   state: unknown,
-): Exclude<AnalyticsParticipation, null> {
+): AnalyticsParticipation {
   const controllerState = isRecord(state) ? state : {};
   const analyticsController = getControllerState<AnalyticsState>(
     controllerState.AnalyticsController,
@@ -133,6 +140,10 @@ function getAnalyticsStateFromControllerState(
   const metaMetricsController = getControllerState<MetaMetricsState>(
     controllerState.MetaMetricsController,
   );
+
+  if (!analyticsController && !metaMetricsController) {
+    return null;
+  }
 
   const { analyticsId, optedIn } = analyticsController ?? {};
 
@@ -144,10 +155,27 @@ function getAnalyticsStateFromControllerState(
   };
 }
 
+function getDefaultOptOutState(): Exclude<AnalyticsParticipation, null> {
+  return {
+    analyticsId: undefined,
+    optedIn: false,
+    completedMetaMetricsOnboarding: false,
+  };
+}
+
 function getControllerState<TControllerState>(
   state: unknown,
 ): TControllerState | undefined {
   return isRecord(state) ? (state as TControllerState) : undefined;
+}
+
+function hasAnalyticsFields(value: unknown): value is AnalyticsState & MetaMetricsState {
+  return (
+    isRecord(value) &&
+    ('analyticsId' in value ||
+      'optedIn' in value ||
+      'completedMetaMetricsOnboarding' in value)
+  );
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

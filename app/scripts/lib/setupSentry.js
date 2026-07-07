@@ -271,13 +271,32 @@ function setSentryClient() {
   });
 
   Sentry.registerSpanErrorInstrumentation();
-  Sentry.init(clientOptions);
+  const client = initSentryClient(clientOptions);
 
   setCITags();
 
   addDebugListeners();
 
-  return true;
+  return client;
+}
+
+// Sentry.init refuses to initialize in MV3 extension workers under webpack
+// LavaMoat because package compartments do not see the app-level NW.js bypass.
+function initSentryClient(clientOptions) {
+  const client = new Sentry.BrowserClient({
+    ...clientOptions,
+    stackParser: clientOptions.stackParser ?? Sentry.defaultStackParser,
+    integrations: [
+      ...Sentry.getDefaultIntegrations(clientOptions),
+      ...clientOptions.integrations,
+    ],
+    transport: clientOptions.transport ?? Sentry.makeFetchTransport,
+  });
+
+  Sentry.setCurrentClient(client);
+  client.init();
+
+  return client;
 }
 
 /**

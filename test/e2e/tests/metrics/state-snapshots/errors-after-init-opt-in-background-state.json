@@ -381,12 +381,7 @@
   },
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
-  "SnapRegistryController": {
-    "database": "object",
-    "databaseUnavailable": "boolean",
-    "lastUpdated": "number",
-    "signature": "string"
-  },
+  "SnapRegistryController": { "databaseUnavailable": "boolean" },
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",

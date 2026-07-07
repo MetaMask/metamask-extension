@@ -52,6 +52,7 @@ describe('SnapRegistryControllerInit', () => {
         type: 'extension',
         version: '13.9.0',
       },
+      fetchFunction: expect.any(Function),
     });
   });
 });
