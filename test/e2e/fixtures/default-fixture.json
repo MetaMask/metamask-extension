@@ -198,12 +198,12 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
-      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": true,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -1073,6 +1073,7 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
@@ -1088,7 +1089,6 @@
         "tokenNetworkFilter": {
           "0x539": true
         },
-        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",

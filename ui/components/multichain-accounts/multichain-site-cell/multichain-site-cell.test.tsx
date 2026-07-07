@@ -28,6 +28,18 @@ jest.mock('../../../hooks/useAnalytics', () => {
   };
 });
 
+jest.mock('../../../contexts/metametrics', () => {
+  const { createContext } = jest.requireActual('react');
+  return {
+    MetaMetricsContext: createContext({
+      trackEvent: jest.fn(),
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    }),
+  };
+});
+
 const MOCK_WALLET_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 const MOCK_GROUP_ID_1 = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
 const MOCK_GROUP_ID_2 = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1';

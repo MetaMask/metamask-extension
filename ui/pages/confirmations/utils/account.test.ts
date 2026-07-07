@@ -3,6 +3,7 @@ import {
   isBitcoinAccountForSend,
   isEVMAccountForSend,
   isSolanaAccountForSend,
+  isStellarAccountForSend,
 } from './account';
 
 describe('Account Send Utils', () => {
@@ -234,6 +235,59 @@ describe('Account Send Utils', () => {
         scopes: ['eip155:1', 'solana:mainnet'],
       } as unknown as InternalAccount;
       expect(isBitcoinAccountForSend(account)).toBe(false);
+    });
+  });
+
+  describe('isStellarAccountForSend', () => {
+    it('returns false when account is null', () => {
+      expect(isStellarAccountForSend(null as unknown as InternalAccount)).toBe(
+        false,
+      );
+    });
+
+    it('returns false when account is undefined', () => {
+      expect(
+        isStellarAccountForSend(undefined as unknown as InternalAccount),
+      ).toBe(false);
+    });
+
+    it('returns true when account type starts with stellar:', () => {
+      const account = {
+        id: 'test-id',
+        type: 'stellar:account',
+        address: 'GADDRESS',
+        metadata: {},
+        methods: [],
+        options: {},
+        scopes: ['stellar:pubnet'],
+      } as unknown as InternalAccount;
+      expect(isStellarAccountForSend(account)).toBe(true);
+    });
+
+    it('returns true when account has a stellar scope', () => {
+      const account = {
+        id: 'test-id',
+        type: 'other:type',
+        address: 'GADDRESS',
+        metadata: {},
+        methods: [],
+        options: {},
+        scopes: ['stellar:pubnet'],
+      } as unknown as InternalAccount;
+      expect(isStellarAccountForSend(account)).toBe(true);
+    });
+
+    it('returns false for a non-stellar account', () => {
+      const account = {
+        id: 'test-id',
+        type: 'eip155:eoa',
+        address: '0x123',
+        metadata: {},
+        methods: [],
+        options: {},
+        scopes: ['eip155:1'],
+      } as unknown as InternalAccount;
+      expect(isStellarAccountForSend(account)).toBe(false);
     });
   });
 });
