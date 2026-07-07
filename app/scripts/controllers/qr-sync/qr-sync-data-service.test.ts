@@ -36,6 +36,7 @@ const TEST_SEED_PHRASE_INDICES = new Uint8Array(
   new Uint16Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).buffer,
 );
 const TEST_ENTROPY_ID = 'entropy-primary';
+const TEST_SECONDARY_ENTROPY_ID = 'entropy-secondary';
 const TEST_ACCOUNT_ID = 'account-1';
 const TEST_PRIVATE_KEY_ACCOUNT_ID = 'account-pk';
 
@@ -420,6 +421,371 @@ describe('QrSyncDataService', () => {
         type: 'PrivateKey',
         privateKey: 'MHhhYmNkZWY=',
       });
+    });
+
+    it('throws when no account groups are selected', async () => {
+      const { dataService } = setupDataService();
+
+      await expect(
+        dataService.buildWalletExportEntries(TEST_PASSWORD, []),
+      ).rejects.toThrow('At least one account group must be selected.');
+    });
+
+    it('deduplicates selected account group ids', async () => {
+      const fixture = createEntropyFixture(TEST_ENTROPY_ID, 0);
+
+      const { dataService, exportSeedPhrase } = setupDataService({
+        groupsById: new Map([[fixture.groupId, fixture.group]]),
+        walletsById: new Map([[fixture.walletId, fixture.wallet]]),
+      });
+
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [fixture.groupId, fixture.groupId],
+      );
+
+      expect(entries).toHaveLength(1);
+      expect(entries[0]).toMatchObject({
+        type: 'Mnemonic',
+        groups: [expect.objectContaining({ groupIndex: 0 })],
+      });
+      expect(exportSeedPhrase).toHaveBeenCalledTimes(1);
+    });
+
+    it('combines multiple groups from the same entropy into one mnemonic entry', async () => {
+      const group0 = createEntropyFixture(TEST_ENTROPY_ID, 0, 0);
+      const group1 = createEntropyFixture(TEST_ENTROPY_ID, 1, 1);
+      const wallet = {
+        ...group0.wallet,
+        groups: {
+          [group0.groupId]: group0.group,
+          [group1.groupId]: group1.group,
+        },
+      } as AccountWalletObject;
+
+      const { dataService, exportSeedPhrase } = setupDataService({
+        groupsById: new Map([
+          [group0.groupId, group0.group],
+          [group1.groupId, group1.group],
+        ]),
+        walletsById: new Map([[group0.walletId, wallet]]),
+      });
+
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [group0.groupId, group1.groupId],
+      );
+
+      expect(entries).toHaveLength(1);
+      expect(entries[0]).toMatchObject({
+        type: 'Mnemonic',
+        groups: [
+          expect.objectContaining({ groupIndex: 0, name: 'Account 1' }),
+          expect.objectContaining({
+            groupIndex: 1,
+            name: 'Account 2',
+            pinned: true,
+          }),
+        ],
+      });
+      expect(exportSeedPhrase).toHaveBeenCalledTimes(1);
+      expect(exportSeedPhrase).toHaveBeenCalledWith(
+        { password: TEST_PASSWORD },
+        TEST_ENTROPY_ID,
+      );
+    });
+
+    it('sorts mnemonic groups by groupIndex', async () => {
+      const group0 = createEntropyFixture(TEST_ENTROPY_ID, 0, 0);
+      const group2 = createEntropyFixture(TEST_ENTROPY_ID, 2, 2);
+      const wallet = {
+        ...group0.wallet,
+        groups: {
+          [group0.groupId]: group0.group,
+          [group2.groupId]: group2.group,
+        },
+      } as AccountWalletObject;
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([
+          [group0.groupId, group0.group],
+          [group2.groupId, group2.group],
+        ]),
+        walletsById: new Map([[group0.walletId, wallet]]),
+      });
+
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [group2.groupId, group0.groupId],
+      );
+
+      const mnemonicEntry = entries[0] as { groups: { groupIndex: number }[] };
+      expect(mnemonicEntry.groups.map((group) => group.groupIndex)).toEqual([
+        0, 2,
+      ]);
+    });
+
+    it('marks only the primary entropy wallet with isPrimary', async () => {
+      const primary = createEntropyFixture(TEST_ENTROPY_ID, 0);
+      const secondary = createEntropyFixture(TEST_SECONDARY_ENTROPY_ID, 0);
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([
+          [primary.groupId, primary.group],
+          [secondary.groupId, secondary.group],
+        ]),
+        walletsById: new Map([
+          [primary.walletId, primary.wallet],
+          [secondary.walletId, secondary.wallet],
+        ]),
+        primaryEntropyId: TEST_ENTROPY_ID,
+      });
+
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [primary.groupId, secondary.groupId],
+      );
+
+      expect(entries).toHaveLength(2);
+      expect(entries[0]).toMatchObject({
+        type: 'Mnemonic',
+        isPrimary: true,
+      });
+      expect(entries[1]).toMatchObject({
+        type: 'Mnemonic',
+      });
+      expect(entries[1]).not.toHaveProperty('isPrimary');
+    });
+
+    it('builds mixed mnemonic and private key exports', async () => {
+      const mnemonicFixture = createEntropyFixture(TEST_ENTROPY_ID, 0);
+      const privateKeyFixture = createPrivateKeyFixture();
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([
+          [mnemonicFixture.groupId, mnemonicFixture.group],
+          [privateKeyFixture.groupId, privateKeyFixture.group],
+        ]),
+        walletsById: new Map([
+          [mnemonicFixture.walletId, mnemonicFixture.wallet],
+          [privateKeyFixture.walletId, privateKeyFixture.wallet],
+        ]),
+        getAccount: (accountId) =>
+          accountId === TEST_PRIVATE_KEY_ACCOUNT_ID
+            ? createMockInternalAccount({
+                id: TEST_PRIVATE_KEY_ACCOUNT_ID,
+                address: '0ximported',
+              })
+            : undefined,
+      });
+
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [mnemonicFixture.groupId, privateKeyFixture.groupId],
+      );
+
+      expect(entries).toHaveLength(2);
+      expect(entries[0]).toMatchObject({ type: 'Mnemonic' });
+      expect(entries[1]).toMatchObject({
+        type: 'PrivateKey',
+        name: 'Imported Account',
+      });
+    });
+
+    it('throws when account group is not found', async () => {
+      const fixture = createEntropyFixture(TEST_ENTROPY_ID, 0);
+
+      const { dataService } = setupDataService({
+        groupsById: new Map(),
+        walletsById: new Map([[fixture.walletId, fixture.wallet]]),
+      });
+
+      await expect(
+        dataService.buildWalletExportEntries(TEST_PASSWORD, [fixture.groupId]),
+      ).rejects.toThrow(`Account group "${fixture.groupId}" not found.`);
+    });
+
+    it('throws when wallet is not found', async () => {
+      const fixture = createEntropyFixture(TEST_ENTROPY_ID, 0);
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([[fixture.groupId, fixture.group]]),
+        walletsById: new Map(),
+      });
+
+      await expect(
+        dataService.buildWalletExportEntries(TEST_PASSWORD, [fixture.groupId]),
+      ).rejects.toThrow(`Wallet for account group "${fixture.groupId}" not found.`);
+    });
+
+    it('throws when entropy wallet group is not a multichain account', async () => {
+      const fixture = createEntropyFixture(TEST_ENTROPY_ID, 0);
+      const invalidGroup = {
+        ...fixture.group,
+        type: AccountGroupType.SingleAccount,
+      } as AccountGroupObject;
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([[fixture.groupId, invalidGroup]]),
+        walletsById: new Map([[fixture.walletId, fixture.wallet]]),
+      });
+
+      await expect(
+        dataService.buildWalletExportEntries(TEST_PASSWORD, [fixture.groupId]),
+      ).rejects.toThrow(`Account group "${fixture.groupId}" cannot be synced.`);
+    });
+
+    it('rejects snap wallets', async () => {
+      const snapWalletId = toAccountWalletId(AccountWalletType.Snap, 'snap1');
+      const groupId = `${snapWalletId}/0` as AccountGroupId;
+      const group = {
+        type: AccountGroupType.MultichainAccount,
+        id: groupId,
+        accounts: [TEST_ACCOUNT_ID],
+        metadata: {
+          name: 'Snap Account',
+          pinned: false,
+          hidden: false,
+          lastSelected: 0,
+          entropy: { groupIndex: 0 },
+        },
+      } as AccountGroupObject;
+      const snapWallet = {
+        type: AccountWalletType.Snap,
+        id: snapWalletId,
+        status: 'ready',
+        groups: { [groupId]: group },
+        metadata: { name: 'Snap Wallet', snap: { id: 'npm:example' } },
+      } as AccountWalletObject;
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([[groupId, group]]),
+        walletsById: new Map([[snapWalletId, snapWallet]]),
+      });
+
+      await expect(
+        dataService.buildWalletExportEntries(TEST_PASSWORD, [groupId]),
+      ).rejects.toThrow(`Account group "${groupId}" cannot be synced.`);
+    });
+
+    it('resolves entropy id from entropySource account option for HD keyring wallets', async () => {
+      const fixture = createHdKeyringFixture(TEST_ENTROPY_ID, 1);
+      const account = createMockInternalAccount({
+        id: TEST_ACCOUNT_ID,
+        options: {
+          entropySource: TEST_ENTROPY_ID,
+        },
+      });
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([[fixture.groupId, fixture.group]]),
+        walletsById: new Map([[fixture.walletId, fixture.wallet]]),
+        getAccount: (accountId) =>
+          accountId === TEST_ACCOUNT_ID ? account : undefined,
+      });
+
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [fixture.groupId],
+      );
+
+      expect(entries[0]).toMatchObject({
+        type: 'Mnemonic',
+        groups: [expect.objectContaining({ groupIndex: 0 })],
+      });
+    });
+
+    it('includes hidden metadata when group or account is hidden', async () => {
+      const fixture = createEntropyFixture(TEST_ENTROPY_ID, 0);
+      const hiddenGroup = {
+        ...fixture.group,
+        metadata: {
+          ...fixture.group.metadata,
+          hidden: true,
+        },
+      } as AccountGroupObject;
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([[fixture.groupId, hiddenGroup]]),
+        walletsById: new Map([[fixture.walletId, fixture.wallet]]),
+      });
+
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [fixture.groupId],
+      );
+
+      expect(entries[0]).toMatchObject({
+        type: 'Mnemonic',
+        groups: [expect.objectContaining({ hidden: true })],
+      });
+      expect(
+        (entries[0] as { groups: { pinned?: boolean }[] }).groups[0],
+      ).not.toHaveProperty('pinned');
+    });
+
+    it('throws when private key account address cannot be resolved', async () => {
+      const fixture = createPrivateKeyFixture();
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([[fixture.groupId, fixture.group]]),
+        walletsById: new Map([[fixture.walletId, fixture.wallet]]),
+        getAccount: () => undefined,
+      });
+
+      await expect(
+        dataService.buildWalletExportEntries(TEST_PASSWORD, [fixture.groupId]),
+      ).rejects.toThrow(`Account for group "${fixture.groupId}" not found.`);
+    });
+
+    it('throws when HD keyring account has no entropy id', async () => {
+      const fixture = createHdKeyringFixture(TEST_ENTROPY_ID, 0);
+      const account = createMockInternalAccount({
+        id: TEST_ACCOUNT_ID,
+        options: {},
+      });
+
+      const { dataService } = setupDataService({
+        groupsById: new Map([[fixture.groupId, fixture.group]]),
+        walletsById: new Map([[fixture.walletId, fixture.wallet]]),
+        getAccount: (accountId) =>
+          accountId === TEST_ACCOUNT_ID ? account : undefined,
+      });
+
+      await expect(
+        dataService.buildWalletExportEntries(TEST_PASSWORD, [fixture.groupId]),
+      ).rejects.toThrow(`Account group "${fixture.groupId}" cannot be synced.`);
+    });
+
+    it('calls exportSeedPhrase once per unique entropy id', async () => {
+      const primary = createEntropyFixture(TEST_ENTROPY_ID, 0);
+      const secondary = createEntropyFixture(TEST_SECONDARY_ENTROPY_ID, 0);
+
+      const { dataService, exportSeedPhrase } = setupDataService({
+        groupsById: new Map([
+          [primary.groupId, primary.group],
+          [secondary.groupId, secondary.group],
+        ]),
+        walletsById: new Map([
+          [primary.walletId, primary.wallet],
+          [secondary.walletId, secondary.wallet],
+        ]),
+      });
+
+      await dataService.buildWalletExportEntries(TEST_PASSWORD, [
+        primary.groupId,
+        secondary.groupId,
+      ]);
+
+      expect(exportSeedPhrase).toHaveBeenCalledTimes(2);
+      expect(exportSeedPhrase).toHaveBeenCalledWith(
+        { password: TEST_PASSWORD },
+        TEST_ENTROPY_ID,
+      );
+      expect(exportSeedPhrase).toHaveBeenCalledWith(
+        { password: TEST_PASSWORD },
+        TEST_SECONDARY_ENTROPY_ID,
+      );
     });
   });
 });

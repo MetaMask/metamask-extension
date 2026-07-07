@@ -26,7 +26,7 @@ import {
   QrSyncConnectionStatus,
   QrSyncMessageVersion,
 } from './constants';
-import { QrSyncDataService } from './qr-sync-data-service';
+import { QrSyncDataServiceBuildWalletExportEntriesAction } from './qr-sync-data-service-method-action-types';
 
 export type QrSyncConnectionStatusType =
   (typeof QrSyncConnectionStatus)[keyof typeof QrSyncConnectionStatus];
@@ -321,18 +321,6 @@ export type QrSyncControllerMessenger = Messenger<
   QrSyncAllowedActions,
   QrSyncControllerEvents
 >;
-
-/**
- * Builds sync-ready wallet export entries from the user's account group selection.
- *
- * @param password - The wallet password used to export secrets.
- * @param selectedAccountGroupIds - The account groups selected for sync.
- * @returns Wallet export entries for the sync-ready payload.
- */
-export type QrSyncDataServiceBuildWalletExportEntriesAction = {
-  type: 'QrSyncDataService:buildWalletExportEntries';
-  handler: QrSyncDataService['buildWalletExportEntries'];
-};
 
 export type QrSyncDataServiceAllowedActions =
   | QrSyncDataServiceBuildWalletExportEntriesAction

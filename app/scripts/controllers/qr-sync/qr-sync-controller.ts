@@ -733,7 +733,7 @@ export class QrSyncController extends BaseController<
         version: QrSyncMessageVersion.V1,
       });
     } catch (error) {
-      log.error('QrSyncController: failed to send message', message, error);
+      log.error('QrSyncController: failed to send message', message.type, error);
       throw new Error(QrSyncErrorMessages.SYNC_FAILED_TO_SEND_MESSAGE);
     }
   }
