@@ -119,3 +119,14 @@ export const getIsControllerDeprecated = (
 export const getIsTokenListControllerDeprecated = (
   state: RemoteFeatureFlagsState,
 ): boolean => getIsControllerDeprecated(state, 'TokenListController');
+
+/**
+ * Selector to check whether the `CurrencyRateController` has been deprecated by
+ * the assets-unify-state rollout for the running app version.
+ *
+ * @param state - The MetaMask state object
+ * @returns boolean - True if `CurrencyRateController` is deprecated, false otherwise.
+ */
+export const getIsCurrencyRateControllerDeprecated = (
+  state: RemoteFeatureFlagsState,
+): boolean => getIsControllerDeprecated(state, 'CurrencyRateController');
