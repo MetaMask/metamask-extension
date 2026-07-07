@@ -18,12 +18,35 @@ globalThis.stateHooks.lazyListener = lazyListener;
 
 let runImportScriptsInitiated = false;
 
+async function maybeApplyServiceWorkerStartupDelay() {
+  if (!process.env.IN_TEST) {
+    return;
+  }
+
+  const manifest = chrome.runtime.getManifest() as {
+    _flags?: {
+      testing?: {
+        simulateServiceWorkerStartupDelayMs?: number;
+      };
+    };
+  };
+  const delayMs = manifest._flags?.testing?.simulateServiceWorkerStartupDelayMs;
+
+  if (typeof delayMs !== 'number' || delayMs <= 0) {
+    return;
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, delayMs));
+}
+
 async function runImportScripts() {
   // Bail if we've already run importScripts
   if (runImportScriptsInitiated) {
     return;
   }
   runImportScriptsInitiated = true;
+
+  await maybeApplyServiceWorkerStartupDelay();
 
   const startImportScriptsTime = performance.now();
 

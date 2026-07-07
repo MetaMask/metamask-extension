@@ -102,6 +102,11 @@ export type ManifestFlags = {
      */
     simulatedSlowBackgroundLoadingTimeout?: number;
     /**
+     * Number of milliseconds to wait before importing the background script
+     * during service worker installation.
+     */
+    simulateServiceWorkerStartupDelayMs?: number;
+    /**
      * Simulate background initialization hang for testing the initialization
      * timeout error screen. Only triggers when a vault backup exists in IndexedDB,
      * so tests can onboard first, then reload to trigger the timeout.
