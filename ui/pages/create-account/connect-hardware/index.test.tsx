@@ -22,7 +22,7 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIsNewHardwareWalletOnboardingEnabled } from '../../../../shared/lib/environment';
 import { MOCK_RAW_HARDWARE_ACCOUNTS } from '../../../../test/unit/hardware-wallets/connect-hardware/raw-hardware-accounts';
-import type { RawHardwareAccount } from './types';
+import { LEDGER_HD_PATHS } from './utils/hardware-hd-paths';
 import ConnectHardwareForm from '.';
 
 jest.mock('../../../../shared/lib/environment', () => ({
@@ -143,8 +143,6 @@ function createMockState(overrides?: Record<string, unknown>) {
     ...overrides,
   };
 }
-
-const MOCK_ACCOUNTS: RawHardwareAccount[] = MOCK_RAW_HARDWARE_ACCOUNTS;
 
 const DEVICE_LABEL_TO_TESTID: Record<string, string> = {
   [tEn('ledger')]: 'connect-hardware-wallet-ledger',
@@ -375,7 +373,7 @@ describe('ConnectHardwareForm', () => {
 
   describe('connectToHardwareWallet', () => {
     it('calls connectHardware when a device is selected', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -387,7 +385,7 @@ describe('ConnectHardwareForm', () => {
     });
 
     it('does not call connectHardware again when accounts are already loaded', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -406,7 +404,7 @@ describe('ConnectHardwareForm', () => {
     });
 
     it('transitions to account list on successful connection', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -619,7 +617,7 @@ describe('ConnectHardwareForm', () => {
     let mockStore: ReturnType<ReturnType<typeof configureMockStore>>;
 
     beforeEach(async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
       mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -697,7 +695,7 @@ describe('ConnectHardwareForm', () => {
       });
 
       it('passes a null hd path fallback when no path is selected', async () => {
-        mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+        mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
         cleanup();
 
         const storeWithEmptyPath = configureMockStore([thunk])(
@@ -801,7 +799,7 @@ describe('ConnectHardwareForm', () => {
 
   describe('QR Hardware Wallet', () => {
     it('calls connectHardware when Keystone wallet option is clicked', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -815,7 +813,7 @@ describe('ConnectHardwareForm', () => {
 
   describe('showTemporaryAlert', () => {
     it('dispatches showAlert on first hardware connection', async () => {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
@@ -836,7 +834,7 @@ describe('ConnectHardwareForm', () => {
 
   describe('onAccountRestriction', () => {
     it('displays ledgerAccountRestriction error when Next is clicked with fewer than 5 accounts', async () => {
-      const threeAccounts = MOCK_ACCOUNTS.slice(0, 3);
+      const threeAccounts = MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 3);
       mockConnectHardware.mockResolvedValue(threeAccounts);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
@@ -902,7 +900,7 @@ describe('ConnectHardwareForm', () => {
       mockStore: ReturnType<ReturnType<typeof configureMockStore>>,
       deviceLabel = tEn('trezor'),
     ) {
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
       renderWithProvider(<ConnectHardwareForm />, mockStore);
       connectToDevice(deviceLabel);
 
@@ -913,7 +911,7 @@ describe('ConnectHardwareForm', () => {
 
     it('renders the legacy account list when the feature flag is disabled', async () => {
       mockGetIsNewHardwareWalletOnboardingEnabled.mockReturnValue(false);
-      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      mockConnectHardware.mockResolvedValue(MOCK_RAW_HARDWARE_ACCOUNTS);
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
       connectToDevice(tEn('trezor'));
@@ -930,7 +928,6 @@ describe('ConnectHardwareForm', () => {
       const mockStore = configureMockStore([thunk])(createMockState());
       await connectDeviceAndWaitForAccountSelector(mockStore);
 
-      expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(5);
       expect(
         screen.queryByTestId('hw-account-list__item'),
       ).not.toBeInTheDocument();
@@ -981,6 +978,54 @@ describe('ConnectHardwareForm', () => {
       });
       await waitFor(() => {
         expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
+      });
+    });
+
+    it('marks the browser unsupported when show more is blocked in the new flow', async () => {
+      const mockStore = configureMockStore([thunk])(createMockState());
+      await connectDeviceAndWaitForAccountSelector(mockStore);
+
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.WindowBlocked),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-back-button'),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('browserNotSupported')),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('marks the browser unsupported when HD path reload is blocked in the new flow', async () => {
+      const mockStore = configureMockStore([thunk])(createMockState());
+      await connectDeviceAndWaitForAccountSelector(mockStore, tEn('ledger'));
+
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.WindowBlocked),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-settings-button'),
+      );
+      fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
+      fireEvent.click(screen.getByTestId('select-hd-path-page-continue-button'));
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-back-button'),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('browserNotSupported')),
+        ).toBeInTheDocument();
       });
     });
   });

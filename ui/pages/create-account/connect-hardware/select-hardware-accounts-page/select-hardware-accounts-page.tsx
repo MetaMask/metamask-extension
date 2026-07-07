@@ -79,6 +79,7 @@ const ACCOUNTS_PER_PAGE = 5;
  * @param options.connectedAccounts - Lowercase addresses already imported in MetaMask.
  * @param options.onBack - Called when the user leaves the account selector.
  * @param options.onError - Called when the parent should display an error.
+ * @param options.onBrowserBlocked - Called when the browser blocks a hardware popup.
  */
 export const SelectHardwareAccountsPage = ({
   device,
@@ -86,6 +87,7 @@ export const SelectHardwareAccountsPage = ({
   connectedAccounts,
   onBack,
   onError,
+  onBrowserBlocked,
 }: SelectHardwareAccountsPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -195,10 +197,15 @@ export const SelectHardwareAccountsPage = ({
 
         if (resolution.kind === HardwareConnectErrorResolutionKind.Error) {
           onError(resolution.message);
+        } else if (
+          resolution.kind === HardwareConnectErrorResolutionKind.BrowserBlocked
+        ) {
+          onBrowserBlocked();
+          onError(null);
         }
       }
     },
-    [device, dispatch, onError, t],
+    [device, dispatch, onBrowserBlocked, onError, t],
   );
 
   const handlePathChange = useCallback(
@@ -214,11 +221,13 @@ export const SelectHardwareAccountsPage = ({
         }),
       );
       setSelectedAccountIndices([]);
+      setAccounts([]);
       setLastFetchedBatchSize(0);
       setIsLoadingMoreAccounts(false);
+      onError(null);
       fetchAccounts(0, path);
     },
-    [device, dispatch, fetchAccounts, selectedPath],
+    [device, dispatch, fetchAccounts, onError, selectedPath],
   );
 
   const handleShowMore = useCallback(async () => {

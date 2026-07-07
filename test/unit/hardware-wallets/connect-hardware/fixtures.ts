@@ -7,7 +7,7 @@ import type {
   HardwareConnectAccount,
   RawHardwareAccount,
 } from '../../../../ui/pages/create-account/connect-hardware/types';
-import type { SelectHardwareAccountsPageProps } from '../../../../ui/pages/create-account/connect-hardware/select-hardware-accounts-page/select-hardware-accounts-page.types';
+import type { SelectHardwareAccountsPageProps } from '../../../../ui/pages/create-account/connect-hardware/select-hardware-accounts-page';
 import {
   LEDGER_HD_PATHS,
   TREZOR_HD_PATHS,
@@ -72,6 +72,7 @@ export function createDefaultSelectHardwareAccountsPageProps(
     connectedAccounts: [],
     onBack: jest.fn(),
     onError: jest.fn(),
+    onBrowserBlocked: jest.fn(),
     ...overrides,
   };
 }

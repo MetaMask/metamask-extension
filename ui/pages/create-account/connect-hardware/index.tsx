@@ -604,6 +604,10 @@ const ConnectHardwareForm = () => {
           connectedAccounts={connectedAccounts}
           onBack={onCancel}
           onError={setError}
+          onBrowserBlocked={() => {
+            setBrowserSupported(false);
+            setError(null);
+          }}
         />
       );
     }

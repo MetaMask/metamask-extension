@@ -10,7 +10,7 @@ import {
   toHardwareConnectAccounts,
 } from '../../../../../test/unit/hardware-wallets/connect-hardware/fixtures';
 import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
-import type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';
+import type { SelectHardwareAccountsPageProps } from './index';
 
 const mockMetaMetricsContext = {
   trackEvent: () => Promise.resolve(),
@@ -21,7 +21,10 @@ const mockMetaMetricsContext = {
 
 const mockStore = createSelectHardwareAccountsMockStore();
 
-type StoryArgs = Omit<SelectHardwareAccountsPageProps, 'onBack' | 'onError'>;
+type StoryArgs = Omit<
+  SelectHardwareAccountsPageProps,
+  'onBack' | 'onError' | 'onBrowserBlocked'
+>;
 
 const SelectHardwareAccountsPageStory = (args: StoryArgs) => (
   <Provider store={mockStore}>
@@ -30,6 +33,7 @@ const SelectHardwareAccountsPageStory = (args: StoryArgs) => (
         {...args}
         onBack={() => undefined}
         onError={() => undefined}
+        onBrowserBlocked={() => undefined}
       />
     </MetaMetricsContext.Provider>
   </Provider>

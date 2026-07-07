@@ -171,6 +171,18 @@ describe('resolveHardwareConnectUserError', () => {
         ),
       );
     });
+
+    it('returns the raw error message when no ledger hex code is present', () => {
+      const rawMessage = 'Ledger connection failed without a status code';
+
+      expect(
+        resolveHardwareConnectUserError(
+          new Error(rawMessage),
+          HardwareDeviceNames.trezor,
+          tEn,
+        ),
+      ).toStrictEqual(expectErrorResolution(rawMessage));
+    });
   });
 
   describe('legacy timeout messages', () => {
@@ -223,10 +235,7 @@ describe('resolveHardwareConnectUserError', () => {
     ])(
       'suppresses legacy dismiss token %s',
       (
-        legacyMessage:
-          | typeof HardwareConnectLegacyErrorMessage.WindowClosed
-          | typeof HardwareConnectLegacyErrorMessage.PopupClosed
-          | typeof HardwareConnectLegacyErrorMessage.KeystoneSyncCancel,
+        legacyMessage: (typeof HardwareConnectLegacyErrorMessage)[keyof typeof HardwareConnectLegacyErrorMessage],
       ) => {
         expect(
           resolveHardwareConnectUserError(

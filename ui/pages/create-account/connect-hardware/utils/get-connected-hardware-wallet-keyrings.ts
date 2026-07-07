@@ -1,13 +1,18 @@
 import type { KeyringObject } from '@metamask/keyring-controller';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 
-const HARDWARE_WALLET_KEYRING_TYPES = [
+/** Hardware keyring types supported by connect-hardware flows. */
+export const HARDWARE_WALLET_KEYRING_TYPES = [
   KeyringType.ledger,
   KeyringType.trezor,
   KeyringType.lattice,
   KeyringType.qr,
   KeyringType.oneKey,
 ] as const;
+
+/** Hardware keyring type value from {@link HARDWARE_WALLET_KEYRING_TYPES}. */
+export type HardwareWalletKeyringType =
+  (typeof HARDWARE_WALLET_KEYRING_TYPES)[number];
 
 /**
  * Filters MetaMask keyrings to hardware wallets with imported accounts.

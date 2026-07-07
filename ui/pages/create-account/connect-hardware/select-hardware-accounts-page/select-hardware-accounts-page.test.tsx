@@ -18,7 +18,7 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { LEDGER_HD_PATHS } from '../utils/hardware-hd-paths';
 import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
-import type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';
+import type { SelectHardwareAccountsPageProps } from '.';
 
 const mockConnectHardware = jest.fn();
 const mockConnectHardwareAction = jest.fn();
@@ -57,6 +57,31 @@ const renderPage = (props: Partial<SelectHardwareAccountsPageProps> = {}) => {
     ),
   };
 };
+
+function openHdPathSettings(): void {
+  fireEvent.click(
+    screen.getByTestId('select-hardware-accounts-page-settings-button'),
+  );
+}
+
+function selectLedgerHdPath(pathIndex: number): void {
+  fireEvent.click(screen.getByText(LEDGER_HD_PATHS[pathIndex].name));
+}
+
+function confirmHdPathSelection(): void {
+  fireEvent.click(screen.getByTestId('select-hd-path-page-continue-button'));
+}
+
+/**
+ * Opens settings, selects a ledger HD path, and confirms the change.
+ *
+ * @param pathIndex - Index of the ledger HD path option to confirm.
+ */
+function confirmLedgerHdPathChange(pathIndex: number): void {
+  openHdPathSettings();
+  selectLedgerHdPath(pathIndex);
+  confirmHdPathSelection();
+}
 
 describe('SelectHardwareAccountsPage', () => {
   beforeEach(() => {
@@ -267,6 +292,7 @@ describe('SelectHardwareAccountsPage', () => {
         expect(mockConnectHardwareAction).toHaveBeenCalled();
       });
       expect(props.onError).not.toHaveBeenCalled();
+      expect(props.onBrowserBlocked).not.toHaveBeenCalled();
     });
 
     it('forwards legacy ledger locked fetch errors to onError', async () => {
@@ -284,6 +310,24 @@ describe('SelectHardwareAccountsPage', () => {
       await waitFor(() => {
         expect(props.onError).toHaveBeenCalledWith(tEn('ledgerLocked'));
       });
+    });
+
+    it('forwards browser blocked fetch errors to onBrowserBlocked', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.WindowBlocked),
+      );
+      const { props } = renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
+
+      fireEvent.click(
+        screen.getByTestId('select-hardware-accounts-page-show-more-button'),
+      );
+
+      await waitFor(() => {
+        expect(props.onBrowserBlocked).toHaveBeenCalledTimes(1);
+      });
+      expect(props.onError).toHaveBeenCalledWith(null);
     });
 
     it('hides show more after a partial batch is appended', async () => {
@@ -426,9 +470,7 @@ describe('SelectHardwareAccountsPage', () => {
     it('opens the HD path page when settings is clicked', () => {
       renderPage();
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-settings-button'),
-      );
+      openHdPathSettings();
 
       expect(screen.getByText(tEn('selectHdPath'))).toBeInTheDocument();
       expect(screen.getAllByTestId('hardware-hd-path-option')).toHaveLength(3);
@@ -437,9 +479,7 @@ describe('SelectHardwareAccountsPage', () => {
     it('renders trezor HD path options for trezor devices', () => {
       renderPage({ device: HardwareDeviceNames.trezor });
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-settings-button'),
-      );
+      openHdPathSettings();
 
       expect(screen.getAllByTestId('hardware-hd-path-option')).toHaveLength(3);
     });
@@ -447,9 +487,7 @@ describe('SelectHardwareAccountsPage', () => {
     it('returns to the account selector when back is clicked on the HD path page', () => {
       renderPage();
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-settings-button'),
-      );
+      openHdPathSettings();
       fireEvent.click(screen.getByTestId('select-hd-path-page-back-button'));
 
       expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
@@ -459,12 +497,8 @@ describe('SelectHardwareAccountsPage', () => {
     it('returns without reloading when Continue is clicked with the same path', () => {
       renderPage();
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-settings-button'),
-      );
-      fireEvent.click(
-        screen.getByTestId('select-hd-path-page-continue-button'),
-      );
+      openHdPathSettings();
+      confirmHdPathSelection();
 
       expect(mockConnectHardwareAction).not.toHaveBeenCalled();
       expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
@@ -473,35 +507,174 @@ describe('SelectHardwareAccountsPage', () => {
     it('does not reload accounts when a new path is selected but not confirmed', () => {
       renderPage();
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-settings-button'),
-      );
-      fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
+      openHdPathSettings();
+      selectLedgerHdPath(1);
 
       expect(mockConnectHardwareAction).not.toHaveBeenCalled();
       expect(screen.getByText(tEn('selectHdPath'))).toBeInTheDocument();
     });
 
-    it('reloads accounts and returns to the account selector after confirming a new path', async () => {
+    it('reloads accounts for the selected path after confirmation', async () => {
       const pathChangedAccount = createMockRawHardwareAccounts(1, 0)[0];
       mockConnectHardware.mockResolvedValue([pathChangedAccount]);
       renderPage({
         accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
       });
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-settings-button'),
-      );
-      fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
-      fireEvent.click(
-        screen.getByTestId('select-hd-path-page-continue-button'),
-      );
+      confirmLedgerHdPathChange(1);
 
       await waitFor(() => {
-        expect(mockConnectHardwareAction).toHaveBeenCalledTimes(1);
+        expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+          HardwareDeviceNames.ledger,
+          0,
+          LEDGER_HD_PATHS[1].value,
+          false,
+          expect.any(Function),
+        );
       });
       expect(screen.getByText(tEn('selectAnAccount'))).toBeInTheDocument();
       expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(1);
+    });
+
+    it('clears stale accounts immediately when confirming a new HD path', async () => {
+      let resolveConnectHardware: (value: unknown) => void = () => undefined;
+      mockConnectHardware.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveConnectHardware = resolve;
+          }),
+      );
+      renderPage({
+        accounts: toHardwareConnectAccounts(
+          MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 2),
+        ),
+      });
+
+      expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(2);
+
+      confirmLedgerHdPathChange(1);
+
+      expect(
+        screen.queryByTestId('hardware-account-card'),
+      ).not.toBeInTheDocument();
+
+      const pathChangedAccount = createMockRawHardwareAccounts(1, 0)[0];
+      await act(async () => {
+        resolveConnectHardware([pathChangedAccount]);
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hardware-account-card')).toHaveLength(1);
+      });
+    });
+
+    it('clears account selection when confirming a new HD path', async () => {
+      mockConnectHardware.mockResolvedValue(createMockRawHardwareAccounts(1, 0));
+      renderPage();
+
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Account 1' }));
+      expect(screen.getByRole('checkbox', { name: 'Account 1' })).toBeChecked();
+
+      confirmLedgerHdPathChange(1);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('checkbox', { name: 'Account 1' }),
+        ).not.toBeChecked();
+      });
+    });
+
+    it('ignores stale HD path reload results when a newer path is confirmed', async () => {
+      const stalePathAccounts = createMockRawHardwareAccounts(1, 1);
+      const latestPathAccounts = createMockRawHardwareAccounts(1, 2);
+      let resolveFirstFetch: (value: unknown) => void = () => undefined;
+      let resolveSecondFetch: (value: unknown) => void = () => undefined;
+      let fetchCount = 0;
+
+      mockConnectHardware.mockImplementation(() => {
+        fetchCount += 1;
+
+        if (fetchCount === 1) {
+          return new Promise((resolve) => {
+            resolveFirstFetch = resolve;
+          });
+        }
+
+        return new Promise((resolve) => {
+          resolveSecondFetch = resolve;
+        });
+      });
+
+      renderPage({
+        accounts: toHardwareConnectAccounts(
+          MOCK_RAW_HARDWARE_ACCOUNTS.slice(0, 2),
+        ),
+      });
+
+      confirmLedgerHdPathChange(1);
+      confirmLedgerHdPathChange(2);
+
+      await act(async () => {
+        resolveFirstFetch(stalePathAccounts);
+      });
+
+      expect(
+        screen.queryByTestId('hardware-account-card'),
+      ).not.toBeInTheDocument();
+
+      await act(async () => {
+        resolveSecondFetch(latestPathAccounts);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('checkbox', { name: 'Account 3' })).toBeInTheDocument();
+      });
+    });
+
+    it('forwards HD path reload failures to onError', async () => {
+      mockConnectHardware.mockRejectedValue(new Error('Path reload failed'));
+      const { props } = renderPage();
+
+      confirmLedgerHdPathChange(1);
+
+      await waitFor(() => {
+        expect(props.onError).toHaveBeenCalledWith('Path reload failed');
+      });
+      expect(props.onBrowserBlocked).not.toHaveBeenCalled();
+    });
+
+    it('does not notify parent when HD path reload fails with a suppressed error', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.PopupClosed),
+      );
+      const { props } = renderPage();
+
+      confirmLedgerHdPathChange(1);
+
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalled();
+      });
+      expect(props.onError).toHaveBeenCalledWith(null);
+      expect(props.onBrowserBlocked).not.toHaveBeenCalled();
+    });
+
+    it('forwards browser blocked path reload errors to onBrowserBlocked', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error(HardwareConnectLegacyErrorMessage.WindowBlocked),
+      );
+      const { props } = renderPage({
+        accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
+      });
+
+      confirmLedgerHdPathChange(1);
+
+      await waitFor(() => {
+        expect(props.onBrowserBlocked).toHaveBeenCalledTimes(1);
+      });
+      expect(props.onError).toHaveBeenCalledWith(null);
+      expect(
+        screen.queryByTestId('hardware-account-card'),
+      ).not.toBeInTheDocument();
     });
 
     it('clears accounts when a path reload returns no accounts', async () => {
@@ -510,13 +683,7 @@ describe('SelectHardwareAccountsPage', () => {
         accounts: toHardwareConnectAccounts(MOCK_RAW_HARDWARE_ACCOUNTS),
       });
 
-      fireEvent.click(
-        screen.getByTestId('select-hardware-accounts-page-settings-button'),
-      );
-      fireEvent.click(screen.getByText(LEDGER_HD_PATHS[1].name));
-      fireEvent.click(
-        screen.getByTestId('select-hd-path-page-continue-button'),
-      );
+      confirmLedgerHdPathChange(1);
 
       await waitFor(() => {
         expect(

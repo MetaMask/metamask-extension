@@ -8,6 +8,12 @@ export const HARDWARE_ACCOUNTS_PAGE_VIEWS = ['accounts', 'hd-path'] as const;
 export type HardwareAccountsPageView =
   (typeof HARDWARE_ACCOUNTS_PAGE_VIEWS)[number];
 
+/** Parent callback for showing or clearing connect hardware errors. */
+export type ConnectHardwarePageErrorHandler = (error: string | null) => void;
+
+/** Parent callback when the browser blocks a hardware wallet popup. */
+export type ConnectHardwarePageBrowserBlockedHandler = () => void;
+
 /**
  * Props for the hardware account selection page.
  * Rendered by index.tsx when the new hardware onboarding flag is enabled.
@@ -17,11 +23,13 @@ export type HardwareAccountsPageView =
  * @property connectedAccounts - Lowercase addresses already imported in MetaMask.
  * @property onBack - Called when the user leaves the account selector.
  * @property onError - Called when the parent should display an error.
+ * @property onBrowserBlocked - Called when the browser blocks a hardware popup.
  */
 export type SelectHardwareAccountsPageProps = {
   device: HardwareDeviceNames;
   accounts: HardwareConnectAccount[];
   connectedAccounts: string[];
   onBack: () => void;
-  onError: (error: string | null) => void;
+  onError: ConnectHardwarePageErrorHandler;
+  onBrowserBlocked: ConnectHardwarePageBrowserBlockedHandler;
 };
