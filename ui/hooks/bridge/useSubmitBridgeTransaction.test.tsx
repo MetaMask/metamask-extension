@@ -466,14 +466,17 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=activity`, {
-        replace: true,
-        state: {
-          bridgeState: null,
-          stayOnHomePage: true,
-          token: null,
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+          state: {
+            bridgeState: null,
+            stayOnHomePage: true,
+            token: null,
+          },
         },
-      });
+      );
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
@@ -508,14 +511,17 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=activity`, {
-        replace: true,
-        state: {
-          bridgeState: null,
-          stayOnHomePage: true,
-          token: null,
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+          state: {
+            bridgeState: null,
+            stayOnHomePage: true,
+            token: null,
+          },
         },
-      });
+      );
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
       expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
@@ -580,9 +586,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
     it('navigates to activity after QR hardware wallet submit when no QR SIGN scan occurs', async () => {
       const store = makeMockStore();
       isHardwareWalletSpy.mockImplementation(() => true);
-      getHardwareWalletTypeSpy.mockImplementation(
-        () => HardwareKeyringType.qr,
-      );
+      getHardwareWalletTypeSpy.mockImplementation(() => HardwareKeyringType.qr);
       submitTxSpy.mockReturnValueOnce((async () => undefined) as never);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -632,9 +636,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         },
       });
       isHardwareWalletSpy.mockImplementation(() => true);
-      getHardwareWalletTypeSpy.mockImplementation(
-        () => HardwareKeyringType.qr,
-      );
+      getHardwareWalletTypeSpy.mockImplementation(() => HardwareKeyringType.qr);
       submitTxSpy.mockReturnValueOnce((async () => undefined) as never);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
