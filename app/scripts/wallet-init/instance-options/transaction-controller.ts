@@ -72,6 +72,7 @@ export function getTransactionControllerInstanceOptions({
     request;
 
   return {
+    disableSwaps: false,
     getPermittedAccounts: async (origin?: string) =>
       getPermittedAccounts(origin),
     getSavedGasFees: getSavedGasFees.bind(null, {
