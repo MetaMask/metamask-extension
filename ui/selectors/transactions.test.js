@@ -27,6 +27,7 @@ import {
   getTransactions,
   getUnapprovedTransactions,
   getTransactionsByChainId,
+  getCurrentNetworkTransactions,
   incomingTxListSelectorAllChains,
   incomingTxListSelector,
   selectedAddressTxListSelectorAllChain,
@@ -2136,6 +2137,54 @@ describe('Transaction Selectors', () => {
 
       // Should return same reference (memoized)
       expect(result1).toBe(result2);
+    });
+  });
+
+  describe('getCurrentNetworkTransactions', () => {
+    it('returns transactions for the current network', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      expect(getCurrentNetworkTransactions(state)).toStrictEqual([mainnetTx]);
+    });
+
+    it('memoizes results when called with same state', () => {
+      const tx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [tx],
+        },
+      };
+
+      const result1 = getCurrentNetworkTransactions(state);
+      const result2 = getCurrentNetworkTransactions(state);
+
+      expect(result1).toBe(result2);
+      expect(result1).toStrictEqual([tx]);
     });
   });
 });
