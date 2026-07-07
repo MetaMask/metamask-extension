@@ -39,7 +39,7 @@ export class KeyManager implements IKeyManager {
     myPrivateKey: Uint8Array,
   ): Promise<string> {
     const encryptedBuffer = base64ToBytes(encryptedB64);
-    const decryptedBuffer = await decrypt(myPrivateKey, encryptedBuffer);
+    const decryptedBuffer = decrypt(myPrivateKey, encryptedBuffer);
     return bytesToString(decryptedBuffer);
   }
 }

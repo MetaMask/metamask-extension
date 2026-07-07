@@ -88,9 +88,13 @@ export const useBridgeNavigation = () => {
   /**
    * Navigates to the current route and clears the location state.
    * @param to - The default route to navigate to.
+   * @param stayOnHomePage - Whether to set the stayOnHomePage flag in state.
+   * @param replace - Whether to replace the current history entry instead of
+   * pushing a new one. Should be `true` for terminal navigations (e.g. after
+   * bridge submission) so users cannot return to flow pages via back navigation.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }, stayOnHomePage = false) => {
+    (to: To = { pathname }, stayOnHomePage = false, replace = false) => {
       navigate(to, {
         state: {
           ...state,
@@ -98,6 +102,7 @@ export const useBridgeNavigation = () => {
           token: null,
           stayOnHomePage,
         },
+        replace,
       });
     },
     [state, pathname],
@@ -253,9 +258,9 @@ export const useBridgeNavigation = () => {
       BridgeQueryParams.IsFromTransactionShield,
     );
     if (isFromTransactionShield) {
-      resetLocationState(TRANSACTION_SHIELD_ROUTE);
+      resetLocationState(TRANSACTION_SHIELD_ROUTE, false, true);
     } else {
-      resetLocationState(DEFAULT_ROUTE, true);
+      resetLocationState(DEFAULT_ROUTE, true, true);
     }
   }, [search, resetLocationState]);
 

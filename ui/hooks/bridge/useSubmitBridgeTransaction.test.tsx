@@ -332,6 +332,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
           DEFAULT_ROUTE,
           expect.objectContaining({
+            replace: true,
             state: expect.objectContaining({
               bridgeState: null,
               stayOnHomePage: true,
