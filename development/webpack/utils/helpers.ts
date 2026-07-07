@@ -1,6 +1,5 @@
 import { join, sep } from 'node:path';
-import type { Compiler, EntryObject, Stats } from 'webpack';
-import type { Configuration } from 'webpack-dev-server';
+import type { EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
 
 export type Manifest = chrome.runtime.Manifest;
@@ -64,56 +63,16 @@ export const UI_COMPONENT_RE = new RegExp(
   'u',
 );
 
+export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
+
+export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
+
 /**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`
  */
 export const noop = () => undefined;
-
-/**
- * Suppresses routine webpack-dev-server info logs while leaving warnings and
- * errors visible.
- *
- * webpack-dev-server logs startup and shutdown banners through webpack's
- * infrastructure logger. Those banners interrupt webpack's progress status
- * line, so the webpack launcher prints its own concise watch message instead.
- *
- * @param compiler - The webpack compiler.
- */
-export function suppressDevServerInfoLogs(compiler: Compiler): void {
-  compiler.hooks.infrastructureLog.tap(
-    'MetaMaskDevServerInfoLogSuppressor',
-    (name, type) =>
-      name === 'webpack-dev-server' && type === 'info' ? true : undefined,
-  );
-}
-
-/**
- * Logs watch-mode build stats and writes a line once the build is ready for
- * more changes.
- *
- * webpack-dev-server starts listening before webpack finishes the initial
- * compilation. Hooking the compiler completion keeps the output aligned with
- * webpack watch mode: stats first, then the watch-ready line.
- *
- * @param compiler - The webpack compiler.
- * @param message - The message to write.
- */
-export function logWatchBuildStats(compiler: Compiler, message: string): void {
-  const logBuild = (error?: Error | null, stats?: Stats) => {
-    compiler.getInfrastructureLogger('webpack.Progress').status();
-    logStats(error, stats);
-    console.error(message);
-  };
-
-  compiler.hooks.done.tap('MetaMaskWatchBuildLogger', (stats) => {
-    logBuild(undefined, stats);
-  });
-  compiler.hooks.failed.tap('MetaMaskWatchBuildLogger', (error) => {
-    logBuild(error);
-  });
-}
 
 /**
  * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
@@ -134,30 +93,6 @@ export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
   signals.forEach((signal) => process.on(signal, noop));
   return () => signals.forEach((signal) => process.off(signal, noop));
 }
-
-/**
- * Builds the webpack-dev-server client import URL from a
- * dev-server config. webpack preserves the query string as `__resourceQuery`,
- * which the client reads at runtime to know where to connect.
- *
- * Only fields that are set are forwarded; anything omitted falls back to
- * webpack-dev-server's client defaults at runtime. `protocol=ws` is always
- * included because the extension page origin is `chrome-extension://...`,
- * so the client cannot auto-detect a WebSocket protocol.
- *
- * @param config - The webpack-dev-server configuration.
- * @returns The import specifier for the dev-server client.
- */
-export const getDevServerClientUrl = (config: Configuration): string => {
-  const params = new URLSearchParams({ protocol: 'ws' });
-  if (config.host !== undefined) params.set('hostname', config.host);
-  if (config.port !== undefined) params.set('port', config.port.toString());
-  if (config.hot !== undefined) params.set('hot', config.hot.toString());
-  if (config.liveReload !== undefined) {
-    params.set('live-reload', config.liveReload.toString());
-  }
-  return `webpack-dev-server/client/index?${params}`;
-};
 
 /**
  * @param filename

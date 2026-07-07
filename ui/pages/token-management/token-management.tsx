@@ -47,11 +47,11 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,
-  getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
   selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
+import { useNetworkFilterButtonLabel } from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addCustomAsset,
@@ -109,6 +109,10 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+} from '../../../shared/constants/network';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -181,6 +185,11 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   const assetReference = assetType?.split(':').pop();
   return assetReference || assetId;
 };
+
+const hasValidAssetId = (
+  result: TokenSearchResult,
+): result is TokenSearchResult & { assetId: CaipAssetType } =>
+  typeof result.assetId === 'string';
 
 const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
   const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
@@ -475,15 +484,6 @@ export const TokenManagementPage = () => {
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
-  const enabledNetworksByNamespace = useSelector((state: unknown) => {
-    try {
-      return getEnabledNetworksByNamespace(
-        state as Parameters<typeof getEnabledNetworksByNamespace>[0],
-      );
-    } catch {
-      return {} as Record<string, boolean>;
-    }
-  });
   const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allMultichainNetworkConfigurations = useSelector(
@@ -511,14 +511,6 @@ export const TokenManagementPage = () => {
         caipChainId,
       ),
     [store],
-  );
-
-  const enabledChainIds = useMemo(
-    () =>
-      Object.entries(enabledNetworksByNamespace ?? {})
-        .filter(([, enabled]) => Boolean(enabled))
-        .map(([chainId]) => chainId as Hex),
-    [enabledNetworksByNamespace],
   );
 
   const getNetworkMeta = useCallback(
@@ -576,8 +568,24 @@ export const TokenManagementPage = () => {
       }),
     );
 
+    // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
+    // display duplicate. Hide it here too — it can re-enter via imported tokens
+    // even though the asset selector already filters it from balances. The
+    // chain id can be hex (0x13b2) or CAIP (eip155:5042) and the address may
+    // only live inside the assetId, so normalize both before comparing.
+    const visibleAssets = dedupedAssets.filter((asset) => {
+      if (normalizeToHexChainId(String(asset.chainId)) !== CHAIN_IDS.ARC) {
+        return true;
+      }
+      const assetAddress =
+        'address' in asset && asset.address
+          ? asset.address
+          : getAssetReferenceFromAssetId(asset.assetId);
+      return assetAddress?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
+    });
+
     const accountAssets = sortAssetsWithPriority(
-      dedupedAssets,
+      visibleAssets,
       tokenSortConfig,
     ) as ManagedAsset[];
 
@@ -639,7 +647,20 @@ export const TokenManagementPage = () => {
       return EMPTY_TOKEN_SEARCH_RESULTS;
     }
 
-    return searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS;
+    const results = (searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS).filter(
+      hasValidAssetId,
+    );
+
+    // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
+    // display duplicate. Drop it from search/browse results too.
+    return results.filter((result) => {
+      const chainPart = String(result.assetId).split('/')[0];
+      if (normalizeToHexChainId(chainPart) !== CHAIN_IDS.ARC) {
+        return true;
+      }
+      const reference = getAssetReferenceFromAssetId(result.assetId);
+      return reference?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
+    });
   }, [debouncedSearchQuery.length, hasQuery, searchResponse?.data]);
   const searchResults = useMemo(
     () => (hasQuery ? apiTokenResults : EMPTY_TOKEN_SEARCH_RESULTS),
@@ -773,28 +794,9 @@ export const TokenManagementPage = () => {
     setSearchQuery('');
   }, [commitStagedHides]);
 
-  const networkFilterLabel = useMemo(() => {
-    const enabledCount = enabledChainIds.length;
-    if (enabledCount === 0) {
-      return t('noNetworksSelected');
-    }
-    if (enabledCount === 1) {
-      const onlyChain = enabledChainIds[0];
-      const evmName = networkConfigurations?.[onlyChain]?.name;
-      const multichainName =
-        allMultichainNetworkConfigurations?.[onlyChain as CaipChainId]?.name;
-      return (
-        evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork')
-      );
-    }
-    return t('allDefaultNetworks');
-  }, [
-    allMultichainNetworkConfigurations,
-    currentNetwork?.name,
-    enabledChainIds,
-    networkConfigurations,
-    t,
-  ]);
+  const networkFilterLabel = useNetworkFilterButtonLabel();
+  const isSingleNetworkFilterSelected =
+    allEnabledNetworksForAllNamespaces.length === 1;
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -1456,7 +1458,7 @@ export const TokenManagementPage = () => {
       <ButtonIcon
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
         data-testid="token-management-header-back-button"
       />
     </Link>
@@ -1503,13 +1505,22 @@ export const TokenManagementPage = () => {
           data-testid="token-management-network-filter"
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          className="bg-default text-default border border-muted"
+          startIconProps={{ size: IconSize.Md }}
+          className={`rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed ${
+            isSingleNetworkFilterSelected
+              ? 'text-primary-default'
+              : 'text-default'
+          }`}
           onClick={handleOpenNetworkFilter}
         >
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
+            color={
+              isSingleNetworkFilterSelected
+                ? TextColor.PrimaryDefault
+                : TextColor.TextDefault
+            }
             ellipsis
           >
             {networkFilterLabel}

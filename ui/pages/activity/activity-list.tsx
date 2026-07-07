@@ -30,7 +30,7 @@ import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
 
-const itemHeight = 70;
+const itemHeight = 62;
 const headerHeight = 40;
 
 export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
@@ -82,7 +82,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   });
 
   const handleClick = (item: ActivityListItem) => {
-    if (!item.data.hash) {
+    if (!item.hash) {
       return;
     }
 
@@ -160,9 +160,9 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
       />
 
       <TransactionDetailsModal
-        isOpen={Boolean(selectedItem?.data.hash)}
+        isOpen={Boolean(selectedItem?.hash)}
         chainId={selectedItem?.chainId}
-        txIdentifier={selectedItem?.data.hash}
+        txIdentifier={selectedItem?.hash}
         onClose={handleClose}
       />
     </PendingTransactionCancelSpeedUpProvider>

@@ -173,15 +173,12 @@ const ConfirmAddSuggestedToken = () => {
     navigate(mostRecentOverviewPage);
   }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
-  const goBackIfNoSuggestedTokensOnFirstRender = () => {
+  // Go back if there are no suggested tokens to render
+  useEffect(() => {
     if (!suggestedTokens.length) {
       navigate(mostRecentOverviewPage);
     }
-  };
-
-  useEffect(() => {
-    goBackIfNoSuggestedTokensOnFirstRender();
-  }, []);
+  }, [suggestedTokens.length, navigate, mostRecentOverviewPage]);
 
   return (
     <div className={classNames}>

@@ -25,10 +25,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
+import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
 import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
 import { MusdOverrideContent } from './musd-override-content';
 
-const MusdBottomContent = () => {
+const MusdBottomContent = ({ hasInput }: { hasInput: boolean }) => {
   const t = useI18nContext();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
@@ -36,19 +37,25 @@ const MusdBottomContent = () => {
   const isPaidByMetaMask = useIsPaidByMetaMask();
 
   const isResultReady = isQuotesLoading || Boolean(quotes?.length);
+  const showResults = isResultReady && !hideResults;
 
-  if (!isResultReady || hideResults) {
+  if (!hasInput && !showResults) {
     return null;
   }
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingBottom={4}>
-      <BridgeFeeRow
-        variant={ConfirmInfoRowSize.Small}
-        tooltipDescription={t('musdConversionFeeTooltipDescription')}
-      />
-      <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
-      {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
+      {hasInput && <PayWithRow />}
+      {showResults && (
+        <>
+          <BridgeFeeRow
+            variant={ConfirmInfoRowSize.Small}
+            tooltipDescription={t('musdConversionFeeTooltipDescription')}
+          />
+          <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
+          {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
+        </>
+      )}
     </Box>
   );
 };
@@ -127,7 +134,14 @@ export const MusdConversionInfo = () => {
   }, [defaultPaymentToken, existingPayToken]);
 
   const renderOverrideContent = useCallback(
-    (amountHuman: string) => <MusdOverrideContent amountHuman={amountHuman} />,
+    (amountHuman: string, hasInput: boolean) => (
+      <MusdOverrideContent amountHuman={amountHuman} hasInput={hasInput} />
+    ),
+    [],
+  );
+
+  const renderBottomContent = useCallback(
+    (hasInput: boolean) => <MusdBottomContent hasInput={hasInput} />,
     [],
   );
 
@@ -137,10 +151,9 @@ export const MusdConversionInfo = () => {
       currency="usd"
       disableAutomaticToken={true}
       preferredToken={preferredToken}
-      hasMax={true}
       prefillMaxOnLoad={prefillMaxOnLoad}
       overrideCenterContent={renderOverrideContent}
-      overrideBottomContent={<MusdBottomContent />}
+      overrideBottomContent={renderBottomContent}
     />
   );
 };

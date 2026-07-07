@@ -2,8 +2,8 @@
  * MusdOverrideContent Component
  *
  * Override content component for the CustomAmountInfo in mUSD conversion flow.
- * Renders the OutputAmountTag showing the expected mUSD output and the PayWithRow
- * for token selection.
+ * Renders the OutputAmountTag showing the expected mUSD output and the
+ * PayWithPill for token selection.
  *
  * Ported from metamask-mobile:
  * app/components/Views/confirmations/components/info/musd-conversion-info/musd-conversion-info.tsx
@@ -17,11 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import {
-  ConfirmInfoRowSize,
-  PayWithRow,
-  PayWithRowSkeleton,
-} from '../../rows/pay-with-row/pay-with-row';
+import { PayWithPill, PayWithPillSkeleton } from '../../pay-with-pill';
 import { useCustomAmount } from '../../../../../hooks/musd/useCustomAmount';
 import { OutputAmountTag } from './output-amount-tag';
 
@@ -30,6 +26,8 @@ export type MusdOverrideContentProps = {
    * Human-readable amount string (e.g., "100.50")
    */
   amountHuman: string;
+  /** When false, shows the centered PayWithPill (selector moves to the bottom row when true). */
+  hasInput: boolean;
 };
 
 /**
@@ -38,9 +36,11 @@ export type MusdOverrideContentProps = {
  *
  * @param options0
  * @param options0.amountHuman
+ * @param options0.hasInput
  */
 export const MusdOverrideContent = ({
   amountHuman,
+  hasInput,
 }: MusdOverrideContentProps) => {
   const { shouldShowOutputAmountTag, outputAmount, outputSymbol } =
     useCustomAmount({ amountHuman });
@@ -61,11 +61,8 @@ export const MusdOverrideContent = ({
           showBackground={false}
         />
       )}
-      {hasTokens && payToken ? (
-        <PayWithRow variant={ConfirmInfoRowSize.Small} />
-      ) : (
-        <PayWithRowSkeleton />
-      )}
+      {!hasInput &&
+        (hasTokens && payToken ? <PayWithPill /> : <PayWithPillSkeleton />)}
     </Box>
   );
 };

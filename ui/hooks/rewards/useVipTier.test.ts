@@ -1,12 +1,7 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { useVipTier } from './useVipTier';
-
-jest.mock('../../helpers/utils/rewards-utils', () => ({
-  formatAccountToCaipAccountId: (address: string, chainId: string) =>
-    `eip155:${chainId}:${address}`,
-}));
 
 const mockGetVipTierForAccount = jest.fn();
 setBackgroundConnection({
@@ -24,7 +19,7 @@ const stateWithAccount = {
           address: '0xabc123',
           metadata: { name: 'Account', keyring: { type: 'HD Key Tree' } },
           type: 'eip155:eoa',
-          scopes: [],
+          scopes: ['eip155:1'],
           methods: [],
         },
       },
@@ -69,6 +64,50 @@ const stateWithVipDisabled = {
   },
 };
 
+const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+const SOLANA_ADDRESS = 'FdASaVKKMZr5QZqdBCi4SbDLeLJYKLGyMEy4gHukTykP';
+
+const stateWithSolanaAccount = {
+  metamask: {
+    ...stateWithAccount.metamask,
+    internalAccounts: {
+      selectedAccount: 'sol-1',
+      accounts: {
+        'sol-1': {
+          id: 'sol-1',
+          address: SOLANA_ADDRESS,
+          metadata: {
+            name: 'Solana Account',
+            keyring: { type: 'Snap Keyring' },
+          },
+          type: 'solana:data-account',
+          scopes: [SOLANA_SCOPE],
+          methods: [],
+        },
+      },
+    },
+  },
+};
+
+const stateWithScopelessAccount = {
+  metamask: {
+    ...stateWithAccount.metamask,
+    internalAccounts: {
+      selectedAccount: 'acc-2',
+      accounts: {
+        'acc-2': {
+          id: 'acc-2',
+          address: '0xdef456',
+          metadata: { name: 'Account', keyring: { type: 'HD Key Tree' } },
+          type: 'eip155:eoa',
+          scopes: [],
+          methods: [],
+        },
+      },
+    },
+  },
+};
+
 describe('useVipTier', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -85,7 +124,7 @@ describe('useVipTier', () => {
     expect(result.current).toBeNull();
   });
 
-  it('returns the VIP tier on success', async () => {
+  it('returns the VIP tier on success and derives the CAIP-10 id from the account scope', async () => {
     mockGetVipTierForAccount.mockResolvedValue(3);
 
     const { result } = renderHookWithProvider(
@@ -97,9 +136,34 @@ describe('useVipTier', () => {
       expect(result.current).toBe(3);
     });
 
-    expect(mockGetVipTierForAccount).toHaveBeenCalledWith(
-      'eip155:0x1:0xabc123',
+    expect(mockGetVipTierForAccount).toHaveBeenCalledWith('eip155:1:0xabc123');
+  });
+
+  it('builds a solana CAIP-10 id (not an eip155 one) for a non-EVM account', async () => {
+    mockGetVipTierForAccount.mockResolvedValue(5);
+
+    const { result } = renderHookWithProvider(
+      () => useVipTier(),
+      stateWithSolanaAccount,
     );
+
+    await waitFor(() => {
+      expect(result.current).toBe(5);
+    });
+
+    expect(mockGetVipTierForAccount).toHaveBeenCalledWith(
+      `${SOLANA_SCOPE}:${SOLANA_ADDRESS}`,
+    );
+  });
+
+  it('returns null and skips the lookup when the account has no scope', () => {
+    const { result } = renderHookWithProvider(
+      () => useVipTier(),
+      stateWithScopelessAccount,
+    );
+
+    expect(result.current).toBeNull();
+    expect(mockGetVipTierForAccount).not.toHaveBeenCalled();
   });
 
   it('returns null when no account is selected', () => {
@@ -152,5 +216,41 @@ describe('useVipTier', () => {
 
     expect(result.current).toBeNull();
     expect(mockGetVipTierForAccount).not.toHaveBeenCalled();
+  });
+
+  it('refetches the VIP tier once the rewards subscription hydrates (cold-start race)', async () => {
+    // Cold start: subscription state is not hydrated yet, so the controller
+    // resolves no subscription and the background returns null (no /vip/fees).
+    mockGetVipTierForAccount.mockResolvedValueOnce(null);
+
+    const { result, store } = renderHookWithProvider(
+      () => useVipTier(),
+      stateWithAccount,
+    );
+
+    await waitFor(() => {
+      expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
+    });
+    expect(result.current).toBeNull();
+
+    // Silent auth completes and populates the active rewards subscription id.
+    // The query is keyed on it, so this triggers a refetch that now resolves.
+    mockGetVipTierForAccount.mockResolvedValueOnce(5);
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          rewardsActiveAccount: {
+            account: 'eip155:1:0xabc123',
+            subscriptionId: 'sub-1',
+          },
+        },
+      });
+    });
+
+    await waitFor(() => {
+      expect(result.current).toBe(5);
+    });
+    expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(2);
   });
 });
