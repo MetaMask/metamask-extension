@@ -70,7 +70,8 @@ export function BottomNavBar() {
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
 
-  const { isHome, isPerps, isSwaps, isActivity } = getActiveBottomNavTabs(pathname);
+  const { isHome, isPerps, isSwaps, isActivity } =
+    getActiveBottomNavTabs(pathname);
 
   const handleHomeClick = useCallback(
     () =>
