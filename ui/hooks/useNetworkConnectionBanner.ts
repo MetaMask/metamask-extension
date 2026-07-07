@@ -1,9 +1,8 @@
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { getNetworkConnectionBanner } from '../selectors/selectors';
 import type { RouteMessengerInstance } from '../pages/home/messenger';
-import { MetaMetricsContext } from '../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -14,6 +13,7 @@ import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 import { useMessenger } from './useMessenger';
+import { useAnalytics } from './useAnalytics';
 
 type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
   trackNetworkBannerEvent: (event: {
@@ -33,7 +33,7 @@ export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
     const dispatch = useDispatch();
     const messenger = useMessenger<RouteMessengerInstance>();
-    const { trackEvent } = useContext(MetaMetricsContext);
+    const { trackEvent, createEventBuilder } = useAnalytics();
     const networkConnectionBannerState = useSelector(
       getNetworkConnectionBanner,
     );
@@ -82,25 +82,26 @@ export const useNetworkConnectionBanner =
           );
           const sanitizedRpcUrl = isPublic ? onlyKeepHost(rpcUrl) : 'custom';
 
-          trackEvent({
-            category: MetaMetricsEventCategory.Network,
-            event: eventName,
-            // The names of Segment properties have a particular case.
-            /* eslint-disable @typescript-eslint/naming-convention */
-            properties: {
-              banner_type: bannerType,
-              chain_id_caip: `eip155:${chainIdAsDecimal}`,
-              rpc_domain: sanitizedRpcUrl,
-              rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
-            },
-            /* eslint-enable @typescript-eslint/naming-convention */
-          });
+          trackEvent(
+            createEventBuilder(eventName)
+              .addCategory(MetaMetricsEventCategory.Network)
+              .addProperties({
+                // The names of Segment properties have a particular case.
+                /* eslint-disable @typescript-eslint/naming-convention */
+                banner_type: bannerType,
+                chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                rpc_domain: sanitizedRpcUrl,
+                rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
+                /* eslint-enable @typescript-eslint/naming-convention */
+              })
+              .build(),
+          );
         } catch (error) {
           // Analytics tracking failed - don't surface this error since it's non-critical
           console.error('Failed to track network banner event:', error);
         }
       },
-      [networkConfigurationsByChainId, trackEvent],
+      [networkConfigurationsByChainId, trackEvent, createEventBuilder],
     );
 
     // Fire the banner-shown analytics when the banner transitions to a

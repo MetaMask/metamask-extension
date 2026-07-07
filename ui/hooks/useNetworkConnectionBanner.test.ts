@@ -14,6 +14,21 @@ jest.mock('../selectors/selectors', () => ({
   getNetworkConnectionBanner: jest.fn(),
 }));
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('./useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../components/app/toast-master/utils', () => ({
   ...jest.requireActual('../components/app/toast-master/utils'),
   setShowInfuraSwitchToast: jest.fn((value) => ({
@@ -86,7 +101,6 @@ describe('useNetworkConnectionBanner', () => {
   });
 
   it('fires the banner-shown analytics event when transitioning to a visible status', async () => {
-    const mockTrackEvent = jest.fn();
     mockGetNetworkConnectionBanner.mockReturnValue({
       status: 'degraded',
       networkName: 'Ethereum Mainnet',
@@ -100,9 +114,6 @@ describe('useNetworkConnectionBanner', () => {
       renderHookWithProviderTyped(
         () => useNetworkConnectionBanner(),
         mockState,
-        undefined,
-        undefined,
-        () => mockTrackEvent,
       );
       // Flush microtasks for the analytics dispatch.
       await Promise.resolve();
@@ -111,7 +122,7 @@ describe('useNetworkConnectionBanner', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.NetworkConnectionBannerShown,
+        name: MetaMetricsEventName.NetworkConnectionBannerShown,
         properties: expect.objectContaining({
           /* eslint-disable @typescript-eslint/naming-convention */
           banner_type: 'degraded',
@@ -123,15 +134,11 @@ describe('useNetworkConnectionBanner', () => {
   });
 
   it('does not fire analytics when the banner status stays available', () => {
-    const mockTrackEvent = jest.fn();
     mockGetNetworkConnectionBanner.mockReturnValue({ status: 'available' });
 
     renderHookWithProviderTyped(
       () => useNetworkConnectionBanner(),
       mockState,
-      undefined,
-      undefined,
-      () => mockTrackEvent,
     );
 
     expect(mockTrackEvent).not.toHaveBeenCalled();

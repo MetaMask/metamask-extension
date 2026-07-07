@@ -127,6 +127,7 @@ import { EncryptionPublicKeyController } from '../controllers/encryption-public-
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
 import { DataDeletionService } from '../services/data-deletion-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 
@@ -194,6 +195,7 @@ export type MessengerClient =
   | PhishingController
   | PPOMController
   | PreferencesController
+  | QrSyncController
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | RemoteFeatureFlagController
@@ -298,6 +300,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  QrSyncController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   RewardsController['state'] &
