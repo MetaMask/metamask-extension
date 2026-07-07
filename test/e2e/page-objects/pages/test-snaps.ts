@@ -129,6 +129,7 @@ export const buttonLocator = {
   startWebSocket: '#startWebSocket',
   stopWebSocket: '#stopWebSocket',
   getWebSocketState: '#getWebSocketState',
+  messengerCallButton: '#messenger-call',
 } satisfies Record<string, string>;
 
 export const spanLocator = {
