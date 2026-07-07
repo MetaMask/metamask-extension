@@ -19,9 +19,7 @@ export function isSyncableWallet(wallet: AccountWalletObject): boolean {
 
   const keyringType = wallet.metadata.keyring.type;
 
-  return (
-    keyringType === KeyringTypes.hd || keyringType === KeyringTypes.simple
-  );
+  return keyringType === KeyringTypes.hd || keyringType === KeyringTypes.simple;
 }
 
 /**

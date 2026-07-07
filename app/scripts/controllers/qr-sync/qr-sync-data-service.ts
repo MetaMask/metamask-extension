@@ -128,16 +128,17 @@ export class QrSyncDataService {
 
       return {
         ...entry,
-        groups: [...entry.groups].sort(
-          (a, b) => a.groupIndex - b.groupIndex,
-        ),
+        groups: [...entry.groups].sort((a, b) => a.groupIndex - b.groupIndex),
       };
     });
 
     return [...mnemonicEntries, ...privateKeyEntries];
   }
 
-  #getAccountGroupAndWalletObject(groupId: AccountGroupId): { group: AccountGroupObject, wallet: AccountWalletObject } {
+  #getAccountGroupAndWalletObject(groupId: AccountGroupId): {
+    group: AccountGroupObject;
+    wallet: AccountWalletObject;
+  } {
     const group = this.#messenger.call(
       'AccountTreeController:getAccountGroupObject',
       groupId,
@@ -293,7 +294,8 @@ export class QrSyncDataService {
     return (await this.#messenger.call(
       'KeyringController:withKeyringV2',
       { type: KeyringType.Hd, index: 0 },
-      async ({ metadata }: { metadata: { id: EntropySourceId } }) => metadata.id,
+      async ({ metadata }: { metadata: { id: EntropySourceId } }) =>
+        metadata.id,
     )) as EntropySourceId | undefined;
   }
 

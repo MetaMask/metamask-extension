@@ -62,7 +62,9 @@ describe('QrCodeScan', () => {
     renderWithProvider(<QrCodeScan />, mockStore);
 
     expect(
-      screen.getByText(`Expires in ${QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000}s`),
+      screen.getByText(
+        `Expires in ${QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000}s`,
+      ),
     ).toBeInTheDocument();
   });
 

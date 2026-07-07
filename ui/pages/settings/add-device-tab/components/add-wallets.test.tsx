@@ -1,9 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import {
-  AccountWalletType,
-  toAccountWalletId,
-} from '@metamask/account-api';
+import { AccountWalletType, toAccountWalletId } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 // eslint-disable-next-line import-x/no-restricted-paths

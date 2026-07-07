@@ -229,9 +229,10 @@ describe('QrSyncDataService', () => {
         walletsById: new Map([[fixture.walletId, fixture.wallet]]),
       });
 
-      const entries = await dataService.buildWalletExportEntries(TEST_PASSWORD, [
-        fixture.groupId,
-      ]);
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [fixture.groupId],
+      );
 
       expect(entries).toEqual([
         expect.objectContaining({
@@ -268,9 +269,10 @@ describe('QrSyncDataService', () => {
         walletsById: new Map([[group0.walletId, wallet]]),
       });
 
-      const entries = await dataService.buildWalletExportEntries(TEST_PASSWORD, [
-        group1.groupId,
-      ]);
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [group1.groupId],
+      );
 
       expect(entries).toHaveLength(1);
       expect(entries[0]).toMatchObject({
@@ -300,9 +302,10 @@ describe('QrSyncDataService', () => {
             : undefined,
       });
 
-      const entries = await dataService.buildWalletExportEntries(TEST_PASSWORD, [
-        fixture.groupId,
-      ]);
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [fixture.groupId],
+      );
 
       expect(entries).toEqual([
         expect.objectContaining({
@@ -323,9 +326,10 @@ describe('QrSyncDataService', () => {
           accountId === TEST_ACCOUNT_ID ? fixture.account : undefined,
       });
 
-      const entries = await dataService.buildWalletExportEntries(TEST_PASSWORD, [
-        fixture.groupId,
-      ]);
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [fixture.groupId],
+      );
 
       expect(entries).toEqual([
         expect.objectContaining({
@@ -379,9 +383,10 @@ describe('QrSyncDataService', () => {
         exportSeedPhrase: jest.fn().mockResolvedValue(mnemonicIndices),
       });
 
-      const entries = await dataService.buildWalletExportEntries(TEST_PASSWORD, [
-        fixture.groupId,
-      ]);
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [fixture.groupId],
+      );
 
       expect(entries[0]).toMatchObject({
         type: 'Mnemonic',
@@ -406,9 +411,10 @@ describe('QrSyncDataService', () => {
         exportPrivateKey: jest.fn().mockResolvedValue('0xabcdef'),
       });
 
-      const entries = await dataService.buildWalletExportEntries(TEST_PASSWORD, [
-        fixture.groupId,
-      ]);
+      const entries = await dataService.buildWalletExportEntries(
+        TEST_PASSWORD,
+        [fixture.groupId],
+      );
 
       expect(entries[0]).toMatchObject({
         type: 'PrivateKey',

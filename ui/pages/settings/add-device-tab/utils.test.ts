@@ -1,13 +1,13 @@
-import {
-  AccountWalletType,
-  toAccountWalletId,
-} from '@metamask/account-api';
+import { AccountWalletType, toAccountWalletId } from '@metamask/account-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 
 import type { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { filterSyncableWallets, isSyncableWallet } from './utils';
 
-const entropyWalletId = toAccountWalletId(AccountWalletType.Entropy, 'entropy1');
+const entropyWalletId = toAccountWalletId(
+  AccountWalletType.Entropy,
+  'entropy1',
+);
 const importedWalletId = toAccountWalletId(
   AccountWalletType.Keyring,
   'imported',

@@ -22,7 +22,8 @@ const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
 // TODO: source this from the controller
 
 const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
-const MWP_SESSION_REQUEST_EXPIRY_SECONDS = QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
+const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
+  QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
 
 const EnterVerificationCode = () => {
   const t = useI18nContext();

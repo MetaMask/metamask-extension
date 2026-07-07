@@ -31,14 +31,21 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 
-import { QR_SYNC_PHASES, QR_SYNC_TIMEOUT_MS, QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_PHASES,
+  QR_SYNC_TIMEOUT_MS,
+  QrSyncErrorCodes,
+} from '../../../../shared/constants/qr-sync';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { QrSyncActionTypes, QrSyncErrorMessages } from './constants';
 import { getDefaultQrSyncControllerState } from './metadata';
 import { QrSyncController } from './qr-sync-controller';
 import { QrSyncDataService } from './qr-sync-data-service';
 import type { KeyManager } from './key-manager';
-import type { QrSyncControllerMessenger, QrSyncDataServiceMessenger } from './types';
+import type {
+  QrSyncControllerMessenger,
+  QrSyncDataServiceMessenger,
+} from './types';
 
 type RootMessenger = Messenger<
   MockAnyNamespace,
@@ -163,8 +170,7 @@ function setupController(
     entropyFixtures?: ReturnType<typeof createEntropyWalletFixture>[];
   } = {},
 ) {
-  const entropyIds =
-    options.keyringHandlers?.entropyIds ?? [TEST_ENTROPY_ID];
+  const entropyIds = options.keyringHandlers?.entropyIds ?? [TEST_ENTROPY_ID];
   const primaryEntropyId =
     options.keyringHandlers?.primaryEntropyId ?? TEST_ENTROPY_ID;
   const seedPhrase = options.keyringHandlers?.seedPhrase ?? TEST_SEED_PHRASE;
@@ -287,7 +293,8 @@ function setupController(
     qrSyncMessenger,
     qrSyncDataService,
     exportSeedPhrase,
-    primaryGroupId: entropyFixtures[0]?.groupId ?? primaryEntropyFixture.groupId,
+    primaryGroupId:
+      entropyFixtures[0]?.groupId ?? primaryEntropyFixture.groupId,
     entropyFixtures,
   };
 }
@@ -673,7 +680,8 @@ describe('QrSyncController', () => {
 
   describe('syncAccounts', () => {
     it('exports selected mnemonics and sends sync-ready to mobile', async () => {
-      const { controller, exportSeedPhrase, primaryGroupId } = setupController();
+      const { controller, exportSeedPhrase, primaryGroupId } =
+        setupController();
 
       await mockStartSession(controller);
       await mockSetReviewingSyncOffer(controller);

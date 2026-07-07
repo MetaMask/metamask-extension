@@ -5,9 +5,15 @@ import type {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 
-
-import { KeyringControllerExportAccountAction, KeyringControllerExportSeedPhraseAction, KeyringControllerWithKeyringV2Action } from '@metamask/keyring-controller';
-import { AccountTreeControllerGetAccountGroupObjectAction, AccountTreeControllerGetAccountWalletObjectAction } from '@metamask/account-tree-controller';
+import {
+  KeyringControllerExportAccountAction,
+  KeyringControllerExportSeedPhraseAction,
+  KeyringControllerWithKeyringV2Action,
+} from '@metamask/keyring-controller';
+import {
+  AccountTreeControllerGetAccountGroupObjectAction,
+  AccountTreeControllerGetAccountWalletObjectAction,
+} from '@metamask/account-tree-controller';
 import { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
 import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
 import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
@@ -190,9 +196,7 @@ export type PrivateKeyAccountExport = {
 /**
  * A single wallet or imported account entry in a sync-ready export bundle.
  */
-export type WalletExportEntry =
-  | MnemonicWalletExport
-  | PrivateKeyAccountExport;
+export type WalletExportEntry = MnemonicWalletExport | PrivateKeyAccountExport;
 
 /**
  * Wallet export entries sent in the `sync-ready` message `data` field.
@@ -329,7 +333,6 @@ export type QrSyncDataServiceBuildWalletExportEntriesAction = {
   type: 'QrSyncDataService:buildWalletExportEntries';
   handler: QrSyncDataService['buildWalletExportEntries'];
 };
-
 
 export type QrSyncDataServiceAllowedActions =
   | QrSyncDataServiceBuildWalletExportEntriesAction
