@@ -4536,6 +4536,10 @@
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
   },
+  "home": {
+    "message": "Home",
+    "description": "Label for the Home tab in the bottom navigation bar"
+  },
   "honeypotDescription": {
     "message": "This token might pose a honeypot risk. It is advised to conduct due diligence before interacting to prevent any potential financial loss."
   },
