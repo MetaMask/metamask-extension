@@ -6,13 +6,18 @@ import {
   DistributionType,
   EnvironmentType,
 } from '@metamask/remote-feature-flag-controller';
-import { ENVIRONMENT } from '../../../../shared/constants/build';
+import {
+  ENVIRONMENT,
+  type MetaMaskBuildEnvironment,
+} from '../../../../shared/constants/build';
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
 import type { WalletInitMessenger } from '../initialization';
 
 const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
 
-const BUILD_TYPE_MAPPING = {
+type MetaMaskBuildType = 'flask' | 'main' | 'beta' | 'experimental';
+
+const BUILD_TYPE_MAPPING: Record<MetaMaskBuildType, DistributionType> = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
   beta: DistributionType.Beta,
@@ -20,7 +25,9 @@ const BUILD_TYPE_MAPPING = {
   experimental: DistributionType.Main,
 };
 
-const ENVIRONMENT_MAPPING = {
+const ENVIRONMENT_MAPPING: Partial<
+  Record<MetaMaskBuildEnvironment, EnvironmentType>
+> = {
   [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
   [ENVIRONMENT.RELEASE_CANDIDATE]: EnvironmentType.ReleaseCandidate,
   [ENVIRONMENT.PRODUCTION]: EnvironmentType.Production,
@@ -41,12 +48,11 @@ export function getConfigForRemoteFeatureFlagRequest() {
   const buildType = process.env.METAMASK_BUILD_TYPE;
 
   const distribution =
-    BUILD_TYPE_MAPPING[buildType as keyof typeof BUILD_TYPE_MAPPING] ||
-    DistributionType.Main;
+    BUILD_TYPE_MAPPING[buildType as MetaMaskBuildType] || DistributionType.Main;
 
   let environment =
     ENVIRONMENT_MAPPING[
-      process.env.METAMASK_ENVIRONMENT as keyof typeof ENVIRONMENT_MAPPING
+      process.env.METAMASK_ENVIRONMENT as MetaMaskBuildEnvironment
     ] || EnvironmentType.Development;
 
   if (buildType === 'experimental') {
