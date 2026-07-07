@@ -37,6 +37,21 @@ export const ETH_NATIVE_ASSET = {
   metadata: {},
 };
 
+// USDC on Ethereum, used as the ERC20 destination for BTC → ERC20 swaps
+export const USDC_ASSET = {
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  chainId: 1,
+  assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  symbol: 'USDC',
+  decimals: 6,
+  name: 'USDC',
+  coingeckoId: 'usd-coin',
+  aggregators: ['coinGecko', 'lifi', 'socket'],
+  occurrences: 14,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
+};
+
 // Mock quote for BTC → ETH bridge (based on real API response)
 export const MOCK_BRIDGE_QUOTE_BTC_TO_ETH = [
   {
@@ -94,6 +109,63 @@ export const MOCK_BRIDGE_QUOTE_BTC_TO_ETH = [
   },
 ];
 
+// Mock quote for BTC → USDC (ERC20) bridge, mirrors the ETH quote with a USDC destination
+export const MOCK_BRIDGE_QUOTE_BTC_TO_USDC = [
+  {
+    quote: {
+      bridgeId: 'rango',
+      requestId: 'a1b2c3d4-0000-4f22-b09b-f313031aa482',
+      aggregator: 'rango',
+      srcChainId: BTC_CHAIN_ID_NUMERIC,
+      srcTokenAmount: '49562500',
+      srcAsset: BTC_NATIVE_ASSET,
+      destChainId: 1,
+      destTokenAmount: '40296220000',
+      destAsset: USDC_ASSET,
+      minDestTokenAmount: '39490000000',
+      feeData: {
+        metabridge: {
+          amount: '437500',
+          asset: BTC_NATIVE_ASSET,
+          quoteBpsFee: 87.5,
+          baseBpsFee: 87.5,
+        },
+      },
+      bridges: ['bridgers (via Rango)'],
+      protocols: ['bridgers (via Rango)'],
+      steps: [
+        {
+          srcAsset: BTC_NATIVE_ASSET,
+          destAsset: USDC_ASSET,
+          action: 'bridge',
+          srcChainId: BTC_CHAIN_ID_NUMERIC,
+          destChainId: 1,
+          protocol: {
+            name: 'Bridgers',
+            displayName: 'bridgers',
+            icon: 'https://raw.githubusercontent.com/rango-exchange/assets/main/swappers/Bridgers/icon.svg',
+          },
+          srcAmount: '49562500',
+          destAmount: '40296220000',
+          minDestTokenAmount: '39490000000',
+        },
+      ],
+      priceData: {
+        totalFromAmountUsd: '41330.5',
+        totalToAmountUsd: '40296.22',
+        priceImpact: '0.01641821726340818',
+        totalFeeAmountUsd: '361.641875',
+      },
+    },
+    trade: {
+      unsignedPsbtBase64:
+        'cHNidP8BAJQCAAAAAAN9pe0CAAAAABYAFPLqwmbyhkzd5PUF2obVvXYnSrZXAAAAAAAAAAA3ajV2VWM6dG86RVRIOjB4NUNmRTczYjYwMjFFODE4Qjc3NmI0MjFCMWM0RGIyNDc0MDg2YTdlMQeeBgAAAAAAIlEgIe1bHEhrJG2TVEQhBs6qXQypErB9R/DBF7ySbork4r0AAAAAAAAAAAA=',
+      inputsToSign: null,
+    },
+    estimatedProcessingTimeInSeconds: 600,
+  },
+];
+
 // Feature flags for BTC bridge
 export const BTC_BRIDGE_FEATURE_FLAGS = {
   refreshRate: 30000,
@@ -119,22 +191,7 @@ export const BTC_BRIDGE_FEATURE_FLAGS = {
 // Mock tokens for BTC bridge
 export const MOCK_BTC_TOKENS = [BTC_NATIVE_ASSET];
 
-export const MOCK_ETH_TOKENS_FOR_BRIDGE = [
-  ETH_NATIVE_ASSET,
-  {
-    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    chainId: 1,
-    assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    symbol: 'USDC',
-    decimals: 6,
-    name: 'USDC',
-    coingeckoId: 'usd-coin',
-    aggregators: ['coinGecko', 'lifi', 'socket'],
-    occurrences: 14,
-    iconUrl:
-      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-  },
-];
+export const MOCK_ETH_TOKENS_FOR_BRIDGE = [ETH_NATIVE_ASSET, USDC_ASSET];
 
 // Mock bridge API endpoints
 export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
@@ -174,12 +231,22 @@ export async function mockBridgeGetQuote(
 
       // Only return BTC quotes for BTC source chain
       if (srcChainId === BTC_CHAIN_ID_NUMERIC.toString()) {
+        const destTokenAddress =
+          url.searchParams.get('destTokenAddress')?.toLowerCase() ?? '';
+        const isUsdcDestination = destTokenAddress.includes(
+          USDC_ASSET.address.slice(2),
+        );
+        const quote = isUsdcDestination
+          ? MOCK_BRIDGE_QUOTE_BTC_TO_USDC
+          : MOCK_BRIDGE_QUOTE_BTC_TO_ETH;
         console.log(
-          `[BTC Bridge Mock] getQuote called for BTC, returnQuotes: ${returnQuotes}`,
+          `[BTC Bridge Mock] getQuote called for BTC, dest: ${
+            isUsdcDestination ? 'USDC' : 'ETH'
+          }, returnQuotes: ${returnQuotes}`,
         );
         return {
           statusCode: 200,
-          json: returnQuotes ? MOCK_BRIDGE_QUOTE_BTC_TO_ETH : [],
+          json: returnQuotes ? quote : [],
         };
       }
 
