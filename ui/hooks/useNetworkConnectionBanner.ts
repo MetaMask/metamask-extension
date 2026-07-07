@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef, useContext } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { selectFirstFailedNetworkForNetworkConnectionBanner } from '../selectors/multichain/networks';
@@ -7,7 +7,6 @@ import {
   getIsDeviceOffline,
 } from '../selectors/selectors';
 import { updateNetworkConnectionBanner, updateNetwork } from '../store/actions';
-import { MetaMetricsContext } from '../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -17,6 +16,7 @@ import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
+import { useAnalytics } from './useAnalytics';
 
 type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
   trackNetworkBannerEvent: (event: {
@@ -38,7 +38,7 @@ const UNAVAILABLE_BANNER_TIMEOUT = 30 * 1000;
 export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
     const dispatch = useDispatch();
-    const { trackEvent } = useContext(MetaMetricsContext);
+    const { trackEvent, createEventBuilder } = useAnalytics();
     const isOffline = useSelector(getIsDeviceOffline);
     const failedNetwork = useSelector(
       selectFirstFailedNetworkForNetworkConnectionBanner,
@@ -115,25 +115,26 @@ export const useNetworkConnectionBanner =
           );
           const sanitizedRpcUrl = isPublic ? onlyKeepHost(rpcUrl) : 'custom';
 
-          trackEvent({
-            category: MetaMetricsEventCategory.Network,
-            event: eventName,
-            // The names of Segment properties have a particular case.
-            /* eslint-disable @typescript-eslint/naming-convention */
-            properties: {
-              banner_type: bannerType,
-              chain_id_caip: `eip155:${chainIdAsDecimal}`,
-              rpc_domain: sanitizedRpcUrl,
-              rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
-            },
-            /* eslint-enable @typescript-eslint/naming-convention */
-          });
+          trackEvent(
+            createEventBuilder(eventName)
+              .addCategory(MetaMetricsEventCategory.Network)
+              .addProperties({
+                // The names of Segment properties have a particular case.
+                /* eslint-disable @typescript-eslint/naming-convention */
+                banner_type: bannerType,
+                chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                rpc_domain: sanitizedRpcUrl,
+                rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
+                /* eslint-enable @typescript-eslint/naming-convention */
+              })
+              .build(),
+          );
         } catch (error) {
           // Analytics tracking failed - don't surface this error since it's non-critical
           console.error('Failed to track network banner event:', error);
         }
       },
-      [networkConfigurationsByChainId, trackEvent],
+      [networkConfigurationsByChainId, trackEvent, createEventBuilder],
     );
 
     const startUnavailableTimer = useCallback(() => {
