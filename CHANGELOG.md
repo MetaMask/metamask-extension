@@ -9,8 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.39.0]
 
+### Uncategorized
+
+- chore: sync stable into release/13.39.0 (#44171)
+- chore: migrate `rejectAllPendingApprovals` to `LegacyBackgroundApiService` (#44104)
+- chore: bind `syncAccountTreeWithUserStorage` directly to `AccountTreeController:syncWithUserStorage` (#44100)
+- perf(6594): audit createDeepEqualSelector for confirmation selectors (#43606)
+
 ### Added
 
+- N/A (#42843)
 - Changed the Perps order entry size field to a single input with a swap toggle between USD and asset denominations. (#44035)
 - Add BannerDismissed event to analytics (#44033)
 - Added events for chainlist (#44113)
