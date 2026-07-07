@@ -4,7 +4,10 @@ import {
   PERPS_EVENT_VALUE,
   PerpsAnalyticsEvent,
 } from '../../../../shared/constants/perps-events';
-import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 import {
   createPerpsInfrastructure,

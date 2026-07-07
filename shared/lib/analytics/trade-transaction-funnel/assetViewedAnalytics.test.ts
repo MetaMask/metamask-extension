@@ -46,14 +46,14 @@ describe('mergeAssetViewedProperties', () => {
   });
 
   it('maps openPositionsCount camelCase to open_positions_count on Asset Viewed', () => {
-    expect(mergeAssetViewedProperties('Perps', { openPositionsCount: 2 })).toStrictEqual(
-      {
-        [ASSET_VIEWED_PROPERTY.OPEN_POSITIONS_COUNT]: 2,
-        [ASSET_VIEWED_PROPERTY.TRADE_TYPE]: 'Perps',
-        [ASSET_VIEWED_PROPERTY.IMPLEMENTATION_TYPE]:
-          ASSET_VIEWED_IMPLEMENTATION_TYPE_NATIVE,
-      },
-    );
+    expect(
+      mergeAssetViewedProperties('Perps', { openPositionsCount: 2 }),
+    ).toStrictEqual({
+      [ASSET_VIEWED_PROPERTY.OPEN_POSITIONS_COUNT]: 2,
+      [ASSET_VIEWED_PROPERTY.TRADE_TYPE]: 'Perps',
+      [ASSET_VIEWED_PROPERTY.IMPLEMENTATION_TYPE]:
+        ASSET_VIEWED_IMPLEMENTATION_TYPE_NATIVE,
+    });
   });
 });
 
