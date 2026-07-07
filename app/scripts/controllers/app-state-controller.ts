@@ -189,6 +189,13 @@ export type AppStateControllerState = {
    * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
    */
   passkeyAutoUnlockSuppressed: boolean;
+
+  /**
+   * Per-experiment eligibility map. Keyed by A/B test flag key, value is true
+   * when the user was eligible at the time of evaluation, false otherwise.
+   * Evaluated once post-onboarding and persisted so users cannot drop out.
+   */
+  experimentEligibility: Record<string, boolean>;
 };
 
 const controllerName = 'AppStateController';
@@ -324,6 +331,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
+  experimentEligibility: {},
   ...getInitialStateOverrides(),
 });
 
@@ -703,6 +711,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  experimentEligibility: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
 
 const MESSENGER_EXPOSED_METHODS = [
@@ -750,6 +764,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setNewPrivacyPolicyToastShownDate',
   'setOnboardingDate',
   'setOutdatedBrowserWarningLastShown',
+  'setExperimentEligibility',
   'setPasskeyAutoUnlockSuppressed',
   'setPendingExtensionVersion',
   'setPendingRedirectRoute',
@@ -1335,6 +1350,22 @@ export class AppStateController extends BaseController<
   setPerpsTabBadgeSeen(value: boolean): void {
     this.update((state) => {
       state.perpsTabBadgeSeen = value;
+    });
+  }
+
+  /**
+   * Records whether the user is eligible for a named experiment.
+   * Called once per experiment; subsequent calls for the same key are no-ops.
+   *
+   * @param flagKey - The LaunchDarkly flag key for the experiment.
+   * @param isEligible - Whether the user meets the cohort criteria.
+   */
+  setExperimentEligibility(flagKey: string, isEligible: boolean): void {
+    if (this.state.experimentEligibility[flagKey] !== undefined) {
+      return;
+    }
+    this.update((state) => {
+      state.experimentEligibility[flagKey] = isEligible;
     });
   }
 

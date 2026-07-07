@@ -105,6 +105,9 @@ import {
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
+import { evaluateNewUserCohortEligibility } from '../../shared/lib/new-user-cohort';
+import { selectExperimentEligibility } from '../../shared/lib/ab-testing/selectExperimentEligibility';
+import { BOTTOM_NAV_AB_TEST_KEY } from '../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -7775,6 +7778,48 @@ export function setMusdConversionEducationSeen(value: boolean) {
 export function setPerpsTabBadgeSeen(value: boolean) {
   return async () => {
     await submitRequestToBackground('setPerpsTabBadgeSeen', [value]);
+  };
+}
+
+/**
+ * Persist that a user is eligible or not for a named new-user experiment.
+ *
+ * @param flagKey - The LaunchDarkly flag key for the experiment.
+ * @param isEligible - Whether the user is eligible for the experiment.
+ */
+export function setExperimentEligibility(flagKey: string, isEligible: boolean) {
+  return async () => {
+    await submitRequestToBackground('setExperimentEligibility', [
+      flagKey,
+      isEligible,
+    ]);
+  };
+}
+
+/**
+ * Evaluates and persists the user's eligibility for the bottom nav bar experiment.
+ */
+export function saveBottomNavEligibility(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    const state = getState();
+
+    if (
+      selectExperimentEligibility(BOTTOM_NAV_AB_TEST_KEY)(state) !== undefined
+    ) {
+      return;
+    }
+
+    const isEligible = evaluateNewUserCohortEligibility({
+      firstTimeInfoDate: state.metamask.firstTimeInfo?.date,
+      firstTimeFlowType: state.metamask.firstTimeFlowType,
+    });
+
+    await dispatch(setExperimentEligibility(BOTTOM_NAV_AB_TEST_KEY, isEligible));
   };
 }
 

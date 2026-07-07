@@ -93,6 +93,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentMigrationVersion: AppMetadataControllerState['currentMigrationVersion'];
   previousAppVersion: AppMetadataControllerState['previousAppVersion'];
   previousMigrationVersion: AppMetadataControllerState['previousMigrationVersion'];
+  firstTimeInfo: AppMetadataControllerState['firstTimeInfo'];
   approvalFlows: ApprovalControllerState['approvalFlows'];
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   pendingApprovalCount: ApprovalControllerState['pendingApprovalCount'];
@@ -131,6 +132,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
   perpsTabBadgeSeen: AppStateControllerState['perpsTabBadgeSeen'];
+  experimentEligibility: AppStateControllerState['experimentEligibility'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
