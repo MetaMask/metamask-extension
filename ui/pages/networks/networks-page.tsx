@@ -4,12 +4,7 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
