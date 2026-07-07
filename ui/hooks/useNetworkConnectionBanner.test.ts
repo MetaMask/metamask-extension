@@ -104,10 +104,7 @@ describe('useNetworkConnectionBanner', () => {
   it('does not fire analytics when the banner status stays available', () => {
     mockGetNetworkConnectionBanner.mockReturnValue({ status: 'available' });
 
-    renderHookWithProviderTyped(
-      () => useNetworkConnectionBanner(),
-      mockState,
-    );
+    renderHookWithProviderTyped(() => useNetworkConnectionBanner(), mockState);
 
     expect(mockTrackEvent).not.toHaveBeenCalled();
   });
