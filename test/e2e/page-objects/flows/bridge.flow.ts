@@ -189,15 +189,18 @@ const waitForAssetPageNavigation = async (
   const caipChainId = toEvmCaipChainId(chainId);
   const addressNeedle = address.toLowerCase().slice(2);
 
-  await driver.waitUntil(async () => {
-    const url = (await driver.getCurrentUrl()).toLowerCase();
-    return (
-      url.includes(encodedLowercasePath.toLowerCase()) ||
-      url.includes(encodedChecksumPath.toLowerCase()) ||
-      (url.includes(`/asset/${caipChainId.toLowerCase()}`) &&
-        url.includes(addressNeedle))
-    );
-  }, { timeout: driver.timeout, interval: 100 });
+  await driver.waitUntil(
+    async () => {
+      const url = (await driver.getCurrentUrl()).toLowerCase();
+      return (
+        url.includes(encodedLowercasePath.toLowerCase()) ||
+        url.includes(encodedChecksumPath.toLowerCase()) ||
+        (url.includes(`/asset/${caipChainId.toLowerCase()}`) &&
+          url.includes(addressNeedle))
+      );
+    },
+    { timeout: driver.timeout, interval: 100 },
+  );
 };
 
 /**

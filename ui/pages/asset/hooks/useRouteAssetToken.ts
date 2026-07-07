@@ -6,7 +6,10 @@ import {
 } from '@metamask/utils';
 
 import { useAsyncResult } from '../../../hooks/useAsync';
-import { Token, TokenWithFiatAmount } from '../../../components/app/assets/types';
+import {
+  Token,
+  TokenWithFiatAmount,
+} from '../../../components/app/assets/types';
 import { buildTokenFromCaipAssetId } from '../build-token-from-caip-asset-id';
 
 type LocationStateToken = {
