@@ -4313,9 +4313,6 @@
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Incluye"
-  },
   "includesXTransactions": {
     "message": "Incluye $1 transacciones"
   },
@@ -10380,29 +10377,8 @@
   "turnOn": {
     "message": "Activar"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Activar las notificaciones"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Activar"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Hubo un error al crear las notificaciones. Vuelva a intentarlo más tarde."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Manténgase al tanto de lo que sucede en su monedero mediante notificaciones."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "configuración de notificaciones."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Descubra cómo protegemos su privacidad mientras utiliza esta función."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Para usar las notificaciones del monedero, utilizamos un perfil para sincronizar algunas configuraciones en sus dispositivos. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Puede desactivar las notificaciones en cualquier momento en $1"
   },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"

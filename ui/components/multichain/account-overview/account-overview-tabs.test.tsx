@@ -13,7 +13,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
 import { setPerpsTabBadgeSeen } from '../../../store/actions';
-import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/perps-tab-badge';
+import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
 jest.mock('../../../store/actions', () => ({

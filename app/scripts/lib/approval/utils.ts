@@ -28,25 +28,6 @@ export function getAttentionRequiredApprovalCount({
   ).length;
 }
 
-export function rejectAllApprovals({
-  approvalController,
-  deleteInterface,
-}: {
-  approvalController: ApprovalController;
-  deleteInterface?: (id: string) => void;
-}) {
-  const approvalRequestsById = approvalController.state.pendingApprovals;
-  const approvalRequests = Object.values(approvalRequestsById);
-
-  for (const approvalRequest of approvalRequests) {
-    rejectApproval({
-      approvalController,
-      approvalRequest,
-      deleteInterface,
-    });
-  }
-}
-
 export function rejectOriginApprovals({
   approvalController,
   deleteInterface,

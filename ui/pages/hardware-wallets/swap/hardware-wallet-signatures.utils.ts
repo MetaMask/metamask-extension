@@ -1,6 +1,9 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import type { useI18nContext } from '../../../hooks/useI18nContext';
+import { rejectPendingApproval } from '../../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../../store/store';
 import {
   HardwareWalletSignatureStatus,
   type HardwareWalletSignaturesState,
@@ -39,6 +42,26 @@ export const isQrHardwareSignRequest = (
     'cbor' in request.request.payload &&
     typeof request.request.payload.cbor === 'string',
   );
+
+/**
+ * Rejects the pending approval associated with a hardware-wallet signature,
+ * using a user-rejected-request error. This clears the approval from the
+ * background's pending queue before the caller cancels the transaction itself.
+ *
+ * @param dispatch - The Redux dispatch function.
+ * @param id - The pending approval id to reject.
+ */
+export const cleanupPendingApproval = (
+  dispatch: MetaMaskReduxDispatch,
+  id: string,
+): void => {
+  dispatch(
+    rejectPendingApproval(
+      id,
+      serializeError(providerErrors.userRejectedRequest()),
+    ),
+  );
+};
 
 /**
  * Extracts a 'from' or 'to' address string from a transaction object.

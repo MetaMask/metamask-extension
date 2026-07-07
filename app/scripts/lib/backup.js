@@ -1,4 +1,6 @@
 import { prependZero } from '../../../shared/lib/string-utils';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 export default class Backup {
   constructor(opts = {}) {
@@ -7,14 +9,12 @@ export default class Backup {
       addressBookController,
       accountsController,
       networkController,
-      trackMetaMetricsEvent,
     } = opts;
 
     this.preferencesController = preferencesController;
     this.accountsController = accountsController;
     this.addressBookController = addressBookController;
     this.networkController = networkController;
-    this._trackMetaMetricsEvent = trackMetaMetricsEvent;
   }
 
   async restoreUserData(jsonString) {
@@ -37,10 +37,11 @@ export default class Backup {
     }
 
     if (preferences || addressBook || network || internalAccounts) {
-      this._trackMetaMetricsEvent({
-        event: 'User Data Imported',
-        category: 'Backup',
-      });
+      trackEvent(
+        createEventBuilder('User Data Imported')
+          .addCategory(MetaMetricsEventCategory.Backup)
+          .build(),
+      );
     }
   }
 

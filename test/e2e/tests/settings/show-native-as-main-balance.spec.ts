@@ -8,6 +8,10 @@ import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/pre
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
+import {
+  getLocalhost25EthAssetsControllerPatch,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
@@ -56,6 +60,7 @@ describe('Settings: Show native token as main balance', function () {
         fixtures: new FixtureBuilderV2()
           .withConversionRateDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(getLocalhost25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -76,6 +81,7 @@ describe('Settings: Show native token as main balance', function () {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()
+          .withAssetsController(getMainnet25EthAssetsControllerPatch(1700))
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -110,6 +116,7 @@ describe('Settings: Show native token as main balance', function () {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()
+          .withAssetsController(getMainnet25EthAssetsControllerPatch(1700))
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
