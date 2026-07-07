@@ -5,6 +5,7 @@ import React, {
   useContext,
   useMemo,
   useCallback,
+  useRef,
 } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,7 +43,10 @@ import {
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   getCompletedOnboarding,
+  getHasSeenOnboardingCompletionPage,
+  getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
+  getIsWalletResetInProgress,
   getOpenedWithSidepanel,
 } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
@@ -86,7 +90,7 @@ import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import PrivacySettings from './privacy-settings/privacy-settings';
-import CreationSuccessful from './creation-successful/creation-successful';
+import OnboardingCompletionRoute from './creation-successful/onboarding-completion-route';
 import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import MetaMetricsComponent from './metametrics/metametrics';
@@ -123,6 +127,11 @@ export default function OnboardingFlow() {
   const theme = useTheme();
   const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
+  const hasSeenOnboardingCompletionPage = useSelector(
+    getHasSeenOnboardingCompletionPage,
+  );
+  const isInitialized = useSelector(getIsInitialized);
+  const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const { isFromReminder, isFromSettingsSecurity } =
@@ -168,6 +177,41 @@ export default function OnboardingFlow() {
     () => pathname === ONBOARDING_WELCOME_ROUTE,
     [pathname],
   );
+
+  // When users close the extension without tapping Done on the completion page,
+  // they land here again on reopen. `hasSeenOnboardingCompletionPage` tracks that
+  // visit, while `completedOnboarding` stays false until the full Done flow runs.
+  // Capture `hasSeen` once per route entry so marking seen on first visit does
+  // not flip auto-complete on in the same session (CreationSuccessful marks seen
+  // on mount).
+  const completionRouteEntryRef = useRef({
+    pathname: '',
+    hasSeen: false,
+  });
+
+  if (completionRouteEntryRef.current.pathname !== pathname) {
+    completionRouteEntryRef.current = {
+      pathname,
+      hasSeen:
+        pathname === ONBOARDING_COMPLETION_ROUTE
+          ? hasSeenOnboardingCompletionPage
+          : false,
+    };
+  }
+
+  const hasSeenAtCompletionEntry =
+    pathname === ONBOARDING_COMPLETION_ROUTE
+      ? completionRouteEntryRef.current.hasSeen
+      : false;
+
+  // Return visit: skip the completion UI and run the same Done flow as the button.
+  const shouldAutoCompleteCompletion =
+    pathname === ONBOARDING_COMPLETION_ROUTE &&
+    hasSeenAtCompletionEntry &&
+    isInitialized &&
+    !isResetWalletInProgress &&
+    !isFromReminder &&
+    !completedOnboarding;
 
   useEffect(() => {
     setOnboardingDate();
@@ -480,7 +524,11 @@ export default function OnboardingFlow() {
               />
               <Route
                 path={toRelativePath(ONBOARDING_COMPLETION_ROUTE)}
-                element={<CreationSuccessful />}
+                element={
+                  <OnboardingCompletionRoute
+                    shouldAutoComplete={shouldAutoCompleteCompletion}
+                  />
+                }
               />
               <Route
                 path={toRelativePath(ONBOARDING_WELCOME_ROUTE)}

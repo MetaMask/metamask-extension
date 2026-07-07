@@ -73,11 +73,17 @@ const mockSetIsBackupAndSyncFeatureEnabled = jest
   .fn()
   .mockResolvedValue(undefined);
 const mockToggleExternalServices = jest.fn().mockResolvedValue(undefined);
+const mockSetHasSeenOnboardingCompletionPage = jest
+  .fn()
+  .mockResolvedValue(undefined);
+const mockCompleteOnboarding = jest.fn().mockResolvedValue(true);
 const backgroundConnectionMock = new Proxy(
   {
     removeDeferredDeepLink: mockRemoveDeferredDeepLink,
     setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
     toggleExternalServices: mockToggleExternalServices,
+    setHasSeenOnboardingCompletionPage: mockSetHasSeenOnboardingCompletionPage,
+    completeOnboarding: mockCompleteOnboarding,
   },
   {
     get: (target, prop) => {
@@ -116,6 +122,8 @@ describe('Wallet Ready Page', () => {
       seedPhraseBackedUp: true,
       isInitialized: true,
       isUnlocked: true,
+      completedOnboarding: false,
+      hasSeenOnboardingCompletionPage: false,
       deferredDeepLink: null,
     },
     appState: {
@@ -128,6 +136,18 @@ describe('Wallet Ready Page', () => {
     jest.clearAllMocks();
     mockUseNavigate.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
+    (
+      useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
+    ).mockReturnValue(false);
+  });
+
+  it('marks the onboarding completion page as seen on first visit', async () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+    renderWithProvider(<CreationSuccessful />, mockStore);
+
+    await waitFor(() => {
+      expect(mockSetHasSeenOnboardingCompletionPage).toHaveBeenCalledWith(true);
+    });
   });
 
   it('should render the wallet ready content if the seed phrase is backed up', () => {

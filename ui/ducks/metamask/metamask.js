@@ -49,6 +49,7 @@ const initialState = {
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
+  hasSeenOnboardingCompletionPage: false,
   knownMethodData: {},
   use4ByteResolution: true,
   analyticsId: null,
@@ -163,11 +164,19 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.SET_HAS_SEEN_ONBOARDING_COMPLETION_PAGE: {
+      return {
+        ...metamaskState,
+        hasSeenOnboardingCompletionPage: true,
+      };
+    }
+
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
         isInitialized: false,
         completedOnboarding: false,
+        hasSeenOnboardingCompletionPage: false,
         firstTimeFlowType: null,
         isUnlocked: false,
         onboardingTabs: {},
@@ -490,6 +499,11 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
+
+export function getHasSeenOnboardingCompletionPage(state) {
+  return state.metamask.hasSeenOnboardingCompletionPage;
+}
+
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }
