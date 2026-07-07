@@ -17,12 +17,14 @@ describe('AssetActivationErrorToast', () => {
 
     render(
       <AssetActivationErrorToast
-        message="Something went wrong"
+        message="Trustline activation test error"
         onClose={onClose}
       />,
     );
 
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+    expect(
+      screen.getByText('Trustline activation test error'),
+    ).toBeInTheDocument();
 
     const closeButton = document.querySelector('.mm-banner-base__close-button');
     expect(closeButton).toBeInTheDocument();

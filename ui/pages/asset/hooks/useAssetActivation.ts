@@ -26,7 +26,7 @@ import { Asset } from '../types/asset';
  * @param params - Hook parameters.
  * @param params.asset - Asset to activate or deactivate.
  * @returns Trustline actions, loading flags, error state, and whether deactivation is allowed.
- *   For assets that do not require a trustline, actions are inert and deactivation is disabled.
+ * For assets that do not require a trustline, actions are inert and deactivation is disabled.
  */
 export const useAssetActivation = ({ asset }: { asset: Asset }) => {
   const t = useI18nContext();
