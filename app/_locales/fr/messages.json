@@ -4397,9 +4397,6 @@
     "message": "Importés",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Comprend"
-  },
   "includesXTransactions": {
     "message": "Inclut $1 transactions"
   },
@@ -10494,29 +10491,8 @@
   "turnOn": {
     "message": "Activer"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Activer les notifications"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Activer"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Une erreur s’est produite lors de la création des notifications. Veuillez réessayer plus tard."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Restez au courant de ce qui se passe dans votre portefeuille grâce aux notifications."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "paramètres de notification."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Découvrez comment nous protégeons vos données personnelles lorsque vous utilisez cette fonctionnalité."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Pour activer les notifications du portefeuille, nous utilisons un profil pour synchroniser certains paramètres entre vos appareils. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Vous pouvez désactiver les notifications à tout moment dans les $1"
   },
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"

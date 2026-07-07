@@ -4397,9 +4397,6 @@
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "includes": {
-    "message": "Включает"
-  },
   "includesXTransactions": {
     "message": "Включает $1 транзакции(-й)"
   },
@@ -10494,29 +10491,8 @@
   "turnOn": {
     "message": "Включить"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Включить уведомления"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Включить"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Произошла ошибка при создании уведомлений. Повторите попытку позже."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Будьте в курсе того, что происходит в вашем кошельке, с помощью уведомлений."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "настройки уведомлений."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Узнайте, как мы защищаем вашу конфиденциальность при использовании этой функции."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Чтобы отправлять уведомления кошелька, мы используем профиль для синхронизации некоторых настроек на ваших устройствах ($1)."
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Вы можете отключить уведомления в любое время в $1"
   },
   "turnOnTokenDetection": {
     "message": "Включите расширенное определение токенов"

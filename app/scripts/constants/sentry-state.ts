@@ -145,6 +145,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   BridgeStatusController: {
     txHistory: false,
+    quoteUpdateStatusStore: false,
   },
   ConnectivityController: {
     connectivityStatus: true,

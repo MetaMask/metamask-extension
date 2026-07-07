@@ -6,6 +6,7 @@ import { confusables } from 'unicode-confusables';
 import {
   isBtcMainnetAddress,
   isSolanaAddress,
+  isStellarAddress,
   isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
 
@@ -104,6 +105,16 @@ export const validateBtcAddress = (address: string) => {
 
 export const validateTronAddress = (address: string) => {
   if (!isTronAddress(address)) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
+
+  return {};
+};
+
+export const validateStellarAddress = (address: string) => {
+  if (!isStellarAddress(address)) {
     return {
       error: 'invalidAddress',
     };
