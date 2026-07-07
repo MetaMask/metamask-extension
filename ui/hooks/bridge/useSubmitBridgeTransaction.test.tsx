@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -575,7 +576,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('does not navigate to activity after QR hardware wallet submit', async () => {
+    it('navigates to activity after QR hardware wallet submit when no QR SIGN scan occurs', async () => {
       const store = makeMockStore();
       isHardwareWalletSpy.mockImplementation(() => true);
       getHardwareWalletTypeSpy.mockImplementation(
@@ -594,10 +595,68 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
+      // No QR SIGN scan lifecycle occurred, so post-submit navigation must
+      // run (the global useNavigateOnQrScanComplete hook would not fire).
+      expect(mockUseNavigate).toHaveBeenCalledTimes(2);
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        1,
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        { state: {} },
+      );
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        2,
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+          state: {
+            bridgeState: null,
+            stayOnHomePage: true,
+            token: null,
+          },
+        },
+      );
+    });
+
+    it('does not navigate to activity after QR hardware wallet submit when a QR SIGN scan is active', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          activeQrCodeScanRequest: {
+            requestId: 'test-request-id',
+            type: QrScanRequestType.SIGN,
+            request: {
+              requestId: 'test-request-id',
+              payload: { cbor: 'test-cbor', type: 'test-type' },
+            },
+          },
+        },
+      });
+      isHardwareWalletSpy.mockImplementation(() => true);
+      getHardwareWalletTypeSpy.mockImplementation(
+        () => HardwareKeyringType.qr,
+      );
+      submitTxSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
+
+      // A QR SIGN scan lifecycle was observed, so post-submit navigation is
+      // skipped to avoid duplicating the global hook's navigation.
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
         { state: {} },
+      );
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        expect.anything(),
       );
     });
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
@@ -6,12 +6,14 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { getExtensionSkipTransactionStatusPage } from '../../../shared/lib/selectors/smart-transactions';
 import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../shared/lib/selectors/keyring';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
+import { getActiveQrCodeScanRequest } from '../../selectors/selectors';
 import { captureException } from '../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
@@ -65,6 +67,17 @@ export default function useSubmitBridgeTransaction() {
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const isQrHardwareWallet = hardwareWalletType === HardwareKeyringType.qr;
   const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
+  const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
+
+  // Tracks whether a QR SIGN scan request was active at any point during the
+  // current submit. QR success navigation is normally handled by the
+  // globally-mounted useNavigateOnQrScanComplete hook after the SIGN lifecycle
+  // completes; intent-based quotes can finish without ever triggering that
+  // lifecycle, so we fall back to navigating here when no SIGN scan occurred.
+  const sawQrSignRequestDuringSubmitRef = useRef(false);
+  if (activeQrCodeScanRequest?.type === QrScanRequestType.SIGN) {
+    sawQrSignRequestDuringSubmitRef.current = true;
+  }
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
@@ -85,6 +98,7 @@ export default function useSubmitBridgeTransaction() {
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
     setIsSubmitting(true);
+    sawQrSignRequestDuringSubmitRef.current = false;
 
     try {
       if (isHardwareWalletAccount) {
@@ -172,7 +186,12 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    if (!isQrHardwareWallet) {
+    // QR hardware wallets rely on the globally-mounted
+    // useNavigateOnQrScanComplete hook to navigate after the QR SIGN scan
+    // lifecycle completes. Intent-based quotes can finish without triggering
+    // that SIGN lifecycle, so navigate here whenever no SIGN scan was observed
+    // during this submit (otherwise the global hook handles it).
+    if (!isQrHardwareWallet || !sawQrSignRequestDuringSubmitRef.current) {
       if (toastEnabled) {
         // Match the QR completion path: dispatch resetBridgeController and
         // clear bridge navigation state so a later bridge entry starts clean.
