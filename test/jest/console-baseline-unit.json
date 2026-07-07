@@ -758,6 +758,9 @@
       "MetaMask: Background connection not initialized": 52,
       "Reselect: Identity function warnings": 1
     },
+    "ui/pages/confirmations/components/confirm/info/shared/native-send-heading/native-send-heading.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/pages/confirmations/components/confirm/info/shared/nft-send-heading/nft-send-heading.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 1
