@@ -14,7 +14,7 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_OBJECT } from '../../selectors/shared';
 import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
-import { selectTransactionIds } from '../../selectors/toast';
+import { selectTransactionIds } from '../../selectors/transaction-ids';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;

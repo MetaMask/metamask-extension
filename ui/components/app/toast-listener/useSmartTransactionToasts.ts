@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { TransactionStatus as EvmTransactionStatus } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
-import { type TransactionStatus } from '../../../helpers/utils/transaction-display';
 import { resolvePendingApproval } from '../../../store/actions';
 import { selectSmartTransactions } from '../../../selectors/toast';
 import {
@@ -10,6 +9,7 @@ import {
   showFailedToast,
   showPendingToast,
   showSuccessToast,
+  type ToastStatus,
 } from './shared';
 
 function generateToastId(txId: string) {
@@ -33,7 +33,7 @@ export const smartTransactionFailureStatuses = new Set<string>([
 export function mapSmartTransactionToastStatus(
   status?: string,
   evmStatus?: string,
-): TransactionStatus | undefined {
+): ToastStatus | undefined {
   if (status === SmartTransactionStatuses.SUCCESS) {
     return 'success';
   }
@@ -62,12 +62,12 @@ export function mapSmartTransactionToastStatus(
 export function useSmartTransactionToasts() {
   const dispatch = useDispatch();
   const transactions = useSelector(selectSmartTransactions);
-  const previousStatusesRef = useRef<
-    Record<string, TransactionStatus | undefined>
-  >({});
+  const previousStatusesRef = useRef<Record<string, ToastStatus | undefined>>(
+    {},
+  );
 
   useEffect(() => {
-    const nextStatuses: Record<string, TransactionStatus | undefined> = {};
+    const nextStatuses: Record<string, ToastStatus | undefined> = {};
 
     for (const tx of transactions) {
       const toastId = generateToastId(tx.txId);

@@ -6,6 +6,7 @@ const mockUseSelector = jest.fn();
 const mockUseSmartTransactionToasts = jest.fn();
 const mockPerpsDepositToast = jest.fn(() => null);
 const mockUsePerpsWithdrawTransactionToasts = jest.fn();
+const mockMusdConversionListener = jest.fn(() => null);
 const mockIsInteractiveUI = jest.fn();
 
 jest.mock('react-redux', () => ({
@@ -30,6 +31,10 @@ jest.mock('./useSmartTransactionToasts', () => ({
 
 jest.mock('../perps/perps-deposit-toast', () => ({
   PerpsDepositToast: () => mockPerpsDepositToast(),
+}));
+
+jest.mock('../musd/musd-conversion-listener', () => ({
+  MusdConversionListener: () => mockMusdConversionListener(),
 }));
 
 jest.mock('./usePerpsWithdrawTransactionToasts', () => ({
@@ -67,6 +72,7 @@ describe('ToastListener', () => {
 
     expect(mockUseSmartTransactionToasts).toHaveBeenCalledTimes(1);
     expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
+    expect(mockMusdConversionListener).toHaveBeenCalledTimes(1);
   });
 
   it('mounts only the perps withdraw toast hook when the smart transaction toast flag is disabled', () => {
@@ -77,6 +83,7 @@ describe('ToastListener', () => {
 
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
     expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
+    expect(mockMusdConversionListener).toHaveBeenCalledTimes(1);
   });
 
   it('does not mount toast listeners in non-interactive UI', () => {
@@ -88,5 +95,6 @@ describe('ToastListener', () => {
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
     expect(mockPerpsDepositToast).not.toHaveBeenCalled();
     expect(mockUsePerpsWithdrawTransactionToasts).not.toHaveBeenCalled();
+    expect(mockMusdConversionListener).not.toHaveBeenCalled();
   });
 });

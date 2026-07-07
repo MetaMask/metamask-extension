@@ -4,6 +4,7 @@ import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectToastImplementation } from '../../../selectors/toast';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
+import { MusdConversionListener } from '../musd/musd-conversion-listener';
 import { useSmartTransactionToasts } from './useSmartTransactionToasts';
 import { usePerpsWithdrawTransactionToasts } from './usePerpsWithdrawTransactionToasts';
 import { TransactionEventToastListener } from './transaction-event-toast-listener';
@@ -34,6 +35,7 @@ export function ToastListener() {
     <>
       {isUnlocked ? <PerpsDepositToast /> : null}
       <PerpsWithdrawTransactionToastListener />
+      <MusdConversionListener />
 
       {toastImplementation === 'messenger' && <TransactionEventToastListener />}
       {toastImplementation === 'redux' && <SmartTransactionToastListener />}
