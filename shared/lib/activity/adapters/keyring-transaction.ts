@@ -263,7 +263,7 @@ export function mapKeyringTransaction({
         hash: transaction.id,
         data: {
           from,
-          token: rawToken,
+          token: rawToken ? { ...rawToken, amount: undefined } : rawToken,
           fees,
         },
       };
@@ -304,7 +304,7 @@ export function mapKeyringTransaction({
         hash: transaction.id,
         data: {
           from,
-          token: rawToken,
+          token: rawToken ? { ...rawToken, amount: undefined } : rawToken,
           fees,
         },
       };

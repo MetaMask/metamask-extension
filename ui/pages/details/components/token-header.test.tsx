@@ -3,11 +3,15 @@ import { render } from '@testing-library/react';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import type { TokenAsset } from '../../../hooks/useTokensData';
 import { useTokensData } from '../../../hooks/useTokensData';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { TokenHeader } from './token-header';
 
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
-}));
+jest.mock('../../../hooks/useI18nContext', () => {
+  const { enLocale } = jest.requireActual('../../../../test/lib/i18n-helpers');
+  return {
+    useI18nContext: () => (key: string) => enLocale[key]?.message ?? key,
+  };
+});
 
 jest.mock('../../../hooks/useTokensData', () => ({
   useTokensData: jest.fn(() => ({})),
@@ -88,14 +92,16 @@ describe('TokenHeader', () => {
       <TokenHeader token={{ assetId: STELLAR_USDC_ASSET, direction: 'out' }} />,
     );
 
-    expect(getByText('token')).toBeInTheDocument();
+    expect(getByText(messages.token.message)).toBeInTheDocument();
   });
 
   it('handles a missing token by requesting no metadata and rendering the generic label', () => {
-    const { getByText, getByTestId } = render(<TokenHeader token={undefined} />);
+    const { getByText, getByTestId } = render(
+      <TokenHeader token={undefined} />,
+    );
 
     expect(mockUseTokensData).toHaveBeenCalledWith([]);
-    expect(getByText('token')).toBeInTheDocument();
+    expect(getByText(messages.token.message)).toBeInTheDocument();
     expect(getByTestId('activity-avatar')).toHaveTextContent(
       JSON.stringify([null]),
     );

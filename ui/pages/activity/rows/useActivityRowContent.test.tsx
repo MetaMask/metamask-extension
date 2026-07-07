@@ -4,10 +4,8 @@ import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navi
 import { useActivityRowContent } from './useActivityRowContent';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext:
-    () =>
-    (key: string, substitutions?: string[]) =>
-      substitutions ? `${key}|${substitutions.join(',')}` : key,
+  useI18nContext: () => (key: string, substitutions?: string[]) =>
+    substitutions ? `${key}|${substitutions.join(',')}` : key,
 }));
 
 jest.mock('./useFormatTokenAmount', () => ({

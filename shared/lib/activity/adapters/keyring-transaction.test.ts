@@ -342,7 +342,7 @@ describe('mapKeyringTransaction', () => {
       data: {
         from: 'owner-address',
         token: {
-          amount: '0',
+          amount: undefined,
           assetId: STELLAR_USDC_ASSET,
           direction: 'out',
           symbol: 'USDC',
@@ -389,7 +389,7 @@ describe('mapKeyringTransaction', () => {
       data: {
         from: 'owner-address',
         token: {
-          amount: '0',
+          amount: undefined,
           assetId: STELLAR_USDC_ASSET,
           direction: 'out',
           symbol: 'USDC',
