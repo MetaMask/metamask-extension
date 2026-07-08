@@ -24,10 +24,10 @@ import {
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
 } from '../../../../shared/constants/metametrics';
+import type { AnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment-tracking';
 import { getPlatform } from '../../lib/util';
 import { ANONYMOUS_EVENT_PROPERTY } from './platform-adapter';
-import type { AnalyticsMessenger } from './analytics-messenger';
 
 type SegmentTrackPayload = Omit<
   SegmentEventPayload,
@@ -44,10 +44,10 @@ type SegmentPagePayload = {
 };
 
 type ConfigureAnalyticsOptions = {
-  messenger: AnalyticsMessenger;
+  messenger: AnalyticsControllerInitMessenger;
 };
 
-let messenger: AnalyticsMessenger | undefined;
+let messenger: AnalyticsControllerInitMessenger | undefined;
 let cachedProfileIdentity:
   | {
       profileId?: string;
@@ -55,7 +55,7 @@ let cachedProfileIdentity:
     }
   | undefined;
 
-function getMessenger(): AnalyticsMessenger {
+function getMessenger(): AnalyticsControllerInitMessenger {
   if (!messenger) {
     throw new Error('Analytics has not been configured');
   }

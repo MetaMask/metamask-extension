@@ -8,12 +8,12 @@ import {
   configureAnalytics,
   getProfileIdentityProperties,
 } from '../controllers/analytics/analytics';
-import type { AnalyticsMessenger } from '../controllers/analytics/analytics-messenger';
 import {
   createEnrichmentContext,
   createPlatformAdapter,
 } from '../controllers/analytics/platform-adapter';
 import { configureOptOutSegmentEnrichment } from '../lib/segment/custom-segment-tracking';
+import type { AnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
 import { MessengerClientInitFunction } from './types';
 
 /**
@@ -29,7 +29,7 @@ import { MessengerClientInitFunction } from './types';
 export const AnalyticsControllerInit: MessengerClientInitFunction<
   AnalyticsController,
   AnalyticsControllerMessenger,
-  AnalyticsMessenger
+  AnalyticsControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
   const persisted = {
     ...persistedState.AnalyticsController,

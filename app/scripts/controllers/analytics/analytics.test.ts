@@ -19,6 +19,7 @@ import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
+import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
@@ -26,7 +27,6 @@ import {
   trackEvent,
   updateProfileSessionData,
 } from './analytics';
-import { getAnalyticsMessenger } from './analytics-messenger';
 
 function createConfiguredMessenger() {
   const trackEventHandler = jest.fn();
@@ -118,7 +118,7 @@ function createConfiguredMessenger() {
     trackViewHandler as never,
   );
 
-  const analyticsMessenger = getAnalyticsMessenger(rootMessenger);
+  const analyticsMessenger = getAnalyticsControllerInitMessenger(rootMessenger);
 
   configureAnalytics({
     messenger: analyticsMessenger,

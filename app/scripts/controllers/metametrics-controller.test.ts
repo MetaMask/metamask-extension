@@ -68,6 +68,7 @@ import {
 import type { Preferences } from '../../../shared/types/preferences';
 import * as sentry from '../../../shared/lib/sentry';
 import { configureOptOutSegmentEnrichment } from '../lib/segment/custom-segment-tracking';
+import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
 import {
   createEnrichmentContext,
   enrichEventContext,
@@ -79,7 +80,6 @@ import {
   getProfileIdentityProperties,
   updateProfileSessionData,
 } from './analytics/analytics';
-import { getAnalyticsMessenger } from './analytics';
 import {
   MetaMetricsController,
   AllowedActions,
@@ -3254,7 +3254,7 @@ async function withController<ReturnValue>(
       mockAnalyticsControllerState.optedIn = false;
     });
 
-    const analyticsMessenger = getAnalyticsMessenger(messenger);
+    const analyticsMessenger = getAnalyticsControllerInitMessenger(messenger);
     const enrichmentContext = createEnrichmentContext(
       analyticsMessenger,
       '0.0.1-test',

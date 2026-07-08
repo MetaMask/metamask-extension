@@ -25,7 +25,7 @@ import {
   segment as extensionSegmentSingleton,
   type SegmentClient,
 } from '../../lib/segment';
-import type { AnalyticsMessenger } from './analytics-messenger';
+import type { AnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 
 export const ANONYMOUS_EVENT_PROPERTY = 'anonymous' as const;
 
@@ -57,7 +57,7 @@ export type PlatformAdapterEnrichmentContext = {
  * @returns Enrichment context for universal metadata.
  */
 export function createEnrichmentContext(
-  messenger: AnalyticsMessenger,
+  messenger: AnalyticsControllerInitMessenger,
   appVersion: string,
   getProfileIdentityProperties: () => Record<string, string>,
 ): PlatformAdapterEnrichmentContext {
