@@ -156,7 +156,6 @@
     "error": null,
     "estimatedGasFeeTimeBounds": {},
     "etag": null,
-    "eventQueue": "object",
     "events": "object",
     "eventsBeforeMetricsOptIn": "object",
     "fcmToken": "string",
