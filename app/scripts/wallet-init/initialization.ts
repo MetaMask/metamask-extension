@@ -1,5 +1,9 @@
 import { Wallet } from '@metamask/wallet';
-import type { DefaultActions, DefaultEvents, WalletOptions } from '@metamask/wallet';
+import type {
+  DefaultActions,
+  DefaultEvents,
+  WalletOptions,
+} from '@metamask/wallet';
 import { Json } from '@metamask/utils';
 import { Encryptor } from '@metamask/keyring-controller';
 import { ShowApprovalRequest } from '@metamask/approval-controller';
