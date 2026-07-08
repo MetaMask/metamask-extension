@@ -2042,62 +2042,6 @@
   "bridgeGetNewQuote": {
     "message": "Get new quote"
   },
-  "hardwareAllSetTitle": {
-    "message": "You're all set",
-    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
-  },
-  "hardwareAlmostThereTitle": {
-    "message": "Almost there! Confirm on your device again",
-    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
-  },
-  "hardwareApproveAmount": {
-    "message": "Approve $1 $2",
-    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
-  },
-  "hardwareApprovedAmount": {
-    "message": "Approved $1 $2",
-    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
-  },
-  "hardwareDeviceDisconnected": {
-    "message": "Reconnect your device and try again",
-    "description": "Title shown when a hardware wallet device disconnects during signing."
-  },
-  "hardwareReconnectDevice": {
-    "message": "Reconnect your device to continue",
-    "description": "Description shown when a hardware wallet device disconnects during signing."
-  },
-  "hardwareRejected": {
-    "message": "Rejected",
-    "description": "Label for a rejected hardware-wallet bridge signature."
-  },
-  "hardwareResendTransaction": {
-    "message": "Resend transaction",
-    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
-  },
-  "hardwareSendAmount": {
-    "message": "Send $1 $2",
-    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
-  },
-  "hardwareSendingAmount": {
-    "message": "Sending $1 $2",
-    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
-  },
-  "hardwareSentAmount": {
-    "message": "Sent $1 $2",
-    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
-  },
-  "hardwareSpender": {
-    "message": "Spender: $1",
-    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
-  },
-  "hardwareToAddress": {
-    "message": "To: $1",
-    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareTransactionRejected": {
-    "message": "You rejected this transaction on your device",
-    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
-  },
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },
@@ -2191,34 +2135,6 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
-  },
-  "qrHardwareScanSignatureFinal": {
-    "message": "Scan final QR code",
-    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
-  },
-  "qrHardwareScanSignatureNext": {
-    "message": "Scan next QR code",
-    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
-  },
-  "qrHardwareShowQrCode": {
-    "message": "Show QR code",
-    "description": "Button label to go back to showing the QR code from the scanner view."
-  },
-  "qrHardwareSignDisplayStepTitle": {
-    "message": "Step $1 of $2: Scan this QR code with your wallet",
-    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
-  },
-  "qrHardwareSignLastStepTitle": {
-    "message": "Last step: Scan the QR code shown on your wallet",
-    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
-  },
-  "qrHardwareSignStepTitle": {
-    "message": "Step $1 of $2: Scan the QR code shown on your wallet",
-    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
-  },
-  "qrHardwareSignTitle": {
-    "message": "Scan QR code below and sign on your device ($1/$2)",
-    "description": "Title for a QR hardware-wallet bridge signature step. $1 is the current signature step and $2 is the total signature count."
   },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "No quotes available. Try a smaller amount."
@@ -4351,6 +4267,62 @@
   },
   "hardware": {
     "message": "Hardware"
+  },
+  "hardwareAllSetTitle": {
+    "message": "You're all set",
+    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
+  },
+  "hardwareAlmostThereTitle": {
+    "message": "Almost there! Confirm on your device again",
+    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "hardwareApproveAmount": {
+    "message": "Approve $1 $2",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareApprovedAmount": {
+    "message": "Approved $1 $2",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareDeviceDisconnected": {
+    "message": "Reconnect your device and try again",
+    "description": "Title shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareReconnectDevice": {
+    "message": "Reconnect your device to continue",
+    "description": "Description shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareRejected": {
+    "message": "Rejected",
+    "description": "Label for a rejected hardware-wallet bridge signature."
+  },
+  "hardwareResendTransaction": {
+    "message": "Resend transaction",
+    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
+  },
+  "hardwareSendAmount": {
+    "message": "Send $1 $2",
+    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSendingAmount": {
+    "message": "Sending $1 $2",
+    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSentAmount": {
+    "message": "Sent $1 $2",
+    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSpender": {
+    "message": "Spender: $1",
+    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "hardwareToAddress": {
+    "message": "To: $1",
+    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareTransactionRejected": {
+    "message": "You rejected this transaction on your device",
+    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
@@ -8196,6 +8168,34 @@
   "qrErrorWrongUrTypeSigningTitle": {
     "message": "Wrong QR code",
     "description": "Title shown when the UR type does not match what is expected during signing."
+  },
+  "qrHardwareScanSignatureFinal": {
+    "message": "Scan final QR code",
+    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrHardwareScanSignatureNext": {
+    "message": "Scan next QR code",
+    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrHardwareShowQrCode": {
+    "message": "Show QR code",
+    "description": "Button label to go back to showing the QR code from the scanner view."
+  },
+  "qrHardwareSignDisplayStepTitle": {
+    "message": "Step $1 of $2: Scan this QR code with your wallet",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
+  },
+  "qrHardwareSignLastStepTitle": {
+    "message": "Last step: Scan the QR code shown on your wallet",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
+  "qrHardwareSignStepTitle": {
+    "message": "Step $1 of $2: Scan the QR code shown on your wallet",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
+  },
+  "qrHardwareSignTitle": {
+    "message": "Scan QR code below and sign on your device ($1/$2)",
+    "description": "Title for a QR hardware-wallet bridge signature step. $1 is the current signature step and $2 is the total signature count."
   },
   "queued": {
     "message": "Queued"

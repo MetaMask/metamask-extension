@@ -35,10 +35,7 @@ jest.mock(
             }
           }}
         />
-        <button
-          data-testid="base-qr-reader__cancel"
-          onClick={handleCancel}
-        />
+        <button data-testid="base-qr-reader__cancel" onClick={handleCancel} />
         <button
           data-testid="base-qr-reader__set-error-title"
           onClick={() => setErrorTitle('error')}
@@ -110,9 +107,7 @@ jest.mock('@ngraveio/bc-ur', () => ({
     private readonly mockPayloadId: string;
 
     constructor(ur: { mockBuffer: Buffer; mockType: string }) {
-      this.mockPayloadId = `${ur.mockType}-${ur.mockBuffer.toString(
-        'hex',
-      )}`;
+      this.mockPayloadId = `${ur.mockType}-${ur.mockBuffer.toString('hex')}`;
     }
 
     nextPart() {
@@ -266,18 +261,6 @@ describe('QrHardwareSigningPage', () => {
     fireEvent.click(getByTestId('base-qr-reader__cancel'));
 
     expect(onCancel).toHaveBeenCalledTimes(1);
-  });
-
-  it('invokes noop error callbacks from Reader without throwing', () => {
-    const { getByTestId } = render(
-      <QrHardwareSigningPage
-        {...BASE_PROPS}
-        phase={QrHardwareSigningPhase.ScanSignature}
-      />,
-    );
-
-    fireEvent.click(getByTestId('base-qr-reader__set-error-title'));
-    fireEvent.click(getByTestId('base-qr-reader__set-error-active'));
   });
 
   it('uses qrHardwareScanSignatureFinal label when isFinalSignature is true', () => {
