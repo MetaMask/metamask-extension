@@ -2076,7 +2076,7 @@ const unapprovedTransactionSelectorFactory =
   createParameterizedDeepEqualSelector(20);
 
 export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
-  (state) => getUnapprovedTransactions(state),
+  getUnapprovedTransactions,
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => unapprovedTxs?.[transactionId],
 );
