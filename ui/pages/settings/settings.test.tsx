@@ -10,7 +10,6 @@ import {
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
-  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -223,7 +222,7 @@ describe('Settings', () => {
     });
 
     it('navigates from a notification section back to the main notifications settings page', async () => {
-      mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
+      mockPathname = '/settings/notifications/walletActivity';
       renderSettings(mockStore);
 
       const backButton = await screen.findByTestId(

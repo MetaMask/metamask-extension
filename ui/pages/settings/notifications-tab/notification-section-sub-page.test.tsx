@@ -2,21 +2,32 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { useParams } from 'react-router-dom';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
-import { NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
-import { createMockNotificationPreferences } from '../../../hooks/metamask-notifications/mocks';
+import {
+  createMockNotificationCategories,
+  createMockNotificationPreferences,
+} from '../../../hooks/metamask-notifications/mocks';
 import {
   useNotificationPreferences,
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
+import { useNotificationCategories } from '../../../hooks/metamask-notifications/useNotificationCategories';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+import { NotificationCategoryId } from '../../notifications/notification-categories-types';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getNotificationsSettingsSectionRoute } from '../../notifications-settings/notifications-settings-routes';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn(),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -81,6 +92,13 @@ jest.mock(
 );
 
 jest.mock(
+  '../../../hooks/metamask-notifications/useNotificationCategories',
+  () => ({
+    useNotificationCategories: jest.fn(),
+  }),
+);
+
+jest.mock(
   '../../../contexts/metamask-notifications/metamask-notifications',
   () => ({
     useMetamaskNotificationsContext: () => ({
@@ -90,6 +108,9 @@ jest.mock(
 );
 
 const mockStore = configureMockStore([thunk]);
+
+const setSectionType = (sectionType: NotificationsSettingsSectionType) =>
+  jest.mocked(useParams).mockReturnValue({ sectionType });
 
 const createInternalAccount = ({
   id,
@@ -122,6 +143,7 @@ describe('NotificationSectionSubPage', () => {
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
       .mockImplementation(() => undefined);
+    setSectionType(NotificationCategoryId.WalletActivity);
     jest.mocked(useAccountSettingsProps).mockReturnValue({
       data: {},
       initialLoading: false,
@@ -138,6 +160,10 @@ describe('NotificationSectionSubPage', () => {
       refetchPreferences: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
+    });
+    jest.mocked(useNotificationCategories).mockReturnValue({
+      categories: createMockNotificationCategories(),
+      isLoading: false,
     });
   });
 
@@ -169,9 +195,9 @@ describe('NotificationSectionSubPage', () => {
     });
 
     renderWithProvider(
-      <NotificationSectionSubPage sectionType="walletActivity" />,
+      <NotificationSectionSubPage />,
       store,
-      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      getNotificationsSettingsSectionRoute(NotificationCategoryId.WalletActivity),
     );
 
     expect(
@@ -290,9 +316,9 @@ describe('NotificationSectionSubPage', () => {
     });
 
     renderWithProvider(
-      <NotificationSectionSubPage sectionType="walletActivity" />,
+      <NotificationSectionSubPage />,
       store,
-      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      getNotificationsSettingsSectionRoute(NotificationCategoryId.WalletActivity),
     );
 
     expect(
@@ -392,9 +418,9 @@ describe('NotificationSectionSubPage', () => {
     );
 
     renderWithProvider(
-      <NotificationSectionSubPage sectionType="walletActivity" />,
+      <NotificationSectionSubPage />,
       store,
-      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      getNotificationsSettingsSectionRoute(NotificationCategoryId.WalletActivity),
     );
 
     fireEvent.click(
@@ -494,9 +520,9 @@ describe('NotificationSectionSubPage', () => {
     });
 
     renderWithProvider(
-      <NotificationSectionSubPage sectionType="walletActivity" />,
+      <NotificationSectionSubPage />,
       store,
-      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      getNotificationsSettingsSectionRoute(NotificationCategoryId.WalletActivity),
     );
 
     expect(
@@ -528,6 +554,7 @@ describe('NotificationSectionSubPage', () => {
       preferences: NotificationPreferences,
     ) => {
       const updatePreference = jest.fn();
+      setSectionType(section);
       jest.mocked(useNotificationPreferences).mockReturnValue({
         preferences,
         hasNotificationPreferences: true,
@@ -539,7 +566,7 @@ describe('NotificationSectionSubPage', () => {
         updatePreferencesSection: jest.fn(),
       });
       renderWithProvider(
-        <NotificationSectionSubPage sectionType={section} />,
+        <NotificationSectionSubPage />,
         buildStore(),
         getNotificationsSettingsSectionRoute(section),
       );
@@ -551,15 +578,15 @@ describe('NotificationSectionSubPage', () => {
       preferences: NotificationPreferences;
     }[] = [
       {
-        section: 'walletActivity',
+        section: NotificationCategoryId.WalletActivity,
         preferences: createMockNotificationPreferences(),
       },
       {
-        section: 'marketing',
+        section: NotificationCategoryId.Marketing,
         preferences: createMockNotificationPreferences(),
       },
       {
-        section: 'agenticCli',
+        section: NotificationCategoryId.AgenticCli,
         preferences: {
           ...createMockNotificationPreferences(),
           agenticCli: {
@@ -571,7 +598,7 @@ describe('NotificationSectionSubPage', () => {
       ...(getIsPerpsIncludedInBuild()
         ? [
             {
-              section: 'perps' as const,
+              section: NotificationCategoryId.Perps as NotificationsSettingsSectionType,
               preferences: createMockNotificationPreferences(),
             },
           ]

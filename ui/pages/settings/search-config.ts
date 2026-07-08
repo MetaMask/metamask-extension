@@ -1,11 +1,4 @@
-import {
-  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
-  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
-  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-  THIRD_PARTY_APIS_ROUTE,
-} from '../../helpers/constants/routes';
-import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+import { THIRD_PARTY_APIS_ROUTE } from '../../helpers/constants/routes';
 
 export type SearchItemMeta = {
   readonly id: string;
@@ -106,13 +99,6 @@ export const NOTIFICATIONS_ITEMS = {
   'allow-notifications': 'notifications',
 } as const;
 
-export const NOTIFICATIONS_SECTION_ITEMS = {
-  'wallet-activity': 'notificationsSettingsWalletActivityTitle',
-  perps: 'notificationsSettingsPerpsTitle',
-  marketing: 'notificationsSettingsMarketingTitle',
-  'agentic-cli': 'notificationsSettingsAgenticCliTitle',
-} as const;
-
 export const DEVELOPER_TOOLS_ITEMS = {
   'show-fiat-in-testnets': 'showFiatConversionInTestnets',
   'delete-activity-and-nonce-data': 'deleteActivityAndNonceData',
@@ -160,36 +146,6 @@ export const SETTINGS_SEARCH_CONFIG: TabSearchConfig[] = [
   {
     tabId: 'notifications',
     items: createSearchItemMeta(NOTIFICATIONS_ITEMS),
-    subPages: [
-      {
-        path: NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-        items: createSearchItemMeta({
-          'wallet-activity': NOTIFICATIONS_SECTION_ITEMS['wallet-activity'],
-        }),
-      },
-      ...(getIsPerpsIncludedInBuild()
-        ? [
-            {
-              path: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
-              items: createSearchItemMeta({
-                perps: NOTIFICATIONS_SECTION_ITEMS.perps,
-              }),
-            },
-          ]
-        : []),
-      {
-        path: NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
-        items: createSearchItemMeta({
-          marketing: NOTIFICATIONS_SECTION_ITEMS.marketing,
-        }),
-      },
-      {
-        path: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-        items: createSearchItemMeta({
-          'agentic-cli': NOTIFICATIONS_SECTION_ITEMS['agentic-cli'],
-        }),
-      },
-    ],
   },
   {
     tabId: 'developer-tools',

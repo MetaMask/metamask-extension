@@ -18,11 +18,12 @@ import { NotificationCategoryId, type NotificationCategoryMetadata } from '../no
 import { SettingsSelectItem } from '../settings/shared';
 import { getNotificationsSettingsSectionRoute } from './notifications-settings-routes';
 
-export type NotificationsSettingsSectionType =
-  | 'walletActivity'
-  | 'perps'
-  | 'marketing'
-  | 'agenticCli';
+// Any category the BE catalog returns is routable via the generic
+// notifications settings sub-page - the section type is just its id.
+export type NotificationsSettingsSectionType = Exclude<
+  NotificationCategoryId,
+  NotificationCategoryId.All
+>;
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;
@@ -73,7 +74,7 @@ export const getNotificationsSettingsSectionConfigs = (
         getIsPerpsIncludedInBuild(),
     )
     .map((category) => ({
-      type: category.id as unknown as NotificationsSettingsSectionType,
+      type: category.id,
       title: category.label,
       description: category.description,
       iconName: getIconNameFromCategoryIcon(category.icon),
