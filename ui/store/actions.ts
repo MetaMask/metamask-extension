@@ -106,7 +106,6 @@ import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { evaluateNewUserCohortEligibility } from '../../shared/lib/new-user-cohort';
-import { selectExperimentEligibility } from '../../shared/lib/ab-testing/selectExperimentEligibility';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -135,6 +134,7 @@ import {
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
+  selectExperimentEligibility,
 } from '../selectors';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
