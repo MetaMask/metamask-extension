@@ -13,6 +13,7 @@ import { getServerMochaToBackground } from '../background-socket/server-mocha-to
 import { PAGES, type Driver } from '../webdriver/driver';
 
 const STRUCTURED_CLONE_CHROME_VERSION = '148';
+const STRUCTURED_CLONE_MESSAGE_SERIALIZATION = 'structured_clone';
 const DEFAULT_ITERATIONS = 10;
 const DEFAULT_WARMUPS = 1;
 const DEFAULT_PAYLOAD_BYTES = Math.floor(5.5 * 1024 * 1024);
@@ -345,11 +346,14 @@ async function runVariant({
       },
       isBenchmark: true,
       manifestTransform:
-        variant === 'flagOffJson'
-          ? (manifest: Record<string, unknown>) => {
+        (manifest: Record<string, unknown>) => {
+          if (variant === 'flagOffJson') {
               delete manifest.message_serialization;
-            }
-          : undefined,
+            return;
+          }
+
+          manifest.message_serialization = STRUCTURED_CLONE_MESSAGE_SERIALIZATION;
+        },
       title: `structured-clone-messaging-${variant}-${launchIndex}`,
     },
     async ({ driver }: { driver: Driver }) => {
