@@ -45,6 +45,7 @@ import {
   getHasSeenOnboardingCompletionPage,
   getIsPrimarySeedPhraseBackedUp,
   getOpenedWithSidepanel,
+  getShouldUnlockBeforeOnboardingCompletion,
 } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
@@ -60,7 +61,6 @@ import {
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
-  getShouldUnlockBeforeOnboardingCompletion,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import type { UIMetricsEventPayload } from '../../contexts/metametrics';

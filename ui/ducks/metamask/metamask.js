@@ -27,6 +27,7 @@ import { updateTransactionGasFees } from '../../store/actions/update-transaction
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { EMPTY_ARRAY } from '../../selectors/shared';
+import { getIsUnlocked } from './base-selectors';
 
 const initialState = {
   isInitialized: false,
@@ -582,4 +583,24 @@ export function getOpenedWithSidepanel(state) {
  */
 export function getPasskeyAutoUnlockSuppressed(state) {
   return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
+}
+
+/**
+ * True when a locked user should unlock before resuming the onboarding
+ * completion page (return visit without tapping Done).
+ *
+ * @param {object} state - MetaMask state tree
+ * @returns {boolean} Whether the user must unlock before onboarding completion
+ */
+export function getShouldUnlockBeforeOnboardingCompletion(state) {
+  const { hasSeenOnboardingCompletionPage, completedOnboarding } =
+    state.metamask;
+
+  return (
+    hasSeenOnboardingCompletionPage &&
+    !completedOnboarding &&
+    !getIsUnlocked(state) &&
+    getIsInitialized(state) &&
+    !getIsWalletResetInProgress(state)
+  );
 }
