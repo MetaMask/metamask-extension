@@ -12,7 +12,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { add0x, hexToBytes } from '@metamask/utils';
+import { add0x, hexToBytes, type Hex } from '@metamask/utils';
 import {
   EncAccountDataType,
   SecretType,
@@ -408,6 +408,44 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).resolves.toStrictEqual('0x123');
+      });
+    });
+  });
+
+  describe('checkDelegationDisabled', () => {
+    it('performs an eth_call against the delegation manager and returns the decoded result', async () => {
+      const delegationManagerAddress: Hex =
+        '0x1234567890123456789012345678901234567890';
+      const delegationHash: Hex = `0x${'0'.repeat(63)}1`;
+      const mockRequest = jest
+        .fn()
+        .mockResolvedValue(
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+        );
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({
+            provider: { request: mockRequest },
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkDelegationDisabled',
+          delegationManagerAddress,
+          delegationHash,
+          'networkClientId',
+        );
+
+        expect(mockRequest).toHaveBeenCalledWith({
+          method: 'eth_call',
+          params: [
+            { to: delegationManagerAddress, data: expect.any(String) },
+            'latest',
+          ],
+        });
+        expect(result).toBe(true);
       });
     });
   });
