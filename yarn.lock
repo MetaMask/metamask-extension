@@ -6674,6 +6674,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/java-tron-up@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/java-tron-up@npm:1.0.0"
+  dependencies:
+    "@metamask/local-node-utils": "npm:^1.0.0"
+  bin:
+    java-tron-up: ./dist/bin/java-tron-up.mjs
+  checksum: 10/a617b99a278101f5a82ee80933b0572acd6d95955aeb2d166bfbe2691d5d0b8d729b87575cee3fef8da7f923015baa2807965223994c694b272c7f8600532e09
+  languageName: node
+  linkType: hard
+
 "@metamask/jazzicon@npm:2.0.0":
   version: 2.0.0
   resolution: "@metamask/jazzicon@npm:2.0.0"
@@ -6925,6 +6936,15 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/d0917b2f634d9eb2f563827739fca00c1675ee90674ec49b2b68afcb604aee843d6c5be5d79e9780fa22d29f71fc876f40b2d3d0ed4cab7f5948937ddd276691
+  languageName: node
+  linkType: hard
+
+"@metamask/local-node-utils@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/local-node-utils@npm:1.0.0"
+  dependencies:
+    yaml: "npm:^2.3.4"
+  checksum: 10/ecbe70ee0c27b391988b5703034bd690099c4855369ccef3f013d8e08a1ccefe20db462f48e9f38c9e8165bc2094970ff27adeaa4eb9f612e7c19eb1e2574b1f
   languageName: node
   linkType: hard
 
@@ -33050,6 +33070,7 @@ __metadata:
     "@metamask/geolocation-controller": "npm:^0.1.1"
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"
     "@metamask/institutional-wallet-snap": "npm:1.5.0"
+    "@metamask/java-tron-up": "npm:^1.0.0"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.3.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"

@@ -64,6 +64,7 @@ export const PREFERENCES_ITEMS = {
 export const PRIVACY_ITEMS = {
   'basic-functionality': 'basicConfigurationLabel',
   'third-party-apis': 'thirdPartyApis',
+  'ipfs-gateway': 'ipfsGateway',
   'batch-account-balance-requests': 'useMultiAccountBalanceChecker',
   'skip-link-confirmation': 'skipLinkConfirmationScreens',
   metametrics: 'participateInMetaMetrics',
@@ -77,7 +78,6 @@ export const THIRD_PARTY_API_ITEMS = {
   'network-details-check': 'useSafeChainsListValidation',
   'show-ens-domains': 'ensDomainsSettingTitle',
   'make-smart-contracts-easier': 'makeSmartContractsEasier',
-  'ipfs-gateway': 'ipfsGateway',
   'display-nft-media': 'displayNftMedia',
   'autodetect-nfts': 'useNftDetection',
   'proposed-nicknames': 'externalNameSourcesSetting',
