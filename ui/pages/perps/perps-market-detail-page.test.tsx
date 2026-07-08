@@ -477,9 +477,9 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByTestId('perps-position-return-value'),
       ).toHaveTextContent('••••••');
-      expect(
-        screen.getByTestId('perps-position-size-value'),
-      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-position-size-value')).toHaveTextContent(
+        '••••••',
+      );
       expect(
         screen.getByTestId('perps-position-margin-value'),
       ).toHaveTextContent('••••••');
