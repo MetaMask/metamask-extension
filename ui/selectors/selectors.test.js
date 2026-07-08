@@ -1187,6 +1187,35 @@ describe('Selectors', () => {
       );
     });
 
+    it('recomputes unapproved transaction when txParams mutate in place', () => {
+      const mutableState = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-3',
+              status: TransactionStatus.unapproved,
+              txParams: { maxFeePerGas: '0x1', gas: '0x5208' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x1');
+
+      mutableState.metamask.transactions[0].txParams.maxFeePerGas = '0x999';
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x999');
+    });
+
     it('caches full transaction data per transaction ID', () => {
       expect(
         selectors.getFullTxData(

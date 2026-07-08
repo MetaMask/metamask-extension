@@ -99,19 +99,13 @@ export const getTransactionsByChainId = createChainIdSelector(
  * @param {object} state - Root state
  * @returns {object[]} Array of transaction objects
  */
-export const getCurrentNetworkTransactions =
-  createShallowEqualInputAndResultSelector(
-    getTransactions,
-    getCurrentChainIdSafe,
-    (transactions, chainId) => {
-      if (!transactions.length || !chainId) {
-        return EMPTY_ARRAY;
-      }
-      return transactions.filter(
-        (transaction) => transaction.chainId === chainId,
-      );
-    },
-  );
+export const getCurrentNetworkTransactions = (state) => {
+  const chainId = getCurrentChainIdSafe(state);
+  if (!chainId) {
+    return EMPTY_ARRAY;
+  }
+  return getTransactionsByChainId(state, chainId);
+};
 
 export const incomingTxListSelectorAllChains =
   createShallowEqualInputAndResultSelector(

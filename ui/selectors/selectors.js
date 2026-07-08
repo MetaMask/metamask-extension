@@ -2073,7 +2073,7 @@ export const getMetadataContractName = createSelector(
 export const getTxData = (state) => state.confirmTransaction.txData;
 
 const unapprovedTransactionSelectorFactory =
-  createParameterizedShallowEqualSelector(20);
+  createParameterizedDeepEqualSelector(20);
 
 export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
   getUnapprovedTransactions,
@@ -2081,7 +2081,7 @@ export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
   (unapprovedTxs, transactionId) => unapprovedTxs?.[transactionId],
 );
 
-const transactionSelectorFactory = createParameterizedShallowEqualSelector(50);
+const transactionSelectorFactory = createParameterizedDeepEqualSelector(50);
 
 export const getTransaction = transactionSelectorFactory(
   getCurrentNetworkTransactions,
