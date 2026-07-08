@@ -45,6 +45,7 @@ import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useABTest } from '../../../hooks/useABTest';
+import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
 import {
   PERPS_TAB_BADGE_AB_KEY,
   PERPS_TAB_BADGE_VARIANTS,
@@ -108,6 +109,7 @@ export const AccountOverviewTabs = ({
 
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const showBottomNav = useBottomNavBar();
 
   // Track exposure only when the Perps tab is shown, gated on availability (not
   // dismissal) so control and treatment record symmetrically once per session.
@@ -261,7 +263,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {isPerpsExperienceAvailable && (
+        {isPerpsExperienceAvailable && !showBottomNav && (
           <Tab
             name={
               showPerpsTabBadge ? (
@@ -334,7 +336,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {showActivity && (
+        {showActivity && !showBottomNav && (
           <Tab
             name={t('activity')}
             tabKey={AccountOverviewTabKey.Activity}
