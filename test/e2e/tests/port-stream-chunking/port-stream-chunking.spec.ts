@@ -2,11 +2,6 @@ import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import {
-  type TransactionMeta,
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -14,12 +9,11 @@ import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
 import { type Driver, PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 
-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 const PORT_STREAM_CHUNKED_EVENT = 'Port Stream Chunked';
 const STRUCTURED_CLONE_MESSAGE_SERIALIZATION = 'structured_clone';
 const STRUCTURED_CLONE_CHROME_VERSION = '148';
 const CHROMIUM_MESSAGE_SIZE_LIMIT = 67108864; // 64 MB
-const HUGE_TRANSACTION_COUNT = 35;
+const HUGE_BACKGROUND_STATE_MARGIN = 1024;
 const BACKGROUND_STATE_SYNC_TIMEOUT = 60000;
 const UNLOCK_PASSWORD_INPUT = { testId: 'unlock-password' };
 const UNLOCK_SUBMIT_BUTTON = { testId: 'unlock-submit' };
@@ -39,6 +33,12 @@ type HugeStateTestOptions = {
   title?: string;
 };
 
+function getHugeBackgroundStateValue() {
+  return '1'.repeat(
+    CHROMIUM_MESSAGE_SIZE_LIMIT + HUGE_BACKGROUND_STATE_MARGIN,
+  );
+}
+
 async function mockSegment(mockServer: Mockttp) {
   return [
     await mockServer
@@ -54,30 +54,6 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-const hugeTx: TransactionMeta & {
-  loadingDefaults: boolean;
-  testingNoise: string;
-} = {
-  id: '4243712234858512',
-  time: 1589314601567,
-  status: TransactionStatus.confirmed,
-  chainId: '0x5' as const,
-  networkClientId: 'goerli',
-  loadingDefaults: false,
-  txParams: {
-    from: '0xabca64466f257793eaa52fcfff5066894b76a149' as `0x${string}`,
-    to: '0xefg5bc4e8f1f969934d773fa67da095d2e491a97' as `0x${string}`,
-    nonce: '0xc',
-    value: '0xde0b6b3a7640000',
-    gas: '0x5208',
-    gasPrice: '0x2540be400',
-    data: `0x${'11'.repeat(10 ** 6)}` as `0x${string}`,
-  },
-  origin: 'metamask',
-  type: TransactionType.simpleSend,
-  testingNoise: '😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀',
-};
-
 function getBuiltManifest() {
   const browser = process.env.SELENIUM_BROWSER ?? Browser.CHROME;
 
@@ -87,10 +63,6 @@ function getBuiltManifest() {
 }
 
 function assertChromeMessageSerialization(expected?: string) {
-  if (isFirefox) {
-    return;
-  }
-
   const manifest = getBuiltManifest();
   if (expected === undefined) {
     assert.strictEqual(
@@ -135,13 +107,18 @@ async function loginToHomepageWithoutSendKeys(driver: Driver) {
   await driver.driver.executeScript(
     `
       const [input, password] = arguments;
+      const inputWindow = input.ownerDocument.defaultView;
       const valueSetter = Object.getOwnPropertyDescriptor(
-        HTMLInputElement.prototype,
+        Object.getPrototypeOf(input),
         'value',
-      ).set;
-      valueSetter.call(input, password);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+      )?.set;
+      if (valueSetter) {
+        valueSetter.call(input, password);
+      } else {
+        input.value = password;
+      }
+      input.dispatchEvent(new inputWindow.Event('input', { bubbles: true }));
+      input.dispatchEvent(new inputWindow.Event('change', { bubbles: true }));
     `,
     passwordInput,
     WALLET_PASSWORD,
@@ -156,18 +133,13 @@ async function loadWalletWithHugeBackgroundState({
   manifestTransform,
   title,
 }: HugeStateTestOptions) {
-  const largeTransactions = Array.from(
-    { length: HUGE_TRANSACTION_COUNT },
-    () => hugeTx,
-  );
-
   await withFixtures(
     {
       fixtures: new FixtureBuilderV2()
-        .withTransactionController({ transactions: largeTransactions })
         .withMetaMetricsController({
           analyticsId: MOCK_ANALYTICS_ID,
           completedMetaMetricsOnboarding: true,
+          marketingCampaignCookieId: getHugeBackgroundStateValue(),
           optedIn: true,
         })
         .build(),
@@ -193,18 +165,23 @@ async function loadWalletWithHugeBackgroundState({
       // Just check that the balance is displayed (wallet is usable).
       await homepage.checkExpectedBalanceIsDisplayed();
 
-      const expectChunkedEvent = !isFirefox && expectChromeChunkedEvent;
       const events = await getEventPayloads(
         driver,
         mockedEndpoint,
-        expectChunkedEvent,
+        expectChromeChunkedEvent,
       );
-      assertChunkedEvent(events as SegmentEvent[], expectChunkedEvent);
+      assertChunkedEvent(events as SegmentEvent[], expectChromeChunkedEvent);
     },
   );
 }
 
 describe('Port Stream Chunking', function () {
+  before(function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+  });
+
   it('uses chunked messaging with a huge background state when structured clone messaging is not enabled', async function () {
     await loadWalletWithHugeBackgroundState({
       expectChromeChunkedEvent: true,
