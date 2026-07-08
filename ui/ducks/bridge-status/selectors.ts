@@ -76,42 +76,6 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
-export const selectBridgeHistoryForToast = createSelector(
-  [
-    selectBridgeHistoryForAccountGroup,
-    selectCurrentAccountNonEvmTransactions,
-    selectTransactionIds,
-  ],
-  (bridgeHistory, nonEvmTxs, evmTxIds) => {
-    if (!bridgeHistory) {
-      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
-    }
-
-    const nonEvmTxIds = new Set(nonEvmTxs.map((tx) => tx.id));
-
-    return Object.entries(bridgeHistory).reduce<
-      Record<string, BridgeHistoryItem>
-    >((acc, [key, item]) => {
-      if (!item.quote) {
-        return acc;
-      }
-      // Same-chain swaps are handled by their respective transaction watchers
-      if (item.quote.srcChainId === item.quote.destChainId) {
-        return acc;
-      }
-      // Only include items whose source transaction exists in transactions
-      const hasMatchingTx = isNonEvmChainId(item.quote.srcChainId)
-        ? nonEvmTxIds.has(key)
-        : evmTxIds.has(key);
-
-      if (hasMatchingTx) {
-        acc[key] = item;
-      }
-      return acc;
-    }, {});
-  },
-);
-
 export const selectNonEvmBridgeSourceTxIds = createSelector(
   [selectBridgeHistoryForAccountGroup],
   (bridgeHistory) => {
