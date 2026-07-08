@@ -137,9 +137,9 @@ describe('useOnboardingCompletion', () => {
     );
     mockUseNavigate.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
-    (
-      useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
-    ).mockReturnValue(false);
+    (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
+      false,
+    );
   });
 
   it('marks the onboarding completion page as seen', async () => {
@@ -158,16 +158,13 @@ describe('useOnboardingCompletion', () => {
   });
 
   it('does not mark the onboarding completion page as seen when already seen', () => {
-    const { result } = renderHookWithProvider(
-      () => useOnboardingCompletion(),
-      {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          hasSeenOnboardingCompletionPage: true,
-        },
+    const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        hasSeenOnboardingCompletionPage: true,
       },
-    );
+    });
 
     act(() => {
       result.current.markCompletionPageSeen();

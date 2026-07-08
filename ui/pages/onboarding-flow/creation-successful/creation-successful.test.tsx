@@ -104,9 +104,9 @@ describe('Wallet Ready Page', () => {
       isSidePanelOpen: false,
       setIsSidePanelOpen: mockSetIsSidePanelOpen,
     });
-    (
-      useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
-    ).mockReturnValue(false);
+    (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
+      false,
+    );
   });
 
   it('marks the onboarding completion page as seen on first visit', async () => {
@@ -227,8 +227,7 @@ describe('Wallet Ready Page', () => {
 
   it('navigates to security settings when done from reminder via settings security', async () => {
     const previousSearch = mockUseLocationSearch;
-    mockUseLocationSearch =
-      '?isFromReminder=true&isFromSettingsSecurity=true';
+    mockUseLocationSearch = '?isFromReminder=true&isFromSettingsSecurity=true';
 
     try {
       const mockStore = configureMockStore([thunk])(mockState);
@@ -266,9 +265,9 @@ describe('Wallet Ready Page', () => {
   });
 
   it('disables the done button while the side panel is open', () => {
-    (
-      useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
-    ).mockReturnValue(true);
+    (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
+      true,
+    );
     mockUseOnboardingCompletion.mockReturnValue({
       completeOnboardingFromCompletionPage:
         mockCompleteOnboardingFromCompletionPage,

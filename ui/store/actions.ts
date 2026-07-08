@@ -5922,17 +5922,20 @@ export function setHasSeenOnboardingCompletionPage(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
-   try {
-    log.debug(`background.setHasSeenOnboardingCompletionPage`);
-    await submitRequestToBackground('setHasSeenOnboardingCompletionPage', [
-      hasSeenOnboardingCompletionPage,
-    ]);
-    if (hasSeenOnboardingCompletionPage) {
-      dispatch(setHasSeenOnboardingCompletionPageAction());
+    try {
+      log.debug(`background.setHasSeenOnboardingCompletionPage`);
+      await submitRequestToBackground('setHasSeenOnboardingCompletionPage', [
+        hasSeenOnboardingCompletionPage,
+      ]);
+      if (hasSeenOnboardingCompletionPage) {
+        dispatch(setHasSeenOnboardingCompletionPageAction());
+      }
+    } catch (error) {
+      console.error(
+        'Failed to mark onboarding completion page as seen:',
+        error,
+      );
     }
-   } catch (error) {
-    console.error('Failed to mark onboarding completion page as seen:', error);
-   }
   };
 }
 

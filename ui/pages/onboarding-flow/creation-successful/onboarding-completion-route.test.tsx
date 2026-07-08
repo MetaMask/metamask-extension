@@ -127,9 +127,9 @@ describe('OnboardingCompletionRoute', () => {
     jest.clearAllMocks();
     mockUseNavigate.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
-    (
-      useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
-    ).mockReturnValue(false);
+    (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
+      false,
+    );
     (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
       null,
     );
