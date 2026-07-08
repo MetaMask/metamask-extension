@@ -13,8 +13,8 @@ export const PerpsHomePage = () => {
     <Page data-testid="perps-home-page">
       <Text
         variant={TextVariant.HeadingLg}
-        fontWeight={FontWeight.Medium}
-        className="pt-6 px-4 pb-2"
+        fontWeight={FontWeight.Bold}
+        className="pt-4 px-4 pb-2"
       >
         {t('perps')}
       </Text>
