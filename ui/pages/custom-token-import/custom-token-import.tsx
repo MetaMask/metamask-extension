@@ -402,8 +402,12 @@ export const CustomTokenImportPage = () => {
       }
       const next = Number(value);
       setDecimals(value);
+      // ERC-20 `decimals()` is a `uint8`, so token decimals must be a
+      // non-negative integer. Fractional values like `1.5` would otherwise
+      // pass the range check and later break balance formatting.
       if (
         Number.isNaN(next) ||
+        !Number.isInteger(next) ||
         next < MIN_DECIMAL_VALUE ||
         next > MAX_DECIMAL_VALUE
       ) {
