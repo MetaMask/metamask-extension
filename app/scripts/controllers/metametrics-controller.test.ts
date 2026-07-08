@@ -2382,7 +2382,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
-                canonicalProfileId: 'profileId',
+                canonicalProfileId: 'canonicalProfileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -2399,7 +2399,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
-          [MetaMetricsUserTrait.CanonicalProfileId]: 'profileId',
+          [MetaMetricsUserTrait.CanonicalProfileId]: 'canonicalProfileId',
           [MetaMetricsUserTrait.AccountType]: 'imported',
         });
       });
@@ -2471,7 +2471,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
-                canonicalProfileId: 'profileId',
+                canonicalProfileId: 'canonicalProfileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -2539,7 +2539,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
-                canonicalProfileId: 'profileId',
+                canonicalProfileId: 'canonicalProfileId',
                 metaMetricsId: 'testid',
               },
             },
