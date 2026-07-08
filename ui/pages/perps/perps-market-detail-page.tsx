@@ -19,6 +19,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
@@ -515,9 +516,11 @@ const PerpsMarketDetailPage = () => {
 
   // Candle period: persisted in PreferencesController across sessions/markets.
   // Local override gives instant UI feedback; background save persists for next visit.
-  const { perpsSelectedCandlePeriod: persistedCandlePeriod } = useSelector(
-    getPreferences,
-  ) as { perpsSelectedCandlePeriod?: string };
+  const { perpsSelectedCandlePeriod: persistedCandlePeriod, privacyMode } =
+    useSelector(getPreferences) as {
+      perpsSelectedCandlePeriod?: string;
+      privacyMode?: boolean;
+    };
   const resolvedPersistedPeriod =
     persistedCandlePeriod &&
     Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
@@ -1315,7 +1318,7 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsPnl')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                     color={
@@ -1323,9 +1326,11 @@ const PerpsMarketDetailPage = () => {
                         ? TextColor.SuccessDefault
                         : TextColor.ErrorDefault
                     }
+                    isHidden={privacyMode}
+                    data-testid="perps-position-pnl-value"
                   >
                     {formatPnl(position.unrealizedPnl)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Return Card */}
@@ -1338,7 +1343,7 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsReturn')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                     color={
@@ -1346,12 +1351,14 @@ const PerpsMarketDetailPage = () => {
                         ? TextColor.SuccessDefault
                         : TextColor.ErrorDefault
                     }
+                    isHidden={privacyMode}
+                    data-testid="perps-position-return-value"
                   >
                     {/* Controller/mobile ROE is a ratio (e.g. 0.1579), same as what the formatter expects. */}
                     {formatPercentWithMinThreshold(
                       Number.parseFloat(position.returnOnEquity),
                     )}
-                  </Text>
+                  </SensitiveText>
                 </Box>
               </Box>
 
@@ -1373,9 +1380,10 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsSize')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-size-value"
                   >
                     {showSizeInFiat && Boolean(position.entryPrice)
@@ -1387,7 +1395,7 @@ const PerpsMarketDetailPage = () => {
                           Math.abs(parseFloat(position.size)),
                           marketInfo?.szDecimals,
                         )} ${getDisplayName(position.symbol)}`}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Margin Card - click to open Add/Remove margin popover */}
@@ -1406,13 +1414,14 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsMargin')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-margin-value"
                   >
                     {formatPerpsFiatMinimal(position.marginUsed)}
-                  </Text>
+                  </SensitiveText>
                   <Popover
                     referenceElement={marginMenuRef.current}
                     isOpen={isMarginMenuOpen}

@@ -201,4 +201,29 @@ describe('PositionCard', () => {
       screen.queryByTestId('position-card-roe-ETH'),
     ).not.toBeInTheDocument();
   });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks size, value, P&L and RoE when privacy mode is enabled', () => {
+      const position = createMockPosition({ symbol: 'ETH', size: '2.5' });
+      renderWithProvider(<PositionCard position={position} />, privacyStore);
+
+      expect(screen.queryByText('2.5 ETH')).not.toBeInTheDocument();
+      expect(screen.queryByText('$7,125')).not.toBeInTheDocument();
+      expect(screen.queryByText('+$375.00')).not.toBeInTheDocument();
+      expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
+        '••••••',
+      );
+      expect(screen.getAllByText('••••••')).toHaveLength(4);
+    });
+  });
 });

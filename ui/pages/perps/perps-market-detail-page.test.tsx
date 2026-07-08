@@ -456,6 +456,35 @@ describe('PerpsMarketDetailPage', () => {
       expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
     });
 
+    it('masks position P&L, return, size, and margin when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-return-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-size-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-margin-value'),
+      ).toHaveTextContent('••••••');
+    });
+
     it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
       mockUseLocation.mockReturnValue({
         pathname: '/perps/market/ETH',

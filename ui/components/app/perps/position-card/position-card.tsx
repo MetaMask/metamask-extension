@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   Box,
@@ -6,6 +7,7 @@ import {
   BoxAlignItems,
   ButtonBase,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
@@ -15,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Position } from '@metamask/perps-controller';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { formatPnl } from '../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, getPositionDirection } from '../utils';
@@ -43,6 +46,7 @@ export const PositionCard = ({
   assetName,
 }: PositionCardProps) => {
   const navigate = useNavigate();
+  const { privacyMode } = useSelector(getPreferences);
   const { formatPercentWithMinThreshold } = useFormatters();
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
@@ -112,9 +116,13 @@ export const PositionCard = ({
             {position.leverage.value}x {direction}
           </Text>
         </Box>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {absSize} {displaySymbol}
-        </Text>
+        <SensitiveText
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          isHidden={privacyMode}
+        >
+          {`${absSize} ${displaySymbol}`}
+        </SensitiveText>
       </Box>
 
       {/* Right side: Position value and P&L */}
@@ -124,33 +132,36 @@ export const PositionCard = ({
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text
+        <SensitiveText
           fontWeight={FontWeight.Medium}
           className="text-s-body-md @compact:text-s-body-sm"
+          isHidden={privacyMode}
         >
           {formatPerpsFiatMinimal(parseFloat(position.positionValue))}
-        </Text>
+        </SensitiveText>
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Baseline}
           gap={1}
         >
-          <Text
+          <SensitiveText
             variant={TextVariant.BodySm}
             color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+            isHidden={privacyMode}
           >
             {formattedPnl}
-          </Text>
+          </SensitiveText>
           {formattedRoe !== null && (
-            <Text
+            <SensitiveText
               variant={TextVariant.BodySm}
               color={
                 isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault
               }
+              isHidden={privacyMode}
               data-testid={`position-card-roe-${position.symbol}`}
             >
               ({formattedRoe})
-            </Text>
+            </SensitiveText>
           )}
         </Box>
       </Box>
