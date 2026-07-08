@@ -17,6 +17,7 @@ import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
   PERPS_FALLBACK_PRICE_DISPLAY,
+  PERPS_FALLBACK_DATA_DISPLAY,
 } from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
@@ -153,8 +154,8 @@ export const PerpsOrderBook = ({
     if (Number.isFinite(orderBookMid) && orderBookMid > 0) {
       return orderBookMid;
     }
-    if (Number.isFinite(marketPrice) && (marketPrice as number) > 0) {
-      return marketPrice as number;
+    if (typeof marketPrice === 'number' && marketPrice > 0) {
+      return marketPrice;
     }
     return null;
   }, [orderBook?.midPrice, marketPrice]);
@@ -216,7 +217,9 @@ export const PerpsOrderBook = ({
   );
 
   const groupingTriggerLabel =
-    currentGrouping === null ? '—' : formatGroupingLabel(currentGrouping);
+    currentGrouping === null
+      ? PERPS_FALLBACK_DATA_DISPLAY
+      : formatGroupingLabel(currentGrouping);
 
   const hasLadder = Boolean(
     grouped && (grouped.bids.length > 0 || grouped.asks.length > 0),

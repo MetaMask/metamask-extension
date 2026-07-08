@@ -174,6 +174,23 @@ describe('PerpsOrderBook', () => {
       ).toBeInTheDocument();
     });
 
+    it('closes the config modal from the close button', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      expect(
+        screen.getByText(messages.perpsOrderBookConfigTitle.message),
+      ).toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-close'),
+      );
+
+      expect(
+        screen.queryByText(messages.perpsOrderBookConfigTitle.message),
+      ).not.toBeInTheDocument();
+    });
+
     it('applies a new currency to the metric column header', () => {
       renderOrderBook();
 

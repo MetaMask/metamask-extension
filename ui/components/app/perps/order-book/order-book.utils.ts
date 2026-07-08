@@ -6,6 +6,7 @@ import {
   formatLargeNumber,
   PRICE_RANGES_UNIVERSAL,
   PERPS_FALLBACK_DATA_DISPLAY,
+  PERPS_MAX_PRICE_DECIMALS,
 } from '../../../../../shared/lib/perps-formatters';
 import type {
   OrderBookListCurrency,
@@ -31,8 +32,8 @@ const GROUPING_MULTIPLIERS = [1, 2, 5, 10, 100, 1000] as const;
 /** Default grouping is the 4th (index 3) option: a mid-range increment. */
 const DEFAULT_GROUPING_INDEX = 3;
 
-/** Hyperliquid caps price precision at 6 decimals; never exceed it. */
-const MAX_PRICE_DECIMALS = 6;
+/** Hyperliquid caps price precision; reuse the shared limit as the single source of truth. */
+const MAX_PRICE_DECIMALS = PERPS_MAX_PRICE_DECIMALS;
 
 /** Compact-notation thresholds for USD amounts. */
 const USD_COMPACT_MILLIONS_THRESHOLD = 1_000_000;
@@ -158,10 +159,13 @@ export function aggregateOrderBookLevels(
     if (!Number.isFinite(price)) {
       continue;
     }
-    const parsedSize = Number.parseFloat(level.size);
-    const parsedNotional = Number.parseFloat(level.notional);
-    const size = Number.isFinite(parsedSize) ? parsedSize : 0;
-    const notional = Number.isFinite(parsedNotional) ? parsedNotional : 0;
+    const size = Number.parseFloat(level.size);
+    const notional = Number.parseFloat(level.notional);
+    // Skip malformed levels entirely rather than coercing to 0, so a bad row
+    // never contributes phantom zero depth to a bucket / cumulative total.
+    if (!Number.isFinite(size) || !Number.isFinite(notional)) {
+      continue;
+    }
 
     const bucketPrice =
       side === 'bid'
@@ -324,6 +328,10 @@ export function formatSpreadBps(spreadPercentage: number): string {
 /**
  * Compute the buy/sell depth ratio (percentages summing to 100) from the
  * cumulative totals at the deepest displayed level on each side.
+ *
+ * Uses base-size cumulative totals (`level.total`) rather than notional so the
+ * ratio stays consistent with the size-weighted depth bars (`getDepthWidth`),
+ * which also key off `level.total`.
  *
  * @param bids - Displayed bid levels.
  * @param asks - Displayed ask levels.

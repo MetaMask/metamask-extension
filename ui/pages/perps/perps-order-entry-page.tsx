@@ -52,6 +52,7 @@ import {
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getIsPerpsExperienceAvailable,
+  getIsPerpsOrderBookEnabled,
   getIsPerpsSlippageConfigEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -139,7 +140,6 @@ import {
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
 import {
   PerpsOrderBook,
-  CandlesticksIcon,
   ORDER_BOOK_DEFAULT_WIDTH_PCT,
   ORDER_BOOK_MIN_WIDTH_PCT,
   ORDER_BOOK_MAX_WIDTH_PCT,
@@ -272,6 +272,7 @@ const PerpsOrderEntryPage = () => {
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const isSlippageConfigEnabled = useSelector(getIsPerpsSlippageConfigEnabled);
+  const isOrderBookEnabled = useSelector(getIsPerpsOrderBookEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { gate } = useSelectedAccountComplianceGate();
@@ -1773,33 +1774,36 @@ const PerpsOrderEntryPage = () => {
             )}
           </Box>
         </Box>
-        <Box
-          data-testid="perps-order-book-toggle"
-          role="button"
-          tabIndex={0}
-          onClick={handleToggleOrderBook}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              handleToggleOrderBook();
-            }
-          }}
-          aria-label={t('perpsOrderBook')}
-          aria-pressed={isOrderBookOpen}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          className={twMerge(
-            'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg',
-            isOrderBookOpen && 'bg-muted',
-          )}
-        >
-          <CandlesticksIcon
+        {isOrderBookEnabled && (
+          <Box
+            data-testid="perps-order-book-toggle"
+            role="button"
+            tabIndex={0}
+            onClick={handleToggleOrderBook}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                handleToggleOrderBook();
+              }
+            }}
+            aria-label={t('perpsOrderBook')}
+            aria-pressed={isOrderBookOpen}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             className={twMerge(
-              'w-6 h-6',
-              isOrderBookOpen ? 'text-primary-default' : 'text-alternative',
+              'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg',
+              isOrderBookOpen && 'bg-muted',
             )}
-          />
-        </Box>
+          >
+            <Icon
+              name={IconName.Candlestick}
+              size={IconSize.Lg}
+              className={
+                isOrderBookOpen ? 'text-primary-default' : 'text-alternative'
+              }
+            />
+          </Box>
+        )}
       </Box>
 
       {/* Body: form content (left) + sliding order book (right) */}
@@ -1921,7 +1925,7 @@ const PerpsOrderEntryPage = () => {
       </Box>
         </Box>
         {/* Draggable divider: resize the order book / form split. */}
-        {isOrderBookOpen && (
+        {isOrderBookEnabled && isOrderBookOpen && (
           <div
             role="separator"
             aria-orientation="vertical"
@@ -1939,23 +1943,25 @@ const PerpsOrderEntryPage = () => {
         {/* Order book: slides in from the right, resizable via the divider. It
             is unmounted while collapsed so its focusable controls never sit in
             a zero-width, hidden panel. */}
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          style={{ width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%' }}
-          className={twMerge(
-            'shrink-0 h-full overflow-hidden',
-            !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
-          )}
-        >
-          {isOrderBookOpen && (
-            <PerpsOrderBook
-              symbol={decodedSymbol}
-              isOpen={isOrderBookOpen}
-              marketPrice={currentPrice}
-              szDecimals={marketInfo?.szDecimals}
-            />
-          )}
-        </Box>
+        {isOrderBookEnabled && (
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            style={{ width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%' }}
+            className={twMerge(
+              'shrink-0 h-full overflow-hidden',
+              !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
+            )}
+          >
+            {isOrderBookOpen && (
+              <PerpsOrderBook
+                symbol={decodedSymbol}
+                isOpen={isOrderBookOpen}
+                marketPrice={currentPrice}
+                szDecimals={marketInfo?.szDecimals}
+              />
+            )}
+          </Box>
+        )}
       </div>
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}

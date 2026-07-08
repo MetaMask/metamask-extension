@@ -104,6 +104,21 @@ export const getIsPerpsSlippageConfigEnabled = createSelector(
     isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsSlippageConfig2),
 );
 
+/**
+ * Whether the perps order-book panel is enabled.
+ *
+ * Gated behind the dedicated `perpsOrderBookEnabled` remote rollout flag
+ * (LaunchDarkly key `perps-order-book-enabled`, default OFF) so the new
+ * order-book surface can be shipped dark and rolled out independently of the
+ * broader perps experience. Follows the same `{ enabled, minimumVersion }`
+ * rollout shape as `perpsEnabledVersion`.
+ */
+export const getIsPerpsOrderBookEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsOrderBookEnabled),
+);
+
 // Re-export the VIP program flag so perps consumers can import from this
 // domain module without reaching into the rewards duck directly.
 export { selectVipProgramEnabled as getIsVipProgramEnabled } from '../../ducks/rewards/selectors';

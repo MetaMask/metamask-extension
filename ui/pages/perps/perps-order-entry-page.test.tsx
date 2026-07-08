@@ -333,6 +333,7 @@ describe('PerpsOrderEntryPage', () => {
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
         perpsSlippageConfig2: { enabled: true, minimumVersion: '0.0.0' },
+        perpsOrderBookEnabled: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
@@ -508,6 +509,20 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('order book toggle', () => {
+    it('does not render the order book toggle when the feature flag is off', () => {
+      const state = createMockState();
+      state.metamask.remoteFeatureFlags.perpsOrderBookEnabled = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      const store = mockStore(state);
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(
+        screen.queryByTestId('perps-order-book-toggle'),
+      ).not.toBeInTheDocument();
+    });
+
     it('mounts the order book and resize divider only after the toggle is pressed', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);

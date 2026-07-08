@@ -184,7 +184,10 @@ export const PerpsOrderBookConfigModal = ({
           style: modalLayoutProps.dialogStyle,
         }}
       >
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ 'data-testid': `${dataTestId}-close` }}
+        >
           {t('perpsOrderBookConfigTitle')}
         </ModalHeader>
 

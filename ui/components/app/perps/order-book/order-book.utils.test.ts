@@ -110,10 +110,12 @@ describe('order-book.utils', () => {
       expect(result[1].total).toBe('4');
     });
 
-    it('treats non-finite size/notional as 0 and skips invalid prices', () => {
+    it('skips levels with non-finite size/notional or price instead of adding phantom zero-depth buckets', () => {
       const result = aggregateOrderBookLevels(
         [
-          level('105', 'not-a-number', 'nope'),
+          // Distinct price bucket (200) but malformed size/notional: must be
+          // dropped entirely, not surface as an empty bucket.
+          level('205', 'not-a-number', 'nope'),
           level('bad-price', '5', '500'),
           level('104', '2', '208'),
         ],

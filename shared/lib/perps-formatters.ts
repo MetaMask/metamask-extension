@@ -55,6 +55,9 @@ export const PERPS_FALLBACK_PRICE_DISPLAY = PERPS_CONSTANTS.FallbackPriceDisplay
 /** Display when non-price data is unavailable (mirrors mobile `FallbackDataDisplay`). */
 export const PERPS_FALLBACK_DATA_DISPLAY = PERPS_CONSTANTS.FallbackDataDisplay;
 
+/** Maximum price decimal places (matches the Hyperliquid precision limit). */
+export const PERPS_MAX_PRICE_DECIMALS = DECIMAL_PRECISION_CONFIG.MaxPriceDecimals;
+
 // ---------------------------------------------------------------------------
 // Module-level Intl.NumberFormat cache (keyed by serialized options).
 // ---------------------------------------------------------------------------
