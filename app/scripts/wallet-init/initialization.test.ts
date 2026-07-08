@@ -31,6 +31,29 @@ jest.mock('./instance-options/remote-feature-flag-controller', () => ({
 jest.mock('./instance-options/storage-service', () => ({
   getStorageServiceInstanceOptions: jest.fn(() => 'storage-options'),
 }));
+jest.mock('./instance-options/network-controller', () => ({
+  getNetworkControllerInitializationConfiguration: jest.fn(
+    () => 'network-controller-initialization-configuration',
+  ),
+  getNetworkControllerInstanceOptions: jest.fn(() => ({
+    infuraProjectId: 'fake-infura-project-id',
+    failoverUrls: {
+      '0x1': [],
+      '0x13b2': [],
+      '0x2105': [],
+      '0x3e7': [],
+      '0x531': [],
+      '0x89': [],
+      '0x8f': [],
+      '0xa': [],
+      '0xa4b1': [],
+      '0xa86a': [],
+      '0xe708': [],
+    },
+    getRpcServiceOptions: jest.fn(),
+  })),
+  setupRpcEndpointMetrics: jest.fn(),
+}));
 
 const MockWallet = jest.mocked(Wallet);
 const connectivityAdapter = {} as unknown as ConnectivityAdapter;
@@ -55,6 +78,9 @@ describe('initializeWallet', () => {
     expect(MockWallet).toHaveBeenCalledWith({
       messenger,
       state,
+      initializationConfigurations: [
+        'network-controller-initialization-configuration',
+      ],
       instanceOptions: {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
@@ -74,6 +100,7 @@ describe('initializeWallet', () => {
             '0xa86a': [],
             '0xe708': [],
           },
+          getRpcServiceOptions: expect.any(Function),
         },
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',

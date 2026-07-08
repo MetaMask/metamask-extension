@@ -1,5 +1,9 @@
 import { Wallet } from '@metamask/wallet';
-import type { DefaultActions, DefaultEvents } from '@metamask/wallet';
+import type {
+  DefaultActions,
+  DefaultEvents,
+  WalletOptions,
+} from '@metamask/wallet';
 import { Json } from '@metamask/utils';
 import { Encryptor } from '@metamask/keyring-controller';
 import { ShowApprovalRequest } from '@metamask/approval-controller';
@@ -15,6 +19,7 @@ import { getKeyringControllerInstanceOptions } from './instance-options/keyring-
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
 import {
+  getNetworkControllerInitializationConfiguration,
   getNetworkControllerInstanceOptions,
   setupRpcEndpointMetrics,
 } from './instance-options/network-controller';
@@ -32,6 +37,10 @@ export type WalletInitMessenger = RootMessenger<
   | PreferencesControllerStateChangeEvent
   | OnboardingControllerStateChangeEvent
 >;
+
+type WalletInitializationConfiguration = NonNullable<
+  WalletOptions['initializationConfigurations']
+>[number];
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -67,6 +76,9 @@ export function initializeWallet({
   const wallet = new Wallet({
     messenger,
     state,
+    initializationConfigurations: [
+      getNetworkControllerInitializationConfiguration() as WalletInitializationConfiguration,
+    ],
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
