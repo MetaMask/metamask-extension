@@ -1,5 +1,5 @@
 import React from 'react';
-import { type NavigateFunction, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -40,71 +40,6 @@ type TabBarProps = {
   onTabClick?: (key: string) => boolean | void;
 };
 
-type TabBarMenuItemProps = Omit<TabItem, 'key'> & {
-  itemKey: string;
-  active: boolean;
-  removeFullscreenStyles: boolean;
-  onTabClick?: (key: string) => boolean | void;
-  navigate: NavigateFunction;
-};
-
-const TabBarMenuItem = ({
-  itemKey,
-  content,
-  iconName,
-  dataTestId,
-  active,
-  removeFullscreenStyles,
-  onTabClick,
-  navigate,
-}: TabBarMenuItemProps) => {
-  const activeClass = active && !removeFullscreenStyles ? 'sm:bg-pressed' : '';
-  const caretClass = removeFullscreenStyles
-    ? 'rtl:rotate-180'
-    : 'sm:hidden rtl:rotate-180';
-
-  const handleClick = (event?: React.MouseEvent) => {
-    event?.preventDefault();
-
-    if (active || onTabClick?.(itemKey) === true) {
-      return;
-    }
-
-    transitionForward(() => navigate(itemKey));
-  };
-
-  return (
-    <MenuItem
-      key={itemKey}
-      to={itemKey}
-      iconName={iconName}
-      iconColor={IconColor.IconAlternative}
-      iconSize={IconSize.Lg}
-      textVariant={TextVariant.BodyMd}
-      className={`!rounded-none hover:bg-hover focus:outline-none focus:[outline:none] focus-visible:outline-none focus-visible:[outline:none] focus:shadow-none ${activeClass}`}
-      data-testid={dataTestId}
-      onClick={handleClick}
-    >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Between}
-        className="w-full"
-      >
-        <Text fontWeight={FontWeight.Medium} className="whitespace-nowrap">
-          {content}
-        </Text>
-        <Icon
-          name={IconName.ArrowRight}
-          size={IconSize.Sm}
-          color={IconColor.IconAlternative}
-          className={caretClass}
-        />
-      </Box>
-    </MenuItem>
-  );
-};
-
 const TabBar = ({
   tabs = [],
   sections = [],
@@ -117,19 +52,50 @@ const TabBar = ({
   const renderItems = (items: TabItem[]) =>
     items.map(({ key, content, iconName, dataTestId }) => {
       const active = isActive(key, content);
+      const activeClass =
+        active && !removeFullscreenStyles ? 'sm:bg-pressed' : '';
+      const caretClass = removeFullscreenStyles
+        ? 'rtl:rotate-180'
+        : 'sm:hidden rtl:rotate-180';
+      const handleClick = (event?: React.MouseEvent) => {
+        event?.preventDefault();
+
+        if (active || onTabClick?.(key) === true) {
+          return;
+        }
+
+        transitionForward(() => navigate(key));
+      };
 
       return (
-        <TabBarMenuItem
+        <MenuItem
           key={key}
-          active={active}
-          content={content}
-          dataTestId={dataTestId}
+          to={key}
           iconName={iconName}
-          itemKey={key}
-          navigate={navigate}
-          onTabClick={onTabClick}
-          removeFullscreenStyles={removeFullscreenStyles}
-        />
+          iconColor={IconColor.IconAlternative}
+          iconSize={IconSize.Lg}
+          textVariant={TextVariant.BodyMd}
+          className={`!rounded-none hover:bg-hover focus:outline-none focus:[outline:none] focus-visible:outline-none focus-visible:[outline:none] focus:shadow-none ${activeClass}`}
+          data-testid={dataTestId}
+          onClick={handleClick}
+        >
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Between}
+            className="w-full"
+          >
+            <Text fontWeight={FontWeight.Medium} className="whitespace-nowrap">
+              {content}
+            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+              className={caretClass}
+            />
+          </Box>
+        </MenuItem>
       );
     });
 

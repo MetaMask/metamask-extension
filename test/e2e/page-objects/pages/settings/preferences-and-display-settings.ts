@@ -106,6 +106,7 @@ class PreferencesAndDisplaySettings {
     );
     await this.driver.clickElement(this.preferencesTabButton);
     await this.checkNoLoadingOverlaySpinner();
+    await this.driver.waitForSelector(this.languageSubpageLink);
     await this.driver.clickElement(this.accountIdenticonSubpageLink);
     await this.driver.waitForSelector(this.accountIdenticonList);
     await this.driver.waitForSelector(
@@ -124,6 +125,7 @@ class PreferencesAndDisplaySettings {
     );
     await this.driver.clickElement(this.preferencesTabButton);
     await this.checkNoLoadingOverlaySpinner();
+    await this.driver.waitForSelector(this.languageSubpageLink);
     await this.driver.clickElement(this.accountIdenticonSubpageLink);
     await this.driver.waitForSelector(this.accountIdenticonList);
     const activeSelector = this.identicons[identicon];
