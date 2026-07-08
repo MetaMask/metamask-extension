@@ -29,7 +29,7 @@ const DEFAULT_ENRICHMENT_CONTEXT: PlatformAdapterEnrichmentContext = {
     chain_id: '0x1',
   }),
   getProfileIdentityProperties: () => ({}),
-  getMarketingCampaignCookieId: () => undefined,
+  getMarketingCampaignCookieId: () => null,
   hasMarketingConsent: () => false,
   hasBasicFunctionalityEnabled: () => true,
   getRemoteFeatureFlags: () => ({}),

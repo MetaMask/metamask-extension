@@ -40,7 +40,7 @@ export type PlatformAdapterEnrichmentContext = {
   getDefaultChainId: () => Hex | null;
   getPageChainProperties: () => AnalyticsEventProperties;
   getProfileIdentityProperties: () => Record<string, string>;
-  getMarketingCampaignCookieId: () => string | undefined;
+  getMarketingCampaignCookieId: () => string | null;
   hasMarketingConsent: () => boolean;
   hasBasicFunctionalityEnabled: () => boolean;
   getRemoteFeatureFlags: () => Record<string, unknown>;
@@ -80,7 +80,7 @@ export function createEnrichmentContext(
         .call('PreferencesController:getState')
         .currentLocale.replace('_', '-'),
     getDefaultChainId,
-    getPageChainProperties: () => {
+    getPageChainProperties: (): AnalyticsEventProperties => {
       const { isEvmSelected, selectedMultichainNetworkChainId } =
         messenger.call('MultichainNetworkController:getState');
 
@@ -89,7 +89,7 @@ export function createEnrichmentContext(
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: getDefaultChainId(),
-        };
+        } as AnalyticsEventProperties;
       }
 
       return {
@@ -99,15 +99,14 @@ export function createEnrichmentContext(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_caip: selectedMultichainNetworkChainId,
-      };
+      } as AnalyticsEventProperties;
     },
     getProfileIdentityProperties,
     getMarketingCampaignCookieId: () =>
-      messenger.call('MetaMetricsController:getState')
-        .marketingCampaignCookieId,
+      messenger.call('MetaMetricsController:getState').marketingCampaignCookieId,
     hasMarketingConsent: () =>
       messenger.call('MetaMetricsController:getState')
-        .dataCollectionForMarketing,
+        .dataCollectionForMarketing === true,
     hasBasicFunctionalityEnabled: () =>
       messenger.call('PreferencesController:getState').useExternalServices,
     getRemoteFeatureFlags: () =>
@@ -241,8 +240,10 @@ export function enrichEventContext(
     version: ctx.appVersion,
   };
   enrichedContext.userAgent = ctx.userAgent;
-  enrichedContext.marketingCampaignCookieId =
-    ctx.getMarketingCampaignCookieId();
+  const marketingCampaignCookieId = ctx.getMarketingCampaignCookieId();
+  if (marketingCampaignCookieId !== null) {
+    enrichedContext.marketingCampaignCookieId = marketingCampaignCookieId;
+  }
 
   return enrichedContext;
 }
