@@ -7435,10 +7435,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preinstalled-example-snap@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/preinstalled-example-snap@npm:0.8.0"
-  checksum: 10/68771f3b3d635ddb18e590b411c94a88b7e08a5a4932eceb0880fcfa5becb73c02ad5ee13d021429f118e957615a44c0ecb798b204e4788eacb9e2deb23bb63f
+"@metamask/preinstalled-example-snap@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@metamask/preinstalled-example-snap@npm:0.8.1"
+  checksum: 10/011353bd6647bc81d0e28a84bce3dd16e5c274050a0e4fae238f05fb888aa2e3a8c5cd7aebbe04f3874745b378d5c0f1d90476747346aff57dc77912ae213d2b
   languageName: node
   linkType: hard
 
@@ -8130,10 +8130,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-snaps@npm:^3.5.1":
-  version: 3.5.1
-  resolution: "@metamask/test-snaps@npm:3.5.1"
-  checksum: 10/b84fed54bb6c530d51366978490d3ed7e4e5d7dc3c10d36cf52e1b8ea5810c92e5489457cc5fd78657b622bb165f8797fca726a51a0a5c8eeec851533231a7a9
+"@metamask/test-snaps@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "@metamask/test-snaps@npm:3.5.2"
+  checksum: 10/cd91d6cf74fb7b794d5b6de9803b6810f933e90767ed5f66aabea513c5f914c1373ab7609977f272f9a8fc95abb1c45d67bd0248634a9c279ba4bbf6e7df14f0
   languageName: node
   linkType: hard
 
@@ -33086,7 +33086,7 @@ __metadata:
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.39.1"
     "@metamask/preferences-controller": "npm:^23.0.0"
-    "@metamask/preinstalled-example-snap": "npm:^0.8.0"
+    "@metamask/preinstalled-example-snap": "npm:^0.8.1"
     "@metamask/profile-metrics-controller": "npm:^4.0.1"
     "@metamask/profile-sync-controller": "npm:^28.2.0"
     "@metamask/providers": "npm:^22.1.1"
@@ -33122,7 +33122,7 @@ __metadata:
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
-    "@metamask/test-snaps": "npm:^3.5.1"
+    "@metamask/test-snaps": "npm:^3.5.2"
     "@metamask/transaction-controller": "npm:^68.1.1"
     "@metamask/transaction-pay-controller": "npm:^23.17.2"
     "@metamask/tron-wallet-snap": "npm:^1.28.0"

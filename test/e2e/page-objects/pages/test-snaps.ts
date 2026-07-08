@@ -156,6 +156,7 @@ export const spanLocator = {
   messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
   personalSignResultSpan: '#personalSignResult',
   preferencesResultSpan: '#preferencesResult',
+  preinstalledResultSpan: '#preinstalledResult',
   providerVersionResultSpan: '#ethproviderResult',
   multichainProviderResultSpan: '#multichainProviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',

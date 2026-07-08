@@ -304,7 +304,7 @@ describe('Preinstalled example Snap', function () {
 
         await testSnaps.scrollAndClickButton('messengerCallButton');
 
-        await testSnaps.checkMessageResultSpan('rpcResultSpan', 'false');
+        await testSnaps.checkMessageResultSpan('preinstalledResultSpan', 'false');
       },
     );
   });
