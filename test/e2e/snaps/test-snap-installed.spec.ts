@@ -10,7 +10,10 @@ import {
   mockDialogSnap,
   mockErrorSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH, MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES } from '../constants';
+import {
+  DAPP_PATH,
+  MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES,
+} from '../constants';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
