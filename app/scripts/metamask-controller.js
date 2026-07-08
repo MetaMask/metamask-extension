@@ -3746,15 +3746,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Assets Controller - accounts passed from UI; options may include chainIds, assetTypes
-      getAssets: (accounts, options) => {
-        if (!this.assetsController) {
-          return Promise.resolve();
-        }
-        return this.assetsController.getAssets(accounts, {
-          ...options,
-          forceUpdate: true,
-        });
-      },
+      getAssets: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getAssets',
+      ),
 
       /** Token Detection V2 */
       addDetectedTokens:

@@ -31,6 +31,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
+      'AssetsController:getAssets',
       'AssetsController:setSelectedCurrency',
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',

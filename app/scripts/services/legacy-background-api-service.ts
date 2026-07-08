@@ -48,7 +48,14 @@ import {
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
 } from '@metamask/assets-controllers';
-import { AssetsControllerSetSelectedCurrencyAction } from '@metamask/assets-controller';
+import {
+  AccountId,
+  Asset,
+  AssetsControllerGetAssetsAction,
+  AssetsControllerSetSelectedCurrencyAction,
+  Caip19AssetId,
+} from '@metamask/assets-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
@@ -185,6 +192,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
+  'getAssets',
   'getCode',
   'getGlobalChainId',
   'getNextNonce',
@@ -233,6 +241,7 @@ type AllowedActions =
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AssetsControllerGetAssetsAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
@@ -432,6 +441,32 @@ export class LegacyBackgroundApiService {
         currencyCode,
       );
     }
+  }
+
+  /**
+   * Refreshes and returns the assets for the given accounts via the
+   * AssetsController (force-updating from remote sources).
+   *
+   * No-ops when the assets unify state feature is not enabled, since the
+   * AssetsController is not registered in that case.
+   *
+   * @param accounts - The accounts to fetch assets for.
+   * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
+   * @returns The assets for the given accounts, or `undefined` when the feature
+   * is not enabled.
+   */
+  async getAssets(
+    accounts: InternalAccount[],
+    options?: Parameters<AssetsControllerGetAssetsAction['handler']>[1],
+  ): Promise<Record<AccountId, Record<Caip19AssetId, Asset>> | undefined> {
+    if (!this.isAssetsUnifyStateEnabled()) {
+      return undefined;
+    }
+
+    return await this.#messenger.call('AssetsController:getAssets', accounts, {
+      ...options,
+      forceUpdate: true,
+    });
   }
 
   /**
