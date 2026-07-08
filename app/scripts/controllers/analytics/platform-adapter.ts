@@ -240,10 +240,8 @@ export function enrichEventContext(
     version: ctx.appVersion,
   };
   enrichedContext.userAgent = ctx.userAgent;
-  const marketingCampaignCookieId = ctx.getMarketingCampaignCookieId();
-  if (marketingCampaignCookieId !== null) {
-    enrichedContext.marketingCampaignCookieId = marketingCampaignCookieId;
-  }
+  enrichedContext.marketingCampaignCookieId =
+    ctx.getMarketingCampaignCookieId();
 
   return enrichedContext;
 }

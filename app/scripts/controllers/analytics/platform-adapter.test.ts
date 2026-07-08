@@ -40,6 +40,8 @@ const DEFAULT_ENRICHMENT_CONTEXT: PlatformAdapterEnrichmentContext = {
 const DEFAULT_APP_CONTEXT = {
   app: { name: 'MetaMask Extension', version: '1.0.0' },
   userAgent: '',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  marketingCampaignCookieId: null,
 };
 
 function createMockEnrichmentContext(
@@ -106,6 +108,38 @@ describe('createPlatformAdapter', () => {
       );
     });
 
+    it('always includes marketingCampaignCookieId in context, including when null', () => {
+      const { adapter, segment } = buildAdapter();
+      adapter.track('Wallet Opened');
+      expect(segment.track).toHaveBeenCalledWith(
+        expect.objectContaining({
+          context: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            marketingCampaignCookieId: null,
+          }),
+        }),
+        undefined,
+      );
+    });
+
+    it('forwards marketingCampaignCookieId when present', () => {
+      const { adapter, segment } = buildAdapter(
+        createMockEnrichmentContext({
+          getMarketingCampaignCookieId: () => 'campaign-cookie-id',
+        }),
+      );
+      adapter.track('Wallet Opened');
+      expect(segment.track).toHaveBeenCalledWith(
+        expect.objectContaining({
+          context: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            marketingCampaignCookieId: 'campaign-cookie-id',
+          }),
+        }),
+        undefined,
+      );
+    });
+
     it('forwards properties when provided', () => {
       const { adapter, segment } = buildAdapter();
       adapter.track('Wallet Opened', { chainId: '0x1' });
@@ -152,6 +186,8 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            marketingCampaignCookieId: null,
           },
           messageId: 'msg-1',
           timestamp,
@@ -308,6 +344,8 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            marketingCampaignCookieId: null,
           },
           messageId: 'id-1',
           timestamp,
@@ -363,6 +401,8 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            marketingCampaignCookieId: null,
           },
           messageId: 'page-1',
           timestamp,
