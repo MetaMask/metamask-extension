@@ -102,7 +102,7 @@ class TokensTab extends HomePage {
     '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenImportedMessageCloseButton =
-    '.actionable-message__message button[aria-label="Close"]';
+    '.home__new-tokens-imported-notification button[aria-label="Close"]';
 
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';

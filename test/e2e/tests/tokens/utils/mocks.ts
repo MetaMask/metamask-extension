@@ -1,5 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../../constants';
 
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 const TOKENS_API_URL = 'https://tokens.api.cx.metamask.io';
@@ -381,6 +382,49 @@ export const getMockAssetsPrice = (
   'eip155:59144/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:8453/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:42161/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+});
+
+export const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
+
+export const LOCALHOST_NATIVE_ASSET_ID = 'eip155:1337/slip44:1';
+
+export const DEFAULT_MAINNET_ETH_HUMAN_BALANCE = '25';
+
+/**
+ * Seeds AssetsController native balances for unified-assets E2E fixtures.
+ *
+ * @param conversionRate - ETH/USD rate used for {@link getMockAssetsPrice}.
+ * @param accountId - Internal account id to seed (defaults to fixture account 1).
+ * @param amount - Native ETH balance in human-readable units (defaults to 25).
+ */
+export const getMainnet25EthAssetsControllerPatch = (
+  conversionRate: number = MOCK_ETH_CONVERSION_RATE,
+  accountId: string = DEFAULT_FIXTURE_ACCOUNT_ID,
+  amount: string = DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
+) => ({
+  assetsBalance: {
+    [accountId]: {
+      [MAINNET_NATIVE_ASSET_ID]: { amount },
+    },
+  },
+  assetsPrice: getMockAssetsPrice(conversionRate),
+});
+
+/**
+ * Seeds localhost native ETH for unified-assets E2E fixtures on chain 1337.
+ *
+ * @param accountId - Internal account id to seed (defaults to fixture account 1).
+ */
+export const getLocalhost25EthAssetsControllerPatch = (
+  accountId: string = DEFAULT_FIXTURE_ACCOUNT_ID,
+) => ({
+  assetsBalance: {
+    [accountId]: {
+      [LOCALHOST_NATIVE_ASSET_ID]: {
+        amount: DEFAULT_MAINNET_ETH_HUMAN_BALANCE,
+      },
+    },
+  },
 });
 
 /**
