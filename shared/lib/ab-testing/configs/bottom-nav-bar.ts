@@ -35,5 +35,6 @@ export const BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping = {
     MetaMetricsEventName.TokenScreenOpened,
     MetaMetricsEventName.PerpsScreenViewed,
     MetaMetricsEventName.ActivityScreenOpened,
+    'Unified SwapBridge Page Viewed'
   ],
 };
