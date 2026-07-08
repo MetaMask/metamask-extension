@@ -1842,27 +1842,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  trackInsightSnapView(snapId) {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.InsightSnapViewed)
-        .addCategory(MetaMetricsEventCategory.Snaps)
-        .addProperties({
-          snap_id: snapId,
-        })
-        .build(),
-    );
-  }
-
-  /**
-   * Get snap metadata from the current state without refreshing the registry database.
-   *
-   * @param {string} snapId - A snap id.
-   * @returns The available metadata for the snap, if any.
-   */
-  _getSnapMetadata(snapId) {
-    return this.snapsRegistry.state.database?.verifiedSnaps?.[snapId]?.metadata;
-  }
-
   /**
    * Sets up BaseController V2 event subscriptions. Currently, this includes
    * the subscriptions necessary to notify permission subjects of account
@@ -3116,11 +3095,10 @@ export default class MetamaskController extends EventEmitter {
         'MultichainAccountService:createNextMultichainAccountGroup',
       ),
 
-      alignMultichainWallets: async () => {
-        if (this.multichainAccountService) {
-          await this.multichainAccountService.alignWallets();
-        }
-      },
+      alignMultichainWallets: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:alignWallets',
+      ),
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
@@ -3623,7 +3601,6 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-      trackInsightSnapView: this.trackInsightSnapView.bind(this),
       updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
         metaMetricsController,
       ),

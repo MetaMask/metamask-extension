@@ -24,6 +24,19 @@ import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AssetPage from './asset-page';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
   ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
   useMusdGeoBlocking: () => ({
@@ -177,6 +190,9 @@ describe('AssetPage', () => {
     },
     appState: {
       confirmationExchangeRates: {},
+    },
+    confirmTransaction: {
+      txData: {},
     },
     metamask: {
       ...mockMultichainNetworkState(),

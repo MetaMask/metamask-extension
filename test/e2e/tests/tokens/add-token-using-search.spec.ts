@@ -1,15 +1,17 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_ID, NETWORK_CLIENT_ID } from '../../constants';
 import {
   BSC_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
+import { mockTokenMetadataApis } from './utils/mocks';
 
 const BSC_BAT_ADDRESS = '0x0d8775f648430679a709e98d2b0cb6250d2887ef';
+const BSC_BAT_ASSET_ID = `eip155:56/erc20:${BSC_BAT_ADDRESS}`;
 
 const BSC_BAT_TOKEN_LIST_ENTRY = {
   [BSC_BAT_ADDRESS]: {
@@ -191,6 +193,20 @@ describe('Add existing token using search', function () {
       ...(await mockBscBridgeApi(mockServer)),
       ...(await mockSupportedNetworks(mockServer)),
       ...(await mockTokensAssets(mockServer)),
+      ...(await mockTokenMetadataApis(
+        mockServer,
+        [
+          {
+            address: BSC_BAT_ADDRESS,
+            symbol: 'BAT',
+            name: 'Basic Attention Token',
+            decimals: 18,
+            chainId: 56,
+            balance: '1',
+          },
+        ],
+        { includeAssetsV3: false },
+      )),
       await mockTokenSearch(mockServer),
     ];
   }
@@ -213,30 +229,48 @@ describe('Add existing token using search', function () {
           .withTokenListControllerStorageServiceData([
             { chainId: CHAIN_IDS.BSC, data: BSC_BAT_TOKEN_LIST_ENTRY },
           ])
+          .withAssetsController({
+            customAssets: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: [BSC_BAT_ASSET_ID],
+            },
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                [BSC_BAT_ASSET_ID]: { amount: '1' },
+              },
+            },
+            assetsInfo: {
+              [BSC_BAT_ASSET_ID]: {
+                aggregators: [],
+                decimals: 18,
+                name: 'Basic Attention Token',
+                symbol: 'BAT',
+                type: 'erc20',
+              },
+            },
+          })
           .build(),
         localNodeOptions: {
           chainId: parseInt(CHAIN_IDS.BSC, 16),
         },
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
         title: this.test?.fullTitle(),
         testSpecificMock: mockBscApis,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const tokensTab = new TokensTab(driver);
-        await tokensTab.checkTokenAmountIsDisplayed('25 BNB');
         await tokensTab.importTokenBySearch({
           tokenName: 'BAT',
           networkName: BSC_DISPLAY_NAME,
         });
         await tokensTab.checkTokenAmountInTokenDetailsModal(
           'Basic Attention Token',
-          '0 BAT',
+          '1 BAT',
         );
       },
     );

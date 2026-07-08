@@ -606,7 +606,7 @@
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "document": false,
-        "document.visibilityState": true,
+        "document.visibilityState": false,
         "addEventListener": false
       }
     }
