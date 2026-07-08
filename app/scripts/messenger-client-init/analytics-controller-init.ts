@@ -1,7 +1,7 @@
-import type {
+import {
   AnalyticsController,
-  AnalyticsControllerMessenger,
-  AnalyticsControllerState,
+  type AnalyticsControllerMessenger,
+  type AnalyticsControllerState,
 } from '@metamask/analytics-controller';
 import { generateMetaMetricsId } from '../../../shared/lib/generate-metametrics-id';
 import {

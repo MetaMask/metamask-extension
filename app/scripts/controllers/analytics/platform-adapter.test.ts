@@ -491,18 +491,28 @@ describe('createPlatformAdapter', () => {
       );
     });
 
-    it('overwrites caller-provided universal properties', () => {
+    it('overwrites caller-provided universal properties (locale, chain_id, profile_id, canonical_profile_id)', () => {
       const { adapter, segment } = buildAdapter(
         createMockEnrichmentContext({
           getLocale: () => 'fr-FR',
           getDefaultChainId: () => '0x89' as Hex,
+          getProfileIdentityProperties: () => ({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            profile_id: 'profileId',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            canonical_profile_id: 'canonicalProfileId',
+          }),
         }),
       );
 
       adapter.track('Test Event', {
         locale: 'en-US',
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: '0x1',
+        chain_id: 1,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        profile_id: 'callerProfileId',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        canonical_profile_id: 'callerCanonicalProfileId',
       });
 
       expect(segment.track).toHaveBeenCalledWith(
@@ -510,7 +520,11 @@ describe('createPlatformAdapter', () => {
           properties: {
             locale: 'fr-FR',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
+            chain_id: '0x89',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            profile_id: 'profileId',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            canonical_profile_id: 'canonicalProfileId',
           },
         }),
         undefined,
