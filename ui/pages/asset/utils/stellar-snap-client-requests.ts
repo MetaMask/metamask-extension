@@ -12,11 +12,13 @@ export type StellarChangeTrustOptResult = {
 
 /**
  * Request the Stellar wallet snap to add a classic trustline (`changeTrustOpt` with action `add`).
- * @param params
- * @param params.accountId
- * @param params.assetId
- * @param params.scope
- * @param params.limit
+ * @param params - The parameters for the request.
+ * @param params.accountId - The account ID.
+ * @param params.assetId - The asset ID.
+ * @param params.scope - The scope.
+ * @param params.limit - The limit.
+ *
+ * @returns The result of the request.
  */
 export async function requestStellarChangeTrustOptAdd(params: {
   accountId: string;
@@ -41,17 +43,18 @@ export async function requestStellarChangeTrustOptAdd(params: {
 /**
  * Request the Stellar wallet snap to remove a classic trustline (`changeTrustOpt` with action `delete`).
  * Requires a zero balance on the trustline; the snap validates and prompts for confirmation.
- * @param params
- * @param params.accountId
- * @param params.assetId
- * @param params.scope
+ *
+ * @param params - The parameters for the request.
+ * @param params.accountId - The account ID.
+ * @param params.assetId - The asset ID.
+ * @param params.scope - The scope.
  */
 export async function requestStellarChangeTrustOptDelete(params: {
   accountId: string;
   assetId: CaipAssetType;
   scope: CaipChainId;
-}): Promise<unknown> {
-  return handleSnapRequest({
+}): Promise<void> {
+  await handleSnapRequest({
     snapId: STELLAR_WALLET_SNAP_ID,
     origin: 'metamask',
     handler: HandlerType.OnClientRequest,

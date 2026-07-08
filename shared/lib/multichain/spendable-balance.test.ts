@@ -62,22 +62,18 @@ describe('computeBaseReserve', () => {
 
 describe('computeSpendableBalance', () => {
   it('subtracts base reserve from total balance', () => {
-    expect(computeSpendableBalance('250', '2.5')).toBe('247.5');
+    expect(computeSpendableBalance('250', '2.5')).toStrictEqual('247.5');
   });
 
   it('returns a negative spendable balance when reserve exceeds total', () => {
-    expect(computeSpendableBalance('1', '2.5')).toBe('-1.5');
+    expect(computeSpendableBalance('1', '2.5')).toStrictEqual('0');
   });
 
   it('throws when total balance is invalid', () => {
-    expect(() => computeSpendableBalance('not-a-number', '2.5')).toThrow(
-      'not a number',
-    );
+    expect(computeSpendableBalance('not-a-number', '2.5')).toStrictEqual('0');
   });
 
   it('throws when base reserve is invalid', () => {
-    expect(() => computeSpendableBalance('250', 'not-a-number')).toThrow(
-      'not a number',
-    );
+    expect(computeSpendableBalance('250', 'not-a-number')).toStrictEqual('0');
   });
 });

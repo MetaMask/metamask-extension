@@ -38,10 +38,7 @@ export function SpendableBalanceSection({
   const formatFiat = useFiatFormatter();
 
   const { totalDisplay, spendableDisplay, reservedDisplay } = useMemo(() => {
-    const spendable = BigNumber.max(
-      '0',
-      computeSpendableBalance(totalBalance, baseReserve),
-    ).toString();
+    const spendable = computeSpendableBalance(totalBalance, baseReserve);
 
     return {
       totalDisplay: `${totalBalance} ${symbol}`,

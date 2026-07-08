@@ -62,6 +62,9 @@ export function computeBaseReserve({
 /**
  * Computes the spendable balance for a native asset that supports reserve
  * balance display.
+ * if the total balance or base reserve is not a valid number, returns '0'.
+ * if the spendable balance is negative, returns '0'.
+ * otherwise, returns the spendable balance as a string.
  *
  * @param totalBalance - The total balance of the asset.
  * @param baseReserve - The base reserve of the asset.
@@ -71,16 +74,16 @@ export function computeSpendableBalance(
   totalBalance: string,
   baseReserve: string,
 ): string {
-  if (!isValidNumberString(totalBalance)) {
-    throw new Error(`total balance is not a number: ${totalBalance}`);
-  }
-  if (!isValidNumberString(baseReserve)) {
-    throw new Error(`base reserve is not a number: ${baseReserve}`);
+  if (!isValidNumberString(totalBalance) || !isValidNumberString(baseReserve)) {
+    return '0';
   }
   const total = new BigNumber(totalBalance);
   const reserved = new BigNumber(baseReserve);
-  const spendable = total.minus(reserved).toString();
-  return spendable;
+  const spendable = total.minus(reserved);
+  if (spendable.isNegative()) {
+    return '0';
+  }
+  return spendable.toString();
 }
 
 /**
