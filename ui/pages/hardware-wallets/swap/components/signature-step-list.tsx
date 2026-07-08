@@ -57,7 +57,7 @@ const InlineQrSignatureCode = ({
  * @param props.activeQrStep
  * @param props.qrSignRequest
  */
-function signatureStepList({
+const SignatureStepList = ({
   hasSigningRequest,
   needsTwoConfirmations,
   firstStepStatus,
@@ -69,7 +69,7 @@ function signatureStepList({
   showInlineQrCode,
   activeQrStep,
   qrSignRequest,
-}: Readonly<SignatureStepListProps>) {
+}: Readonly<SignatureStepListProps>) => {
   if (!hasSigningRequest) {
     return null;
   }
@@ -146,6 +146,6 @@ function signatureStepList({
       </li>
     </ul>
   );
-}
+};
 
-export default React.memo(signatureStepList);
+export default React.memo(SignatureStepList);

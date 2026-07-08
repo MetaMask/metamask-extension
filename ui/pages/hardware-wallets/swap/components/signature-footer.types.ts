@@ -16,8 +16,8 @@ export type SignatureFooterProps = {
   readonly isRetryable: boolean;
 
   /**
-   * Whether a retry is currently in flight. Disables the retry button to
-   * prevent double-clicks.
+   * Whether a retry is currently in flight. Disables the retry and resend
+   * buttons to prevent double-clicks.
    */
   readonly isRetrying: boolean;
 

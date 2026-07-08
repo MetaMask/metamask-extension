@@ -70,6 +70,16 @@ describe('SignatureFooter', () => {
     ).toBeDisabled();
   });
 
+  it('disables resend button when isRetrying is true', () => {
+    const { getByTestId } = renderWithI18n(
+      <SignatureFooter {...BASE_PROPS} showStuckRetryButton isRetrying />,
+    );
+
+    expect(
+      getByTestId('hardware-wallet-signatures__resend-button'),
+    ).toBeDisabled();
+  });
+
   it('renders resend button when showStuckRetryButton is true', () => {
     const { getByTestId } = renderWithI18n(
       <SignatureFooter {...BASE_PROPS} showStuckRetryButton />,
