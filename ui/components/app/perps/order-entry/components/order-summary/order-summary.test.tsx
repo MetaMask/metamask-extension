@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
@@ -18,6 +18,19 @@ const mockStore = configureStore({
     ...mockState.metamask,
   },
 });
+
+function showTooltip(labelTestId: string, event: 'hover' | 'focus' = 'hover') {
+  const label = screen.getByTestId(labelTestId);
+  const tooltipTrigger = label.closest('[data-tooltipped]');
+
+  expect(tooltipTrigger).not.toBeNull();
+
+  if (event === 'focus') {
+    fireEvent.focus(tooltipTrigger as HTMLElement);
+  } else {
+    fireEvent.mouseEnter(tooltipTrigger as HTMLElement);
+  }
+}
 
 describe('OrderSummary', () => {
   describe('rendering', () => {
@@ -38,6 +51,127 @@ describe('OrderSummary', () => {
       expect(
         screen.getByText(messages.perpsLiquidationPrice.message),
       ).toBeInTheDocument();
+    });
+
+    it('renders dotted underline tooltip labels without showing tooltips at rest', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-order-summary-margin-tooltip-label'),
+      ).toHaveClass('border-dotted');
+      expect(
+        screen.getByTestId('perps-order-summary-liquidation-price-tooltip-label'),
+      ).toHaveClass('border-dotted');
+      expect(
+        screen.getByTestId('perps-order-summary-fees-tooltip-label'),
+      ).toHaveClass('border-dotted');
+      expect(
+        screen.queryByTestId('perps-order-summary-margin-tooltip'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-summary-liquidation-price-tooltip'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-summary-fees-tooltip'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the Mobile-parity Margin tooltip on hover', async () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+        />,
+        mockStore,
+      );
+
+      showTooltip('perps-order-summary-margin-tooltip-label');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-summary-margin-tooltip'),
+        ).toHaveTextContent(messages.perpsMarginTooltip.message);
+      });
+    });
+
+    it('shows the Mobile-parity Liquidation price tooltip on focus', async () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+        />,
+        mockStore,
+      );
+
+      showTooltip(
+        'perps-order-summary-liquidation-price-tooltip-label',
+        'focus',
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-summary-liquidation-price-tooltip'),
+        ).toHaveTextContent(messages.perpsLiquidationPriceTooltip.message);
+      });
+    });
+
+    it('shows live fee rates in the Fees tooltip', async () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={0.5}
+          liquidationPrice={null}
+          metamaskFeeRate={0.001}
+          protocolFeeRate={0.00045}
+          protocolFeeLabel={messages.perpsFeesTooltipHyperliquidFee.message}
+        />,
+        mockStore,
+      );
+
+      showTooltip('perps-order-summary-fees-tooltip-label');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-summary-fees-tooltip'),
+        ).toHaveTextContent(
+          `${messages.perpsFeesTooltipMetamaskFee.message}0.100%`,
+        );
+        expect(
+          screen.getByTestId('perps-order-summary-fees-tooltip'),
+        ).toHaveTextContent(
+          `${messages.perpsFeesTooltipHyperliquidFee.message}0.045%`,
+        );
+      });
+    });
+
+    it('falls back to the provider fee label when no protocol fee label is provided', async () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={0.5}
+          liquidationPrice={null}
+          metamaskFeeRate={0.001}
+          protocolFeeRate={0.00045}
+        />,
+        mockStore,
+      );
+
+      showTooltip('perps-order-summary-fees-tooltip-label');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-summary-fees-tooltip'),
+        ).toHaveTextContent(messages.perpsFeesTooltipProviderFee.message);
+      });
     });
 
     it('displays dash when values are null', () => {

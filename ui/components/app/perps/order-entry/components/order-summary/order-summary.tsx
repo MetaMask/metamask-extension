@@ -17,8 +17,68 @@ import {
 } from '@metamask/design-system-react';
 import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import Tooltip from '../../../../../ui/tooltip/tooltip';
+import { formatPerpsFeeRate } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';
+
+type TooltipLabelProps = {
+  label: string;
+  tooltip: React.ReactNode;
+  testId: string;
+};
+
+const TooltipLabel = ({ label, tooltip, testId }: TooltipLabelProps) => (
+  <Tooltip
+    position="top"
+    size="regular"
+    html={tooltip}
+    tag="span"
+    wrapperClassName="inline-flex"
+  >
+    <Text
+      variant={TextVariant.BodySm}
+      color={TextColor.TextAlternative}
+      data-testid={testId}
+      className="cursor-help border-0 border-b border-dotted border-current p-0"
+    >
+      {label}
+    </Text>
+  </Tooltip>
+);
+
+type TooltipBodyProps = {
+  children: React.ReactNode;
+  testId: string;
+};
+
+const TooltipBody = ({ children, testId }: TooltipBodyProps) => (
+  <Box
+    role="tooltip"
+    data-testid={testId}
+    flexDirection={BoxFlexDirection.Column}
+    gap={2}
+    className="w-64 max-w-[calc(100vw-32px)]"
+  >
+    {children}
+  </Box>
+);
+
+type FeeTooltipRowProps = {
+  label: string;
+  value: string;
+};
+
+const FeeTooltipRow = ({ label, value }: FeeTooltipRowProps) => (
+  <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6">
+    <Text variant={TextVariant.BodySm} className="leading-5">
+      {label}
+    </Text>
+    <Text variant={TextVariant.BodySm} className="text-right leading-5">
+      {value}
+    </Text>
+  </div>
+);
 
 /**
  * OrderSummary - Displays calculated order values (margin, fees, liquidation price)
@@ -29,6 +89,9 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  * @param props.originalEstimatedFees - Estimated trading fees before discount
  * @param props.liquidationPrice - Estimated liquidation price
  * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount percentage (whole numbers)
+ * @param props.metamaskFeeRate - Live MetaMask fee rate for the fees tooltip
+ * @param props.protocolFeeRate - Live protocol/provider fee rate for the fees tooltip
+ * @param props.protocolFeeLabel - Label for the protocol/provider fee row
  * @param props.showSlippageRow
  * @param props.slippageDisplay
  * @param props.exceedsMaxSlippage
@@ -41,6 +104,9 @@ export const OrderSummary = ({
   originalEstimatedFees,
   liquidationPrice,
   metamaskFeeRateDiscountPercentage,
+  metamaskFeeRate,
+  protocolFeeRate,
+  protocolFeeLabel,
   showSlippageRow = false,
   slippageDisplay,
   exceedsMaxSlippage = false,
@@ -58,9 +124,17 @@ export const OrderSummary = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsLiquidationPrice')}
-        </Text>
+        <TooltipLabel
+          label={t('perpsLiquidationPrice')}
+          testId="perps-order-summary-liquidation-price-tooltip-label"
+          tooltip={
+            <TooltipBody testId="perps-order-summary-liquidation-price-tooltip">
+              <Text variant={TextVariant.BodySm}>
+                {t('perpsLiquidationPriceTooltip')}
+              </Text>
+            </TooltipBody>
+          }
+        />
         <SensitiveText
           variant={TextVariant.BodySm}
           color={TextColor.TextDefault}
@@ -128,9 +202,17 @@ export const OrderSummary = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsMargin')}
-        </Text>
+        <TooltipLabel
+          label={t('perpsMargin')}
+          testId="perps-order-summary-margin-tooltip-label"
+          tooltip={
+            <TooltipBody testId="perps-order-summary-margin-tooltip">
+              <Text variant={TextVariant.BodySm}>
+                {t('perpsMarginTooltip')}
+              </Text>
+            </TooltipBody>
+          }
+        />
         <SensitiveText
           variant={TextVariant.BodySm}
           color={TextColor.TextDefault}
@@ -147,9 +229,22 @@ export const OrderSummary = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsFees')}
-        </Text>
+        <TooltipLabel
+          label={t('perpsFees')}
+          testId="perps-order-summary-fees-tooltip-label"
+          tooltip={
+            <TooltipBody testId="perps-order-summary-fees-tooltip">
+              <FeeTooltipRow
+                label={t('perpsFeesTooltipMetamaskFee')}
+                value={formatPerpsFeeRate(metamaskFeeRate)}
+              />
+              <FeeTooltipRow
+                label={protocolFeeLabel ?? t('perpsFeesTooltipProviderFee')}
+                value={formatPerpsFeeRate(protocolFeeRate)}
+              />
+            </TooltipBody>
+          }
+        />
         <PerpsFeesDisplay
           metamaskFeeRateDiscountPercentage={
             estimatedFees === null
