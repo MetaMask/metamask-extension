@@ -88,7 +88,7 @@ describe('Preinstalled example Snap', function () {
           2,
         );
         await testSnaps.checkMessageResultSpan(
-          'rpcResultSpan',
+          'preinstalledResultSpan',
           jsonTextValidation,
         );
       },
