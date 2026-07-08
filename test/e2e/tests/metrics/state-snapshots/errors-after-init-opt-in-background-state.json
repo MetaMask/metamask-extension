@@ -68,7 +68,7 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": null,
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
@@ -118,7 +118,10 @@
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object"
   },
-  "BridgeStatusController": { "txHistory": "object" },
+  "BridgeStatusController": {
+    "quoteUpdateStatusStore": "object",
+    "txHistory": "object"
+  },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",
@@ -290,6 +293,7 @@
       "featureNotificationsEnabled": "boolean",
       "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
+      "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
@@ -326,6 +330,7 @@
     "watchEthereumAccountEnabled": "boolean"
   },
   "ProfileMetricsController": "object",
+  "QrSyncController": "object",
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
     "localOverrides": "object",

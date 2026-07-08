@@ -5,8 +5,24 @@ import {
 } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
+import { getManifestFlags } from '../../../../../shared/lib/manifestFlags';
 import { createBuilderRequest } from './test-utils';
 import { getMetaMaskPayProperties } from './metamask-pay';
+
+jest.mock('../../../../../shared/lib/manifestFlags', () => ({
+  getManifestFlags: jest.fn(),
+}));
+
+const getManifestFlagsMock = jest.mocked(getManifestFlags);
+
+const PREFILL_ENABLED_FLAGS = {
+  confirmations_pay_extended: {
+    prefilledAmount: {
+      default: { enabled: false },
+      overrides: { musdConversion: { enabled: true } },
+    },
+  },
+};
 
 const PAY_TOKEN_MOCK = {
   symbol: 'USDC',
@@ -76,6 +92,10 @@ function createPayRequest(overrides = {}) {
 }
 
 describe('getMetaMaskPayProperties', () => {
+  beforeEach(() => {
+    getManifestFlagsMock.mockReturnValue({});
+  });
+
   describe('core pay properties', () => {
     it('returns empty when metamaskPay is absent', async () => {
       const request = createBuilderRequest();
@@ -169,6 +189,162 @@ describe('getMetaMaskPayProperties', () => {
       const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_use_case).toBeUndefined();
+    });
+  });
+
+  describe('mm_pay_amount_input_type', () => {
+    function createMusdRequest({
+      flags = {},
+      fragmentProperties,
+      metamaskPay = { chainId: '0x1', tokenAddress: '0xabc' },
+    }: {
+      flags?: Record<string, unknown>;
+      fragmentProperties?: Record<string, unknown>;
+      metamaskPay?: { chainId: string; tokenAddress: string } | null;
+    } = {}) {
+      const base = createPayRequest();
+
+      return createBuilderRequest({
+        transactionMeta: {
+          ...base.transactionMeta,
+          type: TransactionType.musdConversion,
+          metamaskPay: metamaskPay ?? undefined,
+        } as never,
+        transactionMetricsRequest: {
+          ...base.transactionMetricsRequest,
+          getFeatureFlags: jest.fn().mockReturnValue(flags),
+          getTransactionUIMetricsFragment: jest
+            .fn()
+            .mockReturnValue(
+              fragmentProperties
+                ? { properties: fragmentProperties }
+                : undefined,
+            ),
+        },
+      });
+    }
+
+    it('tags prefilled_max when the prefill flag is enabled for the transaction type', async () => {
+      const request = createMusdRequest({ flags: PREFILL_ENABLED_FLAGS });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_amount_input_type).toBe('prefilled_max');
+    });
+
+    it('tags prefilled_max before metamaskPay data exists', async () => {
+      const request = createMusdRequest({
+        flags: PREFILL_ENABLED_FLAGS,
+        metamaskPay: null,
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_amount_input_type).toBe('prefilled_max');
+      expect(result.properties.mm_pay).toBeUndefined();
+    });
+
+    it('does not tag when the prefill flag is disabled', async () => {
+      const request = createMusdRequest({
+        flags: {
+          confirmations_pay_extended: {
+            prefilledAmount: { default: { enabled: false } },
+          },
+        },
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_amount_input_type).toBeUndefined();
+    });
+
+    it('does not tag pay types without prefill support even when the flag default is enabled', async () => {
+      const base = createPayRequest();
+      const request = createBuilderRequest({
+        transactionMeta: base.transactionMeta,
+        transactionMetricsRequest: {
+          ...base.transactionMetricsRequest,
+          getFeatureFlags: jest.fn().mockReturnValue({
+            confirmations_pay_extended: {
+              prefilledAmount: { default: { enabled: true } },
+            },
+          }),
+        },
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_use_case).toBe('perps_deposit');
+      expect(result.properties.mm_pay_amount_input_type).toBeUndefined();
+    });
+
+    it('prefers the input type recorded on the UI metrics fragment', async () => {
+      const request = createMusdRequest({
+        flags: PREFILL_ENABLED_FLAGS,
+        fragmentProperties: { mm_pay_amount_input_type: 'manual' },
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_amount_input_type).toBe('manual');
+    });
+
+    it('prefers manifest flags over controller flags', async () => {
+      getManifestFlagsMock.mockReturnValue({
+        remoteFeatureFlags: PREFILL_ENABLED_FLAGS,
+      });
+
+      const request = createMusdRequest({
+        flags: {
+          confirmations_pay_extended: {
+            prefilledAmount: { default: { enabled: false } },
+          },
+        },
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_amount_input_type).toBe('prefilled_max');
+    });
+
+    it('copies the parent input type and prefilled amount to child transaction events', async () => {
+      const base = createPayRequest();
+      const request = createBuilderRequest({
+        transactionMeta: {
+          ...base.transactionMeta,
+          type: TransactionType.bridge,
+        } as never,
+        transactionMetricsRequest: {
+          ...base.transactionMetricsRequest,
+          getAllTransactions: jest.fn().mockReturnValue([
+            {
+              id: 'tx-1',
+              type: TransactionType.bridge,
+            },
+            {
+              id: 'parent-1',
+              type: TransactionType.musdConversion,
+              requiredTransactionIds: ['tx-1'],
+              metamaskPay: { chainId: '0x1', tokenAddress: '0xabc' },
+            },
+          ]),
+          getTransactionUIMetricsFragment: jest.fn((transactionId: string) =>
+            transactionId === 'parent-1'
+              ? {
+                  properties: {
+                    mm_pay_amount_input_type: 'prefilled_max',
+                    mm_pay_prefilled_amount: 250,
+                  },
+                }
+              : undefined,
+          ),
+        },
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_amount_input_type).toBe('prefilled_max');
+      expect(result.properties.mm_pay_prefilled_amount).toBe(250);
     });
   });
 

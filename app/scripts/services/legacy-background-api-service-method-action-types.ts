@@ -353,6 +353,33 @@ export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
 };
 
 /**
+ * Rejects all pending approval requests.
+ *
+ * Snap dialogs and account confirmations are accepted with a falsy value and
+ * their interface deleted where applicable, while all other approvals are
+ * rejected with a user-rejected-request error.
+ */
+export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
+  type: `LegacyBackgroundApiService:rejectAllPendingApprovals`;
+  handler: LegacyBackgroundApiService['rejectAllPendingApprovals'];
+};
+
+/**
+ * Toggles external services on or off.
+ *
+ * When enabled, token detection and non-RPC gas fee APIs are started, and the
+ * shield service is started if the user has an active shield subscription.
+ * When disabled, those services are stopped, subscription polling is halted,
+ * and the shield service is stopped if applicable.
+ *
+ * @param useExternal - Whether external services should be enabled.
+ */
+export type LegacyBackgroundApiServiceToggleExternalServicesAction = {
+  type: `LegacyBackgroundApiService:toggleExternalServices`;
+  handler: LegacyBackgroundApiService['toggleExternalServices'];
+};
+
+/**
  * Accepts a permissions request. Silently ignores the request if it can no
  * longer be found.
  *
@@ -398,4 +425,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
+  | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction;

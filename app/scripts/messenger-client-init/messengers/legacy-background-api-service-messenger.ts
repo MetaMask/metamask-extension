@@ -35,6 +35,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
+      'ApprovalController:acceptRequest',
+      'SnapInterfaceController:deleteInterface',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
       'ApprovalController:rejectRequest',
@@ -99,6 +101,14 @@ export function getLegacyBackgroundApiServiceMessenger(
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',
+      'PreferencesController:toggleExternalServices',
+      'SubscriptionController:getState',
+      'TokenDetectionController:enable',
+      'TokenDetectionController:disable',
+      'GasFeeController:enableNonRPCGasFeeApis',
+      'GasFeeController:disableNonRPCGasFeeApis',
+      'ShieldController:start',
+      'ShieldController:stop',
     ],
   });
 

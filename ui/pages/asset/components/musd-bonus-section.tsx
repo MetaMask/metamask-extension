@@ -18,13 +18,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { Hex } from '@metamask/utils';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -50,7 +44,7 @@ import {
 import { useMerklClaim } from '../../../components/app/musd/hooks/useMerklClaim';
 import { useMerklRewards } from '../../../components/app/musd/hooks/useMerklRewards';
 import { useOnMerklClaimConfirmed } from '../../../components/app/musd/hooks/useOnMerklClaimConfirmed';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
@@ -111,7 +105,7 @@ export function MusdBonusSection({
 }: MusdBonusSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hasFiredCtaDisplayedEvent = useRef(false);
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
   const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
@@ -207,11 +201,12 @@ export function MusdBonusSection({
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    trackEvent({
-      event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
-      category: MetaMetricsEventCategory.MusdConversion,
-      properties: impressionProperties,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.MusdClaimBonusCtaDisplayed)
+        .addCategory(MetaMetricsEventCategory.MusdConversion)
+        .addProperties(impressionProperties)
+        .build(),
+    );
   }, [
     bonusAmountRange,
     bonusButtonLabel,
@@ -224,6 +219,7 @@ export function MusdBonusSection({
     networkName,
     showMerklBadge,
     t,
+    createEventBuilder,
     trackEvent,
   ]);
 
@@ -237,14 +233,22 @@ export function MusdBonusSection({
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    trackEvent({
-      event: MetaMetricsEventName.MusdClaimBonusButtonClicked,
-      category: MetaMetricsEventCategory.MusdConversion,
-      properties: clickProperties,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.MusdClaimBonusButtonClicked)
+        .addCategory(MetaMetricsEventCategory.MusdConversion)
+        .addProperties(clickProperties)
+        .build(),
+    );
 
     claimRewards();
-  }, [bonusButtonLabel, chainId, claimRewards, networkName, trackEvent]);
+  }, [
+    bonusButtonLabel,
+    chainId,
+    claimRewards,
+    createEventBuilder,
+    networkName,
+    trackEvent,
+  ]);
 
   if (!isMusdFlowEnabled) {
     return null;

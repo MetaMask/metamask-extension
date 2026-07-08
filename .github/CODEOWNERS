@@ -88,6 +88,9 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 # Ramps team to own code for the ramps folder
 **/ramps/**                                           @MetaMask/ramp
 
+# Product Safety Team
+**/product-safety/**                     @MetaMask/product-safety
+
 # Perps Team
 ui/pages/perps/ @MetaMask/perps
 ui/components/app/perps/ @MetaMask/perps
@@ -108,7 +111,10 @@ app/scripts/services/legacy-background-api-service.ts      @MetaMask/core-platfo
 app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platform
 
 
-# Co-owned by Confirmations and Snaps
+# Co-owned by Extension Platform and Core Platform
+app/scripts/metamask-controller.js @MetaMask/extension-platform @MetaMask/core-platform
+
+# Co-owned by Confirmations and Core Platform
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Core Extension UX
