@@ -31,6 +31,7 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
+    chromeBrowserVersion = process.env.SELENIUM_CHROME_VERSION || '126',
     isBenchmark = false,
   }) {
     const args = [
@@ -91,8 +92,7 @@ class ChromeDriver {
       },
     });
 
-    // Structured clone extension messaging is supported starting in Chrome 148.
-    options.setBrowserVersion('148');
+    options.setBrowserVersion(chromeBrowserVersion);
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {

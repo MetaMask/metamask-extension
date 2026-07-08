@@ -17,6 +17,7 @@ import LoginPage from '../../page-objects/pages/login-page';
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 const PORT_STREAM_CHUNKED_EVENT = 'Port Stream Chunked';
 const STRUCTURED_CLONE_MESSAGE_SERIALIZATION = 'structured_clone';
+const STRUCTURED_CLONE_CHROME_VERSION = '148';
 const CHROMIUM_MESSAGE_SIZE_LIMIT = 67108864; // 64 MB
 
 type SegmentEvent = {
@@ -142,6 +143,9 @@ async function loadWalletWithHugeBackgroundState({
           optedIn: true,
         })
         .build(),
+      driverOptions: {
+        chromeBrowserVersion: STRUCTURED_CLONE_CHROME_VERSION,
+      },
       manifestTransform,
       title,
       testSpecificMock: mockSegment,

@@ -10,6 +10,7 @@ async function buildWebDriver({
   port,
   timeOut,
   proxyPort,
+  chromeBrowserVersion,
   disableServerMochaToBackground,
   isBenchmark = false,
 } = {}) {
@@ -25,6 +26,7 @@ async function buildWebDriver({
     port,
     constrainWindowSize,
     proxyPort,
+    chromeBrowserVersion,
     isBenchmark,
   });
   const driver = new Driver({
