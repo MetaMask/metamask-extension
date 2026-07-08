@@ -13,8 +13,6 @@ import {
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_OBJECT } from '../../selectors/shared';
-import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
-import { selectTransactionIds } from '../../selectors/toast';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
@@ -73,42 +71,6 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
     ).map((internalAccount) => internalAccount.address);
 
     return selectBridgeHistoryForAccount(state, internalAccountAddresses);
-  },
-);
-
-export const selectBridgeHistoryForToast = createSelector(
-  [
-    selectBridgeHistoryForAccountGroup,
-    selectCurrentAccountNonEvmTransactions,
-    selectTransactionIds,
-  ],
-  (bridgeHistory, nonEvmTxs, evmTxIds) => {
-    if (!bridgeHistory) {
-      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
-    }
-
-    const nonEvmTxIds = new Set(nonEvmTxs.map((tx) => tx.id));
-
-    return Object.entries(bridgeHistory).reduce<
-      Record<string, BridgeHistoryItem>
-    >((acc, [key, item]) => {
-      if (!item.quote) {
-        return acc;
-      }
-      // Same-chain swaps are handled by their respective transaction watchers
-      if (item.quote.srcChainId === item.quote.destChainId) {
-        return acc;
-      }
-      // Only include items whose source transaction exists in transactions
-      const hasMatchingTx = isNonEvmChainId(item.quote.srcChainId)
-        ? nonEvmTxIds.has(key)
-        : evmTxIds.has(key);
-
-      if (hasMatchingTx) {
-        acc[key] = item;
-      }
-      return acc;
-    }, {});
   },
 );
 
