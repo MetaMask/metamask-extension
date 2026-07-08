@@ -14,10 +14,7 @@ import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import {
-  ImportNftsModal,
-  ImportTokensModal,
-} from '../../components/multichain';
+import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
@@ -95,7 +92,6 @@ import {
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
-  hideImportTokensModal,
   hideDeprecatedNetworkModal,
   hideKeyringRemovalResultModal,
 } from '../../store/actions';
@@ -143,7 +139,6 @@ import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '..
 import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import BatchSell from '../batch-sell/batch-sell-page';
-import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -269,26 +264,10 @@ const SettingsV2LegacyRedirect = () => {
 };
 
 export const TokenManagementFeatureRoute = () => {
-  const isTokenManagementFilterEnabled = useAppSelector(
-    getIsTokenManagementFilterEnabled,
-  );
-
-  if (!isTokenManagementFilterEnabled) {
-    return <Navigate to={DEFAULT_ROUTE} replace />;
-  }
-
   return <TokenManagementPage />;
 };
 
 export const CustomTokenImportFeatureRoute = () => {
-  const isTokenManagementFilterEnabled = useAppSelector(
-    getIsTokenManagementFilterEnabled,
-  );
-
-  if (!isTokenManagementFilterEnabled) {
-    return <Navigate to={DEFAULT_ROUTE} replace />;
-  }
-
   return <CustomTokenImportPage />;
 };
 
@@ -623,9 +602,6 @@ export default function Routes() {
     getShowExtensionInFullSizeView,
   );
 
-  const isImportTokensModalOpen = useAppSelector(
-    (state) => state.appState.importTokensModalOpen,
-  );
   const isBasicConfigurationModalOpen = useAppSelector(
     (state) => state.appState.showBasicFunctionalityModal,
   );
@@ -781,9 +757,6 @@ export default function Routes() {
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}
       {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
-      {isImportTokensModalOpen ? (
-        <ImportTokensModal onClose={() => dispatch(hideImportTokensModal())} />
-      ) : null}
       {isDeprecatedNetworkModalOpen ? (
         <DeprecatedNetworkModal
           onClose={() => dispatch(hideDeprecatedNetworkModal())}

@@ -17,7 +17,6 @@
     "gasLoadingAnimationIsShowing": "boolean",
     "homeDeepLinkQrCode": null,
     "importNftsModal": "object",
-    "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",

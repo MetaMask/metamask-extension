@@ -75,9 +75,6 @@
   "create": {
     "message": "Vytvořit"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
   },
@@ -171,9 +168,6 @@
   },
   "message": {
     "message": "Zpráva"
-  },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
