@@ -12,7 +12,6 @@ import { upperFirst } from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import {
   Box,
@@ -35,92 +34,45 @@ import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
   U2F_ERROR,
-  LEDGER_ERRORS_CODES,
-  LEDGER_LIVE_PATH,
   MEW_PATH,
-  BIP44_PATH,
-  LATTICE_STANDARD_BIP44_PATH,
-  LATTICE_LEDGER_LIVE_PATH,
-  LATTICE_MEW_PATH,
-  TREZOR_TESTNET_PATH,
   DEVICE_KEYRING_MAP,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { KeyringType } from '../../../../shared/constants/keyring';
+import { getIsNewHardwareWalletOnboardingEnabled } from '../../../../shared/lib/environment';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  toHardwareWalletError,
-  HardwareWalletType,
-} from '../../../contexts/hardware-wallets';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
-
-export const LEDGER_HD_PATHS = [
-  { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
-  { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
-  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
-];
-
-export const LATTICE_HD_PATHS = [
-  {
-    name: `Standard (${LATTICE_STANDARD_BIP44_PATH})`,
-    value: LATTICE_STANDARD_BIP44_PATH,
-  },
-  {
-    name: `Ledger Live (${LATTICE_LEDGER_LIVE_PATH})`,
-    value: LATTICE_LEDGER_LIVE_PATH,
-  },
-  { name: `Ledger Legacy (${LATTICE_MEW_PATH})`, value: LATTICE_MEW_PATH },
-];
-
-export const TREZOR_HD_PATHS = [
-  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
-  { name: `Legacy (Ledger / MEW / MyCrypto)`, value: MEW_PATH },
-  { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
-];
-
-const HD_PATHS: Record<string, { name: string; value: string }[]> = {
-  ledger: LEDGER_HD_PATHS,
-  lattice: LATTICE_HD_PATHS,
-  trezor: TREZOR_HD_PATHS,
-  oneKey: TREZOR_HD_PATHS,
-};
-
-type HardwareAccount = {
-  address: string;
-  balance: string;
-  index: number;
-};
+import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
+import { DEVICE_HD_PATHS } from './utils/hardware-hd-paths';
+import { getConnectedHardwareWalletKeyrings } from './utils/get-connected-hardware-wallet-keyrings';
+import {
+  HardwareConnectErrorResolutionKind,
+  resolveHardwareConnectUserError,
+} from './utils/resolve-hardware-connect-user-error';
+import type {
+  ConnectHardwarePageAccount,
+  HardwareConnectAccount,
+} from './types';
 
 type ActiveQrCodeScanRequest = {
   type?: QrScanRequestType;
 } | null;
-
-const getErrorMessage = (
-  errorCode: string,
-  t: (key: string) => string,
-): string => {
-  const errorCodeLocalized =
-    LEDGER_ERRORS_CODES[errorCode as keyof typeof LEDGER_ERRORS_CODES];
-  if (errorCodeLocalized !== undefined) {
-    return t(errorCodeLocalized);
-  }
-  return errorCode;
-};
 
 const ConnectHardwareForm = () => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch: MetaMaskReduxDispatch = useDispatch();
   const navigate = useNavigate();
+  const isNewHardwareWalletOnboardingEnabled =
+    getIsNewHardwareWalletOnboardingEnabled();
 
   // Selectors
   const chainId = useSelector(getCurrentChainId);
@@ -148,9 +100,9 @@ const ConnectHardwareForm = () => {
   // Local state
   const [error, setError] = useState<string | null>(null);
   const [selectedAccounts, setSelectedAccounts] = useState<number[]>([]);
-  const [hardwareAccounts, setHardwareAccounts] = useState<HardwareAccount[]>(
-    [],
-  );
+  const [hardwareAccounts, setHardwareAccounts] = useState<
+    HardwareConnectAccount[]
+  >([]);
   const [browserSupported, setBrowserSupported] = useState(true);
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
@@ -177,24 +129,16 @@ const ConnectHardwareForm = () => {
   }, []);
 
   const hardwareWalletKeyrings = useMemo(
-    () =>
-      keyrings.filter(
-        (keyring) =>
-          (
-            [
-              KeyringType.ledger,
-              KeyringType.trezor,
-              KeyringType.lattice,
-              KeyringType.qr,
-              KeyringType.oneKey,
-            ] as string[]
-          ).includes(keyring.type) && keyring.accounts.length > 0,
-      ),
+    () => getConnectedHardwareWalletKeyrings(keyrings),
     [keyrings],
   );
 
   // Update balances when accounts change
   useEffect(() => {
+    if (isNewHardwareWalletOnboardingEnabled) {
+      return;
+    }
+
     setHardwareAccounts((prev) => {
       if (prev.length === 0) {
         return prev;
@@ -208,7 +152,7 @@ const ConnectHardwareForm = () => {
         };
       });
     });
-  }, [accounts]);
+  }, [accounts, isNewHardwareWalletOnboardingEnabled]);
 
   const showTemporaryAlert = useCallback(() => {
     dispatch(actions.showAlert(t('hardwareWalletConnected') as string));
@@ -240,7 +184,7 @@ const ConnectHardwareForm = () => {
             loadHid ?? false,
             t as (key: string) => string,
           ),
-        )) as { address: string; index?: number }[];
+        )) as ConnectHardwarePageAccount[];
 
         if (requestId !== latestGetPageRequestId.current) {
           return;
@@ -257,7 +201,7 @@ const ConnectHardwareForm = () => {
             showTemporaryAlert();
           }
 
-          const newAccounts: HardwareAccount[] = nextAccounts.map(
+          const newAccounts: HardwareConnectAccount[] = nextAccounts.map(
             (account, idx) => {
               const normalizedAddress = account.address.toLowerCase();
               const balanceValue = accounts[normalizedAddress]?.balance || null;
@@ -281,56 +225,21 @@ const ConnectHardwareForm = () => {
 
         latestPendingDevice.current = null;
 
-        const errorMessage = toErrorMessage(e);
-
-        // Use shared Ledger error mapping (hw-wallet-sdk) when connecting to Ledger.
-        if (deviceName === HardwareDeviceNames.ledger) {
-          const hwError = toHardwareWalletError(e, HardwareWalletType.Ledger);
-
-          if (
-            hwError.code !== ErrorCode.Unknown &&
-            hwError.code !== ErrorCode.ConnectionClosed
-          ) {
-            setError(hwError.userMessage);
-            return;
-          }
-        }
-
-        const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
-          (errorCode) => errorMessage.includes(errorCode),
+        const resolution = resolveHardwareConnectUserError(
+          e,
+          deviceName as HardwareDeviceNames,
+          t as (key: string) => string,
         );
-        if (errorMessage === 'Window blocked') {
+
+        if (
+          resolution.kind === HardwareConnectErrorResolutionKind.BrowserBlocked
+        ) {
           setBrowserSupported(false);
           setError(null);
-        } else if (errorMessage.includes(U2F_ERROR)) {
-          setError(U2F_ERROR);
         } else if (
-          errorMessage === 'LEDGER_LOCKED' ||
-          errorMessage === 'LEDGER_WRONG_APP'
+          resolution.kind === HardwareConnectErrorResolutionKind.Error
         ) {
-          setError(t('ledgerLocked') as string);
-        } else if (errorMessage.includes('timeout')) {
-          setError(t('ledgerTimeout') as string);
-        } else if (ledgerErrorCode) {
-          setError(
-            `${errorMessage} - ${getErrorMessage(ledgerErrorCode, t as (key: string) => string)}`,
-          );
-        } else if (
-          errorMessage
-            .toLowerCase()
-            .includes(
-              'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
-            )
-        ) {
-          setError(t('QRHardwarePubkeyAccountOutOfRange') as string);
-        } else if (
-          errorMessage !== 'Window closed' &&
-          errorMessage !== 'Popup closed' &&
-          !errorMessage
-            .toLowerCase()
-            .includes('KeystoneError#sync_cancel'.toLowerCase())
-        ) {
-          setError(errorMessage);
+          setError(resolution.message);
         }
       }
     },
@@ -687,6 +596,22 @@ const ConnectHardwareForm = () => {
       return null;
     }
 
+    if (isNewHardwareWalletOnboardingEnabled) {
+      return (
+        <SelectHardwareAccountsPage
+          device={device as HardwareDeviceNames}
+          accounts={hardwareAccounts}
+          connectedAccounts={connectedAccounts}
+          onBack={onCancel}
+          onError={setError}
+          onBrowserBlocked={() => {
+            setBrowserSupported(false);
+            setError(null);
+          }}
+        />
+      );
+    }
+
     return (
       <AccountList
         onPathChange={onPathChange}
@@ -703,7 +628,7 @@ const ConnectHardwareForm = () => {
         onForgetDevice={onForgetDevice}
         onCancel={onCancel}
         onAccountRestriction={onAccountRestriction}
-        hdPaths={HD_PATHS}
+        hdPaths={DEVICE_HD_PATHS}
       />
     );
   };

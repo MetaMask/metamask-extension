@@ -1,16 +1,35 @@
-import type { HardwareWalletAccount } from '../../../../components/multichain-accounts/hardware-account-card';
+import type { HardwareConnectAccount } from '../types';
+import type { HardwareDeviceNames } from '../../../../../shared/constants/hardware-wallets';
 
-/** Props for SelectHardwareAccountsPage. */
+/** Available views in the hardware account selection page. */
+export const HARDWARE_ACCOUNTS_PAGE_VIEWS = ['accounts', 'hd-path'] as const;
+
+/** View state for the hardware account selection page. */
+export type HardwareAccountsPageView =
+  (typeof HARDWARE_ACCOUNTS_PAGE_VIEWS)[number];
+
+/** Parent callback for showing or clearing connect hardware errors. */
+export type ConnectHardwarePageErrorHandler = (error: string | null) => void;
+
+/** Parent callback when the browser blocks a hardware wallet popup. */
+export type ConnectHardwarePageBrowserBlockedHandler = () => void;
+
+/**
+ * Props for the hardware account selection page.
+ * Rendered by index.tsx when the new hardware onboarding flag is enabled.
+ *
+ * @property device - Connected hardware device.
+ * @property accounts - Initial connectHardware rows from index.tsx (balance is ignored).
+ * @property connectedAccounts - Lowercase addresses already imported in MetaMask.
+ * @property onBack - Called when the user leaves the account selector.
+ * @property onError - Called when the parent should display an error.
+ * @property onBrowserBlocked - Called when the browser blocks a hardware popup.
+ */
 export type SelectHardwareAccountsPageProps = {
-  accounts: HardwareWalletAccount[];
-  selectedAccountIds: string[];
-  onAccountSelectionChange: (selectedAccountIds: string[]) => void;
+  device: HardwareDeviceNames;
+  accounts: HardwareConnectAccount[];
+  connectedAccounts: string[];
   onBack: () => void;
-  onShowMore: () => void;
-  onContinue: (selectedAccountIds: string[]) => void;
-  onForgetDevice: () => void;
-  hasMoreAccounts?: boolean;
-  isLoadingMore?: boolean;
-  onSettingsClick?: () => void;
-  showSettingsButton?: boolean;
+  onError: ConnectHardwarePageErrorHandler;
+  onBrowserBlocked: ConnectHardwarePageBrowserBlockedHandler;
 };

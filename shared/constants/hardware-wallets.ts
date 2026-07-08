@@ -167,6 +167,49 @@ export const KEYRING_DEVICE_PROPERTY_MAP = {
 
 export const U2F_ERROR = 'U2F';
 
+/**
+ * Legacy connectHardware error message tokens from older keyring bridges.
+ * Background handlers may still throw these raw strings; prefer mapped
+ * ErrorCode values from @metamask/hw-wallet-sdk when available.
+ *
+ * @property LedgerLocked - Legacy token for a locked Ledger device.
+ * @property LedgerWrongApp - Legacy token for the wrong Ledger app.
+ * @property WindowBlocked - Browser blocked the hardware popup.
+ * @property WindowClosed - User closed the hardware popup window.
+ * @property PopupClosed - User closed the hardware popup.
+ * @property KeystonePubkeyAccountOutOfRange - Keystone account index out of range.
+ * @property KeystoneSyncCancel - User cancelled Keystone sync.
+ */
+export const HardwareConnectLegacyErrorMessage = {
+  LedgerLocked: 'LEDGER_LOCKED',
+  LedgerWrongApp: 'LEDGER_WRONG_APP',
+  WindowBlocked: 'Window blocked',
+  WindowClosed: 'Window closed',
+  PopupClosed: 'Popup closed',
+  KeystonePubkeyAccountOutOfRange:
+    'KeystoneError#pubkey_account.no_expected_account',
+  KeystoneSyncCancel: 'KeystoneError#sync_cancel',
+} as const;
+
+/** Legacy connectHardware error message token value. */
+export type HardwareConnectLegacyErrorMessage =
+  (typeof HardwareConnectLegacyErrorMessage)[keyof typeof HardwareConnectLegacyErrorMessage];
+
+/**
+ * Legacy Ledger locked-state tokens that map to the ledgerLocked locale string.
+ * Both LEDGER_LOCKED and LEDGER_WRONG_APP indicate the device needs unlocking.
+ */
+export const HARDWARE_CONNECT_LEDGER_LOCKED_MESSAGES = [
+  HardwareConnectLegacyErrorMessage.LedgerLocked,
+  HardwareConnectLegacyErrorMessage.LedgerWrongApp,
+] as const satisfies readonly HardwareConnectLegacyErrorMessage[];
+
+/**
+ * Substring that marks timeout errors in legacy connectHardware messages.
+ * Used when bridges do not surface ErrorCode.ConnectionTimeout from the SDK.
+ */
+export const HARDWARE_CONNECT_TIMEOUT_MESSAGE_SUBSTRING = 'timeout';
+
 /** Trezor SDK error code when Trezor Suite Desktop is unavailable (Firefox MV2). */
 export const TREZOR_DESKTOP_CONNECTION_MISSING_CODE =
   'Desktop_ConnectionMissing';

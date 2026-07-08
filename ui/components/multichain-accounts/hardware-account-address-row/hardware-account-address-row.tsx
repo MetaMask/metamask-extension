@@ -16,8 +16,9 @@ import type { HardwareAccountAddressRowProps } from './hardware-account-address-
 
 /**
  * Address row for a hardware wallet account card.
- * @param options0
- * @param options0.address
+ *
+ * @param options - Component props.
+ * @param options.address - Address data to display in the row.
  */
 export const HardwareAccountAddressRow = ({
   address,
@@ -74,13 +75,16 @@ export const HardwareAccountAddressRow = ({
           {truncatedAddress}
         </Text>
       </Box>
-      <Text
-        variant={TextVariant.BodyMd}
-        fontWeight={FontWeight.Medium}
-        className="shrink-0 text-right"
-      >
-        {address.balance}
-      </Text>
+      {address.balance ? (
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          className="shrink-0 text-right"
+          data-testid="hardware-account-address-row-balance"
+        >
+          {address.balance}
+        </Text>
+      ) : null}
     </Box>
   );
 };

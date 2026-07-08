@@ -26,16 +26,31 @@ const renderCard = (props: Partial<HardwareAccountCardProps> = {}) => {
 
 describe('HardwareAccountCard', () => {
   describe('rendering', () => {
-    it('renders account name, total balance, and address rows', () => {
+    it('renders account name and address rows', () => {
       renderCard();
 
       expect(screen.getByText('Account 1')).toBeInTheDocument();
       expect(
-        screen.getByTestId('hardware-account-card-total-balance'),
-      ).toHaveTextContent('$120.00');
-      expect(
         screen.getAllByTestId('hardware-account-address-row'),
       ).toHaveLength(1);
+    });
+
+    it('renders total balance when totalBalance is provided', () => {
+      renderCard();
+
+      expect(
+        screen.getByTestId('hardware-account-card-total-balance'),
+      ).toHaveTextContent('$120.00');
+    });
+
+    it('hides total balance when totalBalance is not provided', () => {
+      renderCard({
+        account: createHardwareWalletAccount({ totalBalance: undefined }),
+      });
+
+      expect(
+        screen.queryByTestId('hardware-account-card-total-balance'),
+      ).not.toBeInTheDocument();
     });
 
     it('marks the card as selected when isSelected is true', () => {
