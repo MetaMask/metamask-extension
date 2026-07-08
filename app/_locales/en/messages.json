@@ -1643,10 +1643,6 @@
   "assetChartNoHistoricalPrices": {
     "message": "We could not fetch any historical data"
   },
-  "assetDeactivate": {
-    "message": "Remove",
-    "description": "Button label to deactivate an asset."
-  },
   "assetInactive": {
     "message": "Inactive",
     "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
