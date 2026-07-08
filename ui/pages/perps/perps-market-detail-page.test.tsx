@@ -485,6 +485,38 @@ describe('PerpsMarketDetailPage', () => {
       ).toHaveTextContent('••••••');
     });
 
+    it('masks entry price, liquidation price, funding payments, and auto close TP/SL when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(
+        screen.getByTestId('perps-position-entry-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-liquidation-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-funding-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-auto-close-tp-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-auto-close-sl-value'),
+      ).toHaveTextContent('••••••');
+    });
+
     it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
       mockUseLocation.mockReturnValue({
         pathname: '/perps/market/ETH',

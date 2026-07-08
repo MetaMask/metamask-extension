@@ -1487,28 +1487,32 @@ const PerpsMarketDetailPage = () => {
                     >
                       TP{' '}
                     </Text>
-                    <Text
+                    <SensitiveText
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
+                      isHidden={privacyMode}
+                      data-testid="perps-auto-close-tp-value"
                     >
                       {effectiveTakeProfitPrice
                         ? formatPerpsFiatUniversal(effectiveTakeProfitPrice)
                         : '-'}
-                    </Text>
+                    </SensitiveText>
                     <Text
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
                       , SL{' '}
                     </Text>
-                    <Text
+                    <SensitiveText
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
+                      isHidden={privacyMode}
+                      data-testid="perps-auto-close-sl-value"
                     >
                       {effectiveStopLossPrice
                         ? formatPerpsFiatUniversal(effectiveStopLossPrice)
                         : '-'}
-                    </Text>
+                    </SensitiveText>
                   </Box>
                 </Box>
                 <Icon
@@ -1571,13 +1575,14 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsEntryPrice')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-entry-value"
                   >
                     {formatPerpsFiatUniversal(position.entryPrice)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Liquidation Price Row */}
@@ -1593,13 +1598,14 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsLiquidationPrice')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-liquidation-value"
                   >
                     {formatPerpsLiquidationPrice(position.liquidationPrice)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Funding Payments Row */}
@@ -1615,9 +1621,10 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsFundingPayments')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-funding-value"
                   >
                     {(() => {
@@ -1635,7 +1642,7 @@ const PerpsMarketDetailPage = () => {
                         { ranges: PRICE_RANGES_MINIMAL_VIEW },
                       )}`;
                     })()}
-                  </Text>
+                  </SensitiveText>
                 </Box>
               </Box>
             </Box>
