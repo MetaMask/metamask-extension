@@ -869,7 +869,7 @@ class Driver {
         this.driver.wait(until.elementIsVisible(elements[0]), timeout),
         this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
       ]);
-      await elements[0].click();
+      await this.clickElement(rawLocator);
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
