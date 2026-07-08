@@ -10,7 +10,7 @@ const genericToastLabels: Record<ToastStatus, string> = {
   failed: 'transactionFailed',
 };
 
-// Add support for new activity types by adding a case here
+// Add per-type toast content here
 function useGetToastContent(
   status: ToastStatus,
   item?: ActivityListItem,

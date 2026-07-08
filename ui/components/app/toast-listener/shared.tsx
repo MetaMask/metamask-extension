@@ -4,7 +4,7 @@ import { useToastLabel } from './useToastLabel';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
-type Props = {
+type ToastContentOptions = {
   title?: string;
   description?: string;
   dataTestId?: string;
@@ -17,7 +17,7 @@ export const ToastContent = ({
   description,
   dataTestId,
   transactionId,
-}: { status: ToastStatus } & Props) => {
+}: { status: ToastStatus } & ToastContentOptions) => {
   const { title: derivedTitle, description: derivedDescription } =
     useToastLabel(status, transactionId);
 
@@ -30,16 +30,16 @@ export const ToastContent = ({
   );
 };
 
-export function showPendingToast(id: string, props?: Props) {
-  toast.loading(<ToastContent status="pending" {...props} />, { id });
+export function showPendingToast(id: string, options?: ToastContentOptions) {
+  toast.loading(<ToastContent status="pending" {...options} />, { id });
 }
 
-export function showSuccessToast(id: string, props?: Props) {
-  toast.success(<ToastContent status="success" {...props} />, { id });
+export function showSuccessToast(id: string, options?: ToastContentOptions) {
+  toast.success(<ToastContent status="success" {...options} />, { id });
 }
 
-export function showFailedToast(id: string, props?: Props) {
-  toast.error(<ToastContent status="failed" {...props} />, { id });
+export function showFailedToast(id: string, options?: ToastContentOptions) {
+  toast.error(<ToastContent status="failed" {...options} />, { id });
 }
 
 export function dismissToast(id: string) {
