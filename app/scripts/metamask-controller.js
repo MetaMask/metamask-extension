@@ -3326,6 +3326,8 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:setLocked',
       ),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
+      createNewVaultAndGetSeedPhrase:
+        this.createNewVaultAndGetSeedPhrase.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.controllerMessenger.call.bind(
@@ -4718,51 +4720,76 @@ export default class MetamaskController extends EventEmitter {
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
-    const isWalletResetInProgress =
-      this.appStateController.getIsWalletResetInProgress();
     try {
-      if (isWalletResetInProgress) {
-        // clear permissions
-        this.permissionController.clearState();
-
-        // Clear snap state
-        await this.snapController.clearState();
-
-        // Clear account tree state
-        this.accountTreeController.clearState();
-
-        // Currently, the account-order-controller is not in sync with
-        // the accounts-controller. To properly persist the hidden state
-        // of accounts, we should add a new flag to the account struct
-        // to indicate if it is hidden or not.
-        // TODO: Update @metamask/accounts-controller to support this.
-        this.accountOrderController.updateHiddenAccountsList([]);
-
-        this.txController.clearUnapprovedTransactions();
-      }
-
-      await this.multichainAccountService.createMultichainAccountWallet({
-        type: 'create',
-        password,
-      });
-
-      // set is resetting wallet in progress to false, after new vault and keychain are created
-      this.appStateController.setIsWalletResetInProgress(false);
-
-      const primaryKeyring = this.keyringController.state.keyrings[0];
-
-      // Once we have our first HD keyring available, we re-create the internal list of
-      // accounts (they should be up-to-date already, but we still run `updateAccounts` as
-      // there are some account migration happening in that function).
-      await this.accountsController.updateAccounts();
-
-      // Then we can build the initial tree.
-      this.accountTreeController.reinit();
-
-      return primaryKeyring;
+      return await this._createNewVaultAndKeychainUnderLock(password);
     } finally {
       releaseLock();
     }
+  }
+
+  /**
+   * Creates a new vault and returns the seed phrase in a single atomic operation.
+   * Holding the vault mutex through seed export avoids races where concurrent
+   * keyring mutations leave no HD keyring available for export.
+   *
+   * @param {string} password
+   * @returns {Promise<Buffer>} The seed phrase encoded as UTF-8 bytes.
+   */
+  async createNewVaultAndGetSeedPhrase(password) {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      await this._createNewVaultAndKeychainUnderLock(password);
+      return await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:getSeedPhrase',
+        password,
+      );
+    } finally {
+      releaseLock();
+    }
+  }
+
+  async _createNewVaultAndKeychainUnderLock(password) {
+    const isWalletResetInProgress =
+      this.appStateController.getIsWalletResetInProgress();
+    if (isWalletResetInProgress) {
+      // clear permissions
+      this.permissionController.clearState();
+
+      // Clear snap state
+      await this.snapController.clearState();
+
+      // Clear account tree state
+      this.accountTreeController.clearState();
+
+      // Currently, the account-order-controller is not in sync with
+      // the accounts-controller. To properly persist the hidden state
+      // of accounts, we should add a new flag to the account struct
+      // to indicate if it is hidden or not.
+      // TODO: Update @metamask/accounts-controller to support this.
+      this.accountOrderController.updateHiddenAccountsList([]);
+
+      this.txController.clearUnapprovedTransactions();
+    }
+
+    await this.multichainAccountService.createMultichainAccountWallet({
+      type: 'create',
+      password,
+    });
+
+    // set is resetting wallet in progress to false, after new vault and keychain are created
+    this.appStateController.setIsWalletResetInProgress(false);
+
+    const primaryKeyring = this.keyringController.state.keyrings[0];
+
+    // Once we have our first HD keyring available, we re-create the internal list of
+    // accounts (they should be up-to-date already, but we still run `updateAccounts` as
+    // there are some account migration happening in that function).
+    await this.accountsController.updateAccounts();
+
+    // Then we can build the initial tree.
+    this.accountTreeController.reinit();
+
+    return primaryKeyring;
   }
 
   /**

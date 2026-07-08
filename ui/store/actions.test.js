@@ -823,6 +823,41 @@ describe('Actions', () => {
     });
   });
 
+  describe('#createNewVaultAndGetSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createNewVaultAndGetSeedPhrase in a single background request', async () => {
+      const store = mockStore();
+      const mockSeedPhrase = 'test seed phrase';
+      const mockEncodedSeedPhrase = Array.from(
+        Buffer.from(mockSeedPhrase).values(),
+      );
+
+      const createNewVaultAndGetSeedPhraseStub = sinon
+        .stub()
+        .resolves(mockEncodedSeedPhrase);
+
+      background.getApi.returns({
+        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const seedPhrase = await store.dispatch(
+        actions.createNewVaultAndGetSeedPhrase('password'),
+      );
+
+      expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndGetSeedPhraseStub.calledWith('password')).toBe(
+        true,
+      );
+      expect(seedPhrase).toStrictEqual(mockSeedPhrase);
+    });
+  });
+
   describe('#createNewVaultAndRestore', () => {
     afterEach(() => {
       sinon.restore();

@@ -1119,8 +1119,11 @@ export function createNewVaultAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await createNewVault(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const encodedSeedPhrase = await submitRequestToBackground<string>(
+        'createNewVaultAndGetSeedPhrase',
+        [password],
+      );
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
 
       // force update the state after creating the vault
       await forceUpdateMetamaskState(dispatch);
