@@ -1,10 +1,5 @@
 {
   "resources": {
-    "$root$": {
-      "globals": {
-        "fetch": true
-      }
-    },
     "@ethersproject/wallet>@ethersproject/random": {
       "globals": {
         "crypto": true
@@ -49,8 +44,7 @@
         "navigator.language": true,
         "navigator.userAgentData": true,
         "crypto": true,
-        "onerror": "write",
-        "onunhandledrejection": "write",
+        "onunhandledrejection": true,
         "addEventListener": true,
         "PerformanceObserver": true,
         "chrome.app": true,
@@ -146,10 +140,6 @@
       }
     },
     "@metamask/network-controller": {
-      "globals": {
-        "btoa": true,
-        "fetch": true
-      },
       "packages": {
         "cockatiel": true
       }
