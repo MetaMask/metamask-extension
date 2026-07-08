@@ -126,12 +126,14 @@ describe('PerpsOrderBook', () => {
       renderOrderBook({ marketPrice: 73776 });
 
       // Grouping defaults to 10 for a ~73.7k asset, so raw prices are bucketed
-      // (73775 -> 73770 for bids, 73777 -> 73780 for asks) and formatted.
-      const topAsk = screen.getByTestId('perps-order-book-ask-0');
+      // (73775 -> 73770 for bids, 73777 -> 73780 for asks) and formatted. Rows
+      // are keyed by their bucketed price, so the highest ask (73788 -> 73790)
+      // renders at the top of the ladder.
+      const topAsk = screen.getByTestId('perps-order-book-ask-73790');
       expect(topAsk).toHaveTextContent('73,790');
       expect(topAsk).toHaveTextContent('$');
 
-      const topBid = screen.getByTestId('perps-order-book-bid-0');
+      const topBid = screen.getByTestId('perps-order-book-bid-73770');
       expect(topBid).toHaveTextContent('73,770');
     });
 

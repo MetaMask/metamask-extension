@@ -1,9 +1,11 @@
 import type { OrderBookData, OrderBookLevel } from '@metamask/perps-controller';
+import { PERFORMANCE_CONFIG } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPositionSize,
   formatLargeNumber,
   PRICE_RANGES_UNIVERSAL,
+  PERPS_FALLBACK_DATA_DISPLAY,
 } from '../../../../../shared/lib/perps-formatters';
 import type {
   OrderBookListCurrency,
@@ -11,12 +13,12 @@ import type {
 } from './order-book.types';
 
 /**
- * Maximum number of price levels rendered per side. Mirrors the shared
- * order-book stream depth (`PERFORMANCE_CONFIG.SlippageEstimateBookLevels`, 10)
- * that feeds this component, so we never advertise more rows than the source
- * can provide.
+ * Maximum number of price levels rendered per side. Reuses the shared
+ * order-book stream depth that feeds this component so the display depth can
+ * never drift from the subscribed book depth.
  */
-export const ORDER_BOOK_DISPLAY_LEVELS = 10;
+export const ORDER_BOOK_DISPLAY_LEVELS =
+  PERFORMANCE_CONFIG.SlippageEstimateBookLevels;
 
 /**
  * Grouping-ladder shape (a "1-2-5 per decade" scale anchored to the price
@@ -39,8 +41,8 @@ const USD_COMPACT_THOUSANDS_THRESHOLD = 10_000;
 /** Basis points per percent, used for the spread readout. */
 const BPS_PER_PERCENT = 100;
 
-/** Shown when a value has not loaded / cannot be parsed (mirrors mobile `FallbackDataDisplay`). */
-const ORDER_BOOK_FALLBACK_DISPLAY = '--';
+/** Shown when a value has not loaded / cannot be parsed. */
+const ORDER_BOOK_FALLBACK_DISPLAY = PERPS_FALLBACK_DATA_DISPLAY;
 
 /** Draggable divider width bounds (percentage of the body), used by the page. */
 export const ORDER_BOOK_DEFAULT_WIDTH_PCT = 33;
@@ -64,7 +66,15 @@ export function calculateGroupingOptions(midPrice: number): number[] {
   const magnitude = Math.floor(Math.log10(midPrice));
   const base = 10 ** (magnitude - GROUPING_DECADE_OFFSET);
 
-  return GROUPING_MULTIPLIERS.map((multiplier) => base * multiplier);
+  // Clamp every increment to the max price precision and de-duplicate: for very
+  // low-priced assets the raw ladder can produce increments below 1e-6 that
+  // would collapse to 0 once rounded to the price cap.
+  const options = GROUPING_MULTIPLIERS.map((multiplier) =>
+    Number((base * multiplier).toFixed(MAX_PRICE_DECIMALS)),
+  ).filter((value) => value > 0);
+  const deduped = Array.from(new Set(options));
+
+  return deduped.length ? deduped : [10 ** -MAX_PRICE_DECIMALS];
 }
 
 /**
@@ -77,8 +87,14 @@ export function formatGroupingLabel(value: number): string {
   if (value >= 1) {
     return value.toLocaleString('en-US');
   }
-  const decimals = Math.max(0, Math.ceil(-Math.log10(value)));
-  return value.toFixed(decimals);
+  const decimals = Math.min(
+    MAX_PRICE_DECIMALS,
+    Math.max(0, Math.ceil(-Math.log10(value))),
+  );
+  return value.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
 }
 
 /**

@@ -16,6 +16,7 @@ import type { OrderBookLevel } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
+  PERPS_FALLBACK_PRICE_DISPLAY,
 } from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
@@ -82,20 +83,19 @@ const OrderBookRow = ({
           opacity: DEPTH_BAR_OPACITY,
         }}
       />
-      <Text
-        variant={TextVariant.BodySm}
-        color={isBid ? TextColor.SuccessDefault : TextColor.ErrorDefault}
-        className="relative z-10"
-      >
-        {formatPerpsFiat(level.price, { ranges: PRICE_RANGES_UNIVERSAL })}
-      </Text>
-      <Text
-        variant={TextVariant.BodySm}
-        color={TextColor.TextDefault}
-        className="relative z-10"
-      >
-        {formatColumnValue(level, currency, metric, szDecimals)}
-      </Text>
+      <Box className="relative z-10" data-testid={`${testId}-price`}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={isBid ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+        >
+          {formatPerpsFiat(level.price, { ranges: PRICE_RANGES_UNIVERSAL })}
+        </Text>
+      </Box>
+      <Box className="relative z-10" data-testid={`${testId}-value`}>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+          {formatColumnValue(level, currency, metric, szDecimals)}
+        </Text>
+      </Box>
     </Box>
   );
 };
@@ -145,8 +145,10 @@ export const PerpsOrderBook = ({
 
   // Single source of truth for the mid price: prefer the order book's own mid
   // (so the displayed mid and the grouping ladder never drift), falling back to
-  // the page's market price before the first order-book update arrives.
-  const midPriceValue = useMemo(() => {
+  // the page's market price before the first order-book update arrives. Null
+  // when neither is available, so the UI shows the unavailable-price fallback
+  // instead of a misleading "$0".
+  const midPriceValue = useMemo<number | null>(() => {
     const orderBookMid = Number.parseFloat(orderBook?.midPrice ?? '');
     if (Number.isFinite(orderBookMid) && orderBookMid > 0) {
       return orderBookMid;
@@ -154,11 +156,11 @@ export const PerpsOrderBook = ({
     if (Number.isFinite(marketPrice) && (marketPrice as number) > 0) {
       return marketPrice as number;
     }
-    return 0;
+    return null;
   }, [orderBook?.midPrice, marketPrice]);
 
   const groupingOptions = useMemo(
-    () => calculateGroupingOptions(midPriceValue),
+    () => calculateGroupingOptions(midPriceValue ?? 0),
     [midPriceValue],
   );
 
@@ -294,7 +296,7 @@ export const PerpsOrderBook = ({
         >
           {/* Asks (sell) */}
           <Box flexDirection={BoxFlexDirection.Column}>
-            {reversedAsks.map((level, index) => (
+            {reversedAsks.map((level) => (
               <OrderBookRow
                 key={`ask-${level.price}`}
                 level={level}
@@ -303,7 +305,7 @@ export const PerpsOrderBook = ({
                 metric={metric}
                 maxTotal={grouped.maxTotal}
                 szDecimals={szDecimals}
-                testId={`${dataTestId}-ask-${index}`}
+                testId={`${dataTestId}-ask-${level.price}`}
               />
             ))}
           </Box>
@@ -322,11 +324,14 @@ export const PerpsOrderBook = ({
             <Text
               variant={TextVariant.HeadingMd}
               fontWeight={FontWeight.Bold}
-              color={TextColor.SuccessDefault}
+              color={TextColor.TextDefault}
+              data-testid={`${dataTestId}-mid-price`}
             >
-              {formatPerpsFiat(midPriceValue, {
-                ranges: PRICE_RANGES_UNIVERSAL,
-              })}
+              {midPriceValue === null
+                ? PERPS_FALLBACK_PRICE_DISPLAY
+                : formatPerpsFiat(midPriceValue, {
+                    ranges: PRICE_RANGES_UNIVERSAL,
+                  })}
             </Text>
             {spreadDisplay && (
               <Text
@@ -340,7 +345,7 @@ export const PerpsOrderBook = ({
 
           {/* Bids (buy) */}
           <Box flexDirection={BoxFlexDirection.Column}>
-            {grouped.bids.map((level, index) => (
+            {grouped.bids.map((level) => (
               <OrderBookRow
                 key={`bid-${level.price}`}
                 level={level}
@@ -349,7 +354,7 @@ export const PerpsOrderBook = ({
                 metric={metric}
                 maxTotal={grouped.maxTotal}
                 szDecimals={szDecimals}
-                testId={`${dataTestId}-bid-${index}`}
+                testId={`${dataTestId}-bid-${level.price}`}
               />
             ))}
           </Box>
@@ -366,6 +371,11 @@ export const PerpsOrderBook = ({
           className="shrink-0"
         >
           <Box
+            role="img"
+            aria-label={t('perpsOrderBookDepthRatio', [
+              String(depthRatio.buyPercent),
+              String(depthRatio.sellPercent),
+            ])}
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             className="h-6 w-full overflow-hidden rounded-full"

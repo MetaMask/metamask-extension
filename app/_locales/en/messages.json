@@ -7237,6 +7237,10 @@
   "perpsOrderBookConfigTitle": {
     "message": "Listed by & Group by"
   },
+  "perpsOrderBookDepthRatio": {
+    "message": "Buy $1%, sell $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
+  },
   "perpsOrderBookGroupBy": {
     "message": "Group by"
   },

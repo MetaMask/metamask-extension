@@ -43,9 +43,17 @@ const FUNDING_RATE_CONFIG = {
 const PERPS_CONSTANTS = {
   /** Display when price data is unavailable. */
   FallbackPriceDisplay: '$---',
+  /** Display when non-price data is unavailable. */
+  FallbackDataDisplay: '--',
   /** Display for zero dollar amounts with decimals. */
   ZeroAmountDetailedDisplay: '$0.00',
 } as const;
+
+/** Display when price data is unavailable (mirrors mobile `FallbackPriceDisplay`). */
+export const PERPS_FALLBACK_PRICE_DISPLAY = PERPS_CONSTANTS.FallbackPriceDisplay;
+
+/** Display when non-price data is unavailable (mirrors mobile `FallbackDataDisplay`). */
+export const PERPS_FALLBACK_DATA_DISPLAY = PERPS_CONSTANTS.FallbackDataDisplay;
 
 // ---------------------------------------------------------------------------
 // Module-level Intl.NumberFormat cache (keyed by serialized options).
