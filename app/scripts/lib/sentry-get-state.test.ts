@@ -124,39 +124,6 @@ describe('sentry-get-state', () => {
       });
     });
 
-    it('falls back to persisted state when snapshot state lacks analytics fields', async () => {
-      const getPersistedState = jest.fn().mockResolvedValue({
-        data: {
-          AnalyticsController: {
-            analyticsId: 'persisted-id',
-            optedIn: true,
-          },
-          MetaMetricsController: {
-            completedMetaMetricsOnboarding: true,
-          },
-        },
-      });
-
-      globalThis.stateHooks = {
-        ...globalThis.stateHooks,
-        getSentryState: () => ({
-          ...emptySentrySnapshot(),
-          state: {},
-        }),
-        getPersistedState,
-        getBackupState: async () => ({}),
-      };
-
-      await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: true,
-        optedIn: true,
-        analyticsId: 'persisted-id',
-      });
-      expect(getPersistedState).toHaveBeenCalledWith({
-        reportErrors: false,
-      });
-    });
-
     it('treats missing or malformed persisted state as not opted in', async () => {
       globalThis.stateHooks = {
         ...globalThis.stateHooks,

@@ -10,8 +10,6 @@ import { getAnalyticsState } from './sentry-get-state';
 export function makeTransport(
   options: Parameters<typeof Sentry.makeFetchTransport>[0],
 ) {
-  const fetchFunction = globalThis.fetch.bind(globalThis);
-
   return Sentry.makeFetchTransport(options, async (...args) => {
     const state = await getAnalyticsState();
 
@@ -19,6 +17,6 @@ export function makeTransport(
       throw new Error('Network request skipped as metrics disabled');
     }
 
-    return await fetchFunction(...args);
+    return await fetch(...args);
   });
 }

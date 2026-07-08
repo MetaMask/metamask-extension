@@ -95,9 +95,6 @@ const maskedBackgroundFields = [
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
-  // Not part of these Sentry assertions; the analytics queue may already be
-  // flushed by the time the event captures application state.
-  'AnalyticsController.eventQueue',
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.appActiveTab',
   'AppStateController.currentPopupId',
@@ -119,23 +116,12 @@ const removedBackgroundFields = [
   'PreferencesController.preferences.avatarType',
 ];
 
-const removedSnapRegistryCacheFields = [
-  // Snap registry cache fields depend on whether the initial registry fetch
-  // has completed before the Sentry capture.
-  'SnapRegistryController.database',
-  'SnapRegistryController.lastUpdated',
-  'SnapRegistryController.signature',
-];
-
 const ignoredConsoleErrors = [
   // The UI logs the expected error
   "Cannot read properties of undefined (reading 'version')",
 ];
 
-const removedUiFields = [
-  ...removedBackgroundFields,
-  ...removedSnapRegistryCacheFields,
-].map(backgroundToUiField);
+const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
 
 const WAIT_FOR_SENTRY_MS = 10000;
 
@@ -153,10 +139,7 @@ function transformBackgroundState(
       set(clonedData, field, typeof get(clonedData, field));
     }
   }
-  for (const field of [
-    ...removedBackgroundFields,
-    ...removedSnapRegistryCacheFields,
-  ]) {
+  for (const field of removedBackgroundFields) {
     if (has(clonedData, field)) {
       unset(clonedData, field);
     }
@@ -262,7 +245,7 @@ function getMissingProperties(complete: object, object: object): object {
 describe('Sentry errors', function () {
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
-      ? "Cannot read properties of undefined (reading 'version')"
+      ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';
   async function mockSentryMigratorError(mockServer: Mockttp) {
     return await mockServer
@@ -529,7 +512,10 @@ describe('Sentry errors', function () {
             '\\$&',
           );
           const migrationErrorRegex = new RegExp(escapedMigrationError, 'u');
-          assert.match(JSON.stringify(mockJsonBody), migrationErrorRegex);
+          assert.match(
+            JSON.stringify(mockJsonBody.exception),
+            migrationErrorRegex,
+          );
         },
       );
     });
