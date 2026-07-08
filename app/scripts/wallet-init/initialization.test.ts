@@ -1,5 +1,4 @@
 import { Wallet } from '@metamask/wallet';
-import { RampsEnvironment } from '@metamask/ramps-controller';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { initializeWallet } from './initialization';
@@ -34,7 +33,7 @@ jest.mock('./instance-options/storage-service', () => ({
   getStorageServiceInstanceOptions: jest.fn(() => 'storage-options'),
 }));
 jest.mock('./instance-options/ramps-environment', () => ({
-  getRampsEnvironment: jest.fn(() => RampsEnvironment.Staging),
+  getRampsEnvironment: jest.fn(() => 'staging'),
 }));
 
 const MockWallet = jest.mocked(Wallet);
@@ -87,7 +86,7 @@ describe('initializeWallet', () => {
         rampsController: {},
         rampsService: {
           context: 'extension',
-          environment: RampsEnvironment.Staging,
+          environment: 'staging',
           fetch: expect.any(Function),
         },
       },
