@@ -109,6 +109,7 @@ class NFTDetailsPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
+    console.log('Check if NFT details page is loaded');
     try {
       await this.driver.waitForMultipleSelectors([
         this.nftSendButton,
@@ -123,10 +124,12 @@ class NFTDetailsPage {
   }
 
   async clickNFTItemButton() {
+    console.log('Click to NFT item button on NFT details page');
     await this.driver.clickElement(this.nftItemButton);
   }
 
   async clickNFTSendButton() {
+    console.log('Click to send NFT button on NFT details page');
     await this.driver.clickElement(this.nftSendButton);
   }
 
