@@ -437,6 +437,7 @@ import { UserOperationControllerInit } from './messenger-client-init/confirmatio
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
+import { QrSyncControllerInit } from './messenger-client-init/qr-sync-controller-init';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
@@ -725,6 +726,7 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
+      QrSyncController: QrSyncControllerInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
       ConfigRegistryController: ConfigRegistryControllerInit,
@@ -867,6 +869,7 @@ export default class MetamaskController extends EventEmitter {
     this.announcementController = messengerClientsByName.AnnouncementController;
     this.accountOrderController = messengerClientsByName.AccountOrderController;
     this.rewardsController = messengerClientsByName.RewardsController;
+    this.qrSyncController = messengerClientsByName.QrSyncController;
     this.claimsController = messengerClientsByName.ClaimsController;
     this.claimsService = messengerClientsByName.ClaimsService;
     this.profileMetricsController =
@@ -1837,27 +1840,6 @@ export default class MetamaskController extends EventEmitter {
         console.error(err);
       }
     });
-  }
-
-  trackInsightSnapView(snapId) {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.InsightSnapViewed)
-        .addCategory(MetaMetricsEventCategory.Snaps)
-        .addProperties({
-          snap_id: snapId,
-        })
-        .build(),
-    );
-  }
-
-  /**
-   * Get snap metadata from the current state without refreshing the registry database.
-   *
-   * @param {string} snapId - A snap id.
-   * @returns The available metadata for the snap, if any.
-   */
-  _getSnapMetadata(snapId) {
-    return this.snapsRegistry.state.database?.verifiedSnaps?.[snapId]?.metadata;
   }
 
   /**
@@ -2988,7 +2970,10 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      toggleExternalServices: this.toggleExternalServices.bind(this),
+      toggleExternalServices: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:toggleExternalServices',
+      ),
       addToken: async ({
         address,
         symbol,
@@ -3113,11 +3098,10 @@ export default class MetamaskController extends EventEmitter {
         'MultichainAccountService:createNextMultichainAccountGroup',
       ),
 
-      alignMultichainWallets: async () => {
-        if (this.multichainAccountService) {
-          await this.multichainAccountService.alignWallets();
-        }
-      },
+      alignMultichainWallets: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:alignWallets',
+      ),
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
@@ -3483,11 +3467,17 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'NetworkOrderController:updateNetworksList',
       ),
-      updateAccountsList: this.updateAccountsList.bind(this),
+      updateAccountsList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountOrderController:updateAccountsList',
+      ),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
       setEnabledAllPopularNetworks:
         this.setEnabledAllPopularNetworks.bind(this),
-      updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
+      updateHiddenAccountsList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountOrderController:updateHiddenAccountsList',
+      ),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
 
@@ -3620,7 +3610,6 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-      trackInsightSnapView: this.trackInsightSnapView.bind(this),
       updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
         metaMetricsController,
       ),
@@ -3919,7 +3908,6 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Other
-      endTrace,
       isRelaySupported,
       isSendBundleSupported,
       openUpdateTabAndReload: () =>
@@ -7459,6 +7447,12 @@ export default class MetamaskController extends EventEmitter {
           getVersion: () => {
             return process.env.METAMASK_VERSION;
           },
+          getMessenger: ({ actions, events }) =>
+            this.controllerMessenger.buildChild({
+              namespace: origin,
+              actions,
+              events,
+            }),
           trackError: (error) => {
             // `captureException` imported from `@sentry/browser` does not seem to
             // work in E2E tests. This is a workaround which works in both E2E
@@ -8264,31 +8258,6 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  toggleExternalServices(useExternal) {
-    this.preferencesController.toggleExternalServices(useExternal);
-    const subscriptionState = this.controllerMessenger.call(
-      'SubscriptionController:getState',
-    );
-    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
-      subscriptionState.subscriptions,
-    );
-    if (useExternal) {
-      this.tokenDetectionController.enable();
-      this.gasFeeController.enableNonRPCGasFeeApis();
-      if (hasActiveShieldSubscription) {
-        this.shieldController.start();
-      }
-    } else {
-      this.tokenDetectionController.disable();
-      this.gasFeeController.disableNonRPCGasFeeApis();
-      // stop polling for the subscriptions if external services are disabled
-      this.subscriptionController.stopAllPolling();
-      if (hasActiveShieldSubscription) {
-        this.shieldController.stop();
-      }
-    }
-  }
-
   //=============================================================================
   // CONFIG
   //=============================================================================
@@ -8482,22 +8451,6 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  /**
-   * Updates the pinned accounts list
-   *
-   * @deprecated This method is deprecated and will be removed in the future.
-   * use AccountTreeController.setAccountGroupPinned instead
-   * @param {AccountAddress[]} pinnedAccountList - The list of accounts to update in the state.
-   */
-  updateAccountsList = (pinnedAccountList) => {
-    try {
-      this.accountOrderController.updateAccountsList(pinnedAccountList);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  };
-
   setEnabledNetworks = async (chainId) => {
     try {
       this.networkEnablementController.enableNetwork(chainId);
@@ -8518,22 +8471,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this.lookupSelectedNetworks();
-  };
-
-  /**
-   * Updates the hidden accounts list
-   *
-   * @deprecated This method is deprecated and will be removed in the future.
-   * use AccountTreeController.setAccountGroupHidden instead
-   * @param {AccountAddress[]} hiddenAccountList - The list of accounts to update in the state.
-   */
-  updateHiddenAccountsList = (hiddenAccountList) => {
-    try {
-      this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
   };
 
   /**

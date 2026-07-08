@@ -1,6 +1,8 @@
 import { noop } from 'lodash';
-import { getAnalyticsMessenger } from '../../controllers/analytics';
-import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
+import {
+  getAnalyticsControllerInitMessenger,
+  getAnalyticsControllerMessenger,
+} from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -141,6 +143,7 @@ import {
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
+import { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
 import {
   getRewardsControllerInitMessenger,
   getRewardsControllerMessenger,
@@ -259,6 +262,7 @@ export {
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
+export { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
 export type {
   PermissionControllerMessenger,
   PermissionControllerInitMessenger,
@@ -351,7 +355,7 @@ export const MESSENGER_FACTORIES = {
   },
   AnalyticsController: {
     getMessenger: getAnalyticsControllerMessenger,
-    getInitMessenger: getAnalyticsMessenger,
+    getInitMessenger: getAnalyticsControllerInitMessenger,
   },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,
@@ -623,6 +627,10 @@ export const MESSENGER_FACTORIES = {
   },
   PreferencesController: {
     getMessenger: getPreferencesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  QrSyncController: {
+    getMessenger: getQrSyncControllerMessenger,
     getInitMessenger: noop,
   },
   TokenBalancesController: {

@@ -103,7 +103,6 @@ function buildDefaultProps(overrides: Record<string, unknown> = {}) {
     navigate: jest.fn(),
     notificationClosing: false,
     attemptCloseNotificationPopup: jest.fn(),
-    fetchBuyableChains: jest.fn(),
     lookupSelectedNetworks: jest.fn(),
     ...overrides,
   };

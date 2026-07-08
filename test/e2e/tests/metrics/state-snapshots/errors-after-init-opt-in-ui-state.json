@@ -17,7 +17,6 @@
     "gasLoadingAnimationIsShowing": "boolean",
     "homeDeepLinkQrCode": null,
     "importNftsModal": "object",
-    "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
@@ -301,6 +300,7 @@
       "featureNotificationsEnabled": "boolean",
       "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
+      "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
@@ -442,7 +442,6 @@
     "withdrawalRequests": "object"
   },
   "perpsTutorial": "object",
-  "ramps": "object",
   "rewards": "object",
   "smartAccounts": "object",
   "swaps": "object",

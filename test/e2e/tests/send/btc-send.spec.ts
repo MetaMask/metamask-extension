@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -21,6 +20,7 @@ import {
   mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
+import { buildBtcSwapFixtures } from '../btc/unified-btc-assets';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
@@ -38,15 +38,22 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
 }
 
 describe('BTC Account - Send', function (this: Suite) {
+  this.timeout(300000);
+
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
+
+  const btcSendFixtureOptions = {
+    fixtures: buildBtcSwapFixtures(),
+    localNodeOptions: [{ type: 'none' as const }],
+    dappOptions: { numberOfTestDapps: 1 },
+  };
 
   it('fields validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
@@ -77,9 +84,8 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
@@ -113,9 +119,8 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
