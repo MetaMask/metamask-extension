@@ -13,9 +13,15 @@ export type PerpsOrderBookProps = {
    */
   isOpen: boolean;
   /**
-   * Current mid/market price, used to derive sensible price-grouping options.
+   * Current mid/market price, used to derive sensible price-grouping options
+   * when the order book has not yet produced its own mid price.
    */
   marketPrice?: number;
+  /**
+   * Asset-specific base-size decimal precision (Hyperliquid `szDecimals`), used
+   * to format base-denominated amounts consistently with the rest of the UI.
+   */
+  szDecimals?: number;
   /** Test id for the container. */
   'data-testid'?: string;
 };
@@ -23,6 +29,8 @@ export type PerpsOrderBookProps = {
 export type PerpsOrderBookConfigModalProps = {
   /** Whether the modal is open. */
   isOpen: boolean;
+  /** DOM id for the dialog, referenced by the trigger's `aria-controls`. */
+  id?: string;
   /** Display symbol for the base currency toggle (e.g. 'BTC'). */
   baseSymbol: string;
   /** Currently applied currency. */

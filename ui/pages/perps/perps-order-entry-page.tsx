@@ -140,8 +140,16 @@ import { calculatePositionSize } from '../../components/app/perps/order-entry/or
 import {
   PerpsOrderBook,
   CandlesticksIcon,
+  ORDER_BOOK_DEFAULT_WIDTH_PCT,
+  ORDER_BOOK_MIN_WIDTH_PCT,
+  ORDER_BOOK_MAX_WIDTH_PCT,
+  clampOrderBookWidthPct,
+  computeOrderBookWidthPct,
 } from '../../components/app/perps/order-book';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
+
+/** Percentage points the order-book divider moves per arrow-key press. */
+const ORDER_BOOK_RESIZE_STEP_PCT = 2;
 
 const ORDER_MODE_TOAST_KEYS: Record<
   OrderMode,
@@ -271,7 +279,9 @@ const PerpsOrderEntryPage = () => {
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
-  const [orderBookWidthPct, setOrderBookWidthPct] = useState(33);
+  const [orderBookWidthPct, setOrderBookWidthPct] = useState(
+    ORDER_BOOK_DEFAULT_WIDTH_PCT,
+  );
   const [isResizingOrderBook, setIsResizingOrderBook] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
   const orderTypeInteractionSkippedRef = useRef(false);
@@ -997,48 +1007,84 @@ const PerpsOrderEntryPage = () => {
   // Draggable divider between the order form and the order book panel. Width is
   // tracked as a percentage of the body so the split stays proportional when the
   // window is resized. Clamped so neither side collapses.
-  const handleOrderBookResizeStart = useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault();
-      setIsResizingOrderBook(true);
-      const handleMove = (moveEvent: MouseEvent) => {
-        const container = bodyRef.current;
-        if (!container) {
-          return;
-        }
-        const rect = container.getBoundingClientRect();
-        if (rect.width <= 0) {
-          return;
-        }
-        const pct = ((rect.right - moveEvent.clientX) / rect.width) * 100;
-        setOrderBookWidthPct(Math.min(60, Math.max(22, pct)));
-      };
-      const handleUp = () => {
-        setIsResizingOrderBook(false);
-        window.removeEventListener('mousemove', handleMove);
-        window.removeEventListener('mouseup', handleUp);
-      };
-      window.addEventListener('mousemove', handleMove);
-      window.addEventListener('mouseup', handleUp);
+  const handleOrderBookResizeStart = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+    setIsResizingOrderBook(true);
+  }, []);
+
+  // Window listeners are driven by the resizing state so they are always
+  // removed on unmount, when resizing stops, or if the mouseup is missed —
+  // attaching them imperatively inside mousedown risks leaking the listeners.
+  useEffect(() => {
+    if (!isResizingOrderBook) {
+      return undefined;
+    }
+    const handleMove = (moveEvent: MouseEvent) => {
+      const container = bodyRef.current;
+      if (!container) {
+        return;
+      }
+      const rect = container.getBoundingClientRect();
+      setOrderBookWidthPct(
+        computeOrderBookWidthPct(rect.right, rect.width, moveEvent.clientX),
+      );
+    };
+    const handleUp = () => setIsResizingOrderBook(false);
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleUp);
+    };
+  }, [isResizingOrderBook]);
+
+  // Keyboard resizing for the divider: arrows nudge the split, Home/End jump to
+  // the bounds. The order book is right-aligned, so ArrowLeft widens it.
+  const handleOrderBookResizeKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      switch (event.key) {
+        case 'ArrowLeft':
+          event.preventDefault();
+          setOrderBookWidthPct((width) =>
+            clampOrderBookWidthPct(width + ORDER_BOOK_RESIZE_STEP_PCT),
+          );
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          setOrderBookWidthPct((width) =>
+            clampOrderBookWidthPct(width - ORDER_BOOK_RESIZE_STEP_PCT),
+          );
+          break;
+        case 'Home':
+          event.preventDefault();
+          setOrderBookWidthPct(ORDER_BOOK_MAX_WIDTH_PCT);
+          break;
+        case 'End':
+          event.preventDefault();
+          setOrderBookWidthPct(ORDER_BOOK_MIN_WIDTH_PCT);
+          break;
+        default:
+          break;
+      }
     },
     [],
   );
 
   const handleToggleOrderBook = useCallback(() => {
-    setIsOrderBookOpen((prev) => {
-      const next = !prev;
-      if (next) {
-        track(MetaMetricsEventName.PerpsUiInteraction, {
-          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-            PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
-          ...(decodedSymbol && {
-            [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-          }),
-        });
-      }
-      return next;
-    });
-  }, [track, decodedSymbol]);
+    const next = !isOrderBookOpen;
+    setIsOrderBookOpen(next);
+    // Tracking is a side effect and must run outside the state updater (updaters
+    // must be pure and may be invoked more than once).
+    if (next) {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+        ...(decodedSymbol && {
+          [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+        }),
+      });
+    }
+  }, [isOrderBookOpen, track, decodedSymbol]);
 
   const handleOrderSubmit = useCallback(async () => {
     if (!isEligible) {
@@ -1880,13 +1926,19 @@ const PerpsOrderEntryPage = () => {
             role="separator"
             aria-orientation="vertical"
             aria-label={t('perpsOrderBookResize')}
+            aria-valuenow={Math.round(orderBookWidthPct)}
+            aria-valuemin={ORDER_BOOK_MIN_WIDTH_PCT}
+            aria-valuemax={ORDER_BOOK_MAX_WIDTH_PCT}
             tabIndex={0}
             onMouseDown={handleOrderBookResizeStart}
+            onKeyDown={handleOrderBookResizeKeyDown}
             className="w-1 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
             data-testid="perps-order-book-resize-handle"
           />
         )}
-        {/* Order book: slides in from the right, resizable via the divider. */}
+        {/* Order book: slides in from the right, resizable via the divider. It
+            is unmounted while collapsed so its focusable controls never sit in
+            a zero-width, hidden panel. */}
         <Box
           flexDirection={BoxFlexDirection.Column}
           style={{ width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%' }}
@@ -1894,13 +1946,15 @@ const PerpsOrderEntryPage = () => {
             'shrink-0 h-full overflow-hidden',
             !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
           )}
-          aria-hidden={!isOrderBookOpen}
         >
-          <PerpsOrderBook
-            symbol={decodedSymbol}
-            isOpen={isOrderBookOpen}
-            marketPrice={currentPrice}
-          />
+          {isOrderBookOpen && (
+            <PerpsOrderBook
+              symbol={decodedSymbol}
+              isOpen={isOrderBookOpen}
+              marketPrice={currentPrice}
+              szDecimals={marketInfo?.szDecimals}
+            />
+          )}
         </Box>
       </div>
       <PerpsGeoBlockModal

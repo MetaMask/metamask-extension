@@ -52,9 +52,9 @@ type PillProps = {
 
 const Pill = ({ label, isSelected, onSelect, className, testId }: PillProps) => (
   <Box
-    role="button"
+    role="radio"
     tabIndex={0}
-    aria-pressed={isSelected}
+    aria-checked={isSelected}
     onClick={onSelect}
     onKeyDown={(event) => {
       if (event.key === 'Enter' || event.key === ' ') {
@@ -94,9 +94,11 @@ const Pill = ({ label, isSelected, onSelect, className, testId }: PillProps) => 
  * @param props.onApply
  * @param props.onClose
  * @param props.'data-testid'
+ * @param props.id
  */
 export const PerpsOrderBookConfigModal = ({
   isOpen,
+  id,
   baseSymbol,
   currency,
   metric,
@@ -171,6 +173,7 @@ export const PerpsOrderBookConfigModal = ({
     <Modal isOpen={isOpen} onClose={onClose} data-testid={dataTestId}>
       <ModalOverlay />
       <ModalContent
+        id={id}
         size={ModalContentSize.Sm}
         display={Display.Flex}
         justifyContent={modalLayoutProps.justifyContent}
@@ -200,7 +203,12 @@ export const PerpsOrderBookConfigModal = ({
             >
               {t('perpsOrderBookListedBy')}
             </Text>
-            <Box flexDirection={BoxFlexDirection.Row} gap={3}>
+            <Box
+              role="radiogroup"
+              aria-label={t('perpsOrderBookListedBy')}
+              flexDirection={BoxFlexDirection.Row}
+              gap={3}
+            >
               <Pill
                 label={baseSymbol}
                 isSelected={draftCurrency === 'base'}
@@ -216,7 +224,12 @@ export const PerpsOrderBookConfigModal = ({
                 testId={`${dataTestId}-currency-usd`}
               />
             </Box>
-            <Box flexDirection={BoxFlexDirection.Row} gap={3}>
+            <Box
+              role="radiogroup"
+              aria-label={t('perpsOrderBookValueType')}
+              flexDirection={BoxFlexDirection.Row}
+              gap={3}
+            >
               <Pill
                 label={t('perpsOrderBookSize')}
                 isSelected={draftMetric === 'size'}
@@ -243,6 +256,8 @@ export const PerpsOrderBookConfigModal = ({
               {t('perpsOrderBookGroupBy')}
             </Text>
             <Box
+              role="radiogroup"
+              aria-label={t('perpsOrderBookGroupBy')}
               flexDirection={BoxFlexDirection.Row}
               gap={3}
               className="flex-wrap"
@@ -253,7 +268,7 @@ export const PerpsOrderBookConfigModal = ({
                   label={formatGroupingLabel(option)}
                   isSelected={draftGrouping === option}
                   onSelect={() => setDraftGrouping(option)}
-                  className="min-w-[4.5rem]"
+                  className="min-w-16"
                   testId={`${dataTestId}-grouping-${option}`}
                 />
               ))}

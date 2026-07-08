@@ -122,13 +122,34 @@ describe('PerpsOrderBook', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders ask, bid, spread and ratio rows', () => {
+    it('renders grouped bid/ask prices with the default USD total metric', () => {
       renderOrderBook({ marketPrice: 73776 });
 
-      expect(screen.getByTestId('perps-order-book-ask-0')).toBeInTheDocument();
-      expect(screen.getByTestId('perps-order-book-bid-0')).toBeInTheDocument();
-      expect(screen.getByTestId('perps-order-book-spread')).toBeInTheDocument();
-      expect(screen.getByTestId('perps-order-book-ratio')).toBeInTheDocument();
+      // Grouping defaults to 10 for a ~73.7k asset, so raw prices are bucketed
+      // (73775 -> 73770 for bids, 73777 -> 73780 for asks) and formatted.
+      const topAsk = screen.getByTestId('perps-order-book-ask-0');
+      expect(topAsk).toHaveTextContent('73,790');
+      expect(topAsk).toHaveTextContent('$');
+
+      const topBid = screen.getByTestId('perps-order-book-bid-0');
+      expect(topBid).toHaveTextContent('73,770');
+    });
+
+    it('renders the mid price and spread in basis points', () => {
+      renderOrderBook({ marketPrice: 73776 });
+
+      const spread = screen.getByTestId('perps-order-book-spread');
+      expect(spread).toHaveTextContent('73,776');
+      expect(spread).toHaveTextContent('0.3 bps');
+    });
+
+    it('renders the buy/sell depth ratio summing to 100%', () => {
+      renderOrderBook({ marketPrice: 73776 });
+
+      const ratio = screen.getByTestId('perps-order-book-ratio');
+      // bid depth 0.32 / (0.32 + 0.62) => 34% buy, 66% sell.
+      expect(ratio).toHaveTextContent('34%');
+      expect(ratio).toHaveTextContent('66%');
     });
 
     it('does not render the removed order book title', () => {

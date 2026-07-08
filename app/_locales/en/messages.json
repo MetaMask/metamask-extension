@@ -7261,6 +7261,9 @@
   "perpsOrderBookTotal": {
     "message": "Total"
   },
+  "perpsOrderBookValueType": {
+    "message": "Value type"
+  },
   "perpsOrderDate": {
     "message": "Date"
   },

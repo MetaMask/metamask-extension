@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
@@ -25,6 +24,7 @@ import {
   calculateGroupingOptions,
   formatColumnValue,
   formatGroupingLabel,
+  formatSpreadBps,
   getDepthRatio,
   getDepthWidth,
   groupOrderBook,
@@ -45,6 +45,7 @@ type OrderBookRowProps = {
   currency: OrderBookListCurrency;
   metric: OrderBookListMetric;
   maxTotal: number;
+  szDecimals?: number;
   testId: string;
 };
 
@@ -54,6 +55,7 @@ const OrderBookRow = ({
   currency,
   metric,
   maxTotal,
+  szDecimals,
   testId,
 }: OrderBookRowProps) => {
   const depthWidth = getDepthWidth(level, maxTotal);
@@ -92,7 +94,7 @@ const OrderBookRow = ({
         color={TextColor.TextDefault}
         className="relative z-10"
       >
-        {formatColumnValue(level, currency, metric)}
+        {formatColumnValue(level, currency, metric, szDecimals)}
       </Text>
     </Box>
   );
@@ -111,15 +113,18 @@ const OrderBookRow = ({
  * @param options0.symbol - Market symbol.
  * @param options0.isOpen - Whether the panel is visible.
  * @param options0.marketPrice - Current market price for grouping options.
+ * @param options0.szDecimals - Asset base-size decimal precision.
  * @param options0.'data-testid' - Container test id.
  */
 export const PerpsOrderBook = ({
   symbol,
   isOpen,
   marketPrice,
+  szDecimals,
   'data-testid': dataTestId = 'perps-order-book',
 }: PerpsOrderBookProps) => {
   const t = useI18nContext();
+  const configModalId = `${dataTestId}-config-modal`;
   const [currency, setCurrency] = useState<OrderBookListCurrency>('usd');
   const [metric, setMetric] = useState<OrderBookListMetric>('total');
   const [selectedGrouping, setSelectedGrouping] = useState<number | null>(null);
@@ -138,13 +143,19 @@ export const PerpsOrderBook = ({
   const metricLabel =
     metric === 'total' ? t('perpsOrderBookTotal') : t('perpsOrderBookSize');
 
+  // Single source of truth for the mid price: prefer the order book's own mid
+  // (so the displayed mid and the grouping ladder never drift), falling back to
+  // the page's market price before the first order-book update arrives.
   const midPriceValue = useMemo(() => {
+    const orderBookMid = Number.parseFloat(orderBook?.midPrice ?? '');
+    if (Number.isFinite(orderBookMid) && orderBookMid > 0) {
+      return orderBookMid;
+    }
     if (Number.isFinite(marketPrice) && (marketPrice as number) > 0) {
       return marketPrice as number;
     }
-    const parsed = Number.parseFloat(orderBook?.midPrice ?? '');
-    return Number.isFinite(parsed) ? parsed : 0;
-  }, [marketPrice, orderBook?.midPrice]);
+    return 0;
+  }, [orderBook?.midPrice, marketPrice]);
 
   const groupingOptions = useMemo(
     () => calculateGroupingOptions(midPriceValue),
@@ -184,10 +195,9 @@ export const PerpsOrderBook = ({
     if (!Number.isFinite(spread) || !Number.isFinite(spreadPercent)) {
       return null;
     }
-    const bps = spreadPercent * 100;
     return `${formatPerpsFiat(spread, {
       ranges: PRICE_RANGES_UNIVERSAL,
-    })} (${bps.toFixed(1)} bps)`;
+    })} (${formatSpreadBps(spreadPercent)} bps)`;
   }, [orderBook]);
 
   const handleApplyConfig = useCallback(
@@ -206,6 +216,10 @@ export const PerpsOrderBook = ({
   const groupingTriggerLabel =
     currentGrouping === null ? '—' : formatGroupingLabel(currentGrouping);
 
+  const hasLadder = Boolean(
+    grouped && (grouped.bids.length > 0 || grouped.asks.length > 0),
+  );
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -221,22 +235,14 @@ export const PerpsOrderBook = ({
         paddingTop={3}
         paddingBottom={2}
       >
-        <Box
-          role="button"
-          tabIndex={0}
+        <button
+          type="button"
           aria-haspopup="dialog"
+          aria-expanded={isConfigOpen}
+          aria-controls={configModalId}
           aria-label={t('perpsOrderBookConfigTitle')}
           onClick={() => setIsConfigOpen(true)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              setIsConfigOpen(true);
-            }
-          }}
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-          className="cursor-pointer rounded-md px-1 py-0.5 hover:bg-muted"
+          className="flex flex-row items-center gap-1 cursor-pointer rounded-md px-1 py-0.5 hover:bg-muted"
           data-testid={`${dataTestId}-grouping-trigger`}
         >
           <Text
@@ -247,7 +253,7 @@ export const PerpsOrderBook = ({
             {groupingTriggerLabel}
           </Text>
           <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
-        </Box>
+        </button>
       </Box>
 
       {/* Column headers */}
@@ -267,7 +273,7 @@ export const PerpsOrderBook = ({
       </Box>
 
       {/* Ladder */}
-      {isInitialLoading || !orderBook || !grouped ? (
+      {isInitialLoading || !orderBook || !grouped || !hasLadder ? (
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
@@ -296,6 +302,7 @@ export const PerpsOrderBook = ({
                 currency={currency}
                 metric={metric}
                 maxTotal={grouped.maxTotal}
+                szDecimals={szDecimals}
                 testId={`${dataTestId}-ask-${index}`}
               />
             ))}
@@ -317,7 +324,7 @@ export const PerpsOrderBook = ({
               fontWeight={FontWeight.Bold}
               color={TextColor.SuccessDefault}
             >
-              {formatPerpsFiat(orderBook.midPrice, {
+              {formatPerpsFiat(midPriceValue, {
                 ranges: PRICE_RANGES_UNIVERSAL,
               })}
             </Text>
@@ -341,6 +348,7 @@ export const PerpsOrderBook = ({
                 currency={currency}
                 metric={metric}
                 maxTotal={grouped.maxTotal}
+                szDecimals={szDecimals}
                 testId={`${dataTestId}-bid-${index}`}
               />
             ))}
@@ -422,6 +430,7 @@ export const PerpsOrderBook = ({
 
       <PerpsOrderBookConfigModal
         isOpen={isConfigOpen}
+        id={configModalId}
         baseSymbol={displaySymbol}
         currency={currency}
         metric={metric}

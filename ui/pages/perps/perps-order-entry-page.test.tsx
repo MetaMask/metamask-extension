@@ -507,6 +507,48 @@ describe('PerpsOrderEntryPage', () => {
     });
   });
 
+  describe('order book toggle', () => {
+    it('mounts the order book and resize divider only after the toggle is pressed', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const toggle = screen.getByTestId('perps-order-book-toggle');
+      expect(toggle).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.queryByTestId('perps-order-book')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-book-resize-handle'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(toggle);
+
+      expect(toggle).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByTestId('perps-order-book')).toBeInTheDocument();
+
+      const divider = screen.getByTestId('perps-order-book-resize-handle');
+      expect(divider).toHaveAttribute('role', 'separator');
+      expect(divider).toHaveAttribute('aria-valuemin', '22');
+      expect(divider).toHaveAttribute('aria-valuemax', '60');
+      expect(divider).toHaveAttribute('aria-valuenow', '33');
+    });
+
+    it('resizes the split within bounds using the keyboard', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+      const divider = screen.getByTestId('perps-order-book-resize-handle');
+
+      fireEvent.keyDown(divider, { key: 'ArrowLeft' });
+      expect(divider).toHaveAttribute('aria-valuenow', '35');
+
+      fireEvent.keyDown(divider, { key: 'Home' });
+      expect(divider).toHaveAttribute('aria-valuenow', '60');
+
+      fireEvent.keyDown(divider, { key: 'End' });
+      expect(divider).toHaveAttribute('aria-valuenow', '22');
+    });
+  });
+
   describe('redirects', () => {
     it('redirects to home when perps is disabled', () => {
       const store = mockStore(createMockState(false));

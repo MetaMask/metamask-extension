@@ -1,6 +1,7 @@
 import type { OrderBookData, OrderBookLevel } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
+  formatPositionSize,
   formatLargeNumber,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
@@ -9,13 +10,45 @@ import type {
   OrderBookListMetric,
 } from './order-book.types';
 
-/** Maximum number of price levels rendered per side. */
-export const ORDER_BOOK_DISPLAY_LEVELS = 11;
+/**
+ * Maximum number of price levels rendered per side. Mirrors the shared
+ * order-book stream depth (`PERFORMANCE_CONFIG.SlippageEstimateBookLevels`, 10)
+ * that feeds this component, so we never advertise more rows than the source
+ * can provide.
+ */
+export const ORDER_BOOK_DISPLAY_LEVELS = 10;
+
+/**
+ * Grouping-ladder shape (a "1-2-5 per decade" scale anchored to the price
+ * magnitude, mirroring the mobile order book). The decade offset shifts the
+ * ladder down so the finest increment sits a few decades below the price.
+ */
+const GROUPING_DECADE_OFFSET = 4;
+const GROUPING_MULTIPLIERS = [1, 2, 5, 10, 100, 1000] as const;
+
+/** Default grouping is the 4th (index 3) option: a mid-range increment. */
+const DEFAULT_GROUPING_INDEX = 3;
+
+/** Hyperliquid caps price precision at 6 decimals; never exceed it. */
+const MAX_PRICE_DECIMALS = 6;
+
+/** Compact-notation thresholds for USD amounts. */
+const USD_COMPACT_MILLIONS_THRESHOLD = 1_000_000;
+const USD_COMPACT_THOUSANDS_THRESHOLD = 10_000;
+
+/** Basis points per percent, used for the spread readout. */
+const BPS_PER_PERCENT = 100;
+
+/** Shown when a value has not loaded / cannot be parsed (mirrors mobile `FallbackDataDisplay`). */
+const ORDER_BOOK_FALLBACK_DISPLAY = '--';
+
+/** Draggable divider width bounds (percentage of the body), used by the page. */
+export const ORDER_BOOK_DEFAULT_WIDTH_PCT = 33;
+export const ORDER_BOOK_MIN_WIDTH_PCT = 22;
+export const ORDER_BOOK_MAX_WIDTH_PCT = 60;
 
 /**
  * Calculate dynamic price-grouping options based on the asset's mid price.
- * Uses a "1-2-5 per decade" scale anchored to the price magnitude, mirroring
- * the mobile order book.
  *
  * @param midPrice - Current mid price of the asset.
  * @returns Array of grouping increments suitable for the price magnitude.
@@ -28,11 +61,10 @@ export function calculateGroupingOptions(midPrice: number): number[] {
     return [0.01, 0.1, 1];
   }
 
-  const k = Math.floor(Math.log10(midPrice));
-  const base = 10 ** (k - 4);
-  const multipliers = [1, 2, 5, 10, 100, 1000];
+  const magnitude = Math.floor(Math.log10(midPrice));
+  const base = 10 ** (magnitude - GROUPING_DECADE_OFFSET);
 
-  return multipliers.map((m) => base * m);
+  return GROUPING_MULTIPLIERS.map((multiplier) => base * multiplier);
 }
 
 /**
@@ -57,13 +89,33 @@ export function formatGroupingLabel(value: number): string {
  */
 export function selectDefaultGrouping(options: number[]): number {
   return (
-    options[3] ?? options[Math.floor(options.length / 2)] ?? options[0] ?? 1
+    options[DEFAULT_GROUPING_INDEX] ??
+    options[Math.floor(options.length / 2)] ??
+    options[0] ??
+    1
   );
 }
 
 /**
+ * Number of decimal places implied by a grouping increment, capped at the
+ * Hyperliquid price-precision limit. Used to build stable (non-floating-point)
+ * bucket keys so equivalent buckets never split due to binary rounding drift.
+ *
+ * @param groupingSize - Price bucket size.
+ * @returns Decimal places to normalize bucket prices to.
+ */
+function getGroupingDecimals(groupingSize: number): number {
+  if (!Number.isFinite(groupingSize) || groupingSize >= 1) {
+    return 0;
+  }
+  return Math.min(MAX_PRICE_DECIMALS, Math.ceil(-Math.log10(groupingSize)));
+}
+
+/**
  * Aggregate raw order book levels into price buckets of `groupingSize`,
- * summing size/notional and recomputing cumulative totals.
+ * summing size/notional and recomputing cumulative totals. Full numeric
+ * precision is preserved through aggregation; rounding happens only at display
+ * time via the formatters below.
  *
  * @param levels - Raw order book levels from the stream.
  * @param groupingSize - Price bucket size (e.g. 10 groups into $10 increments).
@@ -75,34 +127,38 @@ export function aggregateOrderBookLevels(
   groupingSize: number,
   side: 'bid' | 'ask',
 ): OrderBookLevel[] {
-  if (!levels.length || groupingSize <= 0) {
+  if (!levels.length || !Number.isFinite(groupingSize) || groupingSize <= 0) {
     return levels;
   }
 
+  const priceDecimals = getGroupingDecimals(groupingSize);
   const buckets = new Map<
-    number,
+    string,
     { size: number; notional: number; price: number }
   >();
 
   for (const level of levels) {
     const price = Number.parseFloat(level.price);
-    const size = Number.parseFloat(level.size);
-    const notional = Number.parseFloat(level.notional);
     if (!Number.isFinite(price)) {
       continue;
     }
+    const parsedSize = Number.parseFloat(level.size);
+    const parsedNotional = Number.parseFloat(level.notional);
+    const size = Number.isFinite(parsedSize) ? parsedSize : 0;
+    const notional = Number.isFinite(parsedNotional) ? parsedNotional : 0;
 
     const bucketPrice =
       side === 'bid'
         ? Math.floor(price / groupingSize) * groupingSize
         : Math.ceil(price / groupingSize) * groupingSize;
+    const key = bucketPrice.toFixed(priceDecimals);
 
-    const existing = buckets.get(bucketPrice);
+    const existing = buckets.get(key);
     if (existing) {
       existing.size += size;
       existing.notional += notional;
     } else {
-      buckets.set(bucketPrice, { size, notional, price: bucketPrice });
+      buckets.set(key, { size, notional, price: Number.parseFloat(key) });
     }
   }
 
@@ -120,8 +176,8 @@ export function aggregateOrderBookLevels(
       price: bucket.price.toString(),
       size: bucket.size.toString(),
       total: cumulativeSize.toString(),
-      notional: bucket.notional.toFixed(2),
-      totalNotional: cumulativeNotional.toFixed(2),
+      notional: bucket.notional.toString(),
+      totalNotional: cumulativeNotional.toString(),
     };
   });
 }
@@ -168,6 +224,9 @@ export function getDepthWidth(level: OrderBookLevel, maxTotal: number): number {
     return 0;
   }
   const total = Number.parseFloat(level.total);
+  if (!Number.isFinite(total)) {
+    return 0;
+  }
   return Math.min((total / maxTotal) * 100, 100);
 }
 
@@ -179,31 +238,31 @@ export function getDepthWidth(level: OrderBookLevel, maxTotal: number): number {
  */
 function formatUsd(value: number): string {
   if (!Number.isFinite(value)) {
-    return '-';
+    return ORDER_BOOK_FALLBACK_DISPLAY;
   }
-  if (value >= 1_000_000) {
+  if (value >= USD_COMPACT_MILLIONS_THRESHOLD) {
     return `$${formatLargeNumber(value, { decimals: 1 })}`;
   }
-  if (value >= 10_000) {
+  if (value >= USD_COMPACT_THOUSANDS_THRESHOLD) {
     return `$${formatLargeNumber(value, { decimals: 0 })}`;
   }
   return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL });
 }
 
 /**
- * Format a base-asset amount with sensible precision.
+ * Format a base-asset amount using the shared perps size formatter (adaptive
+ * precision + trailing-zero stripping), optionally honoring the asset's
+ * `szDecimals`.
  *
  * @param value - Base-asset amount.
+ * @param szDecimals - Optional asset-specific decimal precision.
  * @returns Formatted string.
  */
-function formatBase(value: number): string {
+function formatBase(value: number, szDecimals?: number): string {
   if (!Number.isFinite(value)) {
-    return '-';
+    return ORDER_BOOK_FALLBACK_DISPLAY;
   }
-  if (value >= 1) {
-    return value.toFixed(4);
-  }
-  return value.toFixed(6);
+  return formatPositionSize(value, szDecimals);
 }
 
 /**
@@ -213,20 +272,37 @@ function formatBase(value: number): string {
  * @param level - Order book level.
  * @param currency - Selected currency ('base' | 'usd').
  * @param metric - Selected metric ('size' | 'total').
+ * @param szDecimals - Optional asset-specific decimal precision for base amounts.
  * @returns Formatted column value.
  */
 export function formatColumnValue(
   level: OrderBookLevel,
   currency: OrderBookListCurrency,
   metric: OrderBookListMetric,
+  szDecimals?: number,
 ): string {
   if (currency === 'usd') {
-    const raw =
-      metric === 'total' ? level.totalNotional : level.notional;
+    const raw = metric === 'total' ? level.totalNotional : level.notional;
     return formatUsd(Number.parseFloat(raw));
   }
   const raw = metric === 'total' ? level.total : level.size;
-  return formatBase(Number.parseFloat(raw));
+  return formatBase(Number.parseFloat(raw), szDecimals);
+}
+
+/**
+ * Format the bid/ask spread in basis points (one decimal, trailing zero
+ * stripped). Centralized here so the readout precision is defined in one place.
+ *
+ * @param spreadPercentage - Spread as a percentage (e.g. 0.0027 for 0.0027%).
+ * @returns Formatted bps value (without unit), or the fallback display.
+ */
+export function formatSpreadBps(spreadPercentage: number): string {
+  if (!Number.isFinite(spreadPercentage)) {
+    return ORDER_BOOK_FALLBACK_DISPLAY;
+  }
+  const bps = spreadPercentage * BPS_PER_PERCENT;
+  const rounded = Math.round(bps * 10) / 10;
+  return rounded.toString();
 }
 
 /**
@@ -247,10 +323,51 @@ export function getDepthRatio(
   const askDepth = asks.length
     ? Number.parseFloat(asks[asks.length - 1].total)
     : 0;
-  const totalDepth = bidDepth + askDepth;
-  if (!Number.isFinite(totalDepth) || totalDepth <= 0) {
+  const safeBidDepth = Number.isFinite(bidDepth) ? bidDepth : 0;
+  const safeAskDepth = Number.isFinite(askDepth) ? askDepth : 0;
+  const totalDepth = safeBidDepth + safeAskDepth;
+  if (totalDepth <= 0) {
     return null;
   }
-  const buyPercent = Math.round((bidDepth / totalDepth) * 100);
+  const buyPercent = Math.round((safeBidDepth / totalDepth) * 100);
   return { buyPercent, sellPercent: 100 - buyPercent };
+}
+
+/**
+ * Clamp an order-book panel width (as a percentage of the body) to the allowed
+ * range so neither the form nor the order book collapses.
+ *
+ * @param pct - Requested width percentage.
+ * @returns Clamped width percentage.
+ */
+export function clampOrderBookWidthPct(pct: number): number {
+  if (!Number.isFinite(pct)) {
+    return ORDER_BOOK_DEFAULT_WIDTH_PCT;
+  }
+  return Math.min(
+    ORDER_BOOK_MAX_WIDTH_PCT,
+    Math.max(ORDER_BOOK_MIN_WIDTH_PCT, pct),
+  );
+}
+
+/**
+ * Derive the order-book panel width from a pointer position over the body,
+ * clamped to the allowed range. The panel is right-aligned, so width grows as
+ * the pointer moves left.
+ *
+ * @param containerRight - Right edge of the body (viewport px).
+ * @param containerWidth - Body width (px).
+ * @param pointerX - Pointer x-position (viewport px).
+ * @returns Clamped width percentage.
+ */
+export function computeOrderBookWidthPct(
+  containerRight: number,
+  containerWidth: number,
+  pointerX: number,
+): number {
+  if (!Number.isFinite(containerWidth) || containerWidth <= 0) {
+    return ORDER_BOOK_DEFAULT_WIDTH_PCT;
+  }
+  const pct = ((containerRight - pointerX) / containerWidth) * 100;
+  return clampOrderBookWidthPct(pct);
 }
