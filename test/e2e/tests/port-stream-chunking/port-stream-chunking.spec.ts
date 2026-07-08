@@ -15,6 +15,7 @@ const STRUCTURED_CLONE_CHROME_VERSION = '148';
 const CHROMIUM_MESSAGE_SIZE_LIMIT = 67108864; // 64 MB
 const HUGE_BACKGROUND_STATE_MARGIN = 1024;
 const BACKGROUND_STATE_SYNC_TIMEOUT = 60000;
+const NO_CHUNK_EVENT_SETTLE_TIMEOUT = 15000;
 const UNLOCK_PASSWORD_INPUT = { testId: 'unlock-password' };
 const UNLOCK_SUBMIT_BUTTON = { testId: 'unlock-submit' };
 
@@ -30,6 +31,7 @@ type HugeStateTestOptions = {
   expectChromeChunkedEvent: boolean;
   expectedChromeMessageSerialization?: string;
   manifestTransform?: (manifest: Record<string, unknown>) => void;
+  expectUsableWallet?: boolean;
   title?: string;
 };
 
@@ -130,6 +132,7 @@ async function loginToHomepageWithoutSendKeys(driver: Driver) {
 async function loadWalletWithHugeBackgroundState({
   expectChromeChunkedEvent,
   expectedChromeMessageSerialization,
+  expectUsableWallet = true,
   manifestTransform,
   title,
 }: HugeStateTestOptions) {
@@ -146,6 +149,9 @@ async function loadWalletWithHugeBackgroundState({
       driverOptions: {
         chromeBrowserVersion: STRUCTURED_CLONE_CHROME_VERSION,
       },
+      ignoredConsoleErrors: expectUsableWallet
+        ? []
+        : ['Background state sync timeout'],
       manifestTransform,
       title,
       testSpecificMock: mockSegment,
@@ -155,15 +161,23 @@ async function loadWalletWithHugeBackgroundState({
 
       // We need an unusual amount of time because of the large background state.
       await driver.navigate(PAGES.HOME, {
+        waitForControllers: expectUsableWallet,
         waitForControllersTimeout: BACKGROUND_STATE_SYNC_TIMEOUT,
       });
-      const loginPage = new LoginPage(driver);
-      await loginPage.checkPageIsLoaded();
-      await loginToHomepageWithoutSendKeys(driver);
 
-      const homepage = new HomePage(driver);
-      // Just check that the balance is displayed (wallet is usable).
-      await homepage.checkExpectedBalanceIsDisplayed();
+      if (expectUsableWallet) {
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginToHomepageWithoutSendKeys(driver);
+
+        const homepage = new HomePage(driver);
+        // Just check that the balance is displayed (wallet is usable).
+        await homepage.checkExpectedBalanceIsDisplayed();
+      } else {
+        // A fallback chunk event is emitted immediately when the initial
+        // background state cannot be posted as a single Chromium message.
+        await driver.delay(NO_CHUNK_EVENT_SETTLE_TIMEOUT);
+      }
 
       const events = await getEventPayloads(
         driver,
@@ -197,6 +211,7 @@ describe('Port Stream Chunking', function () {
       expectChromeChunkedEvent: false,
       expectedChromeMessageSerialization:
         STRUCTURED_CLONE_MESSAGE_SERIALIZATION,
+      expectUsableWallet: false,
       title: this.test?.fullTitle(),
     });
   });
