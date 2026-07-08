@@ -92,6 +92,18 @@ type TronAccountResponse = {
   balance?: number;
 };
 
+type TronTransactionInfoResponse = {
+  id?: string;
+  blockNumber?: number;
+  result?: 'SUCESS' | 'FAILED' | string;
+  receipt?: {
+    result?: 'SUCCESS' | string;
+    [key: string]: unknown;
+  };
+  resMessage?: string;
+  [key: string]: unknown;
+};
+
 type FetchJsonOptions = RequestInit & {
   timeoutMs?: number;
 };
@@ -148,7 +160,11 @@ export class TronNode {
    * @param options.stakedTrxBalances - Map of Tron address to staked TRX in SUN.
    */
   async start(options: TronLocalNodeOptions = {}): Promise<void> {
-    this.#fundingAccount = undefined;
+    if (this.#nodeProcess || this.#runtimeDirectory || this.#fullNodePort) {
+      throw new Error('Tron local node has already started');
+    }
+
+    this.#resetSeederState();
 
     try {
       await this.#startNativeJavaTron(options.ports);
@@ -182,70 +198,77 @@ export class TronNode {
     await installJavaTron({ cwd: process.cwd() });
 
     const runtimeDirectory = await mkdtemp(join(tmpdir(), 'java-tron-e2e-'));
-    const configPath = join(runtimeDirectory, 'fullnode.conf');
-    const outputDirectory = join(runtimeDirectory, 'output');
-    const resolvedPorts = await resolveJavaTronPrivateNetworkPorts(ports);
-    // getAvailablePorts probes ports by briefly binding then releasing them,
-    // which leaves a gap where another process could grab one before we
-    // spawn java-tron. Re-check right before use to fail fast instead of
-    // waiting out the full waitForReady timeout on a silent bind failure.
-    for (const key of JAVA_TRON_PRIVATE_NETWORK_PORT_KEYS) {
-      const port = resolvedPorts[key];
-      if (!(await isTcpPortAvailable(port))) {
-        throw new Error(
-          `${JAVA_TRON_PRIVATE_NETWORK_PORT_LABELS[key]} ${port} is no longer available`,
-        );
+    try {
+      const configPath = join(runtimeDirectory, 'fullnode.conf');
+      const outputDirectory = join(runtimeDirectory, 'output');
+      const resolvedPorts = await resolveJavaTronPrivateNetworkPorts(ports);
+      // getAvailablePorts probes ports by briefly binding then releasing them,
+      // which leaves a gap where another process could grab one before we
+      // spawn java-tron. Re-check right before use to fail fast instead of
+      // waiting out the full waitForReady timeout on a silent bind failure.
+      for (const key of JAVA_TRON_PRIVATE_NETWORK_PORT_KEYS) {
+        const port = resolvedPorts[key];
+        if (!(await isTcpPortAvailable(port))) {
+          throw new Error(
+            `${JAVA_TRON_PRIVATE_NETWORK_PORT_LABELS[key]} ${port} is no longer available`,
+          );
+        }
       }
-    }
-    await mkdir(outputDirectory, { recursive: true });
-    await writeFile(
-      configPath,
-      createJavaTronPrivateNetworkConfig(resolvedPorts),
-    );
-
-    this.#fullNodePort = resolvedPorts.fullNodePort;
-    this.#runtimeDirectory = runtimeDirectory;
-    this.#nodeProcessExitError = undefined;
-    this.#stderr = '';
-    this.#stdout = '';
-
-    const javaTronBinary = getPackageBinaryPath('java-tron');
-    // java-tron brings up one listener for E2E: full-node HTTP (`baseUrl`).
-    // Solidity HTTP/gRPC, PBFT HTTP/gRPC, JSON-RPC, P2P, and backup are
-    // disabled in the generated config; make any re-enabled listener
-    // customizable before parallelizing it.
-    const nodeProcess = spawn(
-      javaTronBinary,
-      ['-c', configPath, '--witness', '-d', outputDirectory],
-      {
-        cwd: runtimeDirectory,
-        detached: process.platform !== 'win32',
-        stdio: ['ignore', 'pipe', 'pipe'],
-        // Reduce JVM startup overhead: pre-size heap to avoid resize pauses,
-        // and enable tiered compilation for faster initial bytecode execution.
-        env: {
-          ...process.env,
-          JAVA_TOOL_OPTIONS: '-Xmx512m -Xms512m -XX:+TieredCompilation',
-        },
-      },
-    );
-    this.#nodeProcess = nodeProcess;
-    nodeProcess.stdout?.on('data', (chunk: Buffer) => {
-      this.#stdout = appendProcessOutput(this.#stdout, chunk);
-    });
-    nodeProcess.stderr?.on('data', (chunk: Buffer) => {
-      this.#stderr = appendProcessOutput(this.#stderr, chunk);
-    });
-    nodeProcess.once('error', (error) => {
-      this.#nodeProcessExitError = error;
-    });
-    nodeProcess.once('exit', (code, signal) => {
-      this.#nodeProcessExitError = new Error(
-        `java-tron exited with code ${code ?? 'null'} and signal ${
-          signal ?? 'null'
-        }.${this.#formatProcessOutput()}`,
+      await mkdir(outputDirectory, { recursive: true });
+      await writeFile(
+        configPath,
+        createJavaTronPrivateNetworkConfig(resolvedPorts),
       );
-    });
+
+      this.#fullNodePort = resolvedPorts.fullNodePort;
+      this.#runtimeDirectory = runtimeDirectory;
+      this.#nodeProcessExitError = undefined;
+      this.#stderr = '';
+      this.#stdout = '';
+
+      const javaTronBinary = getPackageBinaryPath('java-tron');
+      // java-tron brings up one listener for E2E: full-node HTTP (`baseUrl`).
+      // Solidity HTTP/gRPC, PBFT HTTP/gRPC, JSON-RPC, P2P, and backup are
+      // disabled in the generated config; make any re-enabled listener
+      // customizable before parallelizing it.
+      const nodeProcess = spawn(
+        javaTronBinary,
+        ['-c', configPath, '--witness', '-d', outputDirectory],
+        {
+          cwd: runtimeDirectory,
+          detached: process.platform !== 'win32',
+          stdio: ['ignore', 'pipe', 'pipe'],
+          // Reduce JVM startup overhead: pre-size heap to avoid resize pauses,
+          // and enable tiered compilation for faster initial bytecode execution.
+          env: {
+            ...process.env,
+            JAVA_TOOL_OPTIONS: '-Xmx512m -Xms512m -XX:+TieredCompilation',
+          },
+        },
+      );
+      this.#nodeProcess = nodeProcess;
+      nodeProcess.stdout?.on('data', (chunk: Buffer) => {
+        this.#stdout = appendProcessOutput(this.#stdout, chunk);
+      });
+      nodeProcess.stderr?.on('data', (chunk: Buffer) => {
+        this.#stderr = appendProcessOutput(this.#stderr, chunk);
+      });
+      nodeProcess.once('error', (error) => {
+        this.#nodeProcessExitError = error;
+      });
+      nodeProcess.once('exit', (code, signal) => {
+        this.#nodeProcessExitError = new Error(
+          `java-tron exited with code ${code ?? 'null'} and signal ${
+            signal ?? 'null'
+          }.${this.#formatProcessOutput()}`,
+        );
+      });
+    } catch (error) {
+      if (this.#runtimeDirectory !== runtimeDirectory) {
+        await rm(runtimeDirectory, { force: true, recursive: true });
+      }
+      throw error;
+    }
   }
 
   async quit(): Promise<void> {
@@ -255,12 +278,16 @@ export class TronNode {
     this.#nodeProcess = undefined;
     this.#runtimeDirectory = undefined;
 
-    if (nodeProcess) {
-      await stopProcess(nodeProcess);
-    }
+    try {
+      if (nodeProcess) {
+        await stopProcess(nodeProcess);
+      }
 
-    if (runtimeDirectory) {
-      await rm(runtimeDirectory, { force: true, recursive: true });
+      if (runtimeDirectory) {
+        await rm(runtimeDirectory, { force: true, recursive: true });
+      }
+    } finally {
+      this.#resetSeederState();
     }
   }
 
@@ -323,7 +350,7 @@ export class TronNode {
     const fundingAccount = await this.getFundingAccount();
 
     // 1. Build an unsigned TransferContract transaction
-    const createResp = await fetch(`${this.baseUrl}/wallet/createtransaction`, {
+    const tx = (await this.fetchJson('/wallet/createtransaction', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -332,13 +359,8 @@ export class TronNode {
         amount: amountInSun,
         visible: true,
       }),
-    });
-    if (!createResp.ok) {
-      throw new Error(
-        `createtransaction HTTP ${createResp.status}: ${await createResp.text()}`,
-      );
-    }
-    const tx = (await createResp.json()) as {
+      timeoutMs: 15_000,
+    })) as {
       raw_data_hex?: string;
       [key: string]: unknown;
     };
@@ -727,24 +749,16 @@ export class TronNode {
     sigBytes[64] = sig.recovery!;
     const signatureHex = Buffer.from(sigBytes).toString('hex');
 
-    const broadcastResp = await fetch(
-      `${this.baseUrl}/wallet/broadcasttransaction`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...transaction,
-          signature: [signatureHex],
-          visible: true,
-        }),
-      },
-    );
-    if (!broadcastResp.ok) {
-      throw new Error(
-        `broadcasttransaction HTTP ${broadcastResp.status}: ${await broadcastResp.text()}`,
-      );
-    }
-    const result = (await broadcastResp.json()) as {
+    const result = (await this.fetchJson('/wallet/broadcasttransaction', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...transaction,
+        signature: [signatureHex],
+        visible: true,
+      }),
+      timeoutMs: 15_000,
+    })) as {
       result?: boolean;
       txid?: string;
       [key: string]: unknown;
@@ -767,15 +781,15 @@ export class TronNode {
       // gettransactionbyid only confirms the node has seen the broadcast tx;
       // gettransactioninfobyid is only populated once the tx is executed and
       // included in a block, which is what downstream seeding steps need.
-      const checkResp = await fetch(
-        `${this.baseUrl}/wallet/gettransactioninfobyid?value=${txId}`,
-      );
-      const checkData = (await checkResp.json()) as {
-        id?: string;
-        blockNumber?: number;
-      };
-      if (checkData.id && checkData.blockNumber) {
-        return;
+      const checkData = (await this.fetchJson(
+        `/wallet/gettransactioninfobyid?value=${txId}`,
+        { timeoutMs: 5_000 },
+      )) as TronTransactionInfoResponse;
+      if (checkData.id) {
+        assertSuccessfulJavaTronTransaction(txId, checkData);
+        if (checkData.blockNumber !== undefined) {
+          return;
+        }
       }
       await new Promise((r) => setTimeout(r, 250));
     }
@@ -869,6 +883,15 @@ export class TronNode {
       throw this.#nodeProcessExitError;
     }
   }
+
+  #resetSeederState(): void {
+    this.#fundingAccount = undefined;
+    clearRecord(this.#trc10Balances);
+    clearRecord(this.#trc20Balances);
+    clearRecord(this.#stakedTrxBalances);
+    clearRecord(this.trc10Tokens);
+    clearRecord(this.trc20Tokens);
+  }
 }
 
 function getPackageBinaryPath(command: string): string {
@@ -888,6 +911,38 @@ function formatProcessOutput(stdout: string, stderr: string): string {
     sections.push(`\nstderr:\n${stderr.trim()}`);
   }
   return sections.join('');
+}
+
+function assertSuccessfulJavaTronTransaction(
+  txId: string,
+  transactionInfo: TronTransactionInfoResponse,
+): void {
+  const transactionResult = transactionInfo.result;
+  const receiptResult = transactionInfo.receipt?.result;
+  const failed =
+    transactionResult === 'FAILED' ||
+    (receiptResult !== undefined && receiptResult !== 'SUCCESS');
+
+  if (!failed) {
+    return;
+  }
+
+  const reason =
+    typeof transactionInfo.resMessage === 'string' &&
+    transactionInfo.resMessage.length > 0
+      ? `: ${transactionInfo.resMessage}`
+      : '';
+  throw new Error(
+    `Transaction ${txId} failed${reason}. Transaction info: ${JSON.stringify(
+      transactionInfo,
+    )}`,
+  );
+}
+
+function clearRecord(record: object): void {
+  for (const key of Object.keys(record)) {
+    delete (record as Record<string, unknown>)[key];
+  }
 }
 
 export async function resolveJavaTronPrivateNetworkPorts(
