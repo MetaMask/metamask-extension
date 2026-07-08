@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -15,7 +16,7 @@ const MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR = new Date(
 ).getTime();
 
 // TRX balance in SUN (1 TRX = 1,000,000 SUN)
-export const TRX_BALANCE = 6072392; // ~6.07 TRX
+export const TRX_BALANCE = 106072392; // ~106.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
 
@@ -1207,10 +1208,94 @@ export async function mockBridgeGetTronQuoteEmpty(
     }));
 }
 
+export async function mockTronGetChainParameters(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl('/wallet/getchainparameters'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        chainParameter: [
+          { key: 'getMaintenanceTimeInterval', value: 21600000 },
+          { key: 'getAccountUpgradeCost', value: 9999000000 },
+          { key: 'getCreateNewAccountFeeInSystemContract', value: 1000000 },
+          { key: 'getCreateAccountFee', value: 100000 },
+          { key: 'getTransactionFee', value: 1000 },
+          { key: 'getAssetIssueFee', value: 1024000000 },
+          { key: 'getEnergyFee', value: 420 },
+          { key: 'getTotalEnergyLimit', value: 180000000000 },
+          { key: 'getAllowTvmTransferTrc10', value: 1 },
+          { key: 'getTotalEnergyCurrentLimit', value: 180000000000 },
+          { key: 'getAllowMultiSign', value: 1 },
+          { key: 'getAllowAdaptivEnergy', value: 1 },
+        ],
+      },
+    }));
+}
+
+export async function mockTronGetNextMaintenanceTime(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getnextmaintenancetime'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { num: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR },
+    }));
+}
+
+export async function mockTronTriggerConstantContract(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/triggerconstantcontract'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        result: { result: true },
+        energy_used: 1000,
+        energy_penalty: 0,
+        constant_result: [
+          '0000000000000000000000000000000000000000000000000000000000000001',
+        ],
+        transaction: {
+          ret: [{}],
+          visible: false,
+          txID: 'mock_trigger_constant_txid',
+          raw_data: {
+            contract: [],
+            ref_block_bytes: 'f733',
+            ref_block_hash: 'ff89d72ddc1ce1ea',
+            expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+            timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+          },
+          raw_data_hex: '',
+        },
+      },
+    }));
+}
+
+export async function mockTronGetContract(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getcontract'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {},
+    }));
+}
+
 /**
- * Mocks the accounts API v2 supportedNetworks to include Tron so the
- * AccountsApiDataSource handles Tron balances via the v5 API instead of
- * the Snap polling path.
+ * Mocks the accounts API v2 supportedNetworks (**EVM only**).
+ *
+ * Tron balances in these E2E flows come from mocked Tron RPC
+ * (`mockTronGetAccount` and related mocks in this file), not Accounts API v5.
  *
  * @param mockServer
  */
@@ -1221,65 +1306,36 @@ export async function mockAccountsApiV2WithTron(
     .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
-      fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
-        TRON_CHAIN_ID,
-      ],
+      fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
       partialSupport: { balances: [42220, 43114] },
     });
 }
 
 /**
- * Mocks the accounts API v5 multiaccount balances with TRX for the Tron
- * wallet address. The AccountsApiDataSource maps by address (not account
- * UUID), so this works regardless of which runtime account ID the Snap creates.
+ * Mocks the accounts API v5 multiaccount balances (**EVM only**).
+ *
+ * Seeds localhost ETH for login balance validation. Tron TRX/TRC20 balances
+ * come from Tron RPC mocks, not Accounts API v5.
  *
  * @param mockServer
- * @param mockZeroBalance
+ * @param _mockZeroBalance - Unused; Tron zero/non-zero balances use RPC mocks.
  */
 export async function mockAccountsApiV5WithTron(
   mockServer: Mockttp,
-  mockZeroBalance?: boolean,
+  _mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint> {
-  const trxAmount = mockZeroBalance ? '0' : String(TRX_BALANCE / SUN_PER_TRX);
-  const balances = mockZeroBalance
-    ? [
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/slip44:195`,
-          balance: '0',
-        },
-      ]
-    : [
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/slip44:195`,
-          balance: trxAmount,
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6`,
-          balance: '3156454.956836360132407885', // HTX decimals=18
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
-          balance: '2.804595', // USDT decimals=6
-        },
-        {
-          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
-          assetId: `${TRON_CHAIN_ID}/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz`,
-          balance: '0.289757448699320931', // USDD decimals=18
-        },
-      ];
+  const balances = [
+    {
+      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+      assetId: 'eip155:1337/slip44:1',
+      balance: '25',
+    },
+    {
+      accountId: `eip155:1:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+      assetId: 'eip155:1/slip44:60',
+      balance: '25',
+    },
+  ];
 
   return mockServer
     .forGet(
@@ -1330,6 +1386,10 @@ export async function mockTronSwapApis(
     ...(await mockTronApis(mockServer, mockZeroBalance)),
     await mockBridgeGetTronTokens(mockServer),
     await mockBridgeGetTronQuote(mockServer),
+    await mockTronGetChainParameters(mockServer),
+    await mockTronGetNextMaintenanceTime(mockServer),
+    await mockTronTriggerConstantContract(mockServer),
+    await mockTronGetContract(mockServer),
   ];
 }
 
@@ -1341,5 +1401,16 @@ export async function mockTronSwapApisNoQuotes(
     ...(await mockTronApis(mockServer, mockZeroBalance)),
     await mockBridgeGetTronTokens(mockServer),
     await mockBridgeGetTronQuoteEmpty(mockServer),
+  ];
+}
+
+export async function mockTronSwapApisWithoutFeeEstimation(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint[]> {
+  return [
+    ...(await mockTronApis(mockServer, mockZeroBalance)),
+    await mockBridgeGetTronTokens(mockServer),
+    await mockBridgeGetTronQuote(mockServer),
   ];
 }

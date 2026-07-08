@@ -1020,9 +1020,6 @@
   "addAccount": {
     "message": "アカウントを追加"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMaskを使用して取得したトークンを追加します"
-  },
   "addAlias": {
     "message": "別名を追加"
   },
@@ -2970,9 +2967,6 @@
   "customSlippage": {
     "message": "カスタム"
   },
-  "customToken": {
-    "message": "カスタムトークン"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "手動でトークンをインポートする前に、信頼できることを確認してください。$1の詳細をご覧ください。"
   },
@@ -3502,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
-  "enableFromSettings": {
-    "message": " 設定で有効にします。"
-  },
   "enableSmartContractAccount": {
     "message": "スマートアカウントを使用する"
   },
@@ -3531,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "入力したRPC URLが別のチェーンID ($1) を返しました。",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "改善されたトークン検出は現在$1で利用可能です。$2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMaskにより、ENSドメインがブラウザのアドレスバーに直接表示されます。使い方は次の通りです："
@@ -4381,15 +4369,6 @@
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
   },
-  "importTokenQuestion": {
-    "message": "トークンをインポートしますか？"
-  },
-  "importTokenWarning": {
-    "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります！"
-  },
-  "importTokensCamelCase": {
-    "message": "トークンをインポート"
-  },
   "importTokensError": {
     "message": "トークンをインポートできませんでした。後ほど再度お試しください。"
   },
@@ -4687,9 +4666,6 @@
   },
   "lightTheme": {
     "message": "ライト"
-  },
-  "likeToImportToken": {
-    "message": "このトークンをインポートしますか？"
   },
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか？"
@@ -5261,9 +5237,6 @@
   },
   "musdTermsApply": {
     "message": "諸条件が適用されます。"
-  },
-  "mustSelectOne": {
-    "message": "トークンを1つ以上選択する必要があります。"
   },
   "name": {
     "message": "名前"
@@ -10249,9 +10222,6 @@
   },
   "tokenDecimal": {
     "message": "トークンの小数桁数"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "トークンの小数点以下の桁数が必要です。確認はこちら: $1"
   },
   "tokenDetails": {
     "message": "トークンの詳細"
