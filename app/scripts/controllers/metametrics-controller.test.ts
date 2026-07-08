@@ -3254,7 +3254,9 @@ async function withController<ReturnValue>(
       mockAnalyticsControllerState.optedIn = false;
     });
 
-    const analyticsMessenger = getAnalyticsControllerInitMessenger(messenger);
+    const analyticsMessenger = getAnalyticsControllerInitMessenger(
+      messenger as Parameters<typeof getAnalyticsControllerInitMessenger>[0],
+    );
     const enrichmentContext = createEnrichmentContext(
       analyticsMessenger,
       '0.0.1-test',
