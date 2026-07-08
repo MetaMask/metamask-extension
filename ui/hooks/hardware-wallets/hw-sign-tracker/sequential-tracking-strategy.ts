@@ -1,9 +1,14 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { EventResult, TrackingStrategy } from './types';
-import { classifySignedEvent } from './shared-filters';
-import { applyRetryGenerationBump } from './utils';
+import type {
+  EventResult,
+  SignedEventClassifier,
+  TrackingStrategy,
+} from './types';
+import { defaultEventClassifier } from './shared-filters';
+import { applyRetryGenerationBump, getStatusAction } from './utils';
+import { NO_ACTION } from './types';
 
 /**
  * Sequential-mode tracking strategy. Tracks transactions by individual tx ID.
@@ -55,23 +60,27 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
    * statuses to the corresponding signature-state-machine action.
    *
    * @param transactionMeta - The updated transaction.
+   * @param classifySignedTransactionType
    * @returns The resulting action, or `{ action: null }` to emit nothing.
    */
-  processStatusUpdated(transactionMeta: TransactionMeta): EventResult {
+  processStatusUpdated(
+    transactionMeta: TransactionMeta,
+    classifySignedTransactionType: SignedEventClassifier = defaultEventClassifier,
+  ): EventResult {
     const { status, type } = transactionMeta;
 
     if (this.#staleTxIds.has(transactionMeta.id)) {
-      return { action: null };
+      return NO_ACTION;
     }
 
     this.#trackedTxIds.add(transactionMeta.id);
 
     if (status === TransactionStatus.signed) {
       if (!type) {
-        return { action: null };
+        return NO_ACTION;
       }
-      const action = classifySignedEvent(type);
-      return action ? { action } : { action: null };
+      const action = classifySignedTransactionType(transactionMeta);
+      return action ? { action } : NO_ACTION;
     }
 
     if (status === TransactionStatus.failed) {
@@ -80,7 +89,7 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
       };
     }
 
-    return { action: null };
+    return NO_ACTION;
   }
 
   /**
@@ -92,7 +101,7 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
    */
   processRejected(transactionMeta: TransactionMeta): EventResult {
     if (!this.#trackedTxIds.has(transactionMeta.id)) {
-      return { action: null };
+      return NO_ACTION;
     }
 
     return {
@@ -112,25 +121,17 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
     const { status } = transactionMeta;
 
     if (!this.#trackedTxIds.has(transactionMeta.id)) {
-      return { action: null };
+      return NO_ACTION;
     }
 
-    if (status === TransactionStatus.rejected) {
-      return {
-        action: {
-          type: HardwareWalletSignatureEvent.TransactionRejected,
-        },
-      };
-    }
-    if (status === TransactionStatus.failed) {
-      return {
-        action: {
-          type: HardwareWalletSignatureEvent.TransactionFailed,
-        },
-      };
+    if (
+      status === TransactionStatus.rejected ||
+      status === TransactionStatus.failed
+    ) {
+      return { action: getStatusAction(status) };
     }
 
-    return { action: null };
+    return NO_ACTION;
   }
 
   /**

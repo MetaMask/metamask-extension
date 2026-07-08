@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Button,
   Box,
@@ -19,7 +19,7 @@ import {
 import { useSelector } from 'react-redux';
 import PasswordForm from '../../components/app/password-form/password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -52,7 +52,7 @@ const CreatePasswordForm = ({
     (state: { metamask: { location: string } }) => state.metamask?.location,
   );
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   useEffect(() => {
     if (
@@ -75,15 +75,16 @@ const CreatePasswordForm = ({
     event: React.MouseEvent<HTMLAnchorElement>,
   ): void => {
     event.stopPropagation();
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        text: 'Learn More',
-        location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_ARTICLE,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          text: 'Learn More',
+          location: 'create_password',
+          url: ZENDESK_URLS.PASSWORD_ARTICLE,
+        })
+        .build(),
+    );
   };
 
   const createPasswordLink = (

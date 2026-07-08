@@ -3,10 +3,15 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../../../shared/constants/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
-import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
+import {
+  BlockaidResultType,
+  SecurityProvider,
+} from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { genUnapprovedTokenTransferConfirmation } from '../../../../../../test/data/confirmations/token-transfer';
 import {
   addEthereumChainApproval,
+  getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
@@ -35,7 +40,7 @@ import {
   HardwareWalletType,
 } from '../../../../../contexts/hardware-wallets';
 import * as confirmContext from '../../../context/confirm';
-import { SignatureRequestType } from '../../../types/confirm';
+import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
@@ -561,6 +566,46 @@ describe('ConfirmFooter', () => {
     );
     const submitButton = getAllByRole('button')[1];
     expect(submitButton).toHaveClass('mm-button-primary--type-danger');
+  });
+
+  it('opens the scam questionnaire instead of the alert modal for a malicious wallet-initiated send', () => {
+    const transaction = {
+      ...genUnapprovedTokenTransferConfirmation({
+        isWalletInitiatedConfirmation: true,
+      }),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      securityAlertResponse: { result_type: BlockaidResultType.Malicious },
+    } as unknown as Confirmation;
+
+    const { getByTestId, getByText, queryByTestId } = render(
+      getMockConfirmStateForTransaction(transaction, {
+        metamask: {},
+        confirmAlerts: {
+          alerts: {
+            [transaction.id]: [
+              {
+                key: 'blockaid',
+                severity: Severity.Danger,
+                message: 'Malicious',
+                provider: SecurityProvider.Blockaid,
+              },
+            ],
+          },
+          confirmed: { [transaction.id]: { blockaid: false } },
+        },
+      }),
+    );
+
+    fireEvent.click(getByTestId('confirm-footer-button'));
+
+    // Questionnaire opens (its back control + first question are shown)...
+    expect(getByTestId('scam-questionnaire-back')).toBeInTheDocument();
+    expect(
+      getByText(messages.scamQuestionnaireQ1Title.message),
+    ).toBeInTheDocument();
+    // ...and the standard danger-alert modal is not shown instead.
+    expect(queryByTestId('confirm-alert-modal')).not.toBeInTheDocument();
   });
 
   it('suppresses hardware wallet error modal while danger alerts are unconfirmed and hardware wallet is ready', async () => {
