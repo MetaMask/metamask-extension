@@ -28,7 +28,7 @@ import {
   TREZOR_USB_VENDOR_IDS,
 } from '../../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   PREVIOUS_ROUTE,
@@ -136,7 +136,7 @@ const SelectHardware = ({
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [trezorRequestDevicePending, setTrezorRequestDevicePending] =
     useState(false);
   const [showFirefoxWarning, setShowFirefoxWarning] = useState(false);
@@ -162,15 +162,18 @@ const SelectHardware = ({
         return;
       }
 
-      trackEvent({
-        event: MetaMetricsEventName.HardwareWalletMarketingButtonClicked,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          button_type: 'select',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          device_type: upperFirst(option.device),
-        },
-      });
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.HardwareWalletMarketingButtonClicked,
+        )
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            button_type: 'select',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            device_type: upperFirst(option.device),
+          })
+          .build(),
+      );
 
       if (option.device === HardwareDeviceNames.ledger && isFirefox) {
         setShowFirefoxWarning(true);

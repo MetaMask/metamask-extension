@@ -9,7 +9,6 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../btc/mocks/tokens-api';
-
 /**
  * Holds the actual transaction signature captured from sendTransaction.
  * Shared between mock functions so that getSignaturesForAddress and
@@ -59,7 +58,7 @@ export const BRIDGED_TOKEN_LIST_API =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getTokens/u;
 
 export const BRIDGE_GET_QUOTE_API =
-  /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u;
+  /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote(?!Stream)/u;
 
 export const BRIDGE_GET_QUOTE_STREAM_API =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuoteStream/u;
@@ -1547,32 +1546,54 @@ export async function mockGetAccountInfoDevnet(mockServer: Mockttp) {
     });
 }
 
-export async function mockNoQuotesAvailable(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(BRIDGE_GET_QUOTE_STREAM_API)
-    .thenStream(200, mockSseEventSource([]), SSE_RESPONSE_HEADER);
+/**
+ * Mocks bridge quote responses for both REST (`getQuote`) and SSE (`getQuoteStream`).
+ * Solana swap E2E uses the REST path; other flows may still use SSE.
+ *
+ * @param mockServer - Mockttp server.
+ * @param quotes - Quote payloads returned by both endpoints.
+ */
+async function mockBridgeQuotes(
+  mockServer: Mockttp,
+  quotes: unknown[],
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockServer
+      .forGet(BRIDGE_GET_QUOTE_API)
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: quotes,
+      })),
+    await mockServer
+      .forGet(BRIDGE_GET_QUOTE_STREAM_API)
+      .always()
+      .thenStream(
+        200,
+        mockSseEventSource(quotes as unknown[]),
+        SSE_RESPONSE_HEADER,
+      ),
+  ];
 }
 
-export async function mockQuoteFromUSDCtoSOL(mockServer: Mockttp) {
+export async function mockNoQuotesAvailable(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return mockBridgeQuotes(mockServer, []);
+}
+
+export async function mockQuoteFromUSDCtoSOL(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
   const quoteUsdcToSol = await readResponseJsonFile('quoteUsdcToSol.json');
-  return await mockServer
-    .forGet(BRIDGE_GET_QUOTE_STREAM_API)
-    .thenStream(
-      200,
-      mockSseEventSource(quoteUsdcToSol as unknown[]),
-      SSE_RESPONSE_HEADER,
-    );
+  return mockBridgeQuotes(mockServer, quoteUsdcToSol as unknown[]);
 }
 
-export async function mockQuoteFromSoltoUSDC(mockServer: Mockttp) {
+export async function mockQuoteFromSoltoUSDC(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
   const quoteSolToUsdc = await readResponseJsonFile('quoteSolToUsdc.json');
-  return await mockServer
-    .forGet(BRIDGE_GET_QUOTE_STREAM_API)
-    .thenStream(
-      200,
-      mockSseEventSource(quoteSolToUsdc as unknown[]),
-      SSE_RESPONSE_HEADER,
-    );
+  return mockBridgeQuotes(mockServer, quoteSolToUsdc as unknown[]);
 }
 
 export async function mockGetMultipleAccounts(mockServer: Mockttp) {
@@ -2098,6 +2119,7 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     const isSwapScenario = Boolean(
       isExecutedSwapScenario || mockSwapWithNoQuotes,
     );
+
     mockList.push(await simulateSolanaTransaction(mockServer));
     if (walletConnect) {
       mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
@@ -2148,42 +2170,38 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     if (mockSwapWithNoQuotes) {
       mockList.push(await mockBridgeGetTokens(mockServer));
       mockList.push(await mockBridgeSearchTokens(mockServer));
-      mockList.push(await mockNoQuotesAvailable(mockServer));
+      mockList.push(...(await mockNoQuotesAvailable(mockServer)));
     }
     if (mockSwapUSDtoSOL) {
       mockList.push(
-        ...[
-          await mockQuoteFromUSDCtoSOL(mockServer),
-          await mockSendSwapSolanaTransaction(mockServer),
-          await mockGetUSDCSOLTransaction(mockServer),
-          await mockSecurityAlertSwap(mockServer),
-          await mockGetSignaturesSuccessSwap(
-            mockServer,
-            USDC_TO_SOL_SWAP_SIGNATURE,
-          ),
-          await mockBridgeGetTokens(mockServer),
-          await mockBridgeSearchTokens(mockServer),
-        ],
+        ...(await mockQuoteFromUSDCtoSOL(mockServer)),
+        await mockSendSwapSolanaTransaction(mockServer),
+        await mockGetUSDCSOLTransaction(mockServer),
+        await mockSecurityAlertSwap(mockServer),
+        await mockGetSignaturesSuccessSwap(
+          mockServer,
+          USDC_TO_SOL_SWAP_SIGNATURE,
+        ),
+        await mockBridgeGetTokens(mockServer),
+        await mockBridgeSearchTokens(mockServer),
       );
     }
     if (mockSwapSOLtoUSDC) {
       mockList.push(
-        ...[
-          await mockQuoteFromSoltoUSDC(mockServer),
-          await mockSendSwapSolanaTransaction(
-            mockServer,
-            undefined,
-            SOL_TO_USDC_SWAP_SIGNATURE,
-          ),
-          await mockGetSOLUSDCTransaction(mockServer),
-          await mockSecurityAlertSwap(mockServer),
-          await mockGetSignaturesSuccessSwap(
-            mockServer,
-            SOL_TO_USDC_SWAP_SIGNATURE,
-          ),
-          await mockBridgeGetTokens(mockServer),
-          await mockBridgeSearchTokens(mockServer),
-        ],
+        ...(await mockQuoteFromSoltoUSDC(mockServer)),
+        await mockSendSwapSolanaTransaction(
+          mockServer,
+          undefined,
+          SOL_TO_USDC_SWAP_SIGNATURE,
+        ),
+        await mockGetSOLUSDCTransaction(mockServer),
+        await mockSecurityAlertSwap(mockServer),
+        await mockGetSignaturesSuccessSwap(
+          mockServer,
+          SOL_TO_USDC_SWAP_SIGNATURE,
+        ),
+        await mockBridgeGetTokens(mockServer),
+        await mockBridgeSearchTokens(mockServer),
       );
     }
 

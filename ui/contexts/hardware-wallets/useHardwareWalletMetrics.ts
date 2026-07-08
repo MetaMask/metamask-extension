@@ -1,5 +1,5 @@
-import { useCallback, useContext } from 'react';
-import { MetaMetricsContext } from '../metametrics';
+import { useCallback } from 'react';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { useHardwareWalletRecoveryLocation } from '../../hooks/useHardwareWalletRecoveryLocation';
 import {
@@ -12,7 +12,7 @@ import {
  * Keeps Segment payload construction out of generic confirmation UI.
  */
 export function useHardwareWalletMetrics() {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent } = useAnalytics();
   const location = useHardwareWalletRecoveryLocation();
   const { walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
