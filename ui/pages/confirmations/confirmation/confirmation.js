@@ -10,7 +10,6 @@ import React, {
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
 import {
@@ -239,7 +238,7 @@ export default function ConfirmationPage({
   const navigate = useNavigate();
   const pendingConfirmations = useSelector(getUnapprovedTemplatedConfirmations);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
-  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const approvalFlows = useSelector(getApprovalFlows);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
