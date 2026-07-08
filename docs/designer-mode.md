@@ -50,16 +50,19 @@ If it is working, the DevTools console logs:
 For the full "edit → apply to code" loop, you need the `designer-mode` agent
 skill. Agent skills are **not committed to this repo** (per ADR #57) — they are
 synced on demand into the gitignored `.claude/`, `.cursor/`, and `.agents/`
-folders. If you don't already have `.claude/skills/designer-mode/`, install it:
+folders.
+
+The skill is currently **experimental**, so a plain `yarn skills` skips it — it
+must be opted into explicitly (explicit includes bypass the maturity filter):
 
 ```bash
-yarn install   # refreshes the shared MetaMask/skills cache
-yarn skills    # syncs the skills into .claude/ , .cursor/ , .agents/
+yarn install                                # refreshes the shared skills cache
+yarn skills --include ui/designer-mode      # installs .claude/skills/mms-designer-mode/ etc.
 ```
 
 See the [AI Agent Skills](../README.md#ai-agent-skills-yarn-skills) section of
 the README for configuration (domain selection, private overlay, etc.). If the
-skill isn't found after `yarn skills`, your skills source may need the private
+skill isn't found after the sync, your skills source may need the private
 Consensys overlay configured in `.skills.local`.
 
 Once installed, run the `designer-mode` skill in your AI coding assistant and say
@@ -187,4 +190,4 @@ thread. You can keep iterating — each send is a new request.
 - Implementation lives in `ui/helpers/designer-mode/`; the gated entry point is in
   `ui/index.js`.
 - The agent side is documented in the `designer-mode` skill
-  (`.claude/skills/designer-mode/`), which bundles the relay server.
+  (`.claude/skills/mms-designer-mode/`), which bundles the relay server.
