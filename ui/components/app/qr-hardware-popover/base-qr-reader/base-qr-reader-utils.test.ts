@@ -72,8 +72,8 @@ describe('base-qr-reader-utils', () => {
         ErrorCode.PermissionCameraDenied,
         1,
       );
-      expect(args.category).toBe(MetaMetricsEventCategory.Accounts);
-      expect(args.event).toBe(
+      expect(args.properties.category).toBe(MetaMetricsEventCategory.Accounts);
+      expect(args.name).toBe(
         MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
       );
     });
@@ -133,7 +133,7 @@ describe('base-qr-reader-utils', () => {
         1,
       );
       expect(Object.keys(properties).sort()).toStrictEqual(
-        [...HARDWARE_WALLET_RECOVERY_SEGMENT_PAYLOAD_KEYS].sort(),
+        [...HARDWARE_WALLET_RECOVERY_SEGMENT_PAYLOAD_KEYS, 'category'].sort(),
       );
     });
 
@@ -143,7 +143,7 @@ describe('base-qr-reader-utils', () => {
         ErrorCode.PermissionCameraDenied,
         2,
       );
-      expect(ctaArgs.event).toBe(
+      expect(ctaArgs.name).toBe(
         MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
       );
 
@@ -152,7 +152,7 @@ describe('base-qr-reader-utils', () => {
         ErrorCode.PermissionCameraPromptDismissed,
         1,
       );
-      expect(successArgs.event).toBe(
+      expect(successArgs.name).toBe(
         MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
       );
     });
@@ -168,8 +168,8 @@ describe('base-qr-reader-utils', () => {
         classification,
         QrErrorFlowContext.Pairing,
       );
-      expect(args.event).toBe(MetaMetricsEventName.QrHardwareScanFailed);
-      expect(args.category).toBe(MetaMetricsEventCategory.Accounts);
+      expect(args.name).toBe(MetaMetricsEventName.QrHardwareScanFailed);
+      expect(args.properties.category).toBe(MetaMetricsEventCategory.Accounts);
     });
 
     it('includes error_category, is_ur_format, and flow for non_ur_qr_scanned', () => {
@@ -182,6 +182,7 @@ describe('base-qr-reader-utils', () => {
         QrErrorFlowContext.Pairing,
       );
       expect(properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Accounts,
         device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
         error_category: 'non_ur_qr_scanned',
         is_ur_format: false,
@@ -200,6 +201,7 @@ describe('base-qr-reader-utils', () => {
         QrErrorFlowContext.Pairing,
       );
       expect(properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Accounts,
         device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
         error_category: 'wrong_ur_type',
         is_ur_format: true,
@@ -219,6 +221,7 @@ describe('base-qr-reader-utils', () => {
         QrErrorFlowContext.Signing,
       );
       expect(properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Accounts,
         device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
         error_category: 'scan_exception',
         is_ur_format: true,
@@ -237,6 +240,7 @@ describe('base-qr-reader-utils', () => {
         QrErrorFlowContext.Signing,
       );
       expect(properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Accounts,
         device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
         error_category: 'ur_decode_error',
         is_ur_format: true,

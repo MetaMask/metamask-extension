@@ -54,7 +54,6 @@ type AppState = {
     result: 'success' | 'failure' | 'none';
   };
   showKeyringRemovalSnapModal: boolean;
-  importTokensModalOpen: boolean;
   deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     privateKey?: string;
@@ -161,7 +160,6 @@ const initialState: AppState = {
     result: 'none',
   },
   showKeyringRemovalSnapModal: false,
-  importTokensModalOpen: false,
   deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
@@ -337,18 +335,6 @@ export default function reduceApp(
       return {
         ...appState,
         showPermittedNetworkToastOpen: false,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
-      return {
-        ...appState,
-        importTokensModalOpen: true,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
-      return {
-        ...appState,
-        importTokensModalOpen: false,
       };
 
     case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:

@@ -488,7 +488,7 @@ describe('TokenManagementPage', () => {
   });
 
   it('navigates to the custom token import page from the sticky add custom token button', () => {
-    const { store } = renderPage(createState());
+    renderPage(createState());
 
     const addCustomTokenButton = screen.getByTestId(
       'token-management-add-custom-token-button',
@@ -499,7 +499,6 @@ describe('TokenManagementPage', () => {
 
     fireEvent.click(addCustomTokenButton);
 
-    expect(store.getState().appState.importTokensModalOpen).toBeFalsy();
     expect(CUSTOM_TOKEN_IMPORT_ROUTE).toBe('/custom-token-import');
     expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
       expect.objectContaining({
