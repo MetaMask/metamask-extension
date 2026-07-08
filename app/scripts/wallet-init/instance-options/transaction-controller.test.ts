@@ -50,13 +50,9 @@ describe('TransactionController wallet instance options', () => {
     return getTransactionControllerInstanceOptions({
       initMessenger: messenger,
       request: {
-        connectivityAdapter: {} as never,
         getFlatState: jest.fn(() => ({}) as never),
         getPermittedAccounts: jest.fn(() => []),
         getTransactionMetricsRequest: jest.fn(() => ({}) as never),
-        infuraProjectId: 'fake-infura-project-id',
-        messenger: rootMessenger,
-        state: {},
       },
     });
   }

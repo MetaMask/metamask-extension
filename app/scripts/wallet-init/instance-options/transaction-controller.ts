@@ -31,7 +31,6 @@ import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { accountSupports7702 } from '../../lib/account-supports-7702';
 import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionControllerHooks } from '../../lib/transaction/hooks';
-import type { InitializeWalletRequest } from '../types';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 
 type TransactionControllerInstanceOptions = NonNullable<
@@ -44,9 +43,15 @@ type CheckFirstTimeInteractionRequest = {
   to: string;
 };
 
+export type TransactionControllerOptionsRequest = {
+  getFlatState: () => MessengerClientFlatState;
+  getPermittedAccounts: (origin?: string) => string[] | Promise<string[]>;
+  getTransactionMetricsRequest: () => TransactionMetricsRequest;
+};
+
 type GetTransactionControllerInstanceOptionsRequest = {
   initMessenger: TransactionControllerInitMessenger;
-  request: InitializeWalletRequest;
+  request: TransactionControllerOptionsRequest;
 };
 
 type SetupTransactionControllerListenersRequest = {
