@@ -5514,19 +5514,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/approval-controller@npm:8.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.8.1"
-    nanoid: "npm:^3.3.8"
-  checksum: 10/356fa411f2b077a31ea7565ffafaa4ecd68100ed93c26027ef4c30c55f7bf49a9f76a819bee05925756b0d4890d01a0ea0983b3b57bab3bf5b9ec2336f1a40e9
-  languageName: node
-  linkType: hard
-
 "@metamask/approval-controller@npm:^9.0.0, @metamask/approval-controller@npm:^9.0.1, @metamask/approval-controller@npm:^9.0.2":
   version: 9.0.2
   resolution: "@metamask/approval-controller@npm:9.0.2"
@@ -6006,7 +5993,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.4.0, @metamask/core-backend@npm:^6.5.0":
+"@metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.4.0, @metamask/core-backend@npm:^6.5.0":
   version: 6.5.0
   resolution: "@metamask/core-backend@npm:6.5.0"
   dependencies:
@@ -6610,7 +6597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^26.0.3, @metamask/gas-fee-controller@npm:^26.1.0, @metamask/gas-fee-controller@npm:^26.1.1, @metamask/gas-fee-controller@npm:^26.2.1, @metamask/gas-fee-controller@npm:^26.2.3, @metamask/gas-fee-controller@npm:^26.2.4":
+"@metamask/gas-fee-controller@npm:^26.1.0, @metamask/gas-fee-controller@npm:^26.1.1, @metamask/gas-fee-controller@npm:^26.2.1, @metamask/gas-fee-controller@npm:^26.2.3, @metamask/gas-fee-controller@npm:^26.2.4":
   version: 26.2.4
   resolution: "@metamask/gas-fee-controller@npm:26.2.4"
   dependencies:
@@ -6632,9 +6619,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-controller@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "@metamask/gator-permissions-controller@npm:4.2.1"
+"@metamask/gator-permissions-controller@npm:^4.2.1, @metamask/gator-permissions-controller@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "@metamask/gator-permissions-controller@npm:4.2.2"
   dependencies:
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^2.0.3"
@@ -6642,13 +6629,13 @@ __metadata:
     "@metamask/delegation-core": "npm:^2.2.1"
     "@metamask/delegation-deployments": "npm:^1.4.0"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/network-controller": "npm:^33.0.0"
+    "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^68.1.1"
+    "@metamask/transaction-controller": "npm:^68.2.2"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/7b2a1b3d4da4ed252c63ba3e62c1bec31a702aeac3c43ef5708f495dd92414cabeba64f1a63d46f09b6585175e5e18d9b385f5b88b26e492208c0818238ba9e3
+  checksum: 10/de022266b3cc02e176338d3dc031fb9d17f248c9682230b939efe1ffde04e53b83d7015ef751e105b1592e3722370004ea3a75526c7177f8fdd1d05fd62f2b12
   languageName: node
   linkType: hard
 
@@ -7654,7 +7641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^4.1.0, @metamask/remote-feature-flag-controller@npm:^4.2.0, @metamask/remote-feature-flag-controller@npm:^4.2.1, @metamask/remote-feature-flag-controller@npm:^4.2.2":
+"@metamask/remote-feature-flag-controller@npm:^4.2.0, @metamask/remote-feature-flag-controller@npm:^4.2.1, @metamask/remote-feature-flag-controller@npm:^4.2.2":
   version: 4.2.2
   resolution: "@metamask/remote-feature-flag-controller@npm:4.2.2"
   dependencies:
@@ -7738,40 +7725,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/shield-controller@npm:5.0.1"
+"@metamask/shield-controller@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "@metamask/shield-controller@npm:5.1.2"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/signature-controller": "npm:^39.0.1"
-    "@metamask/transaction-controller": "npm:^62.12.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.0.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/signature-controller": "npm:^39.2.1"
+    "@metamask/transaction-controller": "npm:^65.3.0"
     "@metamask/utils": "npm:^11.9.0"
     cockatiel: "npm:^3.1.2"
-  checksum: 10/6bb41aa452b9ba2a7dc4b22a904fadec8df4ca9d6a1ca5eb7af19a1747facfaf4724d82d98cf581db4df6a8f4dfc7a837fb47a5000cd55c4f014ff45ecdba3d8
+  checksum: 10/ab7e5681c65e2255f8f829106db831eaa7ca684370ae1ab8d404c7290d8b4b28f7a57b343d71fb361da8f8cad03bb8062014ec86877a4b9e02c732fdfadf83d0
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^39.0.1, @metamask/signature-controller@npm:^39.2.6":
-  version: 39.2.6
-  resolution: "@metamask/signature-controller@npm:39.2.6"
+"@metamask/signature-controller@npm:^39.2.1, @metamask/signature-controller@npm:^39.2.6":
+  version: 39.2.7
+  resolution: "@metamask/signature-controller@npm:39.2.7"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.2"
+    "@metamask/accounts-controller": "npm:^39.0.4"
     "@metamask/approval-controller": "npm:^9.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/gator-permissions-controller": "npm:^4.2.1"
+    "@metamask/gator-permissions-controller": "npm:^4.2.2"
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/logging-controller": "npm:^8.0.2"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/network-controller": "npm:^33.0.0"
+    "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/utils": "npm:^11.11.0"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/74480f42758ad748e4ef0ce0fdd85d0d4b15e7aa5e6e96a8017566487b47120ad75a1c8b6ed5dcd9058e40cbaccb377cc14496cfbb61c5dab567017d4e140652
+  checksum: 10/7da9d2b205518e9de74a51450e07de27d1d83628b4bd9bc689df7045efd69a7eb3e18c7163aa73ce8f428f50367bf4875522ae05a88b26ed2d22dcceb4f5006a
   languageName: node
   linkType: hard
 
@@ -8193,45 +8180,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.12.0":
-  version: 62.22.0
-  resolution: "@metamask/transaction-controller@npm:62.22.0"
-  dependencies:
-    "@ethereumjs/common": "npm:^4.4.0"
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@ethersproject/wallet": "npm:^5.7.0"
-    "@metamask/accounts-controller": "npm:^37.0.0"
-    "@metamask/approval-controller": "npm:^8.0.0"
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/core-backend": "npm:^6.1.1"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^26.0.3"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/network-controller": "npm:^30.0.0"
-    "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.1.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.9.0"
-    async-mutex: "npm:^0.5.0"
-    bignumber.js: "npm:^9.1.2"
-    bn.js: "npm:^5.2.1"
-    eth-method-registry: "npm:^4.0.0"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-    "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/84d7fffb169bcb7b97844339f167972161f1f3ea14b396f6888e709269d4e126a4a896fcc526a32980a624b934a5afbf5e482a8263cf3be692d9ba6e159dca29
-  languageName: node
-  linkType: hard
-
 "@metamask/transaction-controller@npm:^64.0.0":
   version: 64.4.0
   resolution: "@metamask/transaction-controller@npm:64.4.0"
@@ -8270,7 +8218,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^65.4.0":
+"@metamask/transaction-controller@npm:^65.3.0, @metamask/transaction-controller@npm:^65.4.0":
   version: 65.4.0
   resolution: "@metamask/transaction-controller@npm:65.4.0"
   dependencies:
@@ -33136,7 +33084,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^10.0.3"
     "@metamask/selected-network-controller": "npm:^26.1.4"
-    "@metamask/shield-controller": "npm:^5.0.1"
+    "@metamask/shield-controller": "npm:^5.1.2"
     "@metamask/signature-controller": "npm:^39.2.6"
     "@metamask/skills": "npm:^0.1.0"
     "@metamask/smart-transactions-controller": "npm:^24.2.2"
