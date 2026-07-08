@@ -232,6 +232,7 @@ jobs:
 
       - name: Verify artifact attestation
         if: ${{ !inputs.dry-run }}
+        id: verify-attestation
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZIP_NAME: ${{ env.ZIP_NAME }}
@@ -245,6 +246,7 @@ jobs:
 
       - name: Verify SHA256SUMS
         if: ${{ !inputs.dry-run }}
+        id: verify-sha256sums
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZIP_NAME: ${{ env.ZIP_NAME }}
@@ -371,8 +373,8 @@ jobs:
             echo "|-------|-------|"
             echo "| HTTP status | \`${{ steps.cws-upload.outputs.http_code || 'n/a' }}\` |"
             echo "| CWS uploadState | \`${{ steps.cws-upload.outputs.upload_state || 'n/a' }}\` |"
-            echo "| Attestation verified | ✅ |"
-            echo "| SHA256SUMS verified | ✅ |"
+            echo "| Attestation verified | ${{ steps.verify-attestation.outcome == 'success' && '✅' || '❌' }} |"
+            echo "| SHA256SUMS verified | ${{ steps.verify-sha256sums.outcome == 'success' && '✅' || '❌' }} |"
             echo "| Published to users | no (upload only) |"
             echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
           } >> "${GITHUB_STEP_SUMMARY}"
