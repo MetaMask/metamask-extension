@@ -37,6 +37,7 @@ import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscr
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
+import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -54,6 +55,8 @@ jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
 const mockGetIsShieldSubscriptionActive = jest.mocked(
   getIsShieldSubscriptionActive,
 );
+
+jest.mock('../lib/transaction/sentinel-api');
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -1225,6 +1228,22 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(['0x123']);
+      });
+    });
+  });
+
+  describe('isSendBundleSupported', () => {
+    it('returns whether the sendBundle feature is supported for the chain', async () => {
+      jest.mocked(isSendBundleSupported).mockResolvedValue(true);
+
+      await withService(async ({ rootMessenger }) => {
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:isSendBundleSupported',
+          '0x1',
+        );
+
+        expect(isSendBundleSupported).toHaveBeenCalledWith('0x1');
+        expect(result).toBe(true);
       });
     });
   });
