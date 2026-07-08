@@ -2678,9 +2678,11 @@ async function initOrRestoreBackground() {
   return isInitialized;
 }
 
-export const backgroundInitOrRestore = initOrRestoreBackground().catch((error) => {
-  log.error('initOrRestoreBackground failed', error);
-});
+export const backgroundInitOrRestore = initOrRestoreBackground().catch(
+  (error) => {
+    log.error('initOrRestoreBackground failed', error);
+  },
+);
 
 if (inTest) {
   // listen for test messages from the background
