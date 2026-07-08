@@ -47,7 +47,12 @@ import {
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 
 type CompleteOnboardingFromCompletionPageOptions = {
-  onSidePanelOpened?: () => void;
+  /**
+   * When false, skips the immediate `browser.sidePanel.open()` call.
+   * Used by `OnboardingCompletionRoute` auto-complete on return visits, where
+   * completion runs from a `useEffect` without a user gesture.
+   */
+  openSidePanel?: boolean;
 };
 
 /**
@@ -205,12 +210,15 @@ export function useOnboardingCompletion() {
                 currentWindow: true,
               });
               if (tabs && tabs.length > 0) {
-                if (shouldOpenSidePanel) {
+                // `browser.sidePanel.open()` requires a user gesture. Skip the call when:
+                // - `openSidePanel` is false (auto-complete on return visit), or
+                // - the deferred deep link is Navigate/Interstitial (`shouldOpenSidePanel`).
+                // If `.open()` throws, the outer catch falls through to popup completion.
+                if (shouldOpenSidePanel && options?.openSidePanel !== false) {
                   await browserWithSidePanel.sidePanel.open({
                     windowId: tabs[0].windowId,
                   });
                   setIsSidePanelOpen(true);
-                  options?.onSidePanelOpened?.();
                 }
                 await dispatch(setUseSidePanelAsDefault(true));
                 await dispatch(setCompletedOnboardingWithSidepanel());

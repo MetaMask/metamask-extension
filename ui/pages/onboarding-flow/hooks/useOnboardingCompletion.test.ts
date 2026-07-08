@@ -354,6 +354,69 @@ describe('useOnboardingCompletion', () => {
       });
     });
 
+    it('enables side panel as default without opening it when openSidePanel is false', async () => {
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        mockState,
+      );
+
+      await act(async () => {
+        await result.current.completeOnboardingFromCompletionPage({
+          openSidePanel: false,
+        });
+      });
+
+      await waitFor(() => {
+        expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+        expect(mockSetPreference).toHaveBeenCalledWith(
+          'useSidePanelAsDefault',
+          true,
+        );
+        expect(mockCompleteOnboarding).toHaveBeenCalled();
+        expect(mockUseNavigate).not.toHaveBeenCalled();
+      });
+    });
+
+    it('falls through to popup completion when opening the side panel fails', async () => {
+      const browserMock = jest.requireMock('webextension-polyfill');
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockRejectedValue(
+        new Error(
+          '`sidePanel.open()` may only be called in response to a user gesture.',
+        ),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        mockState,
+      );
+
+      await act(async () => {
+        await result.current.completeOnboardingFromCompletionPage();
+      });
+
+      await waitFor(() => {
+        expect(mockSetPreference).not.toHaveBeenCalledWith(
+          'useSidePanelAsDefault',
+          true,
+        );
+        expect(mockCompleteOnboarding).toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+      consoleErrorSpy.mockRestore();
+    });
+
     it('skips side panel opening when deferred deep link with Navigate type is present', async () => {
       const testRoute = '/home';
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({

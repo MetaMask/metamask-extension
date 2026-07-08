@@ -19,7 +19,11 @@ export default function OnboardingCompletionRoute({
       return;
     }
 
-    completeOnboardingFromCompletionPage().catch((error) => {
+    completeOnboardingFromCompletionPage({
+      // No user gesture here; skip `sidePanel.open()` but still enable side panel on
+      // the next toolbar click via `setUseSidePanelAsDefault` in the hook.
+      openSidePanel: false,
+    }).catch((error) => {
       console.error('Failed to auto-complete onboarding:', error);
       setAutoCompleteFailed(true);
     });
