@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
-import { isEqual } from 'lodash';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   isBalanceCached,
@@ -21,8 +20,7 @@ const EthOverview = ({ className }) => {
   const chainId = useSelector(getCurrentChainId);
   const balance = useSelector(getSelectedAccountCachedBalance);
 
-  // FIXME: This causes re-renders, so use isEqual to avoid this
-  const account = useSelector(getSelectedInternalAccount, isEqual);
+  const account = useSelector(getSelectedInternalAccount);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||

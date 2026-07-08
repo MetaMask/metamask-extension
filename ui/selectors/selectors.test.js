@@ -1309,6 +1309,76 @@ describe('Selectors', () => {
     expect(useCurrencyRateCheck).toStrictEqual(true);
   });
 
+  describe('#getNames', () => {
+    it('returns a stable empty object when names are unavailable', () => {
+      const result1 = selectors.getNames({ metamask: {} });
+      const result2 = selectors.getNames({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the names slice is unchanged', () => {
+      const names = {
+        ethereumAddress: {
+          '0xabc': {
+            '0x1': {
+              name: 'Test Name',
+            },
+          },
+        },
+      };
+      const state = {
+        metamask: {
+          names,
+        },
+      };
+
+      const result1 = selectors.getNames(state);
+      const result2 = selectors.getNames({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(names);
+    });
+  });
+
+  describe('#getNameSources', () => {
+    it('returns a stable empty object when name sources are unavailable', () => {
+      const result1 = selectors.getNameSources({ metamask: {} });
+      const result2 = selectors.getNameSources({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the name sources slice is unchanged', () => {
+      const nameSources = {
+        ens: { label: 'ENS' },
+      };
+      const state = {
+        metamask: {
+          nameSources,
+        },
+      };
+
+      const result1 = selectors.getNameSources(state);
+      const result2 = selectors.getNameSources({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(nameSources);
+    });
+  });
+
   it('#getShowOutdatedBrowserWarning returns false if outdatedBrowserWarningLastShown is less than 2 days ago', () => {
     mockState.metamask.showOutdatedBrowserWarning = true;
     const timestamp = new Date();
