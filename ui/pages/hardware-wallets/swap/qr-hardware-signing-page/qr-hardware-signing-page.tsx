@@ -46,18 +46,16 @@ export const QrHardwareSigningPage = ({
 
   return (
     <Box
-      className="qr-hardware-signing-page"
+      className="qr-hardware-signing-page flex-1 w-full min-h-full"
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
-      style={{ flex: 1, width: '100%', minHeight: '100%' }}
       data-testid="qr-hardware-signing-page"
     >
       <Box
-        className="qr-hardware-signing-page__header"
+        className="w-full"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         padding={4}
-        style={{ width: '100%' }}
       >
         <ButtonIcon
           size={ButtonIconSize.Md}
@@ -68,15 +66,14 @@ export const QrHardwareSigningPage = ({
         />
       </Box>
       <Box
-        className="qr-hardware-signing-page__content"
+        className="flex-1 w-full"
         flexDirection={BoxFlexDirection.Column}
-        gap={4}
+        gap={6}
         paddingHorizontal={4}
         alignItems={BoxAlignItems.Center}
-        style={{ flex: 1, width: '100%' }}
       >
         <Box
-          className="qr-hardware-signing-page__viewport"
+          className="qr-hardware-signing-page__viewport w-full min-h-[293px] rounded-lg overflow-hidden"
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Center}
           backgroundColor={BoxBackgroundColor.BackgroundMuted}
@@ -99,7 +96,7 @@ export const QrHardwareSigningPage = ({
           )}
         </Box>
         <Text
-          className="qr-hardware-signing-page__title"
+          className="w-full"
           color={TextColor.TextDefault}
           variant={TextVariant.HeadingLg}
           data-testid="qr-hardware-signing-page__title"
@@ -108,11 +105,10 @@ export const QrHardwareSigningPage = ({
         </Text>
       </Box>
       <Box
-        className="qr-hardware-signing-page__footer"
+        className="w-full"
         flexDirection={BoxFlexDirection.Column}
         gap={4}
         padding={4}
-        style={{ width: '100%' }}
       >
         {!isScanningSignature && (
           <Button
