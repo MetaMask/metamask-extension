@@ -3,24 +3,8 @@
 import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
-import {
-  addMv3ServiceWorkerDiagnosticErrorListeners,
-  getDiagnosticError,
-  logMv3ServiceWorkerDiagnostic,
-} from './scripts/lib/mv3-service-worker-diagnostics';
 
 const { chrome } = globalThis;
-
-addMv3ServiceWorkerDiagnosticErrorListeners();
-logMv3ServiceWorkerDiagnostic('service-worker-module-start', {
-  environment: process.env.METAMASK_ENVIRONMENT,
-  buildType: process.env.METAMASK_BUILD_TYPE,
-  inTest: Boolean(process.env.IN_TEST),
-  hasChromeRuntime: Boolean(chrome?.runtime),
-  hasBrowserRuntime: Boolean(globalThis.browser?.runtime),
-  hasFetch: typeof globalThis.fetch === 'function',
-  hasIndexedDB: Boolean(globalThis.indexedDB),
-});
 
 // this needs to be run early so we can begin listening to these browser events
 // as soon as possible
@@ -37,49 +21,32 @@ let runImportScriptsInitiated = false;
 async function runImportScripts() {
   // Bail if we've already run importScripts
   if (runImportScriptsInitiated) {
-    logMv3ServiceWorkerDiagnostic('background-import-skipped');
     return;
   }
   runImportScriptsInitiated = true;
 
   const startImportScriptsTime = performance.now();
 
-  logMv3ServiceWorkerDiagnostic('background-import-start');
-
-  try {
-    // eslint-disable-next-line import-x/extensions
-    await import('./scripts/background.js');
-  } catch (error) {
-    logMv3ServiceWorkerDiagnostic('background-import-failed', {
-      error: getDiagnosticError(error),
-    });
-    throw error;
-  }
+  // eslint-disable-next-line import-x/extensions
+  await import('./scripts/background.js');
 
   const endImportScriptsTime = performance.now();
-  const durationSeconds =
-    (endImportScriptsTime - startImportScriptsTime) / 1000;
 
   // for performance metrics/reference
-  console.log(`importScripts completed in ${durationSeconds} seconds`);
-  logMv3ServiceWorkerDiagnostic('background-import-complete', {
-    durationSeconds,
-  });
+  console.log(
+    `importScripts completed in ${
+      (endImportScriptsTime - startImportScriptsTime) / 1000
+    } seconds`,
+  );
 }
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
-self.addEventListener('install', () => {
-  logMv3ServiceWorkerDiagnostic('install-event');
-  runImportScripts();
-});
+self.addEventListener('install', runImportScripts);
 
 // listen for connection events from other contexts, and respond to liveness
 // checks, and ping them to let them know we're listening.
 chrome.runtime.onConnect.addListener((port) => {
-  logMv3ServiceWorkerDiagnostic('runtime-on-connect', {
-    portName: port.name,
-  });
   console.log(
     'MetaMask service worker: Received connection from port',
     port.name,
@@ -115,6 +82,5 @@ chrome.runtime.onConnect.addListener((port) => {
 // @ts-expect-error - typescript doesn't know about this
 // eslint-disable-next-line no-undef
 if (self.serviceWorker.state === 'activated') {
-  logMv3ServiceWorkerDiagnostic('service-worker-already-activated');
   runImportScripts();
 }
