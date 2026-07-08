@@ -634,6 +634,7 @@
     "OnboardingController": {
       "completedOnboarding": false,
       "firstTimeFlowType": null,
+      "hasSeenOnboardingCompletionPage": false,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
