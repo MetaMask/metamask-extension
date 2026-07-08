@@ -450,7 +450,7 @@
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.2.0",
     "@metamask/transaction-controller": "^68.1.1",
-    "@metamask/transaction-pay-controller": "^23.17.2",
+    "@metamask/transaction-pay-controller": "patch:@metamask/transaction-pay-controller@npm%3A23.17.2#~/.yarn/patches/@metamask-transaction-pay-controller-npm-23.17.2-56ce6c455f.patch",
     "@metamask/tron-wallet-snap": "^1.28.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^11.11.0",
