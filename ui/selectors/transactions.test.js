@@ -2165,26 +2165,43 @@ describe('Transaction Selectors', () => {
       expect(getCurrentNetworkTransactions(state)).toStrictEqual([mainnetTx]);
     });
 
-    it('memoizes results when called with same state', () => {
-      const tx = {
+    it('returns cached reference when non-current-network transactions change', () => {
+      const mainnetTx = {
         id: 1,
         chainId: CHAIN_IDS.MAINNET,
         time: 100,
         status: TransactionStatus.confirmed,
       };
 
-      const state = {
+      const state1 = {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-          transactions: [tx],
+          transactions: [mainnetTx],
         },
       };
 
-      const result1 = getCurrentNetworkTransactions(state);
-      const result2 = getCurrentNetworkTransactions(state);
+      const result1 = getCurrentNetworkTransactions(state1);
 
-      expect(result1).toBe(result2);
-      expect(result1).toStrictEqual([tx]);
+      const state2 = {
+        ...state1,
+        metamask: {
+          ...state1.metamask,
+          transactions: [
+            mainnetTx,
+            {
+              id: 2,
+              chainId: CHAIN_IDS.GOERLI,
+              time: 200,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const result2 = getCurrentNetworkTransactions(state2);
+
+      expect(result2).toBe(result1);
+      expect(result2).toStrictEqual([mainnetTx]);
     });
   });
 });
