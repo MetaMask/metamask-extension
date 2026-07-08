@@ -55,5 +55,10 @@ export async function fetchNotificationCategories(
   locale: string,
 ): Promise<NotificationCategoryMetadata[]> {
   const language = locale.toLowerCase().split(/[-_]/u)[0];
-  return CATEGORIES_BY_LOCALE[language] ?? CATEGORIES_BY_LOCALE.en;
+  return new Promise((resolve) =>
+    setTimeout(
+      () => resolve(CATEGORIES_BY_LOCALE[language] ?? CATEGORIES_BY_LOCALE.en),
+      13000,
+    ),
+  );
 }
