@@ -39,7 +39,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 215,
+      "currentMigrationVersion": 216,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -2063,6 +2063,7 @@
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -2304,6 +2305,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 215
+    "version": 216
   }
 }

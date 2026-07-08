@@ -48,7 +48,9 @@ import {
   getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
 import {
+  toggleBasicFunctionality,
   toggleExternalServices,
+  setPreference,
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
@@ -58,6 +60,7 @@ import {
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
   buildInterstitialRoute,
@@ -81,6 +84,8 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
+  const isBasicFunctionalityToggleEnabled =
+    getIsBasicFunctionalityConsolidationEnabledInBuild();
   const backupAndSyncOnboardingToggleState = useSelector(
     getBackupAndSyncOnboardingToggleState,
   );
@@ -285,8 +290,16 @@ export default function CreationSuccessful() {
       );
     }
 
+    if (isBasicFunctionalityToggleEnabled) {
+      await dispatch(
+        setPreference('isBasicFunctionalityConsolidatedEnabled', true, false),
+      );
+    }
+
     await dispatch(
-      toggleExternalServices(externalServicesOnboardingToggleState),
+      isBasicFunctionalityToggleEnabled
+        ? toggleBasicFunctionality(externalServicesOnboardingToggleState)
+        : toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
     if (!backupAndSyncOnboardingToggleState) {
@@ -366,6 +379,7 @@ export default function CreationSuccessful() {
     isOnboardingCompleted,
     dispatch,
     externalServicesOnboardingToggleState,
+    isBasicFunctionalityToggleEnabled,
     backupAndSyncOnboardingToggleState,
     isSidePanelEnabled,
     navigate,
