@@ -2,6 +2,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { MetaMaskReduxState as SelectorState } from '../store/store';
 import {
   selectBridgeApprovalTxIds,
   selectCrossChainBridgeSourceTxIds,
