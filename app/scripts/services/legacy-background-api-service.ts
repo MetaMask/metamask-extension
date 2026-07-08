@@ -43,7 +43,11 @@ import {
   TransactionControllerUpdateEditableParamsAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
-import { CurrencyRateControllerSetCurrentCurrencyAction } from '@metamask/assets-controllers';
+import {
+  CurrencyRateControllerSetCurrentCurrencyAction,
+  TokenDetectionControllerDisableAction,
+  TokenDetectionControllerEnableAction,
+} from '@metamask/assets-controllers';
 import { AssetsControllerSetSelectedCurrencyAction } from '@metamask/assets-controller';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
@@ -113,7 +117,18 @@ import {
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
-import { SubscriptionControllerStopAllPollingAction } from '@metamask/subscription-controller';
+import {
+  SubscriptionControllerGetStateAction,
+  SubscriptionControllerStopAllPollingAction,
+} from '@metamask/subscription-controller';
+import {
+  ShieldControllerStartAction,
+  ShieldControllerStopAction,
+} from '@metamask/shield-controller';
+import {
+  GasFeeControllerDisableNonRPCGasFeeApisAction,
+  GasFeeControllerEnableNonRPCGasFeeApisAction,
+} from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { cloneDeep } from 'lodash';
 import {
@@ -121,6 +136,7 @@ import {
   isPublicEndpointUrl,
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import {
   ASSETS_UNIFY_STATE_VERSION_1,
   AssetsUnifyStateFeatureFlag,
@@ -139,7 +155,10 @@ import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/o
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { TransactionControllerInitMessenger } from '../messenger-client-init/messengers/transaction-controller-messenger';
-import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
+import {
+  PreferencesControllerSetPasswordForgottenAction,
+  PreferencesControllerToggleExternalServicesAction,
+} from '../controllers/preferences-controller-method-action-types';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerCreateEventFragmentAction,
@@ -195,6 +214,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
+  'toggleExternalServices',
   'unMarkPasswordForgotten',
   'upsertTransactionUIMetricsFragment',
 ] as const;
@@ -224,6 +244,8 @@ type AllowedActions =
   | BridgeStatusControllerWipeBridgeStatusAction
   | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
+  | GasFeeControllerDisableNonRPCGasFeeApisAction
+  | GasFeeControllerEnableNonRPCGasFeeApisAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
   | KeyringControllerExportAccountAction
@@ -261,6 +283,7 @@ type AllowedActions =
   | PhishingControllerMaybeUpdateStateAction
   | PhishingControllerTestOriginAction
   | PreferencesControllerSetPasswordForgottenAction
+  | PreferencesControllerToggleExternalServicesAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
@@ -275,9 +298,14 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | ShieldControllerStartAction
+  | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapInterfaceControllerDeleteInterfaceAction
+  | SubscriptionControllerGetStateAction
   | SubscriptionControllerStopAllPollingAction
+  | TokenDetectionControllerDisableAction
+  | TokenDetectionControllerEnableAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
@@ -1530,6 +1558,46 @@ export class LegacyBackgroundApiService {
             }),
           );
           break;
+      }
+    }
+  }
+
+  /**
+   * Toggles external services on or off.
+   *
+   * When enabled, token detection and non-RPC gas fee APIs are started, and the
+   * shield service is started if the user has an active shield subscription.
+   * When disabled, those services are stopped, subscription polling is halted,
+   * and the shield service is stopped if applicable.
+   *
+   * @param useExternal - Whether external services should be enabled.
+   */
+  toggleExternalServices(useExternal: boolean): void {
+    this.#messenger.call(
+      'PreferencesController:toggleExternalServices',
+      useExternal,
+    );
+
+    const subscriptionState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+      subscriptionState.subscriptions,
+    );
+
+    if (useExternal) {
+      this.#messenger.call('TokenDetectionController:enable');
+      this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
+      if (hasActiveShieldSubscription) {
+        this.#messenger.call('ShieldController:start');
+      }
+    } else {
+      this.#messenger.call('TokenDetectionController:disable');
+      this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
+      // stop polling for the subscriptions if external services are disabled
+      this.#messenger.call('SubscriptionController:stopAllPolling');
+      if (hasActiveShieldSubscription) {
+        this.#messenger.call('ShieldController:stop');
       }
     }
   }

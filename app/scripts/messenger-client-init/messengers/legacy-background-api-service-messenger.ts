@@ -103,6 +103,14 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PermissionController:acceptPermissionsRequest',
       'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',
+      'PreferencesController:toggleExternalServices',
+      'SubscriptionController:getState',
+      'TokenDetectionController:enable',
+      'TokenDetectionController:disable',
+      'GasFeeController:enableNonRPCGasFeeApis',
+      'GasFeeController:disableNonRPCGasFeeApis',
+      'ShieldController:start',
+      'ShieldController:stop',
     ],
   });
 

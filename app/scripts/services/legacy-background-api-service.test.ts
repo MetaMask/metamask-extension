@@ -33,6 +33,7 @@ import {
 } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
@@ -44,6 +45,15 @@ import {
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
 
 jest.mock('../lib/transaction/containers/enforced-simulations');
+
+jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
+  ...jest.requireActual('../../../shared/lib/shield/subscription-utils'),
+  getIsShieldSubscriptionActive: jest.fn(),
+}));
+
+const mockGetIsShieldSubscriptionActive = jest.mocked(
+  getIsShieldSubscriptionActive,
+);
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -3103,6 +3113,148 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('toggleExternalServices', () => {
+    afterEach(() => {
+      mockGetIsShieldSubscriptionActive.mockReset();
+    });
+
+    /**
+     * Registers handlers for all actions used by `toggleExternalServices`.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @returns The registered mock handlers, keyed by action.
+     */
+    function registerToggleExternalServicesHandlers(
+      rootMessenger: RootMessenger,
+    ) {
+      const handlers = {
+        toggleExternalServices: jest.fn(),
+        getState: jest.fn().mockReturnValue({ subscriptions: [] }),
+        enableTokenDetection: jest.fn(),
+        disableTokenDetection: jest.fn(),
+        enableGasFeeApis: jest.fn(),
+        disableGasFeeApis: jest.fn(),
+        stopAllPolling: jest.fn(),
+        startShield: jest.fn(),
+        stopShield: jest.fn(),
+      };
+      rootMessenger.registerActionHandler(
+        'PreferencesController:toggleExternalServices',
+        handlers.toggleExternalServices,
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:getState',
+        handlers.getState,
+      );
+      rootMessenger.registerActionHandler(
+        'TokenDetectionController:enable',
+        handlers.enableTokenDetection,
+      );
+      rootMessenger.registerActionHandler(
+        'TokenDetectionController:disable',
+        handlers.disableTokenDetection,
+      );
+      rootMessenger.registerActionHandler(
+        'GasFeeController:enableNonRPCGasFeeApis',
+        handlers.enableGasFeeApis,
+      );
+      rootMessenger.registerActionHandler(
+        'GasFeeController:disableNonRPCGasFeeApis',
+        handlers.disableGasFeeApis,
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:stopAllPolling',
+        handlers.stopAllPolling,
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:start',
+        handlers.startShield,
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:stop',
+        handlers.stopShield,
+      );
+      return handlers;
+    }
+
+    it('enables external services and starts shield when a subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(true);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          true,
+        );
+
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(true);
+        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.startShield).toHaveBeenCalledTimes(1);
+        expect(handlers.disableTokenDetection).not.toHaveBeenCalled();
+        expect(handlers.stopAllPolling).not.toHaveBeenCalled();
+        expect(handlers.stopShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('enables external services without starting shield when no subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(false);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          true,
+        );
+
+        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.startShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('disables external services and stops shield when a subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(true);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          false,
+        );
+
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(false);
+        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
+        expect(handlers.stopShield).toHaveBeenCalledTimes(1);
+        expect(handlers.enableTokenDetection).not.toHaveBeenCalled();
+        expect(handlers.startShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('disables external services without stopping shield when no subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(false);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          false,
+        );
+
+        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
+        expect(handlers.stopShield).not.toHaveBeenCalled();
+      });
+    });
+  });
 });
 
 /**
@@ -3237,6 +3389,14 @@ function getMessenger(
       'PermissionController:acceptPermissionsRequest',
       'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',
+      'PreferencesController:toggleExternalServices',
+      'SubscriptionController:getState',
+      'TokenDetectionController:enable',
+      'TokenDetectionController:disable',
+      'GasFeeController:enableNonRPCGasFeeApis',
+      'GasFeeController:disableNonRPCGasFeeApis',
+      'ShieldController:start',
+      'ShieldController:stop',
     ],
   });
 
