@@ -1,7 +1,9 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { providerErrors } from '@metamask/rpc-errors';
 import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
 import { SignatureStepStatus } from './types';
 import {
+  cleanupPendingApproval,
   getStepStatus,
   hasApprovalTxForRequestId,
   getTitle,
@@ -11,6 +13,15 @@ import {
   isQrHardwareSignRequest,
   getTransactionField,
 } from './hardware-wallet-signatures.utils';
+
+jest.mock('../../../store/actions', () => ({
+  rejectPendingApproval: jest.fn(() => 'REJECT_ACTION'),
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const mockRejectPendingApproval = jest.requireMock(
+  '../../../store/actions',
+).rejectPendingApproval;
 
 const t = (key: string, params?: (string | undefined)[]) => {
   if (params) {
@@ -493,6 +504,27 @@ describe('hardware-wallet-signatures utils', () => {
 
     it('returns undefined when field value is not a string', () => {
       expect(getTransactionField({ from: 123 }, 'from')).toBeUndefined();
+    });
+  });
+
+  describe('cleanupPendingApproval', () => {
+    const dispatch = jest.fn();
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('dispatches rejectPendingApproval with a user-rejected error', () => {
+      cleanupPendingApproval(dispatch as never, 'approval-123');
+
+      expect(mockRejectPendingApproval).toHaveBeenCalledWith(
+        'approval-123',
+        expect.objectContaining({
+          code: providerErrors.userRejectedRequest().code,
+          message: providerErrors.userRejectedRequest().message,
+        }),
+      );
+      expect(dispatch).toHaveBeenCalledWith('REJECT_ACTION');
     });
   });
 });
