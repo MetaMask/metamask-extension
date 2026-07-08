@@ -13,6 +13,7 @@ import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPricesV3,
+  mockTokenMetadataApis,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -28,11 +29,19 @@ describe('Token Details', function () {
       .build(),
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
+    },
+    unifiedEvmAccountsApiBalances: {
+      mainnetAdditionalBalances: [
+        {
+          assetId: `eip155:1/erc20:${tokenAddress.toLowerCase()}`,
+          balance: '1',
+        },
+      ],
     },
   };
 
@@ -42,6 +51,9 @@ describe('Token Details', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+          ])),
           await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
@@ -52,7 +64,12 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
+        await tokensTab.importCustomTokenByChain(
+          chainId,
+          tokenAddress,
+          symbol,
+          '18',
+        );
         await tokensTab.dismissTokenImportedMessage();
         await tokensTab.openTokenDetails(symbol);
         await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
@@ -82,6 +99,9 @@ describe('Token Details', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+          ])),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
               price: ethConversionInUsd,
@@ -111,7 +131,12 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
+        await tokensTab.importCustomTokenByChain(
+          chainId,
+          tokenAddress,
+          symbol,
+          '18',
+        );
         await tokensTab.dismissTokenImportedMessage();
         await tokensTab.openTokenDetails(symbol);
         await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);

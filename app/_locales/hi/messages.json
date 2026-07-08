@@ -1020,9 +1020,6 @@
   "addAccount": {
     "message": "अकाउंट जोड़ें"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask का इस्तेमाल करके, आपके द्वारा प्राप्त किए गए टोकन जोड़ें"
-  },
   "addAlias": {
     "message": "उपनाम जोड़ें"
   },
@@ -2970,9 +2967,6 @@
   "customSlippage": {
     "message": "कस्टम"
   },
-  "customToken": {
-    "message": "कस्टम टोकन"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "कोई भी टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली वर्शन को बनाना शामिल है। $1 के बारे में जानें"
   },
@@ -3502,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट इनेबल करें"
   },
-  "enableFromSettings": {
-    "message": " इसे सेटिंग्स से इनेबल करें।"
-  },
   "enableSmartContractAccount": {
     "message": "स्मार्ट अकाउंट का उपयोग करें"
   },
@@ -3531,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "आपने जो RPC URL डाला है उसने अलग चेन ID ($1) लौटाई है।",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "एडवांस्ड टोकन डिटेक्शन वर्तमान में $1 पर उपलब्ध है। $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask आपको सीधे आपके ब्राउज़़र के एड्रेस बार में ENS डोमेन देखने की सुविधा देता है। यह ऐसे काम करता है:"
@@ -4377,15 +4365,6 @@
   "importSecretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें"
   },
-  "importTokenQuestion": {
-    "message": "टोकन इम्पोर्ट करें?"
-  },
-  "importTokenWarning": {
-    "message": "कोई भी किसी भी नाम के साथ एक टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली वर्शन शामिल हैं। अपने जोखिम पर जोड़ें और ट्रेड करें!"
-  },
-  "importTokensCamelCase": {
-    "message": "टोकन इम्पोर्ट करें"
-  },
   "importTokensError": {
     "message": "हम टोकनों को इंपोर्ट नहीं कर सके। कृपया बाद में फिर से कोशिश करें।"
   },
@@ -4683,9 +4662,6 @@
   },
   "lightTheme": {
     "message": "हल्का"
-  },
-  "likeToImportToken": {
-    "message": "क्या आप इस टोकन को इंपोर्ट करना चाहेंगे?"
   },
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
@@ -5257,9 +5233,6 @@
   },
   "musdTermsApply": {
     "message": "नियम लागू।"
-  },
-  "mustSelectOne": {
-    "message": "कम से कम 1 टोकन को चुनना होगा।"
   },
   "name": {
     "message": "नाम"
@@ -10246,9 +10219,6 @@
   "tokenDecimal": {
     "message": "टोकन डेसिमल"
   },
-  "tokenDecimalFetchFailed": {
-    "message": "टोकन डेसीमल की आवश्यकता है। इसे: $1 पर पाएं"
-  },
   "tokenDetails": {
     "message": "टोकन विवरण"
   },
@@ -10491,29 +10461,8 @@
   "turnOn": {
     "message": "चालू करें"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "सूचनाएँ चालू करें"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "चालू करें"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "नोटिफिकेशंस बनाने में गड़बड़ी हुई। कृपया बाद में फिर से प्रयास करें।"
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "नोटिफिकेशंस के साथ आपके वॉलेट में क्या हो रहा है, इसकी जानकारी रखें।"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "नोटिफिकेशंस सेटिंग्स।"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "जानें कि इस फीचर का उपयोग करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "वॉलेट नोटिफिकेशंस का उपयोग करने के लिए, हम आपके डिवाइस में कुछ सेटिंग्स को सिंक करने के लिए एक प्रोफ़ाइल का उपयोग करते हैं। $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "आप किसी भी समय $1 में नोटिफिकेशंस बंद कर सकते हैं"
   },
   "turnOnTokenDetection": {
     "message": "एडवांस्ड टोकन डिटेक्शन चालू करें"

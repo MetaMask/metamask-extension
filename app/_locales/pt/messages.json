@@ -1020,9 +1020,6 @@
   "addAccount": {
     "message": "Adicionar conta"
   },
-  "addAcquiredTokens": {
-    "message": "Adicione os tokens que você adquiriu usando a MetaMask"
-  },
   "addAlias": {
     "message": "Adicionar pseudônimo"
   },
@@ -2970,9 +2967,6 @@
   "customSlippage": {
     "message": "Personalizado"
   },
-  "customToken": {
-    "message": "Token personalizado"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Qualquer pessoa pode criar um token, inclusive versões falsas de tokens existentes. Saiba mais sobre $1"
   },
@@ -3502,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
   },
-  "enableFromSettings": {
-    "message": " Ative nas Configurações."
-  },
   "enableSmartContractAccount": {
     "message": "Usar conta inteligente"
   },
@@ -3531,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "O URL da RPC inserido retornou um ID de cadeia diferente ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "A detecção aprimorada de tokens está disponível no momento em $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "A MetaMask permite que você veja domínios ENS direto na barra de endereços do seu navegador. Veja como funciona:"
@@ -4377,15 +4365,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Importar Frase de Recuperação Secreta"
   },
-  "importTokenQuestion": {
-    "message": "Importar token?"
-  },
-  "importTokenWarning": {
-    "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
-  },
-  "importTokensCamelCase": {
-    "message": "Importar tokens"
-  },
   "importTokensError": {
     "message": "Não foi possível importar os tokens. Volte a tentar mais tarde."
   },
@@ -4683,9 +4662,6 @@
   },
   "lightTheme": {
     "message": "Claro"
-  },
-  "likeToImportToken": {
-    "message": "Gostaria de importar esse token?"
   },
   "likeToImportTokens": {
     "message": "Você gostaria de importar esses tokens?"
@@ -5257,9 +5233,6 @@
   },
   "musdTermsApply": {
     "message": "Sujeito a termos e condições."
-  },
-  "mustSelectOne": {
-    "message": "Selecione pelo menos 1 token."
   },
   "name": {
     "message": "Nome"
@@ -10246,9 +10219,6 @@
   "tokenDecimal": {
     "message": "Decimal do token"
   },
-  "tokenDecimalFetchFailed": {
-    "message": "É necessário o decimal do token. Encontre-o em: $1"
-  },
   "tokenDetails": {
     "message": "Dados do token"
   },
@@ -10491,29 +10461,8 @@
   "turnOn": {
     "message": "Ativar"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Ativar notificações"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Ativar"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Ocorreu um erro ao criar as notificações. Tente novamente mais tarde."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Fique por dentro do que acontece em sua carteira com as notificações."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "configurações de notificações."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Saiba como protegemos sua privacidade enquanto usa este recurso."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Para usar as notificações da carteira, nós usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Você pode desativar as notificações quando quiser no $1"
   },
   "turnOnTokenDetection": {
     "message": "Ativar detecção avançada de token"

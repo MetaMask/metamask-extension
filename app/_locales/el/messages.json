@@ -1020,9 +1020,6 @@
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
-  "addAcquiredTokens": {
-    "message": "Προσθέστε τα tokens που αποκτήσατε χρησιμοποιώντας το MetaMask"
-  },
   "addAlias": {
     "message": "Προσθήκη ψευδωνύμου"
   },
@@ -2970,9 +2967,6 @@
   "customSlippage": {
     "message": "Προσαρμοσμένο"
   },
-  "customToken": {
-    "message": "Προσαρμοσμένο token"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Πριν εισαγάγετε το token με μη αυτόματο τρόπο, βεβαιωθείτε ότι το εμπιστεύεστε. Μάθετε σχετικά με $1."
   },
@@ -3502,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " Ενεργοποίηση αυτόματου εντοπισμού"
   },
-  "enableFromSettings": {
-    "message": " Ενεργοποιήστε το από τις Ρυθμίσεις."
-  },
   "enableSmartContractAccount": {
     "message": "Χρήση έξυπνου λογαριασμού"
   },
@@ -3531,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "Η διεύθυνση URL του RPC που εισαγάγατε επέστρεψε ένα διαφορετικό αναγνωριστικό αλυσίδας ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Ο βελτιωμένος εντοπισμός για token είναι επί του παρόντος διαθέσιμος στο $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "Το MetaMask σας επιτρέπει να βλέπετε τους τομείς ENS ακριβώς στη γραμμή διευθύνσεων του προγράμματος περιήγησής σας. Δείτε πώς λειτουργεί:"
@@ -4377,15 +4365,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Εισαγωγή της Μυστικής Φράσης Ανάκτησης"
   },
-  "importTokenQuestion": {
-    "message": "Εισαγωγή του token;"
-  },
-  "importTokenWarning": {
-    "message": "Οποιοσδήποτε μπορεί να δημιουργήσει ένα token με οποιοδήποτε όνομα, συμπεριλαμβανομένων ψεύτικων εκδόσεων υφιστάμενων tokens. Προσθέστε και ανταλλάξτε με δική σας ευθύνη!"
-  },
-  "importTokensCamelCase": {
-    "message": "Εισαγωγή tokens"
-  },
   "importTokensError": {
     "message": "Δεν μπορέσαμε να εισάγουμε τα tokens. Προσπαθήστε ξανά αργότερα."
   },
@@ -4683,9 +4662,6 @@
   },
   "lightTheme": {
     "message": "Ανοιχτόχρωμο"
-  },
-  "likeToImportToken": {
-    "message": "Θέλετε να εισαγάγετε αυτό το token;"
   },
   "likeToImportTokens": {
     "message": "Θέλετε να εισαγάγετε αυτά τα tokens;"
@@ -5257,9 +5233,6 @@
   },
   "musdTermsApply": {
     "message": "Ισχύουν όροι."
-  },
-  "mustSelectOne": {
-    "message": "Πρέπει να επιλέξετε τουλάχιστον 1 token."
   },
   "name": {
     "message": "Όνομα"
@@ -10246,9 +10219,6 @@
   "tokenDecimal": {
     "message": "Δεκαδικά ψηφία του token"
   },
-  "tokenDecimalFetchFailed": {
-    "message": "Απαιτείται δεκαδικό token. Βρείτε το σε: $1"
-  },
   "tokenDetails": {
     "message": "Λεπτομέρειες του token"
   },
@@ -10491,29 +10461,8 @@
   "turnOn": {
     "message": "Ενεργοποίηση"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Ενεργοποίηση των ειδοποιήσεων"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Ενεργοποίηση"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Προέκυψε σφάλμα κατά τη δημιουργία των ειδοποιήσεων. Προσπαθήστε ξανά αργότερα."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Μείνετε ενήμεροι για ό,τι συμβαίνει στο πορτοφόλι σας με τις ειδοποιήσεις"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "ρυθμίσεις ειδοποιήσεων."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας κατά τη χρήση αυτής της λειτουργίας."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Για να χρησιμοποιήσετε τις ειδοποιήσεις στο πορτοφόλι σας χρησιμοποιούμε ένα προφίλ για να συγχρονίσουμε ορισμένες ρυθμίσεις στις συσκευές σας. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Μπορείτε να απενεργοποιήσετε τις ειδοποιήσεις ανά πάσα στιγμή στις $1"
   },
   "turnOnTokenDetection": {
     "message": "Ενεργοποίηση της ενισχυμένης ανίχνευσης των token"

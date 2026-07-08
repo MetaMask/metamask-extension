@@ -1020,9 +1020,6 @@
   "addAccount": {
     "message": "Thêm tài khoản"
   },
-  "addAcquiredTokens": {
-    "message": "Thêm token mà bạn đã mua bằng MetaMask"
-  },
   "addAlias": {
     "message": "Thêm biệt danh"
   },
@@ -2970,9 +2967,6 @@
   "customSlippage": {
     "message": "Tùy chỉnh"
   },
-  "customToken": {
-    "message": "Token tùy chỉnh"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bất kỳ ai cũng có thể tạo token, bao gồm cả việc tạo phiên bản giả mạo của token hiện có. Tìm hiểu về $1"
   },
@@ -3502,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " Bật tự động phát hiện"
   },
-  "enableFromSettings": {
-    "message": " Bật tính năng này trong phần Cài đặt."
-  },
   "enableSmartContractAccount": {
     "message": "Sử dụng tài khoản thông minh"
   },
@@ -3531,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "URL RPC bạn đã nhập trả về một ID chuỗi khác ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Tính năng phát hiện token nâng cao hiện có sẵn trên $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask cho phép bạn xem các tên miền ENS ngay trên thanh địa chỉ của trình duyệt. Sau đây là cách hoạt động:"
@@ -4381,15 +4369,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Nhập Cụm từ khôi phục bí mật"
   },
-  "importTokenQuestion": {
-    "message": "Nhập token?"
-  },
-  "importTokenWarning": {
-    "message": "Bất kỳ ai cũng tạo được token bằng bất kỳ tên nào, kể cả phiên bản giả của token hiện có. Bạn tự chịu rủi ro khi thêm và giao dịch!"
-  },
-  "importTokensCamelCase": {
-    "message": "Nhập token"
-  },
   "importTokensError": {
     "message": "Chúng tôi không thể nhập token. Vui lòng thử lại sau."
   },
@@ -4687,9 +4666,6 @@
   },
   "lightTheme": {
     "message": "Sáng"
-  },
-  "likeToImportToken": {
-    "message": "Bạn có muốn nhập token này không?"
   },
   "likeToImportTokens": {
     "message": "Bạn có muốn nhập những token này không?"
@@ -5261,9 +5237,6 @@
   },
   "musdTermsApply": {
     "message": "Áp dụng điều khoản."
-  },
-  "mustSelectOne": {
-    "message": "Phải chọn ít nhất 1 token."
   },
   "name": {
     "message": "Tên"
@@ -10254,9 +10227,6 @@
   "tokenDecimal": {
     "message": "Số thập phân của token"
   },
-  "tokenDecimalFetchFailed": {
-    "message": "Yêu cầu số thập phân của token. Tìm trên: $1"
-  },
   "tokenDetails": {
     "message": "Thông tin token"
   },
@@ -10499,29 +10469,8 @@
   "turnOn": {
     "message": "Bật"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Bật thông báo"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Bật"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Đã xảy ra lỗi khi tạo thông báo. Vui lòng thử lại sau."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Nhận thông báo để cập nhật tình hình trong ví của bạn."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "cài đặt thông báo."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Để sử dụng tính năng thông báo ví, chúng tôi dùng hồ sơ để đồng bộ một số chế độ cài đặt trên các thiết bị của bạn. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Bạn có thể tắt thông báo bất kỳ lúc nào trong $1"
   },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"

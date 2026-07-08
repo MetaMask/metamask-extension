@@ -1020,9 +1020,6 @@
   "addAccount": {
     "message": "Tambah akun"
   },
-  "addAcquiredTokens": {
-    "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
-  },
   "addAlias": {
     "message": "Tambahkan alias"
   },
@@ -2970,9 +2967,6 @@
   "customSlippage": {
     "message": "Kustom"
   },
-  "customToken": {
-    "message": "Token kustom"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Siapa pun dapat membuat token, termasuk membuat versi palsu dari token yang ada. Pelajari tentang $1"
   },
@@ -3502,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
-  "enableFromSettings": {
-    "message": " Aktifkan dari Pengaturan."
-  },
   "enableSmartContractAccount": {
     "message": "Gunakan akun cerdas"
   },
@@ -3531,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "URL RPC yang Anda masukkan kembali ke ID chain yang berbeda ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Saat ini, deteksi token lanjutan tersedia di $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask memungkinkan Anda melihat domain ENS pada bilah alamat browser Anda. Berikut cara kerjanya:"
@@ -4381,15 +4369,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
   },
-  "importTokenQuestion": {
-    "message": "Impor token?"
-  },
-  "importTokenWarning": {
-    "message": "Siapa pun dapat membuat token dengan nama apa pun, termasuk versi palsu dari token yang ada. Tambahkan dan perdagangkan dengan risiko ditanggung sendiri!"
-  },
-  "importTokensCamelCase": {
-    "message": "Impor token"
-  },
   "importTokensError": {
     "message": "Kami tidak dapat mengimpor token. Coba lagi nanti."
   },
@@ -4687,9 +4666,6 @@
   },
   "lightTheme": {
     "message": "Terang"
-  },
-  "likeToImportToken": {
-    "message": "Ingin mengimpor token ini?"
   },
   "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
@@ -5261,9 +5237,6 @@
   },
   "musdTermsApply": {
     "message": "Syarat berlaku."
-  },
-  "mustSelectOne": {
-    "message": "Harus memilih minimal 1 token."
   },
   "name": {
     "message": "Nama"
@@ -10254,9 +10227,6 @@
   "tokenDecimal": {
     "message": "Desimal token"
   },
-  "tokenDecimalFetchFailed": {
-    "message": "Desimal token diperlukan. Temukan di: $1"
-  },
   "tokenDetails": {
     "message": "Detail token"
   },
@@ -10499,29 +10469,8 @@
   "turnOn": {
     "message": "Aktifkan"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Aktifkan notifikasi"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Aktifkan"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Terjadi kesalahan saat membuat notifikasi. Coba lagi nanti."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Pantau terus segala yang terjadi di dompet Anda dengan notifikasi."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "pengaturan notifikasi."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Pelajari cara kami melindungi privasi Anda saat menggunakan fitur ini."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Untuk menggunakan notifikasi dompet, kami menggunakan profil untuk menyinkronkan beberapa pengaturan di seluruh perangkat Anda. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Notifikasi dapat dinonaktifkan setiap saat di $1"
   },
   "turnOnTokenDetection": {
     "message": "Aktifkan deteksi token yang ditingkatkan"
