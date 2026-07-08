@@ -43,15 +43,11 @@ type CheckFirstTimeInteractionRequest = {
   to: string;
 };
 
-export type TransactionControllerOptionsRequest = {
+type GetTransactionControllerInstanceOptionsRequest = {
+  initMessenger: TransactionControllerInitMessenger;
   getFlatState: () => MessengerClientFlatState;
   getPermittedAccounts: (origin?: string) => string[] | Promise<string[]>;
   getTransactionMetricsRequest: () => TransactionMetricsRequest;
-};
-
-type GetTransactionControllerInstanceOptionsRequest = {
-  initMessenger: TransactionControllerInitMessenger;
-  request: TransactionControllerOptionsRequest;
 };
 
 type SetupTransactionControllerListenersRequest = {
@@ -71,11 +67,10 @@ const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
 
 export function getTransactionControllerInstanceOptions({
   initMessenger,
-  request,
+  getFlatState,
+  getPermittedAccounts,
+  getTransactionMetricsRequest,
 }: GetTransactionControllerInstanceOptionsRequest): TransactionControllerInstanceOptions {
-  const { getFlatState, getPermittedAccounts, getTransactionMetricsRequest } =
-    request;
-
   return {
     disableSwaps: false,
     getPermittedAccounts: async (origin?: string) =>

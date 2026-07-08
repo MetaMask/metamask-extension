@@ -146,17 +146,9 @@ describe('initializeWallet', () => {
     );
     expect(getTransactionControllerInstanceOptions).toHaveBeenCalledWith({
       initMessenger: 'transaction-controller-init-messenger',
-      request: {
-        connectivityAdapter,
-        encryptor,
-        getFlatState,
-        getPermittedAccounts,
-        getTransactionMetricsRequest,
-        infuraProjectId: 'fake-infura-project-id',
-        messenger,
-        showApprovalRequest,
-        state,
-      },
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
     });
     expect(setupTransactionControllerListeners).toHaveBeenCalledWith({
       getTransactionMetricsRequest,

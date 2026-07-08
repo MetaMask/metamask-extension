@@ -28,6 +28,8 @@ export function initializeWallet(request: InitializeWalletRequest) {
   const {
     connectivityAdapter,
     encryptor,
+    getFlatState,
+    getPermittedAccounts,
     getTransactionMetricsRequest,
     infuraProjectId,
     messenger,
@@ -56,7 +58,9 @@ export function initializeWallet(request: InitializeWalletRequest) {
       storageService: getStorageServiceInstanceOptions(),
       transactionController: getTransactionControllerInstanceOptions({
         initMessenger: transactionControllerInitMessenger,
-        request,
+        getFlatState,
+        getPermittedAccounts,
+        getTransactionMetricsRequest,
       }),
     },
     messenger,

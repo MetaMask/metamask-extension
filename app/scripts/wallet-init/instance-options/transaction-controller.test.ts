@@ -49,11 +49,9 @@ describe('TransactionController wallet instance options', () => {
 
     return getTransactionControllerInstanceOptions({
       initMessenger: messenger,
-      request: {
-        getFlatState: jest.fn(() => ({}) as never),
-        getPermittedAccounts: jest.fn(() => []),
-        getTransactionMetricsRequest: jest.fn(() => ({}) as never),
-      },
+      getFlatState: jest.fn(() => ({}) as never),
+      getPermittedAccounts: jest.fn(() => []),
+      getTransactionMetricsRequest: jest.fn(() => ({}) as never),
     });
   }
 
