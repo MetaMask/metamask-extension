@@ -170,11 +170,15 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false
+    },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 215,
+      "currentMigrationVersion": 216,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -197,8 +201,9 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": true,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -339,7 +344,11 @@
       "selectedCurrency": "usd"
     },
     "AuthenticationController": {},
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
+      "quoteUpdateStatusStore": {},
       "txHistory": {}
     },
     "ClaimsController": {
@@ -349,6 +358,18 @@
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -424,16 +445,12 @@
     "LoggingController": {
       "logs": {}
     },
-    "AnalyticsController": {
-      "analyticsId": null,
-      "optedIn": false
-    },
     "MetaMetricsController": {
+      "completedMetaMetricsOnboarding": true,
       "dataCollectionForMarketing": false,
       "eventsBeforeMetricsOptIn": [],
       "fragments": {},
       "marketingCampaignCookieId": null,
-      "completedMetaMetricsOnboarding": true,
       "tracesBeforeMetricsOptIn": [],
       "traits": {}
     },
@@ -974,10 +991,6 @@
       "fcmToken": "",
       "isPushEnabled": true
     },
-    "ComplianceController": {
-      "lastCheckedAt": null,
-      "walletComplianceStatusMap": {}
-    },
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
@@ -1060,7 +1073,9 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1280,6 +1295,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 215
+    "version": 216
   }
 }

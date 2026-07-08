@@ -232,7 +232,7 @@ function buildFixturesForSend(title: string) {
     testSpecificMock: mockSetup,
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
   };
@@ -277,9 +277,9 @@ describe('Multichain Asset List', function (this: Suite) {
 
         await homePage.startSendFlow();
         await sendPage.selectToken('0x89', 'TST');
-        await sendPage.fillRecipient(
-          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-        );
+        await sendPage.fillRecipient({
+          recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+        });
       },
     );
   });

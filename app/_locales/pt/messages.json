@@ -82,12 +82,6 @@
   "account": {
     "message": "Conta"
   },
-  "accountActivity": {
-    "message": "Atividade da conta"
-  },
-  "accountActivityText": {
-    "message": "Selecione as contas das quais deseja receber notificações:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Fazer login"
   },
@@ -1026,9 +1020,6 @@
   "addAccount": {
     "message": "Adicionar conta"
   },
-  "addAcquiredTokens": {
-    "message": "Adicione os tokens que você adquiriu usando a MetaMask"
-  },
   "addAlias": {
     "message": "Adicionar pseudônimo"
   },
@@ -1583,9 +1574,6 @@
   },
   "back": {
     "message": "Voltar"
-  },
-  "backToHome": {
-    "message": "Volta à página inicial"
   },
   "backUpIncomplete": {
     "message": "Backup incompleto"
@@ -2422,9 +2410,6 @@
     "message": "Encerrar $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Você pode fechar esta janela a qualquer momento."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2982,20 +2967,11 @@
   "customSlippage": {
     "message": "Personalizado"
   },
-  "customToken": {
-    "message": "Token personalizado"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Qualquer pessoa pode criar um token, inclusive versões falsas de tokens existentes. Saiba mais sobre $1"
   },
   "customerSupport": {
     "message": "suporte ao cliente"
-  },
-  "customizeYourNotifications": {
-    "message": "Personalize suas notificações"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Ative os tipos de notificações que você deseja receber:"
   },
   "dappConnections": {
     "message": "Conexões do dapp"
@@ -3520,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
   },
-  "enableFromSettings": {
-    "message": " Ative nas Configurações."
-  },
   "enableSmartContractAccount": {
     "message": "Usar conta inteligente"
   },
@@ -3549,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "O URL da RPC inserido retornou um ID de cadeia diferente ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "A detecção aprimorada de tokens está disponível no momento em $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "A MetaMask permite que você veja domínios ENS direto na barra de endereços do seu navegador. Veja como funciona:"
@@ -4395,15 +4365,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Importar Frase de Recuperação Secreta"
   },
-  "importTokenQuestion": {
-    "message": "Importar token?"
-  },
-  "importTokenWarning": {
-    "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
-  },
-  "importTokensCamelCase": {
-    "message": "Importar tokens"
-  },
   "importTokensError": {
     "message": "Não foi possível importar os tokens. Volte a tentar mais tarde."
   },
@@ -4414,9 +4375,6 @@
   "imported": {
     "message": "Importada",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Inclui"
   },
   "includesXTransactions": {
     "message": "Inclui $1 transações"
@@ -4704,9 +4662,6 @@
   },
   "lightTheme": {
     "message": "Claro"
-  },
-  "likeToImportToken": {
-    "message": "Gostaria de importar esse token?"
   },
   "likeToImportTokens": {
     "message": "Você gostaria de importar esses tokens?"
@@ -5278,9 +5233,6 @@
   },
   "musdTermsApply": {
     "message": "Sujeito a termos e condições."
-  },
-  "mustSelectOne": {
-    "message": "Selecione pelo menos 1 token."
   },
   "name": {
     "message": "Nome"
@@ -5875,9 +5827,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Algo deu errado. Tente novamente."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fique por dentro de tudo o que acontece em sua carteira com as notificações. Para usar as notificações, usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1 protegemos sua privacidade durante o uso deste recurso."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Saiba como"
@@ -7540,9 +7489,6 @@
   },
   "proceedWithTransaction": {
     "message": "Quero prosseguir mesmo assim"
-  },
-  "productAnnouncements": {
-    "message": "Comunicados sobre produtos"
   },
   "provide": {
     "message": "Fornecer"
@@ -9297,24 +9243,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "As trocas inteligentes estão temporariamente indisponíveis."
   },
-  "smartTransactionCancelled": {
-    "message": "Sua transação foi cancelada"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Não foi possível concluir sua transação. Ela foi cancelada para evitar que você pague taxas de gás desnecessárias."
-  },
-  "smartTransactionError": {
-    "message": "Falha na transação"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Mudanças repentinas no mercado podem provocar falhas. Se o problema continuar, fale com o suporte ao cliente da MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Sua transação foi enviada"
-  },
-  "smartTransactionSuccess": {
-    "message": "Sua transação foi concluída"
-  },
   "smartTransactions": {
     "message": "Transações inteligentes"
   },
@@ -10281,9 +10209,6 @@
   "tokenContractAddress": {
     "message": "Endereço de contrato do token"
   },
-  "tokenContractError": {
-    "message": "Este endereço é um endereço de contrato de token. Se você enviar tokens para este endereço, você os perderá."
-  },
   "tokenContractWarning": {
     "message": "Aviso sobre contrato de token"
   },
@@ -10293,9 +10218,6 @@
   },
   "tokenDecimal": {
     "message": "Decimal do token"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "É necessário o decimal do token. Encontre-o em: $1"
   },
   "tokenDetails": {
     "message": "Dados do token"
@@ -10539,29 +10461,8 @@
   "turnOn": {
     "message": "Ativar"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Ativar notificações"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Ativar"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Ocorreu um erro ao criar as notificações. Tente novamente mais tarde."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Fique por dentro do que acontece em sua carteira com as notificações."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "configurações de notificações."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Saiba como protegemos sua privacidade enquanto usa este recurso."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Para usar as notificações da carteira, nós usamos um perfil para sincronizar algumas configurações entre seus dispositivos. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Você pode desativar as notificações quando quiser no $1"
   },
   "turnOnTokenDetection": {
     "message": "Ativar detecção avançada de token"
@@ -10773,9 +10674,6 @@
   "view": {
     "message": "Ver"
   },
-  "viewActivity": {
-    "message": "Ver atividade"
-  },
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
@@ -10802,9 +10700,6 @@
   },
   "viewTokenDetails": {
     "message": "Ver detalhes do token"
-  },
-  "viewTransaction": {
-    "message": "Ver transação"
   },
   "viewinExplorer": {
     "message": "Ver $1 no explorador",

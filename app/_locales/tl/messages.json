@@ -82,12 +82,6 @@
   "account": {
     "message": "Account"
   },
-  "accountActivity": {
-    "message": "Aktibidad ng account"
-  },
-  "accountActivityText": {
-    "message": "Piliin ang mga account na nais mong makakuha ng abiso:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Mag-log in"
   },
@@ -1026,9 +1020,6 @@
   "addAccount": {
     "message": "Magdagdag ng account"
   },
-  "addAcquiredTokens": {
-    "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
-  },
   "addAlias": {
     "message": "Magdagdag ng alias"
   },
@@ -1583,9 +1574,6 @@
   },
   "back": {
     "message": "Bumalik"
-  },
-  "backToHome": {
-    "message": "Bumalik sa home"
   },
   "backUpIncomplete": {
     "message": "Hindi nakumpleto ang pag-back up"
@@ -2422,9 +2410,6 @@
     "message": "Isara ang $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Maaari mong isara ang window na ito anumang oras."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2982,20 +2967,11 @@
   "customSlippage": {
     "message": "Custom"
   },
-  "customToken": {
-    "message": "Custom na Token"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bago manu-manong mag-import ng token, tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1."
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
-  },
-  "customizeYourNotifications": {
-    "message": "I-customize ang mga notipikasyon mo"
-  },
-  "customizeYourNotificationsText": {
-    "message": "I-on ang mga uri ng notipikasyon na nais mong matanggap:"
   },
   "dappConnections": {
     "message": "Mga koneksyon ng Dapp"
@@ -3520,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
-  "enableFromSettings": {
-    "message": " Paganahin ito mula sa Mga Setting."
-  },
   "enableSmartContractAccount": {
     "message": "Gumamit ng smart account"
   },
@@ -3549,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "Ibang chain ID ($1) ang ibinalik ng RPC URL na inilagay mo.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Ang pinahusay na pagtuklas ng token ay kasalukuyang magagamit sa $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "Pinahihintulutan ng MetaMask na makita mo ang mga ENS mula mismo sa address bar ng iyong browser. Here's how it works:"
@@ -4395,15 +4365,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
   },
-  "importTokenQuestion": {
-    "message": "Mag-import ng token?"
-  },
-  "importTokenWarning": {
-    "message": "Sinumang ay maaaring gumawa ng token gamit ang alinmang pangalan, kabilang ang mga pekeng bersyon ng umiiral na mga token. Magdagdag at mag-trade sa sarili mong panganib!"
-  },
-  "importTokensCamelCase": {
-    "message": "Mag-import ng mga token"
-  },
   "importTokensError": {
     "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
   },
@@ -4414,9 +4375,6 @@
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Kabilang ang"
   },
   "includesXTransactions": {
     "message": "Kabilang ang $1 (na) transaksyon"
@@ -4704,9 +4662,6 @@
   },
   "lightTheme": {
     "message": "Maliwanag"
-  },
-  "likeToImportToken": {
-    "message": "Gusto mo bang i-import ang token na ito?"
   },
   "likeToImportTokens": {
     "message": "Gusto mo bang i-import ang mga token na ito?"
@@ -5278,9 +5233,6 @@
   },
   "musdTermsApply": {
     "message": "Nalalapat ang mga tuntunin."
-  },
-  "mustSelectOne": {
-    "message": "Dapat pumili ng kahit 1 token lang."
   },
   "name": {
     "message": "Pangalan"
@@ -5875,9 +5827,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Nagkaproblema. Subukang muli."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet sa pamamagitan ng mga notipikasyon. Para gamitin ang mga notipikasyon, gumagamit kami ng profile para i-sync ang ilang setting sa lahat ng iyong device. $1 namin pinoprotektahan ang iyong pagkapribado habang ginagamit ang feature na ito."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Alamin kung paano"
@@ -7540,9 +7489,6 @@
   },
   "proceedWithTransaction": {
     "message": "Gusto ko pa ring magpatuloy"
-  },
-  "productAnnouncements": {
-    "message": "Mga anunsiyo ng produkto"
   },
   "provide": {
     "message": "Ibigay"
@@ -9297,24 +9243,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Pansamantalang hindi available ang mga Smart Swap."
   },
-  "smartTransactionCancelled": {
-    "message": "Nakansela ang transaksyon mo"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Hindi nakumpleto ang transaksyon mo, kaya kinansela ito para maiwasan mo ang pagbabayad ng mga hindi kinakailangang gas fee."
-  },
-  "smartTransactionError": {
-    "message": "Nabigo ang transaksyon mo"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Maaaring magdulot ng pagkabigo ang biglaang pagbabago sa merkado. Kung magpatuloy ang problema, makipag-ugnayan sa customer support ng MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Isinumite ang iyong transaksyon"
-  },
-  "smartTransactionSuccess": {
-    "message": "Nakumpleto ang transaksyon mo"
-  },
   "smartTransactions": {
     "message": "Mga Smart Transaction"
   },
@@ -10281,9 +10209,6 @@
   "tokenContractAddress": {
     "message": "Address ng kontrata ng token"
   },
-  "tokenContractError": {
-    "message": "Ang address na ito ay isang address ng kontrata ng token. Kung magpapadala ka ng mga token sa address na ito, mawawala ang mga ito sa iyo."
-  },
   "tokenContractWarning": {
     "message": "Babala sa kontrata ng token"
   },
@@ -10293,9 +10218,6 @@
   },
   "tokenDecimal": {
     "message": "Decimal na token"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "Kailangan ng decimal ng token. Hanapin ito sa: $1"
   },
   "tokenDetails": {
     "message": "Mga detalye ng token"
@@ -10539,29 +10461,8 @@
   "turnOn": {
     "message": "I-on"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "I-on ang mga notipikasyon"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "I-on"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Nagkaroon ng error sa paglikha ng mga notipikasyon. Pakisubukan muli mamaya."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet gamit ang mga notification."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "mga setting ng notipikasyon."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Matuto kung paano namin pinoprotektahan ang iyong privacy habang ginagamit ang feature na ito."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Para magamit ang mga notipikasyon sa wallet, gumagamit kami ng profile para i-sync ang ilang mga setting sa iyong mga device. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Puwede mong i-off ang mga notipikasyon anumang oras sa $1"
   },
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"
@@ -10773,9 +10674,6 @@
   "view": {
     "message": "Tingnan"
   },
-  "viewActivity": {
-    "message": "Tingnan ang aktibidad"
-  },
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
@@ -10802,9 +10700,6 @@
   },
   "viewTokenDetails": {
     "message": "Tingnan ang mga detalye ng token"
-  },
-  "viewTransaction": {
-    "message": "Tingnan ang transaksyon"
   },
   "viewinExplorer": {
     "message": "Tingnan ang $1 sa Explorer",

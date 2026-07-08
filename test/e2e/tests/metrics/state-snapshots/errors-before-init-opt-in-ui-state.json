@@ -54,8 +54,9 @@
       "newPrivacyPolicyToastShownDate": "number",
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "string",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -74,11 +75,21 @@
       "isSignedIn": "boolean",
       "needsProfilePairing": "boolean"
     },
-    "BridgeStatusController": { "txHistory": "object" },
+    "BridgeController": { "inputPrimaryDenomination": "string" },
+    "BridgeStatusController": {
+      "quoteUpdateStatusStore": "object",
+      "txHistory": "object"
+    },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,
       "walletComplianceStatusMap": "object"
+    },
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -203,7 +214,9 @@
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
+        "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
@@ -300,5 +313,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 215 }
+  "meta": { "storageKind": "split", "version": 216 }
 }

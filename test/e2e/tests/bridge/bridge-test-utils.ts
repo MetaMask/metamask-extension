@@ -3,6 +3,7 @@ import { strict as assert } from 'assert';
 import { Readable } from 'stream';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
+  QuoteStreamCompleteReason,
   TokenFeature,
   type FeatureFlagResponse,
 } from '@metamask/bridge-controller';
@@ -510,6 +511,25 @@ const emitEvent = (
 };
 
 /**
+ * Mocks a quote stream that immediately completes with the given payload and no quotes.
+ *
+ * @param completePayload - The SSE `complete` event body.
+ * @returns The Readable stream.
+ */
+function mockSseQuoteStreamCompleteOnly(
+  completePayload: Record<string, unknown>,
+) {
+  return Readable.fromWeb(
+    new ReadableStreamWeb({
+      start(controller) {
+        emitEvent(controller, 'complete', 0, completePayload);
+        controller.close();
+      },
+    }),
+  );
+}
+
+/**
  * Mocks the bridge-api getQuoteStream endpoint's response body
  *
  * @param mockQuotes - The quotes to emit
@@ -557,10 +577,6 @@ async function mockFeatureFlags(
   featureFlags: Partial<FeatureFlagResponse>,
   additionalFlags: Record<string, unknown> = {},
 ) {
-  const extensionSkipTransactionStatusPage =
-    additionalFlags.extensionSkipTransactionStatusPage ??
-    getRegistryBooleanFlag('extensionSkipTransactionStatusPage');
-
   const extensionUxActivityListRedesign =
     additionalFlags.extensionUxActivityListRedesign ??
     getRegistryBooleanFlag('extensionUxActivityListRedesign');
@@ -574,7 +590,6 @@ async function mockFeatureFlags(
         json: [
           {
             bridgeConfig: featureFlags,
-            extensionSkipTransactionStatusPage,
             extensionUxActivityListRedesign,
             ...additionalFlags,
           },
@@ -1109,13 +1124,7 @@ const STX_MAINNET_SENTINEL_URL =
 const STX_LINEA_SENTINEL_URL =
   'https://tx-sentinel-linea-mainnet.api.cx.metamask.io';
 
-const extensionSkipTransactionStatusPage = getRegistryBooleanFlag(
-  'extensionSkipTransactionStatusPage',
-  true,
-);
-
 const STX_MAINNET_NETWORK_CONFIG = {
-  extensionSkipTransactionStatusPage,
   smartTransactionsNetworks: {
     '0x1': {
       extensionActive: true,
@@ -1127,7 +1136,6 @@ const STX_MAINNET_NETWORK_CONFIG = {
 };
 
 const STX_LINEA_NETWORK_CONFIG = {
-  extensionSkipTransactionStatusPage,
   smartTransactionsNetworks: {
     '0xe708': {
       extensionActive: true,
@@ -1393,6 +1401,10 @@ export const getBridgeFixtures = ({
         await mockSwapTokensArbitrum(mockServer),
         await mockSwapAggregatorMetadataArbitrum(mockServer),
         await mockHistoricalPrices(mockServer),
+        await mockSwapUSDCtoGOOGLONGeoBlocked(
+          mockServer,
+          featureFlags.sse?.enabled,
+        ),
       ];
 
       standardMocks.push(...(await mockSearchTokens(mockServer)));
@@ -1444,6 +1456,17 @@ export const getBridgeFixtures = ({
     title,
   };
 };
+
+/**
+ * Bridge fixtures for RWA swap geo-block E2E tests.
+ *
+ * @param title - The Mocha test title for manifest flag injection.
+ */
+export const getRwaSwapGeoBlockFixtures = (title?: string) =>
+  getBridgeFixtures({
+    title,
+    featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  });
 
 export const getQuoteNegativeCasesFixtures = (
   options: { statusCode: number; json: unknown },
@@ -1919,6 +1942,49 @@ async function mockGasSponsoredSwapETHtoUSDC(mockServer: Mockttp) {
     );
 }
 
+/**
+ * Mocks USDC → GOOGLON quote stream completing with RWA geo-restriction (no quotes).
+ *
+ * @param mockServer - The Mockttp server instance.
+ * @param sseEnabled - Whether SSE quote streaming is enabled.
+ */
+async function mockSwapUSDCtoGOOGLONGeoBlocked(
+  mockServer: Mockttp,
+  sseEnabled?: boolean,
+) {
+  const completePayload = {
+    quoteCount: 0,
+    hasQuotes: false,
+    reason: QuoteStreamCompleteReason.RWA_GEO_RESTRICTED,
+  };
+
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .always()
+      .withQuery({
+        srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        destTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+      })
+      .thenStream(
+        200,
+        mockSseQuoteStreamCompleteOnly(completePayload),
+        SSE_RESPONSE_HEADER,
+      );
+  }
+
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      destTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+}
+
 async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
   return mockSentinelNetworks(mockServer, false);
 }
@@ -1981,7 +2047,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
     },
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionSkipTransactionStatusPage,
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         smartTransactionsNetworks: {
           '0x1': {

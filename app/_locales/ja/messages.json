@@ -82,12 +82,6 @@
   "account": {
     "message": "アカウント"
   },
-  "accountActivity": {
-    "message": "アカウントのアクティビティ"
-  },
-  "accountActivityText": {
-    "message": "通知を受けたいアカウントを選択してください:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "ログイン"
   },
@@ -1026,9 +1020,6 @@
   "addAccount": {
     "message": "アカウントを追加"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMaskを使用して取得したトークンを追加します"
-  },
   "addAlias": {
     "message": "別名を追加"
   },
@@ -1583,9 +1574,6 @@
   },
   "back": {
     "message": "戻る"
-  },
-  "backToHome": {
-    "message": "ホームに戻る"
   },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
@@ -2422,9 +2410,6 @@
     "message": "$1を閉じる",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "このウィンドウはいつでも閉じることができます。"
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2982,20 +2967,11 @@
   "customSlippage": {
     "message": "カスタム"
   },
-  "customToken": {
-    "message": "カスタムトークン"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "手動でトークンをインポートする前に、信頼できることを確認してください。$1の詳細をご覧ください。"
   },
   "customerSupport": {
     "message": "カスタマーサポート"
-  },
-  "customizeYourNotifications": {
-    "message": "通知のカスタマイズ"
-  },
-  "customizeYourNotificationsText": {
-    "message": "受け取る通知の種類をオンにします"
   },
   "dappConnections": {
     "message": "DAppの接続"
@@ -3520,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
-  "enableFromSettings": {
-    "message": " 設定で有効にします。"
-  },
   "enableSmartContractAccount": {
     "message": "スマートアカウントを使用する"
   },
@@ -3549,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "入力したRPC URLが別のチェーンID ($1) を返しました。",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "改善されたトークン検出は現在$1で利用可能です。$2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMaskにより、ENSドメインがブラウザのアドレスバーに直接表示されます。使い方は次の通りです："
@@ -4399,15 +4369,6 @@
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
   },
-  "importTokenQuestion": {
-    "message": "トークンをインポートしますか？"
-  },
-  "importTokenWarning": {
-    "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります！"
-  },
-  "importTokensCamelCase": {
-    "message": "トークンをインポート"
-  },
   "importTokensError": {
     "message": "トークンをインポートできませんでした。後ほど再度お試しください。"
   },
@@ -4418,9 +4379,6 @@
   "imported": {
     "message": "インポートされました",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "込み"
   },
   "includesXTransactions": {
     "message": "$1件のトランザクションを含む"
@@ -4708,9 +4666,6 @@
   },
   "lightTheme": {
     "message": "ライト"
-  },
-  "likeToImportToken": {
-    "message": "このトークンをインポートしますか？"
   },
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか？"
@@ -5282,9 +5237,6 @@
   },
   "musdTermsApply": {
     "message": "諸条件が適用されます。"
-  },
-  "mustSelectOne": {
-    "message": "トークンを1つ以上選択する必要があります。"
   },
   "name": {
     "message": "名前"
@@ -5879,9 +5831,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "問題が発生しました。もう一度お試しください。"
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "通知を使えば、ウォレットで何が起きているか常に把握できます。通知を使用するには、プロファイルを使用してデバイス間で一部の設定を同期します。この機能を使用する際に当社がユーザーのプライバシーをどのように保護するのか、$1。"
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "方法"
@@ -7544,9 +7493,6 @@
   },
   "proceedWithTransaction": {
     "message": "それでも続行"
-  },
-  "productAnnouncements": {
-    "message": "製品に関するお知らせ"
   },
   "provide": {
     "message": "提供"
@@ -9301,24 +9247,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "smartTransactionCancelled": {
-    "message": "トランザクションがキャンセルされました"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "トランザクションを完了できなかったため、不要なガス代の支払いを避けるためにキャンセルされました。"
-  },
-  "smartTransactionError": {
-    "message": "トランザクションに失敗しました"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "突然の市場の変化により失敗する場合があります。問題が解決されない場合は、MetaMaskカスタマーサポートにお問い合わせください。"
-  },
-  "smartTransactionPending": {
-    "message": "トランザクションが送信されました"
-  },
-  "smartTransactionSuccess": {
-    "message": "トランザクションが完了しました"
-  },
   "smartTransactions": {
     "message": "スマートトランザクション"
   },
@@ -10285,9 +10213,6 @@
   "tokenContractAddress": {
     "message": "トークンコントラクトアドレス"
   },
-  "tokenContractError": {
-    "message": "このアドレスはトークンコントラクトアドレスです。このアドレスにトークンを送ると、トークンが失われます。"
-  },
   "tokenContractWarning": {
     "message": "トークンコントラクトに関する警告"
   },
@@ -10297,9 +10222,6 @@
   },
   "tokenDecimal": {
     "message": "トークンの小数桁数"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "トークンの小数点以下の桁数が必要です。確認はこちら: $1"
   },
   "tokenDetails": {
     "message": "トークンの詳細"
@@ -10543,29 +10465,8 @@
   "turnOn": {
     "message": "オンにする"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "通知をオンにする"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "オンにする"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "通知の作成中にエラーが発生しました。後でもう一度お試しください。"
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "通知を使えば、ウォレットで何が起きているか常に把握できます。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "通知設定。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "この機能を使用する際に当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください。"
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "ウォレット通知を使用するために、プロファイルを使用して一部の設定をデバイス間で同期します。$1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "通知は$1でいつでもオフにできます"
   },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
@@ -10777,9 +10678,6 @@
   "view": {
     "message": "表示"
   },
-  "viewActivity": {
-    "message": "アクティビティを表示"
-  },
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
@@ -10806,9 +10704,6 @@
   },
   "viewTokenDetails": {
     "message": "トークンの詳細を表示"
-  },
-  "viewTransaction": {
-    "message": "トランザクションを表示"
   },
   "viewinExplorer": {
     "message": "$1をエクスプローラーで表示",

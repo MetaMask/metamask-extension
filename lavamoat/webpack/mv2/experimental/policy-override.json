@@ -62,12 +62,6 @@
     "^ background; v popup": {},
     "wait-on>axios": {
       "globals": {
-        "Buffer": false,
-        "Buffer.alloc": true,
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true,
         "postMessage": true,
         "fetch": true,
         "Request": true,
@@ -139,7 +133,7 @@
         "fetch": true
       }
     },
-    "react-beautiful-dnd": {
+    "@hello-pangea/dnd": {
       "globals": {
         "addEventListener": true,
         "removeEventListener": true
@@ -275,6 +269,25 @@
         "document": false,
         "document.visibilityState": false,
         "addEventListener": false
+      }
+    },
+    "@metamask/mobile-wallet-protocol-core>centrifuge": {
+      "globals": {
+        "AbortController": false,
+        "Event": false,
+        "EventSource": false,
+        "EventTarget": false,
+        "MessageEvent": false,
+        "ReadableStream": false,
+        "SockJS": false,
+        "SuppressedError": false,
+        "URL": false,
+        "WebTransport": false,
+        "console": false,
+        "console.warn": true,
+        "document": false,
+        "fetch": false,
+        "localStorage": false
       }
     }
   }

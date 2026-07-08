@@ -130,6 +130,45 @@ describe('Index Tests', () => {
     });
   });
 
+  it('should remove QR sync state from downloaded state logs', async () => {
+    const mockVersion = '1.0.0';
+    const mockUserAgent = 'test-user-agent';
+
+    jest.spyOn(global.platform, 'getVersion').mockReturnValue(mockVersion);
+    jest
+      .spyOn(window.navigator, 'userAgent', 'get')
+      .mockReturnValue(mockUserAgent);
+
+    const mockState = {
+      metamask: {
+        currentLocale: 'en',
+        qrSyncPhase: 'displaying-qr',
+        qrSyncConnectionStatus: 'connected',
+        qrSyncSessionId: 'session-123',
+        qrSyncQrPayload: 'qr-payload',
+        syncOffer: { isOnboardingCompleted: true },
+        qrSyncSelectedAccountIds: ['account-1'],
+        qrSyncImportedAccountIds: ['account-2'],
+        qrSyncError: { code: 'SYNC_FAILED', message: 'failed' },
+        qrSyncCreatedAt: 1,
+        qrSyncUpdatedAt: 2,
+      },
+    };
+    const store = configureMockStore([thunk])({
+      ...mockState,
+    });
+
+    const cleanAppState = await getCleanAppState(store);
+    expect(cleanAppState).toStrictEqual({
+      metamask: {
+        currentLocale: 'en',
+        socialLoginEmail: undefined,
+      },
+      version: mockVersion,
+      browser: mockUserAgent,
+    });
+  });
+
   describe('runInitialActions', () => {
     beforeEach(() => {
       jest.useFakeTimers();

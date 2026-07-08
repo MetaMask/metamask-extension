@@ -82,12 +82,6 @@
   "account": {
     "message": "Счет"
   },
-  "accountActivity": {
-    "message": "Активность счета"
-  },
-  "accountActivityText": {
-    "message": "Выберите счета, о которых хотите получать уведомления:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Войти"
   },
@@ -1026,9 +1020,6 @@
   "addAccount": {
     "message": "Добавить аккаунт"
   },
-  "addAcquiredTokens": {
-    "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
-  },
   "addAlias": {
     "message": "Добавить псевдоним"
   },
@@ -1583,9 +1574,6 @@
   },
   "back": {
     "message": "Назад"
-  },
-  "backToHome": {
-    "message": "Назад на главную"
   },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
@@ -2422,9 +2410,6 @@
     "message": "Закрыть $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Вы можете закрыть это окно в любое время."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -2982,20 +2967,11 @@
   "customSlippage": {
     "message": "Пользовательский"
   },
-  "customToken": {
-    "message": "Пользовательский токен"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Кто угодно может создать токен, в том числе поддельные версии существующих токенов. Узнайте подробнее о $1"
   },
   "customerSupport": {
     "message": "поддержка пользователя"
-  },
-  "customizeYourNotifications": {
-    "message": "Настройте свои уведомления"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Включите типы уведомлений, которые хотите получать:"
   },
   "dappConnections": {
     "message": "Соединения dapp"
@@ -3520,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " Включить автоопределение"
   },
-  "enableFromSettings": {
-    "message": " Включите его в Настройках."
-  },
   "enableSmartContractAccount": {
     "message": "Использовать смарт-счет"
   },
@@ -3549,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "Введенный вами URL RPC вернул другой ID блокчейна ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Улучшенное определение токенов в настоящее время доступно на $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask позволяет вам видеть домены ENS прямо в адресной строке вашего браузера. Вот как это работает:"
@@ -4395,15 +4365,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Импортировать секретную фразу для восстановления"
   },
-  "importTokenQuestion": {
-    "message": "Импортировать токен?"
-  },
-  "importTokenWarning": {
-    "message": "Кто угодно может создать токен с любым именем, включая поддельные версии существующих токенов. Добавляйте и торгуйте на свой страх и риск!"
-  },
-  "importTokensCamelCase": {
-    "message": "Импорт токенов"
-  },
   "importTokensError": {
     "message": "Нам не удалось импортировать токены. Повторите попытку позже."
   },
@@ -4414,9 +4375,6 @@
   "imported": {
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Включает"
   },
   "includesXTransactions": {
     "message": "Включает $1 транзакции(-й)"
@@ -4704,9 +4662,6 @@
   },
   "lightTheme": {
     "message": "Светлая"
-  },
-  "likeToImportToken": {
-    "message": "Хотите импортировать этот токен?"
   },
   "likeToImportTokens": {
     "message": "Вы хотели бы импортировать эти токены?"
@@ -5278,9 +5233,6 @@
   },
   "musdTermsApply": {
     "message": "Применяются условия."
-  },
-  "mustSelectOne": {
-    "message": "Необходимо выбрать хотя бы 1 токен."
   },
   "name": {
     "message": "Имя"
@@ -5875,9 +5827,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Возникла какая-то проблема. Повторите попытку позже."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Будьте в курсе того, что происходит в вашем кошельке, с помощью уведомлений. Для использования уведомлений мы используем профиль для синхронизации некоторых настроек на ваших устройствах. $1 мы защищаем вашу конфиденциальность при использовании этой функции."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Узнайте как"
@@ -7540,9 +7489,6 @@
   },
   "proceedWithTransaction": {
     "message": "Я все равно хочу продолжить"
-  },
-  "productAnnouncements": {
-    "message": "Объявления о продуктах"
   },
   "provide": {
     "message": "Предоставить"
@@ -9297,24 +9243,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "smartTransactionCancelled": {
-    "message": "Ваша транзакция отменена"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Не удалось завершить вашу транзакцию, поэтому она была отменена, чтобы избавить вас от ненужной платы за газ."
-  },
-  "smartTransactionError": {
-    "message": "Ваша транзакция не удалась"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Внезапные изменения на рынке могут привести к неудачам. Если проблема не исчезнет, ​​обратитесь в поддержку MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Ваша транзакция отправляется"
-  },
-  "smartTransactionSuccess": {
-    "message": "Ваша транзакция завершена"
-  },
   "smartTransactions": {
     "message": "Умные транзакции"
   },
@@ -10281,9 +10209,6 @@
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
   },
-  "tokenContractError": {
-    "message": "Этот адрес — адрес контракта токенов. Если вы отправите токены на этот адрес, вы их потеряете."
-  },
   "tokenContractWarning": {
     "message": "Предупреждение о контракте токена"
   },
@@ -10293,9 +10218,6 @@
   },
   "tokenDecimal": {
     "message": "Число десятичных знаков токена"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "Требуется десятичный токен. Найдите его здесь: $1"
   },
   "tokenDetails": {
     "message": "Описание токена"
@@ -10539,29 +10461,8 @@
   "turnOn": {
     "message": "Включить"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Включить уведомления"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Включить"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Произошла ошибка при создании уведомлений. Повторите попытку позже."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Будьте в курсе того, что происходит в вашем кошельке, с помощью уведомлений."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "настройки уведомлений."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Узнайте, как мы защищаем вашу конфиденциальность при использовании этой функции."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Чтобы отправлять уведомления кошелька, мы используем профиль для синхронизации некоторых настроек на ваших устройствах ($1)."
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Вы можете отключить уведомления в любое время в $1"
   },
   "turnOnTokenDetection": {
     "message": "Включите расширенное определение токенов"
@@ -10773,9 +10674,6 @@
   "view": {
     "message": "Просмотр"
   },
-  "viewActivity": {
-    "message": "Смотреть активность"
-  },
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
@@ -10802,9 +10700,6 @@
   },
   "viewTokenDetails": {
     "message": "Смотреть сведения о токене"
-  },
-  "viewTransaction": {
-    "message": "Смотреть транзакцию"
   },
   "viewinExplorer": {
     "message": "Смотреть $1 в обозревателе",

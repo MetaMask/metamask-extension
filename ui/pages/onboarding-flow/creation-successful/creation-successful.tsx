@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
@@ -41,7 +35,7 @@ import {
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -54,7 +48,9 @@ import {
   getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
 import {
+  toggleBasicFunctionality,
   toggleExternalServices,
+  setPreference,
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
@@ -64,6 +60,7 @@ import {
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
   buildInterstitialRoute,
@@ -87,10 +84,12 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
+  const isBasicFunctionalityToggleEnabled =
+    getIsBasicFunctionalityConsolidationEnabledInBuild();
   const backupAndSyncOnboardingToggleState = useSelector(
     getBackupAndSyncOnboardingToggleState,
   );
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
@@ -275,22 +274,32 @@ export default function CreationSuccessful() {
         firstTimeFlowType === FirstTimeFlowType.create ||
         firstTimeFlowType === FirstTimeFlowType.socialCreate;
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type: firstTimeFlowType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: isNewWallet,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.OnboardingCompleted)
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            wallet_setup_type: firstTimeFlowType,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_wallet: isNewWallet,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_basic_functionality_enabled:
+              externalServicesOnboardingToggleState,
+          })
+          .build(),
+      );
+    }
+
+    if (isBasicFunctionalityToggleEnabled) {
+      await dispatch(
+        setPreference('isBasicFunctionalityConsolidatedEnabled', true, false),
+      );
     }
 
     await dispatch(
-      toggleExternalServices(externalServicesOnboardingToggleState),
+      isBasicFunctionalityToggleEnabled
+        ? toggleBasicFunctionality(externalServicesOnboardingToggleState)
+        : toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
     if (!backupAndSyncOnboardingToggleState) {
@@ -304,16 +313,19 @@ export default function CreationSuccessful() {
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: isOptedIn
-          ? MetaMetricsEventName.MetricsOptIn
-          : MetaMetricsEventName.MetricsOptOut,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountTypeForMetrics,
-        },
-      });
+      trackEvent(
+        createEventBuilder(
+          isOptedIn
+            ? MetaMetricsEventName.MetricsOptIn
+            : MetaMetricsEventName.MetricsOptOut,
+        )
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountTypeForMetrics,
+          })
+          .build(),
+      );
     }
 
     // Side Panel - only if feature flag is enabled
@@ -367,11 +379,13 @@ export default function CreationSuccessful() {
     isOnboardingCompleted,
     dispatch,
     externalServicesOnboardingToggleState,
+    isBasicFunctionalityToggleEnabled,
     backupAndSyncOnboardingToggleState,
     isSidePanelEnabled,
     navigate,
     isFromSettingsSecurity,
     firstTimeFlowType,
+    createEventBuilder,
     trackEvent,
     isOptedIn,
     handleOnDoneNavigation,

@@ -19,13 +19,15 @@ import {
   PayTokenAmountSkeleton,
 } from '../../pay-token-amount/pay-token-amount';
 import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
-import { PayWithPill, PayWithPillSkeleton } from '../../pay-with-pill';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  isPerpsWithdrawTransaction,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -96,7 +98,11 @@ export const CustomAmountInfo = React.memo(
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
-    const hasTokens = availableTokens.length > 0;
+    const isPostQuoteWithdraw =
+      isPostQuoteWithdrawTransaction(currentConfirmation);
+    // Post-quote withdrawals (e.g. Perps) source funds off-chain, not from a
+    // wallet token, so the amount input stays usable without wallet tokens.
+    const hasTokens = availableTokens.length > 0 || isPostQuoteWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
     const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
@@ -147,7 +153,6 @@ export const CustomAmountInfo = React.memo(
           <BottomContainer
             amountFiat={amountFiat}
             disablePay={disablePay}
-            hasInput={hasInput}
             hasTokens={hasTokens}
           />
         )}
@@ -196,9 +201,6 @@ function CenterContainer({
   onAmountChange,
   overrideCenterContent,
 }: CenterContainerProps) {
-  const showCenteredPayWith =
-    !overrideCenterContent && disablePay !== true && hasTokens && !hasInput;
-
   return (
     <Box
       display={Display.Flex}
@@ -231,8 +233,6 @@ function CenterContainer({
           {children}
         </Box>
       )}
-
-      {showCenteredPayWith && <PayWithPill />}
     </Box>
   );
 }
@@ -249,7 +249,6 @@ function CenterContainerSkeleton() {
     >
       <CustomAmountSkeleton />
       <PayTokenAmountSkeleton />
-      <PayWithPillSkeleton />
     </Box>
   );
 }
@@ -257,12 +256,10 @@ function CenterContainerSkeleton() {
 function BottomContainer({
   amountFiat,
   disablePay,
-  hasInput,
   hasTokens,
 }: {
   amountFiat: string;
   disablePay?: boolean;
-  hasInput: boolean;
   hasTokens: boolean;
 }) {
   const t = useI18nContext();
@@ -279,7 +276,7 @@ function BottomContainer({
       gap={2}
       paddingBottom={4}
     >
-      {disablePay !== true && hasTokens && hasInput && <PayWithRow />}
+      {disablePay !== true && hasTokens && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
           <BridgeFeeRow

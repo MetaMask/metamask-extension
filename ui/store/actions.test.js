@@ -30,6 +30,7 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import { createMockNotificationPreferences } from '../hooks/metamask-notifications/mocks';
 import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilities';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
@@ -132,12 +133,16 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.setUseMultiAccountBalanceChecker = sinon.stub();
+    background.setUseTransactionSimulations = sinon.stub();
+    background.setSecurityAlertsEnabled = sinon.stub();
+    background.setUse4ByteResolution = sinon.stub();
+    background.setUseExternalNameSources = sinon.stub();
     background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
-    background.changePassword = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
     background.generatePasskeyRegistrationOptions = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
@@ -302,13 +307,18 @@ describe('Actions', () => {
       const oldPassword = 'old-password';
       const newPassword = 'new-password';
 
-      background.changePassword.resolves();
-      setBackgroundConnection(background);
+      const changePasswordStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        changePassword: changePasswordStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.changePassword(newPassword, oldPassword));
 
       expect(
-        background.changePassword.calledOnceWith(newPassword, oldPassword),
+        changePasswordStub.calledOnceWith(newPassword, oldPassword),
       ).toStrictEqual(true);
     });
   });
@@ -2161,7 +2171,9 @@ describe('Actions', () => {
 
       expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
       expect(
-        createNextMultichainAccountGroup.calledWith(walletIdWithoutPrefix),
+        createNextMultichainAccountGroup.calledWith({
+          entropySource: walletIdWithoutPrefix,
+        }),
       ).toStrictEqual(true);
     });
   });
@@ -4079,6 +4091,75 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getNotificationPreferences', () => {
+    it('calls getNotificationPreferences in the background', async () => {
+      const store = mockStore();
+      const preferences = createMockNotificationPreferences();
+      const getNotificationPreferencesStub = sinon.stub().resolves(preferences);
+
+      setBackgroundConnection({
+        getNotificationPreferences: getNotificationPreferencesStub,
+      });
+
+      const result = await store.dispatch(actions.getNotificationPreferences());
+
+      expect(getNotificationPreferencesStub.calledOnceWith()).toBe(true);
+      expect(result).toBe(preferences);
+    });
+  });
+
+  describe('#putNotificationPreferences', () => {
+    it('calls putNotificationPreferences in the background with the extension client type', async () => {
+      const store = mockStore();
+      const preferences = createMockNotificationPreferences();
+      const putNotificationPreferencesStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        putNotificationPreferences: putNotificationPreferencesStub,
+      });
+
+      await store.dispatch(actions.putNotificationPreferences(preferences));
+
+      expect(
+        putNotificationPreferencesStub.calledOnceWith(preferences, 'extension'),
+      ).toBe(true);
+    });
+  });
+
+  describe('#enableMetamaskNotifications', () => {
+    it('calls enableMetamaskNotifications in the background with options', async () => {
+      const store = mockStore();
+      const options = {
+        hasMarketingConsent: true,
+        productAnnouncementEnabled: true,
+      };
+      const enableMetamaskNotificationsStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        enableMetamaskNotifications: enableMetamaskNotificationsStub,
+      });
+
+      await store.dispatch(actions.enableMetamaskNotifications(options));
+
+      expect(enableMetamaskNotificationsStub.calledOnceWith(options)).toBe(
+        true,
+      );
+    });
+
+    it('calls enableMetamaskNotifications in the background without args when options are omitted', async () => {
+      const store = mockStore();
+      const enableMetamaskNotificationsStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        enableMetamaskNotifications: enableMetamaskNotificationsStub,
+      });
+
+      await store.dispatch(actions.enableMetamaskNotifications());
+
+      expect(enableMetamaskNotificationsStub.calledOnceWith()).toBe(true);
+    });
+  });
+
   describe('#toggleExternalServices', () => {
     it('calls toggleExternalServices', async () => {
       const store = mockStore();
@@ -4095,22 +4176,33 @@ describe('Actions', () => {
     });
   });
 
-  describe('#showConfirmTurnOnMetamaskNotifications', () => {
-    it('should dispatch showModal with the correct payload', async () => {
+  describe('#toggleBasicFunctionality', () => {
+    it('calls toggleExternalServices and consolidated preference setters', async () => {
       const store = mockStore();
 
-      await store.dispatch(actions.showConfirmTurnOnMetamaskNotifications());
+      setBackgroundConnection(background);
 
-      const expectedActions = [
-        {
-          payload: {
-            name: 'TURN_ON_METAMASK_NOTIFICATIONS',
-          },
-          type: 'UI_MODAL_OPEN',
-        },
-      ];
+      await store.dispatch(actions.toggleBasicFunctionality(false));
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        false,
+      ]);
+      expect(
+        background.setUseMultiAccountBalanceChecker.getCall(0).args,
+      ).toStrictEqual([false]);
+      expect(
+        background.setUseTransactionSimulations.getCall(0).args,
+      ).toStrictEqual([false]);
+      expect(background.setSecurityAlertsEnabled.getCall(0).args).toStrictEqual(
+        [false],
+      );
+      expect(background.setUse4ByteResolution.getCall(0).args).toStrictEqual([
+        false,
+      ]);
+      expect(
+        background.setUseExternalNameSources.getCall(0).args,
+      ).toStrictEqual([false]);
     });
   });
 

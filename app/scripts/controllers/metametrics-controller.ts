@@ -66,6 +66,8 @@ import { ENVIRONMENT } from '../../../shared/constants/build';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
+import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import { PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { isMain } from '../../../shared/lib/build-types';
 import type {
@@ -381,6 +383,10 @@ export class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
+
+    // Register A/B test analytics mappings so that matching events are
+    // enriched with their `active_ab_tests` assignment.
+    registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
 
     this.messenger.registerMethodActionHandlers(
       this,
@@ -890,6 +896,7 @@ export class MetaMetricsController extends BaseController<
   }
 
   handleMetaMaskStateUpdate(newState: MetaMaskState): void {
+    analytics.updateProfileSessionData(newState.srpSessionData);
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
       this.identify(userTraits);
@@ -1098,9 +1105,9 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
         metamaskState.preferences?.tokenNetworkFilter || {},
       ),
-      [MetaMetricsUserTrait.ProfileId]: Object.entries(
+      [MetaMetricsUserTrait.CanonicalProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
-      )?.[0]?.[1]?.profile?.profileId,
+      )?.[0]?.[1]?.profile?.canonicalProfileId,
       [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(
         metamaskState.firstTimeFlowType,
       ),
