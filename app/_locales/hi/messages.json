@@ -1143,7 +1143,7 @@
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
   },
   "add_device_success_desc_imported_singular": {
-    "message": "$1 इंपोर्ट किया गया अकाउंट आपके फ़ोन से सिंक हो गया है।",
+    "message": "1 इंपोर्ट किया गया अकाउंट आपके फ़ोन से सिंक हो गया है।",
     "description": "Used when a single imported account was synced"
   },
   "add_device_success_desc_wallet_plural": {
