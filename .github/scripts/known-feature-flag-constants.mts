@@ -52,6 +52,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/lib/active-tab-domain-metrics.ts',
     exportName: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
   },
+  {
+    key: 'SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG',
+    file: 'shared/lib/stores/persistence-diagnostics.ts',
+    exportName: 'SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG',
+  },
 ];
 
 /**
