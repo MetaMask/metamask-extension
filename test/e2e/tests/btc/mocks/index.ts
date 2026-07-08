@@ -1,4 +1,5 @@
 export {
+  mockEmptyInitialFullScan,
   mockInitialFullScan,
   mockInitialFullScanWithConfirmedSend,
 } from './esplora';

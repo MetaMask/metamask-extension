@@ -1,8 +1,10 @@
+import type { Hex } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  configureOptOutSegmentEnrichment,
   trackEarlySegmentEvent,
   trackSegmentEventWhileOptedOut,
   type EarlySegmentState,
@@ -121,6 +123,21 @@ describe('trackEarlySegmentEvent', () => {
 describe('trackSegmentEventWhileOptedOut', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    configureOptOutSegmentEnrichment({
+      getLocale: () => 'en-US',
+      getDefaultChainId: () => '0x1' as Hex,
+      getPageChainProperties: () => ({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: '0x1',
+      }),
+      getProfileIdentityProperties: () => ({}),
+      getMarketingCampaignCookieId: () => null,
+      hasMarketingConsent: () => false,
+      hasBasicFunctionalityEnabled: () => true,
+      getRemoteFeatureFlags: () => ({}),
+      appVersion: '1.0.0',
+      userAgent: '',
+    });
   });
 
   it('tracks event directly to Segment and flushes immediately', () => {
@@ -142,11 +159,21 @@ describe('trackSegmentEventWhileOptedOut', () => {
       event: MetaMetricsEventName.MetricsOptOut,
       properties: {
         category: MetaMetricsEventCategory.Onboarding,
+        locale: 'en-US',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: '0x1',
       },
       context: {
         page: {
           path: '/onboarding',
         },
+        app: {
+          name: 'MetaMask Extension',
+          version: '1.0.0',
+        },
+        userAgent: '',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        marketingCampaignCookieId: null,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
@@ -155,6 +182,32 @@ describe('trackSegmentEventWhileOptedOut', () => {
   it('does not track when analyticsId is empty', () => {
     trackSegmentEventWhileOptedOut({
       analyticsId: '',
+      event: MetaMetricsEventName.MetricsOptOut,
+    });
+
+    expect(mockSegment.track).not.toHaveBeenCalled();
+    expect(mockSegment.flush).not.toHaveBeenCalled();
+  });
+
+  it('does not track when basic functionality is disabled', () => {
+    configureOptOutSegmentEnrichment({
+      getLocale: () => 'en-US',
+      getDefaultChainId: () => '0x1' as Hex,
+      getPageChainProperties: () => ({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: '0x1',
+      }),
+      getProfileIdentityProperties: () => ({}),
+      getMarketingCampaignCookieId: () => null,
+      hasMarketingConsent: () => false,
+      hasBasicFunctionalityEnabled: () => false,
+      getRemoteFeatureFlags: () => ({}),
+      appVersion: '1.0.0',
+      userAgent: '',
+    });
+
+    trackSegmentEventWhileOptedOut({
+      analyticsId: 'test-metrics-id-789',
       event: MetaMetricsEventName.MetricsOptOut,
     });
 

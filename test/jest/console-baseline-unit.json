@@ -437,12 +437,6 @@
     "ui/components/multichain/import-nfts-modal/import-nfts-modal.test.js": {
       "error: Warning: React does not recognize": 1
     },
-    "ui/components/multichain/import-tokens-modal/import-tokens-modal.test.js": {
-      "React: Act warnings (component updates not wrapped)": 15,
-      "React: DOM nesting violations": 1,
-      "React: PropTypes validation failures": 2,
-      "error: Warning: React does not recognize": 1
-    },
     "ui/components/multichain/network-list-menu/network-list-menu.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3,
       "React: componentWill* lifecycle deprecations": 1
@@ -761,6 +755,9 @@
       "MetaMask: Background connection not initialized": 52,
       "Reselect: Identity function warnings": 1
     },
+    "ui/pages/confirmations/components/confirm/info/shared/native-send-heading/native-send-heading.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/pages/confirmations/components/confirm/info/shared/nft-send-heading/nft-send-heading.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 1
@@ -1002,6 +999,12 @@
     },
     "ui/pages/settings/about-tab/about-info.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
+    },
+    "ui/pages/settings/add-device-tab/add-device-settings.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/add-device-tab/components/qr-code-scan.test.tsx": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1

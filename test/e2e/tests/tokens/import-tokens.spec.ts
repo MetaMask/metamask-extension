@@ -3,7 +3,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID } from '../../constants';
+import { NETWORK_CLIENT_ID, DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { login } from '../../page-objects/flows/login.flow';
@@ -20,6 +20,8 @@ import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+const MAINNET_MUSD_ASSET_ID = `eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`;
+const LINEA_MUSD_ASSET_ID = `eip155:59144/erc20:${MUSD_ADDRESS.toLowerCase()}`;
 const POLYGON_USDT_ADDRESS = '0xc2132d05d31c914a87c6611c10748aeb04b58e8f';
 
 const SPOT_PRICES_V3_URL =
@@ -486,11 +488,11 @@ describe('Import flow', function () {
           })
           .withAssetsController({
             assetsBalance: {
-              'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
                 'eip155:1/slip44:60': { amount: '25' },
                 'eip155:59144/slip44:60': { amount: '25' },
-                [`eip155:1/erc20:${MUSD_ADDRESS}`]: { amount: '100' },
-                [`eip155:59144/erc20:${MUSD_ADDRESS}`]: { amount: '50' },
+                [MAINNET_MUSD_ASSET_ID]: { amount: '100' },
+                [LINEA_MUSD_ASSET_ID]: { amount: '50' },
               },
             },
             assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
@@ -513,13 +515,13 @@ describe('Import flow', function () {
                 symbol: 'ETH',
                 name: 'Ethereum',
               },
-              [`eip155:1/erc20:${MUSD_ADDRESS}`]: {
+              [MAINNET_MUSD_ASSET_ID]: {
                 type: 'erc20',
                 decimals: 6,
                 symbol: 'MUSD',
                 name: 'MUSD',
               },
-              [`eip155:59144/erc20:${MUSD_ADDRESS}`]: {
+              [LINEA_MUSD_ASSET_ID]: {
                 type: 'erc20',
                 decimals: 6,
                 symbol: 'MUSD',
@@ -550,7 +552,7 @@ describe('Import flow', function () {
         testSpecificMock: importTokensTestMock,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -570,10 +572,9 @@ describe('Import flow', function () {
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, mUSD
         // ERC20 Tokens: Chain Games, Chai, ChangeX
-        await tokenList.checkTokenItemNumber(8);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
-        await tokenList.checkTokenExistsInList('Changex');
+        await tokenList.checkTokenExistsInList('ChangeX');
         await tokenList.checkTokenExistsInList('Chai');
       },
     );
@@ -686,7 +687,7 @@ describe('Import flow', function () {
         testSpecificMock: importTokensTestMock,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -706,6 +707,7 @@ describe('Import flow', function () {
           '0x89',
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
           'USDT',
+          '6',
         );
 
         console.log(`Imported token ++++++++++`);

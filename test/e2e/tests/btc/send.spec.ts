@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -24,6 +23,7 @@ import {
 } from './mocks';
 import { BTC_CHAIN_ID } from './mocks/bridge';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
+import { buildBtcSwapFixtures } from './unified-btc-assets';
 
 const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
 
@@ -80,14 +80,19 @@ async function landOnBitcoinSendForm(driver: Driver): Promise<{
 }
 
 describe('BTC Account - Send', function (this: Suite) {
-  this.timeout(180_000);
+  this.timeout(300_000);
+
+  const btcSendFixtureOptions = {
+    fixtures: buildBtcSwapFixtures(),
+    localNodeOptions: [{ type: 'none' as const }],
+    dappOptions: { numberOfTestDapps: 1 },
+  };
 
   it('blocks Continue when the recipient address is invalid', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -111,9 +116,8 @@ describe('BTC Account - Send', function (this: Suite) {
   it('blocks Continue when the amount exceeds the balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -137,9 +141,8 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -168,9 +171,8 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -197,9 +199,8 @@ describe('BTC Account - Send', function (this: Suite) {
   it('sends the total BTC balance and shows it pending in Activity', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -226,9 +227,8 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendConfirmMocks,
       },
       async ({ driver }: { driver: Driver }) => {

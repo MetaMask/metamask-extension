@@ -49,7 +49,7 @@ export const PositionCard = ({
   const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
   // Title uses the full asset name; the size line keeps the ticker as its unit.
-  const displayName = assetName || getDisplayName(position.symbol);
+  const displayName = getDisplayName(assetName || position.symbol);
   const displaySymbol = getDisplayName(position.symbol);
   const formattedPnl = formatPnl(pnlNum);
   const roeNum = Number.parseFloat(position.returnOnEquity);

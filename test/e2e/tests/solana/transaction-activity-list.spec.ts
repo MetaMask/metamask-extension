@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
@@ -12,6 +13,7 @@ import {
   commonSolanaTxFailedDetailsFixture,
   buildSolanaTestSpecificMock,
 } from './common-solana';
+import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
 describe('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a confirmed transaction details', async function () {
@@ -57,7 +59,7 @@ describe('Transaction activity list', function (this: Suite) {
     this.timeout(120000);
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildSolanaPositiveBalanceFixture(),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock({
           mockGetTransactionFailed: true,
@@ -67,8 +69,13 @@ describe('Transaction activity list', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('50');
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '50 SOL',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkFailedTxNumberDisplayedInActivity(1);
