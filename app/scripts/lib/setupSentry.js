@@ -42,6 +42,8 @@ const SENTRY_DISTRIBUTED_TRACING_ENABLED =
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
 const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
 
+let browserNavigationSessionTrackingInstalled = false;
+
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
   COINGECKO: 'coingecko.com',
@@ -271,7 +273,7 @@ function setSentryClient() {
   });
 
   Sentry.registerSpanErrorInstrumentation();
-  const client = initSentryClient(clientOptions);
+  const client = initializeSentryClient(clientOptions);
 
   setCITags();
 
@@ -280,9 +282,11 @@ function setSentryClient() {
   return client;
 }
 
-// Sentry.init refuses to initialize in MV3 extension workers under webpack
-// LavaMoat because package compartments do not see the app-level NW.js bypass.
-function initSentryClient(clientOptions) {
+// Sentry.init performs shared-environment checks inside the Sentry package
+// compartment. In MV3 webpack LavaMoat service workers, that compartment cannot
+// observe the app-level `globalThis.nw` bypass above, so construct and bind the
+// BrowserClient directly.
+function initializeSentryClient(clientOptions) {
   const client = new Sentry.BrowserClient({
     ...clientOptions,
     stackParser: clientOptions.stackParser ?? Sentry.defaultStackParser,
@@ -317,15 +321,14 @@ function startInitialBrowserSession(clientOptions) {
 
 function trackBrowserNavigationSessions() {
   if (
-    globalThis.stateHooks?.isSentrySessionTrackingEnabled ||
+    browserNavigationSessionTrackingInstalled ||
     !globalThis.history ||
     !globalThis.location
   ) {
     return;
   }
 
-  globalThis.stateHooks = globalThis.stateHooks || {};
-  globalThis.stateHooks.isSentrySessionTrackingEnabled = true;
+  browserNavigationSessionTrackingInstalled = true;
 
   let lastHref = globalThis.location.href;
   const handleNavigation = () => {

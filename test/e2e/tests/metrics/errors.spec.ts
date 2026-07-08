@@ -95,8 +95,8 @@ const maskedBackgroundFields = [
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
-  // AnalyticsController may omit the queue depending on when the Sentry
-  // capture races controller initialization and event flushing.
+  // Not part of these Sentry assertions; the analytics queue may already be
+  // flushed by the time the event captures application state.
   'AnalyticsController.eventQueue',
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.appActiveTab',
