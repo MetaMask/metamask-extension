@@ -1,11 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/**
- * @file node.ts — Tron local node seeder
- *
- * The local node runs a native java-tron private network. The
- * `@metamask/java-tron-up` package installs the managed Java runtime,
- * FullNode.jar, and the node_modules/.bin/java-tron wrapper used here.
- */
 import { spawn, type ChildProcess } from 'child_process';
 import { mkdir, mkdtemp, rm, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
@@ -63,19 +56,6 @@ const JAVA_TRON_PRIVATE_NETWORK_PORT_LABELS = {
   fullNodePort: 'java-tron HTTP full node port',
 } as const satisfies Record<keyof JavaTronPrivateNetworkPorts, string>;
 
-/**
- * Private keys for known E2E test accounts, keyed by Tron base58 address.
- * These are derived from E2E_SRP (`spread raise short crane omit tent fringe
- * mandate neglect detail suspect cradle`) via the Tron BIP44 path
- * `m/44'/195'/0'/0/<index>`. Storing them here follows the same pattern as
- * Ganache/Anvil seeders, which hard-code the pre-funded account keys.
- *
- * When `freezeBalanceV2` is called for one of these addresses, it signs the
- * freeze transaction with the owner's own key (required by Stake 2.0 —
- * `owner_address` must match the transaction signer). If the address is not
- * present in this map, `freezeBalanceV2` throws; add the derived key here
- * before calling `freezeBalanceV2` with a new test address.
- */
 const E2E_TEST_ACCOUNT_PRIVATE_KEYS: Readonly<Record<string, string>> = {
   // DEFAULT_TRON_ADDRESS — m/44'/195'/0'/0/0 from E2E_SRP
   TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3:
@@ -146,19 +126,6 @@ export class TronNode {
 
   readonly trc20Tokens: Partial<Record<TronTrc20Symbol, TronTrc20Token>> = {};
 
-  /**
-   * Starts a native java-tron private network, waits for the funded genesis
-   * account to become available, and seeds any requested balances into the
-   * MetaMask-controlled Tron account. This keeps the same async start() contract
-   * that Ganache and Anvil expose to withFixtures.
-   *
-   * @param options - Start options.
-   * @param options.initialBalances - Map of Tron address to amount in SUN.
-   * @param options.ports - java-tron private network ports.
-   * @param options.trc10Balances - Map of Tron address to named TRC10 balances.
-   * @param options.trc20Balances - Map of Tron address to named TRC20 balances.
-   * @param options.stakedTrxBalances - Map of Tron address to staked TRX in SUN.
-   */
   async start(options: TronLocalNodeOptions = {}): Promise<void> {
     if (this.#nodeProcess || this.#runtimeDirectory || this.#fullNodePort) {
       throw new Error('Tron local node has already started');
@@ -227,10 +194,6 @@ export class TronNode {
       this.#stdout = '';
 
       const javaTronBinary = getPackageBinaryPath('java-tron');
-      // java-tron brings up one listener for E2E: full-node HTTP (`baseUrl`).
-      // Solidity HTTP/gRPC, PBFT HTTP/gRPC, JSON-RPC, P2P, and backup are
-      // disabled in the generated config; make any re-enabled listener
-      // customizable before parallelizing it.
       const nodeProcess = spawn(
         javaTronBinary,
         ['-c', configPath, '--witness', '-d', outputDirectory],
@@ -238,8 +201,6 @@ export class TronNode {
           cwd: runtimeDirectory,
           detached: process.platform !== 'win32',
           stdio: ['ignore', 'pipe', 'pipe'],
-          // Reduce JVM startup overhead: pre-size heap to avoid resize pauses,
-          // and enable tiered compilation for faster initial bytecode execution.
           env: {
             ...process.env,
             JAVA_TOOL_OPTIONS: '-Xmx512m -Xms512m -XX:+TieredCompilation',
@@ -555,17 +516,6 @@ export class TronNode {
     });
   }
 
-  /**
-   * Freezes `amountInSun` of TRX from `targetAddress` for ENERGY using
-   * Stake 2.0 (`/wallet/freezebalancev2`). The transaction must be signed by
-   * the owner — i.e. the private key corresponding to `targetAddress`. The
-   * seeder resolves that key from {@link E2E_TEST_ACCOUNT_PRIVATE_KEYS}; if
-   * the address is not in that map the call throws — add the BIP44-derived key
-   * (`m/44'/195'/0'/0/<index>` from `E2E_SRP`) to `E2E_TEST_ACCOUNT_PRIVATE_KEYS`
-   * in node.ts before calling this method with a new test address.
-   * @param targetAddress
-   * @param amountInSun
-   */
   async freezeBalanceV2(
     targetAddress: string,
     amountInSun: string,
@@ -584,8 +534,6 @@ export class TronNode {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         owner_address: targetAddress,
-        // Tron HTTP API expects a number literal; SUN values in tests are well
-        // below Number.MAX_SAFE_INTEGER (~9B TRX) so truncation is not a concern.
         frozen_balance: Number(amountInSun),
         resource: 'ENERGY',
         visible: true,
@@ -630,7 +578,6 @@ export class TronNode {
       }),
     })) as { transaction?: unknown };
 
-    // /wallet/triggersmartcontract wraps the tx under a "transaction" key
     await this.signAndBroadcastTransaction(
       resp.transaction ?? resp,
       ownerPrivateKey,
@@ -647,9 +594,6 @@ export class TronNode {
         symbol as TronTrc10Symbol,
         totalSupply,
       );
-      // Java-Tron uses expiration-based (not nonce-based) sequencing; concurrent
-      // transfers from the genesis account are expected to succeed. If flakiness
-      // appears, serialize this back to a sequential for...of loop.
       await Promise.all(
         Object.entries(balancesByAddress).flatMap(([address, balances]) => {
           const amount = balances[symbol as TronTrc10Symbol];
