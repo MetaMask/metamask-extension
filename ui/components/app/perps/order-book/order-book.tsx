@@ -9,77 +9,50 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  ButtonIcon,
-  ButtonIconSize,
+  Icon,
   IconName,
-  IconColor,
+  IconSize,
 } from '@metamask/design-system-react';
 import type { OrderBookLevel } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
-  formatLargeNumber,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
 import { getDisplayName } from '../utils';
-import type { OrderBookUnit, PerpsOrderBookProps } from './order-book.types';
+import {
+  calculateGroupingOptions,
+  formatColumnValue,
+  formatGroupingLabel,
+  getDepthRatio,
+  getDepthWidth,
+  groupOrderBook,
+  selectDefaultGrouping,
+} from './order-book.utils';
+import { PerpsOrderBookConfigModal } from './order-book-config-modal';
+import type {
+  OrderBookListCurrency,
+  OrderBookListMetric,
+  PerpsOrderBookProps,
+} from './order-book.types';
 
-const DEPTH_BAR_OPACITY = 0.14;
-
-/**
- * Formats the cumulative total for a level based on the selected unit.
- *
- * @param level - Order book level.
- * @param unit - Selected display unit ('base' | 'usd').
- * @returns Formatted total string.
- */
-function formatTotal(level: OrderBookLevel, unit: OrderBookUnit): string {
-  if (unit === 'usd') {
-    const value = Number.parseFloat(level.totalNotional);
-    if (value >= 1_000_000) {
-      return `$${formatLargeNumber(value, { decimals: 1 })}`;
-    }
-    if (value >= 10_000) {
-      return `$${formatLargeNumber(value, { decimals: 0 })}`;
-    }
-    return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL });
-  }
-  const total = Number.parseFloat(level.total);
-  if (total >= 1) {
-    return total.toFixed(4);
-  }
-  return total.toFixed(6);
-}
-
-/**
- * Depth-bar width (0-100) for a level relative to the deepest level.
- *
- * @param level - Order book level.
- * @param maxTotal - Maximum cumulative size across all levels.
- * @returns Width as a percentage.
- */
-function getDepthWidth(level: OrderBookLevel, maxTotal: string): number {
-  const max = Number.parseFloat(maxTotal);
-  if (!Number.isFinite(max) || max <= 0) {
-    return 0;
-  }
-  const total = Number.parseFloat(level.total);
-  return Math.min((total / max) * 100, 100);
-}
+const DEPTH_BAR_OPACITY = 0.16;
 
 type OrderBookRowProps = {
   level: OrderBookLevel;
   side: 'bid' | 'ask';
-  unit: OrderBookUnit;
-  maxTotal: string;
+  currency: OrderBookListCurrency;
+  metric: OrderBookListMetric;
+  maxTotal: number;
   testId: string;
 };
 
 const OrderBookRow = ({
   level,
   side,
-  unit,
+  currency,
+  metric,
   maxTotal,
   testId,
 }: OrderBookRowProps) => {
@@ -93,7 +66,7 @@ const OrderBookRow = ({
       justifyContent={BoxJustifyContent.Between}
       paddingLeft={3}
       paddingRight={3}
-      className="relative py-0.5"
+      className="relative py-1"
       data-testid={testId}
     >
       <Box
@@ -108,18 +81,18 @@ const OrderBookRow = ({
         }}
       />
       <Text
-        variant={TextVariant.BodyXs}
+        variant={TextVariant.BodySm}
         color={isBid ? TextColor.SuccessDefault : TextColor.ErrorDefault}
         className="relative z-10"
       >
         {formatPerpsFiat(level.price, { ranges: PRICE_RANGES_UNIVERSAL })}
       </Text>
       <Text
-        variant={TextVariant.BodyXs}
-        color={TextColor.TextAlternative}
+        variant={TextVariant.BodySm}
+        color={TextColor.TextDefault}
         className="relative z-10"
       >
-        {formatTotal(level, unit)}
+        {formatColumnValue(level, currency, metric)}
       </Text>
     </Box>
   );
@@ -129,22 +102,28 @@ const OrderBookRow = ({
  * PerpsOrderBook - Live bid/ask order book with depth bars.
  *
  * Reads from the shared order-book stream channel (the surrounding order entry
- * page owns the stream lifecycle) and renders asks (top), the current spread
- * (middle) and bids (bottom) in a single vertical ladder.
- * @param options0
- * @param options0.symbol
- * @param options0.isOpen
- * @param options0.onClose
- * @param options0.'data-testid'
+ * page owns the stream lifecycle) and renders asks (top), the current mid price
+ * and spread (middle) and bids (bottom) in a single vertical ladder. A trigger
+ * in the header opens a modal for choosing the denomination, value metric and
+ * price grouping.
+ *
+ * @param options0 - Component props.
+ * @param options0.symbol - Market symbol.
+ * @param options0.isOpen - Whether the panel is visible.
+ * @param options0.marketPrice - Current market price for grouping options.
+ * @param options0.'data-testid' - Container test id.
  */
 export const PerpsOrderBook = ({
   symbol,
   isOpen,
-  onClose,
+  marketPrice,
   'data-testid': dataTestId = 'perps-order-book',
 }: PerpsOrderBookProps) => {
   const t = useI18nContext();
-  const [unit, setUnit] = useState<OrderBookUnit>('usd');
+  const [currency, setCurrency] = useState<OrderBookListCurrency>('usd');
+  const [metric, setMetric] = useState<OrderBookListMetric>('total');
+  const [selectedGrouping, setSelectedGrouping] = useState<number | null>(null);
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   // The order entry page already activates/deactivates the background
   // order-book stream, so we only read from the shared channel here.
@@ -155,13 +134,45 @@ export const PerpsOrderBook = ({
   });
 
   const displaySymbol = getDisplayName(symbol);
-  const unitLabel = unit === 'usd' ? 'USD' : displaySymbol;
+  const unitLabel = currency === 'usd' ? 'USD' : displaySymbol;
+  const metricLabel =
+    metric === 'total' ? t('perpsOrderBookTotal') : t('perpsOrderBookSize');
+
+  const midPriceValue = useMemo(() => {
+    if (Number.isFinite(marketPrice) && (marketPrice as number) > 0) {
+      return marketPrice as number;
+    }
+    const parsed = Number.parseFloat(orderBook?.midPrice ?? '');
+    return Number.isFinite(parsed) ? parsed : 0;
+  }, [marketPrice, orderBook?.midPrice]);
+
+  const groupingOptions = useMemo(
+    () => calculateGroupingOptions(midPriceValue),
+    [midPriceValue],
+  );
+
+  const currentGrouping = useMemo(() => {
+    if (selectedGrouping !== null && groupingOptions.includes(selectedGrouping)) {
+      return selectedGrouping;
+    }
+    return groupingOptions.length ? selectDefaultGrouping(groupingOptions) : null;
+  }, [selectedGrouping, groupingOptions]);
+
+  const grouped = useMemo(
+    () => (orderBook ? groupOrderBook(orderBook, currentGrouping) : null),
+    [orderBook, currentGrouping],
+  );
 
   // Asks come lowest-price-first; render highest at the top so the best ask
   // sits directly above the spread row (classic ladder layout).
   const reversedAsks = useMemo(
-    () => (orderBook?.asks ? [...orderBook.asks].reverse() : []),
-    [orderBook?.asks],
+    () => (grouped ? [...grouped.asks].reverse() : []),
+    [grouped],
+  );
+
+  const depthRatio = useMemo(
+    () => (grouped ? getDepthRatio(grouped.bids, grouped.asks) : null),
+    [grouped],
   );
 
   const spreadDisplay = useMemo(() => {
@@ -179,43 +190,21 @@ export const PerpsOrderBook = ({
     })} (${bps.toFixed(1)} bps)`;
   }, [orderBook]);
 
-  const handleUnitToggle = useCallback(
-    (next: OrderBookUnit) => setUnit(next),
+  const handleApplyConfig = useCallback(
+    (next: {
+      currency: OrderBookListCurrency;
+      metric: OrderBookListMetric;
+      grouping: number;
+    }) => {
+      setCurrency(next.currency);
+      setMetric(next.metric);
+      setSelectedGrouping(next.grouping);
+    },
     [],
   );
 
-  const renderUnitButton = (value: OrderBookUnit, label: string) => {
-    const isActive = unit === value;
-    return (
-      <Box
-        role="button"
-        tabIndex={0}
-        aria-pressed={isActive}
-        onClick={() => handleUnitToggle(value)}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            handleUnitToggle(value);
-          }
-        }}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-        className={twMerge(
-          'flex-1 rounded-md py-1 cursor-pointer',
-          isActive ? 'bg-muted' : 'bg-transparent',
-        )}
-        data-testid={`${dataTestId}-unit-${value}`}
-      >
-        <Text
-          variant={TextVariant.BodyXs}
-          fontWeight={isActive ? FontWeight.Medium : FontWeight.Regular}
-          color={isActive ? TextColor.TextDefault : TextColor.TextAlternative}
-        >
-          {label}
-        </Text>
-      </Box>
-    );
-  };
+  const groupingTriggerLabel =
+    currentGrouping === null ? '—' : formatGroupingLabel(currentGrouping);
 
   return (
     <Box
@@ -223,40 +212,42 @@ export const PerpsOrderBook = ({
       className="h-full w-full overflow-hidden bg-default"
       data-testid={dataTestId}
     >
-      {/* Header */}
+      {/* Header: grouping trigger */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Between}
         paddingLeft={3}
-        paddingRight={2}
+        paddingRight={3}
         paddingTop={3}
         paddingBottom={2}
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Bold}>
-          {t('perpsOrderBook')}
-        </Text>
-        <ButtonIcon
-          iconName={IconName.Close}
-          size={ButtonIconSize.Sm}
-          ariaLabel={t('close')}
-          onClick={onClose}
-          iconProps={{ color: IconColor.IconAlternative }}
-          data-testid={`${dataTestId}-close`}
-        />
-      </Box>
-
-      {/* Unit toggle */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={1}
-        marginLeft={3}
-        marginRight={3}
-        marginBottom={2}
-        className="rounded-lg bg-section p-0.5"
-      >
-        {renderUnitButton('base', displaySymbol)}
-        {renderUnitButton('usd', 'USD')}
+        <Box
+          role="button"
+          tabIndex={0}
+          aria-haspopup="dialog"
+          aria-label={t('perpsOrderBookConfigTitle')}
+          onClick={() => setIsConfigOpen(true)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              setIsConfigOpen(true);
+            }
+          }}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          className="cursor-pointer rounded-md px-1 py-0.5 hover:bg-muted"
+          data-testid={`${dataTestId}-grouping-trigger`}
+        >
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
+          >
+            {groupingTriggerLabel}
+          </Text>
+          <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
+        </Box>
       </Box>
 
       {/* Column headers */}
@@ -267,16 +258,16 @@ export const PerpsOrderBook = ({
         paddingRight={3}
         paddingBottom={1}
       >
-        <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsOrderBookPrice')}
         </Text>
-        <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-          {`${t('perpsOrderBookTotal')} (${unitLabel})`}
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {`${metricLabel} (${unitLabel})`}
         </Text>
       </Box>
 
       {/* Ladder */}
-      {isInitialLoading || !orderBook ? (
+      {isInitialLoading || !orderBook || !grouped ? (
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
@@ -302,8 +293,9 @@ export const PerpsOrderBook = ({
                 key={`ask-${level.price}`}
                 level={level}
                 side="ask"
-                unit={unit}
-                maxTotal={orderBook.maxTotal}
+                currency={currency}
+                metric={metric}
+                maxTotal={grouped.maxTotal}
                 testId={`${dataTestId}-ask-${index}`}
               />
             ))}
@@ -316,15 +308,14 @@ export const PerpsOrderBook = ({
             justifyContent={BoxJustifyContent.Between}
             paddingLeft={3}
             paddingRight={3}
-            paddingTop={1}
-            paddingBottom={1}
-            className="border-y border-muted my-0.5"
+            paddingTop={2}
+            paddingBottom={2}
             data-testid={`${dataTestId}-spread`}
           >
             <Text
-              variant={TextVariant.BodySm}
+              variant={TextVariant.HeadingMd}
               fontWeight={FontWeight.Bold}
-              color={TextColor.TextDefault}
+              color={TextColor.SuccessDefault}
             >
               {formatPerpsFiat(orderBook.midPrice, {
                 ranges: PRICE_RANGES_UNIVERSAL,
@@ -332,7 +323,7 @@ export const PerpsOrderBook = ({
             </Text>
             {spreadDisplay && (
               <Text
-                variant={TextVariant.BodyXs}
+                variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
               >
                 {spreadDisplay}
@@ -342,19 +333,104 @@ export const PerpsOrderBook = ({
 
           {/* Bids (buy) */}
           <Box flexDirection={BoxFlexDirection.Column}>
-            {orderBook.bids.map((level, index) => (
+            {grouped.bids.map((level, index) => (
               <OrderBookRow
                 key={`bid-${level.price}`}
                 level={level}
                 side="bid"
-                unit={unit}
-                maxTotal={orderBook.maxTotal}
+                currency={currency}
+                metric={metric}
+                maxTotal={grouped.maxTotal}
                 testId={`${dataTestId}-bid-${index}`}
               />
             ))}
           </Box>
         </Box>
       )}
+
+      {/* Buy/Sell depth ratio */}
+      {depthRatio && (
+        <Box
+          paddingLeft={3}
+          paddingRight={3}
+          paddingTop={2}
+          paddingBottom={3}
+          className="shrink-0"
+        >
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            className="h-6 w-full overflow-hidden rounded-full"
+            data-testid={`${dataTestId}-ratio`}
+          >
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+              paddingLeft={2}
+              paddingRight={2}
+              className="h-full"
+              style={{
+                width: `${depthRatio.buyPercent}%`,
+                backgroundColor: 'var(--color-success-muted)',
+              }}
+            >
+              <Text
+                variant={TextVariant.BodyXs}
+                fontWeight={FontWeight.Bold}
+                color={TextColor.SuccessDefault}
+              >
+                B
+              </Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.SuccessDefault}
+              >
+                {`${depthRatio.buyPercent}%`}
+              </Text>
+            </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.End}
+              gap={1}
+              paddingLeft={2}
+              paddingRight={2}
+              className="h-full"
+              style={{
+                width: `${depthRatio.sellPercent}%`,
+                backgroundColor: 'var(--color-error-muted)',
+              }}
+            >
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.ErrorDefault}
+              >
+                {`${depthRatio.sellPercent}%`}
+              </Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                fontWeight={FontWeight.Bold}
+                color={TextColor.ErrorDefault}
+              >
+                S
+              </Text>
+            </Box>
+          </Box>
+        </Box>
+      )}
+
+      <PerpsOrderBookConfigModal
+        isOpen={isConfigOpen}
+        baseSymbol={displaySymbol}
+        currency={currency}
+        metric={metric}
+        grouping={currentGrouping}
+        groupingOptions={groupingOptions}
+        onApply={handleApplyConfig}
+        onClose={() => setIsConfigOpen(false)}
+        data-testid={`${dataTestId}-config-modal`}
+      />
     </Box>
   );
 };

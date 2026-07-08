@@ -137,7 +137,10 @@ import {
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
-import { PerpsOrderBook } from '../../components/app/perps/order-book';
+import {
+  PerpsOrderBook,
+  CandlesticksIcon,
+} from '../../components/app/perps/order-book';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
 
 const ORDER_MODE_TOAST_KEYS: Record<
@@ -268,6 +271,9 @@ const PerpsOrderEntryPage = () => {
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
+  const [orderBookWidthPct, setOrderBookWidthPct] = useState(33);
+  const [isResizingOrderBook, setIsResizingOrderBook] = useState(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
   trackRef.current = track;
@@ -986,6 +992,36 @@ const PerpsOrderEntryPage = () => {
       setOrderDirection(direction);
     },
     [track],
+  );
+
+  // Draggable divider between the order form and the order book panel. Width is
+  // tracked as a percentage of the body so the split stays proportional when the
+  // window is resized. Clamped so neither side collapses.
+  const handleOrderBookResizeStart = useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      setIsResizingOrderBook(true);
+      const handleMove = (moveEvent: MouseEvent) => {
+        const container = bodyRef.current;
+        if (!container) {
+          return;
+        }
+        const rect = container.getBoundingClientRect();
+        if (rect.width <= 0) {
+          return;
+        }
+        const pct = ((rect.right - moveEvent.clientX) / rect.width) * 100;
+        setOrderBookWidthPct(Math.min(60, Math.max(22, pct)));
+      };
+      const handleUp = () => {
+        setIsResizingOrderBook(false);
+        window.removeEventListener('mousemove', handleMove);
+        window.removeEventListener('mouseup', handleUp);
+      };
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', handleUp);
+    },
+    [],
   );
 
   const handleToggleOrderBook = useCallback(() => {
@@ -1707,27 +1743,21 @@ const PerpsOrderEntryPage = () => {
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Center}
           className={twMerge(
-            'w-9 h-9 shrink-0 cursor-pointer rounded-lg',
+            'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg',
             isOrderBookOpen && 'bg-muted',
           )}
         >
-          <Icon
-            name={IconName.Chart}
-            size={IconSize.Md}
-            color={
-              isOrderBookOpen
-                ? IconColor.PrimaryDefault
-                : IconColor.IconAlternative
-            }
+          <CandlesticksIcon
+            className={twMerge(
+              'w-6 h-6',
+              isOrderBookOpen ? 'text-primary-default' : 'text-alternative',
+            )}
           />
         </Box>
       </Box>
 
       {/* Body: form content (left) + sliding order book (right) */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        className="flex-1 min-h-0 w-full"
-      >
+      <div ref={bodyRef} className="flex flex-row flex-1 min-h-0 w-full">
         <Box
           flexDirection={BoxFlexDirection.Column}
           className="flex-1 min-w-0 h-full overflow-hidden"
@@ -1844,22 +1874,35 @@ const PerpsOrderEntryPage = () => {
         </Button>
       </Box>
         </Box>
-        {/* Order book: slides in from the right, taking 1/3 of the width */}
+        {/* Draggable divider: resize the order book / form split. */}
+        {isOrderBookOpen && (
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            aria-label={t('perpsOrderBookResize')}
+            tabIndex={0}
+            onMouseDown={handleOrderBookResizeStart}
+            className="w-1 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
+            data-testid="perps-order-book-resize-handle"
+          />
+        )}
+        {/* Order book: slides in from the right, resizable via the divider. */}
         <Box
           flexDirection={BoxFlexDirection.Column}
+          style={{ width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%' }}
           className={twMerge(
-            'shrink-0 h-full overflow-hidden border-muted transition-all duration-300 ease-in-out',
-            isOrderBookOpen ? 'w-1/3 border-l' : 'w-0',
+            'shrink-0 h-full overflow-hidden',
+            !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
           )}
           aria-hidden={!isOrderBookOpen}
         >
           <PerpsOrderBook
             symbol={decodedSymbol}
             isOpen={isOrderBookOpen}
-            onClose={() => setIsOrderBookOpen(false)}
+            marketPrice={currentPrice}
           />
         </Box>
-      </Box>
+      </div>
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}

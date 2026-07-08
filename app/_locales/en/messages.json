@@ -7231,6 +7231,18 @@
   "perpsOrderBook": {
     "message": "Order book"
   },
+  "perpsOrderBookApply": {
+    "message": "Apply"
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Listed by & Group by"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Group by"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Listed by"
+  },
   "perpsOrderBookLoading": {
     "message": "Loading order book"
   },
@@ -7239,6 +7251,12 @@
   },
   "perpsOrderBookPrice": {
     "message": "Price"
+  },
+  "perpsOrderBookResize": {
+    "message": "Resize order book"
+  },
+  "perpsOrderBookSize": {
+    "message": "Size"
   },
   "perpsOrderBookTotal": {
     "message": "Total"

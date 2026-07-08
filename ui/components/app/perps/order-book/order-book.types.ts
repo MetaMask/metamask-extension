@@ -1,5 +1,8 @@
-/** Unit used for the "Total" column of the order book. */
-export type OrderBookUnit = 'base' | 'usd';
+/** Currency the metric column is denominated in. */
+export type OrderBookListCurrency = 'base' | 'usd';
+
+/** Metric shown in the value column: per-level size or cumulative total. */
+export type OrderBookListMetric = 'size' | 'total';
 
 export type PerpsOrderBookProps = {
   /** Symbol to display the order book for (e.g. 'BTC', 'ETH'). */
@@ -9,8 +12,35 @@ export type PerpsOrderBookProps = {
    * channel read is disabled to avoid unnecessary work while hidden.
    */
   isOpen: boolean;
-  /** Called when the user requests to close the panel. */
-  onClose: () => void;
+  /**
+   * Current mid/market price, used to derive sensible price-grouping options.
+   */
+  marketPrice?: number;
   /** Test id for the container. */
+  'data-testid'?: string;
+};
+
+export type PerpsOrderBookConfigModalProps = {
+  /** Whether the modal is open. */
+  isOpen: boolean;
+  /** Display symbol for the base currency toggle (e.g. 'BTC'). */
+  baseSymbol: string;
+  /** Currently applied currency. */
+  currency: OrderBookListCurrency;
+  /** Currently applied metric. */
+  metric: OrderBookListMetric;
+  /** Currently applied price grouping. */
+  grouping: number | null;
+  /** Available price-grouping options. */
+  groupingOptions: number[];
+  /** Called with the chosen settings when the user taps Apply. */
+  onApply: (next: {
+    currency: OrderBookListCurrency;
+    metric: OrderBookListMetric;
+    grouping: number;
+  }) => void;
+  /** Called when the modal is dismissed. */
+  onClose: () => void;
+  /** Test id for the modal. */
   'data-testid'?: string;
 };

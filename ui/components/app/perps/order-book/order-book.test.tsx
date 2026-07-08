@@ -23,7 +23,7 @@ const mockOrderBook = {
       totalNotional: '2967',
     },
     {
-      price: '73774',
+      price: '73765',
       size: '0.28',
       total: '0.32',
       notional: '20584',
@@ -39,7 +39,7 @@ const mockOrderBook = {
       totalNotional: '43393',
     },
     {
-      price: '73778',
+      price: '73788',
       size: '0.12',
       total: '0.62',
       notional: '9321',
@@ -59,15 +59,12 @@ const mockStore = configureStore({
   },
 });
 
-function renderOrderBook(props?: {
-  isOpen?: boolean;
-  onClose?: () => void;
-}) {
+function renderOrderBook(props?: { isOpen?: boolean; marketPrice?: number }) {
   return renderWithProvider(
     <PerpsOrderBook
       symbol="BTC"
       isOpen={props?.isOpen ?? true}
-      onClose={props?.onClose ?? jest.fn()}
+      marketPrice={props?.marketPrice ?? 73776}
     />,
     mockStore,
   );
@@ -114,12 +111,9 @@ describe('PerpsOrderBook', () => {
   });
 
   describe('rendering', () => {
-    it('renders the title and column headers', () => {
+    it('renders the column headers with the default metric and currency', () => {
       renderOrderBook();
 
-      expect(
-        screen.getByText(messages.perpsOrderBook.message),
-      ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsOrderBookPrice.message),
       ).toBeInTheDocument();
@@ -128,41 +122,69 @@ describe('PerpsOrderBook', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders ask, bid and spread rows', () => {
-      renderOrderBook();
+    it('renders ask, bid, spread and ratio rows', () => {
+      renderOrderBook({ marketPrice: 73776 });
 
       expect(screen.getByTestId('perps-order-book-ask-0')).toBeInTheDocument();
-      expect(screen.getByTestId('perps-order-book-ask-1')).toBeInTheDocument();
       expect(screen.getByTestId('perps-order-book-bid-0')).toBeInTheDocument();
-      expect(screen.getByTestId('perps-order-book-bid-1')).toBeInTheDocument();
       expect(screen.getByTestId('perps-order-book-spread')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-order-book-ratio')).toBeInTheDocument();
+    });
+
+    it('does not render the removed order book title', () => {
+      renderOrderBook();
+
+      expect(
+        screen.queryByText(messages.perpsOrderBook.message),
+      ).not.toBeInTheDocument();
     });
   });
 
-  describe('unit toggle', () => {
-    it('switches the total column unit label to the base asset', () => {
+  describe('config modal', () => {
+    it('opens the config modal from the grouping trigger', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+
+      expect(
+        screen.getByText(messages.perpsOrderBookConfigTitle.message),
+      ).toBeInTheDocument();
+    });
+
+    it('applies a new currency to the metric column header', () => {
       renderOrderBook();
 
       expect(
         screen.getByText(`${messages.perpsOrderBookTotal.message} (USD)`),
       ).toBeInTheDocument();
 
-      fireEvent.click(screen.getByTestId('perps-order-book-unit-base'));
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-currency-base'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-apply'),
+      );
 
       expect(
         screen.getByText(`${messages.perpsOrderBookTotal.message} (BTC)`),
       ).toBeInTheDocument();
     });
-  });
 
-  describe('closing', () => {
-    it('calls onClose when the close button is clicked', () => {
-      const onClose = jest.fn();
-      renderOrderBook({ onClose });
+    it('applies a new price grouping to the trigger label', () => {
+      renderOrderBook();
 
-      fireEvent.click(screen.getByTestId('perps-order-book-close'));
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-grouping-1'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-apply'),
+      );
 
-      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(
+        screen.getByTestId('perps-order-book-grouping-trigger'),
+      ).toHaveTextContent('1');
     });
   });
 
