@@ -307,7 +307,8 @@
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
     "@metamask/assets-controller@npm:^9.1.0": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch",
-    "@metamask/assets-controller@npm:^10.0.1": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch"
+    "@metamask/assets-controller@npm:^10.0.1": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch",
+    "@metamask/bridge-status-controller@npm:^73.0.0": "patch:@metamask/bridge-status-controller@npm%3A73.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-73.0.0-664418b8e9.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -348,7 +349,7 @@
     "@metamask/bitcoin-wallet-snap": "^1.14.0",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
     "@metamask/bridge-controller": "^75.1.1",
-    "@metamask/bridge-status-controller": "^72.1.1",
+    "@metamask/bridge-status-controller": "patch:@metamask/bridge-status-controller@npm%3A73.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-73.0.0-664418b8e9.patch",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
     "@metamask/claims-controller": "^0.4.2",
