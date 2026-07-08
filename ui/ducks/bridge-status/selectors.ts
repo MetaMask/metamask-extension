@@ -13,8 +13,6 @@ import {
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_OBJECT } from '../../selectors/shared';
-import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
-import { selectTransactionIds } from '../../selectors/toast';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
