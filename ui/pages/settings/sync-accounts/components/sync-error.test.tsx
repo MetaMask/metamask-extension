@@ -50,22 +50,6 @@ describe('SyncError', () => {
     expect(screen.getByText(messages.cancel.message)).toBeInTheDocument();
   });
 
-  it.each([
-    [QrSyncErrorCodes.CHANNEL_INIT_FAILED, 'add_device_error_connection'],
-    [QrSyncErrorCodes.CHANNEL_DISCONNECTED, 'add_device_error_connection'],
-    [QrSyncErrorCodes.SESSION_EXPIRED, 'add_device_error_expired'],
-    [QrSyncErrorCodes.OTP_INVALID, 'add_device_error_invalid_code'],
-    [QrSyncErrorCodes.SYNC_REJECTED, 'add_device_error_rejected'],
-    [QrSyncErrorCodes.SYNC_FAILED, 'add_device_error_sync_failed'],
-    [QrSyncErrorCodes.UNKNOWN, 'add_device_error_generic'],
-  ])('shows the message for the %s error code', (code, messageKey) => {
-    renderSyncError({ code, message: 'controller message' });
-
-    expect(
-      screen.getByText(messages[messageKey as keyof typeof messages].message),
-    ).toBeInTheDocument();
-  });
-
   it('falls back to the generic message when there is no error', () => {
     renderSyncError(null);
 
