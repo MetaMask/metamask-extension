@@ -61,6 +61,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.38.1]
 
+### Changed
+
+- Fixed a crash (BigNumber Error: number type has more than 15 significant digits) affecting send, batch sell, and approval screens when displaying values with high-precision decimals (#44216)
+- Bumped assets controller to v10.0.0 (#44055)
+
 ## [13.38.0]
 
 ### Added
