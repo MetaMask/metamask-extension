@@ -7,6 +7,7 @@ export const MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 = {
   sBTC: `${MultichainNetworks.BITCOIN_SIGNET}/slip44:0`,
   SOL: `${MultichainNetworks.SOLANA}/slip44:501`,
   TRX: `${MultichainNetworks.TRON}/slip44:195`,
+  XLM: `${MultichainNetworks.STELLAR}/slip44:148`,
 } as const;
 
 export enum MultichainNativeAssets {
@@ -34,6 +35,9 @@ export enum MultichainNativeAssets {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   TRON_SHASTA = `${MultichainNetworks.TRON_SHASTA}/slip44:195`,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  STELLAR = `${MultichainNetworks.STELLAR}/slip44:148`,
 }
 
 /**
@@ -55,6 +59,7 @@ export const MULTICHAIN_NETWORK_TO_ASSET_TYPES: Record<
   [MultichainNetworks.TRON]: [MultichainNativeAssets.TRON],
   [MultichainNetworks.TRON_NILE]: [MultichainNativeAssets.TRON_NILE],
   [MultichainNetworks.TRON_SHASTA]: [MultichainNativeAssets.TRON_SHASTA],
+  [MultichainNetworks.STELLAR]: [MultichainNativeAssets.STELLAR],
 } as const;
 
 /**
