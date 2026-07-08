@@ -9,7 +9,6 @@ import { MultichainNativeAssets } from '../../../../shared/constants/multichain/
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -81,7 +80,7 @@ const BTC_OVERVIEW_SWAP = 'coin-overview-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
-const mockMetaMetricsId = 'deadbeef';
+const mockAnalyticsId = 'deadbeef';
 const mockNonEvmBalance = '1';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
@@ -102,34 +101,10 @@ const mockNonEvmAccount = {
   type: BtcAccountType.P2wpkh,
 };
 
-const mockBtcChain = {
-  active: true,
-  chainId: MultichainNetworks.BITCOIN,
-  chainName: 'Bitcoin',
-  shortName: 'Bitcoin',
-  nativeTokenSupported: true,
-  isEvm: false,
-};
-
-const mockSolanaChain = {
-  active: true,
-  chainId: MultichainNetworks.SOLANA,
-  chainName: 'Solana',
-  shortName: 'Solana',
-  nativeTokenSupported: true,
-  isEvm: false,
-};
-
-// default chains do not include BTC
-const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
-  (chain) =>
-    chain.chainId !== MultichainNetworks.BITCOIN &&
-    chain.chainId !== MultichainNetworks.SOLANA,
-);
-
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
+    batchSell: { enabled: true },
     bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     bridgeConfig: {
       support: true,
@@ -190,7 +165,7 @@ const mockMetamaskStore = {
   // selected account
   completedOnboarding: true,
   // Used when clicking on some buttons
-  metaMetricsId: mockMetaMetricsId,
+  analyticsId: mockAnalyticsId,
   // Override state if provided
   multichainNetworkConfigurationsByChainId:
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -202,9 +177,6 @@ const mockMetamaskStore = {
     },
   },
 };
-const mockRampsStore = {
-  buyableChains: mockBuyableChainsEvmOnly,
-};
 
 function getStore(state?: Record<string, unknown>) {
   return configureMockStore([thunk])({
@@ -212,7 +184,6 @@ function getStore(state?: Record<string, unknown>) {
     localeMessages: {
       currentLocale: 'en-US',
     },
-    ramps: mockRampsStore,
     ...state,
   });
 }
@@ -324,7 +295,7 @@ describe('NonEvmOverview', () => {
     expect(buyButton).toBeInTheDocument();
   });
 
-  it('"Buy & Sell" button is disabled if BTC is not buyable and SOL is not buyable', () => {
+  it('keeps the "Buy & Sell" button enabled regardless of buyable chain state', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
@@ -332,56 +303,13 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BUY_BUTTON);
 
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
-  });
-
-  it('"Buy & Sell" button is enabled if BTC is buyable', () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <NonEvmOverview />,
-      storeWithBtcBuyable,
-    );
-
-    const buyButton = queryByTestId(BUY_BUTTON);
-
-    expect(buyButton).toBeInTheDocument();
-    expect(buyButton).not.toBeDisabled();
-  });
-
-  // TODO: Add solana buyable test
-  it.skip('"Buy & Sell" button is enabled if SOL is buyable', () => {
-    const storeWithSolanaBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockSolanaChain],
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <NonEvmOverview />,
-      storeWithSolanaBuyable,
-    );
-
-    const buyButton = queryByTestId(BUY_BUTTON);
-
-    expect(buyButton).toBeInTheDocument();
     expect(buyButton).not.toBeDisabled();
   });
 
   it('calls openBuyInPdapp when clicking on "Buy & Sell" button', async () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
-
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
-      storeWithBtcBuyable,
+      getStore(),
     );
 
     const buyButton = queryByTestId(BUY_BUTTON);
@@ -391,11 +319,7 @@ describe('NonEvmOverview', () => {
   });
 
   it('sends an event when clicking the Buy button', () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
+    const storeWithBtcBuyable = getStore();
 
     const mockTrackEvent = jest.fn();
     const mockMetaMetricsContext = {
@@ -439,13 +363,18 @@ describe('NonEvmOverview', () => {
     });
   });
 
-  it('always show the Receive button', () => {
+  it('shows the Receive button inside the more-options dropdown', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
     );
-    const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
-    expect(receiveButton).toBeInTheDocument();
+
+    // Receive moved into the "More" dropdown – it is hidden until the dropdown is opened
+    expect(queryByTestId(BTC_OVERVIEW_RECEIVE)).not.toBeInTheDocument();
+
+    fireEvent.click(queryByTestId('coin-overview-more') as HTMLElement);
+
+    expect(queryByTestId(BTC_OVERVIEW_RECEIVE)).toBeInTheDocument();
   });
 
   it('always show the Send button', () => {

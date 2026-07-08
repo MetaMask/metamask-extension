@@ -30,6 +30,7 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import type { PriceUpdate } from '@metamask/perps-controller';
@@ -52,6 +53,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -96,12 +98,12 @@ import {
   formatPerpsFiatUniversal,
   formatPerpsLiquidationPrice,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
+import { PERPS_COLLATERAL_SYMBOL } from '../../components/app/perps/constants';
 import {
   derivePositionTpslPricesFromOrders,
   normalizeMarketDetailsOrders,
 } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { Skeleton } from '../../components/component-library/skeleton';
 import { Popover, PopoverPosition } from '../../components/component-library';
 import { useFormatters } from '../../hooks/useFormatters';
 import { EditMarginModal } from '../../components/app/perps/edit-margin';
@@ -110,6 +112,7 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
 import type { Order } from '../../components/app/perps/types';
 import {
   PERPS_TOAST_KEYS,
@@ -117,7 +120,6 @@ import {
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 import Tooltip from '../../components/ui/tooltip';
-import { BorderRadius } from '../../helpers/constants/design-system';
 import type { MetaMaskReduxState } from '../../store/store';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
@@ -275,6 +277,7 @@ const PerpsMarketDetailPage = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+  const { gate } = useSelectedAccountComplianceGate();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
   const {
@@ -415,14 +418,13 @@ const PerpsMarketDetailPage = () => {
     const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
       const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
       if (update) {
-        const ts = (update as { timestamp?: number }).timestamp;
-        const mark = (update as { markPrice?: string }).markPrice;
         setLivePrice({
           symbol: update.symbol,
           price: update.price,
-          timestamp: ts ?? Date.now(),
+          timestamp: update.timestamp,
           percentChange24h: update.percentChange24h,
-          markPrice: mark,
+          markPrice: update.markPrice,
+          isTradable: update.isTradable,
         });
       }
     });
@@ -745,7 +747,15 @@ const PerpsMarketDetailPage = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    navigate({ pathname: '/', search: 'tab=perps' });
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
+  }, [navigate]);
+
+  const handleMarketListClick = useCallback(() => {
+    navigate(PERPS_MARKET_LIST_ROUTE);
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
@@ -761,26 +771,31 @@ const PerpsMarketDetailPage = () => {
 
   const handleOpenOrder = useCallback(
     (direction: 'long' | 'short') => {
-      if (!isEligible) {
-        setIsGeoBlockModalOpen(true);
-        return;
-      }
-      if (!decodedSymbol || isLoadingAccount) {
-        return;
-      }
-      track(MetaMetricsEventName.PerpsUiInteraction, {
-        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-          PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
-        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
-        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-        [PERPS_EVENT_PROPERTY.DIRECTION]: direction,
+      gate(() => {
+        if (!isEligible) {
+          setIsGeoBlockModalOpen(true);
+          return;
+        }
+        if (!decodedSymbol || isLoadingAccount) {
+          return;
+        }
+        track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+            PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
+          [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+            PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+          [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+          [PERPS_EVENT_PROPERTY.DIRECTION]: direction,
+        });
+        navigate(buildOrderEntryUrl(direction, 'new'));
+      }).catch((error: unknown) => {
+        console.error(error);
       });
-      navigate(buildOrderEntryUrl(direction, 'new'));
     },
     [
+      gate,
       isEligible,
       decodedSymbol,
       isLoadingAccount,
@@ -791,43 +806,55 @@ const PerpsMarketDetailPage = () => {
   );
 
   const handleClosePosition = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!position) {
-      return;
-    }
-    setIsCloseModalOpen(true);
-  }, [isEligible, position]);
+    gate(() => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!position) {
+        return;
+      }
+      setIsCloseModalOpen(true);
+    }).catch((error: unknown) => {
+      console.error(error);
+    });
+  }, [gate, isEligible, position]);
 
   const handleOpenAddMarginModal = useCallback(() => {
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    gate(() => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      });
+      setIsModifyMenuOpen(false);
+      setIsMarginMenuOpen(false);
+      setMarginModalMode('add');
+    }).catch((error: unknown) => {
+      console.error(error);
     });
-    setIsModifyMenuOpen(false);
-    setIsMarginMenuOpen(false);
-    setMarginModalMode('add');
-  }, [track]);
+  }, [gate, track]);
 
   const handleOpenDecreaseMarginModal = useCallback(() => {
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    gate(() => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      });
+      setIsModifyMenuOpen(false);
+      setIsMarginMenuOpen(false);
+      setMarginModalMode('remove');
+    }).catch((error: unknown) => {
+      console.error(error);
     });
-    setIsModifyMenuOpen(false);
-    setIsMarginMenuOpen(false);
-    setMarginModalMode('remove');
-  }, [track]);
+  }, [gate, track]);
 
   const handleOpenReverseModal = useCallback(() => {
     setIsModifyMenuOpen(false);
@@ -835,28 +862,33 @@ const PerpsMarketDetailPage = () => {
   }, []);
 
   const handleAddExposure = useCallback(() => {
-    if (!position || !decodedSymbol) {
-      return;
-    }
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
-    });
-    setIsModifyMenuOpen(false);
-    if (position.leverage?.type === 'cross') {
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.INCREASE_POSITION_CROSS_MARGIN_BLOCKED,
-        description: t('perpsCrossMarginNotSupportedDescription'),
+    gate(() => {
+      if (!position || !decodedSymbol) {
+        return;
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
       });
-      return;
-    }
-    const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
-    navigate(buildOrderEntryUrl(direction, 'modify'));
+      setIsModifyMenuOpen(false);
+      if (position.leverage?.type === 'cross') {
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.INCREASE_POSITION_CROSS_MARGIN_BLOCKED,
+          description: t('perpsCrossMarginNotSupportedDescription'),
+        });
+        return;
+      }
+      const direction = parseFloat(position.size) >= 0 ? 'long' : 'short';
+      navigate(buildOrderEntryUrl(direction, 'modify'));
+    }).catch((error: unknown) => {
+      console.error(error);
+    });
   }, [
+    gate,
     position,
     decodedSymbol,
     navigate,
@@ -867,24 +899,28 @@ const PerpsMarketDetailPage = () => {
   ]);
 
   const handleReduceExposure = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-    if (!position || !decodedSymbol) {
-      return;
-    }
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-        PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+    gate(() => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!position || !decodedSymbol) {
+        return;
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+          PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      });
+      setIsModifyMenuOpen(false);
+      setIsCloseModalOpen(true);
+    }).catch((error: unknown) => {
+      console.error(error);
     });
-    setIsModifyMenuOpen(false);
-    setIsCloseModalOpen(true);
-  }, [isEligible, position, decodedSymbol, track]);
+  }, [gate, isEligible, position, decodedSymbol, track]);
 
   const handleOpenMarginMenu = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -908,8 +944,12 @@ const PerpsMarketDetailPage = () => {
   }, []);
 
   const handleOpenTPSLModal = useCallback(() => {
-    setIsTPSLModalOpen(true);
-  }, []);
+    gate(() => {
+      setIsTPSLModalOpen(true);
+    }).catch((error: unknown) => {
+      console.error(error);
+    });
+  }, [gate]);
 
   const handleCloseTPSLModal = useCallback(() => {
     setIsTPSLModalOpen(false);
@@ -996,14 +1036,14 @@ const PerpsMarketDetailPage = () => {
   }
 
   const displayName = getDisplayName(market.symbol);
+  // Full market name (e.g. "Bitcoin"), falling back to the ticker when unavailable.
+  const fullName = market.name || displayName;
 
   // Render the chart area: skeleton during initial load, error state on failure,
   // or the live chart once data is available.
   const renderChartContent = () => {
     if (isCandleLoading && !candleData) {
-      return (
-        <Skeleton className="h-[250px] w-full" borderRadius={BorderRadius.LG} />
-      );
+      return <Skeleton className="h-[250px] w-full rounded-lg" />;
     }
 
     if (candleError && !candleData) {
@@ -1049,95 +1089,136 @@ const PerpsMarketDetailPage = () => {
       {/* Header */}
       <Box
         className="sticky top-0 z-10 bg-background-default"
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
+        flexDirection={BoxFlexDirection.Column}
         paddingTop={4}
         paddingBottom={4}
         gap={2}
       >
-        {/* Back Button */}
+        {/* Top row: back chevron, logo, market identity, favorite star */}
         <Box
-          data-testid="perps-market-detail-back-button"
-          onClick={handleBackClick}
-          aria-label={t('back')}
-          className="p-2 -ml-2 cursor-pointer"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          paddingLeft={4}
+          paddingRight={4}
+          gap={2}
         >
-          <Icon
-            name={IconName.ArrowLeft}
-            size={IconSize.Md}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
-
-        {/* Token Logo */}
-        <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
-
-        {/* Header Content: symbol-USD, max leverage, price + change */}
-        <Box flexDirection={BoxFlexDirection.Column}>
+          {/* Back Button */}
           <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={1}
+            data-testid="perps-market-detail-back-button"
+            onClick={handleBackClick}
+            aria-label={t('back')}
+            className="p-2 -ml-2 cursor-pointer"
           >
-            <Text variant={TextVariant.HeadingMd}>{displayName}-USD</Text>
-            {market.maxLeverage && (
-              <Box
-                className="shrink-0 rounded-md bg-background-muted px-1.5"
-                data-testid="perps-market-max-leverage"
+            <Icon
+              name={IconName.ArrowLeft}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+
+          {/* Token Logo */}
+          <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
+
+          {/* Market identity: full name + leverage + chevron, ticker-collateral perp */}
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            className="min-w-0 flex-1"
+          >
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+            >
+              <Text
+                variant={TextVariant.HeadingMd}
+                className="truncate"
+                data-testid="perps-market-detail-name"
               >
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
+                {fullName}
+              </Text>
+              {market.maxLeverage && (
+                <Box
+                  className="shrink-0 rounded-md bg-background-muted px-1.5"
+                  data-testid="perps-market-max-leverage"
                 >
-                  {market.maxLeverage}
-                </Text>
+                  <Text
+                    variant={TextVariant.BodyXs}
+                    color={TextColor.TextAlternative}
+                  >
+                    {market.maxLeverage}
+                  </Text>
+                </Box>
+              )}
+              <Box
+                data-testid="perps-market-detail-market-list-button"
+                aria-label={t('perpsMarkets')}
+                onClick={handleMarketListClick}
+                className="shrink-0 cursor-pointer p-1 -m-1"
+              >
+                <Icon
+                  name={IconName.ArrowDown}
+                  size={IconSize.Sm}
+                  color={IconColor.IconAlternative}
+                />
               </Box>
-            )}
+            </Box>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              data-testid="perps-market-detail-pair"
+            >
+              {t('perpsPerpMarketSubtitle', [
+                displayName,
+                PERPS_COLLATERAL_SYMBOL,
+              ])}
+            </Text>
           </Box>
+
           <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Baseline}
-            gap={1}
+            data-testid="perps-market-detail-favorite-button"
+            aria-label={
+              isInWatchlist
+                ? t('perpsRemoveFromFavorites')
+                : t('perpsAddToFavorites')
+            }
+            className="p-2 cursor-pointer transition-transform hover:scale-110"
+            onClick={handleFavoriteClick}
           >
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              data-testid="perps-market-detail-price"
-            >
-              {displayPrice}
-            </Text>
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={getChangeColor(displayChange)}
-              data-testid="perps-market-detail-change"
-            >
-              {displayChange}
-            </Text>
+            <Icon
+              name={isInWatchlist ? IconName.StarFilled : IconName.Star}
+              size={IconSize.Md}
+              color={
+                isInWatchlist
+                  ? IconColor.IconDefault
+                  : IconColor.IconAlternative
+              }
+            />
           </Box>
         </Box>
 
-        <Box className="flex-1" />
-
+        {/* Price + 24h change, below the header */}
         <Box
-          data-testid="perps-market-detail-favorite-button"
-          aria-label={
-            isInWatchlist
-              ? t('perpsRemoveFromFavorites')
-              : t('perpsAddToFavorites')
-          }
-          className="p-2 cursor-pointer transition-transform hover:scale-110"
-          onClick={handleFavoriteClick}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Baseline}
+          paddingLeft={4}
+          paddingRight={4}
+          gap={2}
         >
-          <Icon
-            name={isInWatchlist ? IconName.StarFilled : IconName.Star}
-            size={IconSize.Md}
-            color={
-              isInWatchlist ? IconColor.IconDefault : IconColor.IconAlternative
-            }
-          />
+          <Text
+            variant={TextVariant.HeadingLg}
+            fontWeight={FontWeight.Bold}
+            data-testid="perps-market-detail-price"
+          >
+            {displayPrice}
+          </Text>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={getChangeColor(displayChange)}
+            data-testid="perps-market-detail-change"
+          >
+            {displayChange}
+          </Text>
         </Box>
       </Box>
 
@@ -1555,7 +1636,11 @@ const PerpsMarketDetailPage = () => {
         {/* Orders Section - shown regardless of position, but only if there are orders */}
         {orders.length > 0 && (
           <Box paddingLeft={4} paddingRight={4}>
-            <Box paddingBottom={2}>
+            <Box
+              paddingTop={4}
+              paddingBottom={2}
+              data-testid="perps-orders-section-header"
+            >
               <Text
                 variant={TextVariant.HeadingSm}
                 fontWeight={FontWeight.Medium}
@@ -1573,6 +1658,7 @@ const PerpsMarketDetailPage = () => {
                   order={order}
                   variant="muted"
                   onClick={handleOrderClick}
+                  assetName={market.name}
                 />
               ))}
             </Box>
@@ -1581,7 +1667,11 @@ const PerpsMarketDetailPage = () => {
 
         {/* Stats Section - always visible */}
         <Box paddingLeft={4} paddingRight={4}>
-          <Box paddingTop={4} paddingBottom={2}>
+          <Box
+            paddingTop={4}
+            paddingBottom={2}
+            data-testid="perps-stats-section-header"
+          >
             <Text
               variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
@@ -1819,11 +1909,15 @@ const PerpsMarketDetailPage = () => {
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
                 onClick={() => {
-                  if (!isEligible) {
-                    setIsGeoBlockModalOpen(true);
-                    return;
-                  }
-                  setIsModifyMenuOpen((prev) => !prev);
+                  gate(() => {
+                    if (!isEligible) {
+                      setIsGeoBlockModalOpen(true);
+                      return;
+                    }
+                    setIsModifyMenuOpen((prev) => !prev);
+                  }).catch((error: unknown) => {
+                    console.error(error);
+                  });
                 }}
                 className="w-full flex items-center gap-2"
                 data-testid="perps-modify-cta-button"

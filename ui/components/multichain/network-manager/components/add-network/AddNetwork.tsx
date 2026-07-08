@@ -8,12 +8,14 @@ type AddNetworkProps = {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   network: UpdateNetworkFields;
   isEdit?: boolean;
+  onAddFromChainlist?: () => void;
 };
 
 export const AddNetwork = ({
   networkFormState,
   network,
   isEdit = false,
+  onAddFromChainlist,
 }: AddNetworkProps) => {
   const [, setSearchParams] = useSearchParams();
   return (
@@ -21,6 +23,9 @@ export const AddNetwork = ({
       toggleNetworkMenuAfterSubmit={false}
       usePageFooterStyle={true}
       onComplete={() => {
+        if (!isEdit) {
+          networkFormState.clear();
+        }
         setSearchParams({});
       }}
       onEdit={() => {
@@ -28,6 +33,7 @@ export const AddNetwork = ({
       }}
       networkFormState={networkFormState}
       existingNetwork={network}
+      onAddFromChainlist={onAddFromChainlist}
       onRpcAdd={() => {
         setSearchParams({ view: isEdit ? 'edit-rpc' : 'add-rpc' });
       }}

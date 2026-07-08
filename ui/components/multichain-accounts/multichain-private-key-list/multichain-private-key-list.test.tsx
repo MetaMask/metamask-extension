@@ -1,16 +1,41 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
+import {
+  startPasskeyAuthentication,
+  cancelPasskeyCeremony,
+  isPasskeyCeremonySilentError,
+} from '../../../../shared/lib/passkey';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../../shared/lib/trace', () => ({
-  ...jest.requireActual('../../../../shared/lib/trace'),
   trace: jest.fn(),
   endTrace: jest.fn(),
+  TraceName: {
+    ShowAccountPrivateKeyList: 'Show Account Private Key List',
+  },
+  TraceOperation: {
+    AccountUi: 'account.ui',
+  },
 }));
 
 const mockTrace = trace as jest.MockedFunction<typeof trace>;
@@ -25,6 +50,50 @@ const mockHandleCopy = jest.fn();
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: () => [false, mockHandleCopy],
 }));
+
+const mockUseIsPasskeyActive = jest.fn().mockReturnValue(false);
+const mockUseIsPasskeyIncompatibleInSidepanel = jest
+  .fn()
+  .mockReturnValue(false);
+
+jest.mock('../../../hooks/usePasskeyAvailability', () => ({
+  useIsPasskeyActive: () => mockUseIsPasskeyActive(),
+  useIsPasskeyIncompatibleInSidepanel: () =>
+    mockUseIsPasskeyIncompatibleInSidepanel(),
+}));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  getEnvironmentType: jest.fn().mockReturnValue('popup'),
+}));
+
+jest.mock('../../../../shared/lib/passkey', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey'),
+  startPasskeyAuthentication: jest.fn(),
+  cancelPasskeyCeremony: jest.fn(),
+  isPasskeyCeremonySilentError: jest.fn(),
+}));
+
+const mockStartPasskeyAuthentication =
+  startPasskeyAuthentication as jest.MockedFunction<
+    typeof startPasskeyAuthentication
+  >;
+const mockCancelPasskeyCeremony = cancelPasskeyCeremony as jest.MockedFunction<
+  typeof cancelPasskeyCeremony
+>;
+const mockIsPasskeyCeremonySilentError =
+  isPasskeyCeremonySilentError as jest.MockedFunction<
+    typeof isPasskeyCeremonySilentError
+  >;
+
+const mockPasskeyAuthResponse = {
+  id: 'assertion-id',
+  type: 'public-key',
+};
 
 const mockStore = configureStore([]);
 
@@ -90,6 +159,13 @@ const ACCOUNT_TREE_MOCK = {
 const createMockState = () => ({
   metamask: {
     completedOnboarding: true,
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [ACCOUNT_ONE_ADDRESS_MOCK],
+        metadata: { id: 'entropy-source-id' },
+      },
+    ],
     internalAccounts: {
       accounts: INTERNAL_ACCOUNTS_MOCK,
       selectedAccount: ACCOUNT_ONE_ID_MOCK,
@@ -208,6 +284,18 @@ const mockExportAccounts = jest
     return Promise.resolve([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
   });
 
+const mockExportAccountsWithPasskey = jest
+  .fn()
+  .mockImplementation(
+    (_authenticationResponse: unknown, _addresses: string[]) => {
+      return Promise.resolve([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
+    },
+  );
+
+const mockGeneratePasskeyAuthenticationOptions = jest
+  .fn()
+  .mockResolvedValue({ challenge: 'challenge' });
+
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
@@ -223,6 +311,14 @@ jest.mock('../../../store/actions', () => ({
   exportAccounts: (_pwd: string, _addresses: string[]) => {
     return mockExportAccounts(_pwd, _addresses);
   },
+  exportAccountsWithPasskey: (
+    authenticationResponse: unknown,
+    addresses: string[],
+  ) => {
+    return mockExportAccountsWithPasskey(authenticationResponse, addresses);
+  },
+  generatePasskeyAuthenticationOptions: () =>
+    mockGeneratePasskeyAuthenticationOptions(),
 }));
 
 const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
@@ -238,6 +334,12 @@ describe('MultichainPrivateKeyList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseI18nContext.mockReturnValue((key: string) => key);
+    mockUseIsPasskeyActive.mockReturnValue(false);
+    mockUseIsPasskeyIncompatibleInSidepanel.mockReturnValue(false);
+    mockStartPasskeyAuthentication.mockResolvedValue(
+      mockPasskeyAuthResponse as never,
+    );
+    mockIsPasskeyCeremonySilentError.mockReturnValue(false);
   });
 
   it('renders with password input', () => {
@@ -270,5 +372,111 @@ describe('MultichainPrivateKeyList', () => {
         name: TraceName.ShowAccountPrivateKeyList,
       }),
     );
+  });
+
+  describe('passkey reveal', () => {
+    beforeEach(() => {
+      mockUseIsPasskeyActive.mockReturnValue(true);
+      mockUseIsPasskeyIncompatibleInSidepanel.mockReturnValue(false);
+    });
+
+    it('verifies via passkey and reveals private keys without a password', async () => {
+      renderComponent();
+
+      await waitFor(() => {
+        expect(mockExportAccountsWithPasskey).toHaveBeenCalledWith(
+          mockPasskeyAuthResponse,
+          [ACCOUNT_ONE_ADDRESS_MOCK],
+        );
+      });
+      expect(mockExportAccounts).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('multichain-private-key-password-input'),
+      ).not.toBeInTheDocument();
+      expect(mockTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountPrivateKeyList,
+        }),
+      );
+      expect(mockEndTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountPrivateKeyList,
+        }),
+      );
+    });
+
+    it('falls back to the password prompt when the passkey ceremony is cancelled', async () => {
+      mockStartPasskeyAuthentication.mockRejectedValue(new Error('cancelled'));
+      mockIsPasskeyCeremonySilentError.mockReturnValue(true);
+
+      renderComponent();
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('multichain-private-key-password-input'),
+        ).toBeInTheDocument();
+      });
+      expect(mockExportAccountsWithPasskey).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the password prompt when "Use password" is clicked', async () => {
+      mockStartPasskeyAuthentication.mockReturnValue(
+        new Promise(() => {
+          // never resolves
+        }),
+      );
+
+      renderComponent();
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('export-private-keys-verify-passkey-use-password'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(
+        screen.getByTestId('export-private-keys-verify-passkey-use-password'),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('multichain-private-key-password-input'),
+        ).toBeInTheDocument();
+      });
+      expect(mockCancelPasskeyCeremony).toHaveBeenCalled();
+    });
+
+    it('falls back to the password prompt when passkey export fails', async () => {
+      mockExportAccountsWithPasskey.mockRejectedValueOnce(
+        new Error('export failed'),
+      );
+
+      renderComponent();
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('multichain-private-key-password-input'),
+        ).toBeInTheDocument();
+      });
+      expect(mockEndTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountPrivateKeyList,
+        }),
+      );
+    });
+
+    it('uses the password prompt when passkey is incompatible in the side panel', () => {
+      mockUseIsPasskeyIncompatibleInSidepanel.mockReturnValue(true);
+
+      renderComponent();
+
+      expect(
+        screen.getByTestId('multichain-private-key-password-input'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('export-private-keys-passkey-verifying'),
+      ).not.toBeInTheDocument();
+      expect(mockStartPasskeyAuthentication).not.toHaveBeenCalled();
+    });
   });
 });

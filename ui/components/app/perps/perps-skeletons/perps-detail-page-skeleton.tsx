@@ -8,10 +8,8 @@ import {
   IconName,
   IconSize,
   IconColor,
+  Skeleton,
 } from '@metamask/design-system-react';
-
-import { Skeleton } from '../../../component-library/skeleton';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
 
 /**
  * PerpsDetailPageSkeleton component displays a loading skeleton for the market detail page
@@ -25,58 +23,74 @@ export const PerpsDetailPageSkeleton = () => {
     >
       {/* Header */}
       <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
+        flexDirection={BoxFlexDirection.Column}
         paddingTop={4}
         paddingBottom={4}
         gap={2}
       >
-        {/* Back Button Placeholder */}
-        <Box className="p-2 -ml-2">
-          <Icon
-            name={IconName.ArrowLeft}
-            size={IconSize.Md}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
+        {/* Top row: back chevron, logo, market identity, favorite star */}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          paddingLeft={4}
+          paddingRight={4}
+          gap={2}
+        >
+          {/* Back Button Placeholder */}
+          <Box className="p-2 -ml-2">
+            <Icon
+              name={IconName.ArrowLeft}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
 
-        {/* Token Logo Skeleton */}
-        <Skeleton
-          className="h-10 w-10 shrink-0"
-          borderRadius={BorderRadius.pill}
-        />
+          {/* Token Logo Skeleton */}
+          <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
 
-        {/* Header Content Skeleton */}
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          <Skeleton className="h-4 w-20" />
+          {/* Market Identity Skeleton */}
           <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={2}
+            flexDirection={BoxFlexDirection.Column}
+            className="min-w-0 flex-1"
+            gap={1}
           >
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-3 w-16" />
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-10" />
+            </Box>
+            <Skeleton className="h-3 w-20" />
+          </Box>
+
+          {/* Favorite Star Placeholder */}
+          <Box className="p-2">
+            <Icon
+              name={IconName.Star}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
           </Box>
         </Box>
 
-        {/* Spacer */}
-        <Box className="flex-1" />
-
-        {/* Favorite Star Placeholder */}
-        <Box className="p-2">
-          <Icon
-            name={IconName.Star}
-            size={IconSize.Md}
-            color={IconColor.IconAlternative}
-          />
+        {/* Price + 24h change Skeleton */}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          paddingLeft={4}
+          paddingRight={4}
+          gap={2}
+        >
+          <Skeleton className="h-7 w-32" />
+          <Skeleton className="h-4 w-16" />
         </Box>
       </Box>
 
       {/* Chart Skeleton */}
       <Box paddingLeft={4} paddingRight={4}>
-        <Skeleton className="h-[250px] w-full" borderRadius={BorderRadius.LG} />
+        <Skeleton className="h-[250px] w-full rounded-lg" />
       </Box>
 
       {/* Period Selector Skeleton */}
@@ -89,11 +103,7 @@ export const PerpsDetailPageSkeleton = () => {
         paddingRight={4}
       >
         {['1m', '5m', '15m', '1h', '4h', '1d'].map((period) => (
-          <Skeleton
-            key={period}
-            className="h-8 w-10"
-            borderRadius={BorderRadius.MD}
-          />
+          <Skeleton key={period} className="h-8 w-10 rounded-md" />
         ))}
       </Box>
 
@@ -140,10 +150,7 @@ export const PerpsDetailPageSkeleton = () => {
               alignItems={BoxAlignItems.Center}
               gap={4}
             >
-              <Skeleton
-                className="h-8 w-8 shrink-0"
-                borderRadius={BorderRadius.pill}
-              />
+              <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
@@ -181,8 +188,8 @@ export const PerpsDetailPageSkeleton = () => {
         paddingBottom={4}
       >
         <Box flexDirection={BoxFlexDirection.Row} gap={3}>
-          <Skeleton className="h-12 flex-1" borderRadius={BorderRadius.LG} />
-          <Skeleton className="h-12 flex-1" borderRadius={BorderRadius.LG} />
+          <Skeleton className="h-12 flex-1 rounded-lg" />
+          <Skeleton className="h-12 flex-1 rounded-lg" />
         </Box>
       </Box>
     </Box>

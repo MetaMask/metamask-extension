@@ -2,17 +2,68 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
+import { getMockAssetsPrice } from '../tokens/utils/mocks';
 
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+const MUSD_MAINNET_ASSET_ID = `eip155:1/erc20:${MUSD_ADDRESS}`;
+const MUSD_LINEA_ASSET_ID = `eip155:59144/erc20:${MUSD_ADDRESS}`;
+
+function buildTokenFilterFixtures() {
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+    .withEnabledNetworks({ eip155: { '0x1': true } })
+    .withAssetsController({
+      assetsBalance: {
+        [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          [MUSD_MAINNET_ASSET_ID]: { amount: '100' },
+          [MUSD_LINEA_ASSET_ID]: { amount: '100' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(),
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+          name: 'Ethereum',
+        },
+        'eip155:59144/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+          name: 'Ethereum',
+        },
+        [MUSD_MAINNET_ASSET_ID]: {
+          type: 'erc20',
+          decimals: 6,
+          symbol: 'MUSD',
+          name: 'MUSD',
+        },
+        [MUSD_LINEA_ASSET_ID]: {
+          type: 'erc20',
+          decimals: 6,
+          symbol: 'MUSD',
+          name: 'MUSD',
+        },
+      },
+    })
+    .build();
+}
 
 async function mockLineaAndMusd(mockServer: Mockttp) {
   return [
@@ -245,30 +296,30 @@ describe('Network Manager', function (this: Suite) {
   it('should filter tokens by enabled networks', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({ eip155: { '0x1': true } })
-          .build(),
+        fixtures: buildTokenFilterFixtures(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockLineaAndMusd,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-        const assetListPage = new AssetListPage(driver);
+        await login(driver, {
+          validateBalance: false,
+          waitForNonEvmAccounts: false,
+        });
+        const tokensTab = new TokensTab(driver);
         const networkManager = new NetworkManager(driver);
 
         // Only Ethereum native token and MUSD
-        await assetListPage.checkTokenItemNumber(2);
+        await tokensTab.checkTokenItemNumber(2);
 
         // Change to Linea, only Linea native token and MUSD visible
         await networkManager.openNetworkManager();
         await networkManager.selectNetworkByChainId(NetworkId.LINEA);
-        await assetListPage.checkTokenItemNumber(2);
+        await tokensTab.checkTokenItemNumber(2);
 
         // Change to Ethereum, only Ethereum native token and MUSD visible
         await networkManager.openNetworkManager();
         await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
-        await assetListPage.checkTokenItemNumber(2);
+        await tokensTab.checkTokenItemNumber(2);
       },
     );
   });

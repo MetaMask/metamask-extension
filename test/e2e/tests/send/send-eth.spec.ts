@@ -14,7 +14,7 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -33,7 +33,7 @@ import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { withTransactionEnvelopeTypeFixtures } from '../confirmations/helpers';
 
 const DEFAULT_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
@@ -56,20 +56,20 @@ describe('Send ETH', function () {
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);
           const transactionConfirmation = new TransactionConfirmation(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x539', 'ETH');
-          await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+          await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
           await sendPage.fillAmount('1');
           await sendPage.pressContinueButton();
 
           await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
           await homePage.goToActivityList();
-          await activityListPage.checkTransactionActivityByText('Sent');
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
-          await activityListPage.checkTxAmountInActivity('-1 ETH');
+          await activityTab.checkTransactionActivityByText('Sent');
+          await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityTab.checkTxAmountInActivity('-1 ETH');
         },
       );
     });
@@ -91,7 +91,7 @@ describe('Send ETH', function () {
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
 
           await testDapp.openTestDappPage({
             contractAddress: null,
@@ -113,7 +113,7 @@ describe('Send ETH', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await homePage.goToActivityList();
-          await activityListPage.checkTransactionActivityByText('Sent');
+          await activityTab.checkTransactionActivityByText('Sent');
         },
       );
     });
@@ -144,7 +144,7 @@ describe('Send ETH', function () {
           await login(driver);
 
           const transactionConfirmation = new TransactionConfirmation(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
           const homePage = new HomePage(driver);
 
           await createInternalTransaction({
@@ -157,9 +157,9 @@ describe('Send ETH', function () {
 
           await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
           await homePage.goToActivityList();
-          await activityListPage.checkTransactionActivityByText('Sent');
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
-          await activityListPage.checkTxAmountInActivity('-1 ETH');
+          await activityTab.checkTransactionActivityByText('Sent');
+          await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityTab.checkTxAmountInActivity('-1 ETH');
         },
       );
     });
@@ -198,7 +198,7 @@ describe('Send ETH', function () {
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x1', 'ETH');
-          await sendPage.fillRecipient('test.eth');
+          await sendPage.fillRecipient({ recipientAddress: 'test.eth' });
 
           await driver.findElement({ text: '0xc0ffe...54979' });
         },

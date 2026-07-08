@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useContext } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
@@ -12,7 +12,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -30,6 +30,7 @@ type SelectableListItemProps = {
   isSelected?: boolean;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   testId?: string;
+  className?: string;
   children: ReactNode;
 };
 
@@ -37,15 +38,20 @@ export const SelectableListItem = ({
   isSelected,
   onClick,
   testId,
+  className,
   children,
 }: SelectableListItemProps) => {
   return (
     <Box className="selectable-list-item-wrapper" data-testid={testId}>
       <Text
         data-testid={`${testId}__button`}
-        className={classnames('selectable-list-item', {
-          'selectable-list-item--selected': Boolean(isSelected),
-        })}
+        className={classnames(
+          'selectable-list-item',
+          {
+            'selectable-list-item--selected': Boolean(isSelected),
+          },
+          className,
+        )}
         onClick={onClick}
         variant={TextVariant.bodySmMedium}
         as="button"
@@ -72,7 +78,7 @@ type SortControlProps = {
 
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 
@@ -92,16 +98,17 @@ const SortControl = ({ handleClose }: SortControlProps) => {
           order,
         }),
       );
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TokenSortPreference,
-        properties: {
-          [MetaMetricsUserTrait.TokenSortPreference]: key,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenSortPreference)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            [MetaMetricsUserTrait.TokenSortPreference]: key,
+          })
+          .build(),
+      );
       handleClose();
     },
-    [dispatch, handleClose, trackEvent],
+    [createEventBuilder, dispatch, handleClose, trackEvent],
   );
 
   return (

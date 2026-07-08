@@ -4,6 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -12,13 +13,29 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { Anvil } from '../../seeder/anvil';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { mockPriceApi } from '../tokens/utils/mocks';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
+import {
+  getMockAssetsPrice,
+  mockPriceApi,
+  mockSpotPrices,
+  MOCK_ETH_CONVERSION_RATE,
+} from '../tokens/utils/mocks';
 
 const EXPECTED_BALANCE_USD = '$85,025.00';
-const EXPECTED_SEPOLIA_BALANCE_NATIVE = '25';
 const NETWORK_NAME_MAINNET = 'Ethereum';
 const NETWORK_NAME_SEPOLIA = 'Sepolia';
-const SEPOLIA_NATIVE_TOKEN = 'SepoliaETH';
+
+const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
+
+const SEPOLIA_NATIVE_ASSET_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/11155111/slip44/60.png',
+  name: 'Sepolia Ether',
+  symbol: 'SepoliaETH',
+  type: 'native' as const,
+};
 
 describe('Multichain Aggregated Balances', function (this: Suite) {
   it('shows correct aggregated balance when "Current Network" is selected', async function () {
@@ -40,15 +57,38 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
               [CHAIN_IDS.MAINNET]: true,
             },
           })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                [SEPOLIA_NATIVE_ASSET_ID]: { amount: '25' },
+              },
+            },
+            assetsInfo: {
+              [SEPOLIA_NATIVE_ASSET_ID]: SEPOLIA_NATIVE_ASSET_INFO,
+            },
+            assetsPrice: {
+              ...getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
+              [SEPOLIA_NATIVE_ASSET_ID]: getMockAssetsPrice(
+                MOCK_ETH_CONVERSION_RATE,
+              )['eip155:1/slip44:60'],
+            },
+          })
           .build(),
         localNodeOptions: {
           hardfork: 'muirGlacier',
         },
         smartContract,
-        ethConversionInUsd: 3401, // 25 ETH × $3401 = $85,025.00
+        ethConversionInUsd: MOCK_ETH_CONVERSION_RATE, // 25 ETH × $3401 = $85,025.00
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockPriceApi(mockServer);
+          await mockSpotPrices(mockServer, {
+            [SEPOLIA_NATIVE_ASSET_ID]: {
+              price: MOCK_ETH_CONVERSION_RATE,
+              marketCap: 112500000,
+              pricePercentChange1d: 0,
+            },
+          });
         },
       },
       async ({
@@ -58,7 +98,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[] | undefined[];
       }) => {
-        console.log('// Step 1: Log in and set up page objects');
         await login(driver, { localNode: localNodes[0] });
 
         const homepage = new HomePage(driver);
@@ -66,19 +105,16 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         const settingsPage = new SettingsPage(driver);
         const accountListPage = new AccountListPage(driver);
 
-        console.log('Step 2: Switch to Ethereum');
         await switchToNetworkFromNetworkSelect(
           driver,
           'Popular',
           NETWORK_NAME_MAINNET,
         );
 
-        console.log('Step 3: Enable fiat balance display in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
-        console.log('Step 4: Verify main balance on homepage and account menu');
         await homepage.checkExpectedBalanceIsDisplayed(
           EXPECTED_BALANCE_USD,
           'usd',
@@ -89,31 +125,20 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         });
         await accountListPage.closeMultichainAccountsPage();
 
-        console.log('Step 5: Switch to Sepolia test network');
         await switchToNetworkFromNetworkSelect(
           driver,
           'Custom',
           NETWORK_NAME_SEPOLIA,
         );
 
-        console.log('Step 6: Verify native balance on Sepolia network');
-        // Not working with BIP44
-        // await homepage.checkExpectedBalanceIsDisplayed(
-        //  EXPECTED_SEPOLIA_BALANCE_NATIVE,
-        //  SEPOLIA_NATIVE_TOKEN,
-        // );
-
-        console.log('Step 7: Enable fiat display on testnets in settings');
         await headerNavbar.openSettingsPage();
-        await settingsPage.toggleBalanceSetting();
         await settingsPage.goToDeveloperOptions();
         await settingsPage.toggleShowFiatOnTestnets();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
-        console.log('Step 8: Verify USD balance on Sepolia network');
         await homepage.checkExpectedBalanceIsDisplayed(
-          EXPECTED_SEPOLIA_BALANCE_NATIVE,
-          SEPOLIA_NATIVE_TOKEN,
+          EXPECTED_BALANCE_USD,
+          'usd',
         );
       },
     );

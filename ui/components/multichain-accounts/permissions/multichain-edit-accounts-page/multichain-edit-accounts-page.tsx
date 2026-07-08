@@ -2,14 +2,15 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   IconName,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSecondary,
-  ButtonSecondarySize,
-} from '../../../component-library';
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
   BackgroundColor,
@@ -19,7 +20,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { MultichainAccountList } from '../../multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
@@ -59,7 +60,7 @@ export const MultichainEditAccountsPage = ({
   snapsPermissionsRequestType = SnapsPermissionsRequestType.None,
 }: MultichainEditAccountsPageProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
     defaultSelectedAccountGroups,
   );
@@ -117,20 +118,22 @@ export const MultichainEditAccountsPage = ({
     );
 
     onSubmit(selectedAccountGroups);
-    trackEvent({
-      category: MetaMetricsEventCategory.Permissions,
-      event: MetaMetricsEventName.UpdatePermissionedAccounts,
-      properties: {
-        addedAccounts: addedAccounts.length,
-        removedAccounts: removedAccounts.length,
-        location: 'Edit Accounts Modal',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.UpdatePermissionedAccounts)
+        .addCategory(MetaMetricsEventCategory.Permissions)
+        .addProperties({
+          addedAccounts: addedAccounts.length,
+          removedAccounts: removedAccounts.length,
+          location: 'Edit Accounts Modal',
+        })
+        .build(),
+    );
   }, [
     selectedAccountGroups,
     defaultSelectedAccountGroups,
     onSubmit,
     trackEvent,
+    createEventBuilder,
   ]);
 
   return (
@@ -170,20 +173,21 @@ export const MultichainEditAccountsPage = ({
         />
       </ScrollContainer>
       <Footer className="multichain-edit-accounts-page__footer">
-        <ButtonSecondary
+        <Button
           data-testid="connect-more-accounts-button"
           onClick={handleConnect}
-          size={ButtonSecondarySize.Lg}
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
           // Allow 0 accounts selected for existing Snaps and non-Snaps revoke flows,
           // but require at least 1 account for initial Snaps permission requests
-          disabled={
+          isDisabled={
             selectedAccountGroups.length === 0 &&
             snapsPermissionsRequestType === SnapsPermissionsRequestType.Initial
           }
-          block
+          isFullWidth
         >
           {confirmButtonText ?? t('connect')}
-        </ButtonSecondary>
+        </Button>
       </Footer>
     </Page>
   );

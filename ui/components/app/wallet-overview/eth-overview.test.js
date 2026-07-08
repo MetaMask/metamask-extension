@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -9,7 +9,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import useMultiPolling from '../../../hooks/useMultiPolling';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -19,6 +18,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
+
+const mockOpenBatchSellExperience = jest.fn();
+
+jest.mock('../../../hooks/batch-sell/useBatchSell', () => ({
+  useBatchSell: () => ({
+    openBatchSellExperience: mockOpenBatchSellExperience,
+  }),
+}));
 
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
@@ -56,6 +63,17 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
+}));
+
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
+  RampsMetaMaskEntry: {
+    BuySellButton: 'ext_buy_sell_button',
+  },
 }));
 
 const mockGetIntlLocale = getIntlLocale;
@@ -130,6 +148,7 @@ describe('EthOverview', () => {
         [CHAIN_IDS.MAINNET]: {},
       },
       remoteFeatureFlags: {
+        batchSell: { enabled: true },
         bridgeConfig: {
           support: true,
         },
@@ -197,9 +216,6 @@ describe('EthOverview', () => {
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
     },
-    ramps: {
-      buyableChains: defaultBuyableChains,
-    },
   };
 
   const store = configureMockStore([thunk])(mockStore);
@@ -212,6 +228,7 @@ describe('EthOverview', () => {
 
   afterEach(() => {
     store.clearActions();
+    mockOpenBatchSellExperience.mockClear();
   });
 
   describe('EthOverview', () => {
@@ -336,10 +353,57 @@ describe('EthOverview', () => {
       expect(bridgeButton).not.toBeInTheDocument();
     });
 
-    it('should always show the Receive button', () => {
+    it('should show the Receive button inside the more-options dropdown', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const receiveButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
-      expect(receiveButton).toBeInTheDocument();
+
+      // Receive moved into the "More" dropdown – it is hidden until the dropdown is opened
+      expect(queryByTestId(ETH_OVERVIEW_RECEIVE)).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+
+      expect(queryByTestId(ETH_OVERVIEW_RECEIVE)).toBeInTheDocument();
+    });
+
+    it('should show the Batch Sell button inside the more-options dropdown', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+
+      expect(queryByTestId('eth-overview-batchSell')).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+
+      expect(queryByTestId('eth-overview-batchSell')).toBeInTheDocument();
+    });
+
+    it('should call openBatchSellExperience when Batch Sell button is clicked', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+      fireEvent.click(queryByTestId('eth-overview-batchSell'));
+
+      expect(mockOpenBatchSellExperience).toHaveBeenCalledTimes(1);
+    });
+
+    it('should show Receive as a direct button when Batch Sell is disabled', () => {
+      const disabledBatchSellStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          remoteFeatureFlags: {
+            ...mockStore.metamask.remoteFeatureFlags,
+            batchSell: { enabled: false },
+          },
+        },
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        disabledBatchSellStore,
+      );
+
+      // Only one action enabled → renders as a direct button, not a dropdown
+      expect(queryByTestId('eth-overview-more')).not.toBeInTheDocument();
+      expect(queryByTestId('eth-overview-default')).toBeInTheDocument();
+      expect(queryByTestId('eth-overview-batchSell')).not.toBeInTheDocument();
     });
 
     it('should always show the Portfolio button', () => {
@@ -354,7 +418,7 @@ describe('EthOverview', () => {
       expect(buyButton).toBeInTheDocument();
     });
 
-    it('should have the Buy native token button disabled if chain id is not part of supported buyable chains', () => {
+    it('should keep the Buy native token button enabled on unsupported chains', () => {
       const mockedStoreWithUnbuyableChainId = {
         ...mockStore,
         metamask: {
@@ -377,36 +441,10 @@ describe('EthOverview', () => {
       );
       const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
       expect(buyButton).toBeInTheDocument();
-      expect(buyButton).toBeDisabled();
-    });
-
-    it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
-      const mockedStoreWithUnbuyableChainId = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
-          accountsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
-            },
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithUnbuyableChainId,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-      const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
-      expect(buyButton).toBeInTheDocument();
       expect(buyButton).not.toBeDisabled();
     });
 
-    it('should open the Buy native token URI when clicking on Buy button for a buyable chain ID', async () => {
+    it('should open the in-extension buy flow when clicking on Buy button', async () => {
       const mockedStoreWithBuyableChainId = {
         ...mockStore,
         metamask: {
@@ -433,15 +471,7 @@ describe('EthOverview', () => {
       expect(buyButton).not.toBeDisabled();
 
       fireEvent.click(buyButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            `/buy?metamaskEntry=ext_buy_sell_button`,
-          ),
-        }),
-      );
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -478,6 +508,37 @@ describe('EthOverview', () => {
         text: 'Buy',
         // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
         token_symbol: expect.any(Object),
+      },
+    });
+  });
+
+  it('sends an event when clicking the Batch Sell button', () => {
+    const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
+
+    const mockedStore = configureMockStore([thunk])(mockStore);
+    const { queryByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <EthOverview />
+      </MetaMetricsContext.Provider>,
+      mockedStore,
+    );
+
+    fireEvent.click(queryByTestId('eth-overview-more'));
+    fireEvent.click(queryByTestId('eth-overview-batchSell'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.NavBatchSellButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Batch Sell',
+        location: 'home',
+        chain_id: CHAIN_IDS.MAINNET,
       },
     });
   });

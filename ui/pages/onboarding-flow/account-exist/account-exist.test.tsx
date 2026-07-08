@@ -5,13 +5,24 @@ import { waitFor, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import initializedMockState from '../../../../test/data/mock-state.json';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../../../shared/constants/onboarding';
 import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as Actions from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import AccountExist from './account-exist';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const mockUseNavigate = jest.fn();
 
@@ -23,6 +34,10 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('Account Exist Seedless Onboarding View', () => {
+  beforeEach(() => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -72,6 +87,41 @@ describe('Account Exist Seedless Onboarding View', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
       replace: true,
+    });
+  });
+
+  describe('Telegram social login', () => {
+    it('renders the Telegram-specific description key when socialLoginType is Telegram', () => {
+      const store = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialImport,
+          authConnection: AuthConnection.Telegram,
+        },
+      });
+      const { getByText } = renderWithProvider(<AccountExist />, store);
+      expect(
+        getByText(
+          messages.accountAlreadyExistsLoginDescriptionTelegram.message,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('interpolates socialLoginType instead of email when socialLoginType is Telegram', () => {
+      const store = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialImport,
+          authConnection: AuthConnection.Telegram,
+          socialLoginEmail: 'should-not-appear@example.com',
+        },
+      });
+      const { queryByText } = renderWithProvider(<AccountExist />, store);
+      expect(
+        queryByText(/should-not-appear@example.com/u),
+      ).not.toBeInTheDocument();
     });
   });
 

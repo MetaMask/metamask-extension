@@ -83,16 +83,7 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Restore .metamask folder
-        id: restore-metamask
-        uses: actions/cache/restore@v5
-        with:
-          path: .metamask
-          key: .metamask-${{ hashFiles('yarn.lock') }}
-          fail-on-cache-miss: false
-
-      - name: Install anvil if cache missed
-        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
+      - name: Install anvil
         run: yarn mm-foundryup
 
       - name: Download build artifact
@@ -138,6 +129,24 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
+
+      # geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
+      # We pin the version as a temporary patch until migration to Playwright (in progress)
+      # This sets GECKODRIVER_PATH, which `test/e2e/webdriver/firefox.js` reads
+      # first; the firefox.js fallback handles local runs. Remove this step (and
+      # the firefox.js pin) once a fixed geckodriver release is verified.
+      # See: https://github.com/mozilla/geckodriver/releases/tag/v0.37.0
+      - name: Pin geckodriver 0.36.0 (Firefox only)
+        if: ${{ contains(inputs.test-command, 'firefox') }}
+        run: |
+          GECKO_VERSION=0.36.0
+          GECKO_DIR="$RUNNER_TEMP/geckodriver-${GECKO_VERSION}"
+          mkdir -p "$GECKO_DIR"
+          curl -fsSL "https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VERSION}/geckodriver-v${GECKO_VERSION}-linux64.tar.gz" \
+            | tar -xz -C "$GECKO_DIR"
+          chmod +x "$GECKO_DIR/geckodriver"
+          echo "GECKODRIVER_PATH=$GECKO_DIR/geckodriver" >> "$GITHUB_ENV"
+          "$GECKO_DIR/geckodriver" --version
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}

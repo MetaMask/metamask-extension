@@ -3,9 +3,9 @@ import {
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  Skeleton,
 } from '@metamask/design-system-react';
 
-import { Skeleton } from '../../../component-library/skeleton';
 import { PerpsCardSkeleton } from './perps-card-skeleton';
 import { PerpsStartTradeCtaSkeleton } from './perps-start-trade-cta-skeleton';
 

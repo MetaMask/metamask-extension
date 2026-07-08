@@ -117,7 +117,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                     data-testid="snap-account-redirect-url-icon"
                   >
                     <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/export.svg');"
                     />
                   </button>

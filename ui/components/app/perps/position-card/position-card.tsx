@@ -23,6 +23,8 @@ import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes'
 export type PositionCardProps = {
   position: Position;
   onClick?: (position: Position) => void;
+  /** Full asset name (e.g. 'Bitcoin'); falls back to the ticker when omitted */
+  assetName?: string;
 };
 
 /**
@@ -33,15 +35,22 @@ export type PositionCardProps = {
  * @param options0 - Component props
  * @param options0.position - The position data to display
  * @param options0.onClick
+ * @param options0.assetName - Full asset name; falls back to the ticker when omitted
  */
-export const PositionCard = ({ position, onClick }: PositionCardProps) => {
+export const PositionCard = ({
+  position,
+  onClick,
+  assetName,
+}: PositionCardProps) => {
   const navigate = useNavigate();
   const { formatPercentWithMinThreshold } = useFormatters();
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
-  const displayName = getDisplayName(position.symbol);
+  // Title uses the full asset name; the size line keeps the ticker as its unit.
+  const displayName = getDisplayName(assetName || position.symbol);
+  const displaySymbol = getDisplayName(position.symbol);
   const formattedPnl = formatPnl(pnlNum);
   const roeNum = Number.parseFloat(position.returnOnEquity);
   const formattedRoe = Number.isNaN(roeNum)
@@ -68,6 +77,7 @@ export const PositionCard = ({ position, onClick }: PositionCardProps) => {
         'gap-4 text-left cursor-pointer',
         'bg-default pt-2 pb-2 px-4 h-[62px]',
         'hover:bg-hover active:bg-pressed',
+        '[container-name:list-item] [container-type:inline-size]',
       )}
       isFullWidth
       onClick={handleClick}
@@ -92,13 +102,18 @@ export const PositionCard = ({ position, onClick }: PositionCardProps) => {
           alignItems={BoxAlignItems.Center}
           gap={1}
         >
-          <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+          <Text
+            fontWeight={FontWeight.Medium}
+            className="text-s-body-md @compact:text-s-body-sm"
+          >
+            {displayName}
+          </Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {position.leverage.value}x {direction}
           </Text>
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {absSize} {displayName}
+          {absSize} {displaySymbol}
         </Text>
       </Box>
 
@@ -109,7 +124,10 @@ export const PositionCard = ({ position, onClick }: PositionCardProps) => {
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        <Text
+          fontWeight={FontWeight.Medium}
+          className="text-s-body-md @compact:text-s-body-sm"
+        >
           {formatPerpsFiatMinimal(parseFloat(position.positionValue))}
         </Text>
         <Box

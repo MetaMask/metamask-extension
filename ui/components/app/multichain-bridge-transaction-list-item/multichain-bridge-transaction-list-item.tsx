@@ -41,7 +41,7 @@ import {
 } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
-import { formatAmount } from '../../../pages/confirmations/components/simulation-details/formatAmount';
+import { formatAmount } from '../../../../shared/lib/format-amount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 
 type MultichainBridgeTransactionListItemProps = {
@@ -157,14 +157,13 @@ const MultichainBridgeTransactionListItem = ({
       rightContent={
         <>
           <Text
-            className="activity-list-item__primary-currency"
+            className="activity-list-item__primary-currency text-s-body-md @compact:text-s-body-sm"
             color={TextColor.textDefault}
             data-testid="transaction-list-item-primary-currency"
             ellipsis
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Right}
             title="Primary Currency"
-            variant={TextVariant.bodyMdMedium}
           >
             {(() => {
               if (sourceAsset?.fungible) {

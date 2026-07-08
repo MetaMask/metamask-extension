@@ -109,6 +109,21 @@ export const getAssetImageUrl = (
   }
 };
 
+/**
+ * Returns the image url for a CAIP-formatted asset
+ *
+ * @param assetId - The CAIP-formatted asset id
+ * @returns The image url for the asset
+ */
+export const getCaipAssetImageUrl = (assetId?: CaipAssetType) => {
+  if (!assetId) {
+    return undefined;
+  }
+
+  const chainId = assetId.split('/')[0] as CaipChainId;
+  return getAssetImageUrl(assetId, chainId);
+};
+
 export type AssetMetadata = {
   assetId: CaipAssetType;
   symbol: string;

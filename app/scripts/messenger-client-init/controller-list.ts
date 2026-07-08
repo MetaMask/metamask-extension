@@ -1,4 +1,5 @@
 import { MultichainAccountService } from '@metamask/multichain-account-service';
+import { SnapAccountService } from '@metamask/snap-account-service';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -83,12 +84,18 @@ import {
   AccountActivityService,
   BackendWebSocketService,
 } from '@metamask/core-backend';
+import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
+import {
+  ConfigRegistryApiService,
+  ConfigRegistryController,
+} from '@metamask/config-registry-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
+  ProofOfOwnershipService,
 } from '@metamask/profile-metrics-controller';
 import {
   GeolocationApiService,
@@ -100,6 +107,7 @@ import {
 } from '@metamask/compliance-controller';
 import { PerpsController } from '@metamask/perps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
+import { AnalyticsController } from '@metamask/analytics-controller';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -108,7 +116,6 @@ import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
-import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import { SubscriptionService } from '../services/subscription/subscription-service';
 import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
@@ -119,6 +126,7 @@ import { EncryptionPublicKeyController } from '../controllers/encryption-public-
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
 import { DataDeletionService } from '../services/data-deletion-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 
@@ -131,12 +139,14 @@ export type MessengerClient =
   | AccountsController
   | AddressBookController
   | AlertController
+  | AnalyticsController
   | AnnouncementController
   | AppMetadataController
   | ApprovalController
   | AppStateController
   | AssetsController
   | AuthenticationController
+  | AuthenticatedUserStorageService
   | BridgeController
   | BridgeStatusController
   | ClaimsController
@@ -184,6 +194,7 @@ export type MessengerClient =
   | PhishingController
   | PPOMController
   | PreferencesController
+  | QrSyncController
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | RemoteFeatureFlagController
@@ -197,7 +208,6 @@ export type MessengerClient =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
-  | SnapKeyringBuilder
   | SnapRegistryController
   | SubscriptionController
   | SnapsNameProvider
@@ -220,15 +230,19 @@ export type MessengerClient =
   | WebSocketService
   | BackendWebSocketService
   | AccountActivityService
+  | SnapAccountService
   | MultichainAccountService
   | NetworkEnablementController
   | ClaimsService
   | ClientController
   | ComplianceController
   | ComplianceService
+  | ConfigRegistryController
+  | ConfigRegistryApiService
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
+  | ProofOfOwnershipService
   | ConnectivityController;
 
 /**
@@ -244,6 +258,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
+  AnalyticsController['state'] &
   AssetsController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
@@ -251,6 +266,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   ClaimsController['state'] &
   ClientController['state'] &
   ComplianceController['state'] &
+  ConfigRegistryController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
@@ -282,6 +298,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  QrSyncController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   RewardsController['state'] &

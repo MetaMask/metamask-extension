@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
+  HotModuleReplacementPlugin,
   ProvidePlugin,
   type Chunk,
   type Configuration,
@@ -22,7 +23,9 @@ import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
+  JAVASCRIPT_FILE_RE,
   NODE_MODULES_RE,
+  TYPESCRIPT_FILE_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
@@ -35,10 +38,12 @@ import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
-import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
-import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
+import { MODES } from './utils/constants';
+import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
+import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -51,6 +56,7 @@ const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
+const isDevelopmentWatchMode = isDevelopment && args.watch;
 const MANIFEST_VERSION = args.manifestVersion;
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
@@ -61,57 +67,6 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
-const bundleSizeUiEntrypoints = new Set([
-  'home',
-  'loading',
-  'notification',
-  'popup-init',
-  'popup',
-  'sidepanel',
-]);
-const bundleSizeOtherEntrypoints = new Set([
-  'offscreen',
-  'trezor-usb-permissions',
-  'usb-permissions',
-]);
-const bundleSizeOtherEntrypointPattern = /^offscreen\.\d+$/u;
-const bundleSizeContentScriptEntrypoints = new Set([
-  'scripts/contentscript.js',
-  'scripts/inpage.js',
-  'vendor/trezor/content-script.js',
-]);
-
-// TODO(#41847): Move HTML entrypoints into ownership-specific locations so
-// this classifier no longer needs to know about the current mixed page layout.
-const classifyBundleSizeEntrypoint = (
-  entrypointName: string,
-): BundleSizeCategory | null => {
-  if (
-    // MV3 uses the service-worker.ts entry point for the background script,
-    // while MV2 uses background
-    entrypointName === 'service-worker.ts' ||
-    entrypointName === 'background'
-  ) {
-    return 'background';
-  }
-
-  if (bundleSizeUiEntrypoints.has(entrypointName)) {
-    return 'ui';
-  }
-
-  if (
-    bundleSizeOtherEntrypoints.has(entrypointName) ||
-    bundleSizeOtherEntrypointPattern.test(entrypointName)
-  ) {
-    return 'other';
-  }
-
-  if (bundleSizeContentScriptEntrypoints.has(entrypointName)) {
-    return 'contentScripts';
-  }
-
-  return null;
-};
 
 // #region cache
 const cache = args.cache
@@ -148,6 +103,11 @@ const cache = args.cache
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 
 const manifestPlugin = new ManifestPlugin({
+  html: [
+    { directory: join('html', 'ui'), category: 'ui' },
+    { directory: join('html', 'background'), category: 'background' },
+    { directory: join('html', 'other'), category: 'other' },
+  ],
   web_accessible_resources: webAccessibleResources,
   manifest_version: MANIFEST_VERSION,
   description: commitHash
@@ -166,7 +126,7 @@ const manifestPlugin = new ManifestPlugin({
     ? {
         zipOptions: {
           outFilePath: `../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
-          mtime: getLatestCommit().timestamp(),
+          mtime: getDefaultZipMtime(),
           excludeExtensions: ['.map'],
           // `level: 9` is the highest; it may increase build time by ~5% over level 1
           level: 9,
@@ -182,7 +142,6 @@ const manifestPlugin = new ManifestPlugin({
     ? {
         outFile: BUNDLE_SIZE_SUMMARY_FILE,
         debug: true,
-        classifyEntrypoint: classifyBundleSizeEntrypoint,
       }
     : false,
 });
@@ -195,24 +154,23 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
-    // In watch mode, inject a `<script>` tag for the bundled
-    // webpack-dev-server client into every UI page (identified by the
-    // `#app-content` mount point — every page that renders the React UI
-    // has it via `partial-body.html`, no other extension page does). Kept
-    // out of the MV3 service worker, the Firefox MV2 background page, and
-    // the offscreen page — reloading those would break the message ports
-    // connecting them to the UI.
-    beforeEmit: (content, _entry, compilation) => {
-      if (!args.watch || !content.includes('id="app-content"')) return content;
-      const entrypoint = compilation.entrypoints.get(
-        DEV_SERVER_CLIENT_ENTRY_NAME,
-      );
-      if (!entrypoint) return content;
-      const tags = entrypoint
-        .getFiles()
-        .map((file) => `<script src="${file}" defer></script>`)
-        .join('');
-      return content.replace('</head>', `${tags}</head>`);
+    // In watch mode, inject the dev-only background client into the relevant HTML page.
+    beforeEmit: (content, entry, compilation) => {
+      if (!args.watch) {
+        return content;
+      }
+      // The MV2 (Firefox) background page gets the background client,
+      // which triggers `chrome.runtime.reload()` only when a background or
+      // content-script bundle changes. (On MV3 the client is bundled into the
+      // service worker instead, since it loads a single JS file.)
+      if (MANIFEST_VERSION === 2 && entry.name === 'background') {
+        return injectEntryScripts(
+          content,
+          compilation,
+          BACKGROUND_CLIENT_ENTRY_NAME,
+        );
+      }
+      return content;
     },
     preload: [
       {
@@ -310,6 +268,18 @@ if (args.reactCompilerVerbose) {
   plugins.push(new ReactCompilerPlugin());
 }
 
+if (isDevelopmentWatchMode) {
+  const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+  plugins.push(
+    new HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin({
+      include: UI_DIR_RE,
+      overlay: false,
+      runtimeEntry: false,
+    }),
+  );
+}
+
 if (args.bundleAnalyzer) {
   const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
   plugins.push(
@@ -319,11 +289,27 @@ if (args.bundleAnalyzer) {
 
 // #endregion plugins
 
-const swcConfig = { browsersListQuery, isDevelopment };
+const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+
+const swcReactRefreshConfig = { ...swcConfig, refresh: true };
+const reactRefreshTsxLoader = getSwcLoader(
+  'typescript',
+  true,
+  safeVariables,
+  swcReactRefreshConfig,
+);
+const reactRefreshJsxLoader = getSwcLoader(
+  'ecmascript',
+  true,
+  safeVariables,
+  swcReactRefreshConfig,
+);
+
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+
 const isChunkableInitial = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
@@ -461,13 +447,6 @@ const config = {
           options: { declarations: [...buildEnvVarDeclarations] },
         },
       },
-      // @protobufjs/inquire intentionally uses `require(moduleName)` to probe
-      // optional modules such as `buffer` and `long`.
-      {
-        test: /[\\/]@protobufjs[\\/]inquire[\\/]index\.js$/u,
-        include: NODE_MODULES_RE,
-        parser: { exprContextCritical: false },
-      },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
         test: UI_COMPONENT_RE,
@@ -475,17 +454,47 @@ const config = {
         use: threadLoader,
       },
       // own typescript, and own typescript with jsx
-      {
-        test: /\.(?:ts|mts|tsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: tsxLoader,
-      },
+      ...(isDevelopmentWatchMode
+        ? [
+            {
+              test: TYPESCRIPT_FILE_RE,
+              include: UI_DIR_RE,
+              use: reactRefreshTsxLoader,
+            },
+            {
+              test: TYPESCRIPT_FILE_RE,
+              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              use: tsxLoader,
+            },
+          ]
+        : [
+            {
+              test: TYPESCRIPT_FILE_RE,
+              exclude: NODE_MODULES_RE,
+              use: tsxLoader,
+            },
+          ]),
       // own javascript, and own javascript with jsx
-      {
-        test: /\.(?:js|mjs|jsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: jsxLoader,
-      },
+      ...(isDevelopmentWatchMode
+        ? [
+            {
+              test: JAVASCRIPT_FILE_RE,
+              include: UI_DIR_RE,
+              use: reactRefreshJsxLoader,
+            },
+            {
+              test: JAVASCRIPT_FILE_RE,
+              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              use: jsxLoader,
+            },
+          ]
+        : [
+            {
+              test: JAVASCRIPT_FILE_RE,
+              exclude: NODE_MODULES_RE,
+              use: jsxLoader,
+            },
+          ]),
       // React Compiler for UI component files (must appear after SWC rules)
       { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: reactCompiler },
       // vendor javascript. We must transform all npm modules to ensure browser
@@ -646,6 +655,11 @@ const config = {
   // don't warn about large JS assets, unless they are going to be too big for Firefox
   performance: { maxAssetSize: 1 << 22 },
   watch: args.watch,
+  devServer: getDevServerOptions({
+    uiClientRule: {
+      include: join(context, 'scripts/load/ui.ts'),
+    },
+  }),
   watchOptions: {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues

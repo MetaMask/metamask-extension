@@ -1,11 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
-import {
-  BridgeBackgroundAction,
-  BridgeUserAction,
-  RequestStatus,
-} from '@metamask/bridge-controller';
+import { FeatureId, RequestStatus } from '@metamask/bridge-controller';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import * as networkConstants from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
@@ -246,7 +242,7 @@ describe('Ducks - Bridge', () => {
     it('dispatches quote params to the bridge controller', () => {
       const mockUpdateParams = jest.fn();
       setBackgroundConnection({
-        [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
+        updateBridgeQuoteRequestParams: mockUpdateParams,
         getStatePatches: jest.fn(),
       } as never);
 
@@ -277,6 +273,8 @@ describe('Ducks - Bridge', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_amount_source: 1000,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
           },
         ) as never,
       );
@@ -308,6 +306,8 @@ describe('Ducks - Bridge', () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source: 1000,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
         },
         0,
         1,
@@ -330,7 +330,7 @@ describe('Ducks - Bridge', () => {
         'clearAllBridgeCacheItems',
       );
       setBackgroundConnection({
-        [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
+        resetState: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 

@@ -12,7 +12,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
-import { trackEarlySegmentEvent } from './segment/early-segment-tracking';
+import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
 
 const platform = new ExtensionPlatform();
 
@@ -64,10 +64,13 @@ export const persistenceManager = new PersistenceManager({ localStore })
 /**
  * Get the persisted wallet state.
  *
+ * @param options - Options for retrieving persisted state.
+ * @param options.reportErrors - Whether read errors should be reported to Sentry.
  * @returns The persisted wallet state.
  */
-globalThis.stateHooks.getPersistedState = async function () {
-  return await persistenceManager.get({ validateVault: false });
+globalThis.stateHooks.getPersistedState = async function (options = {}) {
+  const { reportErrors = true } = options;
+  return await persistenceManager.get({ validateVault: false, reportErrors });
 };
 
 /**

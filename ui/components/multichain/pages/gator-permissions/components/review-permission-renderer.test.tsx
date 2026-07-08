@@ -5,6 +5,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { ALL_METAMASK_FACILITATOR_ADDRESSES } from '../../../../../../shared/lib/gator-permissions';
 import { ReviewPermissionRenderer } from './review-permission-renderer';
 
 const store = configureStore(mockState);
@@ -163,6 +164,30 @@ describe('ReviewPermissionRenderer', () => {
     expect(
       screen.getAllByTestId('review-gator-permission-rule-address'),
     ).toHaveLength(2);
+  });
+
+  it('renders MetaMask facilitator instead of addresses when all redeemers are facilitator addresses', () => {
+    renderReviewPermissionRenderer({
+      rules: [
+        {
+          type: 'redeemer',
+          data: { addresses: [ALL_METAMASK_FACILITATOR_ADDRESSES[0]] },
+        },
+      ],
+    });
+
+    expect(screen.getByText(messages.redeemers.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.gatorPermissionsMetaMaskFacilitator.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('review-gator-permission-rule-address'),
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(
+        '[data-original-title="May only be redeemed by the MetaMask x402 facilitator"]',
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it('does not open nickname popover from copy buttons', () => {
