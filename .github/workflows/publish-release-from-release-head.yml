@@ -339,12 +339,18 @@ jobs:
       - name: Generate SHA256SUMS
         run: |
           set -euo pipefail
-          sha256sum \
+          # Emit bare filenames (no directory prefix) so `sha256sum -c SHA256SUMS`
+          # works when release assets are downloaded into a single directory
+          # (INFRA-3661 CWS upload verify). Release assets are published under
+          # bare zip names, not their workspace-relative build paths.
+          : > SHA256SUMS
+          for zip in \
             build-dist-webpack/builds/metamask-chrome-*.zip \
             build-dist-mv2-webpack/builds/metamask-firefox-*.zip \
             build-flask-webpack/builds/metamask-chrome-*.zip \
-            build-flask-mv2-webpack/builds/metamask-firefox-*.zip \
-            > SHA256SUMS
+            build-flask-mv2-webpack/builds/metamask-firefox-*.zip; do
+            ( cd "$(dirname "${zip}")" && sha256sum "$(basename "${zip}")" ) >> "${GITHUB_WORKSPACE}/SHA256SUMS"
+          done
           echo "=== SHA256SUMS ==="
           cat SHA256SUMS
 
