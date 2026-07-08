@@ -27,7 +27,7 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
   });
 
   it('fires HardwareWalletRecoveryCtaClicked with full Segment properties when device is disconnected', () => {
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    const trackEvent = jest.fn();
 
     trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
       location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
@@ -54,7 +54,7 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
   });
 
   it('passes the given recovery location into properties', () => {
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    const trackEvent = jest.fn();
 
     trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
       location: MetaMetricsHardwareWalletRecoveryLocation.Send,
@@ -73,7 +73,7 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
   });
 
   it('uses the connection error when state is ErrorState', () => {
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    const trackEvent = jest.fn();
     const connectionError = new HardwareWalletError('Device disconnected', {
       code: ErrorCode.DeviceDisconnected,
       severity: Severity.Err,
@@ -104,7 +104,7 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
   });
 
   it('does not call trackEvent when walletType does not map to a Segment device_type', () => {
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    const trackEvent = jest.fn();
 
     trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
       location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
@@ -116,7 +116,7 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
   });
 
   it('increments error_type_view_count on repeated CTA for the same error identity', () => {
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    const trackEvent = jest.fn();
     const options = {
       location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
       walletType: HardwareWalletType.Ledger,
@@ -145,7 +145,7 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
   });
 
   it('starts error_type_view_count at 1 again after reset for the same identity', () => {
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    const trackEvent = jest.fn();
     const options = {
       location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
       walletType: HardwareWalletType.Ledger,
@@ -166,18 +166,18 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
     );
   });
 
-  it('does not surface errors when trackEvent rejects', async () => {
-    const trackEvent = jest
-      .fn()
-      .mockRejectedValue(new Error('segment unavailable'));
-
-    trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
-      location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
-      walletType: HardwareWalletType.Ledger,
-      connectionState: disconnectedState,
+  it('does not surface errors when trackEvent throws', () => {
+    const trackEvent = jest.fn(() => {
+      throw new Error('segment unavailable');
     });
 
-    await Promise.resolve();
+    expect(() =>
+      trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+        location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+        walletType: HardwareWalletType.Ledger,
+        connectionState: disconnectedState,
+      }),
+    ).not.toThrow();
     expect(trackEvent).toHaveBeenCalledTimes(1);
   });
 });

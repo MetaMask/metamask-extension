@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { useHardwareWalletRecoveryLocation } from '../../hooks/useHardwareWalletRecoveryLocation';
 import {
   useHardwareWalletConfig,

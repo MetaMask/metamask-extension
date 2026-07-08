@@ -30,15 +30,16 @@ import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/u
 import * as useSubmitBridgeTransactionModule from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { BridgeCTAButton } from './bridge-cta-button';
 
-const mockTrackAnalyticsEvent = jest.fn().mockResolvedValue(undefined);
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
   );
+
   return {
     useAnalytics: () => ({
-      trackEvent: mockTrackAnalyticsEvent,
+      trackEvent: mockTrackEvent,
       createEventBuilder,
     }),
   };
@@ -83,7 +84,7 @@ setBackgroundConnection({
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockTrackAnalyticsEvent.mockClear();
+    mockTrackEvent.mockClear();
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
