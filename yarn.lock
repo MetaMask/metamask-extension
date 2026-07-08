@@ -5933,13 +5933,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connectivity-controller@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/connectivity-controller@npm:0.2.0"
+"@metamask/connectivity-controller@npm:@metamask-previews/connectivity-controller@0.2.0-preview-c4108f3eb":
+  version: 0.2.0-preview-c4108f3eb
+  resolution: "@metamask-previews/connectivity-controller@npm:0.2.0-preview-c4108f3eb"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/messenger": "npm:^1.0.0"
-  checksum: 10/586c80931341375c713aa5a474725ec88174e6e885d5f75d23b6458b734ec0e912a8c47996bea94a82f9549c9598ba982ac99aaeccac1fd92002c35a38f5397f
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/480bf319497b5aebec5569194a75218f1d8577f0b7bab890afd5b6f90303b790d93934a4bb4de43c4a521c023478d0437301c940820f6af1d10fd39015595579
   languageName: node
   linkType: hard
 

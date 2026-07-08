@@ -312,7 +312,8 @@
     "@metamask/assets-controller@npm:^9.1.0": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch",
     "@metamask/assets-controller@npm:^10.0.1": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch",
     "@metamask/messenger": "^2.0.0",
-    "@metamask/network-connection-banner-controller": "npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-c4108f3eb"
+    "@metamask/network-connection-banner-controller": "npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-c4108f3eb",
+    "@metamask/connectivity-controller": "npm:@metamask-previews/connectivity-controller@0.2.0-preview-c4108f3eb"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
