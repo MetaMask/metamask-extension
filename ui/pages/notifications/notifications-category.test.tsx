@@ -63,15 +63,16 @@ describe('NotificationsCategory', () => {
     jest.clearAllMocks();
   });
 
-  it('only renders the All tab when notifications are disabled', async () => {
+  it('renders nothing when notifications are disabled', () => {
     const store = configureStore(buildState(false));
-    const { getByTestId, findByText, queryByText } = renderWithProvider(
+    const { queryByTestId, queryByText } = renderWithProvider(
       <NotificationsCategory onSelect={jest.fn()} />,
       store,
     );
 
-    expect(getByTestId(NOTIFICATIONS_CATEGORY_TEST_IDS.ALL)).toBeInTheDocument();
-    await findByText('All');
+    expect(
+      queryByTestId(NOTIFICATIONS_CATEGORY_TEST_IDS.ALL),
+    ).not.toBeInTheDocument();
     expect(queryByText('Wallet activity')).not.toBeInTheDocument();
   });
 
