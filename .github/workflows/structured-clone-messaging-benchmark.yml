@@ -57,8 +57,9 @@ jobs:
       - name: Run structured clone messaging benchmark
         run: >-
           yarn tsx test/e2e/benchmarks/structured-clone-messaging-benchmark.ts
-          --iterations 20
-          --warmups 3
+          --iterations 10
+          --warmups 1
+          --payloadBytes 5767168
           --out test-artifacts/benchmarks/structured-clone-messaging-benchmark.json
           --markdownOut test-artifacts/benchmarks/structured-clone-messaging-benchmark.md
         shell: bash

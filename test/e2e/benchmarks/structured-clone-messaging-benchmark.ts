@@ -13,9 +13,9 @@ import { getServerMochaToBackground } from '../background-socket/server-mocha-to
 import { PAGES, type Driver } from '../webdriver/driver';
 
 const STRUCTURED_CLONE_CHROME_VERSION = '148';
-const DEFAULT_ITERATIONS = 20;
-const DEFAULT_WARMUPS = 3;
-const DEFAULT_PAYLOAD_BYTES = 8 * 1024 * 1024;
+const DEFAULT_ITERATIONS = 10;
+const DEFAULT_WARMUPS = 1;
+const DEFAULT_PAYLOAD_BYTES = Math.floor(5.5 * 1024 * 1024);
 const DEFAULT_TIMEOUT_MS = 10000;
 const DEFAULT_OUT =
   'test-artifacts/benchmarks/structured-clone-messaging-benchmark.json';
@@ -359,6 +359,12 @@ async function runVariant({
         await getServerMochaToBackground().getPortStreamChunkingTestEventStats();
 
       for (let index = 0; index < warmups; index++) {
+        console.log(
+          `${VARIANT_LABELS[variant]} launch ${
+            launchIndex + 1
+          } warmup ${index + 1}/${warmups}`,
+        );
+
         await emitAndMeasurePayload({
           driver,
           payloadBytes,
@@ -368,12 +374,24 @@ async function runVariant({
       }
 
       for (let index = 0; index < measuredIterations; index++) {
+        console.log(
+          `${VARIANT_LABELS[variant]} launch ${
+            launchIndex + 1
+          } sample ${index + 1}/${measuredIterations}`,
+        );
+
         const duration = await emitAndMeasurePayload({
           driver,
           payloadBytes,
           sampleId: `${variant}-launch-${launchIndex}-sample-${index}`,
           timeoutMs,
         });
+
+        console.log(
+          `${VARIANT_LABELS[variant]} launch ${
+            launchIndex + 1
+          } sample ${index + 1}/${measuredIterations}: ${formatMs(duration)}`,
+        );
 
         samples.push(duration);
       }
