@@ -442,7 +442,6 @@
     "withdrawalRequests": "object"
   },
   "perpsTutorial": "object",
-  "ramps": "object",
   "rewards": "object",
   "smartAccounts": "object",
   "swaps": "object",
