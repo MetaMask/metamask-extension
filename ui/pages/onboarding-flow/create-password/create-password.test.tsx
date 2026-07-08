@@ -392,7 +392,7 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should create new wallet without marketing checked when its social login flow', () => {
+    it('should create new wallet without marketing checked when its social login flow', async () => {
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -441,7 +441,9 @@ describe('Onboarding Create Password', () => {
 
       fireEvent.click(createNewWalletButton as HTMLElement);
 
-      expect(mockCreateNewAccount).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockCreateNewAccount).toHaveBeenCalled();
+      });
     });
   });
 
