@@ -499,8 +499,13 @@ const PerpsOrderEntryPage = () => {
       // Controller not ready
     });
 
-    // Subscribe to order book updates from the stream manager
+    // Drop any previous symbol's cached order book so late-mounting consumers
+    // (e.g. the order-book panel) and the immediate subscribe replay below never
+    // render the prior market's book before this symbol's first update arrives.
     const streamManager = getPerpsStreamManager();
+    streamManager.orderBook.clearCache();
+
+    // Subscribe to order book updates from the stream manager
     const unsubscribe = streamManager.orderBook.subscribe((orderBook) => {
       if (!orderBook) {
         return;
