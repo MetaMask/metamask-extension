@@ -260,10 +260,6 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        // Fiat value should be displayed as we mock the price and that is not a 'test network'
-        await homePage.checkExpectedBalanceIsDisplayed('10', 'ETH');
 
         // Check for network addition toast
         // Note: With sidepanel enabled, appState is lost during page reload,
@@ -276,6 +272,11 @@ describe('MetaMask onboarding', function () {
         } else {
           await homePage.checkAddNetworkMessageIsDisplayed(networkName);
         }
+
+        await homePage.checkPageIsLoaded();
+
+        // Fiat value should be displayed as we mock the price and that is not a 'test network'
+        await homePage.checkExpectedBalanceIsDisplayed('10', 'ETH');
       },
     );
   });
