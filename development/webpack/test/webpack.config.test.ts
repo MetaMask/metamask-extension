@@ -439,6 +439,19 @@ ${Object.entries(env)
       false,
     );
 
+    for (const chunkName of ['offscreen', 'offscreen.1']) {
+      const offscreenConfig = runtimeConfiguration({ name: chunkName });
+      assert.strictEqual(offscreenConfig.mode, 'safe');
+      assert.strictEqual(
+        offscreenConfig.embeddedOptions?.scuttleGlobalThis?.scuttlerName,
+        undefined,
+      );
+      assert.strictEqual(
+        offscreenConfig.embeddedOptions?.scuttleGlobalThis?.enabled,
+        false,
+      );
+    }
+
     const trezorContentScriptConfig = runtimeConfiguration({
       name: 'vendor/trezor/content-script.js',
     });

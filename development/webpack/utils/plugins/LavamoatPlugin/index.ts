@@ -13,6 +13,8 @@ const rootDir = join(__dirname, '../../../../../');
 // Entries that need to be included in the unsafe layer to run without LavaMoat.
 const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
 
+const offscreenEntryNamePattern = /^offscreen(?:\.\d+)?$/u;
+
 type ScuttleGlobalThisException = string | RegExp;
 
 const getScuttleGlobalThisExceptions = (
@@ -145,14 +147,17 @@ export const lavamoatPlugin = (args: Args) =>
               ]
             : [],
         };
-      } else if (chunk.name === 'service-worker.ts') {
+      } else if (
+        chunk.name === 'service-worker.ts' ||
+        (chunk.name && offscreenEntryNamePattern.test(chunk.name))
+      ) {
         return {
           mode: 'safe',
           embeddedOptions: {
-            // The MV3 service worker relies on Chrome's host global for
-            // extension APIs, worker APIs, and webextension-polyfill setup.
-            // Keep LavaMoat compartments/lockdown, but do not scuttle this
-            // host global.
+            // The MV3 service worker and offscreen document rely on Chrome's
+            // host global for extension APIs, webextension-polyfill setup, and
+            // offscreen iframe/postMessage bridges. Keep LavaMoat
+            // compartments/lockdown, but do not scuttle these host globals.
             scuttleGlobalThis: {
               enabled: false,
             },
