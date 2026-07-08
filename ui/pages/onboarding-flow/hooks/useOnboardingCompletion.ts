@@ -9,6 +9,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
   buildInterstitialRoute,
@@ -34,6 +35,8 @@ import {
 } from '../../../ducks/metamask/metamask';
 import {
   toggleExternalServices,
+  toggleBasicFunctionality,
+  setPreference,
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
@@ -72,6 +75,8 @@ export function useOnboardingCompletion() {
   const isOptedIn = useSelector(getOptedIn);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
+  const isBasicFunctionalityToggleEnabled =
+    getIsBasicFunctionalityConsolidationEnabledInBuild();
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const isFinishingOnboardingRef = useRef(false);
@@ -148,8 +153,16 @@ export function useOnboardingCompletion() {
         );
       }
 
+      if (isBasicFunctionalityToggleEnabled) {
+        await dispatch(
+          setPreference('isBasicFunctionalityConsolidatedEnabled', true, false),
+        );
+      }
+
       await dispatch(
-        toggleExternalServices(externalServicesOnboardingToggleState),
+        isBasicFunctionalityToggleEnabled
+          ? toggleBasicFunctionality(externalServicesOnboardingToggleState)
+          : toggleExternalServices(externalServicesOnboardingToggleState),
       );
 
       if (!backupAndSyncOnboardingToggleState) {
@@ -224,6 +237,7 @@ export function useOnboardingCompletion() {
       externalServicesOnboardingToggleState,
       firstTimeFlowType,
       handleOnDoneNavigation,
+      isBasicFunctionalityToggleEnabled,
       isOnboardingCompleted,
       isOptedIn,
       isSidePanelEnabled,
