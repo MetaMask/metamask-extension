@@ -7140,20 +7140,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^1.0.0, @metamask/messenger@npm:^1.1.1, @metamask/messenger@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@metamask/messenger@npm:1.2.0"
-  dependencies:
-    "@metamask/utils": "npm:^11.9.0"
-    yargs: "npm:^17.7.2"
-  peerDependencies:
-    typescript: ">=5.0.0"
-  bin:
-    messenger-generate-action-types: ./dist/generate-action-types/cli.mjs
-  checksum: 10/6818e4609d6162a436cc07955905f9e57ff6dbef841e9066a5fb9cc0538e981526fbcb5eef1fa1968d79212d57ddda2fce4dda5f87eb64d8d98f7db1216a6a98
-  languageName: node
-  linkType: hard
-
 "@metamask/messenger@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/messenger@npm:2.0.0"
@@ -33254,7 +33240,7 @@ __metadata:
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/message-signing-snap": "npm:1.1.4"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/messenger-cli": "npm:^0.1.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^11.0.0"
