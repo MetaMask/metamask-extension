@@ -431,6 +431,44 @@ function setupStateHooks(store) {
     return logsArray;
   };
 
+  if (process.env.IN_TEST) {
+    window.stateHooks.waitForPortStreamChunkingTestPayload = function (
+      sampleId,
+      timeoutMs = 10000,
+    ) {
+      const hasReceivedPayload = () =>
+        store.getState().metamask.dappSwapComparisonData?.[
+          'port-stream-chunking'
+        ]?.commands === `port-stream-chunking-test:${sampleId}`;
+
+      if (hasReceivedPayload()) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve, reject) => {
+        let unsubscribe = () => undefined;
+        const timeout = setTimeout(() => {
+          unsubscribe();
+          reject(
+            new Error(
+              `Timed out waiting for port stream chunking payload ${sampleId}`,
+            ),
+          );
+        }, timeoutMs);
+
+        unsubscribe = store.subscribe(() => {
+          if (!hasReceivedPayload()) {
+            return;
+          }
+
+          clearTimeout(timeout);
+          unsubscribe();
+          resolve();
+        });
+      });
+    };
+  }
+
   // Long Task observer: 100% in test/debug, 10% sampled in production
   const longTaskSampleRate =
     process.env.IN_TEST || process.env.METAMASK_DEBUG ? 1 : 0.1;

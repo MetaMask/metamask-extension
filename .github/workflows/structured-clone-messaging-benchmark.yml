@@ -1,0 +1,79 @@
+name: Structured clone messaging benchmark
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: read
+
+jobs:
+  build-test-webpack:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.head_ref == 'david/chrome-structured-clone-benchmark' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-webpack
+      build-command: yarn build:test:webpack --zip
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  structured-clone-messaging-benchmark:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.head_ref == 'david/chrome-structured-clone-benchmark' }}
+    name: chrome-webpack-structuredCloneMessaging
+    needs: build-test-webpack
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      SELENIUM_CHROME_VERSION: '148'
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      FORCE_COLOR: '1'
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download artifact 'build-test-webpack'
+        uses: actions/download-artifact@v7
+        with:
+          name: build-test-webpack
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.run_id }}
+
+      - name: Run structured clone messaging benchmark
+        run: >-
+          yarn tsx test/e2e/benchmarks/structured-clone-messaging-benchmark.ts
+          --iterations 20
+          --warmups 3
+          --out test-artifacts/benchmarks/structured-clone-messaging-benchmark.json
+          --markdownOut test-artifacts/benchmarks/structured-clone-messaging-benchmark.md
+        shell: bash
+
+      - name: Add benchmark summary
+        if: ${{ always() }}
+        run: |
+          if [ -f test-artifacts/benchmarks/structured-clone-messaging-benchmark.md ]; then
+            cat test-artifacts/benchmarks/structured-clone-messaging-benchmark.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+        shell: bash
+
+      - name: Upload benchmark result as GitHub artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: structured-clone-messaging-benchmark
+          path: |
+            test-artifacts/benchmarks/structured-clone-messaging-benchmark.json
+            test-artifacts/benchmarks/structured-clone-messaging-benchmark.md
+          retention-days: 7
+          if-no-files-found: ignore

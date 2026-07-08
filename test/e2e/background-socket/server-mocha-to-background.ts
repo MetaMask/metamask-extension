@@ -2,6 +2,7 @@ import events from 'events';
 import { WebSocketServer } from 'ws';
 import {
   MessageType,
+  PortStreamChunkingTestEventStats,
   ServerMochaEventEmitterType,
   WindowProperties,
 } from './types';
@@ -84,8 +85,16 @@ class ServerMochaToBackground {
       this.eventEmitter.emit('openTabs', message.tabs);
     } else if (message.command === 'portStreamChunkingTestPayloadEmitted') {
       this.eventEmitter.emit('portStreamChunkingTestPayloadEmitted');
+    } else if (
+      message.command === 'portStreamChunkingTestEventStats' &&
+      message.eventStats
+    ) {
+      this.eventEmitter.emit(
+        'portStreamChunkingTestEventStats',
+        message.eventStats,
+      );
     } else if (message.command === 'backgroundError') {
-      const error = new Error(message.error);
+      const error = new Error(message.error ?? 'Unknown background error');
       if (this.eventEmitter.listenerCount('error') > 0) {
         this.eventEmitter.emit('error', error);
       } else {
@@ -120,39 +129,103 @@ class ServerMochaToBackground {
     return tabs;
   }
 
-  async emitPortStreamChunkingTestPayload(byteLength: number) {
-    this.send({ command: 'emitPortStreamChunkingTestPayload', byteLength });
+  async getPortStreamChunkingTestEventStats() {
+    const eventStatsPromise = this.waitForPortStreamChunkingTestEventStats();
 
-    await this.waitForPortStreamChunkingTestPayloadEmitted();
+    this.send({ command: 'getPortStreamChunkingTestEventStats' });
+
+    return await eventStatsPromise;
+  }
+
+  async emitPortStreamChunkingTestPayload(
+    byteLength: number,
+    sampleId?: string,
+  ) {
+    const payloadEmittedPromise =
+      this.waitForPortStreamChunkingTestPayloadEmitted();
+
+    this.send({
+      command: 'emitPortStreamChunkingTestPayload',
+      byteLength,
+      sampleId,
+    });
+
+    await payloadEmittedPromise;
   }
 
   // This is a way to wait for an event async, without timeouts or polling
   async waitForResponse() {
     return new Promise((resolve, reject) => {
-      this.eventEmitter.once('error', (error) => {
-        this.eventEmitter.removeListener('openTabs', resolve);
+      const { eventEmitter } = this;
+      function cleanup() {
+        eventEmitter.removeListener('error', onError);
+        eventEmitter.removeListener('openTabs', onOpenTabs);
+      }
+      function onError(error: Error) {
+        cleanup();
         reject(error);
-      });
-      this.eventEmitter.once('openTabs', (result) => {
-        this.eventEmitter.removeListener('error', reject);
+      }
+      function onOpenTabs(result: chrome.tabs.Tab[]) {
+        cleanup();
         resolve(result);
-      });
+      }
+
+      eventEmitter.once('error', onError);
+      eventEmitter.once('openTabs', onOpenTabs);
     });
   }
 
   async waitForPortStreamChunkingTestPayloadEmitted() {
     return new Promise<void>((resolve, reject) => {
-      this.eventEmitter.once('error', (error) => {
-        this.eventEmitter.removeListener(
+      const { eventEmitter } = this;
+      function cleanup() {
+        eventEmitter.removeListener('error', onError);
+        eventEmitter.removeListener(
           'portStreamChunkingTestPayloadEmitted',
-          resolve,
+          onPayloadEmitted,
         );
+      }
+      function onError(error: Error) {
+        cleanup();
         reject(error);
-      });
-      this.eventEmitter.once('portStreamChunkingTestPayloadEmitted', () => {
-        this.eventEmitter.removeListener('error', reject);
+      }
+      function onPayloadEmitted() {
+        cleanup();
         resolve();
-      });
+      }
+
+      eventEmitter.once('error', onError);
+      eventEmitter.once(
+        'portStreamChunkingTestPayloadEmitted',
+        onPayloadEmitted,
+      );
+    });
+  }
+
+  async waitForPortStreamChunkingTestEventStats() {
+    return new Promise<PortStreamChunkingTestEventStats>((resolve, reject) => {
+      const { eventEmitter } = this;
+      function cleanup() {
+        eventEmitter.removeListener('error', onError);
+        eventEmitter.removeListener(
+          'portStreamChunkingTestEventStats',
+          onEventStats,
+        );
+      }
+      function onError(error: Error) {
+        cleanup();
+        reject(error);
+      }
+      function onEventStats(stats: PortStreamChunkingTestEventStats) {
+        cleanup();
+        resolve(stats);
+      }
+
+      eventEmitter.once('error', onError);
+      eventEmitter.once(
+        'portStreamChunkingTestEventStats',
+        onEventStats,
+      );
     });
   }
 }

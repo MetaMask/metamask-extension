@@ -1,11 +1,17 @@
 import log from 'loglevel';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { MessageType, WindowProperties } from './types';
+import {
+  MessageType,
+  PortStreamChunkingTestEventStats,
+  WindowProperties,
+} from './types';
 
 type PortStreamChunkingTestHooks = {
   emitPortStreamChunkingTestPayload?: (
     byteLength?: number,
+    sampleId?: string,
   ) => Promise<void> | void;
+  getPortStreamChunkingTestEventStats?: () => PortStreamChunkingTestEventStats;
 };
 
 /**
@@ -131,6 +137,29 @@ class SocketBackgroundToMocha {
       const tabs = await this.queryTabs({ title: message.title });
       log.debug('SocketBackgroundToMocha sending tabs:', tabs);
       this.send({ command: 'openTabs', tabs: this.cleanTabs(tabs) });
+    } else if (message.command === 'getPortStreamChunkingTestEventStats') {
+      try {
+        const testHooks = globalThis.stateHooks as
+          | PortStreamChunkingTestHooks
+          | undefined;
+        const eventStats = testHooks?.getPortStreamChunkingTestEventStats?.();
+
+        if (!eventStats) {
+          throw new Error(
+            'Port stream chunking test event stats hook is unavailable',
+          );
+        }
+
+        this.send({
+          command: 'portStreamChunkingTestEventStats',
+          eventStats,
+        });
+      } catch (error) {
+        this.send({
+          command: 'backgroundError',
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
     } else if (message.command === 'emitPortStreamChunkingTestPayload') {
       try {
         const testHooks = globalThis.stateHooks as
@@ -144,7 +173,8 @@ class SocketBackgroundToMocha {
           );
         }
 
-        await emitPayload(message.byteLength);
+        await emitPayload(message.byteLength, message.sampleId);
+        await new Promise((resolve) => setTimeout(resolve, 0));
 
         this.send({ command: 'portStreamChunkingTestPayloadEmitted' });
       } catch (error) {
