@@ -11,6 +11,11 @@ class NftsTab extends HomePage {
 
   private readonly importNftButton = '[data-testid="import-nfts__button"]';
 
+  private readonly importNftErrorMessageByText = (errorMessage: string) => ({
+    tag: 'p',
+    text: errorMessage,
+  });
+
   private readonly importNftModalTitle = { text: 'Import NFT', tag: 'h4' };
 
   private readonly importNftNetworkDropdown =
@@ -22,12 +27,6 @@ class NftsTab extends HomePage {
   private readonly importNftTokenIdInput = '#token-id';
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
-
-  private readonly nftItemByIndex = (index: number) => ({
-    xpath: `(//*[@data-testid="nft-item"])[${index + 1}]`,
-  });
-
-  private readonly nftListItem = '[data-testid="nft-wrapper"]';
 
   private readonly nftNameByText = (nftName: string) => ({
     tag: 'p',
@@ -42,6 +41,9 @@ class NftsTab extends HomePage {
   private readonly successRemoveNftMessage =
     '[data-testid="nft-remove-success-toast"]';
 
+  /**
+   * Checks if the NFT icon is displayed in the NFT tab on the homepage.
+   */
   async checkNftImageIsDisplayed(): Promise<void> {
     console.log('Check that NFT image is displayed in NFT tab on homepage');
     await this.driver.waitForSelector(this.nftIconOnActivityList);
@@ -59,11 +61,19 @@ class NftsTab extends HomePage {
     await this.driver.waitForSelector(this.nftNameByText(nftName));
   }
 
+  /**
+   * Checks if the no NFT info is displayed in the NFT tab on the homepage.
+   */
   async checkNoNftInfoIsDisplayed(): Promise<void> {
     console.log('Check that no NFT info is displayed on nft tab');
     await this.driver.waitForSelector(this.noNftInfo);
   }
 
+  /**
+   * Checks if the number of NFTs displayed in the NFT tab on the homepage is the expected number.
+   *
+   * @param expectedNumberOfNfts - The expected number of NFTs to display.
+   */
   async checkNumberOfNftsDisplayed(
     expectedNumberOfNfts: number,
   ): Promise<void> {
@@ -80,6 +90,9 @@ class NftsTab extends HomePage {
     console.log(`${expectedNumberOfNfts} NFTs found in NFT list on homepage`);
   }
 
+  /**
+   * Checks if the NFT tab page is loaded.
+   */
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.clickElement(this.actionBarButton);
@@ -91,6 +104,9 @@ class NftsTab extends HomePage {
     console.log('NFT list page is loaded');
   }
 
+  /**
+   * Checks if the success imported NFT message is displayed in the NFT tab on the homepage.
+   */
   async checkSuccessImportNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success imported NFT message is displayed on homepage',
@@ -98,6 +114,9 @@ class NftsTab extends HomePage {
     await this.driver.waitForSelector(this.successImportNftMessage);
   }
 
+  /**
+   * Checks if the success removed NFT message is displayed in the NFT tab on the homepage.
+   */
   async checkSuccessRemoveNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success removed NFT message is displayed on homepage',
@@ -105,20 +124,9 @@ class NftsTab extends HomePage {
     await this.driver.waitForSelector(this.successRemoveNftMessage);
   }
 
-  async clickNFTFromList(index = 0, timeout = 10000): Promise<void> {
-    console.log(`Clicking NFT at index ${index}`);
-    await this.driver.wait(async () => {
-      const nfts = await this.driver.findElements(this.nftListItem);
-      return nfts.length > index;
-    }, timeout);
-
-    await this.driver.clickElementAndWaitToDisappear(
-      this.nftItemByIndex(index),
-      timeout,
-    );
-    console.log(`NFT at index ${index} selected successfully`);
-  }
-
+  /**
+   * Clicks the NFT icon on the activity list.
+   */
   async clickNFTIconOnActivityList() {
     console.log('Clicking NFT icon on activity list');
     await this.driver.clickElement(this.nftIconOnActivityList);
@@ -145,10 +153,9 @@ class NftsTab extends HomePage {
     await this.driver.fill(this.importNftTokenIdInput, id);
     if (expectedErrorMessage) {
       await this.driver.clickElement(this.confirmImportNftButton);
-      await this.driver.waitForSelector({
-        tag: 'p',
-        text: expectedErrorMessage,
-      });
+      await this.driver.waitForSelector(
+        this.importNftErrorMessageByText(expectedErrorMessage),
+      );
     } else {
       await this.driver.clickElementAndWaitToDisappear(
         this.confirmImportNftButton,
