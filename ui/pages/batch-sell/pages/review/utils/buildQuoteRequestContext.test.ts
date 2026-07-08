@@ -60,6 +60,17 @@ describe('computeUsdAmountSource', () => {
 
     expect(computeUsdAmountSource({ asset, sendAmountPercent: 100 })).toBe(4.5);
   });
+
+  it('does not throw when sendAmountPercent has more than 15 significant digits', () => {
+    const asset = buildAsset({ balance: '500', tokenFiatPrice: 2 });
+
+    expect(() =>
+      computeUsdAmountSource({
+        asset,
+        sendAmountPercent: 33.333333333333336,
+      }),
+    ).not.toThrow();
+  });
 });
 
 describe('buildQuoteRequestContext', () => {
