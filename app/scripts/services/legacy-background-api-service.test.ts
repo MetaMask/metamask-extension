@@ -38,6 +38,7 @@ import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -57,6 +58,7 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 );
 
 jest.mock('../lib/transaction/sentinel-api');
+jest.mock('../lib/transaction/transaction-relay');
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -3381,6 +3383,24 @@ describe('LegacyBackgroundApiService', () => {
         expect(() => jest.runAllTimers()).toThrow(
           expect.objectContaining({ name: 'TestError', message: 'boom' }),
         );
+      });
+    });
+  });
+
+  describe('isRelaySupported', () => {
+    const isRelaySupportedMock = jest.mocked(isRelaySupported);
+
+    it('delegates to the transaction relay lib and returns its result', async () => {
+      isRelaySupportedMock.mockResolvedValue(true);
+
+      await withService(async ({ rootMessenger }) => {
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:isRelaySupported',
+          '0x1',
+        );
+
+        expect(isRelaySupportedMock).toHaveBeenCalledWith('0x1');
+        expect(result).toBe(true);
       });
     });
   });
