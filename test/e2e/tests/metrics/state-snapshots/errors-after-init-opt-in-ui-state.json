@@ -175,6 +175,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "hasPlacedFirstOrder": "object",
+    "hasSeenOnboardingCompletionPage": true,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": "object",
     "hip3ConfigVersion": "number",

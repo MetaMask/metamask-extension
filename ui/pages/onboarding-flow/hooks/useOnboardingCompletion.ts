@@ -130,8 +130,7 @@ export function useOnboardingCompletion() {
         const deferredDeepLinkResult =
           await getDeferredDeepLinkRoute(deferredDeepLink);
         const shouldOpenSidePanel =
-          deferredDeepLinkResult?.type !==
-            DeferredDeepLinkRouteType.Navigate &&
+          deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
           deferredDeepLinkResult?.type !==
             DeferredDeepLinkRouteType.Interstitial;
 
