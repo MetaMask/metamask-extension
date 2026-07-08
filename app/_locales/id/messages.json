@@ -4414,10 +4414,6 @@
   "holdToRevealUnlockedLabel": {
     "message": "tahan untuk mengungkapkan lingkaran terbuka"
   },
-  "home": {
-    "message": "Beranda",
-    "description": "Label for the Home tab in the bottom navigation bar"
-  },
   "honeypotDescription": {
     "message": "Token ini dapat menimbulkan risiko honeypot. Disarankan untuk melakukan uji tuntas sebelum berinteraksi untuk mencegah potensi kerugian finansial."
   },
@@ -4762,45 +4758,6 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Pastikan Ledger terhubung dan untuk memilih aplikasi Ethereum."
-  },
-  "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Buka di perangkat Ledger untuk melanjutkan"
-  },
-  "ledgerConnectionStatusAppClosedTitle": {
-    "message": "Aplikasi Ethereum ditutup"
-  },
-  "ledgerConnectionStatusDeviceFoundTitle": {
-    "message": "Perangkat Ledger ditemukan"
-  },
-  "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Buka perangkat Ledger untuk melanjutkan"
-  },
-  "ledgerConnectionStatusDeviceLockedTitle": {
-    "message": "Ledger terkunci"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
-    "message": "Instal dan buka aplikasi Ethereum"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
-    "message": "Buka perangkat Ledger"
-  },
-  "ledgerConnectionStatusDeviceNotFoundTitle": {
-    "message": "Perangkat tidak ditemukan"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Putuskan koneksi dan hubungkan kembali perangkat Anda"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
-    "message": "Ledger tidak responsif"
-  },
-  "ledgerConnectionStatusGenericErrorTitle": {
-    "message": "Terjadi kesalahan"
-  },
-  "ledgerConnectionStatusSearchingDescription": {
-    "message": "Tunggu sebentar selagi kami mencarinya..."
-  },
-  "ledgerConnectionStatusSearchingTitle": {
-    "message": "Mencari perangkat Anda"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Perangkat Ledger gagal dibuka. Ledger Anda mungkin terhubung ke perangkat lunak lain. Tutup Ledger Live atau aplikasi lain yang terhubung ke perangkat Ledger Anda, dan coba hubungkan kembali."
@@ -8446,15 +8403,6 @@
   },
   "save": {
     "message": "Simpan"
-  },
-  "scamQuestionnaireContinue": {
-    "message": "Lanjutkan"
-  },
-  "scamQuestionnaireWarningContactSupport": {
-    "message": "Hubungi dukungan"
-  },
-  "scamQuestionnaireWarningTitle": {
-    "message": "Anda mungkin sedang menjadi korban penipuan saat ini"
   },
   "scanInstructions": {
     "message": "Tempatkan kode QR di bagian depan kamera Anda"

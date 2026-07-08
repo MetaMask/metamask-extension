@@ -4410,10 +4410,6 @@
   "holdToRevealUnlockedLabel": {
     "message": "i-hold para ibunyag ang bilog na naka-unlock"
   },
-  "home": {
-    "message": "Home",
-    "description": "Label for the Home tab in the bottom navigation bar"
-  },
   "honeypotDescription": {
     "message": "Puwede may panganib ng honeypot ang token na ito. Ipinapayong magsagawa ng sariling pagsusuri bago gamitin ito para maiwasan ang anumang potensyal na pagkalugi."
   },
@@ -4758,45 +4754,6 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Tiyaking naka-plug in ang iyong Ledger at piliin ang Ethereum app."
-  },
-  "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Buksan ito sa iyong Ledger device para makapagpatuloy"
-  },
-  "ledgerConnectionStatusAppClosedTitle": {
-    "message": "Nagsara ang Ethereum app"
-  },
-  "ledgerConnectionStatusDeviceFoundTitle": {
-    "message": "Natagpuan ang ledger device"
-  },
-  "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Paki-unlock ang iyong Ledger device para makapagpatuloy"
-  },
-  "ledgerConnectionStatusDeviceLockedTitle": {
-    "message": "Naka-lock ang Ledger"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
-    "message": "I-install at buksan ang Ethereum app"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
-    "message": "I-unlock ang iyong Ledger device"
-  },
-  "ledgerConnectionStatusDeviceNotFoundTitle": {
-    "message": "Hindi nahanap ang device"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Idiskonekta at muling ikonekta ang iyong device"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
-    "message": "Hindi tumutugon ang Ledger"
-  },
-  "ledgerConnectionStatusGenericErrorTitle": {
-    "message": "Mayroong nang mali"
-  },
-  "ledgerConnectionStatusSearchingDescription": {
-    "message": "Maghintay habang hinahanap namin ito..."
-  },
-  "ledgerConnectionStatusSearchingTitle": {
-    "message": "Hinahanap ang device mo"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Nabigong mabuksan ang Ledger device. Ang iyong Ledger ay maaaring konektado sa ibang software. Pakisara ang Ledger Live o iba pang mga application na konektado sa iyong Ledger device, at subukan muling ikonekta."
@@ -8438,15 +8395,6 @@
   },
   "save": {
     "message": "I-save"
-  },
-  "scamQuestionnaireContinue": {
-    "message": "Magpatuloy"
-  },
-  "scamQuestionnaireWarningContactSupport": {
-    "message": "Kontakin ang suporta"
-  },
-  "scamQuestionnaireWarningTitle": {
-    "message": "Baka nai-scam ka na ngayon"
   },
   "scanInstructions": {
     "message": "Itapat ang QR code sa iyong camera"

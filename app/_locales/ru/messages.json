@@ -4410,10 +4410,6 @@
   "holdToRevealUnlockedLabel": {
     "message": "удерживайте, чтобы показать разблокированный круг"
   },
-  "home": {
-    "message": "Главная",
-    "description": "Label for the Home tab in the bottom navigation bar"
-  },
   "honeypotDescription": {
     "message": "Этот токен может быть ловушкой. Рекомендуется провести комплексную проверку перед началом взаимодействия, чтобы предотвратить возможные финансовые потери."
   },
@@ -4758,45 +4754,6 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Убедитесь, что Ledger подключен, и выберите приложение Ethereum."
-  },
-  "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Откройте его на устройстве Ledger, чтобы продолжить"
-  },
-  "ledgerConnectionStatusAppClosedTitle": {
-    "message": "Приложение Ethereum закрыто"
-  },
-  "ledgerConnectionStatusDeviceFoundTitle": {
-    "message": "Устройство Ledger найдено"
-  },
-  "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Разблокируйте устройство Ledger, чтобы продолжить"
-  },
-  "ledgerConnectionStatusDeviceLockedTitle": {
-    "message": "Леджер заблокирован"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
-    "message": "Установите и откройте приложение Ethereum"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
-    "message": "Разблокируйте свое устройство Ledger"
-  },
-  "ledgerConnectionStatusDeviceNotFoundTitle": {
-    "message": "Устройство не найдено"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Отключите и снова подключите ваше устройство"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
-    "message": "Ledger не отвечает"
-  },
-  "ledgerConnectionStatusGenericErrorTitle": {
-    "message": "Что-то пошло не так"
-  },
-  "ledgerConnectionStatusSearchingDescription": {
-    "message": "Подождите, пока мы его ищем..."
-  },
-  "ledgerConnectionStatusSearchingTitle": {
-    "message": "Поиск вашего устройства"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Не удалось открыть Ledger. Он может быть подключен к другой программе. Закройте Ledger Live или другие приложения, подключенные к Ledger, и снова попробуйте подключиться."
@@ -8438,15 +8395,6 @@
   },
   "save": {
     "message": "Сохранить"
-  },
-  "scamQuestionnaireContinue": {
-    "message": "Продолжить"
-  },
-  "scamQuestionnaireWarningContactSupport": {
-    "message": "Связаться с поддержкой"
-  },
-  "scamQuestionnaireWarningTitle": {
-    "message": "Возможно, вас прямо сейчас пытаются обмануть"
   },
   "scanInstructions": {
     "message": "Поместите QR-код перед камерой"

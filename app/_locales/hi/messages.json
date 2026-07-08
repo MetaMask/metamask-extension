@@ -4410,10 +4410,6 @@
   "holdToRevealUnlockedLabel": {
     "message": "लॉक किए गए सर्कल को दिखाने के लिए होल्ड करें"
   },
-  "home": {
-    "message": "होम",
-    "description": "Label for the Home tab in the bottom navigation bar"
-  },
   "honeypotDescription": {
     "message": "यह टोकन हनीपोट जोखिम पैदा कर सकता है। किसी भी संभावित वित्तीय नुकसान को रोकने के लिए इंटरैक्ट करने से पहले पूरी जांच-पड़ताल करने की सलाह दी जाती है।"
   },
@@ -4758,45 +4754,6 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "अपने Ledger डिवाइस में प्लग इन करें और Ethereum ऐप चुनें"
-  },
-  "ledgerConnectionStatusAppClosedDescription": {
-    "message": "जारी रखने के लिए कृपया इसे अपने Ledger डिवाइस पर खोलें"
-  },
-  "ledgerConnectionStatusAppClosedTitle": {
-    "message": "Ethereum ऐप बंद है"
-  },
-  "ledgerConnectionStatusDeviceFoundTitle": {
-    "message": "Ledger डिवाइस मिला"
-  },
-  "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "जारी रखने के लिए कृपया अपने Ledger डिवाइस को अनलॉक करें"
-  },
-  "ledgerConnectionStatusDeviceLockedTitle": {
-    "message": "Ledger लॉक है"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
-    "message": "Ethereum ऐप को इनस्टॉल करें और खोलें"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
-    "message": "अपने Ledger डिवाइस को अनलॉक करें"
-  },
-  "ledgerConnectionStatusDeviceNotFoundTitle": {
-    "message": "डिवाइस नहीं मिला"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "कृपया अपना डिवाइस डिस्कनेक्ट करें और फिर से कनेक्ट करें"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
-    "message": "Ledger काम नहीं कर रहा है"
-  },
-  "ledgerConnectionStatusGenericErrorTitle": {
-    "message": "कुछ गलत हो गया"
-  },
-  "ledgerConnectionStatusSearchingDescription": {
-    "message": "जब तक हम इसे ढूंढते हैं, रुकें..."
-  },
-  "ledgerConnectionStatusSearchingTitle": {
-    "message": "आपका डिवाइस खोज रहा है"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger डिवाइस खोलने में नहीं हो पाया। आपका Ledger अन्य सॉफ्टवेयर से कनेक्ट हो सकता है। कृपया Ledger लाइव या अपने Ledger डिवाइस से जुड़े अन्य ऐप्लिकेशन को बंद करें, और फिर से कनेक्ट करने की कोशिश करें।"
@@ -8438,15 +8395,6 @@
   },
   "save": {
     "message": "सेव करें"
-  },
-  "scamQuestionnaireContinue": {
-    "message": "जारी रखें"
-  },
-  "scamQuestionnaireWarningContactSupport": {
-    "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
-  },
-  "scamQuestionnaireWarningTitle": {
-    "message": "हो सकता है कि आपके साथ अभी धोखाधड़ी हो रही हो"
   },
   "scanInstructions": {
     "message": "QR कोड को अपने कैमरे के सामने रखें"

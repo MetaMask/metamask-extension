@@ -4414,10 +4414,6 @@
   "holdToRevealUnlockedLabel": {
     "message": "長押ししてロックが解除された円を表示します"
   },
-  "home": {
-    "message": "ホーム",
-    "description": "Label for the Home tab in the bottom navigation bar"
-  },
   "honeypotDescription": {
     "message": "このトークンはハニーポットの危険性があります。金銭的な損失を防ぐために、やり取りする前にデューディリジェンスを行うことをお勧めします。"
   },
@@ -4762,42 +4758,6 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledgerが接続されていて、イーサリアムアプリを選択していることを確認してください。"
-  },
-  "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Ledgerデバイスでアプリを開いてから続行してください"
-  },
-  "ledgerConnectionStatusDeviceFoundTitle": {
-    "message": "Ledgerデバイスが見つかりました"
-  },
-  "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Ledgerデバイスのロックを解除してから続行してください"
-  },
-  "ledgerConnectionStatusDeviceLockedTitle": {
-    "message": "Ledgerがロックされています"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
-    "message": "イーサリアムアプリをインストールして開きます"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
-    "message": "Ledgerデバイスのロックを解除します"
-  },
-  "ledgerConnectionStatusDeviceNotFoundTitle": {
-    "message": "デバイスが見つかりません"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "デバイスの接続を解除して、再接続してください"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
-    "message": "Ledgerが応答しません"
-  },
-  "ledgerConnectionStatusGenericErrorTitle": {
-    "message": "問題が発生しました"
-  },
-  "ledgerConnectionStatusSearchingDescription": {
-    "message": "検索する間そのままお待ちください..."
-  },
-  "ledgerConnectionStatusSearchingTitle": {
-    "message": "デバイスを検索中"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledgerデバイスを開けませんでした。Ledgerが他のソフトウェアに接続されている可能性があります。Ledger LiveまたはLedgerデバイスに接続されている他のアプリケーションを閉じて、もう一度接続してみてください。"
@@ -8439,15 +8399,6 @@
   },
   "save": {
     "message": "保存"
-  },
-  "scamQuestionnaireContinue": {
-    "message": "続行"
-  },
-  "scamQuestionnaireWarningContactSupport": {
-    "message": "サポートへのお問い合わせ"
-  },
-  "scamQuestionnaireWarningTitle": {
-    "message": "今騙されている可能性があります"
   },
   "scanInstructions": {
     "message": "QRコードにカメラを向けてください"

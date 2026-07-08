@@ -4410,10 +4410,6 @@
   "holdToRevealUnlockedLabel": {
     "message": "círculo \"segure para revelar\" desbloqueado"
   },
-  "home": {
-    "message": "Início",
-    "description": "Label for the Home tab in the bottom navigation bar"
-  },
   "honeypotDescription": {
     "message": "Este token pode representar um risco de honeypot (armadilha). É recomendado realizar a devida diligência antes de interagir para evitar possíveis perdas financeiras."
   },
@@ -4758,45 +4754,6 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Certifique-se de conectar o seu dispositivo Ledger e de selecionar o app Ethereum."
-  },
-  "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Abra-o em seu dispositivo Ledger para continuar"
-  },
-  "ledgerConnectionStatusAppClosedTitle": {
-    "message": "O app Ethereum está fechado"
-  },
-  "ledgerConnectionStatusDeviceFoundTitle": {
-    "message": "Dispositivo Ledge encontrado"
-  },
-  "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Desbloqueie seu dispositivo Ledger para continuar"
-  },
-  "ledgerConnectionStatusDeviceLockedTitle": {
-    "message": "A Ledger está bloqueada"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
-    "message": "Instale e abra o app da Ethereum"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
-    "message": "Desbloqueie seu dispositivo Ledger"
-  },
-  "ledgerConnectionStatusDeviceNotFoundTitle": {
-    "message": "Dispositivo não encontrado"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Desconecte e reconecte seu dispositivo"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
-    "message": "O Ledger não está respondendo"
-  },
-  "ledgerConnectionStatusGenericErrorTitle": {
-    "message": "Ocorreu algum erro"
-  },
-  "ledgerConnectionStatusSearchingDescription": {
-    "message": "Aguarde enquanto o procuramos..."
-  },
-  "ledgerConnectionStatusSearchingTitle": {
-    "message": "Procurando seu dispositivo"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ocorreu uma falha ao abrir o dispositivo Ledger. Seu Ledger pode não estar conectado a outros softwares. Feche o Ledger Live ou outros aplicativos conectados ao seu dispositivo Ledger e tente reconectar."
@@ -8438,15 +8395,6 @@
   },
   "save": {
     "message": "Salvar"
-  },
-  "scamQuestionnaireContinue": {
-    "message": "Continuar"
-  },
-  "scamQuestionnaireWarningContactSupport": {
-    "message": "Falar com o suporte"
-  },
-  "scamQuestionnaireWarningTitle": {
-    "message": "Você pode estar sendo vítima de um golpe neste exato momento"
   },
   "scanInstructions": {
     "message": "Posicione o código QR na frente da sua câmera"

@@ -4414,10 +4414,6 @@
   "holdToRevealUnlockedLabel": {
     "message": "kilidi açılmış daireyi açığa çıkarmak için tut"
   },
-  "home": {
-    "message": "Ana Sayfa",
-    "description": "Label for the Home tab in the bottom navigation bar"
-  },
   "honeypotDescription": {
     "message": "Bu token bir bal tuzağı riski taşıyor olabilir. Olası mali kayıpları önlemek için etkileşimde bulunmadan önce gerekli özeni göstermeniz tavsiye edilir."
   },
@@ -4762,45 +4758,6 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledger'ınızın bağlı olduğundan emin olun ve Ethereum uygulamasını seçin."
-  },
-  "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Devam etmek için lütfen Ledger cihazınızda açın"
-  },
-  "ledgerConnectionStatusAppClosedTitle": {
-    "message": "Ethereum uygulaması kapatıldı"
-  },
-  "ledgerConnectionStatusDeviceFoundTitle": {
-    "message": "Ledger cihazı bulundu"
-  },
-  "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Devam etmek için lütfen Ledger cihazınızın kilidini açın"
-  },
-  "ledgerConnectionStatusDeviceLockedTitle": {
-    "message": "Ledger kilitli"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
-    "message": "Ethereum uygulamasını yükleyin ve açın"
-  },
-  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
-    "message": "Ledger cihazınızn kilidini açın"
-  },
-  "ledgerConnectionStatusDeviceNotFoundTitle": {
-    "message": "Cihaz bulunamadı"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Lütfen cihazın bağlantısını kesip yeniden bağlayın"
-  },
-  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
-    "message": "Ledger yanıt vermiyor"
-  },
-  "ledgerConnectionStatusGenericErrorTitle": {
-    "message": "Bir şeyler ters gitti"
-  },
-  "ledgerConnectionStatusSearchingDescription": {
-    "message": "Biz bunu ararken bekleyin..."
-  },
-  "ledgerConnectionStatusSearchingTitle": {
-    "message": "Cihazınız aranıyor"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger cihazı açılamadı. Ledger'ınız başka bir yazılıma bağlanmış olabilir. Lütfen Ledger Live'ı ya da Ledger cihazınızla bağlantılı diğer uygulamaları kapatıp tekrar bağlanmayı deneyin."
@@ -8446,15 +8403,6 @@
   },
   "save": {
     "message": "Kaydet"
-  },
-  "scamQuestionnaireContinue": {
-    "message": "Devam Et"
-  },
-  "scamQuestionnaireWarningContactSupport": {
-    "message": "Destek ile iletişime geç"
-  },
-  "scamQuestionnaireWarningTitle": {
-    "message": "Şu anda dolandırılıyor olabilirsiniz"
   },
   "scanInstructions": {
     "message": "QR kodu kameranızın önüne getirin"
