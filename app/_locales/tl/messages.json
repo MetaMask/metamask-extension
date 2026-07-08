@@ -1020,9 +1020,6 @@
   "addAccount": {
     "message": "Magdagdag ng account"
   },
-  "addAcquiredTokens": {
-    "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
-  },
   "addAlias": {
     "message": "Magdagdag ng alias"
   },
@@ -2970,9 +2967,6 @@
   "customSlippage": {
     "message": "Custom"
   },
-  "customToken": {
-    "message": "Custom na Token"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bago manu-manong mag-import ng token, tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1."
   },
@@ -3502,9 +3496,6 @@
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
-  "enableFromSettings": {
-    "message": " Paganahin ito mula sa Mga Setting."
-  },
   "enableSmartContractAccount": {
     "message": "Gumamit ng smart account"
   },
@@ -3531,9 +3522,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "Ibang chain ID ($1) ang ibinalik ng RPC URL na inilagay mo.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Ang pinahusay na pagtuklas ng token ay kasalukuyang magagamit sa $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "Pinahihintulutan ng MetaMask na makita mo ang mga ENS mula mismo sa address bar ng iyong browser. Here's how it works:"
@@ -4377,15 +4365,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
   },
-  "importTokenQuestion": {
-    "message": "Mag-import ng token?"
-  },
-  "importTokenWarning": {
-    "message": "Sinumang ay maaaring gumawa ng token gamit ang alinmang pangalan, kabilang ang mga pekeng bersyon ng umiiral na mga token. Magdagdag at mag-trade sa sarili mong panganib!"
-  },
-  "importTokensCamelCase": {
-    "message": "Mag-import ng mga token"
-  },
   "importTokensError": {
     "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
   },
@@ -4683,9 +4662,6 @@
   },
   "lightTheme": {
     "message": "Maliwanag"
-  },
-  "likeToImportToken": {
-    "message": "Gusto mo bang i-import ang token na ito?"
   },
   "likeToImportTokens": {
     "message": "Gusto mo bang i-import ang mga token na ito?"
@@ -5257,9 +5233,6 @@
   },
   "musdTermsApply": {
     "message": "Nalalapat ang mga tuntunin."
-  },
-  "mustSelectOne": {
-    "message": "Dapat pumili ng kahit 1 token lang."
   },
   "name": {
     "message": "Pangalan"
@@ -10245,9 +10218,6 @@
   },
   "tokenDecimal": {
     "message": "Decimal na token"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "Kailangan ng decimal ng token. Hanapin ito sa: $1"
   },
   "tokenDetails": {
     "message": "Mga detalye ng token"
