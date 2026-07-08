@@ -57,10 +57,16 @@ const TabBar = ({
       const caretClass = removeFullscreenStyles
         ? 'rtl:rotate-180'
         : 'sm:hidden rtl:rotate-180';
+      const shouldAnimateNavigation = removeFullscreenStyles;
       const handleClick = (event?: React.MouseEvent) => {
         event?.preventDefault();
 
         if (active || onTabClick?.(key) === true) {
+          return;
+        }
+
+        if (!shouldAnimateNavigation) {
+          navigate(key);
           return;
         }
 
