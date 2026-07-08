@@ -2,7 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
-import { FontWeight, Text, TextVariant as DsTextVariant } from '@metamask/design-system-react';
+import {
+  FontWeight,
+  Text,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 import {
   PREPARE_SWAP_ROUTE,
