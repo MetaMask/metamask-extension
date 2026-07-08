@@ -1712,7 +1712,7 @@ export const getBridgeQuoteStatusManagerFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
