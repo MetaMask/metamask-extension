@@ -227,6 +227,32 @@ describe('useOnboardingCompletion', () => {
     expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
   });
 
+  it('allows retrying completion after a failed attempt', async () => {
+    mockCompleteOnboarding
+      .mockRejectedValueOnce(new Error('completion failed'))
+      .mockResolvedValueOnce(true);
+
+    const { result } = renderHookWithProvider(
+      () => useOnboardingCompletion(),
+      mockState,
+    );
+
+    await act(async () => {
+      await expect(
+        result.current.completeOnboardingFromCompletionPage(),
+      ).rejects.toThrow('completion failed');
+    });
+
+    await act(async () => {
+      await result.current.completeOnboardingFromCompletionPage();
+    });
+
+    await waitFor(() => {
+      expect(mockCompleteOnboarding).toHaveBeenCalledTimes(2);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
   describe('Backup & Sync onboarding intent', () => {
     it('disables the backup & sync main feature on completion when the onboarding flag is off', async () => {
       const { result } = renderHookWithProvider(

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import { useOnboardingCompletion } from '../hooks/useOnboardingCompletion';
 import CreationSuccessful from './creation-successful';
@@ -12,18 +12,24 @@ export default function OnboardingCompletionRoute({
   shouldAutoComplete,
 }: OnboardingCompletionRouteProps) {
   const { completeOnboardingFromCompletionPage } = useOnboardingCompletion();
+  const [autoCompleteFailed, setAutoCompleteFailed] = useState(false);
 
   useEffect(() => {
-    if (!shouldAutoComplete) {
+    if (!shouldAutoComplete || autoCompleteFailed) {
       return;
     }
 
     completeOnboardingFromCompletionPage().catch((error) => {
       console.error('Failed to auto-complete onboarding:', error);
+      setAutoCompleteFailed(true);
     });
-  }, [shouldAutoComplete, completeOnboardingFromCompletionPage]);
+  }, [
+    autoCompleteFailed,
+    shouldAutoComplete,
+    completeOnboardingFromCompletionPage,
+  ]);
 
-  if (shouldAutoComplete) {
+  if (shouldAutoComplete && !autoCompleteFailed) {
     return <LoadingScreen />;
   }
 

@@ -150,6 +150,27 @@ describe('OnboardingCompletionRoute', () => {
     });
   });
 
+  it('renders the completion page when auto-complete fails', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    mockCompleteOnboarding.mockRejectedValueOnce(
+      new Error('auto-complete failed'),
+    );
+    const mockStore = configureMockStore([thunk])(mockState);
+
+    const { getByTestId } = renderWithProvider(
+      <OnboardingCompletionRoute shouldAutoComplete />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('wallet-ready')).toBeInTheDocument();
+    });
+    expect(mockCompleteOnboarding).toHaveBeenCalledTimes(1);
+    consoleErrorSpy.mockRestore();
+  });
+
   it('renders the completion page when shouldAutoComplete is false', () => {
     const mockStore = configureMockStore([thunk])({
       ...mockState,

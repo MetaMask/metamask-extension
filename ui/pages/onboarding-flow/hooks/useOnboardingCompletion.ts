@@ -126,107 +126,121 @@ export function useOnboardingCompletion() {
       }
       isFinishingOnboardingRef.current = true;
 
-      const deferredDeepLinkResult =
-        await getDeferredDeepLinkRoute(deferredDeepLink);
-      const shouldOpenSidePanel =
-        deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
-        deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Interstitial;
+      try {
+        const deferredDeepLinkResult =
+          await getDeferredDeepLinkRoute(deferredDeepLink);
+        const shouldOpenSidePanel =
+          deferredDeepLinkResult?.type !==
+            DeferredDeepLinkRouteType.Navigate &&
+          deferredDeepLinkResult?.type !==
+            DeferredDeepLinkRouteType.Interstitial;
 
-      if (!isOnboardingCompleted) {
-        const isNewWallet =
-          firstTimeFlowType === FirstTimeFlowType.create ||
-          firstTimeFlowType === FirstTimeFlowType.socialCreate;
+        if (!isOnboardingCompleted) {
+          const isNewWallet =
+            firstTimeFlowType === FirstTimeFlowType.create ||
+            firstTimeFlowType === FirstTimeFlowType.socialCreate;
 
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.OnboardingCompleted)
-            .addCategory(MetaMetricsEventCategory.Onboarding)
-            .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              wallet_setup_type: firstTimeFlowType,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              new_wallet: isNewWallet,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              is_basic_functionality_enabled:
-                externalServicesOnboardingToggleState,
-            })
-            .build(),
-        );
-      }
-
-      if (isBasicFunctionalityToggleEnabled) {
-        await dispatch(
-          setPreference('isBasicFunctionalityConsolidatedEnabled', true, false),
-        );
-      }
-
-      await dispatch(
-        isBasicFunctionalityToggleEnabled
-          ? toggleBasicFunctionality(externalServicesOnboardingToggleState)
-          : toggleExternalServices(externalServicesOnboardingToggleState),
-      );
-
-      if (!backupAndSyncOnboardingToggleState) {
-        await dispatch(
-          setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false),
-        );
-      }
-
-      if (!isOnboardingCompleted) {
-        trackEvent(
-          createEventBuilder(
-            isOptedIn
-              ? MetaMetricsEventName.MetricsOptIn
-              : MetaMetricsEventName.MetricsOptOut,
-          )
-            .addCategory(MetaMetricsEventCategory.Onboarding)
-            .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: accountTypeForMetrics,
-            })
-            .build(),
-        );
-      }
-
-      if (isSidePanelEnabled) {
-        try {
-          const browserWithSidePanel = browser as BrowserWithSidePanel;
-          if (browserWithSidePanel?.sidePanel?.open) {
-            const tabs = await browser.tabs.query({
-              active: true,
-              currentWindow: true,
-            });
-            if (tabs && tabs.length > 0) {
-              if (shouldOpenSidePanel) {
-                await browserWithSidePanel.sidePanel.open({
-                  windowId: tabs[0].windowId,
-                });
-                setIsSidePanelOpen(true);
-                options?.onSidePanelOpened?.();
-              }
-              await dispatch(setUseSidePanelAsDefault(true));
-              await dispatch(setCompletedOnboardingWithSidepanel());
-
-              handleOnDoneNavigation(
-                deferredDeepLinkResult,
-                Boolean(deferredDeepLink),
-                true,
-              );
-
-              return;
-            }
-          }
-        } catch (error) {
-          console.error('Error opening side panel:', error);
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.OnboardingCompleted)
+              .addCategory(MetaMetricsEventCategory.Onboarding)
+              .addProperties({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                wallet_setup_type: firstTimeFlowType,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                new_wallet: isNewWallet,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                is_basic_functionality_enabled:
+                  externalServicesOnboardingToggleState,
+              })
+              .build(),
+          );
         }
+
+        if (isBasicFunctionalityToggleEnabled) {
+          await dispatch(
+            setPreference(
+              'isBasicFunctionalityConsolidatedEnabled',
+              true,
+              false,
+            ),
+          );
+        }
+
+        await dispatch(
+          isBasicFunctionalityToggleEnabled
+            ? toggleBasicFunctionality(externalServicesOnboardingToggleState)
+            : toggleExternalServices(externalServicesOnboardingToggleState),
+        );
+
+        if (!backupAndSyncOnboardingToggleState) {
+          await dispatch(
+            setIsBackupAndSyncFeatureEnabled(
+              BACKUPANDSYNC_FEATURES.main,
+              false,
+            ),
+          );
+        }
+
+        if (!isOnboardingCompleted) {
+          trackEvent(
+            createEventBuilder(
+              isOptedIn
+                ? MetaMetricsEventName.MetricsOptIn
+                : MetaMetricsEventName.MetricsOptOut,
+            )
+              .addCategory(MetaMetricsEventCategory.Onboarding)
+              .addProperties({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                account_type: accountTypeForMetrics,
+              })
+              .build(),
+          );
+        }
+
+        if (isSidePanelEnabled) {
+          try {
+            const browserWithSidePanel = browser as BrowserWithSidePanel;
+            if (browserWithSidePanel?.sidePanel?.open) {
+              const tabs = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+              });
+              if (tabs && tabs.length > 0) {
+                if (shouldOpenSidePanel) {
+                  await browserWithSidePanel.sidePanel.open({
+                    windowId: tabs[0].windowId,
+                  });
+                  setIsSidePanelOpen(true);
+                  options?.onSidePanelOpened?.();
+                }
+                await dispatch(setUseSidePanelAsDefault(true));
+                await dispatch(setCompletedOnboardingWithSidepanel());
+
+                handleOnDoneNavigation(
+                  deferredDeepLinkResult,
+                  Boolean(deferredDeepLink),
+                  true,
+                );
+
+                return;
+              }
+            }
+          } catch (error) {
+            console.error('Error opening side panel:', error);
+          }
+        }
+
+        await dispatch(setCompletedOnboarding());
+
+        handleOnDoneNavigation(
+          deferredDeepLinkResult,
+          Boolean(deferredDeepLink),
+          false,
+        );
+      } catch (error) {
+        isFinishingOnboardingRef.current = false;
+        throw error;
       }
-
-      await dispatch(setCompletedOnboarding());
-
-      handleOnDoneNavigation(
-        deferredDeepLinkResult,
-        Boolean(deferredDeepLink),
-        false,
-      );
     },
     [
       accountTypeForMetrics,
