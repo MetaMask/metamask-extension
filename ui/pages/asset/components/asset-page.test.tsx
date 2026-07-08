@@ -191,6 +191,9 @@ describe('AssetPage', () => {
     appState: {
       confirmationExchangeRates: {},
     },
+    confirmTransaction: {
+      txData: {},
+    },
     metamask: {
       ...mockMultichainNetworkState(),
       txHistory: {},
