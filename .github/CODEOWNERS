@@ -88,6 +88,9 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 # Ramps team to own code for the ramps folder
 **/ramps/**                                           @MetaMask/ramp
 
+# Product Safety Team
+**/product-safety/**                     @MetaMask/product-safety
+
 # Perps Team
 ui/pages/perps/ @MetaMask/perps
 ui/components/app/perps/ @MetaMask/perps
