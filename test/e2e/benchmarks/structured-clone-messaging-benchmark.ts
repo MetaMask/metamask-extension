@@ -9,7 +9,10 @@ import { withFixtures } from '../helpers';
 import HomePage from '../page-objects/pages/home/homepage';
 import LoginPage from '../page-objects/pages/login-page';
 import { WALLET_PASSWORD } from '../constants';
-import { getServerMochaToBackground } from '../background-socket/server-mocha-to-background';
+import {
+  getServerMochaToBackground,
+  stopServerMochaToBackground,
+} from '../background-socket/server-mocha-to-background';
 import { PAGES, type Driver } from '../webdriver/driver';
 
 const STRUCTURED_CLONE_CHROME_VERSION = '148';
@@ -345,15 +348,14 @@ async function runVariant({
         chromeBrowserVersion: STRUCTURED_CLONE_CHROME_VERSION,
       },
       isBenchmark: true,
-      manifestTransform:
-        (manifest: Record<string, unknown>) => {
-          if (variant === 'flagOffJson') {
-              delete manifest.message_serialization;
-            return;
-          }
+      manifestTransform: (manifest: Record<string, unknown>) => {
+        if (variant === 'flagOffJson') {
+          delete manifest.message_serialization;
+          return;
+        }
 
-          manifest.message_serialization = STRUCTURED_CLONE_MESSAGE_SERIALIZATION;
-        },
+        manifest.message_serialization = STRUCTURED_CLONE_MESSAGE_SERIALIZATION;
+      },
       title: `structured-clone-messaging-${variant}-${launchIndex}`,
     },
     async ({ driver }: { driver: Driver }) => {
@@ -515,76 +517,80 @@ async function parseCliOptions(): Promise<CliOptions> {
 }
 
 async function main() {
-  const options = await parseCliOptions();
-  const samples: Record<VariantName, number[]> = {
-    flagOffJson: [],
-    flagOnStructuredClone: [],
-  };
-  const variantLaunchOrder: VariantName[] = [
-    'flagOffJson',
-    'flagOnStructuredClone',
-    'flagOnStructuredClone',
-    'flagOffJson',
-  ];
+  try {
+    const options = await parseCliOptions();
+    const samples: Record<VariantName, number[]> = {
+      flagOffJson: [],
+      flagOnStructuredClone: [],
+    };
+    const variantLaunchOrder: VariantName[] = [
+      'flagOffJson',
+      'flagOnStructuredClone',
+      'flagOnStructuredClone',
+      'flagOffJson',
+    ];
 
-  for (const [launchIndex, variant] of variantLaunchOrder.entries()) {
-    const remaining = options.iterations - samples[variant].length;
+    for (const [launchIndex, variant] of variantLaunchOrder.entries()) {
+      const remaining = options.iterations - samples[variant].length;
 
-    if (remaining <= 0) {
-      continue;
+      if (remaining <= 0) {
+        continue;
+      }
+
+      const measuredIterations = Math.min(
+        Math.ceil(options.iterations / 2),
+        remaining,
+      );
+
+      console.log(
+        `Running ${VARIANT_LABELS[variant]} launch ${
+          launchIndex + 1
+        } with ${measuredIterations} measured samples`,
+      );
+
+      samples[variant].push(
+        ...(await runVariant({
+          variant,
+          measuredIterations,
+          warmups: options.warmups,
+          payloadBytes: options.payloadBytes,
+          timeoutMs: options.timeoutMs,
+          launchIndex,
+        })),
+      );
     }
 
-    const measuredIterations = Math.min(
-      Math.ceil(options.iterations / 2),
-      remaining,
-    );
-
-    console.log(
-      `Running ${VARIANT_LABELS[variant]} launch ${
-        launchIndex + 1
-      } with ${measuredIterations} measured samples`,
-    );
-
-    samples[variant].push(
-      ...(await runVariant({
-        variant,
-        measuredIterations,
-        warmups: options.warmups,
+    const variants = {
+      flagOffJson: summarize(samples.flagOffJson),
+      flagOnStructuredClone: summarize(samples.flagOnStructuredClone),
+    };
+    const results: BenchmarkResults = {
+      metadata: {
+        chromeVersion: STRUCTURED_CLONE_CHROME_VERSION,
+        iterationsPerVariant: options.iterations,
+        warmupsPerBrowserLaunch: options.warmups,
         payloadBytes: options.payloadBytes,
+        payloadMiB: options.payloadBytes / 1024 / 1024,
         timeoutMs: options.timeoutMs,
-        launchIndex,
-      })),
-    );
+        measuredAt: new Date().toISOString(),
+      },
+      variants,
+      comparison: compareVariants(
+        variants.flagOffJson,
+        variants.flagOnStructuredClone,
+      ),
+    };
+    const markdown = buildMarkdown(results);
+
+    await mkdir(dirname(options.out), { recursive: true });
+    await mkdir(dirname(options.markdownOut), { recursive: true });
+    await writeFile(options.out, `${JSON.stringify(results, null, 2)}\n`);
+    await writeFile(options.markdownOut, markdown);
+
+    console.log(markdown);
+  } finally {
+    stopServerMochaToBackground();
   }
-
-  const variants = {
-    flagOffJson: summarize(samples.flagOffJson),
-    flagOnStructuredClone: summarize(samples.flagOnStructuredClone),
-  };
-  const results: BenchmarkResults = {
-    metadata: {
-      chromeVersion: STRUCTURED_CLONE_CHROME_VERSION,
-      iterationsPerVariant: options.iterations,
-      warmupsPerBrowserLaunch: options.warmups,
-      payloadBytes: options.payloadBytes,
-      payloadMiB: options.payloadBytes / 1024 / 1024,
-      timeoutMs: options.timeoutMs,
-      measuredAt: new Date().toISOString(),
-    },
-    variants,
-    comparison: compareVariants(
-      variants.flagOffJson,
-      variants.flagOnStructuredClone,
-    ),
-  };
-  const markdown = buildMarkdown(results);
-
-  await mkdir(dirname(options.out), { recursive: true });
-  await mkdir(dirname(options.markdownOut), { recursive: true });
-  await writeFile(options.out, `${JSON.stringify(results, null, 2)}\n`);
-  await writeFile(options.markdownOut, markdown);
-
-  console.log(markdown);
 }
 
 main().catch((error) => {

@@ -231,11 +231,11 @@ class ServerMochaToBackground {
 }
 
 // Singleton setup below
-let _serverMochaToBackground: ServerMochaToBackground;
+let _serverMochaToBackground: ServerMochaToBackground | undefined;
 
 export function getServerMochaToBackground() {
   if (!_serverMochaToBackground) {
-    startServerMochaToBackground();
+    return startServerMochaToBackground();
   }
 
   return _serverMochaToBackground;
@@ -243,4 +243,11 @@ export function getServerMochaToBackground() {
 
 function startServerMochaToBackground() {
   _serverMochaToBackground = new ServerMochaToBackground();
+
+  return _serverMochaToBackground;
+}
+
+export function stopServerMochaToBackground() {
+  _serverMochaToBackground?.stop();
+  _serverMochaToBackground = undefined;
 }
