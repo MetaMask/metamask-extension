@@ -7283,12 +7283,12 @@
   "perpsMargin": {
     "message": "Margin"
   },
+  "perpsMarginRiskWarning": {
+    "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
+  },
   "perpsMarginTooltip": {
     "message": "Margin is the money you put in to open a trade. It acts as collateral, and it's the most you can lose on that trade.",
     "description": "Tooltip content for the margin row on the Perps order summary"
-  },
-  "perpsMarginRiskWarning": {
-    "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
   },
   "perpsMarket": {
     "message": "Market"
