@@ -2,7 +2,6 @@ import React, {
   useEffect,
   useRef,
   useState,
-  useContext,
   useMemo,
   useCallback,
 } from 'react';
@@ -29,8 +28,6 @@ import {
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -53,11 +50,8 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
-} from '../../../../../../shared/constants/network';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -112,7 +106,7 @@ const AssetListControlBar = ({
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const sortButtonRef = useRef<HTMLButtonElement>(null);
   const importButtonRef = useRef<HTMLButtonElement>(null);
@@ -163,6 +157,7 @@ const AssetListControlBar = ({
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
+  const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
   const networkButtonText = useNetworkFilterButtonLabel();
 
   const shouldShowRefreshButtons = useMemo(
@@ -280,29 +275,31 @@ const AssetListControlBar = ({
 
   const handleTokenImportModal = () => {
     dispatch(showImportTokensModal());
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: 'HOME',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'HOME',
+        })
+        .build(),
+    );
     closePopover();
   };
 
   const handleOpenTokenManagement = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: 'HOME',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'HOME',
+        })
+        .build(),
+    );
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
     navigate(TOKEN_MANAGEMENT_ROUTE);
-  }, [navigate, trackEvent]);
+  }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {
     dispatch(showImportNftsModal({}));
@@ -339,17 +336,6 @@ const AssetListControlBar = ({
     });
   };
 
-  const singleNetworkIconUrl = useMemo(() => {
-    const chainIds = allEnabledNetworksForAllNamespaces;
-
-    if (totalEnabledNetworkCount !== 1) {
-      return undefined;
-    }
-
-    const singleEnabledChainId = chainIds[0];
-    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [allEnabledNetworksForAllNamespaces, totalEnabledNetworkCount]);
-
   return (
     <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -366,21 +352,25 @@ const AssetListControlBar = ({
               ? BackgroundColor.backgroundPressed
               : BackgroundColor.backgroundDefault
           }
-          color={TextColor.textDefault}
+          color={
+            isSingleNetworkFilterSelected
+              ? TextColor.primaryDefault
+              : TextColor.textDefault
+          }
           marginRight={isFullScreen ? 2 : null}
           borderColor={BorderColor.borderMuted}
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {singleNetworkIconUrl && (
-              <AvatarNetwork
-                name={currentMultichainNetwork.nickname}
-                src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Xs}
-                borderWidth={0}
-              />
-            )}
-            <Text variant={TextVariant.bodySmMedium} ellipsis>
+            <Text
+              variant={TextVariant.bodySmMedium}
+              color={
+                isSingleNetworkFilterSelected
+                  ? TextColor.primaryDefault
+                  : TextColor.textDefault
+              }
+              ellipsis
+            >
               {networkButtonText}
             </Text>
           </Box>

@@ -4,6 +4,7 @@ import type {
   AnalyticsTrackingEvent,
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
+import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import type { Json } from '@metamask/utils';
 import { omitBy } from 'lodash';
 import type {
@@ -11,7 +12,6 @@ import type {
   AnalyticsEventBuildOptions,
 } from '../../../../shared/lib/analytics/create-event-builder';
 import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
-import type { FlattenedBackgroundStateProxy } from '../../../../shared/types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
@@ -81,7 +81,7 @@ export function configureAnalytics({
  * @param srpSessionData - Current SRP session data from MetaMask state.
  */
 export function updateProfileSessionData(
-  srpSessionData: FlattenedBackgroundStateProxy['srpSessionData'],
+  srpSessionData: AuthenticationController.AuthenticationControllerState['srpSessionData'],
 ): void {
   const profile = Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile;
 

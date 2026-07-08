@@ -1,7 +1,12 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
-import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import AddDeviceSettings from './add-device-settings';
 
 const mockNavigate = jest.fn();
@@ -11,118 +16,147 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('./components', () => {
-  const { AddDeviceSettingsStep } = jest.requireActual('./constant');
-  return {
-    QrCodeScan: ({
-      onScanSuccess,
-    }: {
-      onScanSuccess: (step: string) => void;
-    }) => (
-      <button
-        data-testid="qr-code-scan"
-        onClick={() =>
-          onScanSuccess(AddDeviceSettingsStep.EnterVerificationCode)
-        }
-      >
-        qr
-      </button>
-    ),
-    EnterVerificationCode: ({
-      onContinue,
-    }: {
-      onContinue: (step: string) => void;
-    }) => (
-      <button
-        data-testid="enter-verification-code"
-        onClick={() => onContinue(AddDeviceSettingsStep.ValidatingDevice)}
-      >
-        verify
-      </button>
-    ),
-    EnterPassword: ({ onContinue }: { onContinue: (step: string) => void }) => (
-      <button
-        data-testid="enter-password"
-        onClick={() => onContinue(AddDeviceSettingsStep.AddWallets)}
-      >
-        password
-      </button>
-    ),
-    AddWallets: ({
-      onAddWallets,
-    }: {
-      onAddWallets: (step: string) => void;
-    }) => (
-      <button
-        data-testid="add-wallets"
-        onClick={() => onAddWallets(AddDeviceSettingsStep.SyncingWallets)}
-      >
-        wallets
-      </button>
-    ),
-    LoadingStep: ({
-      title,
-      onComplete,
-    }: {
-      title: string;
-      onComplete?: () => void;
-    }) => (
-      <button data-testid="loading-step" onClick={onComplete}>
-        {title}
-      </button>
-    ),
-    Success: ({ onDone }: { onDone: () => void }) => (
-      <button data-testid="success" onClick={onDone}>
-        done
-      </button>
-    ),
-  };
-});
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('./components', () => ({
+  QrCodeScan: () => <div data-testid="qr-code-scan" />,
+  EnterVerificationCode: () => <div data-testid="enter-verification-code" />,
+  EnterPassword: ({
+    onPasswordChange,
+  }: {
+    onPasswordChange: (password: string) => void;
+  }) => (
+    <button
+      data-testid="enter-password"
+      type="button"
+      onClick={() => onPasswordChange('test-password')}
+    >
+      password
+    </button>
+  ),
+  AddWallets: () => <div data-testid="add-wallets" />,
+  LoadingStep: () => <div data-testid="loading-step" />,
+  Success: () => <div data-testid="success" />,
+}));
+
+const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+
+const qrSyncState = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    qrSyncPhase: QR_SYNC_PHASES.IDLE,
+    qrSyncQrPayload: 'metamask://connect/mwp?p=test',
+    qrSyncError: null,
+  },
+};
 
 describe('AddDeviceSettings', () => {
   beforeEach(() => {
-    mockNavigate.mockClear();
+    jest.clearAllMocks();
+    mockSubmitRequestToBackground.mockResolvedValue(undefined);
   });
 
-  it('starts on the QR code scan step', () => {
-    renderWithLocalization(<AddDeviceSettings />);
+  afterEach(() => {
+    cleanup();
+  });
 
+  it('renders QrCodeScan when the phase is idle', () => {
+    const store = configureMockStore([thunk])(qrSyncState);
+    renderWithProvider(<AddDeviceSettings />, store);
     expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
   });
 
-  it('advances through the full add device flow', () => {
-    renderWithLocalization(<AddDeviceSettings />);
-
-    fireEvent.click(screen.getByTestId('qr-code-scan'));
-    expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('enter-verification-code'));
-    expect(screen.getByTestId('loading-step')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('loading-step'));
-    expect(screen.getByTestId('enter-password')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('enter-password'));
-    expect(screen.getByTestId('add-wallets')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('add-wallets'));
-    expect(screen.getByTestId('loading-step')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('loading-step'));
-    expect(screen.getByTestId('success')).toBeInTheDocument();
+  it('renders QrCodeScan when the phase is displaying QR', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.DISPLAYING_QR,
+      },
+    });
+    renderWithProvider(<AddDeviceSettings />, store);
+    expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
   });
 
-  it('navigates to the default route when the success step is done', () => {
-    renderWithLocalization(<AddDeviceSettings />);
+  it('renders EnterVerificationCode when the phase is awaiting OTP input', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.AWAITING_OTP_INPUT,
+      },
+    });
+    renderWithProvider(<AddDeviceSettings />, store);
+    expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
+  });
 
-    fireEvent.click(screen.getByTestId('qr-code-scan'));
-    fireEvent.click(screen.getByTestId('enter-verification-code'));
-    fireEvent.click(screen.getByTestId('loading-step'));
-    fireEvent.click(screen.getByTestId('enter-password'));
-    fireEvent.click(screen.getByTestId('add-wallets'));
-    fireEvent.click(screen.getByTestId('loading-step'));
-    fireEvent.click(screen.getByTestId('success'));
+  it('renders LoadingStep when the phase is awaiting a sync offer', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+      },
+    });
+    renderWithProvider(<AddDeviceSettings />, store);
+    expect(screen.getByTestId('loading-step')).toBeInTheDocument();
+  });
 
-    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  it('renders EnterPassword when the phase is reviewing the sync offer', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
+      },
+    });
+    renderWithProvider(<AddDeviceSettings />, store);
+    expect(screen.getByTestId('enter-password')).toBeInTheDocument();
+  });
+
+  it('renders LoadingStep when the phase is awaiting sync completion', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
+      },
+    });
+    renderWithProvider(<AddDeviceSettings />, store);
+    expect(screen.getByTestId('loading-step')).toBeInTheDocument();
+  });
+
+  it('creates a QR sync session when mounted in the idle phase', async () => {
+    const store = configureMockStore([thunk])(qrSyncState);
+    renderWithProvider(<AddDeviceSettings />, store);
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'messengerCall',
+        ['QrSyncController:createSession', []],
+      );
+    });
+  });
+
+  it('exits automatically when the flow reaches a terminal phase', async () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.CANCELLED,
+      },
+    });
+    renderWithProvider(<AddDeviceSettings />, store);
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'messengerCall',
+        ['QrSyncController:resetState', []],
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
   });
 });

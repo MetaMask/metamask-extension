@@ -28,6 +28,7 @@
     "backupAndSyncOnboardingToggleState": "boolean",
     "externalServicesOnboardingToggleState": "boolean",
     "gasLoadingAnimationIsShowing": "boolean",
+    "homeDeepLinkQrCode": "null",
     "importNftsModal": {
       "open": "boolean"
     },
@@ -730,6 +731,10 @@
         "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z": "boolean",
         "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": "boolean"
       },
+      "stellar": {
+        "stellar:pubnet": "boolean",
+        "stellar:testnet": "boolean"
+      },
       "tron": {
         "tron:728126428": "boolean",
         "tron:3448148188": "boolean",
@@ -1127,6 +1132,18 @@
         "name": "string",
         "nativeCurrency": "string"
       },
+      "stellar:pubnet": {
+        "chainId": "string",
+        "isEvm": "boolean",
+        "name": "string",
+        "nativeCurrency": "string"
+      },
+      "stellar:testnet": {
+        "chainId": "string",
+        "isEvm": "boolean",
+        "name": "string",
+        "nativeCurrency": "string"
+      },
       "tron:2494104990": {
         "chainId": "string",
         "isEvm": "boolean",
@@ -1195,7 +1212,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "null",
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": "null",
     "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
@@ -1219,6 +1236,7 @@
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
+      "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
@@ -1253,6 +1271,7 @@
       }
     ],
     "quoteStreamComplete": "null",
+    "quoteUpdateStatusStore": {},
     "quotes": [],
     "quotesInitialLoadTime": "null",
     "quotesLastFetched": "null",

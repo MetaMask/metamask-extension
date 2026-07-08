@@ -82,12 +82,6 @@
   "account": {
     "message": "Tài khoản"
   },
-  "accountActivity": {
-    "message": "Hoạt động của tài khoản"
-  },
-  "accountActivityText": {
-    "message": "Chọn tài khoản mà bạn muốn nhận thông báo:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Đăng nhập"
   },
@@ -2985,12 +2979,6 @@
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
   },
-  "customizeYourNotifications": {
-    "message": "Tùy chỉnh thông báo"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Bật các loại thông báo mà bạn muốn nhận:"
-  },
   "dappConnections": {
     "message": "Kết nối Dapp"
   },
@@ -4412,9 +4400,6 @@
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "includes": {
-    "message": "Bao gồm"
   },
   "includesXTransactions": {
     "message": "Bao gồm $1 giao dịch"
@@ -5873,9 +5858,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Đã xảy ra lỗi. Vui lòng thử lại."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Nhận thông báo để cập nhật tình hình trong ví của bạn. Để sử dụng thông báo, chúng tôi dùng hồ sơ để đồng bộ một số cài đặt trên các thiết bị của bạn. $1 chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Tìm hiểu cách thức"
@@ -7542,9 +7524,6 @@
   },
   "proceedWithTransaction": {
     "message": "Tôi vẫn muốn tiếp tục"
-  },
-  "productAnnouncements": {
-    "message": "Thông báo về sản phẩm"
   },
   "provide": {
     "message": "Cung cấp"
@@ -10520,29 +10499,8 @@
   "turnOn": {
     "message": "Bật"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Bật thông báo"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Bật"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Đã xảy ra lỗi khi tạo thông báo. Vui lòng thử lại sau."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Nhận thông báo để cập nhật tình hình trong ví của bạn."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "cài đặt thông báo."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Để sử dụng tính năng thông báo ví, chúng tôi dùng hồ sơ để đồng bộ một số chế độ cài đặt trên các thiết bị của bạn. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Bạn có thể tắt thông báo bất kỳ lúc nào trong $1"
   },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"

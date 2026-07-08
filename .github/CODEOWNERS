@@ -88,6 +88,9 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 # Ramps team to own code for the ramps folder
 **/ramps/**                                           @MetaMask/ramp
 
+# Product Safety Team
+**/product-safety/**                     @MetaMask/product-safety
+
 # Perps Team
 ui/pages/perps/ @MetaMask/perps
 ui/components/app/perps/ @MetaMask/perps
@@ -108,7 +111,10 @@ app/scripts/services/legacy-background-api-service.ts      @MetaMask/core-platfo
 app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platform
 
 
-# Co-owned by Confirmations and Snaps
+# Co-owned by Extension Platform and Core Platform
+app/scripts/metamask-controller.js @MetaMask/extension-platform @MetaMask/core-platform
+
+# Co-owned by Confirmations and Core Platform
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Core Extension UX
@@ -204,7 +210,7 @@ test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/
 # Wallet Integrations
 test/e2e/page-objects/benchmark                                       @MetaMask/core-platform
 test/e2e/playwright/benchmark                                         @MetaMask/core-platform
-app/scripts/lib/createDefiReferralMiddleware.ts                       @MetaMask/core-platform
+app/scripts/lib/defi-referrals/createDefiReferralMiddleware.ts        @MetaMask/core-platform
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/core-platform
 shared/lib/caip25-caveat-merger.ts                                    @MetaMask/core-platform
 test/e2e/flask/multichain-api                                         @MetaMask/core-platform
@@ -276,6 +282,17 @@ app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platfor
 ui/hooks/gator-permissions                           @MetaMask/delegation
 app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
 shared/lib/gator-permissions                         @MetaMask/delegation
+
+# Wallet Library initialization
+app/scripts/wallet-init/initialization* @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/keyrings* @MetaMask/accounts-engineers @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/remote-feature-flags* @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/approval-controller* @MetaMask/confirmations
+app/scripts/wallet-init/instance-options/connectivity-controller* @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/keyring-controller* @MetaMask/accounts-engineers @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/network-controller* @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/remote-feature-flag-controller* @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/storage-service* @MetaMask/extension-platform @MetaMask/core-platform
 
 # Snapshots – no code owners assigned
 # This allows anyone with write access to approve changes to any *.snap files.
