@@ -163,7 +163,7 @@
   },
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
-    "@metamask/messenger@npm:^0.3.0": "^1.2.0",
+    "@metamask/messenger": "^2.0.0",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
@@ -403,7 +403,7 @@
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^14.0.0",
     "@metamask/message-signing-snap": "1.1.4",
-    "@metamask/messenger": "^1.2.0",
+    "@metamask/messenger": "^2.0.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/mobile-wallet-protocol-core": "^0.4.0",
     "@metamask/mobile-wallet-protocol-dapp-client": "^0.3.0",
