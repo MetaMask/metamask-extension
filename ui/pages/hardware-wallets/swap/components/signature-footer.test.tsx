@@ -1,7 +1,10 @@
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { I18nContext } from '../../../../contexts/i18n';
-import { enLocale as messages, tEn } from '../../../../../test/lib/i18n-helpers';
+import {
+  enLocale as messages,
+  tEn,
+} from '../../../../../test/lib/i18n-helpers';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
 import SignatureFooter from './signature-footer';
 
@@ -36,9 +39,9 @@ describe('SignatureFooter', () => {
       />,
     );
 
-    expect(getByTestId('hardware-wallet-signatures__retry-button').textContent).toBe(
-      messages.hardwareWalletErrorReconnectButton.message,
-    );
+    expect(
+      getByTestId('hardware-wallet-signatures__retry-button').textContent,
+    ).toBe(messages.hardwareWalletErrorReconnectButton.message);
   });
 
   it('renders retry button with try-again label when isRetryable is true and status is not Disconnected', () => {
@@ -50,9 +53,9 @@ describe('SignatureFooter', () => {
       />,
     );
 
-    expect(getByTestId('hardware-wallet-signatures__retry-button').textContent).toBe(
-      messages.errorPageTryAgain.message,
-    );
+    expect(
+      getByTestId('hardware-wallet-signatures__retry-button').textContent,
+    ).toBe(messages.errorPageTryAgain.message);
   });
 
   it('disables retry button when isRetrying is true', () => {
@@ -102,11 +105,7 @@ describe('SignatureFooter', () => {
 
   it('renders scan final label when isFinalSignature is true', () => {
     const { getByTestId } = renderWithI18n(
-      <SignatureFooter
-        {...BASE_PROPS}
-        showInlineQrCode
-        isFinalSignature
-      />,
+      <SignatureFooter {...BASE_PROPS} showInlineQrCode isFinalSignature />,
     );
 
     expect(
@@ -142,9 +141,7 @@ describe('SignatureFooter', () => {
       />,
     );
 
-    expect(
-      queryByTestId('hardware-wallet-signatures__scan-button'),
-    ).toBeNull();
+    expect(queryByTestId('hardware-wallet-signatures__scan-button')).toBeNull();
   });
 
   it('calls handleRetry when retry button is clicked', async () => {
