@@ -310,9 +310,7 @@
     "@metamask/multichain-account-service": "^11.0.0",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/assets-controller@npm:^9.1.0": "^10.1.0",
-    "@metamask/messenger": "^2.0.0",
-    "@metamask/network-connection-banner-controller": "npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-c4108f3eb",
-    "@metamask/connectivity-controller": "npm:@metamask-previews/connectivity-controller@0.2.0-preview-c4108f3eb"
+    "@metamask/messenger": "^2.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -362,7 +360,7 @@
     "@metamask/client-controller": "^1.0.0",
     "@metamask/compliance-controller": "^2.1.0",
     "@metamask/config-registry-controller": "^0.4.0",
-    "@metamask/connectivity-controller": "^0.2.0",
+    "@metamask/connectivity-controller": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^12.3.0",
     "@metamask/core-backend": "^6.4.0",

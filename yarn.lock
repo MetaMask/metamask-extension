@@ -5896,14 +5896,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connectivity-controller@npm:@metamask-previews/connectivity-controller@0.2.0-preview-c4108f3eb":
-  version: 0.2.0-preview-c4108f3eb
-  resolution: "@metamask-previews/connectivity-controller@npm:0.2.0-preview-c4108f3eb"
+"@metamask/connectivity-controller@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/connectivity-controller@npm:0.2.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/messenger": "npm:^1.0.0"
+  checksum: 10/586c80931341375c713aa5a474725ec88174e6e885d5f75d23b6458b734ec0e912a8c47996bea94a82f9549c9598ba982ac99aaeccac1fd92002c35a38f5397f
+  languageName: node
+  linkType: hard
+
+"@metamask/connectivity-controller@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/connectivity-controller@npm:0.3.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/messenger": "npm:^2.0.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/480bf319497b5aebec5569194a75218f1d8577f0b7bab890afd5b6f90303b790d93934a4bb4de43c4a521c023478d0437301c940820f6af1d10fd39015595579
+  checksum: 10/4751d3e4725f6d27d0e91e9213edc5855ab10ddd794200af6095a6c4b9db1c2d5b5ed8c4ec812002a29e0e141fa809e042c8002039f02a64c4dc33b53c2c9945
   languageName: node
   linkType: hard
 
@@ -7141,20 +7151,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-connection-banner-controller@npm:@metamask-previews/network-connection-banner-controller@0.1.0-preview-c4108f3eb":
-  version: 0.1.0-preview-c4108f3eb
-  resolution: "@metamask-previews/network-connection-banner-controller@npm:0.1.0-preview-c4108f3eb"
+"@metamask/network-connection-banner-controller@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/network-connection-banner-controller@npm:0.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/client-controller": "npm:^1.0.1"
-    "@metamask/connectivity-controller": "npm:^0.2.0"
+    "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/network-enablement-controller": "npm:^5.4.1"
     "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/705e1a8f2f001298ea1f04f476a1ff132306a725ee26169dec32b5ee2376377acfe4c9740b01a70f4ace59d33994c076e9c70c3f7b22ffd4a7336a9c3814bcd8
+  checksum: 10/5cbdce70a3e7d6a1a95577071062120a160d118f1e2c9e55cb8f4ecf2b9c2b08078d830856d23c09e47e296e96a73211eef22d8bd6c5107afbc14b66a66b0b50
   languageName: node
   linkType: hard
 
@@ -32972,7 +32982,7 @@ __metadata:
     "@metamask/client-mcp-core": "npm:0.5.0"
     "@metamask/compliance-controller": "npm:^2.1.0"
     "@metamask/config-registry-controller": "npm:^0.4.0"
-    "@metamask/connectivity-controller": "npm:^0.2.0"
+    "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/core-backend": "npm:^6.4.0"
