@@ -255,7 +255,10 @@ describe('EditMarginModalContent', () => {
     });
 
     it('masks the liquidation price and available amount when privacy mode is enabled', () => {
-      renderWithProvider(<EditMarginModalContent {...defaultProps} />, privacyStore);
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        privacyStore,
+      );
 
       expect(
         screen.getByTestId('perps-edit-margin-liquidation-price-value'),
@@ -266,7 +269,10 @@ describe('EditMarginModalContent', () => {
     });
 
     it('masks the liquidation price comparison values when privacy mode is enabled', () => {
-      renderWithProvider(<EditMarginModalContent {...defaultProps} />, privacyStore);
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        privacyStore,
+      );
 
       const amountInput = screen.getByPlaceholderText('0.00');
       fireEvent.change(amountInput, { target: { value: '100' } });

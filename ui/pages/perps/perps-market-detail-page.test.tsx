@@ -509,12 +509,12 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByTestId('perps-position-funding-value'),
       ).toHaveTextContent('••••••');
-      expect(
-        screen.getByTestId('perps-auto-close-tp-value'),
-      ).toHaveTextContent('••••••');
-      expect(
-        screen.getByTestId('perps-auto-close-sl-value'),
-      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-auto-close-tp-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(screen.getByTestId('perps-auto-close-sl-value')).toHaveTextContent(
+        '••••••',
+      );
     });
 
     it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
