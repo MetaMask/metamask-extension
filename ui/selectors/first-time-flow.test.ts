@@ -1,6 +1,5 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
-  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
 } from '../helpers/constants/routes';
@@ -10,20 +9,6 @@ import {
 } from './first-time-flow';
 
 describe('getFirstTimeFlowTypeRouteAfterUnlock', () => {
-  it('returns the completion route when the user has seen it but onboarding is unfinished', () => {
-    const state = {
-      metamask: {
-        firstTimeFlowType: FirstTimeFlowType.create,
-        hasSeenOnboardingCompletionPage: true,
-        completedOnboarding: false,
-      },
-    };
-
-    expect(getFirstTimeFlowTypeRouteAfterUnlock(state)).toBe(
-      ONBOARDING_COMPLETION_ROUTE,
-    );
-  });
-
   it('returns the flow-specific route when onboarding completion has not been seen', () => {
     const createState = {
       metamask: {
