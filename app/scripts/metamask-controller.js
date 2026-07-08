@@ -3464,7 +3464,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'NetworkOrderController:updateNetworksList',
       ),
-      updateAccountsList: this.updateAccountsList.bind(this),
+      updateAccountsList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountOrderController:updateAccountsList',
+      ),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
       setEnabledAllPopularNetworks:
         this.setEnabledAllPopularNetworks.bind(this),
@@ -8459,22 +8462,6 @@ export default class MetamaskController extends EventEmitter {
       if (!(exp instanceof PermissionsRequestNotFoundError)) {
         throw exp;
       }
-    }
-  };
-
-  /**
-   * Updates the pinned accounts list
-   *
-   * @deprecated This method is deprecated and will be removed in the future.
-   * use AccountTreeController.setAccountGroupPinned instead
-   * @param {AccountAddress[]} pinnedAccountList - The list of accounts to update in the state.
-   */
-  updateAccountsList = (pinnedAccountList) => {
-    try {
-      this.accountOrderController.updateAccountsList(pinnedAccountList);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
     }
   };
 
