@@ -1534,7 +1534,6 @@
     "useMultiAccountBalanceChecker": "boolean",
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
-    "userOperations": {},
     "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
