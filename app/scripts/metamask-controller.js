@@ -3902,7 +3902,6 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Other
-      endTrace,
       isRelaySupported,
       isSendBundleSupported,
       openUpdateTabAndReload: () =>
