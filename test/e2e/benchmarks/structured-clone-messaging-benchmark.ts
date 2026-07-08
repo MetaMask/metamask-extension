@@ -6,9 +6,11 @@ import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
-import { login } from '../page-objects/flows/login.flow';
+import HomePage from '../page-objects/pages/home/homepage';
+import LoginPage from '../page-objects/pages/login-page';
+import { WALLET_PASSWORD } from '../constants';
 import { getServerMochaToBackground } from '../background-socket/server-mocha-to-background';
-import { type Driver } from '../webdriver/driver';
+import { PAGES, type Driver } from '../webdriver/driver';
 
 const STRUCTURED_CLONE_CHROME_VERSION = '148';
 const DEFAULT_ITERATIONS = 20;
@@ -19,6 +21,8 @@ const DEFAULT_OUT =
   'test-artifacts/benchmarks/structured-clone-messaging-benchmark.json';
 const DEFAULT_MARKDOWN_OUT =
   'test-artifacts/benchmarks/structured-clone-messaging-benchmark.md';
+const UNLOCK_PASSWORD_INPUT = { testId: 'unlock-password' };
+const UNLOCK_SUBMIT_BUTTON = { testId: 'unlock-submit' };
 
 type VariantName = 'flagOffJson' | 'flagOnStructuredClone';
 
@@ -260,6 +264,40 @@ async function waitForPortStreamPayloadInUi(
   assert.strictEqual(result.ok, true);
 }
 
+async function loginToHomepageWithoutSendKeys(driver: Driver) {
+  await driver.navigate(PAGES.HOME);
+
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
+
+  const passwordInput = await driver.findElement(UNLOCK_PASSWORD_INPUT);
+
+  await driver.driver.executeScript(
+    `
+      const [input, password] = arguments;
+      const inputWindow = input.ownerDocument.defaultView;
+      const valueSetter = Object.getOwnPropertyDescriptor(
+        Object.getPrototypeOf(input),
+        'value',
+      )?.set;
+      if (valueSetter) {
+        valueSetter.call(input, password);
+      } else {
+        input.value = password;
+      }
+      input.dispatchEvent(new inputWindow.Event('input', { bubbles: true }));
+      input.dispatchEvent(new inputWindow.Event('change', { bubbles: true }));
+    `,
+    passwordInput,
+    WALLET_PASSWORD,
+  );
+
+  await driver.clickElement(UNLOCK_SUBMIT_BUTTON);
+
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+}
+
 async function emitAndMeasurePayload({
   driver,
   payloadBytes,
@@ -306,7 +344,6 @@ async function runVariant({
         chromeBrowserVersion: STRUCTURED_CLONE_CHROME_VERSION,
       },
       isBenchmark: true,
-      localNodeOptions: [{ type: 'none' }],
       manifestTransform:
         variant === 'flagOffJson'
           ? (manifest: Record<string, unknown>) => {
@@ -316,10 +353,7 @@ async function runVariant({
       title: `structured-clone-messaging-${variant}-${launchIndex}`,
     },
     async ({ driver }: { driver: Driver }) => {
-      await login(driver, {
-        validateBalance: false,
-        waitForNonEvmAccounts: false,
-      });
+      await loginToHomepageWithoutSendKeys(driver);
 
       const beforeStats =
         await getServerMochaToBackground().getPortStreamChunkingTestEventStats();

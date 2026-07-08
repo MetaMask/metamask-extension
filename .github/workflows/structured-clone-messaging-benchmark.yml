@@ -50,6 +50,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.run_id }}
 
+      - name: Install anvil
+        run: yarn mm-foundryup
+        shell: bash
+
       - name: Run structured clone messaging benchmark
         run: >-
           yarn tsx test/e2e/benchmarks/structured-clone-messaging-benchmark.ts
