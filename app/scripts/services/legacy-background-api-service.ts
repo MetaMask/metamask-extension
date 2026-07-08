@@ -209,6 +209,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
+  'throwTestError',
   'toggleExternalServices',
   'unMarkPasswordForgotten',
   'upsertTransactionUIMetricsFragment',
@@ -1597,5 +1598,20 @@ export class LegacyBackgroundApiService {
         throw error;
       }
     }
+  }
+
+  /**
+   * Throw an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * use this for handling errors.
+   */
+  throwTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      throw error;
+    });
   }
 }

@@ -391,6 +391,18 @@ export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
 };
 
 /**
+ * Throw an artificial error in a timeout handler for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+ * use this for handling errors.
+ */
+export type LegacyBackgroundApiServiceThrowTestErrorAction = {
+  type: `LegacyBackgroundApiService:throwTestError`;
+  handler: LegacyBackgroundApiService['throwTestError'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -427,4 +439,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
-  | LegacyBackgroundApiServiceAcceptPermissionsRequestAction;
+  | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
+  | LegacyBackgroundApiServiceThrowTestErrorAction;
