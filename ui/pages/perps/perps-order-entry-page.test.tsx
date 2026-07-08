@@ -269,6 +269,10 @@ jest.mock('../../hooks/perps/stream', () => ({
     error: null,
     fetchMoreHistory: jest.fn(),
   }),
+  usePerpsLiveOrderBook: () => ({
+    orderBook: null,
+    isInitialLoading: false,
+  }),
 }));
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({

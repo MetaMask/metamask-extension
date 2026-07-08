@@ -7228,6 +7228,21 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderBook": {
+    "message": "Order book"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Loading order book"
+  },
+  "perpsOrderBookNoData": {
+    "message": "No order book data"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Price"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Total"
+  },
   "perpsOrderDate": {
     "message": "Date"
   },

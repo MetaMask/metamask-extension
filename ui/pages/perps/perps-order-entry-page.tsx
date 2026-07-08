@@ -137,6 +137,7 @@ import {
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
+import { PerpsOrderBook } from '../../components/app/perps/order-book';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
 
 const ORDER_MODE_TOAST_KEYS: Record<
@@ -266,6 +267,7 @@ const PerpsOrderEntryPage = () => {
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
   trackRef.current = track;
@@ -986,6 +988,22 @@ const PerpsOrderEntryPage = () => {
     [track],
   );
 
+  const handleToggleOrderBook = useCallback(() => {
+    setIsOrderBookOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+          ...(decodedSymbol && {
+            [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+          }),
+        });
+      }
+      return next;
+    });
+  }, [track, decodedSymbol]);
+
   const handleOrderSubmit = useCallback(async () => {
     if (!isEligible) {
       setIsGeoBlockModalOpen(true);
@@ -1611,7 +1629,7 @@ const PerpsOrderEntryPage = () => {
 
   return (
     <form
-      className="main-container asset__container"
+      className="main-container asset__container relative overflow-hidden"
       data-testid="perps-order-entry-page"
       onSubmit={handleFormSubmit}
     >
@@ -1673,21 +1691,59 @@ const PerpsOrderEntryPage = () => {
             )}
           </Box>
         </Box>
-        <Box className="w-9 shrink-0" aria-hidden="true" />
+        <Box
+          data-testid="perps-order-book-toggle"
+          role="button"
+          tabIndex={0}
+          onClick={handleToggleOrderBook}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              handleToggleOrderBook();
+            }
+          }}
+          aria-label={t('perpsOrderBook')}
+          aria-pressed={isOrderBookOpen}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          className={twMerge(
+            'w-9 h-9 shrink-0 cursor-pointer rounded-lg',
+            isOrderBookOpen && 'bg-muted',
+          )}
+        >
+          <Icon
+            name={IconName.Chart}
+            size={IconSize.Md}
+            color={
+              isOrderBookOpen
+                ? IconColor.PrimaryDefault
+                : IconColor.IconAlternative
+            }
+          />
+        </Box>
       </Box>
 
-      {/* Scrollable form */}
+      {/* Body: form content (left) + sliding order book (right) */}
       <Box
-        paddingLeft={4}
-        paddingRight={4}
-        paddingBottom={4}
-        flexDirection={BoxFlexDirection.Column}
-        gap={4}
-        className={twMerge(
-          'flex-1 overflow-y-auto overflow-x-hidden',
-          isOrderPending && 'pointer-events-none opacity-50',
-        )}
+        flexDirection={BoxFlexDirection.Row}
+        className="flex-1 min-h-0 w-full"
       >
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className="flex-1 min-w-0 h-full overflow-hidden"
+        >
+          {/* Scrollable form */}
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            flexDirection={BoxFlexDirection.Column}
+            gap={4}
+            className={twMerge(
+              'flex-1 overflow-y-auto overflow-x-hidden',
+              isOrderPending && 'pointer-events-none opacity-50',
+            )}
+          >
         {orderMode === 'new' && (
           <DirectionTabs
             direction={orderDirection}
@@ -1786,6 +1842,23 @@ const PerpsOrderEntryPage = () => {
         >
           {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
         </Button>
+      </Box>
+        </Box>
+        {/* Order book: slides in from the right, taking 1/3 of the width */}
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className={twMerge(
+            'shrink-0 h-full overflow-hidden border-muted transition-all duration-300 ease-in-out',
+            isOrderBookOpen ? 'w-1/3 border-l' : 'w-0',
+          )}
+          aria-hidden={!isOrderBookOpen}
+        >
+          <PerpsOrderBook
+            symbol={decodedSymbol}
+            isOpen={isOrderBookOpen}
+            onClose={() => setIsOrderBookOpen(false)}
+          />
+        </Box>
       </Box>
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
