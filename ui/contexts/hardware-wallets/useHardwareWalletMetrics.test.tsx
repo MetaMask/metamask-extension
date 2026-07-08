@@ -1,9 +1,7 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../shared/constants/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { useHardwareWalletRecoveryLocation } from '../../hooks/useHardwareWalletRecoveryLocation';
-import { MetaMetricsContext } from '../metametrics';
 import {
   useHardwareWalletConfig,
   useHardwareWalletState,
@@ -20,13 +18,26 @@ jest.mock('./HardwareWalletContext', () => ({
   useHardwareWalletState: jest.fn(),
 }));
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
   trackHardwareWalletRecoveryConnectCtaClicked,
 );
 
 describe('useHardwareWalletMetrics', () => {
-  const mockTrackEvent = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
     (useHardwareWalletRecoveryLocation as jest.Mock).mockReturnValue(
@@ -41,20 +52,7 @@ describe('useHardwareWalletMetrics', () => {
   });
 
   it('returns a callback that forwards to trackHardwareWalletRecoveryConnectCtaClicked', () => {
-    const { result } = renderHook(() => useHardwareWalletMetrics(), {
-      wrapper: ({ children }: React.PropsWithChildren<unknown>) => (
-        <MetaMetricsContext.Provider
-          value={{
-            trackEvent: mockTrackEvent,
-            bufferedTrace: jest.fn(),
-            bufferedEndTrace: jest.fn(),
-            onboardingParentContext: { current: null },
-          }}
-        >
-          {children}
-        </MetaMetricsContext.Provider>
-      ),
-    });
+    const { result } = renderHook(() => useHardwareWalletMetrics());
 
     result.current.trackConnectCtaClicked();
 
