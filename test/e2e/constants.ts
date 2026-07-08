@@ -255,13 +255,14 @@ export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 /* Title of Portfolio page */
 export const PORTFOLIO_PAGE_TITLE = 'MetaMask Portfolio';
 
-/* Default TRON address created using test SRP */
+/* Default TRON address created using test SRP (Account 1) */
 export const DEFAULT_TRON_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 
-/* Second TRON address created using test SRP */
+/* Arbitrary Tron recipient address used in send-flow tests
+ * (signAndSendTrx, signAndSendUsdt). NOT a snap-derived HD account. */
 export const DEFAULT_TRON_ADDRESS_2 = 'TEcjynxEx7bPfDByW1uwPgsLCBhqynvpQx';
 
-/* Default TRON address created using test SRP */
+/* Default TRON address shortened display (Account 1) */
 export const DEFAULT_TRON_ADDRESS_SHORT = 'TJ3Q...vGS3';
 
 /* Account types */

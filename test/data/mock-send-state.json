@@ -14,7 +14,6 @@
     "importNftsModal": { "open": false },
     "showPermittedNetworkToastOpen": false,
     "isLoading": false,
-    "importTokensModalOpen": false,
     "modal": {
       "open": false,
       "modalState": {

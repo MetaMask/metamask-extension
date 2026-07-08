@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Трябва да изберете акаунт!"
   },
-  "addAcquiredTokens": {
-    "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
-  },
   "addAlias": {
     "message": "Добавете псевдоним"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Разширени"
-  },
-  "customToken": {
-    "message": "Персонализиран маркер"
   },
   "decimal": {
     "message": "Точност до десетични знаци"
@@ -347,9 +341,6 @@
   },
   "metamaskVersion": {
     "message": "Версия на MetaMask"
-  },
-  "mustSelectOne": {
-    "message": "Трябва да изберете поне 1 жетон."
   },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
