@@ -16,7 +16,7 @@ const MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR = new Date(
 ).getTime();
 
 // TRX balance in SUN (1 TRX = 1,000,000 SUN)
-export const TRX_BALANCE = 6072392; // ~6.07 TRX
+export const TRX_BALANCE = 106072392; // ~106.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
 
@@ -1208,6 +1208,89 @@ export async function mockBridgeGetTronQuoteEmpty(
     }));
 }
 
+export async function mockTronGetChainParameters(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl('/wallet/getchainparameters'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        chainParameter: [
+          { key: 'getMaintenanceTimeInterval', value: 21600000 },
+          { key: 'getAccountUpgradeCost', value: 9999000000 },
+          { key: 'getCreateNewAccountFeeInSystemContract', value: 1000000 },
+          { key: 'getCreateAccountFee', value: 100000 },
+          { key: 'getTransactionFee', value: 1000 },
+          { key: 'getAssetIssueFee', value: 1024000000 },
+          { key: 'getEnergyFee', value: 420 },
+          { key: 'getTotalEnergyLimit', value: 180000000000 },
+          { key: 'getAllowTvmTransferTrc10', value: 1 },
+          { key: 'getTotalEnergyCurrentLimit', value: 180000000000 },
+          { key: 'getAllowMultiSign', value: 1 },
+          { key: 'getAllowAdaptivEnergy', value: 1 },
+        ],
+      },
+    }));
+}
+
+export async function mockTronGetNextMaintenanceTime(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getnextmaintenancetime'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { num: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR },
+    }));
+}
+
+export async function mockTronTriggerConstantContract(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/triggerconstantcontract'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        result: { result: true },
+        energy_used: 1000,
+        energy_penalty: 0,
+        constant_result: [
+          '0000000000000000000000000000000000000000000000000000000000000001',
+        ],
+        transaction: {
+          ret: [{}],
+          visible: false,
+          txID: 'mock_trigger_constant_txid',
+          raw_data: {
+            contract: [],
+            ref_block_bytes: 'f733',
+            ref_block_hash: 'ff89d72ddc1ce1ea',
+            expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+            timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+          },
+          raw_data_hex: '',
+        },
+      },
+    }));
+}
+
+export async function mockTronGetContract(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getcontract'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {},
+    }));
+}
+
 /**
  * Mocks the accounts API v2 supportedNetworks (**EVM only**).
  *
@@ -1303,6 +1386,10 @@ export async function mockTronSwapApis(
     ...(await mockTronApis(mockServer, mockZeroBalance)),
     await mockBridgeGetTronTokens(mockServer),
     await mockBridgeGetTronQuote(mockServer),
+    await mockTronGetChainParameters(mockServer),
+    await mockTronGetNextMaintenanceTime(mockServer),
+    await mockTronTriggerConstantContract(mockServer),
+    await mockTronGetContract(mockServer),
   ];
 }
 
@@ -1314,5 +1401,16 @@ export async function mockTronSwapApisNoQuotes(
     ...(await mockTronApis(mockServer, mockZeroBalance)),
     await mockBridgeGetTronTokens(mockServer),
     await mockBridgeGetTronQuoteEmpty(mockServer),
+  ];
+}
+
+export async function mockTronSwapApisWithoutFeeEstimation(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint[]> {
+  return [
+    ...(await mockTronApis(mockServer, mockZeroBalance)),
+    await mockBridgeGetTronTokens(mockServer),
+    await mockBridgeGetTronQuote(mockServer),
   ];
 }
