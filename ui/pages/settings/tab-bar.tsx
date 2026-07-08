@@ -61,7 +61,7 @@ const TabBar = ({
       const handleClick = (event?: React.MouseEvent) => {
         event?.preventDefault();
 
-        if (active || onTabClick?.(key) === true) {
+        if (onTabClick?.(key) === true) {
           return;
         }
 
