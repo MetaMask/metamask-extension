@@ -15,7 +15,7 @@ class AddEditNetworkModal {
 
   private readonly addExplorerUrlTitle = {
     text: 'Add a block explorer URL',
-    tag: 'p',
+    tag: 'h4',
   };
 
   private readonly addRpcUrlButton = {
@@ -45,9 +45,19 @@ class AddEditNetworkModal {
   private readonly editModalRpcDropDownButton =
     '[data-testid="test-add-rpc-drop-down"]';
 
-  private readonly editModalSaveButton = {
-    testId: 'page-container-footer-next',
+  private readonly legacyEditModalSaveButton = {
+    text: 'Save',
+    tag: 'button',
   };
+
+  private readonly settingsV2EditModalSaveButton =
+    '[data-testid="page-container-footer-next"]';
+
+  private readonly settingsV2NetworksPageBackButton =
+    '[data-testid="settings-v2-header-back-button"]';
+
+  private readonly settingsV2NetworksPageList =
+    '[data-testid="networks-page-list"]';
 
   private readonly explorerUrlInputDropDownButton = {
     testId: 'test-explorer-drop-down',
@@ -67,7 +77,23 @@ class AddEditNetworkModal {
         this.networkNameInputField,
         this.editModalRpcDropDownButton,
       ]);
-      await this.driver.waitForSelector(this.editModalSaveButton);
+
+      await this.driver.waitUntil(async () => {
+        const legacySaveVisible =
+          await this.driver.isElementPresentAndVisible(
+            this.legacyEditModalSaveButton,
+          );
+        if (legacySaveVisible) {
+          return true;
+        }
+
+        return await this.driver.isElementPresentAndVisible(
+          this.settingsV2EditModalSaveButton,
+        );
+      }, {
+        interval: 200,
+        timeout: 10_000,
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for add/edit network dialog to be loaded',
@@ -76,6 +102,20 @@ class AddEditNetworkModal {
       throw e;
     }
     console.log('Edit network dialog is loaded');
+  }
+
+  private async getSaveButtonSelector(): Promise<
+    string | { text: string; tag: string }
+  > {
+    if (
+      await this.driver.isElementPresentAndVisible(
+        this.settingsV2EditModalSaveButton,
+      )
+    ) {
+      return this.settingsV2EditModalSaveButton;
+    }
+
+    return this.legacyEditModalSaveButton;
   }
 
   /**
@@ -145,14 +185,83 @@ class AddEditNetworkModal {
     );
   }
 
-  async saveEditedNetwork(): Promise<void> {
+  async saveEditedNetwork(networkName?: string): Promise<void> {
     console.log('Save and close edit network modal');
-    await this.driver.clickElementAndWaitToDisappear(this.editModalSaveButton);
-  }
+    const saveButtonSelector = await this.getSaveButtonSelector();
 
-  async clickBackButton(): Promise<void> {
-    console.log('Click back button in add/edit network modal');
-    await this.driver.clickElementAndWaitToDisappear(this.backButton);
+    await this.driver.waitUntil(async () => {
+      const saveButton = await this.driver.findElement(saveButtonSelector);
+      return await saveButton.isEnabled();
+    }, {
+      interval: 200,
+      timeout: 10_000,
+    });
+
+    await this.driver.clickElement(saveButtonSelector);
+    await this.driver.assertElementNotPresent(this.networkNameInputField, {
+      waitAtLeastGuard: 300,
+      timeout: 20_000,
+    });
+
+    // Wait for success message toast to appear and auto-dismiss
+    // The success message "Network XYZ was successfully edited!" blocks interaction
+    console.log('[AddEditNetworkModal] Waiting for success message to appear and dismiss...');
+    await this.driver.delay(500); // Let the toast appear
+
+    // Wait for the success message to disappear (it auto-dismisses after ~2-3 seconds)
+    const successMessageSelector = '[data-testid="toast-notification"]';
+    const maxWaitTime = 5000;
+    const startTime = Date.now();
+    while (await this.driver.isElementPresentAndVisible(successMessageSelector)) {
+      if (Date.now() - startTime > maxWaitTime) {
+        console.log('[AddEditNetworkModal] Success message did not disappear within timeout, continuing anyway');
+        break;
+      }
+      await this.driver.delay(200);
+    }
+    console.log('[AddEditNetworkModal] Success message dismissed or timeout reached');
+
+    // In Settings V2, saving can return to the networks page instead of home.
+    // Preserve legacy flow expectation by navigating back to the wallet home page.
+    if (
+      await this.driver.isElementPresentAndVisible(this.settingsV2NetworksPageList)
+    ) {
+      if (networkName) {
+        const networkNameSelector = `[data-testid="${networkName}"]`;
+        if (await this.driver.isElementPresentAndVisible(networkNameSelector)) {
+          await this.driver.clickElement(networkNameSelector);
+        }
+      }
+
+      if (
+        await this.driver.isElementPresentAndVisible(this.settingsV2NetworksPageList)
+      ) {
+        console.log('Network list is visible, navigating back to wallet home page');
+        // Try clicking the back button first
+        let navigated = false;
+        try {
+          await this.driver.findClickableElement(this.settingsV2NetworksPageBackButton, {
+            timeout: 5_000,
+          });
+          await this.driver.clickElement(this.settingsV2NetworksPageBackButton);
+          navigated = true;
+          console.log('Navigated back via back button');
+        } catch (e) {
+          console.warn('[AddEditNetworkModal] Back button click failed, using navigation script');
+          // Fallback: use script-based navigation if button not found
+          await this.driver.executeScript(
+            `window.location.hash = ${JSON.stringify('/')}`,
+          );
+          navigated = true;
+        }
+        console.log('Navigated back to wallet home page');
+      }
+
+      await this.driver.assertElementNotPresent(this.settingsV2NetworksPageList, {
+        waitAtLeastGuard: 300,
+        timeout: 20_000,
+      });
+    }
   }
 
   /**
@@ -248,7 +357,9 @@ class AddEditNetworkModal {
   async checkSaveButtonIsEnabled(): Promise<boolean> {
     console.log('Check if save button is enabled on add/edit network modal');
     try {
-      await this.driver.findClickableElement(this.editModalSaveButton);
+      await this.driver.findClickableElement(this.editModalSaveButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Save button not enabled', e);
       return false;

@@ -1,0 +1,774 @@
+/**
+ * Network configuration data for production token import tests
+ *
+ * To add a new network:
+ * 1. Add a new entry to the NETWORK_CONFIGS array
+ * 2. The test will automatically run for that network
+ *
+ * No code changes needed - just update this data file!
+ */
+
+import * as path from 'path';
+
+export type NetworkConfig = {
+  /**
+   * Unique identifier for the network (used in test names and reports)
+   */
+  networkId: string;
+
+  /**
+   * Display name of the network
+   */
+  networkName: string;
+
+  /**
+   * Chain ID (decimal number)
+   */
+  chainId: number;
+
+  /**
+   * Chain ID (decimal number)
+   */
+  chainIdHex: string;
+  /**
+   * Native currency symbol (e.g., 'ETH', 'XTZ')
+   */
+  symbol: string;
+
+  /**
+   * RPC endpoint URL
+   */
+  rpcUrl: string;
+
+  /**
+   * RPC name (displayed in MetaMask)
+   */
+  rpcName: string;
+
+  /**
+   * URL to the tokenlist JSON file
+   */
+  tokenlistUrl: string;
+
+  /**
+   * Optional: Manually specified tokens to import instead of fetching tokenlistUrl
+   */
+  manualTokens?: {
+    symbol: string;
+    address: string;
+    name?: string;
+    decimals?: number;
+    logoURI?: string;
+  }[];
+
+  /**
+   * Optional: Block explorer URL
+   */
+  blockExplorerUrl?: string;
+};
+
+/**
+ * Token object from a tokenlist JSON file
+ */
+export type TokenListToken = {
+  chainId: number | string;
+  address: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  [key: string]: any;
+};
+
+/**
+ * Complete tokenlist structure
+ */
+export type TokenList = {
+  name?: string;
+  logoURI?: string;
+  tokens: TokenListToken[];
+  [key: string]: any;
+};
+
+/**
+ * Normalise a chainId to a decimal number.
+ * Handles: number (1), decimal string ('1'), hex string ('0x1')
+ *
+ * @param value - The chainId value
+ * @returns The chainId as a decimal number
+ */
+export function normalizeChainId(value: number | string): number {
+  if (typeof value === 'number') {
+    return value;
+  }
+
+  if (typeof value === 'string' && value.startsWith('0x')) {
+    return parseInt(value, 16);
+  }
+
+  return parseInt(value, 10);
+}
+
+/**
+ * Filter a tokenlist to only include tokens matching a specific chainId.
+ *
+ * Does not mutate the original tokenlist. Returns a new object with filtered tokens.
+ *
+ * @param tokenList - The complete tokenlist to filter
+ * @param chainId - The target chain ID
+ * @returns A new tokenlist containing only tokens for the target chainId
+ * @example
+ * ```typescript
+ * const filtered = filterTokenListByChainId(tokenList, 4326);
+ * // filtered.tokens now contains only tokens with chainId: 4326
+ * ```
+ */
+export function filterTokenListByChainId(
+  tokenList: TokenList,
+  chainId: number,
+): TokenList {
+  return {
+    ...tokenList,
+    tokens: tokenList.tokens.filter(
+      (token) => normalizeChainId(token.chainId) === chainId,
+    ),
+  };
+}
+
+/**
+ * Fetch tokenlist JSON and filter tokens to only those matching the network's chainId.
+ *
+ * Many tokenlists include tokens for multiple chains (e.g., megaeth list has both
+ * chainId 1 and 4326 tokens). This function fetches the list and filters to only
+ * the tokens that belong to the specified network.
+ *
+ * @param network - Network config containing tokenlistUrl and chainId
+ * @returns Promise resolving to the filtered tokenlist
+ * @throws Error if fetch fails
+ * @example
+ * ```typescript
+ * const megaethConfig = getNetworkConfig('megaeth');
+ * const tokenList = await fetchAndFilterTokenList(megaethConfig);
+ * // tokenList.tokens now contains ONLY tokens with chainId: 4326
+ * ```
+ */
+export async function fetchAndFilterTokenList(
+  network: NetworkConfig,
+): Promise<TokenList> {
+  const response = await fetch(network.tokenlistUrl);
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch tokenlist for ${network.networkId}: ${response.status}`,
+    );
+  }
+
+  const tokenList: TokenList = await response.json();
+  return filterTokenListByChainId(tokenList, network.chainId);
+}
+
+/**
+ * Fetch tokenlist and extract token addresses for a specific network.
+ *
+ * Returns only the token addresses (not the full token objects).
+ *
+ * @param network - Network config containing tokenlistUrl and chainId
+ * @returns Promise resolving to array of token addresses
+ * @throws Error if fetch fails
+ * @example
+ * ```typescript
+ * const megaethConfig = getNetworkConfig('megaeth');
+ * const addresses = await getTokenAddressesForNetwork(megaethConfig);
+ * // Returns: ['0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072', ...]
+ * // Only addresses for chainId 4326
+ * ```
+ */
+export async function getTokenAddressesForNetwork(
+  network: NetworkConfig,
+): Promise<string[]> {
+  const tokenList = await fetchAndFilterTokenList(network);
+  return tokenList.tokens.map((token) => token.address);
+}
+
+/**
+ * Fetch tokenlist and get complete token objects for a specific network.
+ *
+ * Returns the full token objects with all metadata (name, symbol, decimals, etc.).
+ *
+ * @param network - Network config containing tokenlistUrl and chainId
+ * @returns Promise resolving to array of token objects
+ * @throws Error if fetch fails
+ * @example
+ * ```typescript
+ * const megaethConfig = getNetworkConfig('megaeth');
+ * const tokens = await getTokensForNetwork(megaethConfig);
+ * // Returns: [
+ * //   {
+ * //     chainId: 4326,
+ * //     address: '0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072',
+ * //     name: 'Bitcoin',
+ * //     symbol: 'BTC.b',
+ * //     decimals: 8,
+ * //     ...
+ * //   },
+ * //   ...
+ * // ]
+ * // Only tokens with chainId 4326
+ * ```
+ */
+export async function getTokensForNetwork(
+  network: NetworkConfig,
+): Promise<TokenListToken[]> {
+  const tokenList = await fetchAndFilterTokenList(network);
+  return tokenList.tokens;
+}
+
+/**
+ * Network configuration for popular networks (already built-in to MetaMask)
+ * These networks do NOT require custom RPC setup
+ */
+export type NetworkConfigPopular = {
+  /**
+   * Unique identifier for the network (used in test names and reports)
+   */
+  networkId: string;
+
+  /**
+   * Display name of the network
+   */
+  networkName: string;
+
+  /**
+   * Chain ID (decimal number)
+   */
+  chainId: number;
+
+  /**
+   * URL to the tokenlist JSON file
+   */
+  tokenlistUrl: string;
+
+  /**
+   * Optional: Block explorer URL
+   */
+  blockExplorerUrl?: string;
+};
+
+/**
+ * Network configuration for additional networks (already built-in to MetaMask)
+ * These networks do NOT require custom RPC setup
+ */
+export type NetworkConfigAdditional = {
+  /**
+   * Unique identifier for the network (used in test names and reports)
+   */
+  networkId: string;
+
+  /**
+   * Display name of the network
+   */
+  networkName: string;
+
+  /**
+   * Chain ID (decimal number)
+   */
+  chainId: number;
+
+  chainIdHex: string;
+  /**
+   * URL to the tokenlist JSON file
+   */
+  tokenlistUrl: string;
+
+  /**
+   * Optional: Manually specified tokens to import instead of fetching tokenlistUrl
+   */
+  manualTokens?: {
+    symbol: string;
+    address: string;
+    name?: string;
+    decimals?: number;
+    logoURI?: string;
+  }[];
+
+  /**
+   * Optional: Fixture setup method name (from FixtureBuilder)
+   * Example: 'withNetworkControllerOnHyperEVM'
+   */
+  fixtureSetupMethod?: string;
+
+  /**
+   * Optional: Block explorer URL
+   */
+  blockExplorerUrl?: string;
+};
+
+/**
+ * Network configurations for production token import tests
+ *
+ * Add new networks here to automatically include them in tests
+ */
+export const NETWORK_CONFIGS: NetworkConfig[] = [
+  {
+    networkId: 'bob',
+    networkName: 'BOB',
+    chainId: 60808,
+    chainIdHex: '0xed88',
+    symbol: 'ETH',
+    rpcUrl: 'https://rpc.gobob.xyz',
+    rpcName: 'BOB RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/bob-collective/tokenlist/refs/heads/main/tokenlist-bob.json',
+    blockExplorerUrl: 'https://explorer.gobob.xyz',
+  },
+  {
+     networkId: 'etherlink',
+     networkName: 'Etherlink Mainnet',
+     chainId: 42793,
+     chainIdHex: '0xa7f1',
+     symbol: 'XTZ',
+     rpcUrl: 'https://node.mainnet.etherlink.com',
+     rpcName: 'Etherlink RPC',
+     tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
+     blockExplorerUrl: 'https://explorer.etherlink.com',
+  },
+  {
+    networkId: 'Injective',
+    networkName: 'Injective',
+    chainId: 1776,
+    chainIdHex: '0x6f0',
+    symbol: 'INJ',
+    rpcUrl: 'https://sentry.evm-rpc.injective.network',
+    rpcName: 'Injective RPC',
+    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+    blockExplorerUrl: 'https://blockscout.injective.network',
+  },
+  {
+    networkId: 'Rootstock',
+    networkName: 'Rootstock Mainnet',
+    chainId: 30,
+    chainIdHex: '0x1e',
+    symbol: 'RBTC',
+    rpcUrl: 'https://public-node.rsk.co',
+    rpcName: 'Rootstock RPC',
+    tokenlistUrl: 'https://tokens.rootstock.io/tokenlist.json',
+    blockExplorerUrl: 'https://explorer.rsk.co',
+  },
+  // {
+  //   networkId: 'Genesys',
+  //   networkName: 'Genesys Mainnet',
+  //   chainId: 16507,
+  //   chainIdHex: '0x4073',
+  //   symbol: 'GSYS',
+  //   rpcUrl: 'https://rpc.genesys.network',
+  //   rpcName: 'Genesys RPC',
+  //   tokenlistUrl: 'https://raw.githubusercontent.com/Gchainvalidators/dex-assets/main/tokenlist.json',
+  //   blockExplorerUrl: 'https://gchainexplorer.genesys.network',
+  // },
+  {
+    networkId: 'Matchain',
+    networkName: 'Matchain',
+    chainId: 698,
+    chainIdHex: '0x2ba',
+    symbol: 'BNB',
+    rpcUrl: 'https://rpc.matchain.io',
+    rpcName: 'Matchain RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/matchainjis/tokenlist/main/tokenlist.json',
+    blockExplorerUrl: 'https://matchscan.io',
+  },
+  {
+    networkId: 'EDUchain',
+    networkName: 'EDU Chain',
+    chainId: 41923,
+    chainIdHex: '0xa3d3',
+    symbol: 'EDU',
+    rpcUrl: 'https://rpc.edu-chain.raas.gelato.cloud',
+    rpcName: 'EDU Chain RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/greenbookwebb/metamask-educhain/main/tokens.json',
+    blockExplorerUrl: 'https://educhain.blockscout.com',
+  },
+  {
+    networkId: 'ApeChain',
+    networkName: 'ApeChain',
+    chainId: 33139, // 0x8173 in hex
+    chainIdHex: '0x8173',
+    symbol: 'APE',
+    rpcUrl: 'https://apechain.drpc.org',
+    rpcName: 'ApeChain RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/CamelotLabs/default-token-list/main/src/tokens/apechain.json',
+    blockExplorerUrl: 'https://apescan.io',
+  },
+  {
+    networkId: 'Berachain',
+    networkName: 'Berachain',
+    chainId: 80094,
+    chainIdHex: '0x13836',
+    symbol: 'BERA',
+    rpcUrl: 'https://rpc.berachain.com',
+    rpcName: 'Berachain RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/berachain/metadata/main/src/tokens/mainnet.json', // Using main branch
+    blockExplorerUrl: 'https://beratrail.io',
+  },
+  {
+    networkId: 'XRPLEVM',
+    networkName: 'XRPL EVM',
+    chainId: 1440000,
+    chainIdHex: '0x160000',
+    symbol: 'XRP',
+    rpcUrl: 'https://rpc.xrplevm.org',
+    rpcName: 'XRPL EVM RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/vriveraPeersyst/xrplevm-tokenlist/main/tokenlist.json',
+    blockExplorerUrl: 'https://explorer.xrplevm.org',
+  },
+  {
+    networkId: 'OmniaChain',
+    networkName: 'Omnia Chain',
+    chainId: 2342,
+    chainIdHex: '0x926',
+    symbol: 'OMNIA',
+    rpcUrl: 'https://rpc.omniaverse.io',
+    rpcName: 'Omnia Chain RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/omni-network/omni/refs/heads/main/docs/docs/public/nom/tokenlist.json',
+    blockExplorerUrl: 'https://scan.omniaverse.io',
+  },
+  {
+    networkId: 'Fraxtal',
+    networkName: 'Fraxtal',
+    chainId: 252,
+    chainIdHex: '0xfc',
+    symbol: 'FRAX',
+    rpcUrl: 'https://rpc.frax.com',
+    rpcName: 'Fraxtal RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/FraxFinance/docs/master/public/tokenlist.json',
+    blockExplorerUrl: 'https://fraxscan.com',
+  },
+  {
+    networkId: 'XDC',
+    networkName: 'XDC Network',
+    chainId: 50,
+    chainIdHex: '0x32',
+    symbol: 'XDC',
+    rpcUrl: 'https://rpc.xdcrpc.com',
+    rpcName: 'XDC Network RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/lifinance/customized-token-list/main/tokens/XDC.json',
+    blockExplorerUrl: 'https://xdcscan.io',
+  },
+  {
+    networkId: 'Plasma',
+    networkName: 'Plasma Network',
+    chainId: 9745,
+    chainIdHex: '0x2601',
+    symbol: 'XPL',
+    rpcUrl: 'https://plasma.drpc.org',
+    rpcName: 'Plasma Network RPC',
+    tokenlistUrl:
+      'https://raw.githubusercontent.com/PlasmaLaboratories/plasma-tokenlist/main/plasma.tokenlist.json',
+    blockExplorerUrl: 'https://plasmascan.to',
+  },
+  {
+    networkId: 'Hemi',
+    networkName: 'Hemi Network',
+    chainId: 43111,
+    chainIdHex: '0xa8c7',
+    symbol: 'ETH',
+    rpcUrl: 'https://rpc.hemi.network/rpc',
+    rpcName: 'Hemi Network RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/hemilabs/token-list/master/src/hemi.tokenlist.json',
+    blockExplorerUrl: 'https://explorer.hemi.xyz',
+  },
+  {
+    networkId: 'Cronos',
+    networkName: 'Cronos Mainnet',
+    chainId: 25,
+    chainIdHex: '0x19',
+    symbol: 'CRO',
+    rpcUrl: 'https://cronos.drpc.org',
+    rpcName: 'Cronos Mainnet RPC',
+    tokenlistUrl: 'https://gist.githubusercontent.com/sugh01/220d1f9d23d99686c51e5e5850ebd87e/raw/d92e6d2290e02368c40be2ffd0c77e519db626ec/omni.json',
+    blockExplorerUrl: 'https://explorer.cronos.org',
+  },
+  {
+    networkId: 'XLayer',
+    networkName: 'X Layer Mainnet',
+    chainId: 196,
+    chainIdHex: '0xc4',
+    symbol: 'OKB',
+    rpcUrl: 'https://xlayer.drpc.org',
+    rpcName: 'X Layer Mainnet',
+    tokenlistUrl: 'https://raw.githubusercontent.com/okx/xlayer-tokenlist/main/xlayer.tokenlist.json',
+    blockExplorerUrl: 'https://www.oklink.com/xlayer',
+  },
+  {
+    networkId: 'Chiliz',
+    networkName: 'Chiliz Chain',
+    chainId: 88888,
+    chainIdHex: '0x15f90',
+    symbol: 'CHZ',
+    rpcUrl: 'https://chiliz.publicnode.com',
+    rpcName: 'Chiliz RPC',
+    tokenlistUrl:
+      'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
+    blockExplorerUrl: 'https://scan.chiliz.com',
+  },
+  {
+    networkId: 'Tempo',
+    networkName: 'Tempo Mainnet',
+    chainId: 4217,
+    chainIdHex: '0x1079',
+    symbol: 'USD',
+    rpcUrl: 'https://tempo-mainnet.drpc.org',
+    rpcName: 'Tempo Mainnet RPC',
+    tokenlistUrl:
+      'https://raw.githubusercontent.com/tempoxyz/tempo-apps/refs/heads/main/apps/tokenlist/data/4217/tokenlist.json',
+    blockExplorerUrl: 'https://explore.mainnet.tempo.xyz',
+  },
+  {
+    networkId: 'Tempo Testnet',
+    networkName: 'Tempo Testnet Moderato',
+    chainId: 42429,
+    chainIdHex: '0xa5f5',
+    symbol: 'USD',
+    rpcUrl: 'https://rpc.testnet.tempo.xyz',
+    rpcName: 'Tempo Testnet RPC',
+    tokenlistUrl:
+      'https://raw.githubusercontent.com/tempoxyz/tempo-apps/main/apps/tokenlist/data/42429/tokenlist.json',
+    blockExplorerUrl: 'https://explorer.tempo.xyz',
+  },
+  {
+    networkId: 'Stable',
+    networkName: 'Stable',
+    chainId: 988,
+    chainIdHex: '0x3dc',
+    symbol: 'USDT0', // adjust if the native symbol differs
+    rpcUrl: 'https://rpc.stable.xyz', // placeholder, replace with real RPC
+    rpcName: 'Stable RPC',
+    tokenlistUrl: 'https://raw.githubusercontent.com/stablelabs/stable-tokenlist/refs/heads/main/tokenlist.json',
+    blockExplorerUrl: 'https://stablescan.xyz', // optional
+  },
+  {
+    networkId: 'Ink',
+    networkName: 'Ink',
+    chainId: 57073,
+    chainIdHex: '0xdef1',
+    symbol: 'ETH', // adjust if the native symbol differs
+    rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
+    rpcName: 'Ink RPC',
+    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+    blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
+  },
+  {
+    networkId: 'Mantle',
+    networkName: 'Mantle',
+    chainId: 5000,
+    chainIdHex: '0x1388',
+    symbol: 'MNT',
+    rpcUrl: 'https://rpc.mantle.xyz',
+    rpcName: 'Mantle RPC',
+    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+    blockExplorerUrl: 'https://mantlescan.xyz',
+  },
+];
+
+/**
+ * Popular and Additional network configurations (pre-built networks in MetaMask)
+ * These networks don't require custom RPC setup - they're already configured in MetaMask
+ */
+export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
+  {
+    networkId: 'Mon',
+    networkName: 'Monad',
+    chainId: 143,
+    chainIdHex: '0x8f',
+    manualTokens: [
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        address: '0x754704Bc059F8C67012fEd69BC8A327a5aafb603',
+        decimals: 6,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0xee8c0e9f1bffb4eb878d8f15f368a02a35481242',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+    fixtureSetupMethod: 'withNetworkControllerOnMonad',
+  },
+  {
+    networkId: 'Base',
+    networkName: 'Base',
+    chainId: 8453,
+    chainIdHex: '0x2105',
+    manualTokens: [
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        decimals: 6,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x4200000000000000000000000000000000000006',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
+    fixtureSetupMethod: 'withNetworkControllerOnBase',
+  },
+  {
+    networkId: 'Ethereum',
+    networkName: 'Ethereum',
+    chainId: 1,
+    chainIdHex: '0x1',
+    manualTokens: [
+      {
+        symbol: 'USDT',
+        name: 'Tether USD',
+        address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        decimals: 6,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
+      },
+      {
+        symbol: 'WBTC',
+        name: 'Wrapped Bitcoin',
+        address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599/logo.png',
+      },
+      {
+        symbol: 'CRVUSD',
+        name: 'Curve.Fi USD Stablecoin',
+        address: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xf939e0a03fb07f59a73314e73794be0e57ac1b4e/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+    fixtureSetupMethod: 'withNetworkControllerOnEthereum',
+  },
+  {
+    networkId: 'Arbitrum',
+    networkName: 'Arbitrum',
+    chainId: 42161,
+    chainIdHex: '0xa4b1',
+    manualTokens: [
+      {
+        symbol: 'WBTC',
+        name: 'Wrapped BTC',
+        address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x82af49447d8a07e3bd95bd0d56f35241523fbab1/logo.png',
+      },
+      {
+        symbol: 'CBBTC',
+        name: 'Coinbase Wrapped BTC',
+        address: '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+    fixtureSetupMethod: 'withNetworkControllerOnArbitrum',
+  },
+  // {
+  //   networkId: 'HYPE',
+  //   networkName: 'HyperEVM',
+  //   chainId: 999,
+  //   tokenlistUrl: `file://${__dirname}/tokenlist.json`,
+  //   fixtureSetupMethod: 'withNetworkControllerOnHyperEVM',
+  // },
+  // {
+  //   networkId: 'megaeth',
+  //   networkName: 'MegaETH',
+  //   chainId: 4326,
+  //   symbol: 'MEGA', // adjust if the native symbol differs
+  //   rpcUrl: 'https://rpc.megaeth.io', // placeholder, replace with real RPC
+  //   rpcName: 'MegaETH RPC',
+  //   tokenlistUrl:
+  //     'https://raw.githubusercontent.com/megaeth-labs/mega-tokenlist/main/megaeth.tokenlist.json',
+  //   blockExplorerUrl: 'https://explorer.megaeth.io', // optional
+  // },
+  // {
+  //   networkId: 'Base',
+  //   networkName: 'Base',
+  //   chainId: 4326,
+  //   symbol: 'ETH', // adjust if the native symbol differs
+  //   rpcUrl: 'https://rpc.megaeth.io', // placeholder, replace with real RPC
+  //   rpcName: 'MegaETH RPC',
+  //   tokenlistUrl:
+  //     'https://raw.githubusercontent.com/megaeth-labs/mega-tokenlist/main/megaeth.tokenlist.json',
+  //   blockExplorerUrl: 'https://explorer.megaeth.io', // optional
+  // },
+];
+
+/**
+ * Get network config by network ID (for custom networks)
+ *
+ * @param networkId - The unique identifier for the network
+ * @returns The network configuration or undefined if not found
+ */
+export function getNetworkConfig(networkId: string): NetworkConfig | undefined {
+  return NETWORK_CONFIGS.find((config) => config.networkId === networkId);
+}
+
+/**
+ * Get popular network config by network ID
+ *
+ * @param networkId - The unique identifier for the network
+ * @returns The network configuration or undefined if not found
+ */
+export function getPopularNetworkConfig(
+  networkId: string,
+): NetworkConfigPopular | undefined {
+  return NETWORK_CONFIGS_POPULAR.find((config) => config.networkId === networkId);
+}
+
+/**
+ * Get additional network config by network ID
+ *
+ * @param networkId - The unique identifier for the network
+ * @returns The network configuration or undefined if not found
+ */
+export function getAdditionalNetworkConfig(
+  networkId: string,
+): NetworkConfigAdditional | undefined {
+  return NETWORK_CONFIGS_ADDITIONAL.find((config) => config.networkId === networkId);
+}
+
+/**
+ * Get all network IDs (for custom networks)
+ *
+ * @returns Array of all network IDs
+ */
+export function getAllNetworkIds(): string[] {
+  return NETWORK_CONFIGS.map((config) => config.networkId);
+}
+
+/**
+ * Get all popular network IDs
+ *
+ * @returns Array of all popular network IDs
+ */
+export function getAllPopularNetworkIds(): string[] {
+  return NETWORK_CONFIGS_POPULAR.map((config) => config.networkId);
+}
+
+/**
+ * Get all additional network IDs
+ *
+ * @returns Array of all additional network IDs
+ */
+export function getAllAdditionalNetworkIds(): string[] {
+  return NETWORK_CONFIGS_ADDITIONAL.map((config) => config.networkId);
+}

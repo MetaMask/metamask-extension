@@ -1,0 +1,600 @@
+/**
+ * Production E2E Test: Monad Network Swap Execution
+ *
+ * Submits live swap transactions across a predefined sequence of routes,
+ * verifies each route results in a confirmed activity entry, asserts the
+ * detail-page values, and generates a simple markdown execution report.
+ *
+ * Routes tested (Monad):  MON → AUSD → AZND → BTC.b → MON
+ *
+ * Prerequisites:
+ * - PRIVATE_KEY_TO in .env.e2e (funded account with Monad-native MON)
+ * - Real network connectivity to Monad RPC
+ */
+
+import { Suite } from 'mocha';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { withProductionFixtures } from '../../helpers/prod-with-fixtures';
+import { PROD_DELAYS } from '../../helpers/prod-test-helpers';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import NetworkManager from '../../../page-objects/pages/network-manager';
+import { Driver } from '../../../webdriver/driver';
+import { getRequiredE2EEnv } from '../../../helpers/e2e-env';
+import {
+  SWAP_TEST_NETWORKS,
+  DEFAULT_SWAP_AMOUNT,
+  Token,
+  SwapRouteResult,
+  SwapValidationResult,
+} from './network-swap-config';
+import {
+  importTokensFromTokenlist,
+  importTokensIntoWallet,
+  performSwapFlow,
+} from './swap-quotation-helpers';
+import {
+  resolveTokensBySymbols,
+  importSingleFundedAccount,
+  waitForSwapQuoteReady,
+  assertCtaFeeText,
+  captureSwapAmounts,
+  submitSwapAndWaitForConfirmed,
+  assertActivityPrimaryCurrency,
+  assertActivitySecondaryCurrency,
+  openLatestSwapActivityRecord,
+  assertSwapDetailConfirmed,
+  assertDetailRow,
+  validateDetailRowAmountAtPrecision,
+  assertSwappedTokenPair,
+  assertTransactionTimestamp,
+  assertTotalGasFeeRow,
+  handleInsufficientFundsIfPresent,
+  navigateBackToHome,
+  recoverToHome,
+  generateSwapExecutionReport,
+  logSwapDetailPageContent,
+} from './swap-execution-helpers';
+
+function getCliOptionValue(optionName: string): string | undefined {
+  const prefixedOption = `--${optionName}`;
+  const exactIndex = process.argv.findIndex((arg) => arg === prefixedOption);
+  if (exactIndex !== -1) {
+    const nextArg = process.argv[exactIndex + 1];
+    return nextArg && !nextArg.startsWith('--') ? nextArg : undefined;
+  }
+
+  const inlineOption = process.argv.find((arg) =>
+    arg.startsWith(`${prefixedOption}=`),
+  );
+  return inlineOption ? inlineOption.slice(prefixedOption.length + 1) : undefined;
+}
+
+function parseNetworkNames(value?: string): string[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(',')
+    .map((name) => name.trim())
+    .filter(Boolean);
+}
+
+async function selectNetworkViaHomeSelector(
+  driver: Driver,
+  chainHexId: string,
+): Promise<void> {
+  const networksListButton = '[data-testid="sort-by-networks"]';
+  const networkListItemSelector = `[data-testid="network-list-item-${chainHexId}"]`;
+
+  const maxAttempts = 3;
+  let lastError: unknown;
+
+  // Start with a best-effort cleanup in case onboarding/help modals are open.
+  await dismissBlockingOverlays(driver);
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await driver.clickElement(networksListButton);
+      await driver.waitForSelector('[role="dialog"]');
+      await driver.clickElement(networkListItemSelector);
+      await driver.delay(PROD_DELAYS.API_RESPONSE);
+      return;
+    } catch (error) {
+      lastError = error;
+      const errorMessage = String(error);
+      const isInterceptionError =
+        errorMessage.includes('ElementClickInterceptedError') ||
+        errorMessage.includes('element click intercepted') ||
+        errorMessage.includes('Other element would receive the click');
+
+      if (!isInterceptionError || attempt === maxAttempts) {
+        throw error;
+      }
+
+      console.log(
+        `[TEST] Network selector click intercepted (attempt ${attempt}/${maxAttempts}). Closing overlay and retrying...`,
+      );
+      await dismissBlockingOverlays(driver);
+      await driver.delay(1000);
+    }
+  }
+
+  throw lastError;
+}
+
+async function dismissBlockingOverlays(driver: Driver): Promise<void> {
+  const closeButtonSelectors = [
+    '[data-testid="import-tokens-modal-close-button"]',
+    '.mm-modal-content__header-close-button',
+    'button[aria-label="Close"]',
+    '[data-testid="popover-close"]',
+  ];
+
+  for (const selector of closeButtonSelectors) {
+    try {
+      const isVisible = await driver.isElementPresentAndVisible(selector, 500);
+      if (isVisible) {
+        await driver.clickElement(selector);
+        await driver.delay(500);
+      }
+    } catch (_error) {
+      // Best-effort cleanup only.
+    }
+  }
+
+  // Ensure we are back on a stable, clickable home context.
+  try {
+    await driver.clickElement('[data-testid="account-overview__asset-tab"]');
+    await driver.delay(500);
+  } catch (_error) {
+    // If tab is already active or not clickable yet, proceed to retry.
+  }
+}
+
+/**
+ * Production E2E Test: Monad Swap Execution
+ *
+ * Configuration is driven by SWAP_TEST_NETWORKS — only networks with
+ * `swapExecutionRoutes` defined will run. Currently: Monad only.
+ */
+describe('Production E2E: Network Swap Execution', function (this: Suite) {
+  this.timeout(900000); // 15 minutes total for all routes
+
+  // Accept networks from CLI (`--network Base`, `--networks Base,Monad`) or
+  // env vars (`NETWORK`, `NETWORKS`). If not provided, run all networks.
+  const networksFromCli =
+    getCliOptionValue('network') ??
+    getCliOptionValue('networks') ??
+    getCliOptionValue('networkNames');
+  const selectedNetworkNames = parseNetworkNames(
+    networksFromCli ?? process.env.NETWORK ?? process.env.NETWORKS,
+  );
+  const selectedNetworks = selectedNetworkNames.length
+    ? SWAP_TEST_NETWORKS.filter((config) =>
+        selectedNetworkNames.some(
+          (name) =>
+            config.networkName.toLowerCase() === name.toLowerCase() ||
+            config.networkId.toLowerCase() === name.toLowerCase(),
+        ),
+      )
+    : SWAP_TEST_NETWORKS;
+
+  if (selectedNetworkNames.length > 0 && selectedNetworks.length === 0) {
+    throw new Error(
+      `No matching swap network configurations found for: ${selectedNetworkNames.join(', ')}`,
+    );
+  }
+
+  selectedNetworks.forEach((networkConfig) => {
+    if (!networkConfig.swapExecutionRoutes?.length) {
+      return; // skip networks not yet configured for execution tests
+    }
+
+    describe(`Network: ${networkConfig.networkName}`, function (this: Suite) {
+      it(`should execute swap routes for ${networkConfig.nativeTokenSymbol}`, async function () {
+        // Collect per-route results for the final markdown report
+        const routeResults: SwapRouteResult[] = [];
+        const fixtureBuilder = new FixtureBuilder();
+        const setupMethod =
+          fixtureBuilder[
+            networkConfig.fixtureSetupMethod as keyof typeof fixtureBuilder
+          ];
+
+        if (typeof setupMethod !== 'function') {
+          throw new Error(
+            `Invalid fixture setup method: ${networkConfig.fixtureSetupMethod}`,
+          );
+        }
+
+        await withProductionFixtures(
+          {
+            fixtures: (setupMethod as () => FixtureBuilder)
+              .call(fixtureBuilder)
+              .build(),
+            title:
+              this.test?.fullTitle() ||
+              `Swap execution test for ${networkConfig.networkName}`,
+            extendedTimeoutMultiplier: 2,
+          },
+          async ({ driver }: { driver: Driver }) => {
+            console.log(`\n${'='.repeat(80)}`);
+            console.log(
+              `[TEST] Starting swap execution test for ${networkConfig.networkName}`,
+            );
+            console.log(`${'='.repeat(80)}\n`);
+
+            // ----------------------------------------------------------------
+            // Step 1: Login
+            // ----------------------------------------------------------------
+            console.log(`[TEST] Logging in to wallet...`);
+            await loginWithoutBalanceValidation(driver);
+            const homePage = new HomePage(driver);
+            await homePage.checkPageIsLoaded();
+            await driver.delay(PROD_DELAYS.API_RESPONSE);
+            console.log(`[TEST] ✅ Logged in`);
+
+            // ----------------------------------------------------------------
+            // Step 2: Select network
+            // ----------------------------------------------------------------
+            console.log(
+              `[TEST] Selecting ${networkConfig.networkName} network...`,
+            );
+
+            // Prefer the home network selector (same pattern as send custom
+            // parameterized tests), and fall back to NetworkManager for
+            // backwards compatibility when the selector entry is not present.
+            try {
+              await selectNetworkViaHomeSelector(driver, networkConfig.chainId);
+            } catch (homeSelectorError) {
+              console.log(
+                `[TEST] Home selector network switch failed, falling back to NetworkManager: ${String(homeSelectorError)}`,
+              );
+
+              await dismissBlockingOverlays(driver);
+              const networkManager = new NetworkManager(driver);
+              await networkManager.openNetworkManager();
+              await networkManager.selectNetworkByNameWithWait(
+                networkConfig.networkName,
+              );
+            }
+
+            await homePage.checkPageIsLoaded();
+            await driver.delay(PROD_DELAYS.API_RESPONSE);
+            console.log(
+              `[TEST] ✅ Network selected: ${networkConfig.networkName}`,
+            );
+
+            // ----------------------------------------------------------------
+            // Step 3: Import funded account
+            // PRIVATE_KEY_FROM holds the account that has balance for swaps.
+            // This does NOT import the entire wallet — it adds one funded
+            // account to the existing MetaMask instance.
+            // ----------------------------------------------------------------
+            console.log(`[TEST] Importing funded account (PRIVATE_KEY_FROM)...`);
+            const privateKeyFrom = getRequiredE2EEnv('PRIVATE_KEY_FROM');
+            await importSingleFundedAccount(driver, privateKeyFrom);
+            console.log(`[TEST] ✅ Funded account imported and active`);
+
+            // ----------------------------------------------------------------
+            // Step 4: Resolve ERC-20 tokens to import.
+            // When manualTokens is provided the config supplies exact contract
+            // addresses — no tokenlist fetch is needed.  Otherwise tokens are
+            // fetched from tokenlistUrl and resolved by symbol.
+            // ----------------------------------------------------------------
+            let resolvedTokens: Token[];
+
+            if (networkConfig.manualTokens?.length) {
+              console.log(
+                `[TEST] Using manual token list for ${networkConfig.networkName}...`,
+              );
+              resolvedTokens = networkConfig.manualTokens.map((mt) => ({
+                chainId: networkConfig.chainId,
+                address: mt.address,
+                name: mt.name ?? mt.symbol,
+                symbol: mt.symbol,
+                decimals: mt.decimals ?? 18,
+              }));
+            } else {
+              console.log(
+                `[TEST] Fetching tokenlist for ${networkConfig.networkName}...`,
+              );
+              const tokenlistTokens = await importTokensFromTokenlist(
+                networkConfig.tokenlistUrl as string,
+                networkConfig.chainId,
+                50, // fetch up to 50 tokens so we can find symbols by name
+              );
+              const executionSymbols =
+                networkConfig.swapExecutionTokenSymbols ?? [];
+              resolvedTokens = resolveTokensBySymbols(
+                tokenlistTokens,
+                executionSymbols,
+              );
+            }
+
+            console.log(
+              `[TEST] Resolved ${resolvedTokens.length} execution tokens: ${resolvedTokens.map((t) => t.symbol).join(', ')}`,
+            );
+
+            await importTokensIntoWallet(
+              driver,
+              networkConfig.chainId,
+              resolvedTokens,
+            );
+            console.log(`[TEST] ✅ ERC-20 tokens imported into wallet`);
+
+            // Build symbol → token lookup for address resolution
+            const tokenBySymbol = new Map<string, Token>(
+              resolvedTokens.map((t) => [t.symbol, t]),
+            );
+
+            // ----------------------------------------------------------------
+            // Step 5: Execute each route sequentially.
+            // Amounts are route-configured (`route.amount`) unless `useMax`
+            // is enabled for that route.
+            // ----------------------------------------------------------------
+            // swapExecutionRoutes is guaranteed non-empty (checked by the
+            // outer guard: `if (!networkConfig.swapExecutionRoutes?.length)`)
+            const executionRoutes = networkConfig.swapExecutionRoutes ?? [];
+
+            for (const route of executionRoutes) {
+              const { from: fromSymbol, to: toSymbol, amount, useMax } = route;
+              const routeLabel = `${fromSymbol} → ${toSymbol}`;
+              const plannedFromAmount = String(
+                amount ??
+                  networkConfig.defaultSwapAmount ??
+                  DEFAULT_SWAP_AMOUNT,
+              );
+              const useMaxForRoute = Boolean(useMax);
+
+              const routeResult: SwapRouteResult = {
+                route: routeLabel,
+                fromSymbol,
+                toSymbol,
+                fromAmount: '',
+                toAmount: '',
+                validations: [],
+                status: 'failed',
+              };
+
+              const recordValidation = (
+                name: string,
+                status: SwapValidationResult['status'],
+                details?: string,
+              ) => {
+                routeResult.validations?.push({ name, status, details });
+              };
+
+              // Resolve destination address.
+              // For native token destination, use the symbol as the picker
+              // search term (no contract address needed).
+              const isToNative = toSymbol === networkConfig.nativeTokenSymbol;
+              const destinationAddress = isToNative
+                ? toSymbol
+                : (tokenBySymbol.get(toSymbol)?.address ?? toSymbol);
+              const destinationTokenNetworkName = isToNative
+                ? networkConfig.networkName
+                : undefined;
+
+              console.log(`\n[TEST] ── Route: ${routeLabel} ──`);
+
+              try {
+                // -- Enter the swap page fresh from home for every route --
+                console.log(
+                  `[TEST] Entering swap flow for route: ${routeLabel}`,
+                );
+                await performSwapFlow(driver, {
+                  sourceTokenSymbol: fromSymbol,
+                  sourceTokenName: tokenBySymbol.get(fromSymbol)?.name,
+                  networkName: networkConfig.networkName,
+                  destinationTokenAddress: destinationAddress,
+                  destinationTokenSymbol: toSymbol,
+                  destinationTokenNetworkName,
+                  fromAmount: plannedFromAmount,
+                  useMax: useMaxForRoute,
+                });
+
+                // -- Wait for quote and assert fee text --
+                // -- Check for ""Insufficient funds"" and auto-reduce to 75% --
+                // Skip for Max routes (the Max button already uses full available balance).
+                if (!useMaxForRoute) {
+                  const reducedAmount = await handleInsufficientFundsIfPresent(
+                    driver,
+                    plannedFromAmount,
+                  );
+                  if (reducedAmount !== undefined) {
+                    console.log(
+                      `[TEST] ⚠️  Insufficient funds — amount reduced to ${reducedAmount}`,
+                    );
+                  }
+                }
+
+                // -- Wait for quote and assert fee text --
+                await waitForSwapQuoteReady(driver);
+                recordValidation('Quote ready', 'passed');
+                await assertCtaFeeText(driver);
+                recordValidation('CTA fee text', 'passed');
+
+                // -- Capture amounts before submission --
+                const { fromAmount, toAmount } =
+                  await captureSwapAmounts(driver);
+                routeResult.fromAmount = fromAmount;
+                routeResult.toAmount = toAmount;
+
+                // -- Submit and wait for confirmed activity entry --
+                await submitSwapAndWaitForConfirmed(
+                  driver,
+                  fromSymbol,
+                  toSymbol,
+                );
+
+                // -- Assert activity list primary/secondary currency --
+                if (useMaxForRoute) {
+                  // Max swaps can render rounded/truncated activity amounts,
+                  // so validate by token symbol instead of exact raw amount.
+                  await assertActivityPrimaryCurrency(
+                    driver,
+                    `${fromSymbol}`,
+                  );
+                } else {
+                  await assertActivityPrimaryCurrency(
+                    driver,
+                    `-${fromAmount} ${fromSymbol}`,
+                  );
+                }
+                recordValidation(
+                  'Activity primary amount',
+                  'passed',
+                  useMaxForRoute
+                    ? `contains ${fromSymbol} (max route)`
+                    : `-${fromAmount} ${fromSymbol}`,
+                );
+                await assertActivitySecondaryCurrency(
+                  driver,
+                  `-${toAmount} ""$""`,
+                );
+                recordValidation(
+                  'Activity secondary value',
+                  'passed',
+                  `-${toAmount} ""$""`,
+                );
+
+                // -- Open detail page --
+                await openLatestSwapActivityRecord(
+                  driver,
+                  fromSymbol,
+                  toSymbol,
+                );
+
+                // -- Log detail page content --
+                await logSwapDetailPageContent(driver);
+
+                // -- Assert detail page --
+                const statusResult = await assertSwapDetailConfirmed(driver);
+                recordValidation(
+                  'Detail status confirmed',
+                  statusResult.isValid ? 'passed' : 'warning',
+                  statusResult.message,
+                );
+
+                const swappedRowResult = await assertSwappedTokenPair(
+                  driver,
+                  fromSymbol,
+                  toSymbol,
+                );
+                recordValidation(
+                  'Detail swapped row',
+                  swappedRowResult.isValid ? 'passed' : 'warning',
+                  swappedRowResult.message,
+                );
+
+                const timestampResult =
+                  await assertTransactionTimestamp(driver);
+                recordValidation(
+                  'Detail time stamp row',
+                  timestampResult.isValid ? 'passed' : 'warning',
+                  timestampResult.message,
+                );
+
+                let sentRowResult;
+                if (useMaxForRoute) {
+                  sentRowResult = await assertDetailRow(driver, 'You sent', fromSymbol);
+                } else {
+                  sentRowResult = await assertDetailRow(
+                    driver,
+                    'You sent',
+                    `${fromAmount} ${fromSymbol}`,
+                  );
+                }
+                recordValidation(
+                  'Detail You sent row',
+                  sentRowResult.isValid ? 'passed' : 'warning',
+                  useMaxForRoute
+                    ? `contains ${fromSymbol} (max route)`
+                    : `${fromAmount} ${fromSymbol}`,
+                );
+                const receivedRowResult =
+                  await validateDetailRowAmountAtPrecision(
+                    driver,
+                    'You received',
+                    `${toAmount} ${toSymbol}`,
+                  );
+                recordValidation(
+                  'Detail You received row',
+                  receivedRowResult.isValid ? 'passed' : 'warning',
+                  receivedRowResult.message,
+                );
+                if (!receivedRowResult.isValid) {
+                  console.warn(
+                    `[TEST] ⚠️  ALERT: ${receivedRowResult.message}`,
+                  );
+                }
+                const totalGasFeeResult = await assertTotalGasFeeRow(
+                  driver,
+                  networkConfig.gasFeeSponsoredByProtocol ?? false,
+                );
+                recordValidation(
+                  'Detail Total gas fee row',
+                  totalGasFeeResult.isValid ? 'passed' : 'warning',
+                  totalGasFeeResult.message,
+                );
+
+                // -- Navigate back to home for next route --
+                await navigateBackToHome(driver);
+
+                routeResult.status = 'passed';
+                console.log(`[TEST] ✅ Route passed: ${routeLabel}`);
+              } catch (error) {
+                routeResult.status = 'failed';
+                routeResult.error = String(error);
+                recordValidation(
+                  'Route execution error',
+                  'failed',
+                  String(error),
+                );
+                console.error(`[TEST] ❌ Route failed: ${routeLabel}`);
+                console.error(error);
+
+                const recovered = await recoverToHome(driver);
+                if (!recovered) {
+                  console.error(
+                    `[TEST] Recovery failed after route ${routeLabel} — stopping suite`,
+                  );
+                  routeResults.push(routeResult);
+                  break;
+                }
+              }
+
+              routeResults.push(routeResult);
+            }
+
+            // ----------------------------------------------------------------
+            // Step 6: Generate markdown execution report
+            // ----------------------------------------------------------------
+            try {
+              generateSwapExecutionReport(routeResults, networkConfig);
+            } catch (reportError) {
+              console.warn(
+                `[TEST] ⚠️  Failed to generate report:`,
+                reportError,
+              );
+            }
+
+            // Fail the test if any routes did not pass
+            const failedRoutes = routeResults.filter(
+              (r) => r.status === 'failed',
+            );
+            if (failedRoutes.length > 0) {
+              throw new Error(
+                `${failedRoutes.length}/${routeResults.length} swap route(s) failed: ${failedRoutes
+                  .map((r) => r.route)
+                  .join(', ')}`,
+              );
+            }
+          },
+        );
+      });
+    });
+  });
+});

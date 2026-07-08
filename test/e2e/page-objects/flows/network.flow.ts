@@ -12,8 +12,21 @@ export const switchToNetworkFromNetworkSelect = async (
   );
   const tokensTab = new TokensTab(driver);
   const networkManager = new NetworkManager(driver);
+  const homePage = new HomePage(driver);
+  const nonEvmNetworks = ['Bitcoin', 'Solana', 'Tron'];
+  if (nonEvmNetworks.includes(networkName)) {
+    // Wait for snap accounts to be ready before switching networks, to prevent race conditions
+    await homePage.waitForNonEvmAccountsLoaded();
+  }
+  await networkManager.openNetworkManager();
 
   await tokensTab.openNetworksFilter();
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
+};
+
+export const switchToEditRPCViaGlobalMenuNetworks = async (driver: Driver) => {
+  await driver.waitForSelector('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="global-menu-networks"]');
 };

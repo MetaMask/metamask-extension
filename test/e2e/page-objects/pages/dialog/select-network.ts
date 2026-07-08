@@ -3,8 +3,10 @@ import { Driver } from '../../../webdriver/driver';
 class SelectNetwork {
   private driver: Driver;
 
-  private readonly addCustomNetworkButton =
-    '[data-testid="networks-page-add-custom-network-button"]';
+  private readonly addCustomNetworkButton = {
+    text: 'Add a custom network',
+    tag: 'button',
+  };
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
@@ -33,10 +35,17 @@ class SelectNetwork {
 
   private readonly rpcUrlItem = '.select-rpc-url__item';
 
+  private readonly searchInput =
+    '[data-testid="network-redesign-modal-search-input"]';
+
+  private readonly settingsV2NetworksPageList =
+    '[data-testid="networks-page-list"]';
+
+  private readonly settingsV2AddCustomNetworkButton =
+    '[data-testid="networks-page-add-custom-network-button"]';
+
   private readonly searchButton =
     '[data-testid="settings-header-search-button"]';
-
-  private readonly searchInput = '[data-testid="settings-header-search-input"]';
 
   private readonly selectNetworkMessage = {
     text: 'Manage networks',
@@ -45,7 +54,7 @@ class SelectNetwork {
 
   private readonly selectRpcMessage = {
     text: 'Select RPC URL',
-    tag: 'p',
+    tag: 'h4',
   };
 
   private readonly yourNetworksMessage = {
@@ -55,12 +64,8 @@ class SelectNetwork {
 
   private readonly showTestNetworksToggle = '.toggle-button';
 
-  private readonly networksPageSuccessToast = {
-    testId: 'networks-page-network-success-toast',
-  };
-
   private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
-    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`;
+    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"] button`;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -70,16 +75,28 @@ class SelectNetwork {
     try {
       await this.driver.waitForMultipleSelectors([
         this.selectNetworkMessage,
-        this.addCustomNetworkButton,
+        this.searchInput,
+      ]);
+      console.log('Select network legacy dialog is loaded');
+      return;
+    } catch (e) {
+      console.log('Legacy manage networks dialog not detected, trying Settings V2 networks page', e);
+    }
+
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.settingsV2NetworksPageList,
+        this.settingsV2AddCustomNetworkButton,
       ]);
     } catch (e) {
       console.log(
-        'Timeout while waiting for select network dialog to be loaded',
+        'Timeout while waiting for network management UI to be loaded',
         e,
       );
       throw e;
     }
-    console.log('Select network dialog is loaded');
+
+    console.log('Select network Settings V2 page is loaded');
   }
 
   async checkYourNetworksDialogIsLoaded(): Promise<void> {
@@ -109,7 +126,7 @@ class SelectNetwork {
     console.log('Click Add Button for Popular Network');
 
     const buttonSelector = this.addPopularNetworkByChainIdIcon(chainId);
-    const addButton = await this.driver.findElement(buttonSelector);
+
     await this.driver.clickElementAndWaitToDisappear(buttonSelector);
   }
 
@@ -141,28 +158,37 @@ class SelectNetwork {
   async deleteNetwork(chainId: string): Promise<void> {
     console.log(`Delete network ${chainId} from network list`);
     await this.openNetworkListOptions(chainId);
-    await this.driver.clickElement(this.deleteNetworkButton);
+    await this.driver.clickElementAndWaitToDisappear(this.deleteNetworkButton);
     await this.driver.waitForSelector(this.confirmDeleteNetworkModal);
     // Ensure drawer overlay is not present to avoid ElementClickInterceptedError
     await this.driver.assertElementNotPresent(this.drawerOverlay, {
       waitAtLeastGuard: 200,
     });
-    await this.driver.clickElement(this.confirmDeleteNetworkButton);
-    await this.driver.assertElementNotPresent(this.confirmDeleteNetworkModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmDeleteNetworkButton,
+    );
   }
 
   async fillNetworkSearchInput(networkName: string): Promise<void> {
     console.log(`Fill network search input with ${networkName}`);
-    await this.driver.clickElement(this.searchButton);
-    await this.driver.waitForSelector(this.searchInput);
     await this.driver.fill(this.searchInput, networkName);
   }
 
   async openAddCustomNetworkModal(): Promise<void> {
     console.log('Open add custom network modal');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.addCustomNetworkButton,
-    );
+
+    if (
+      await this.driver.isElementPresentAndVisible(
+        this.settingsV2AddCustomNetworkButton,
+      )
+    ) {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.settingsV2AddCustomNetworkButton,
+      );
+      return;
+    }
+
+    await this.driver.clickElementAndWaitToDisappear(this.addCustomNetworkButton);
   }
 
   async openEditNetworkModal(): Promise<void> {
@@ -289,26 +315,6 @@ class SelectNetwork {
       parent: {
         css: `[data-testid="popular-network-${chainId}"]`,
       },
-    });
-  }
-
-  async checkAddNetworkMessageIsDisplayed(networkName: string): Promise<void> {
-    console.log(
-      `Check the toaster message for adding network ${networkName} is displayed on networks page`,
-    );
-    await this.driver.waitForSelector({
-      ...this.networksPageSuccessToast,
-      text: `“${networkName}” was successfully added!`,
-    });
-  }
-
-  async checkEditNetworkMessageIsDisplayed(networkName: string): Promise<void> {
-    console.log(
-      `Check the toaster message for editing network ${networkName} is displayed on networks page`,
-    );
-    await this.driver.waitForSelector({
-      ...this.networksPageSuccessToast,
-      text: `“${networkName}” was successfully edited!`,
     });
   }
 }

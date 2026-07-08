@@ -29,6 +29,16 @@ class TokensTab extends HomePage {
     };
   };
 
+  private readonly multichainNetworkListItemByNameXpath = (
+    networkName: string,
+  ) => {
+    return `//*[starts-with(@data-testid, "network-list-item-eip155:") and .//*[@data-testid="${networkName}"]]`;
+  };
+
+  private readonly multichainNetworkLabelByName = (networkName: string) => {
+    return `[data-testid="${networkName}"]`;
+  };
+
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
   private readonly customTokenModalOption =
@@ -177,6 +187,16 @@ class TokensTab extends HomePage {
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',
   };
+
+  // New selectors for updated popover menu structure
+  private readonly importTokensButtonLegacy =
+    '[data-testid="importTokens"]';
+
+  private readonly manageTokensButton =
+    '[data-testid="manageTokens__button"]';
+
+  private readonly manageTokensMenuItem =
+    '[data-testid="manageTokens"]';
 
   async clickNetworkSelectorDropdown(): Promise<void> {
     console.log(`Clicking on the network selector dropdown`);
@@ -360,7 +380,43 @@ class TokensTab extends HomePage {
       waitAtLeastGuard: 1000,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
-    await this.driver.clickElement(this.importTokensButton);
+
+    // Wait for popover to become visible after clicking 3-dots button
+    await this.driver.delay(300);
+
+    // Check for Import Tokens menu item (primary option in popover)
+    const hasImportTokensEntry =
+      await this.driver.isElementPresentAndVisible(this.importTokensButton, 1500);
+
+    if (hasImportTokensEntry) {
+      console.log('[IMPORT] Found Import Tokens menu item in popover, using it');
+      await this.driver.clickElement(this.importTokensButton);
+    } else {
+      // Fallback: Check for Manage Tokens menu item (shown when isTokenManagementFilterEnabled=true)
+      const hasManageTokensEntry =
+        (await this.driver.isElementPresentAndVisible(
+          this.manageTokensMenuItem,
+          1500,
+        )) ||
+        (await this.driver.isElementPresentAndVisible(
+          this.manageTokensButton,
+          1500,
+        ));
+
+      if (hasManageTokensEntry) {
+        console.log(
+          '[IMPORT] Import Tokens entry not found. Falling back to Manage Tokens flow.',
+        );
+        await this.importCustomTokenFromManageTokensUI(chainId, tokenAddress);
+        return;
+      }
+
+      // Enhanced error message with attempted selectors for debugging
+      const debugInfo = `Attempted selectors: importTokens (${this.importTokensButton}), manageTokens (${this.manageTokensMenuItem}), manageTokens__button (${this.manageTokensButton})`;
+      throw new Error(
+        `Neither Import Tokens nor Manage Tokens entry is available in asset options. ${debugInfo}`,
+      );
+    }
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.clickElement(this.tokenChainDropdown);
     await this.driver.clickElementAndWaitToDisappear(
@@ -385,26 +441,60 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.tokenAddressInput);
 
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
-    await this.driver.waitForSelector(this.tokenSymbolTitle);
 
-    if (symbol) {
-      // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
-      await this.driver.waitForSelector(this.importTokensNextButton, {
-        state: 'disabled',
-        waitAtLeastGuard: 1000,
-      });
+    // If symbol and decimals are provided, skip waiting for RPC detection
+    // and fill them directly to avoid timeout on slow RPC endpoints
+    if (symbol && decimals) {
+      console.log(
+        `[IMPORT] Token metadata provided - skipping RPC detection (${symbol}/${decimals})`,
+      );
+      // Wait for form to be ready
+      await this.driver.delay(500);
+
+      // Fill symbol directly without waiting for RPC
       await this.driver.fill(this.tokenSymbolInput, symbol);
-    }
+      await this.driver.delay(300);
 
-    if (decimals) {
-      await this.driver.waitForSelector(this.importTokensNextButton, {
-        state: 'disabled',
-        waitAtLeastGuard: 1000,
-      });
+      // Fill decimals
       await this.driver.fill(this.tokenDecimalsInput, decimals);
+    } else {
+      // Original flow: wait for RPC to detect symbol/decimals
+      console.log(
+        `[IMPORT] Token metadata NOT provided - waiting for RPC detection`,
+      );
+      await this.driver.waitForSelector(this.tokenSymbolTitle, {
+        timeout: 30000, // Increased timeout for slow RPCs
+      });
+
+      if (symbol) {
+        // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
+        await this.driver.waitForSelector(this.importTokensNextButton, {
+          state: 'disabled',
+          waitAtLeastGuard: 1000,
+        });
+        await this.driver.fill(this.tokenSymbolInput, symbol);
+      }
+
+      if (decimals) {
+        await this.driver.waitForSelector(this.importTokensNextButton, {
+          state: 'disabled',
+          waitAtLeastGuard: 1000,
+        });
+        await this.driver.fill(this.tokenDecimalsInput, decimals);
+      }
     }
 
-    await this.driver.waitForSelector(this.tokenDecimalsTitle);
+    // ALWAYS wait for decimals field to be visible and stable before proceeding
+    // This ensures form is ready for BOTH metadata-provided and RPC-detected flows
+    console.log(
+      `[IMPORT] Waiting for form to be stable before clicking Next...`,
+    );
+    await this.driver.waitForSelector(this.tokenDecimalsTitle, {
+      timeout: 10000,
+    });
+    await this.driver.delay(300); // Small delay to ensure form is fully stable
+
+    console.log(`[IMPORT] Form is ready. Clicking Next button...`);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.tokenConfirmListItem);
     // Same readiness condition as `importTokenBySearch`: confirm copy means
@@ -416,6 +506,51 @@ class TokensTab extends HomePage {
     );
 
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
+  }
+
+  /**
+   * NEW TOKEN IMPORT FLOW: Import a custom token using Token Management page
+   * This replaces the old flow that used 3-dots menu
+   *
+   * Flow:
+   * 1. Click "Manage Tokens" button
+   * 2. Click "Add Custom Token" button
+   * 3. Enter token address
+   * 4. Click Submit
+   * 5. Verify on Token Management page
+   * 6. Click back to return to home
+   *
+   * @param chainId - The chain ID in hex format (e.g., 0x1)
+   * @param tokenAddress - The token address to import (e.g., 0x...)
+   */
+  async importCustomTokenFromManageTokensUI(
+    chainId: string,
+    tokenAddress: string,
+  ): Promise<void> {
+    console.log(
+      `[TOKEN-MANAGEMENT] Importing custom token ${tokenAddress} on chain ${chainId}`,
+    );
+
+    try {
+      // Import TokenManagementPage locally to avoid circular dependencies
+      const TokenManagementPage = (
+        await import('./token-management.js')
+      ).default;
+      const tokenManagementPage = new TokenManagementPage(this.driver);
+
+      // Execute the complete flow with skipInitialClick=true since dropdown is already open
+      await tokenManagementPage.addCustomToken(tokenAddress, true);
+
+      // Return to home page
+      await tokenManagementPage.goBackToHome();
+
+      console.log(`[TOKEN-MANAGEMENT] ✅ Token imported successfully`);
+    } catch (error) {
+      console.error(
+        `[TOKEN-MANAGEMENT] ❌ Failed to import token: ${error}`,
+      );
+      throw error;
+    }
   }
 
   async importTokenBySearch({
@@ -488,6 +623,46 @@ class TokensTab extends HomePage {
         interval: 100,
       },
     );
+  }
+
+  async selectNetworkFilter(networkName: string): Promise<void> {
+    console.log(`Selecting network filter: ${networkName}`);
+    const currentLabel = await this.getNetworksFilterLabel();
+
+    if (currentLabel === networkName) {
+      console.log(`Network filter already selected: ${networkName}`);
+      return;
+    }
+
+    await this.openNetworksFilter();
+
+    // New multichain network selector UI renders list rows with
+    // data-testid like "network-list-item-eip155:143" and nested
+    // name nodes like data-testid="Monad".
+    try {
+      const rowXpath = this.multichainNetworkListItemByNameXpath(networkName);
+      await this.driver.waitForSelector({ xpath: rowXpath }, { timeout: 5000 });
+      await this.driver.clickElement({ xpath: rowXpath });
+    } catch (error) {
+      console.log(
+        `Multichain row selector failed for ${networkName}, trying label selector`,
+      );
+      try {
+        const labelSelector = this.multichainNetworkLabelByName(networkName);
+        await this.driver.waitForSelector(labelSelector, { timeout: 3000 });
+        await this.driver.clickElement(labelSelector);
+      } catch {
+        // Legacy dropdown fallback for older network filter UI.
+        await this.driver.waitForSelector(
+          this.customNetworkSelectedOption(networkName),
+        );
+        await this.driver.clickElement(
+          this.customNetworkSelectedOption(networkName),
+        );
+      }
+    }
+
+    await this.waitUntilFilterLabelIs(networkName);
   }
 
   /**
@@ -924,6 +1099,162 @@ class TokensTab extends HomePage {
         interval: 200,
         stableFor: veryLargeDelayMs,
       },
+    );
+  }
+
+  /**
+   * Verifies a custom network is visible in the network selector by chain ID.
+   * Opens the network filter, clicks on the "Custom" tab if available,
+   * and verifies the network exists with the given chain ID.
+   *
+   * @param chainId - The chain ID to verify (e.g., "88888" for Chiliz)
+   * @param networkName - Optional network name for logging
+   */
+  async verifyCustomNetworkExistsInSelector(
+    chainId: string,
+    networkName: string = `Chain ${chainId}`,
+  ): Promise<void> {
+    console.log(
+      `[AssetList] Verifying custom network ${networkName} (chainId: ${chainId}) exists in network selector`,
+    );
+
+    // Open the network filter
+    await this.openNetworksFilter();
+    console.log(`[AssetList] Network filter opened, looking for Custom tab`);
+
+    // Try to click on the "Custom" tab
+    try {
+      const customTabButton =
+        'button:has-text("Custom")[role="tab"], button[role="tab"]:text("Custom"), [data-testid*="custom"][role="tab"]';
+      await this.driver.waitForSelector(
+        { text: 'Custom', tag: 'button' },
+        { timeout: 3000 },
+      );
+      await this.driver.clickElement({ text: 'Custom', tag: 'button' });
+      console.log(`[AssetList] Clicked on Custom tab`);
+    } catch (e) {
+      console.warn(
+        `[AssetList] Custom tab not found or click failed, continuing anyway: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      );
+    }
+
+    // Wait for and verify the custom network exists by chain ID
+    const networkEip155Selector = `[data-testid="network-list-item-eip155:${String(
+      chainId,
+    )}"]`;
+    console.log(
+      `[AssetList] Waiting for network selector: ${networkEip155Selector}`,
+    );
+
+    try {
+      await this.driver.waitForSelector(networkEip155Selector, {
+        timeout: 5000,
+      });
+      console.log(
+        `[AssetList] ✅ Custom network ${networkName} (chainId: ${chainId}) found in network selector`,
+      );
+    } catch (e) {
+      console.error(
+        `[AssetList] ❌ Custom network ${networkName} (chainId: ${chainId}) NOT found in network selector`,
+      );
+      throw e;
+    }
+
+    // Close the network filter modal
+    try {
+      await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
+      console.log(`[AssetList] Network filter modal closed`);
+    } catch {
+      console.warn(`[AssetList] Could not close network filter modal`);
+    }
+  }
+
+  /**
+   * Selects a custom network from the network selector and verifies it's active.
+   * Opens the network filter, clicks on the "Custom" tab, selects the network
+   * by chain ID, and verifies it's displayed on the home page.
+   *
+   * @param chainId - The chain ID to select (e.g., "88888" for Chiliz)
+   * @param networkName - Optional network name for logging
+   */
+  async selectCustomNetworkByChainId(
+    chainId: string,
+    networkName: string = `Chain ${chainId}`,
+  ): Promise<void> {
+    console.log(
+      `[AssetList] Selecting custom network ${networkName} (chainId: ${chainId})`,
+    );
+
+    // Open the network filter
+    await this.openNetworksFilter();
+    console.log(`[AssetList] Network filter opened`);
+
+    // Try to click on the "Custom" tab
+    try {
+      await this.driver.waitForSelector(
+        { text: 'Custom', tag: 'button' },
+        { timeout: 3000 },
+      );
+      await this.driver.clickElement({ text: 'Custom', tag: 'button' });
+      console.log(`[AssetList] Clicked on Custom tab`);
+      await this.driver.delay(500); // Wait for tab transition
+    } catch (e) {
+      console.warn(
+        `[AssetList] Custom tab not found or click failed: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      );
+    }
+
+    // Click on the network by chain ID
+    const networkEip155Selector = `[data-testid="network-list-item-eip155:${String(
+      chainId,
+    )}"]`;
+    console.log(
+      `[AssetList] Clicking on network selector: ${networkEip155Selector}`,
+    );
+
+    try {
+      await this.driver.waitForSelector(networkEip155Selector, {
+        timeout: 5000,
+      });
+      await this.driver.clickElement(networkEip155Selector);
+      console.log(`[AssetList] Clicked on network ${networkName}`);
+      await this.driver.delay(1000); // Wait for network switch
+    } catch (e) {
+      console.error(
+        `[AssetList] ❌ Failed to click on network ${networkName} (chainId: ${chainId})`,
+      );
+      throw e;
+    }
+
+    // Wait for modal to close
+    try {
+      await this.driver.assertElementNotPresent(this.modalCloseButton, {
+        timeout: 5000,
+      });
+      console.log(`[AssetList] Network filter modal closed automatically`);
+    } catch {
+      console.warn(
+        `[AssetList] Modal close button still present, trying to close it`,
+      );
+      try {
+        await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
+      } catch {
+        console.warn(`[AssetList] Could not close network filter modal`);
+      }
+    }
+
+    // Verify the network is now active on the home page
+    await this.driver.delay(1000); // Wait for page to settle
+    console.log(
+      `[AssetList] Verifying network ${networkName} is active on home page`,
+    );
+    await this.checkNetworkFilterText(networkName);
+    console.log(
+      `[AssetList] ✅ Custom network ${networkName} (chainId: ${chainId}) successfully selected and active`,
     );
   }
 }

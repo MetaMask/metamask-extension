@@ -16,7 +16,7 @@ class NetworkManager {
   protected readonly driver: Driver;
 
   private readonly addCustomNetworkButton = {
-    text: 'Add custom network',
+    text: 'Add a custom network',
     tag: 'button',
   };
 
@@ -45,15 +45,17 @@ class NetworkManager {
     `[data-testid="${networkName}"]`;
 
   private readonly networkManagerCloseButton =
-    '[data-testid="modal-header-close-button"]';
+    '[data-testid="modal-header-close-button"], [aria-label="Close"]';
 
   private readonly networkManagerSelectAllButton =
     '[data-testid="network-manager-select-all"]';
 
   private readonly networkManagerToggle = '[data-testid="sort-by-networks"]';
 
-  private readonly networkPopupDeleteButton =
-    '[data-testid="confirm-delete-network-modal-delete-button"]';
+  private readonly networkPopupDeleteButton = {
+    text: 'Delete',
+    tag: 'button',
+  };
 
   private readonly selectedNetworkListItem = (selector: string) =>
     `:is(${selector}.multichain-network-list-item--selected, ${selector} .multichain-network-list-item--selected)`;
@@ -76,14 +78,6 @@ class NetworkManager {
     await this.driver.clickElementAndWaitToDisappear(
       this.networkManagerCloseButton,
     );
-  }
-
-  async selectTab(tabName: string): Promise<void> {
-    console.log(`Selecting tab: ${tabName}`);
-    await this.driver.clickElement({
-      text: tabName,
-    });
-    await this.waitForCategoryContent(tabName);
   }
 
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {

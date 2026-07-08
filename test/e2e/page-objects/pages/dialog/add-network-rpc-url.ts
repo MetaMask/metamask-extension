@@ -5,8 +5,12 @@ class AddNetworkRpcUrlModal {
   private readonly driver: Driver;
 
   private readonly addRpcUrlButton = {
-    testId: 'page-container-footer-next',
+    text: 'Add URL',
+    tag: 'button',
   };
+
+  private readonly settingsV2AddRpcUrlButton =
+    '[data-testid="page-container-footer-next"]';
 
   private readonly addRpcNameInput = {
     testId: 'rpc-name-input-test',
@@ -27,10 +31,23 @@ class AddNetworkRpcUrlModal {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.addRpcUrlInput,
-        this.addRpcUrlButton,
-      ]);
+      await this.driver.waitForSelector(this.addRpcUrlInput);
+      await this.driver.waitUntil(async () => {
+        const legacyButtonVisible = await this.driver.isElementPresentAndVisible(
+          this.addRpcUrlButton,
+        );
+
+        if (legacyButtonVisible) {
+          return true;
+        }
+
+        return await this.driver.isElementPresentAndVisible(
+          this.settingsV2AddRpcUrlButton,
+        );
+      }, {
+        interval: 200,
+        timeout: 10_000,
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for Add network RPC URL dialog to be loaded',
@@ -69,8 +86,27 @@ class AddNetworkRpcUrlModal {
 
   async saveAddRpcUrl(): Promise<void> {
     console.log('Confirm added RPC URL');
-    await this.driver.clickElement(this.addRpcUrlButton);
-    await this.driver.assertElementNotPresent(this.addRpcUrlInput);
+
+    const saveButton =
+      (await this.driver.isElementPresentAndVisible(
+        this.settingsV2AddRpcUrlButton,
+      ))
+        ? this.settingsV2AddRpcUrlButton
+        : this.addRpcUrlButton;
+
+    await this.driver.waitUntil(async () => {
+      const button = await this.driver.findElement(saveButton);
+      return await button.isEnabled();
+    }, {
+      interval: 200,
+      timeout: 10_000,
+    });
+
+    await this.driver.clickElement(saveButton);
+    await this.driver.assertElementNotPresent(this.addRpcUrlInput, {
+      waitAtLeastGuard: 300,
+      timeout: 20_000,
+    });
   }
 
   /**
@@ -86,7 +122,13 @@ class AddNetworkRpcUrlModal {
         shouldBeEnabled ? 'enabled' : 'disabled'
       }`,
     );
-    const addRpcUrlButton = await this.driver.findElement(this.addRpcUrlButton);
+    const buttonSelector =
+      (await this.driver.isElementPresentAndVisible(
+        this.settingsV2AddRpcUrlButton,
+      ))
+        ? this.settingsV2AddRpcUrlButton
+        : this.addRpcUrlButton;
+    const addRpcUrlButton = await this.driver.findElement(buttonSelector);
     assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
   }
 
