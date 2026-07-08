@@ -91,8 +91,8 @@ class ChromeDriver {
       },
     });
 
-    // Temporarily lock to version 126
-    options.setBrowserVersion('126');
+    // Structured clone extension messaging is supported starting in Chrome 148.
+    options.setBrowserVersion('148');
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {

@@ -140,6 +140,7 @@ function normalizeSmartContracts(smartContract) {
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
+ * @property {(manifest: object) => void} manifestTransform - Function to alter manifest.json before browser launch.
  * @property {string} extensionId - The extension ID (useful for connecting via `externally_connectable`).
  */
 
@@ -226,6 +227,7 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
+    manifestTransform,
     solanaWebSocketSpecificMocks = [],
     accountActivityWebSocketSpecificMocks = [],
     perpsWebSocketSpecificMocks = [],
@@ -506,7 +508,9 @@ async function withFixtures(options, testSuite) {
       }
     });
 
-    await setManifestFlags(manifestFlags);
+    await setManifestFlags(manifestFlags, {
+      transformManifest: manifestTransform,
+    });
 
     const wd = await buildWebDriver({
       ...driverOptions,
