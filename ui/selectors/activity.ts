@@ -526,17 +526,35 @@ export const selectLocalActivityItems = createSelector(
 );
 
 export const selectLocalActivityItemsByIdentifier = createSelector(
+  selectLocalTransactions,
   selectLocalActivityItems,
-  (items) => {
+  (transactionGroups, items) => {
     const itemsByIdentifier = new Map<string, ActivityListItem>();
 
-    for (const item of items) {
-      const hash = item.hash?.toLowerCase();
-
-      if (hash) {
-        itemsByIdentifier.set(hash, item);
+    transactionGroups.forEach((transactionGroup, index) => {
+      const item = items[index];
+      if (!item) {
+        return;
       }
-    }
+
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        const hash = transaction.hash?.toLowerCase();
+        if (hash) {
+          itemsByIdentifier.set(hash, item);
+        }
+
+        // Also index by id so pending transactions (no hash yet) and toast
+        // listeners keyed on transactionMeta.id can still resolve the item after
+        // broadcast, when item.hash becomes the on-chain hash.
+        const id = transaction.id?.toLowerCase();
+        if (id) {
+          itemsByIdentifier.set(id, item);
+        }
+      }
+    });
 
     return itemsByIdentifier;
   },
