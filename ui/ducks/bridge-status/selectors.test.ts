@@ -3,9 +3,7 @@ import type { TransactionControllerState } from '@metamask/transaction-controlle
 import {
   selectBridgeHistoryForApprovalTxId,
   selectBridgeHistoryForOriginalTxMetaId,
-  selectBridgeHistoryForToast,
   selectNonEvmBridgeSourceTxIds,
-  selectTransactionIds,
 } from './selectors';
 
 type BridgeStatusAppState = {
@@ -24,51 +22,6 @@ jest.mock('../../selectors/multichain-transactions', () => ({
 }));
 
 describe('bridge-status selectors', () => {
-  describe('selectTransactionIds', () => {
-    it('returns a Set of all transaction ids', () => {
-      const state = {
-        metamask: {
-          transactions: [{ id: 'a' }, { id: 'b' }, { id: 'c' }],
-        },
-      };
-
-      const result = selectTransactionIds(
-        state as unknown as BridgeStatusAppState,
-      );
-      expect(result).toStrictEqual(new Set(['a', 'b', 'c']));
-    });
-
-    it('returns an empty Set when there are no transactions', () => {
-      const result = selectTransactionIds({
-        metamask: {},
-      } as unknown as BridgeStatusAppState);
-      expect(result).toStrictEqual(new Set());
-    });
-  });
-
-  describe('selectBridgeHistoryForToast', () => {
-    it('returns cross-chain items whose source tx exists in transactions', () => {
-      const state = {
-        metamask: {
-          txHistory: {
-            // cross-chain ✅ with matching source tx
-            'tx-1': { quote: { srcChainId: 1, destChainId: 10 } },
-            // same-chain with matching source tx
-            'tx-2': { quote: { srcChainId: 1, destChainId: 1 } },
-            // cross-chain with no matching source tx
-            'tx-3': { quote: { srcChainId: 1, destChainId: 10 } },
-          },
-          transactions: [{ id: 'tx-1' }, { id: 'tx-2' }],
-        },
-      };
-
-      const result = selectBridgeHistoryForToast(
-        state as unknown as BridgeStatusAppState,
-      );
-      expect(Object.keys(result)).toStrictEqual(['tx-1']);
-    });
-  });
-
   describe('selectNonEvmBridgeSourceTxIds', () => {
     it('returns ids for cross-chain non-EVM source entries', () => {
       const solChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
