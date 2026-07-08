@@ -12,9 +12,10 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { transitionForward } from '../../../components/ui/transition';
 import { SECURITY_ITEMS } from '../search-config';
 
 type ManageWalletRecoveryItemProps = {
@@ -23,6 +24,7 @@ type ManageWalletRecoveryItemProps = {
 
 const ManageWalletRecoveryItem = ({ route }: ManageWalletRecoveryItemProps) => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const isSRPBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
 
   return (
@@ -30,6 +32,10 @@ const ManageWalletRecoveryItem = ({ route }: ManageWalletRecoveryItemProps) => {
       to={route}
       data-testid="reveal-seed-words"
       className="block rounded-none text-inherit no-underline hover:bg-background-default-hover"
+      onClick={(event) => {
+        event.preventDefault();
+        transitionForward(() => navigate(route));
+      }}
     >
       <Box
         flexDirection={BoxFlexDirection.Row}
