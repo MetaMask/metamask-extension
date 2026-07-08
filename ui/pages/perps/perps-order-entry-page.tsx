@@ -143,6 +143,8 @@ import {
   ORDER_BOOK_DEFAULT_WIDTH_PCT,
   ORDER_BOOK_MIN_WIDTH_PCT,
   ORDER_BOOK_MAX_WIDTH_PCT,
+  ORDER_BOOK_MIN_WIDTH_PX,
+  ORDER_BOOK_FORM_MIN_WIDTH_PX,
   clampOrderBookWidthPct,
   computeOrderBookWidthPct,
 } from '../../components/app/perps/order-book';
@@ -1811,10 +1813,18 @@ const PerpsOrderEntryPage = () => {
         )}
       </Box>
 
-      {/* Body: form content (left) + sliding order book (right) */}
-      <div ref={bodyRef} className="flex flex-row flex-1 min-h-0 w-full">
+      {/* Body: form content (left) + sliding order book (right). Scrolls
+          horizontally as a fallback when a narrow popup cannot fit both
+          pixel-floored panes. */}
+      <div
+        ref={bodyRef}
+        className="flex flex-row flex-1 min-h-0 w-full overflow-x-auto"
+      >
         <Box
           flexDirection={BoxFlexDirection.Column}
+          style={{
+            minWidth: isOrderBookOpen ? ORDER_BOOK_FORM_MIN_WIDTH_PX : undefined,
+          }}
           className="flex-1 min-w-0 h-full overflow-hidden"
         >
           {/* Scrollable form */}
@@ -1951,7 +1961,12 @@ const PerpsOrderEntryPage = () => {
         {isOrderBookEnabled && (
           <Box
             flexDirection={BoxFlexDirection.Column}
-            style={{ width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%' }}
+            style={{
+              width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%',
+              // Only floor the width while open so the collapse animation can
+              // still shrink the panel to zero.
+              minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : undefined,
+            }}
             className={twMerge(
               'shrink-0 h-full overflow-hidden',
               !isResizingOrderBook && 'transition-all duration-300 ease-in-out',

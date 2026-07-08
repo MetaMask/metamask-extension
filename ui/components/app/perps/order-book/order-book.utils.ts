@@ -51,6 +51,17 @@ export const ORDER_BOOK_MIN_WIDTH_PCT = 22;
 export const ORDER_BOOK_MAX_WIDTH_PCT = 60;
 
 /**
+ * Pixel floors for the split layout. In the narrow (~360px) extension popup the
+ * percentage widths alone would squeeze either side below a usable size, so both
+ * panes get a pixel minimum (only applied while the book is open); the body
+ * scrolls horizontally if the popup cannot fit both floors.
+ */
+/** Minimum readable width for the order-book panel (fits both columns). */
+export const ORDER_BOOK_MIN_WIDTH_PX = 208;
+/** Minimum usable width for the order-entry form beside the book. */
+export const ORDER_BOOK_FORM_MIN_WIDTH_PX = 224;
+
+/**
  * Calculate dynamic price-grouping options based on the asset's mid price.
  *
  * @param midPrice - Current mid price of the asset.
