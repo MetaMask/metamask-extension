@@ -23,6 +23,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { transitionBack } from '../../../components/ui/transition';
 
 const sortedCurrencies = [...availableCurrencies].sort((a, b) =>
   a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase()),
@@ -51,7 +52,7 @@ const CurrencySubPage = () => {
         .build(),
     );
     dispatch(setCurrentCurrency(value));
-    navigate(PREFERENCES_AND_DISPLAY_ROUTE);
+    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
   };
 
   return (

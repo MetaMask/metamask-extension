@@ -116,6 +116,16 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
+}));
+
 jest.mock('../../../components/app/musd/hooks/useMerklRewards', () => ({
   useMerklRewards: jest.fn(() => ({
     hasClaimableReward: false,
@@ -190,6 +200,9 @@ describe('AssetPage', () => {
     },
     appState: {
       confirmationExchangeRates: {},
+    },
+    confirmTransaction: {
+      txData: {},
     },
     metamask: {
       ...mockMultichainNetworkState(),
@@ -426,7 +439,7 @@ describe('AssetPage', () => {
     expect(buyButton).toBeEnabled();
   });
 
-  it('should disable the buy button on unsupported chains', () => {
+  it('keeps the buy button enabled on unsupported chains', () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -439,10 +452,10 @@ describe('AssetPage', () => {
     );
     const buyButton = queryByTestId('token-overview-buy');
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
+    expect(buyButton).toBeEnabled();
   });
 
-  it('should open the buy crypto URL for a buyable chain ID', async () => {
+  it('opens the in-extension buy flow when clicking the buy button', async () => {
     const mockedStoreWithBuyableChainId = {
       ...mockStore,
       metamask: {
@@ -463,13 +476,7 @@ describe('AssetPage', () => {
     expect(buyButton).not.toBeDisabled();
 
     fireEvent.click(buyButton as HTMLElement);
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-    await waitFor(() =>
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_sell_button`),
-      }),
-    );
+    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
   });
 
   it('hides the Send button when token balance is zero', () => {
