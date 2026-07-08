@@ -17,6 +17,13 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+const mockNavigateToBridgePage = jest.fn();
+jest.mock('../../../hooks/bridge/useBridgeNavigation', () => ({
+  useBridgeNavigation: () => ({
+    navigateToBridgePage: mockNavigateToBridgePage,
+  }),
+}));
+
 jest.mock('../../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../../shared/lib/environment'),
   getIsPerpsIncludedInBuild: jest.fn(() => true),
@@ -168,7 +175,11 @@ describe('BottomNavBar', () => {
       const { getByTestId } = renderBottomNavBar();
 
       fireEvent.click(getByTestId('bottom-nav-swaps'));
-      expect(mockNavigate).toHaveBeenCalledWith(SWAP_PATH);
+      expect(mockNavigateToBridgePage).toHaveBeenCalledWith({
+        token: null,
+        search: expect.any(URLSearchParams),
+        isEntrypoint: true,
+      });
     });
 
     it('navigates to the activity route when Activity is clicked', () => {

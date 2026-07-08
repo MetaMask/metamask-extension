@@ -16,10 +16,10 @@ import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  SWAP_PATH,
 } from '../../../helpers/constants/routes';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -69,6 +69,7 @@ export function BottomNavBar() {
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
+  const { navigateToBridgePage } = useBridgeNavigation();
 
   const { isHome, isPerps, isSwaps, isActivity } =
     getActiveBottomNavTabs(pathname);
@@ -86,7 +87,15 @@ export function BottomNavBar() {
     [navigate],
   );
 
-  const handleSwapsClick = useCallback(() => navigate(SWAP_PATH), [navigate]);
+  const handleSwapsClick = useCallback(
+    () =>
+      navigateToBridgePage({
+        token: null,
+        search: new URLSearchParams(''),
+        isEntrypoint: true,
+      }),
+    [navigateToBridgePage],
+  );
 
   const handleActivityClick = useCallback(
     () => navigate(ACTIVITY_ROUTE),
