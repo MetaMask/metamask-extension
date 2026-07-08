@@ -1,4 +1,5 @@
 import { Wallet } from '@metamask/wallet';
+import { RampsEnvironment } from '@metamask/ramps-controller';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { initializeWallet } from './initialization';
@@ -8,6 +9,7 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
+import { rampsController, rampsService } from './ramps';
 import { createMockMessenger } from './test-utils';
 
 jest.mock('@metamask/wallet');
@@ -31,6 +33,9 @@ jest.mock('./instance-options/remote-feature-flag-controller', () => ({
 jest.mock('./instance-options/storage-service', () => ({
   getStorageServiceInstanceOptions: jest.fn(() => 'storage-options'),
 }));
+jest.mock('./instance-options/ramps-environment', () => ({
+  getRampsEnvironment: jest.fn(() => RampsEnvironment.Staging),
+}));
 
 const MockWallet = jest.mocked(Wallet);
 const connectivityAdapter = {} as unknown as ConnectivityAdapter;
@@ -45,16 +50,18 @@ describe('initializeWallet', () => {
     const messenger = createMockMessenger();
     const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
 
-    initializeWallet({
+    const { wallet } = initializeWallet({
       messenger,
       state,
       connectivityAdapter,
       infuraProjectId: 'fake-infura-project-id',
     });
 
+    expect(wallet).toBeDefined();
     expect(MockWallet).toHaveBeenCalledWith({
       messenger,
       state,
+      initializationConfigurations: [rampsService, rampsController],
       instanceOptions: {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
@@ -77,6 +84,12 @@ describe('initializeWallet', () => {
         },
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
+        rampsController: {},
+        rampsService: {
+          context: 'extension',
+          environment: RampsEnvironment.Staging,
+          fetch: expect.any(Function),
+        },
       },
     });
   });

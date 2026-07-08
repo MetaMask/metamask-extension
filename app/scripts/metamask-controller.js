@@ -222,7 +222,6 @@ import {
   getIsShieldSubscriptionActive,
 } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/lib/error';
-import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -549,7 +548,7 @@ export default class MetamaskController extends EventEmitter {
 
     const connectivityAdapter = new ExtensionConnectivityAdapter();
     this.connectivityAdapter = connectivityAdapter;
-    this.wallet = initializeWallet({
+    const { wallet, walletInitPromise } = initializeWallet({
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
@@ -557,6 +556,8 @@ export default class MetamaskController extends EventEmitter {
       showApprovalRequest: this.opts.showUserConfirmation,
       connectivityAdapter,
     });
+    this.wallet = wallet;
+    this.walletInitPromise = walletInitPromise;
 
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
@@ -754,27 +755,15 @@ export default class MetamaskController extends EventEmitter {
     this.controllerPersistedState = controllerPersistedState;
     this.messengerClientsByName = messengerClientsByName;
 
-    const rampsEnabled = Boolean(
-      getManifestFlags().remoteFeatureFlags?.rampsEnabled ??
-      messengerClientsByName.RemoteFeatureFlagController?.state
-        ?.remoteFeatureFlags?.rampsEnabled,
-    );
-    this.rampsController = rampsEnabled
-      ? this.wallet.getInstance('RampsController')
-      : undefined;
-    if (this.rampsController) {
-      this.rampsController
-        .init()
-        .then(() => {
-          this.rampsController.startOrderPolling();
-        })
-        .catch(() => {
-          // Initialization failed - error state is available via selectors.
-        });
-    }
-    this.rampsControllerApi = this.rampsController
-      ? getRampsControllerApi(this.rampsController)
-      : {};
+    this.rampsController = this.wallet.getInstance('RampsController');
+    this.rampsControllerApi = getRampsControllerApi(this.rampsController);
+    this.walletInitPromise
+      .then(() => {
+        this.rampsController.startOrderPolling();
+      })
+      .catch((error) => {
+        console.error('RampsController failed to start order polling', error);
+      });
 
     // Backwards compatibility for existing references
     this.approvalController = this.wallet.getInstance('ApprovalController');
@@ -1476,9 +1465,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
-      ...(this.rampsController
-        ? { RampsController: this.rampsController }
-        : {}),
+      RampsController: this.rampsController,
       DeFiPositionsController: this.deFiPositionsController,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
@@ -1546,9 +1533,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
-        ...(this.rampsController
-          ? { RampsController: this.rampsController }
-          : {}),
+        RampsController: this.rampsController,
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,

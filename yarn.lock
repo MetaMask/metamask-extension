@@ -7564,18 +7564,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:^14.3.0":
-  version: 14.3.0
-  resolution: "@metamask/ramps-controller@npm:14.3.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.2.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/profile-sync-controller": "npm:^28.2.0"
-  checksum: 10/da12f5f3c3ed02474f59f868ba03e918a77e48aa11f0279adfd57bc99b0581ea27a625962c65cd5b00c2f65e5d963fe0cda6c9cd7e293cafe234037ce14fc04e
-  languageName: node
-  linkType: hard
-
 "@metamask/ramps-controller@npm:^15.0.0":
   version: 15.0.0
   resolution: "@metamask/ramps-controller@npm:15.0.0"
@@ -33051,7 +33039,7 @@ __metadata:
     "@metamask/profile-metrics-controller": "npm:^4.0.1"
     "@metamask/profile-sync-controller": "npm:^28.2.0"
     "@metamask/providers": "npm:^22.1.1"
-    "@metamask/ramps-controller": "npm:^14.3.0"
+    "@metamask/ramps-controller": "npm:^15.0.0"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^0.2.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"

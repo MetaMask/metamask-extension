@@ -79,7 +79,6 @@ import {
 } from '../../shared/constants/defi-referrals';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
-import * as manifestFlagsModule from '../../shared/lib/manifestFlags';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
 import * as utils from './lib/util';
@@ -4373,19 +4372,12 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('RampsController flag gate', () => {
-      function buildControllerWithRampsFlag(remoteFlag) {
-        const initState = {
-          ...cloneDeep(firstTimeState),
-          RemoteFeatureFlagController: {
-            remoteFeatureFlags: { rampsEnabled: remoteFlag },
-            cacheTimestamp: 0,
-          },
-        };
-        return new MetaMaskController({
+    describe('RampsController wiring', () => {
+      it('always assigns rampsController and background API', () => {
+        const controller = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
-          initState,
+          initState: cloneDeep(firstTimeState),
           initLangCode: 'en_US',
           platform: {
             showTransactionNotification: () => undefined,
@@ -4403,33 +4395,9 @@ describe('MetaMaskController', () => {
             namespace: MOCK_ANY_NAMESPACE,
           }),
         });
-      }
 
-      beforeEach(() => {
-        jest.spyOn(manifestFlagsModule, 'getManifestFlags').mockReturnValue({});
-      });
-
-      it('does not assign rampsController when flag is off', () => {
-        const controller = buildControllerWithRampsFlag(false);
-        expect(controller.rampsController).toBeUndefined();
-      });
-
-      it('does not assign rampsController when flag is absent', () => {
-        const controller = buildControllerWithRampsFlag(undefined);
-        expect(controller.rampsController).toBeUndefined();
-      });
-
-      it('assigns rampsController when remote flag is true', () => {
-        const controller = buildControllerWithRampsFlag(true);
         expect(controller.rampsController).toBeDefined();
-      });
-
-      it('assigns rampsController when manifest flag overrides to true', () => {
-        jest.spyOn(manifestFlagsModule, 'getManifestFlags').mockReturnValue({
-          remoteFeatureFlags: { rampsEnabled: true },
-        });
-        const controller = buildControllerWithRampsFlag(false);
-        expect(controller.rampsController).toBeDefined();
+        expect(Object.keys(controller.rampsControllerApi)).toMatchSnapshot();
       });
     });
 

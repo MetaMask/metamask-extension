@@ -63,7 +63,7 @@ export type WalletInitMessenger = RootMessenger<
  * @param options.connectivityAdapter - Adapter that observes the device's
  * network connectivity.
  * @param options.infuraProjectId - The Infura project ID.
- * @returns The constructed `Wallet`.
+ * @returns The constructed `Wallet` and its initialization promise.
  */
 export function initializeWallet({
   messenger,
@@ -126,7 +126,9 @@ export function initializeWallet({
 
   setupRpcEndpointMetrics(infuraProjectId, messenger);
 
-  wallet.init().catch((error) => console.error(error));
+  const walletInitPromise = wallet.init().catch((error) => {
+    console.error(error);
+  });
 
-  return wallet;
+  return { wallet, walletInitPromise };
 }
