@@ -41,15 +41,9 @@ export const getIsSocialLoginFlow = (state) => {
  * @returns {string} Route to redirect the user to
  */
 export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
-  const {
-    firstTimeFlowType,
-    hasSeenOnboardingCompletionPage,
-    completedOnboarding,
-  } = state.metamask;
+  const { firstTimeFlowType } = state.metamask;
 
-  if (hasSeenOnboardingCompletionPage && !completedOnboarding) {
-    return ONBOARDING_COMPLETION_ROUTE;
-  } else if (firstTimeFlowType === FirstTimeFlowType.create) {
+  if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_CREATE_PASSWORD_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;

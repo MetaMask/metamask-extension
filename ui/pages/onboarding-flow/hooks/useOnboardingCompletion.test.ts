@@ -190,7 +190,7 @@ describe('useOnboardingCompletion', () => {
     );
 
     await act(async () => {
-      await result.current.completeOnboardingFromCompletionPage();
+      await result.current.completeOnboarding();
     });
 
     await waitFor(() => {
@@ -208,7 +208,7 @@ describe('useOnboardingCompletion', () => {
     });
 
     await act(async () => {
-      await result.current.completeOnboardingFromCompletionPage();
+      await result.current.completeOnboarding();
     });
 
     expect(mockCompleteOnboarding).not.toHaveBeenCalled();
@@ -225,7 +225,7 @@ describe('useOnboardingCompletion', () => {
     );
 
     await act(async () => {
-      await result.current.completeOnboardingFromCompletionPage();
+      await result.current.completeOnboarding();
     });
 
     await waitFor(() => {
@@ -244,7 +244,7 @@ describe('useOnboardingCompletion', () => {
     );
 
     await act(async () => {
-      await result.current.completeOnboardingFromCompletionPage();
+      await result.current.completeOnboarding();
     });
 
     await waitFor(() => {
@@ -265,13 +265,13 @@ describe('useOnboardingCompletion', () => {
     );
 
     await act(async () => {
-      await expect(
-        result.current.completeOnboardingFromCompletionPage(),
-      ).rejects.toThrow('completion failed');
+      await expect(result.current.completeOnboarding()).rejects.toThrow(
+        'completion failed',
+      );
     });
 
     await act(async () => {
-      await result.current.completeOnboardingFromCompletionPage();
+      await result.current.completeOnboarding();
     });
 
     await waitFor(() => {
@@ -294,7 +294,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -313,7 +313,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -372,7 +372,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -397,7 +397,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage(true);
+        await result.current.completeOnboarding(true);
       });
 
       await waitFor(() => {
@@ -447,7 +447,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage(true);
+        await result.current.completeOnboarding(true);
       });
 
       await waitFor(() => {
@@ -480,7 +480,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -522,7 +522,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -558,7 +558,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -600,7 +600,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -650,7 +650,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -681,7 +681,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -710,7 +710,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -735,7 +735,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {
@@ -768,7 +768,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage();
+        await result.current.completeOnboarding();
       });
 
       await waitFor(() => {

@@ -49,7 +49,7 @@ export default function CreationSuccessful() {
   const isInitialized = useSelector(getIsInitialized);
   const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
   const {
-    completeOnboardingFromCompletionPage,
+    completeOnboarding: completeOnboardingFromCompletionPage,
     markCompletionPageSeen,
     isSidePanelOpen,
     setIsSidePanelOpen,

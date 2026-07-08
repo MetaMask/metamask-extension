@@ -8,22 +8,27 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  SECURITY_AND_PASSWORD_ROUTE,
+  DEEP_LINK_ROUTE,
 } from '../../../helpers/constants/routes';
+import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
+import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
 import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { useOnboardingCompletion } from '../hooks/useOnboardingCompletion';
 import CreationSuccessful from './creation-successful';
 
-jest.mock('../hooks/useOnboardingCompletion');
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
 
-const mockCompleteOnboardingFromCompletionPage = jest
-  .fn()
-  .mockResolvedValue(undefined);
-const mockMarkCompletionPageSeen = jest.fn();
-const mockSetIsSidePanelOpen = jest.fn();
-
-const mockUseOnboardingCompletion = useOnboardingCompletion as jest.Mock;
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 let mockUseLocationSearch = '';
@@ -47,7 +52,11 @@ jest.mock('../../../components/component-library/lottie-animation', () => ({
 }));
 
 jest.mock('webextension-polyfill', () => ({
+  tabs: {
+    query: jest.fn(),
+  },
   sidePanel: {
+    open: jest.fn(),
     onClosed: {
       addListener: jest.fn(),
       removeListener: jest.fn(),
@@ -55,7 +64,44 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
+const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
+  () => false,
+);
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
+}));
+
+// Mock background connection to prevent "Background connection not initialized" warnings
+const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
+const mockSetIsBackupAndSyncFeatureEnabled = jest
+  .fn()
+  .mockResolvedValue(undefined);
+const mockToggleExternalServices = jest.fn().mockResolvedValue(undefined);
+const mockSetPreference = jest.fn().mockResolvedValue(undefined);
+const mockSetUseMultiAccountBalanceChecker = jest
+  .fn()
+  .mockResolvedValue(undefined);
+const backgroundConnectionMock = new Proxy(
+  {
+    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
+    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
+    toggleExternalServices: mockToggleExternalServices,
+    setPreference: mockSetPreference,
+    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
+  },
+  {
+    get: (target, prop) => {
+      if (prop in target) {
+        return target[prop as keyof typeof target];
+      }
+      return jest.fn().mockResolvedValue(undefined);
+    },
+  },
+);
 
 describe('Wallet Ready Page', () => {
   const mockState = {
@@ -84,8 +130,6 @@ describe('Wallet Ready Page', () => {
       seedPhraseBackedUp: true,
       isInitialized: true,
       isUnlocked: true,
-      completedOnboarding: false,
-      hasSeenOnboardingCompletionPage: false,
       deferredDeepLink: null,
     },
     appState: {
@@ -96,49 +140,21 @@ describe('Wallet Ready Page', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseNavigate.mockClear();
-    mockUseOnboardingCompletion.mockReturnValue({
-      completeOnboardingFromCompletionPage:
-        mockCompleteOnboardingFromCompletionPage,
-      markCompletionPageSeen: mockMarkCompletionPageSeen,
-      isSidePanelOpen: false,
-      setIsSidePanelOpen: mockSetIsSidePanelOpen,
-    });
-    (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
       false,
     );
+    mockUseNavigate.mockClear();
+    setBackgroundConnection(backgroundConnectionMock as never);
   });
 
-  it('marks the onboarding completion page as seen on first visit', async () => {
-    const mockStore = configureMockStore([thunk])(mockState);
-    renderWithProvider(<CreationSuccessful />, mockStore);
-
-    await waitFor(() => {
-      expect(mockMarkCompletionPageSeen).toHaveBeenCalled();
-    });
-  });
-
-  it('does not mark the onboarding completion page as seen when from reminder', () => {
-    const previousSearch = mockUseLocationSearch;
-    mockUseLocationSearch = '?isFromReminder=true';
-
-    try {
-      const mockStore = configureMockStore([thunk])(mockState);
-      renderWithProvider(<CreationSuccessful />, mockStore);
-      expect(mockMarkCompletionPageSeen).not.toHaveBeenCalled();
-    } finally {
-      mockUseLocationSearch = previousSearch;
-    }
-  });
-
-  it('renders the wallet ready content if the seed phrase is backed up', () => {
+  it('should render the wallet ready content if the seed phrase is backed up', () => {
     const mockStore = configureMockStore([thunk])(mockState);
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
     expect(getByText(messages.yourWalletIsReady.message)).toBeInTheDocument();
   });
 
-  it('renders the wallet ready content if the seed phrase is not backed up', () => {
+  it('should render the wallet ready content if the seed phrase is not backed up', () => {
     const mockStore = configureMockStore([thunk])({
       ...mockState,
       metamask: {
@@ -151,7 +167,7 @@ describe('Wallet Ready Page', () => {
     expect(getByText(messages.yourWalletIsReady.message)).toBeInTheDocument();
   });
 
-  it('redirects to privacy-settings view when "Manage default settings" button is clicked', () => {
+  it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
     const mockStore = configureMockStore([thunk])(mockState);
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
     const privacySettingsButton = getByText(
@@ -189,7 +205,23 @@ describe('Wallet Ready Page', () => {
     }
   });
 
-  it('delegates onboarding completion to the shared hook when "Done" is clicked', async () => {
+  it('should route to pin extension route when "Done" button is clicked', async () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+    const { getByTestId } = renderWithProvider(
+      <CreationSuccessful />,
+      mockStore,
+    );
+    const doneButton = getByTestId('onboarding-complete-done');
+    fireEvent.click(doneButton);
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
+  it('sets the consolidated Basic Functionality cohort marker when the build flag is enabled', async () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
     const mockStore = configureMockStore([thunk])(mockState);
     const { getByTestId } = renderWithProvider(
       <CreationSuccessful />,
@@ -199,16 +231,44 @@ describe('Wallet Ready Page', () => {
     fireEvent.click(getByTestId('onboarding-complete-done'));
 
     await waitFor(() => {
-      expect(mockCompleteOnboardingFromCompletionPage).toHaveBeenCalledTimes(1);
+      expect(mockSetPreference).toHaveBeenCalledWith(
+        'isBasicFunctionalityConsolidatedEnabled',
+        true,
+      );
     });
   });
 
-  it('navigates away without completing onboarding when from reminder', async () => {
-    const previousSearch = mockUseLocationSearch;
-    mockUseLocationSearch = '?isFromReminder=true';
+  describe('Backup & Sync onboarding intent', () => {
+    it('disables the backup & sync main feature on completion when the onboarding flag is off', async () => {
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        appState: {
+          ...mockState.appState,
+          backupAndSyncOnboardingToggleState: false,
+        },
+      });
 
-    try {
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      fireEvent.click(getByTestId('onboarding-complete-done'));
+
+      // Only the main flag needs to be disabled: account/contact syncing gate
+      // on `isBackupAndSyncEnabled` downstream, so disabling main is sufficient.
+      await waitFor(() => {
+        expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledWith(
+          'main',
+          false,
+        );
+      });
+      expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not call the backup & sync controller on completion when the onboarding flag is on (default)', async () => {
       const mockStore = configureMockStore([thunk])(mockState);
+
       const { getByTestId } = renderWithProvider(
         <CreationSuccessful />,
         mockStore,
@@ -219,34 +279,8 @@ describe('Wallet Ready Page', () => {
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       });
-      expect(mockCompleteOnboardingFromCompletionPage).not.toHaveBeenCalled();
-    } finally {
-      mockUseLocationSearch = previousSearch;
-    }
-  });
-
-  it('navigates to security settings when done from reminder via settings security', async () => {
-    const previousSearch = mockUseLocationSearch;
-    mockUseLocationSearch = '?isFromReminder=true&isFromSettingsSecurity=true';
-
-    try {
-      const mockStore = configureMockStore([thunk])(mockState);
-      const { getByTestId } = renderWithProvider(
-        <CreationSuccessful />,
-        mockStore,
-      );
-
-      fireEvent.click(getByTestId('onboarding-complete-done'));
-
-      await waitFor(() => {
-        expect(mockUseNavigate).toHaveBeenCalledWith(
-          SECURITY_AND_PASSWORD_ROUTE,
-        );
-      });
-      expect(mockCompleteOnboardingFromCompletionPage).not.toHaveBeenCalled();
-    } finally {
-      mockUseLocationSearch = previousSearch;
-    }
+      expect(mockSetIsBackupAndSyncFeatureEnabled).not.toHaveBeenCalled();
+    });
   });
 
   it('redirects to default route when wallet is not initialized', () => {
@@ -264,24 +298,365 @@ describe('Wallet Ready Page', () => {
     });
   });
 
-  it('disables the done button while the side panel is open', () => {
-    (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
-      true,
-    );
-    mockUseOnboardingCompletion.mockReturnValue({
-      completeOnboardingFromCompletionPage:
-        mockCompleteOnboardingFromCompletionPage,
-      markCompletionPageSeen: mockMarkCompletionPageSeen,
-      isSidePanelOpen: true,
-      setIsSidePanelOpen: mockSetIsSidePanelOpen,
+  describe('Deferred Deep Link - Side Panel Enabled', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockUseNavigate.mockClear();
+      (
+        useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
+      ).mockReturnValue(true);
     });
 
-    const mockStore = configureMockStore([thunk])(mockState);
-    const { getByTestId } = renderWithProvider(
-      <CreationSuccessful />,
-      mockStore,
-    );
+    it('should open side panel and redirect to external URL with _self target when deferred deep link has Redirect type', async () => {
+      const externalUrl = 'https://external-app.com/callback';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Redirect,
+        url: externalUrl,
+      });
 
-    expect(getByTestId('onboarding-complete-done')).toBeDisabled();
+      const mockAssign = jest.fn();
+      Object.defineProperty(window, 'location', {
+        value: {
+          assign: mockAssign,
+        },
+        writable: true,
+      });
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink:
+              'https://example.com/deferred?redirectTo=https://external-app.com/callback',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(browserMock.sidePanel.open).toHaveBeenCalledWith({
+          windowId: 1,
+        });
+        expect(mockAssign).toHaveBeenCalledWith(externalUrl);
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+    });
+
+    it('should skip side panel opening when deferred deep link with Navigate type is present', async () => {
+      const testRoute = '/home';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Navigate,
+        route: testRoute,
+      });
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://example.com/deferred?path=/home',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        // The side panel should NOT be opened when a deferred deep link has the 'Navigate' type
+        expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(testRoute);
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+    });
+
+    it('should open side panel when deferred deep link route result is null', async () => {
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now() - 2 * 60 * 60 * 1000, // Expired link
+            referringLink: 'https://example.com/deferred',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        // Side panel should be opened when deferred deep link is null
+        expect(browserMock.sidePanel.open).toHaveBeenCalledWith({
+          windowId: 1,
+        });
+        expect(mockUseNavigate).not.toHaveBeenCalled();
+      });
+    });
+
+    it('should skip side panel opening and navigate to interstitial page for Interstitial type (unsigned/invalid signature)', async () => {
+      const urlPathAndQuery = '/swap?amount=100';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Interstitial,
+        urlPathAndQuery,
+      });
+      (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
+        `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
+      );
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://link.metamask.io/swap?amount=100',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        // The side panel should NOT be opened for Interstitial type
+        expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+        expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
+          urlPathAndQuery,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
+        );
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('Deferred Deep Link - Side Panel Disabled', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockUseNavigate.mockClear();
+      (
+        useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
+      ).mockReturnValue(false);
+    });
+
+    it('should redirect to external URL with _blank target when deferred deep link has Redirect type and side panel is disabled', async () => {
+      const externalUrl = 'https://external-app.com/callback';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Redirect,
+        url: externalUrl,
+      });
+
+      const windowOpenSpy = jest
+        .spyOn(window, 'open')
+        .mockImplementation(() => null);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://link.metamask.io/buy',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(windowOpenSpy).toHaveBeenCalledWith(externalUrl, '_blank');
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+
+      windowOpenSpy.mockRestore();
+    });
+
+    it('should navigate to internal route when deferred deep link has Navigate type and side panel is disabled', async () => {
+      const testRoute = '/swap';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Navigate,
+        route: testRoute,
+      });
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://link.metamask.io/swap',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(testRoute);
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+    });
+
+    it('should navigate to DEFAULT_ROUTE when deferred deep link result is null and side panel is disabled', async () => {
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now() - 2 * 60 * 60 * 1000, // Expired link
+            referringLink: 'https://link.metamask.io/swap',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+
+    it('should navigate to DEFAULT_ROUTE when no deferred deep link is available and side panel is disabled', async () => {
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: null,
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+
+    it('should navigate to interstitial page for Interstitial type (unsigned/invalid signature) when side panel is disabled', async () => {
+      const urlPathAndQuery = '/swap?amount=100';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Interstitial,
+        urlPathAndQuery,
+      });
+      (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
+        `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
+      );
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://link.metamask.io/swap?amount=100',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
+          urlPathAndQuery,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
+        );
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+    });
   });
 });

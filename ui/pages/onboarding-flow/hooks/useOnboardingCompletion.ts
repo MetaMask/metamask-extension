@@ -120,13 +120,12 @@ export function useOnboardingCompletion() {
   /**
    * Runs the shared onboarding "Done" flow from the completion page.
    *
-   * @param autoCompleteWithoutUserGesture - When true (return visit via
-   * `OnboardingCompletionRoute`), skips `sidePanel.open()` because completion
-   * runs from `useEffect` without a user gesture. Side panel is still enabled
-   * on the next toolbar click, and navigation follows popup rules so the user
-   * is sent home instead of remaining on the completion route.
+   * @param autoCompleteWithoutUserGesture - When true (unlock after seeing
+   * wallet-ready without tapping Done), skips `sidePanel.open()` because
+   * completion runs without a user gesture. Side panel is still enabled on the
+   * next toolbar click, and navigation follows popup rules.
    */
-  const completeOnboardingFromCompletionPage = useCallback(
+  const completeOnboarding = useCallback(
     async (autoCompleteWithoutUserGesture: boolean = false) => {
       if (!isUnlocked) {
         return;
@@ -285,7 +284,7 @@ export function useOnboardingCompletion() {
   }, [dispatch, hasSeenOnboardingCompletionPage]);
 
   return {
-    completeOnboardingFromCompletionPage,
+    completeOnboarding,
     markCompletionPageSeen,
     isSidePanelOpen,
     setIsSidePanelOpen,

@@ -5,7 +5,6 @@ import React, {
   useContext,
   useMemo,
   useCallback,
-  useRef,
 } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,9 +43,7 @@ import { toRelativeRoutePath } from '../routes/utils';
 import {
   getCompletedOnboarding,
   getHasSeenOnboardingCompletionPage,
-  getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
-  getIsWalletResetInProgress,
   getOpenedWithSidepanel,
 } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
@@ -91,12 +88,13 @@ import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import PrivacySettings from './privacy-settings/privacy-settings';
-import OnboardingCompletionRoute from './creation-successful/onboarding-completion-route';
+import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
 import { useOnboardingSearchParams } from './hooks/useOnboardingSearchParams';
+import { useOnboardingCompletion } from './hooks/useOnboardingCompletion';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
@@ -131,9 +129,8 @@ export default function OnboardingFlow() {
   const hasSeenOnboardingCompletionPage = useSelector(
     getHasSeenOnboardingCompletionPage,
   );
-  const isInitialized = useSelector(getIsInitialized);
-  const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
+  const { completeOnboarding } = useOnboardingCompletion();
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const shouldUnlockBeforeOnboardingCompletion = useSelector(
     getShouldUnlockBeforeOnboardingCompletion,
@@ -181,44 +178,6 @@ export default function OnboardingFlow() {
     () => pathname === ONBOARDING_WELCOME_ROUTE,
     [pathname],
   );
-
-  // When users close the extension without tapping Done on the completion page,
-  // they land here again on reopen. `hasSeenOnboardingCompletionPage` tracks that
-  // visit, while `completedOnboarding` stays false until the full Done flow runs.
-  // Capture `hasSeen` once per route entry so marking seen on first visit does
-  // not flip auto-complete on in the same session (CreationSuccessful marks seen
-  // on mount).
-  const completionRouteEntryRef = useRef({
-    pathname: '',
-    hasSeen: false,
-  });
-
-  if (completionRouteEntryRef.current.pathname !== pathname) {
-    completionRouteEntryRef.current = {
-      pathname,
-      hasSeen:
-        pathname === ONBOARDING_COMPLETION_ROUTE
-          ? hasSeenOnboardingCompletionPage
-          : false,
-    };
-  }
-
-  const hasSeenAtCompletionEntry =
-    pathname === ONBOARDING_COMPLETION_ROUTE
-      ? completionRouteEntryRef.current.hasSeen
-      : false;
-
-  // Return visit: skip the completion UI and run the same Done flow as the button.
-  // Require unlock so background sync triggered by `completeOnboarding` can obtain
-  // a bearer token (see `AuthenticationController.getBearerToken`).
-  const shouldAutoCompleteCompletion =
-    pathname === ONBOARDING_COMPLETION_ROUTE &&
-    hasSeenAtCompletionEntry &&
-    isInitialized &&
-    !isResetWalletInProgress &&
-    !isFromReminder &&
-    !completedOnboarding &&
-    isUnlocked;
 
   useEffect(() => {
     setOnboardingDate();
@@ -391,6 +350,14 @@ export default function OnboardingFlow() {
           }
           navigate(redirectTo, { replace: true });
         }
+      } else if (
+        hasSeenOnboardingCompletionPage &&
+        !completedOnboarding &&
+        !isFromReminder
+      ) {
+        // User saw wallet-ready but closed without tapping Done. After unlock,
+        // finish onboarding the same way as the Done button (no completion UI).
+        await completeOnboarding(true);
       } else {
         navigate(nextRoute, { replace: true });
       }
@@ -541,11 +508,7 @@ export default function OnboardingFlow() {
               />
               <Route
                 path={toRelativePath(ONBOARDING_COMPLETION_ROUTE)}
-                element={
-                  <OnboardingCompletionRoute
-                    shouldAutoComplete={shouldAutoCompleteCompletion}
-                  />
-                }
+                element={<CreationSuccessful />}
               />
               <Route
                 path={toRelativePath(ONBOARDING_WELCOME_ROUTE)}
