@@ -6,6 +6,7 @@ import type {
 import type {
   AnalyticsContext,
   AnalyticsControllerState,
+  AnalyticsEventProperties,
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
 import { AddressBookEntry } from '@metamask/address-book-controller';
@@ -66,12 +67,19 @@ import {
 } from '../../../test/data/mock-accounts';
 import type { Preferences } from '../../../shared/types/preferences';
 import * as sentry from '../../../shared/lib/sentry';
-import { ANONYMOUS_EVENT_PROPERTY } from './analytics/platform-adapter';
+import { configureOptOutSegmentEnrichment } from '../lib/segment/custom-segment-tracking';
+import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
+import {
+  createEnrichmentContext,
+  enrichEventContext,
+  enrichEventProperties,
+  enrichWithABTestAnalytics,
+} from './analytics/platform-adapter';
 import {
   configureAnalytics,
-  getAnalyticsMessenger,
+  getProfileIdentityProperties,
   updateProfileSessionData,
-} from './analytics';
+} from './analytics/analytics';
 import {
   MetaMetricsController,
   AllowedActions,
@@ -936,7 +944,6 @@ describe('MetaMetricsController', function () {
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id: '1',
-                [ANONYMOUS_EVENT_PROPERTY]: true,
               }),
             }),
             undefined,
@@ -1051,7 +1058,6 @@ describe('MetaMetricsController', function () {
             properties: expect.objectContaining({
               foo: 'bar',
               ...DEFAULT_EVENT_PROPERTIES,
-              [ANONYMOUS_EVENT_PROPERTY]: true,
             }),
           }),
           undefined,
@@ -1365,7 +1371,6 @@ describe('MetaMetricsController', function () {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               active_ab_tests: [normalizedAssignment],
               sensitive: 'value',
-              [ANONYMOUS_EVENT_PROPERTY]: true,
             }),
           }),
           undefined,
@@ -1430,7 +1435,6 @@ describe('MetaMetricsController', function () {
                 active_ab_tests: [
                   createActiveABTestAssignment(TEST_BADGE_FLAG_KEY, 'control'),
                 ],
-                [ANONYMOUS_EVENT_PROPERTY]: true,
               }),
             }),
             undefined,
@@ -1578,7 +1582,6 @@ describe('MetaMetricsController', function () {
         expect(spy.mock.calls[1][0].properties).toMatchObject({
           foo: 'bar',
           ...DEFAULT_EVENT_PROPERTIES,
-          [ANONYMOUS_EVENT_PROPERTY]: true,
         });
         expect(spy.mock.calls[1][0].properties).not.toHaveProperty(
           'profile_id',
@@ -1617,7 +1620,6 @@ describe('MetaMetricsController', function () {
               event: 'Signature Requested',
               properties: expect.objectContaining({
                 ...DEFAULT_EVENT_PROPERTIES,
-                [ANONYMOUS_EVENT_PROPERTY]: true,
               }),
             }),
             undefined,
@@ -1658,7 +1660,6 @@ describe('MetaMetricsController', function () {
             properties: expect.objectContaining({
               foo: 'bar',
               ...DEFAULT_EVENT_PROPERTIES,
-              [ANONYMOUS_EVENT_PROPERTY]: true,
             }),
           });
         });
@@ -1695,7 +1696,6 @@ describe('MetaMetricsController', function () {
             properties: expect.objectContaining({
               foo: 'bar',
               ...DEFAULT_EVENT_PROPERTIES,
-              [ANONYMOUS_EVENT_PROPERTY]: true,
             }),
           });
         });
@@ -2126,7 +2126,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.HasMarketingConsent]: false,
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-          [MetaMetricsUserTrait.ProfileId]: undefined,
+          [MetaMetricsUserTrait.CanonicalProfileId]: undefined,
           [MetaMetricsUserTrait.AccountType]: 'metamask',
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
@@ -2382,7 +2382,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
-                canonicalProfileId: 'profileId',
+                canonicalProfileId: 'canonicalProfileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -2399,7 +2399,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
-          [MetaMetricsUserTrait.ProfileId]: 'profileId',
+          [MetaMetricsUserTrait.CanonicalProfileId]: 'canonicalProfileId',
           [MetaMetricsUserTrait.AccountType]: 'imported',
         });
       });
@@ -2471,7 +2471,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
-                canonicalProfileId: 'profileId',
+                canonicalProfileId: 'canonicalProfileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -2539,7 +2539,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
-                canonicalProfileId: 'profileId',
+                canonicalProfileId: 'canonicalProfileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -3254,6 +3254,15 @@ async function withController<ReturnValue>(
       mockAnalyticsControllerState.optedIn = false;
     });
 
+    const analyticsMessenger = getAnalyticsControllerInitMessenger(
+      messenger as Parameters<typeof getAnalyticsControllerInitMessenger>[0],
+    );
+    const enrichmentContext = createEnrichmentContext(
+      analyticsMessenger,
+      '0.0.1-test',
+      getProfileIdentityProperties,
+    );
+
     // Emulate the analytics platform adapter: every Segment payload is built
     // here and passed straight to `segmentMock`, preserving the existing
     // spy-based assertions in tests.
@@ -3282,17 +3291,28 @@ async function withController<ReturnValue>(
         return;
       }
 
+      if (!enrichmentContext.hasBasicFunctionalityEnabled()) {
+        return;
+      }
+
+      const enrichedContext = enrichEventContext(context, enrichmentContext);
+
       const buildPayload = (properties?: Record<string, unknown>) => {
+        const abEnrichedProperties = enrichWithABTestAnalytics(
+          event.name,
+          (properties ?? {}) as AnalyticsEventProperties,
+          enrichmentContext,
+        );
+        const enrichedProperties = enrichEventProperties(
+          abEnrichedProperties,
+          enrichmentContext,
+        );
         const payload: Record<string, unknown> = {
           userId: mockAnalyticsControllerState.analyticsId,
           event: event.name,
+          properties: enrichedProperties,
+          context: enrichedContext,
         };
-        if (properties !== undefined) {
-          payload.properties = properties;
-        }
-        if (context) {
-          payload.context = context;
-        }
         return payload;
       };
 
@@ -3328,17 +3348,31 @@ async function withController<ReturnValue>(
       if (!mockAnalyticsControllerState.optedIn) {
         return;
       }
-      const payload: Record<string, unknown> = {
-        userId: mockAnalyticsControllerState.analyticsId,
-        name,
-      };
-      if (properties) {
-        payload.properties = properties;
+
+      if (!enrichmentContext.hasBasicFunctionalityEnabled()) {
+        return;
       }
-      if (context) {
-        payload.context = context;
+
+      const enrichedProperties = enrichEventProperties(
+        (properties ?? {}) as AnalyticsEventProperties,
+        enrichmentContext,
+      );
+      const pageChainProperties = enrichmentContext.getPageChainProperties();
+      Object.assign(enrichedProperties, pageChainProperties);
+      if (!('chain_id_caip' in pageChainProperties)) {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        delete enrichedProperties.chain_id_caip;
       }
-      segmentMock.page(payload as never, undefined);
+      const enrichedContext = enrichEventContext(context, enrichmentContext);
+      segmentMock.page(
+        {
+          userId: mockAnalyticsControllerState.analyticsId,
+          name,
+          properties: enrichedProperties,
+          context: enrichedContext,
+        } as never,
+        undefined,
+      );
     }) as never);
 
     const metaMetricsControllerMessenger = new Messenger<
@@ -3373,10 +3407,9 @@ async function withController<ReturnValue>(
     });
 
     configureAnalytics({
-      messenger: getAnalyticsMessenger(messenger),
-      version: '0.0.1',
-      environment: 'test',
+      messenger: analyticsMessenger,
     });
+    configureOptOutSegmentEnrichment(enrichmentContext);
 
     return fn({
       controller: new MetaMetricsController({
