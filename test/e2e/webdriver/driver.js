@@ -736,7 +736,9 @@ class Driver {
   async clickElement(rawLocator, { retries = 3, timeout = this.timeout } = {}) {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
-        const element = await this.findClickableElement(rawLocator, { timeout });
+        const element = await this.findClickableElement(rawLocator, {
+          timeout,
+        });
         await element.click();
         return;
       } catch (error) {
