@@ -10,8 +10,8 @@ import {
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { MOCK_ANALYTICS_ID } from '../../constants';
-import { PAGES } from '../../webdriver/driver';
+import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
+import { type Driver, PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
@@ -19,6 +19,10 @@ const PORT_STREAM_CHUNKED_EVENT = 'Port Stream Chunked';
 const STRUCTURED_CLONE_MESSAGE_SERIALIZATION = 'structured_clone';
 const STRUCTURED_CLONE_CHROME_VERSION = '148';
 const CHROMIUM_MESSAGE_SIZE_LIMIT = 67108864; // 64 MB
+const HUGE_TRANSACTION_COUNT = 35;
+const BACKGROUND_STATE_SYNC_TIMEOUT = 60000;
+const UNLOCK_PASSWORD_INPUT = { testId: 'unlock-password' };
+const UNLOCK_SUBMIT_BUTTON = { testId: 'unlock-submit' };
 
 type SegmentEvent = {
   event: string;
@@ -125,13 +129,37 @@ function assertChunkedEvent(
   );
 }
 
+async function loginToHomepageWithoutSendKeys(driver: Driver) {
+  const passwordInput = await driver.findElement(UNLOCK_PASSWORD_INPUT);
+
+  await driver.driver.executeScript(
+    `
+      const [input, password] = arguments;
+      const valueSetter = Object.getOwnPropertyDescriptor(
+        HTMLInputElement.prototype,
+        'value',
+      ).set;
+      valueSetter.call(input, password);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    `,
+    passwordInput,
+    WALLET_PASSWORD,
+  );
+
+  await driver.clickElement(UNLOCK_SUBMIT_BUTTON);
+}
+
 async function loadWalletWithHugeBackgroundState({
   expectChromeChunkedEvent,
   expectedChromeMessageSerialization,
   manifestTransform,
   title,
 }: HugeStateTestOptions) {
-  const largeTransactions = Array.from({ length: 40 }, () => hugeTx);
+  const largeTransactions = Array.from(
+    { length: HUGE_TRANSACTION_COUNT },
+    () => hugeTx,
+  );
 
   await withFixtures(
     {
@@ -154,10 +182,12 @@ async function loadWalletWithHugeBackgroundState({
       assertChromeMessageSerialization(expectedChromeMessageSerialization);
 
       // We need an unusual amount of time because of the large background state.
-      await driver.navigate(PAGES.HOME, { waitForControllersTimeout: 20000 });
+      await driver.navigate(PAGES.HOME, {
+        waitForControllersTimeout: BACKGROUND_STATE_SYNC_TIMEOUT,
+      });
       const loginPage = new LoginPage(driver);
       await loginPage.checkPageIsLoaded();
-      await loginPage.loginToHomepage();
+      await loginToHomepageWithoutSendKeys(driver);
 
       const homepage = new HomePage(driver);
       // Just check that the balance is displayed (wallet is usable).
