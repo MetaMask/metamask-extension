@@ -130,6 +130,8 @@ describe('useOnboardingCompletion', () => {
     },
   };
 
+  let windowOpenSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
@@ -140,6 +142,14 @@ describe('useOnboardingCompletion', () => {
     (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
       false,
     );
+    (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+      null,
+    );
+    windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+  });
+
+  afterEach(() => {
+    windowOpenSpy.mockRestore();
   });
 
   it('marks the onboarding completion page as seen', async () => {
@@ -186,6 +196,23 @@ describe('useOnboardingCompletion', () => {
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
+  });
+
+  it('does not complete onboarding while the wallet is locked', async () => {
+    const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        isUnlocked: false,
+      },
+    });
+
+    await act(async () => {
+      await result.current.completeOnboardingFromCompletionPage();
+    });
+
+    expect(mockCompleteOnboarding).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('sets the consolidated Basic Functionality cohort marker when the build flag is enabled', async () => {
@@ -303,6 +330,9 @@ describe('useOnboardingCompletion', () => {
       (
         useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
       ).mockReturnValue(true);
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
     });
 
     it('opens side panel and redirects to external URL with _self target when deferred deep link has Redirect type', async () => {
@@ -354,7 +384,7 @@ describe('useOnboardingCompletion', () => {
       });
     });
 
-    it('enables side panel as default without opening it when openSidePanel is false', async () => {
+    it('enables side panel as default and navigates home when auto-completing without a user gesture', async () => {
       const browserMock = jest.requireMock('webextension-polyfill');
       (browserMock.tabs.query as jest.Mock).mockResolvedValue([
         { windowId: 1, id: 1 },
@@ -367,9 +397,7 @@ describe('useOnboardingCompletion', () => {
       );
 
       await act(async () => {
-        await result.current.completeOnboardingFromCompletionPage({
-          openSidePanel: false,
-        });
+        await result.current.completeOnboardingFromCompletionPage(true);
       });
 
       await waitFor(() => {
@@ -378,8 +406,57 @@ describe('useOnboardingCompletion', () => {
           'useSidePanelAsDefault',
           true,
         );
-        expect(mockCompleteOnboarding).toHaveBeenCalled();
-        expect(mockUseNavigate).not.toHaveBeenCalled();
+        expect(mockCompleteOnboarding).toHaveBeenCalledTimes(1);
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+
+    it('uses popup redirect handling when auto-completing with a Redirect deferred deep link', async () => {
+      const externalUrl = 'https://external-app.com/callback';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Redirect,
+        url: externalUrl,
+      });
+
+      const mockAssign = jest.fn();
+      Object.defineProperty(window, 'location', {
+        value: {
+          assign: mockAssign,
+        },
+        writable: true,
+      });
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink: 'https://link.metamask.io/buy',
+            },
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboardingFromCompletionPage(true);
+      });
+
+      await waitFor(() => {
+        expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+        expect(mockAssign).not.toHaveBeenCalled();
+        expect(windowOpenSpy).toHaveBeenCalledWith(externalUrl, '_blank');
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+        expect(mockCompleteOnboarding).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -546,6 +623,9 @@ describe('useOnboardingCompletion', () => {
       (
         useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
       ).mockReturnValue(false);
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
     });
 
     it('redirects to external URL with _blank target when deferred deep link has Redirect type and side panel is disabled', async () => {
@@ -554,10 +634,6 @@ describe('useOnboardingCompletion', () => {
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
       });
-
-      const windowOpenSpy = jest
-        .spyOn(window, 'open')
-        .mockImplementation(() => null);
 
       const { result } = renderHookWithProvider(
         () => useOnboardingCompletion(),
@@ -581,8 +657,6 @@ describe('useOnboardingCompletion', () => {
         expect(windowOpenSpy).toHaveBeenCalledWith(externalUrl, '_blank');
         expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
       });
-
-      windowOpenSpy.mockRestore();
     });
 
     it('navigates to internal route when deferred deep link has Navigate type and side panel is disabled', async () => {

@@ -63,6 +63,7 @@ import {
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
+  getShouldUnlockBeforeOnboardingCompletion,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import type { UIMetricsEventPayload } from '../../contexts/metametrics';
@@ -134,6 +135,9 @@ export default function OnboardingFlow() {
   const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
+  const shouldUnlockBeforeOnboardingCompletion = useSelector(
+    getShouldUnlockBeforeOnboardingCompletion,
+  );
   const { isFromReminder, isFromSettingsSecurity } =
     useOnboardingSearchParams();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -205,13 +209,16 @@ export default function OnboardingFlow() {
       : false;
 
   // Return visit: skip the completion UI and run the same Done flow as the button.
+  // Require unlock so background sync triggered by `completeOnboarding` can obtain
+  // a bearer token (see `AuthenticationController.getBearerToken`).
   const shouldAutoCompleteCompletion =
     pathname === ONBOARDING_COMPLETION_ROUTE &&
     hasSeenAtCompletionEntry &&
     isInitialized &&
     !isResetWalletInProgress &&
     !isFromReminder &&
-    !completedOnboarding;
+    !completedOnboarding &&
+    isUnlocked;
 
   useEffect(() => {
     setOnboardingDate();
@@ -267,6 +274,14 @@ export default function OnboardingFlow() {
         },
       );
     }
+
+    if (
+      pathname === ONBOARDING_COMPLETION_ROUTE &&
+      !isFromReminder &&
+      shouldUnlockBeforeOnboardingCompletion
+    ) {
+      navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
+    }
   }, [
     isUnlocked,
     completedOnboarding,
@@ -275,6 +290,8 @@ export default function OnboardingFlow() {
     navigate,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
+    isFromReminder,
+    shouldUnlockBeforeOnboardingCompletion,
   ]);
 
   useEffect(() => {

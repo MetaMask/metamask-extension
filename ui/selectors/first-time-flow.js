@@ -1,6 +1,11 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/lib/environment';
 import {
+  getIsInitialized,
+  getIsWalletResetInProgress,
+} from '../ducks/metamask/metamask';
+import { getIsUnlocked } from '../ducks/metamask/base-selectors';
+import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -36,9 +41,15 @@ export const getIsSocialLoginFlow = (state) => {
  * @returns {string} Route to redirect the user to
  */
 export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
-  const { firstTimeFlowType } = state.metamask;
+  const {
+    firstTimeFlowType,
+    hasSeenOnboardingCompletionPage,
+    completedOnboarding,
+  } = state.metamask;
 
-  if (firstTimeFlowType === FirstTimeFlowType.create) {
+  if (hasSeenOnboardingCompletionPage && !completedOnboarding) {
+    return ONBOARDING_COMPLETION_ROUTE;
+  } else if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_CREATE_PASSWORD_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
@@ -48,6 +59,26 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
     return ONBOARDING_DOWNLOAD_APP_ROUTE;
   }
   return DEFAULT_ROUTE;
+}
+
+/**
+ * True when a locked user should unlock before resuming the onboarding
+ * completion page (return visit without tapping Done).
+ *
+ * @param {object} state - MetaMask state tree
+ * @returns {boolean} Whether the user must unlock before onboarding completion
+ */
+export function getShouldUnlockBeforeOnboardingCompletion(state) {
+  const { hasSeenOnboardingCompletionPage, completedOnboarding } =
+    state.metamask;
+
+  return (
+    hasSeenOnboardingCompletionPage &&
+    !completedOnboarding &&
+    !getIsUnlocked(state) &&
+    getIsInitialized(state) &&
+    !getIsWalletResetInProgress(state)
+  );
 }
 
 /**

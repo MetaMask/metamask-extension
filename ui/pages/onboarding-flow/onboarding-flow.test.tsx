@@ -564,6 +564,45 @@ describe('Onboarding Flow', () => {
     });
   });
 
+  it('redirects locked return visits on the completion route to unlock', async () => {
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      createStore({
+        hasSeenOnboardingCompletionPage: true,
+        completedOnboarding: false,
+        isInitialized: true,
+        isUnlocked: false,
+      }),
+      ONBOARDING_COMPLETION_ROUTE,
+    );
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE, {
+        replace: true,
+      });
+    });
+  });
+
+  it('returns to the completion route after unlock when onboarding is unfinished', async () => {
+    const { getByTestId } = renderUnlockPage({
+      hasSeenOnboardingCompletionPage: true,
+      completedOnboarding: false,
+      isInitialized: true,
+      firstTimeFlowType: FirstTimeFlowType.create,
+    });
+
+    fireEvent.click(getByTestId('unlock-submit'));
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        {
+          replace: true,
+        },
+      );
+    });
+  });
+
   it('should render onboarding Login page screen', async () => {
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlowWithRouteContext />,

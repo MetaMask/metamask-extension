@@ -19,11 +19,9 @@ export default function OnboardingCompletionRoute({
       return;
     }
 
-    completeOnboardingFromCompletionPage({
-      // No user gesture here; skip `sidePanel.open()` but still enable side panel on
-      // the next toolbar click via `setUseSidePanelAsDefault` in the hook.
-      openSidePanel: false,
-    }).catch((error) => {
+    // Pass `true` so the hook skips `sidePanel.open()` (no user gesture) while still
+    // enabling the side panel on the next toolbar click and navigating home.
+    completeOnboardingFromCompletionPage(shouldAutoComplete).catch((error) => {
       console.error('Failed to auto-complete onboarding:', error);
       setAutoCompleteFailed(true);
     });

@@ -33,6 +33,7 @@ import {
   getCompletedOnboarding,
   getHasSeenOnboardingCompletionPage,
 } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import {
   toggleExternalServices,
   toggleBasicFunctionality,
@@ -45,15 +46,6 @@ import {
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
-
-type CompleteOnboardingFromCompletionPageOptions = {
-  /**
-   * When false, skips the immediate `browser.sidePanel.open()` call.
-   * Used by `OnboardingCompletionRoute` auto-complete on return visits, where
-   * completion runs from a `useEffect` without a user gesture.
-   */
-  openSidePanel?: boolean;
-};
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -74,6 +66,7 @@ export function useOnboardingCompletion() {
   );
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
+  const isUnlocked = useSelector(getIsUnlocked);
   const hasSeenOnboardingCompletionPage = useSelector(
     getHasSeenOnboardingCompletionPage,
   );
@@ -124,8 +117,20 @@ export function useOnboardingCompletion() {
     [dispatch, navigate],
   );
 
+  /**
+   * Runs the shared onboarding "Done" flow from the completion page.
+   *
+   * @param autoCompleteWithoutUserGesture - When true (return visit via
+   * `OnboardingCompletionRoute`), skips `sidePanel.open()` because completion
+   * runs from `useEffect` without a user gesture. Side panel is still enabled
+   * on the next toolbar click, and navigation follows popup rules so the user
+   * is sent home instead of remaining on the completion route.
+   */
   const completeOnboardingFromCompletionPage = useCallback(
-    async (options?: CompleteOnboardingFromCompletionPageOptions) => {
+    async (autoCompleteWithoutUserGesture: boolean = false) => {
+      if (!isUnlocked) {
+        return;
+      }
       if (isFinishingOnboardingRef.current) {
         return;
       }
@@ -210,29 +215,34 @@ export function useOnboardingCompletion() {
                 currentWindow: true,
               });
               if (tabs && tabs.length > 0) {
-                // `browser.sidePanel.open()` requires a user gesture. Skip the call when:
-                // - `openSidePanel` is false (auto-complete on return visit), or
-                // - the deferred deep link is Navigate/Interstitial (`shouldOpenSidePanel`).
-                // If `.open()` throws, the outer catch falls through to popup completion.
-                if (shouldOpenSidePanel && options?.openSidePanel !== false) {
+                // `browser.sidePanel.open()` requires a user gesture. Auto-complete
+                // runs from `useEffect`, so skip the call there. Navigate/Interstitial
+                // deferred deep links also skip opening so the popup can route first.
+                if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {
                   await browserWithSidePanel.sidePanel.open({
                     windowId: tabs[0].windowId,
                   });
                   setIsSidePanelOpen(true);
                 }
+
+                // Prefer the side panel on the next toolbar click after onboarding.
                 await dispatch(setUseSidePanelAsDefault(true));
                 await dispatch(setCompletedOnboardingWithSidepanel());
 
+                // Auto-complete passes `completedWithSidePanelFlow: false` so navigation
+                // uses popup rules (home redirect, `_blank` external redirects) even
+                // though the panel did not open in this popup context.
                 handleOnDoneNavigation(
                   deferredDeepLinkResult,
                   Boolean(deferredDeepLink),
-                  true,
+                  !autoCompleteWithoutUserGesture,
                 );
 
                 return;
               }
             }
           } catch (error) {
+            // Unexpected `.open()` failure: fall through to popup completion below.
             console.error('Error opening side panel:', error);
           }
         }
@@ -262,6 +272,7 @@ export function useOnboardingCompletion() {
       isOnboardingCompleted,
       isOptedIn,
       isSidePanelEnabled,
+      isUnlocked,
       trackEvent,
     ],
   );

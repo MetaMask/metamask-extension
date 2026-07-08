@@ -150,6 +150,30 @@ describe('OnboardingCompletionRoute', () => {
     });
   });
 
+  it('navigates home when auto-completing with side panel enabled but without opening it', async () => {
+    (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
+      true,
+    );
+
+    const browserMock = jest.requireMock('webextension-polyfill');
+    (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+      { windowId: 1, id: 1 },
+    ]);
+
+    const mockStore = configureMockStore([thunk])(mockState);
+
+    renderWithProvider(
+      <OnboardingCompletionRoute shouldAutoComplete />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+      expect(mockCompleteOnboarding).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
   it('renders the completion page when auto-complete fails', async () => {
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
