@@ -64,11 +64,17 @@ import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type { Preferences } from '../../../shared/types/preferences';
 import { LegacyBackgroundApiServiceSetLockedAction } from '../services/legacy-background-api-service-method-action-types';
+import {
+  BOTTOM_NAV_AB_TEST_KEY,
+  evaluateBottomNavEligibility,
+} from '../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 import { AppStateControllerMethodActions } from './app-state-controller-method-action-types';
+import type { AppMetadataControllerGetStateAction } from './app-metadata';
+import type { OnboardingControllerGetStateAction } from './onboarding';
 
 export type DappSwapComparisonData = {
   quotes?: QuoteResponse[];
@@ -224,7 +230,9 @@ export type AllowedActions =
   | KeyringControllerGetStateAction
   | LegacyBackgroundApiServiceSetLockedAction
   | PreferencesControllerGetStateAction
-  | ProfileMetricsControllerSkipInitialDelayAction;
+  | ProfileMetricsControllerSkipInitialDelayAction
+  | AppMetadataControllerGetStateAction
+  | OnboardingControllerGetStateAction;
 
 /**
  * Event emitted when the state of the {@link AppStateController} changes.
@@ -839,6 +847,10 @@ export class AppStateController extends BaseController<
       this.#handleUnlock.bind(this),
     );
 
+    messenger.subscribe('KeyringController:unlock', () => {
+      this.#checkBottomNavExperimentEligibility();
+    });
+
     messenger.subscribe(
       'PreferencesController:stateChange',
       ({ preferences }: { preferences: Partial<Preferences> }) => {
@@ -915,6 +927,32 @@ export class AppStateController extends BaseController<
     }
 
     this.#acceptApproval();
+  }
+
+  /**
+   * Evaluates and persists Bottom Nav Bar experiment eligibility on unlock.
+   * If the user has already been evaluated for the experiment, this is a no-op.
+   */
+  #checkBottomNavExperimentEligibility(): void {
+    if (
+      this.state.experimentEligibility[BOTTOM_NAV_AB_TEST_KEY] !== undefined
+    ) {
+      return;
+    }
+
+    const { firstTimeInfo } = this.messenger.call(
+      'AppMetadataController:getState',
+    );
+    const { firstTimeFlowType } = this.messenger.call(
+      'OnboardingController:getState',
+    );
+
+    const isEligible = evaluateBottomNavEligibility({
+      firstTimeInfoDate: firstTimeInfo?.date,
+      firstTimeFlowType,
+    });
+
+    this.setExperimentEligibility(BOTTOM_NAV_AB_TEST_KEY, isEligible);
   }
 
   /**
@@ -1355,15 +1393,11 @@ export class AppStateController extends BaseController<
 
   /**
    * Records whether the user is eligible for a named experiment.
-   * Called once per experiment; subsequent calls for the same key are no-ops.
    *
    * @param flagKey - The LaunchDarkly flag key for the experiment.
    * @param isEligible - Whether the user meets the cohort criteria.
    */
   setExperimentEligibility(flagKey: string, isEligible: boolean): void {
-    if (this.state.experimentEligibility[flagKey] !== undefined) {
-      return;
-    }
     this.update((state) => {
       state.experimentEligibility[flagKey] = isEligible;
     });
