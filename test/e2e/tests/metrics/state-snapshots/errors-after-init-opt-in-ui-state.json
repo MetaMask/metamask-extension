@@ -302,6 +302,7 @@
       "featureNotificationsEnabled": "boolean",
       "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
+      "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
