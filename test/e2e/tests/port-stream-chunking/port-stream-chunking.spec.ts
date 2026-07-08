@@ -8,13 +8,13 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
 import { type Driver, PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
+import { getServerMochaToBackground } from '../../background-socket/server-mocha-to-background';
 
 const PORT_STREAM_CHUNKED_EVENT = 'Port Stream Chunked';
 const STRUCTURED_CLONE_MESSAGE_SERIALIZATION = 'structured_clone';
 const STRUCTURED_CLONE_CHROME_VERSION = '148';
 const CHROMIUM_MESSAGE_SIZE_LIMIT = 67108864; // 64 MB
-const HUGE_BACKGROUND_STATE_MARGIN = 1024;
-const BACKGROUND_STATE_SYNC_TIMEOUT = 60000;
+const STRUCTURED_CLONE_TEST_PAYLOAD_BYTES = 8 * 1024 * 1024;
 const NO_CHUNK_EVENT_SETTLE_TIMEOUT = 15000;
 const UNLOCK_PASSWORD_INPUT = { testId: 'unlock-password' };
 const UNLOCK_SUBMIT_BUTTON = { testId: 'unlock-submit' };
@@ -27,19 +27,12 @@ type SegmentEvent = {
   };
 };
 
-type HugeStateTestOptions = {
+type PortStreamChunkingTestOptions = {
   expectChromeChunkedEvent: boolean;
   expectedChromeMessageSerialization?: string;
   manifestTransform?: (manifest: Record<string, unknown>) => void;
-  expectUsableWallet?: boolean;
   title?: string;
 };
-
-function getHugeBackgroundStateValue() {
-  return '1'.repeat(
-    CHROMIUM_MESSAGE_SIZE_LIMIT + HUGE_BACKGROUND_STATE_MARGIN,
-  );
-}
 
 async function mockSegment(mockServer: Mockttp) {
   return [
@@ -129,29 +122,24 @@ async function loginToHomepageWithoutSendKeys(driver: Driver) {
   await driver.clickElement(UNLOCK_SUBMIT_BUTTON);
 }
 
-async function loadWalletWithHugeBackgroundState({
+async function loadWalletAndEmitPortStreamPayload({
   expectChromeChunkedEvent,
   expectedChromeMessageSerialization,
-  expectUsableWallet = true,
   manifestTransform,
   title,
-}: HugeStateTestOptions) {
+}: PortStreamChunkingTestOptions) {
   await withFixtures(
     {
       fixtures: new FixtureBuilderV2()
         .withMetaMetricsController({
           analyticsId: MOCK_ANALYTICS_ID,
           completedMetaMetricsOnboarding: true,
-          marketingCampaignCookieId: getHugeBackgroundStateValue(),
           optedIn: true,
         })
         .build(),
       driverOptions: {
         chromeBrowserVersion: STRUCTURED_CLONE_CHROME_VERSION,
       },
-      ignoredConsoleErrors: expectUsableWallet
-        ? []
-        : ['Background state sync timeout'],
       manifestTransform,
       title,
       testSpecificMock: mockSegment,
@@ -159,23 +147,23 @@ async function loadWalletWithHugeBackgroundState({
     async ({ driver, mockedEndpoint }) => {
       assertChromeMessageSerialization(expectedChromeMessageSerialization);
 
-      // We need an unusual amount of time because of the large background state.
-      await driver.navigate(PAGES.HOME, {
-        waitForControllers: expectUsableWallet,
-        waitForControllersTimeout: BACKGROUND_STATE_SYNC_TIMEOUT,
-      });
+      await driver.navigate(PAGES.HOME);
 
-      if (expectUsableWallet) {
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginToHomepageWithoutSendKeys(driver);
+      const loginPage = new LoginPage(driver);
+      await loginPage.checkPageIsLoaded();
+      await loginToHomepageWithoutSendKeys(driver);
 
-        const homepage = new HomePage(driver);
-        // Just check that the balance is displayed (wallet is usable).
-        await homepage.checkExpectedBalanceIsDisplayed();
-      } else {
-        // A fallback chunk event is emitted immediately when the initial
-        // background state cannot be posted as a single Chromium message.
+      const homepage = new HomePage(driver);
+      // Just check that the balance is displayed (wallet is usable).
+      await homepage.checkExpectedBalanceIsDisplayed();
+
+      await getServerMochaToBackground().emitPortStreamChunkingTestPayload(
+        STRUCTURED_CLONE_TEST_PAYLOAD_BYTES,
+      );
+
+      if (!expectChromeChunkedEvent) {
+        // Give structured clone enough time to emit the metrics event if it
+        // unexpectedly falls back to chunked messaging.
         await driver.delay(NO_CHUNK_EVENT_SETTLE_TIMEOUT);
       }
 
@@ -196,8 +184,8 @@ describe('Port Stream Chunking', function () {
     }
   });
 
-  it('uses chunked messaging with a huge background state when structured clone messaging is not enabled', async function () {
-    await loadWalletWithHugeBackgroundState({
+  it('uses chunked messaging for a large typed array when structured clone messaging is not enabled', async function () {
+    await loadWalletAndEmitPortStreamPayload({
       expectChromeChunkedEvent: true,
       manifestTransform: (manifest: Record<string, unknown>) => {
         delete manifest.message_serialization;
@@ -206,12 +194,11 @@ describe('Port Stream Chunking', function () {
     });
   });
 
-  it('uses structured clone messaging by default with a huge background state', async function () {
-    await loadWalletWithHugeBackgroundState({
+  it('uses structured clone messaging by default for a large typed array', async function () {
+    await loadWalletAndEmitPortStreamPayload({
       expectChromeChunkedEvent: false,
       expectedChromeMessageSerialization:
         STRUCTURED_CLONE_MESSAGE_SERIALIZATION,
-      expectUsableWallet: false,
       title: this.test?.fullTitle(),
     });
   });

@@ -82,6 +82,15 @@ class ServerMochaToBackground {
   private receivedMessage(message: MessageType) {
     if (message.command === 'openTabs' && message.tabs) {
       this.eventEmitter.emit('openTabs', message.tabs);
+    } else if (message.command === 'portStreamChunkingTestPayloadEmitted') {
+      this.eventEmitter.emit('portStreamChunkingTestPayloadEmitted');
+    } else if (message.command === 'backgroundError') {
+      const error = new Error(message.error);
+      if (this.eventEmitter.listenerCount('error') > 0) {
+        this.eventEmitter.emit('error', error);
+      } else {
+        throw error;
+      }
     } else if (message.command === 'notFound') {
       const error = new Error(
         `No window found by background script with ${message.property}: ${message.value}`,
@@ -111,6 +120,12 @@ class ServerMochaToBackground {
     return tabs;
   }
 
+  async emitPortStreamChunkingTestPayload(byteLength: number) {
+    this.send({ command: 'emitPortStreamChunkingTestPayload', byteLength });
+
+    await this.waitForPortStreamChunkingTestPayloadEmitted();
+  }
+
   // This is a way to wait for an event async, without timeouts or polling
   async waitForResponse() {
     return new Promise((resolve, reject) => {
@@ -121,6 +136,22 @@ class ServerMochaToBackground {
       this.eventEmitter.once('openTabs', (result) => {
         this.eventEmitter.removeListener('error', reject);
         resolve(result);
+      });
+    });
+  }
+
+  async waitForPortStreamChunkingTestPayloadEmitted() {
+    return new Promise<void>((resolve, reject) => {
+      this.eventEmitter.once('error', (error) => {
+        this.eventEmitter.removeListener(
+          'portStreamChunkingTestPayloadEmitted',
+          resolve,
+        );
+        reject(error);
+      });
+      this.eventEmitter.once('portStreamChunkingTestPayloadEmitted', () => {
+        this.eventEmitter.removeListener('error', reject);
+        resolve();
       });
     });
   }

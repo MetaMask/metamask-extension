@@ -1552,6 +1552,30 @@ export function setupController(
     cronjobControllerStorageManager,
   });
 
+  if (inTest) {
+    global.stateHooks.emitPortStreamChunkingTestPayload = (byteLength) => {
+      const normalizedByteLength = Number(byteLength);
+
+      if (
+        !Number.isSafeInteger(normalizedByteLength) ||
+        normalizedByteLength <= 0
+      ) {
+        throw new Error(`Invalid port stream test payload size: ${byteLength}`);
+      }
+
+      const payload = new Uint8Array(normalizedByteLength);
+      payload.fill(1);
+
+      controller.appStateController.setDappSwapComparisonData(
+        'port-stream-chunking',
+        {
+          commands: 'port-stream-chunking-test',
+          quotes: payload,
+        },
+      );
+    };
+  }
+
   // Wire up the callback to notify the UI when set operations fail
   persistenceManager.setOnSetFailed((errorType) => {
     controller.appStateController.setStorageWriteErrorType(errorType);

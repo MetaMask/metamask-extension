@@ -2,6 +2,12 @@ import log from 'loglevel';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { MessageType, WindowProperties } from './types';
 
+type PortStreamChunkingTestHooks = {
+  emitPortStreamChunkingTestPayload?: (
+    byteLength?: number,
+  ) => Promise<void> | void;
+};
+
 /**
  * This singleton class runs on the Extension background script (service worker in MV3).
  * It's used to communicate from the Extension background script to the Mocha/Selenium test.
@@ -125,6 +131,28 @@ class SocketBackgroundToMocha {
       const tabs = await this.queryTabs({ title: message.title });
       log.debug('SocketBackgroundToMocha sending tabs:', tabs);
       this.send({ command: 'openTabs', tabs: this.cleanTabs(tabs) });
+    } else if (message.command === 'emitPortStreamChunkingTestPayload') {
+      try {
+        const testHooks = globalThis.stateHooks as
+          | PortStreamChunkingTestHooks
+          | undefined;
+        const emitPayload = testHooks?.emitPortStreamChunkingTestPayload;
+
+        if (!emitPayload) {
+          throw new Error(
+            'Port stream chunking test payload hook is unavailable',
+          );
+        }
+
+        await emitPayload(message.byteLength);
+
+        this.send({ command: 'portStreamChunkingTestPayloadEmitted' });
+      } catch (error) {
+        this.send({
+          command: 'backgroundError',
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
     } else if (
       message.command === 'waitUntilWindowWithProperty' &&
       message.property &&
