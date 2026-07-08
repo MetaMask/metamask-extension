@@ -190,14 +190,20 @@ describe('order-book.utils', () => {
       ).toBe('1.23');
     });
 
-    it('formats USD totals with a currency prefix', () => {
+    it('formats sub-threshold USD totals as full fiat amounts', () => {
+      expect(
+        formatColumnValue(level('1', '1', '1200', '2', '2400'), 'usd', 'total'),
+      ).toBe('$2,400');
+    });
+
+    it('formats large USD totals with compact notation', () => {
       expect(
         formatColumnValue(
-          level('1', '1', '1200', '2', '2400'),
+          level('1', '1', '1200', '2', '52714'),
           'usd',
           'total',
         ),
-      ).toMatch(/^\$/u);
+      ).toBe('$53K');
     });
 
     it('returns the fallback display for unparseable USD values', () => {

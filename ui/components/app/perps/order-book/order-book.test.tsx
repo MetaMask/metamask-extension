@@ -126,15 +126,23 @@ describe('PerpsOrderBook', () => {
       renderOrderBook({ marketPrice: 73776 });
 
       // Grouping defaults to 10 for a ~73.7k asset, so raw prices are bucketed
-      // (73775 -> 73770 for bids, 73777 -> 73780 for asks) and formatted. Rows
-      // are keyed by their bucketed price, so the highest ask (73788 -> 73790)
-      // renders at the top of the ladder.
-      const topAsk = screen.getByTestId('perps-order-book-ask-73790');
+      // (73775 -> 73770 for bids, 73777 -> 73780 for asks) and formatted. The
+      // highest ask (73788 -> 73790) renders at the top of the ladder (row 0).
+      const topAsk = screen.getByTestId('perps-order-book-ask-row-0');
       expect(topAsk).toHaveTextContent('73,790');
-      expect(topAsk).toHaveTextContent('$');
+      // Value column shows the cumulative USD notional (43,393 + 9,321 =
+      // 52,714) in compact form.
+      expect(
+        screen.getByTestId('perps-order-book-ask-row-0-value'),
+      ).toHaveTextContent('$53K');
 
-      const topBid = screen.getByTestId('perps-order-book-bid-73770');
+      const topBid = screen.getByTestId('perps-order-book-bid-row-0');
       expect(topBid).toHaveTextContent('73,770');
+      // Best bid bucket cumulative notional is 2,967 (below the compact
+      // threshold) so it renders as a full fiat amount.
+      expect(
+        screen.getByTestId('perps-order-book-bid-row-0-value'),
+      ).toHaveTextContent('$2,967');
     });
 
     it('renders the mid price and spread in basis points', () => {

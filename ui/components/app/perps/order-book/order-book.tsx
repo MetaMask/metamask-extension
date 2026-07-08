@@ -84,19 +84,22 @@ const OrderBookRow = ({
           opacity: DEPTH_BAR_OPACITY,
         }}
       />
-      <Box className="relative z-10" data-testid={`${testId}-price`}>
-        <Text
-          variant={TextVariant.BodySm}
-          color={isBid ? TextColor.SuccessDefault : TextColor.ErrorDefault}
-        >
-          {formatPerpsFiat(level.price, { ranges: PRICE_RANGES_UNIVERSAL })}
-        </Text>
-      </Box>
-      <Box className="relative z-10" data-testid={`${testId}-value`}>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-          {formatColumnValue(level, currency, metric, szDecimals)}
-        </Text>
-      </Box>
+      <Text
+        variant={TextVariant.BodySm}
+        color={isBid ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+        className="relative z-10"
+        data-testid={`${testId}-price`}
+      >
+        {formatPerpsFiat(level.price, { ranges: PRICE_RANGES_UNIVERSAL })}
+      </Text>
+      <Text
+        variant={TextVariant.BodySm}
+        color={TextColor.TextDefault}
+        className="relative z-10"
+        data-testid={`${testId}-value`}
+      >
+        {formatColumnValue(level, currency, metric, szDecimals)}
+      </Text>
     </Box>
   );
 };
@@ -299,8 +302,10 @@ export const PerpsOrderBook = ({
         >
           {/* Asks (sell) */}
           <Box flexDirection={BoxFlexDirection.Column}>
-            {reversedAsks.map((level) => (
+            {reversedAsks.map((level, index) => (
               <OrderBookRow
+                // Price-based key keeps React identity stable across live
+                // updates; the rank-based testId stays deterministic for E2E.
                 key={`ask-${level.price}`}
                 level={level}
                 side="ask"
@@ -308,7 +313,7 @@ export const PerpsOrderBook = ({
                 metric={metric}
                 maxTotal={grouped.maxTotal}
                 szDecimals={szDecimals}
-                testId={`${dataTestId}-ask-${level.price}`}
+                testId={`${dataTestId}-ask-row-${index}`}
               />
             ))}
           </Box>
@@ -348,7 +353,7 @@ export const PerpsOrderBook = ({
 
           {/* Bids (buy) */}
           <Box flexDirection={BoxFlexDirection.Column}>
-            {grouped.bids.map((level) => (
+            {grouped.bids.map((level, index) => (
               <OrderBookRow
                 key={`bid-${level.price}`}
                 level={level}
@@ -357,7 +362,7 @@ export const PerpsOrderBook = ({
                 metric={metric}
                 maxTotal={grouped.maxTotal}
                 szDecimals={szDecimals}
-                testId={`${dataTestId}-bid-${level.price}`}
+                testId={`${dataTestId}-bid-row-${index}`}
               />
             ))}
           </Box>

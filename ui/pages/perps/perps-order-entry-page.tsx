@@ -1774,7 +1774,7 @@ const PerpsOrderEntryPage = () => {
             )}
           </Box>
         </Box>
-        {isOrderBookEnabled && (
+        {isOrderBookEnabled ? (
           <Box
             data-testid="perps-order-book-toggle"
             role="button"
@@ -1803,6 +1803,11 @@ const PerpsOrderEntryPage = () => {
               }
             />
           </Box>
+        ) : (
+          // Keep the header symmetric so the centered title does not shift when
+          // the order-book toggle is hidden (default dark-launch state). Mirrors
+          // the back button's width.
+          <Box aria-hidden className="w-9 shrink-0" />
         )}
       </Box>
 
@@ -1824,105 +1829,105 @@ const PerpsOrderEntryPage = () => {
               isOrderPending && 'pointer-events-none opacity-50',
             )}
           >
-        {orderMode === 'new' && (
-          <DirectionTabs
-            direction={orderDirection}
-            onDirectionChange={handleDirectionChange}
-          />
-        )}
-        <OrderEntry
-          asset={decodedSymbol}
-          currentPrice={currentPrice}
-          markPrice={oraclePrice}
-          maxLeverage={maxLeverage}
-          availableBalance={availableBalance}
-          initialDirection={orderDirection}
-          showSubmitButton={false}
-          showOrderSummary={false}
-          onFormStateChange={handleFormStateChange}
-          onCalculationsChange={handleCalculationsChange}
-          mode={orderMode}
-          orderType={orderType}
-          existingPosition={existingPositionForOrder}
-          midPrice={topOfBook?.midPrice}
-          onOrderTypeChange={setOrderType}
-          onAddFunds={handleAddFunds}
-          initialLeverage={initialLeverage}
-          autoFocusUsd={orderMode !== 'close'}
-          autoFocusLimitPrice={orderMode !== 'close'}
-          sizeDecimals={marketInfo?.szDecimals}
-        />
-      </Box>
+            {orderMode === 'new' && (
+              <DirectionTabs
+                direction={orderDirection}
+                onDirectionChange={handleDirectionChange}
+              />
+            )}
+            <OrderEntry
+              asset={decodedSymbol}
+              currentPrice={currentPrice}
+              markPrice={oraclePrice}
+              maxLeverage={maxLeverage}
+              availableBalance={availableBalance}
+              initialDirection={orderDirection}
+              showSubmitButton={false}
+              showOrderSummary={false}
+              onFormStateChange={handleFormStateChange}
+              onCalculationsChange={handleCalculationsChange}
+              mode={orderMode}
+              orderType={orderType}
+              existingPosition={existingPositionForOrder}
+              midPrice={topOfBook?.midPrice}
+              onOrderTypeChange={setOrderType}
+              onAddFunds={handleAddFunds}
+              initialLeverage={initialLeverage}
+              autoFocusUsd={orderMode !== 'close'}
+              autoFocusLimitPrice={orderMode !== 'close'}
+              sizeDecimals={marketInfo?.szDecimals}
+            />
+          </Box>
 
-      {/* Sticky bottom: summary + button */}
-      <Box
-        paddingLeft={4}
-        paddingRight={4}
-        paddingBottom={4}
-        paddingTop={3}
-        flexDirection={BoxFlexDirection.Column}
-        gap={4}
-        className="shrink-0"
-      >
-        {orderCalculations && (
-          <OrderSummary
-            marginRequired={orderCalculations.marginRequired}
-            estimatedFees={orderCalculations.estimatedFees}
-            originalEstimatedFees={originalEstimatedFees}
-            liquidationPrice={orderCalculations.liquidationPrice}
-            metamaskFeeRateDiscountPercentage={
-              metamaskFeeRateDiscountPercentage
-            }
-            showSlippageRow={
-              isSlippageConfigEnabled &&
-              orderType === 'market' &&
-              orderMode !== 'close'
-            }
-            slippageDisplay={slippageDisplay}
-            exceedsMaxSlippage={exceedsMaxSlippage}
-            isSlippageRowDisabled={isMaxSlippageLoading}
-            onSlippageClick={() => {
-              if (isMaxSlippageLoading) {
-                return;
-              }
-              setIsSlippageModalOpen(true);
-              track(MetaMetricsEventName.PerpsUiInteraction, {
-                [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-                  PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_OPENED,
-                [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-                [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]:
-                  bpsToPercent(maxSlippageBps),
-                [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
-                  maxSlippageSource === 'user_configured'
-                    ? PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED
-                    : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
-              });
-            }}
-          />
-        )}
-        {submitError && (
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.ErrorDefault}
-            data-testid="perps-order-submit-error"
+          {/* Sticky bottom: summary + button */}
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={3}
+            flexDirection={BoxFlexDirection.Column}
+            gap={4}
+            className="shrink-0"
           >
-            {submitError}
-          </Text>
-        )}
-        <Button
-          type="submit"
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          disabled={isSubmitDisabled}
-          className={twMerge(
-            'w-full',
-            isSubmitDisabled && 'opacity-70 cursor-not-allowed',
-          )}
-          data-testid="submit-order-button"
-        >
-          {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
-        </Button>
-      </Box>
+            {orderCalculations && (
+              <OrderSummary
+                marginRequired={orderCalculations.marginRequired}
+                estimatedFees={orderCalculations.estimatedFees}
+                originalEstimatedFees={originalEstimatedFees}
+                liquidationPrice={orderCalculations.liquidationPrice}
+                metamaskFeeRateDiscountPercentage={
+                  metamaskFeeRateDiscountPercentage
+                }
+                showSlippageRow={
+                  isSlippageConfigEnabled &&
+                  orderType === 'market' &&
+                  orderMode !== 'close'
+                }
+                slippageDisplay={slippageDisplay}
+                exceedsMaxSlippage={exceedsMaxSlippage}
+                isSlippageRowDisabled={isMaxSlippageLoading}
+                onSlippageClick={() => {
+                  if (isMaxSlippageLoading) {
+                    return;
+                  }
+                  setIsSlippageModalOpen(true);
+                  track(MetaMetricsEventName.PerpsUiInteraction, {
+                    [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+                      PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_OPENED,
+                    [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+                    [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]:
+                      bpsToPercent(maxSlippageBps),
+                    [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
+                      maxSlippageSource === 'user_configured'
+                        ? PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED
+                        : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+                  });
+                }}
+              />
+            )}
+            {submitError && (
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.ErrorDefault}
+                data-testid="perps-order-submit-error"
+              >
+                {submitError}
+              </Text>
+            )}
+            <Button
+              type="submit"
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              disabled={isSubmitDisabled}
+              className={twMerge(
+                'w-full',
+                isSubmitDisabled && 'opacity-70 cursor-not-allowed',
+              )}
+              data-testid="submit-order-button"
+            >
+              {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
+            </Button>
+          </Box>
         </Box>
         {/* Draggable divider: resize the order book / form split. */}
         {isOrderBookEnabled && isOrderBookOpen && (
