@@ -6,7 +6,6 @@ import type { MetaMaskReduxState as SelectorState } from '../store/store';
 import { selectPerpsWithdrawTransactionsForToast } from './toast';
 
 describe('toast selectors', () => {
-
   describe('selectPerpsWithdrawTransactionsForToast', () => {
     it('returns perps withdraw transactions with post-quote toast data', () => {
       const state = {
