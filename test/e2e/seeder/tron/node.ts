@@ -722,13 +722,16 @@ export class TronNode {
     }
     const deadline = Date.now() + 30_000;
     while (Date.now() < deadline) {
-      // gettransactionbyid only confirms the node has seen the broadcast tx;
-      // gettransactioninfobyid is only populated once the tx is executed and
-      // included in a block, which is what downstream seeding steps need.
-      const checkData = (await this.fetchJson(
-        `/wallet/gettransactioninfobyid?value=${txId}`,
-        { timeoutMs: 5_000 },
-      )) as TronTransactionInfoResponse;
+      let checkData: TronTransactionInfoResponse;
+      try {
+        checkData = (await this.fetchJson(
+          `/wallet/gettransactioninfobyid?value=${txId}`,
+          { timeoutMs: 5_000 },
+        )) as TronTransactionInfoResponse;
+      } catch {
+        await new Promise((r) => setTimeout(r, 250));
+        continue;
+      }
       if (checkData.id) {
         assertSuccessfulJavaTronTransaction(txId, checkData);
         if (checkData.blockNumber !== undefined) {
