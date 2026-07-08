@@ -25,7 +25,7 @@ const PerpsWithdrawTransactionToastListener = () => {
   return null;
 };
 
-// Carried over from MusdConversionToast. Consider refactoring this.
+// Carried over from MusdConversionToast. Should move telemetry out of toasts into a more appropriate location.
 const MusdConversionTelemetry = () => {
   const { activeTransactionId } = useMusdConversionToastStatus();
   useMusdConversionConfirmTrace(activeTransactionId ?? '');

@@ -546,9 +546,7 @@ export const selectLocalActivityItemsByIdentifier = createSelector(
           itemsByIdentifier.set(hash, item);
         }
 
-        // Also index by id so pending transactions (no hash yet) and toast
-        // listeners keyed on transactionMeta.id can still resolve the item after
-        // broadcast, when item.hash becomes the on-chain hash.
+        // Also index by id so both pending transactions and toast listeners can resolve the item
         const id = transaction.id?.toLowerCase();
         if (id) {
           itemsByIdentifier.set(id, item);
