@@ -3554,15 +3554,13 @@
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
@@ -3573,7 +3571,6 @@
         "clearTimeout": true,
         "console": true,
         "document": false,
-        "document.visibilityState": true,
         "navigator": true,
         "removeEventListener": true,
         "setInterval": true,
@@ -3603,7 +3600,6 @@
         "defaultShouldDehydrateQuery": true,
         "dehydrate": true,
         "document": false,
-        "document.visibilityState": true,
         "experimental_streamedQuery": true,
         "focusManager": true,
         "hashKey": true,
@@ -4346,6 +4342,25 @@
         "browserify>buffer": true,
         "eth-lattice-keyring>gridplus-sdk>cbor>nofilter": true,
         "stream-browserify": true
+      }
+    },
+    "@metamask/mobile-wallet-protocol-core>centrifuge": {
+      "globals": {
+        "AbortController": false,
+        "Event": false,
+        "EventSource": false,
+        "EventTarget": false,
+        "MessageEvent": false,
+        "ReadableStream": false,
+        "SockJS": false,
+        "SuppressedError": false,
+        "URL": false,
+        "WebTransport": false,
+        "console": false,
+        "console.warn": true,
+        "document": false,
+        "fetch": false,
+        "localStorage": false
       }
     },
     "chalk": {
