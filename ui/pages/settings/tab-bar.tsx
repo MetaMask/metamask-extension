@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { type NavigateFunction, useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -40,6 +40,19 @@ type TabBarProps = {
   onTabClick?: (key: string) => boolean | void;
 };
 
+function navigateToTab(
+  navigate: NavigateFunction,
+  key: string,
+  shouldAnimateNavigation: boolean,
+) {
+  if (!shouldAnimateNavigation) {
+    navigate(key);
+    return;
+  }
+
+  transitionForward(() => navigate(key));
+}
+
 const TabBar = ({
   tabs = [],
   sections = [],
@@ -65,12 +78,7 @@ const TabBar = ({
           return;
         }
 
-        if (!shouldAnimateNavigation) {
-          navigate(key);
-          return;
-        }
-
-        transitionForward(() => navigate(key));
+        navigateToTab(navigate, key, shouldAnimateNavigation);
       };
 
       return (
