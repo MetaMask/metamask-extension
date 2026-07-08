@@ -57,6 +57,18 @@ export type LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction = {
 };
 
 /**
+ * Updates the phishing lists if necessary and then checks whether the given
+ * website is a known phishing site.
+ *
+ * @param website - The website origin to check.
+ * @returns The phishing detection result.
+ */
+export type LegacyBackgroundApiServiceGetPhishingResultAction = {
+  type: `LegacyBackgroundApiService:getPhishingResult`;
+  handler: LegacyBackgroundApiService['getPhishingResult'];
+};
+
+/**
  * Marks the password as forgotten.
  */
 export type LegacyBackgroundApiServiceMarkPasswordForgottenAction = {
@@ -384,6 +396,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
+  | LegacyBackgroundApiServiceGetPhishingResultAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction

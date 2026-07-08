@@ -3469,11 +3469,10 @@ export default class MetamaskController extends EventEmitter {
       setEnabledAllPopularNetworks:
         this.setEnabledAllPopularNetworks.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
-      getPhishingResult: async (website) => {
-        await phishingController.maybeUpdateState();
-
-        return phishingController.test(website);
-      },
+      getPhishingResult: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getPhishingResult',
+      ),
       checkAddressPoisoning: (address) => {
         return phishingController.checkAddressPoisoning(address);
       },
