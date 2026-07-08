@@ -4276,14 +4276,6 @@
     "message": "Almost there! Confirm on your device again",
     "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
   },
-  "hardwareApproveAmount": {
-    "message": "Approve $1 $2",
-    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
-  },
-  "hardwareApprovedAmount": {
-    "message": "Approved $1 $2",
-    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
-  },
   "hardwareDeviceDisconnected": {
     "message": "Reconnect your device and try again",
     "description": "Title shown when a hardware wallet device disconnects during signing."
@@ -8177,26 +8169,6 @@
     "message": "Scan next QR code",
     "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
   },
-  "qrHardwareShowQrCode": {
-    "message": "Show QR code",
-    "description": "Button label to go back to showing the QR code from the scanner view."
-  },
-  "qrHardwareSignDisplayStepTitle": {
-    "message": "Step $1 of $2: Scan this QR code with your wallet",
-    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
-  },
-  "qrHardwareSignLastStepTitle": {
-    "message": "Last step: Scan the QR code shown on your wallet",
-    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
-  },
-  "qrHardwareSignStepTitle": {
-    "message": "Step $1 of $2: Scan the QR code shown on your wallet",
-    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
-  },
-  "qrHardwareSignTitle": {
-    "message": "Scan QR code below and sign on your device ($1/$2)",
-    "description": "Title for a QR hardware-wallet bridge signature step. $1 is the current signature step and $2 is the total signature count."
-  },
   "queued": {
     "message": "Queued"
   },
@@ -8825,14 +8797,6 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
-  },
-  "sendBundleHwGasPayment": {
-    "message": "Paying network fee with $1",
-    "description": "$1 is the symbol of the token being used to pay the network fee"
-  },
-  "sendBundleHwTransaction": {
-    "message": "Transaction",
-    "description": "Generic label for the final transaction step in a hardware-wallet sendBundle signing flow."
   },
   "sendSelectReceiveAsset": {
     "message": "Select asset to receive"

@@ -4084,7 +4084,8 @@
     "message": "Продолжить"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Переподключиться"
+    "message": "Переподключиться",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Убедитесь, что ваш аппаратный кошелек правильно подключен через USB"

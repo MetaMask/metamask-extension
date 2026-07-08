@@ -4088,7 +4088,8 @@
     "message": "Lanjutkan"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Hubungkan kembali"
+    "message": "Hubungkan kembali",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Pastikan dompet perangkat keras terhubung dengan benar melalui USB"

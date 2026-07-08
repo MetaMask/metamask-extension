@@ -4088,7 +4088,8 @@
     "message": "続行"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "再接続"
+    "message": "再接続",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "ハードウェアウォレットがUSBで正しく接続されていることを確認してください"

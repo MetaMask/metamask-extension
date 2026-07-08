@@ -4084,7 +4084,8 @@
     "message": "Magpatuloy"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Muling ikonekta"
+    "message": "Muling ikonekta",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Tiyaking ang wallet na hardware mo ay maayos na nakakonekta sa USB"

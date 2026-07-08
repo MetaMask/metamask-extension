@@ -4084,7 +4084,8 @@
     "message": "Continuar"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Reconectar"
+    "message": "Reconectar",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Certifique-se de que sua carteira de hardware esteja conectada corretamente via USB"
