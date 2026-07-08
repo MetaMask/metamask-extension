@@ -20,7 +20,11 @@ import { formatPnl } from '../../../../../shared/lib/perps-formatters';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName, getPositionDirection } from '../utils';
+import {
+  getDisplayName,
+  getPositionDirection,
+  getPrivacyAwareColor,
+} from '../utils';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
 export type PositionCardProps = {
@@ -51,6 +55,10 @@ export const PositionCard = ({
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
+  const pnlColor = getPrivacyAwareColor(
+    isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault,
+    privacyMode,
+  );
   const absSize = Math.abs(parseFloat(position.size)).toString();
   // Title uses the full asset name; the size line keeps the ticker as its unit.
   const displayName = assetName || getDisplayName(position.symbol);
@@ -146,7 +154,7 @@ export const PositionCard = ({
         >
           <SensitiveText
             variant={TextVariant.BodySm}
-            color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+            color={pnlColor}
             isHidden={privacyMode}
           >
             {formattedPnl}
@@ -154,9 +162,7 @@ export const PositionCard = ({
           {formattedRoe !== null && (
             <SensitiveText
               variant={TextVariant.BodySm}
-              color={
-                isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault
-              }
+              color={pnlColor}
               isHidden={privacyMode}
               data-testid={`position-card-roe-${position.symbol}`}
             >

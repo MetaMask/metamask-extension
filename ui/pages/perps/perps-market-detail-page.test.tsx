@@ -485,6 +485,41 @@ describe('PerpsMarketDetailPage', () => {
       ).toHaveTextContent('••••••');
     });
 
+    it('uses the default text color instead of green/red for P&L and return when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      const pnl = screen.getByTestId('perps-position-pnl-value');
+      const returnValue = screen.getByTestId('perps-position-return-value');
+      expect(pnl).toHaveClass('text-default');
+      expect(pnl).not.toHaveClass('text-success-default');
+      expect(pnl).not.toHaveClass('text-error-default');
+      expect(returnValue).toHaveClass('text-default');
+      expect(returnValue).not.toHaveClass('text-success-default');
+      expect(returnValue).not.toHaveClass('text-error-default');
+    });
+
+    it('uses the success color for a profitable P&L outside of privacy mode', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveClass(
+        'text-success-default',
+      );
+    });
+
     it('masks entry price, liquidation price, funding payments, and auto close TP/SL when privacy mode is enabled', async () => {
       const state = createMockState(true);
       const store = mockStore({

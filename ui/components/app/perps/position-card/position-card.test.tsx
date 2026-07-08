@@ -175,6 +175,9 @@ describe('PositionCard', () => {
     expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
       '(15.79%)',
     );
+    expect(screen.getByTestId('position-card-roe-ETH')).toHaveClass(
+      'text-success-default',
+    );
   });
 
   it('displays ROE percentage for a losing position', () => {
@@ -187,6 +190,9 @@ describe('PositionCard', () => {
 
     expect(screen.getByTestId('position-card-roe-BTC')).toHaveTextContent(
       '(-16.67%)',
+    );
+    expect(screen.getByTestId('position-card-roe-BTC')).toHaveClass(
+      'text-error-default',
     );
   });
 
@@ -224,6 +230,19 @@ describe('PositionCard', () => {
         '••••••',
       );
       expect(screen.getAllByText('••••••')).toHaveLength(4);
+    });
+
+    it('uses the default text color instead of green/red for P&L and RoE when privacy mode is enabled', () => {
+      const position = createMockPosition({
+        symbol: 'ETH',
+        unrealizedPnl: '375.00',
+      });
+      renderWithProvider(<PositionCard position={position} />, privacyStore);
+
+      const roe = screen.getByTestId('position-card-roe-ETH');
+      expect(roe).toHaveClass('text-default');
+      expect(roe).not.toHaveClass('text-success-default');
+      expect(roe).not.toHaveClass('text-error-default');
     });
   });
 });

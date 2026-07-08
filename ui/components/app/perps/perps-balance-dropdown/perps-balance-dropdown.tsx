@@ -31,6 +31,7 @@ import { useSelectedAccountComplianceGate } from '../../compliance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
 import { useOnClickOutside } from '../hooks/useClickOutside';
+import { getPrivacyAwareColor } from '../utils';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
 export type PerpsBalanceActionHandler = () => void | Promise<unknown>;
@@ -97,6 +98,10 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const pnlNum = Number.parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const pnlPrefix = isProfit ? '+' : '-';
+  const pnlColor = getPrivacyAwareColor(
+    isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault,
+    privacyMode,
+  );
   const formattedPnl = `${pnlPrefix}${formatPerpsFiat(Math.abs(pnlNum), {
     ranges: PRICE_RANGES_MINIMAL_VIEW,
   })}`;
@@ -248,20 +253,18 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
             <SensitiveText
               variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
-              color={
-                isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault
-              }
+              color={pnlColor}
               isHidden={privacyMode}
+              data-testid="perps-balance-dropdown-pnl-value"
             >
               {formattedPnl}
             </SensitiveText>
             <SensitiveText
               variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
-              color={
-                isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault
-              }
+              color={pnlColor}
               isHidden={privacyMode}
+              data-testid="perps-balance-dropdown-roe-value"
             >
               {`(${formattedRoe})`}
             </SensitiveText>

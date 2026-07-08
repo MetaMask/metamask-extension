@@ -460,6 +460,26 @@ describe('UpdateTPSLModalContent', () => {
         screen.getByTestId('perps-update-tpsl-current-price-value'),
       ).toHaveTextContent(formatPerpsFiatUniversal(2900));
     });
+
+    it('uses the default text color instead of green/red for estimated P&L when privacy mode is enabled', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} />,
+        privacyStore,
+      );
+
+      const tpPnl = screen.getByTestId(
+        'perps-update-tpsl-estimated-tp-pnl-value',
+      );
+      const slPnl = screen.getByTestId(
+        'perps-update-tpsl-estimated-sl-pnl-value',
+      );
+      expect(tpPnl).toHaveClass('text-default');
+      expect(tpPnl).not.toHaveClass('text-success-default');
+      expect(tpPnl).not.toHaveClass('text-error-default');
+      expect(slPnl).toHaveClass('text-default');
+      expect(slPnl).not.toHaveClass('text-success-default');
+      expect(slPnl).not.toHaveClass('text-error-default');
+    });
   });
 
   describe('presets (RoE% with leverage)', () => {

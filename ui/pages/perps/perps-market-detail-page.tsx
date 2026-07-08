@@ -92,6 +92,7 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
+  getPrivacyAwareColor,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -521,6 +522,19 @@ const PerpsMarketDetailPage = () => {
       perpsSelectedCandlePeriod?: string;
       privacyMode?: boolean;
     };
+
+  const positionPnlColor = getPrivacyAwareColor(
+    position && parseFloat(position.unrealizedPnl) < 0
+      ? TextColor.ErrorDefault
+      : TextColor.SuccessDefault,
+    privacyMode,
+  );
+  const positionReturnColor = getPrivacyAwareColor(
+    position && parseFloat(position.returnOnEquity) < 0
+      ? TextColor.ErrorDefault
+      : TextColor.SuccessDefault,
+    privacyMode,
+  );
   const resolvedPersistedPeriod =
     persistedCandlePeriod &&
     Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
@@ -1321,11 +1335,7 @@ const PerpsMarketDetailPage = () => {
                   <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
-                    color={
-                      parseFloat(position.unrealizedPnl) >= 0
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
+                    color={positionPnlColor}
                     isHidden={privacyMode}
                     data-testid="perps-position-pnl-value"
                   >
@@ -1346,11 +1356,7 @@ const PerpsMarketDetailPage = () => {
                   <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
-                    color={
-                      parseFloat(position.returnOnEquity) >= 0
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
+                    color={positionReturnColor}
                     isHidden={privacyMode}
                     data-testid="perps-position-return-value"
                   >

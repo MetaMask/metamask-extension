@@ -56,6 +56,7 @@ import {
   deriveTpslType,
   formatRoePercent,
   getPnlDisplayColor,
+  getPrivacyAwareColor,
 } from '../utils';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import {
@@ -783,7 +784,10 @@ export const UpdateTPSLModalContent = ({
             <SensitiveText
               variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
-              color={getPnlDisplayColor(estimatedPnlAtTp)}
+              color={getPrivacyAwareColor(
+                getPnlDisplayColor(estimatedPnlAtTp),
+                privacyMode,
+              )}
               isHidden={privacyMode}
               data-testid="perps-update-tpsl-estimated-tp-pnl-value"
             >
@@ -921,7 +925,10 @@ export const UpdateTPSLModalContent = ({
             <SensitiveText
               variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
-              color={getPnlDisplayColor(estimatedPnlAtSl)}
+              color={getPrivacyAwareColor(
+                getPnlDisplayColor(estimatedPnlAtSl),
+                privacyMode,
+              )}
               isHidden={privacyMode}
               data-testid="perps-update-tpsl-estimated-sl-pnl-value"
             >
