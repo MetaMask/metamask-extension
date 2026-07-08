@@ -4910,6 +4910,54 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Please open it on your Ledger device to continue"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "Ethereum app is closed"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Ledger device found"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Please unlock your Ledger device to continue"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger is locked"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Install and open the Ethereum app"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepPlugIn": {
+    "message": "Plug your Ledger into the computer"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepRetry": {
+    "message": "Try connecting again"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Unlock your Ledger device"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Device not found"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Please disconnect and reconnect your device"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger is unresponsive"
+  },
+  "ledgerConnectionStatusGenericErrorDescription": {
+    "message": "Check that your Ledger device is set up with the Secret Recovery Phrase or private key for the selected account"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Something went wrong"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Hold on while we search for it..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Looking for your device"
+  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
   },
@@ -8563,6 +8611,106 @@
   },
   "save": {
     "message": "Save"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "Continue"
+  },
+  "scamQuestionnaireHeaderTitle": {
+    "message": "Security check"
+  },
+  "scamQuestionnaireQ1No": {
+    "message": "No, I know this person in real life"
+  },
+  "scamQuestionnaireQ1Subtitle": {
+    "message": "This includes dating apps, social media, and group chats—even if you've spoken on video."
+  },
+  "scamQuestionnaireQ1Title": {
+    "message": "Did someone you only know online tell you to send this?"
+  },
+  "scamQuestionnaireQ1Yes": {
+    "message": "Yes, someone I met online told me to send this"
+  },
+  "scamQuestionnaireQ2GoodsSubtitle": {
+    "message": "Paying a merchant for something I'm receiving"
+  },
+  "scamQuestionnaireQ2GoodsTitle": {
+    "message": "Buying goods or services"
+  },
+  "scamQuestionnaireQ2GovernmentSubtitle": {
+    "message": "Fines, taxes, or official fees requested in crypto"
+  },
+  "scamQuestionnaireQ2GovernmentTitle": {
+    "message": "Paying the police or a government agency"
+  },
+  "scamQuestionnaireQ2HelpingSubtitle": {
+    "message": "Sending money to a partner, family member, or friend in need"
+  },
+  "scamQuestionnaireQ2HelpingTitle": {
+    "message": "Helping someone I care about"
+  },
+  "scamQuestionnaireQ2InvestmentSubtitle": {
+    "message": "Buying crypto, tokens, or a financial opportunity"
+  },
+  "scamQuestionnaireQ2InvestmentTitle": {
+    "message": "Investment"
+  },
+  "scamQuestionnaireQ2JobSubtitle": {
+    "message": "Onboarding fees, equipment, or task payments"
+  },
+  "scamQuestionnaireQ2JobTitle": {
+    "message": "A job opportunity or work-related"
+  },
+  "scamQuestionnaireQ2SelfTransferSubtitle": {
+    "message": "Self-transfer or moving to cold storage"
+  },
+  "scamQuestionnaireQ2SelfTransferTitle": {
+    "message": "Moving funds between my own wallets"
+  },
+  "scamQuestionnaireQ2Subtitle": {
+    "message": "Choose the option that best describes this payment."
+  },
+  "scamQuestionnaireQ2Title": {
+    "message": "What's this payment for?"
+  },
+  "scamQuestionnaireQ3No": {
+    "message": "No, I am doing this entirely on my own"
+  },
+  "scamQuestionnaireQ3Subtitle": {
+    "message": "This could be over a phone call, video chat, or sharing your screen."
+  },
+  "scamQuestionnaireQ3Title": {
+    "message": "Is someone guiding you through this transaction?"
+  },
+  "scamQuestionnaireQ3Yes": {
+    "message": "Yes, someone is walking me through the steps right now"
+  },
+  "scamQuestionnaireSelectAnswer": {
+    "message": "Select an answer"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Contact support"
+  },
+  "scamQuestionnaireWarningProceedAnyway": {
+    "message": "Ignore risks and continue anyway"
+  },
+  "scamQuestionnaireWarningProceedAnywayCountdown": {
+    "message": "Continue anyway in $1s",
+    "description": "$1 is the number of seconds remaining before the user can continue"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleDetail": {
+    "message": "Once you send, your funds can't be recovered."
+  },
+  "scamQuestionnaireWarningReasonIrreversibleEmphasis": {
+    "message": "Crypto transactions are irreversible."
+  },
+  "scamQuestionnaireWarningReasonKnownScam": {
+    "message": "Based on your answers and this recipient's history, this transaction might be a scam."
+  },
+  "scamQuestionnaireWarningStopPayment": {
+    "message": "Stop this payment"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "You might be getting scammed right now"
   },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"

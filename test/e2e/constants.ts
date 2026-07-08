@@ -90,6 +90,12 @@ export const HARDWARE_WALLET_ACCOUNT_ID =
 /** Trezor hardware wallet address (lowercase) */
 export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
+/**
+ * Human-readable localhost native ETH balance seeded by hardware wallet E2E
+ * tests via `0x100000000000000000000` wei (`setAccountBalance`).
+ */
+export const HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN = '1208925';
+
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 

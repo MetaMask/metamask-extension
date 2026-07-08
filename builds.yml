@@ -440,3 +440,6 @@ env:
 
   # Passkey / Biometrics unlock
   - PASSKEY_ENABLED: true
+
+  # Basic Functionality toggle (required for onboarding)
+  - BFT_CONSOLIDATION_ENABLED: false
