@@ -22399,7 +22399,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-box-model@npm:^1.2.0, css-box-model@npm:^1.2.1":
+"css-box-model@npm:^1.2.1":
   version: 1.2.1
   resolution: "css-box-model@npm:1.2.1"
   dependencies:
@@ -32801,13 +32801,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memoize-one@npm:^5.1.1":
-  version: 5.2.1
-  resolution: "memoize-one@npm:5.2.1"
-  checksum: 10/b7141dc148b5c6fdd51e77ecf0421fd2581681eb8756e0b3dfbd4fe765b5e2b5a6bc90214bb6f19a96b6aed44de17eda3407142a7be9e24ccd0774bbd9874d1b
-  languageName: node
-  linkType: hard
-
 "memoize-one@npm:^6.0.0":
   version: 6.0.0
   resolution: "memoize-one@npm:6.0.0"
@@ -33370,7 +33363,6 @@ __metadata:
     qrcode.react: "npm:^4.2.0"
     randomcolor: "npm:^0.5.4"
     react: "npm:^18.2.0"
-    react-beautiful-dnd: "npm:^13.1.1"
     react-chartjs-2: "npm:^5.2.0"
     react-compiler-runtime: "npm:^1.0.0"
     react-compiler-webpack: "npm:^1.0.0"
@@ -37199,7 +37191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"raf-schd@npm:^4.0.2, raf-schd@npm:^4.0.3":
+"raf-schd@npm:^4.0.3":
   version: 4.0.3
   resolution: "raf-schd@npm:4.0.3"
   checksum: 10/45514041c5ad31fa96aef3bb3c572a843b92da2f2cd1cb4a47c9ad58e48761d3a4126e18daa32b2bfa0bc2551a42d8f324a0e40e536cb656969929602b4e8b58
@@ -37314,24 +37306,6 @@ __metadata:
   bin:
     rc: ./cli.js
   checksum: 10/5c4d72ae7eec44357171585938c85ce066da8ca79146b5635baf3d55d74584c92575fa4e2c9eac03efbed3b46a0b2e7c30634c012b4b4fa40d654353d3c163eb
-  languageName: node
-  linkType: hard
-
-"react-beautiful-dnd@npm:^13.1.1":
-  version: 13.1.1
-  resolution: "react-beautiful-dnd@npm:13.1.1"
-  dependencies:
-    "@babel/runtime": "npm:^7.9.2"
-    css-box-model: "npm:^1.2.0"
-    memoize-one: "npm:^5.1.1"
-    raf-schd: "npm:^4.0.2"
-    react-redux: "npm:^7.2.0"
-    redux: "npm:^4.0.4"
-    use-memo-one: "npm:^1.1.1"
-  peerDependencies:
-    react: ^16.8.5 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.5 || ^17.0.0 || ^18.0.0
-  checksum: 10/2de8162a74f7fc78294e5a928b92d3fff02c579d137a25d53b1ab4313abeb108709bb7281512f7f94d18257de3122b8c85cb5a8375113cb8657088b1a9bda65b
   languageName: node
   linkType: hard
 
@@ -37685,7 +37659,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:^7.2.0, react-redux@npm:^7.2.9":
+"react-redux@npm:^7.2.9":
   version: 7.2.9
   resolution: "react-redux@npm:7.2.9"
   dependencies:
@@ -38239,7 +38213,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.0.0, redux@npm:^4.0.4, redux@npm:^4.0.5, redux@npm:^4.2.1":
+"redux@npm:^4.0.0, redux@npm:^4.0.5, redux@npm:^4.2.1":
   version: 4.2.1
   resolution: "redux@npm:4.2.1"
   dependencies:
@@ -43575,7 +43549,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-memo-one@npm:^1.1.1, use-memo-one@npm:^1.1.3":
+"use-memo-one@npm:^1.1.3":
   version: 1.1.3
   resolution: "use-memo-one@npm:1.1.3"
   peerDependencies:
