@@ -235,4 +235,28 @@ describe('Critical errors', function (this: Suite) {
       },
     );
   });
+
+  it('loads the login page when service worker install delays background initialization', async function () {
+    if (getManifestVersion() === 2) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        manifestFlags: {
+          testing: {
+            simulateBackgroundInitializationDelayMs: 5000,
+          },
+        },
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.navigate(PAGES.HOME, { waitForControllers: false });
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+      },
+    );
+  });
 });

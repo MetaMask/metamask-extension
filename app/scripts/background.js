@@ -2593,6 +2593,18 @@ async function initBackground(backup) {
       });
     }
 
+    const backgroundInitializationDelayMs =
+      getManifestFlags().testing?.simulateBackgroundInitializationDelayMs;
+    if (
+      inTest &&
+      typeof backgroundInitializationDelayMs === 'number' &&
+      backgroundInitializationDelayMs > 0
+    ) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, backgroundInitializationDelayMs),
+      );
+    }
+
     log.info('MetaMask initialization complete.');
     resolveInitialization();
   } catch (error) {
@@ -2606,7 +2618,7 @@ async function initBackground(backup) {
  */
 async function initOrRestoreBackground() {
   if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
-    return;
+    return Promise.resolve();
   }
 
   const restoreSession = await readCriticalErrorRestoreSession(browser);
@@ -2650,7 +2662,7 @@ async function initOrRestoreBackground() {
         await isInitialized;
       } catch (error) {
         log.error('critical-error-restore: initialization failed', error);
-        return;
+        return Promise.resolve();
       }
 
       controller.onboardingController.setFirstTimeFlowType(
@@ -2658,14 +2670,15 @@ async function initOrRestoreBackground() {
       );
 
       await handoffRestoringTabToExtension(platform, handoffPayload);
-      return;
+      return isInitialized;
     }
   }
 
   initBackground(null);
+  return isInitialized;
 }
 
-initOrRestoreBackground().catch((error) => {
+export const backgroundInitOrRestore = initOrRestoreBackground().catch((error) => {
   log.error('initOrRestoreBackground failed', error);
 });
 
