@@ -104,7 +104,7 @@ export const PercentageAndAmountChange = ({
       return null;
     }
     return null;
-  }, [marketData]);
+  }, [balanceValue, conversionRate, currentChainId, fiatCurrency, marketData, nativeCurrency]);
 
   let color = TextColor.textDefault;
 

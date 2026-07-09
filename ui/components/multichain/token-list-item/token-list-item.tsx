@@ -67,6 +67,10 @@ import { TokenWithFiatAmount } from '../../app/assets/types';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
+type MarketDataMap = ReturnType<typeof getMarketData>;
+type CurrencyRatesMap = ReturnType<typeof getCurrencyRates>;
+type NetworkConfigurationsMap = ReturnType<typeof getNetworkConfigurationsByChainId>;
+
 type TokenListItemProps = {
   className?: string;
   onClick?: (arg?: string) => void;
@@ -89,6 +93,21 @@ type TokenListItemProps = {
   isDestinationToken?: boolean;
   accountType?: KeyringAccountType;
   rwaData?: TokenWithFiatAmount['rwaData'];
+  /**
+   * Pre-fetched market data from parent. When provided, avoids a per-row
+   * Redux subscription to `getMarketData`.
+   */
+  marketData?: MarketDataMap;
+  /**
+   * Pre-fetched currency rates from parent. When provided, avoids a per-row
+   * Redux subscription to `getCurrencyRates`.
+   */
+  currencyRates?: CurrencyRatesMap;
+  /**
+   * Pre-fetched network configurations from parent. When provided, avoids a
+   * per-row Redux subscription to `getNetworkConfigurationsByChainId`.
+   */
+  networkConfigurations?: NetworkConfigurationsMap;
 };
 
 export const TokenListItemComponent = ({
@@ -113,12 +132,25 @@ export const TokenListItemComponent = ({
   nativeCurrencySymbol,
   isDestinationToken = false,
   rwaData,
+  marketData: marketDataProp,
+  currencyRates: currencyRatesProp,
+  networkConfigurations: networkConfigurationsProp,
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const currencyRates = useSelector(getCurrencyRates);
+  const currencyRatesFromStore = useSelector(getCurrencyRates);
   const noFeeAssets = useSelector((state) => selectNoFeeAssets(state, chainId));
+
+  // Use lifted props when provided by the parent; fall back to the Redux store
+  // value so the component remains backwards-compatible with callers that have
+  // not yet been updated to pass these props.
+  const multiChainMarketDataFromStore = useSelector(getMarketData);
+  const allNetworksFromStore = useSelector(getNetworkConfigurationsByChainId);
+
+  const multiChainMarketData = marketDataProp ?? multiChainMarketDataFromStore;
+  const currencyRates = currencyRatesProp ?? currencyRatesFromStore;
+  const allNetworks = networkConfigurationsProp ?? allNetworksFromStore;
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
@@ -157,8 +189,6 @@ export const TokenListItemComponent = ({
     }
   };
 
-  const multiChainMarketData = useSelector(getMarketData);
-
   const tokenPercentageChange = address
     ? multiChainMarketData?.[chainId as Hex]?.[address as Hex]
         ?.pricePercentChange1d
@@ -176,8 +206,7 @@ export const TokenListItemComponent = ({
   const rwaToken = { rwaData };
   const isRWAToken = checkIsStockToken(rwaToken);
 
-  // Used for badge icon
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  // Used for badge icon (resolved from props or Redux store above)
 
   return (
     <Box
