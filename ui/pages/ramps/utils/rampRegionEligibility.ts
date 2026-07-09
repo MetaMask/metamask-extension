@@ -4,6 +4,9 @@ import type { Country, UserRegion } from '@metamask/ramps-controller';
  * Returns true only when the user's region is *definitively* unsupported for
  * buy. Any indeterminate input (null region, missing flags with empty country
  * list) returns false — fail-open, never block on uncertainty.
+ * @param userRegion - The user's geolocation region data, or null if not resolved.
+ * @param countries - The list of supported countries.
+ * @returns True if the region is definitively unsupported for buy; false otherwise.
  */
 export function isRampRegionDefinitivelyUnsupported(
   userRegion: UserRegion | null,
