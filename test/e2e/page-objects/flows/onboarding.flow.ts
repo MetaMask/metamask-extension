@@ -99,7 +99,9 @@ const assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions = async (
   startOnboardingPage: StartOnboardingPage,
 ): Promise<void> => {
   await startOnboardingPage.clickImportWalletButton();
-  await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible('import');
+  await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible(
+    'import',
+  );
 };
 
 /**
