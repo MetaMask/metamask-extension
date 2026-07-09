@@ -5709,6 +5709,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/bitcoin-regtest-up@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/bitcoin-regtest-up@npm:1.0.0"
+  dependencies:
+    "@metamask/local-node-utils": "npm:^1.0.0"
+  bin:
+    bitcoin-regtest-up: ./dist/bin/bitcoin-regtest-up.mjs
+  checksum: 10/d77338ff9667a9d49fdcdc6987fe7b5f5c11ad101b3adb009cdf82f5a2dd3355500fefde86f1b9d62e83e6859eb550b0680939baff4337ad2fa74a2e9e0ac196
+  languageName: node
+  linkType: hard
+
 "@metamask/bitcoin-wallet-snap@npm:^1.14.2":
   version: 1.14.2
   resolution: "@metamask/bitcoin-wallet-snap@npm:1.14.2"
@@ -32941,6 +32952,7 @@ __metadata:
     "@metamask/authenticated-user-storage": "npm:^2.1.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.14.2"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^77.2.0"
