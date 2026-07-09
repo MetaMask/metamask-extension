@@ -557,27 +557,6 @@
     "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/hooks/ramps/useRampsController.test.tsx": {
-      "Reselect: Identity function warnings": 6
-    },
-    "ui/hooks/ramps/useRampsCountries.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/hooks/ramps/useRampsOrders.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/hooks/ramps/useRampsPaymentMethods.test.tsx": {
-      "Reselect: Identity function warnings": 4
-    },
-    "ui/hooks/ramps/useRampsProviders.test.tsx": {
-      "Reselect: Identity function warnings": 3
-    },
-    "ui/hooks/ramps/useRampsTokens.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/hooks/ramps/useRampsUserRegion.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/hooks/rewards/useValidateReferralCode.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
@@ -1158,9 +1137,6 @@
     },
     "ui/selectors/nonce-sorted-transactions-selector.test.js": {
       "Reselect: Identity function warnings": 1
-    },
-    "ui/selectors/rampsController/index.test.ts": {
-      "Reselect: Identity function warnings": 2
     },
     "ui/selectors/transactions.test.js": {
       "Reselect: Identity function warnings": 3

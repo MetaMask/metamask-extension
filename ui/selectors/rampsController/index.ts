@@ -31,70 +31,57 @@ const createDefaultResourceState = <TData, TSelected = null>(
   error: null,
 });
 
+const EMPTY_ORDERS: RampsOrder[] = [];
+const DEFAULT_COUNTRIES = createDefaultResourceState<Country[]>([]);
+const DEFAULT_PROVIDERS = createDefaultResourceState<
+  Provider[],
+  Provider | null
+>([], null);
+const DEFAULT_TOKENS = createDefaultResourceState<
+  TokensResponse | null,
+  RampsToken | null
+>(null, null);
+const DEFAULT_PAYMENT_METHODS = createDefaultResourceState<
+  PaymentMethod[],
+  PaymentMethod | null
+>([], null);
+
 export const selectRampsControllerState = createSelector(
   (state: RampsState) => state.metamask,
   (metamask): Partial<RampsControllerState> => ({
     userRegion: metamask.userRegion ?? null,
-    countries: metamask.countries ?? createDefaultResourceState<Country[]>([]),
-    providers:
-      metamask.providers ??
-      createDefaultResourceState<Provider[], Provider | null>([], null),
-    tokens:
-      metamask.tokens ??
-      createDefaultResourceState<TokensResponse | null, RampsToken | null>(
-        null,
-        null,
-      ),
-    paymentMethods:
-      metamask.paymentMethods ??
-      createDefaultResourceState<PaymentMethod[], PaymentMethod | null>(
-        [],
-        null,
-      ),
-    orders: metamask.orders ?? [],
+    countries: metamask.countries ?? DEFAULT_COUNTRIES,
+    providers: metamask.providers ?? DEFAULT_PROVIDERS,
+    tokens: metamask.tokens ?? DEFAULT_TOKENS,
+    paymentMethods: metamask.paymentMethods ?? DEFAULT_PAYMENT_METHODS,
+    orders: metamask.orders ?? EMPTY_ORDERS,
     providerAutoSelected: metamask.providerAutoSelected ?? false,
   }),
 );
 
-export const selectUserRegion = createSelector(
-  (state: RampsState) => state.metamask.userRegion,
-  (userRegion): UserRegion | null => userRegion ?? null,
-);
+export const selectUserRegion = (state: RampsState): UserRegion | null =>
+  state.metamask.userRegion ?? null;
 
-export const selectCountries = createSelector(
-  (state: RampsState) => state.metamask.countries,
-  (countries): ResourceState<Country[]> =>
-    countries ?? createDefaultResourceState<Country[]>([]),
-);
+export const selectCountries = (state: RampsState): ResourceState<Country[]> =>
+  state.metamask.countries ?? DEFAULT_COUNTRIES;
 
-export const selectProviders = createSelector(
-  (state: RampsState) => state.metamask.providers,
-  (providers): ResourceState<Provider[], Provider | null> =>
-    providers ??
-    createDefaultResourceState<Provider[], Provider | null>([], null),
-);
+export const selectProviders = (
+  state: RampsState,
+): ResourceState<Provider[], Provider | null> =>
+  state.metamask.providers ?? DEFAULT_PROVIDERS;
 
-export const selectTokens = createSelector(
-  (state: RampsState) => state.metamask.tokens,
-  (tokens): ResourceState<TokensResponse | null, RampsToken | null> =>
-    tokens ??
-    createDefaultResourceState<TokensResponse | null, RampsToken | null>(
-      null,
-      null,
-    ),
-);
+export const selectTokens = (
+  state: RampsState,
+): ResourceState<TokensResponse | null, RampsToken | null> =>
+  state.metamask.tokens ?? DEFAULT_TOKENS;
 
-export const selectPaymentMethods = createSelector(
-  (state: RampsState) => state.metamask.paymentMethods,
-  (paymentMethods): ResourceState<PaymentMethod[], PaymentMethod | null> =>
-    paymentMethods ??
-    createDefaultResourceState<PaymentMethod[], PaymentMethod | null>([], null),
-);
+export const selectPaymentMethods = (
+  state: RampsState,
+): ResourceState<PaymentMethod[], PaymentMethod | null> =>
+  state.metamask.paymentMethods ?? DEFAULT_PAYMENT_METHODS;
 
-export const selectRampsOrders = createSelector(
-  (state: RampsState) => state.metamask.orders,
-  (orders): RampsOrder[] => orders ?? [],
-);
+export const selectRampsOrders = (state: RampsState): RampsOrder[] =>
+  state.metamask.orders ?? EMPTY_ORDERS;
 
 export const selectRampsOrdersForSelectedAccount = createSelector(
   [selectRampsOrders, getSelectedInternalAccount],
@@ -111,7 +98,5 @@ export const selectRampsOrdersForSelectedAccount = createSelector(
   },
 );
 
-export const selectProviderAutoSelected = createSelector(
-  (state: RampsState) => state.metamask.providerAutoSelected,
-  (providerAutoSelected): boolean => providerAutoSelected ?? false,
-);
+export const selectProviderAutoSelected = (state: RampsState): boolean =>
+  state.metamask.providerAutoSelected ?? false;
