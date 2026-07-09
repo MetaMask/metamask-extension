@@ -4199,7 +4199,8 @@
     "message": "계속"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "다시 연결"
+    "message": "다시 연결",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "하드웨어 지갑이 USB를 통해 정상적으로 연결되었는지 확인하세요"

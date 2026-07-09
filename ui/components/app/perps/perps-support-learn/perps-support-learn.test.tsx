@@ -3,7 +3,6 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -12,15 +11,23 @@ import {
   FEEDBACK_CONFIG,
   SUPPORT_CONFIG,
 } from '../../../../../shared/constants/perps';
+import { PERPS_ROUTE } from '../../../../helpers/constants/routes';
 import { PerpsSupportLearn } from './perps-support-learn';
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 describe('PerpsSupportLearn', () => {
   beforeEach(() => {
@@ -32,28 +39,22 @@ describe('PerpsSupportLearn', () => {
     };
   });
 
-  it('opens the support URL and tracks MetaMetrics when Contact support is clicked', () => {
+  it('opens the support URL and tracks analytics when Contact support is clicked on the Perps tab', () => {
     const store = configureStore(mockState);
-    renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <PerpsSupportLearn />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+    renderWithProvider(<PerpsSupportLearn />, store, PERPS_ROUTE);
 
     fireEvent.click(screen.getByTestId('perps-contact-support'));
 
+    // Legacy MetaMetrics used PageTitle, which overwrote the hardcoded
+    // `perps_support_learn` location with PATH_NAME_MAP title for /perps.
     expect(mockTrackEvent).toHaveBeenCalledWith(
-      {
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: SUPPORT_CONFIG.Url,
-          location: 'perps_support_learn',
-        },
-      },
       expect.objectContaining({
-        contextPropsIntoEventProperties: expect.any(Array),
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
+          url: SUPPORT_CONFIG.Url,
+          location: 'Perps Tab',
+        }),
       }),
     );
     expect(globalThis.platform.openTab).toHaveBeenCalledWith({
@@ -61,29 +62,21 @@ describe('PerpsSupportLearn', () => {
     });
   });
 
-  it('opens the feedback survey and tracks MetaMetrics when Give feedback is clicked', () => {
+  it('opens the feedback survey and tracks analytics when Give feedback is clicked on the Perps tab', () => {
     const store = configureStore(mockState);
-    renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <PerpsSupportLearn />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+    renderWithProvider(<PerpsSupportLearn />, store, PERPS_ROUTE);
 
     fireEvent.click(screen.getByTestId('perps-give-feedback'));
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
-      {
-        category: MetaMetricsEventCategory.Feedback,
-        event: MetaMetricsEventName.ExternalLinkClicked,
-        properties: {
-          url: FEEDBACK_CONFIG.Url,
-          location: 'perps_support_learn',
-          text: 'perps_feedback_survey',
-        },
-      },
       expect.objectContaining({
-        contextPropsIntoEventProperties: expect.any(Array),
+        name: MetaMetricsEventName.ExternalLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Feedback,
+          url: FEEDBACK_CONFIG.Url,
+          location: 'Perps Tab',
+          text: 'perps_feedback_survey',
+        }),
       }),
     );
     expect(globalThis.platform.openTab).toHaveBeenCalledWith({
