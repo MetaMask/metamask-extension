@@ -803,9 +803,7 @@ describe('LegacyBackgroundApiService', () => {
           );
 
           await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:getTrezorFeatures',
-            ),
+            rootMessenger.call('LegacyBackgroundApiService:getTrezorFeatures'),
           ).rejects.toThrow('Trezor bridge does not support getFeatures');
         });
       });
@@ -837,9 +835,7 @@ describe('LegacyBackgroundApiService', () => {
             bridge: { updateTransportMethod: jest.fn() },
             entropySource: 'entropy-1',
             hdPath: "m/44'/60'/0'/0",
-            createAccounts: jest
-              .fn()
-              .mockResolvedValue([{ address: '0xABC' }]),
+            createAccounts: jest.fn().mockResolvedValue([{ address: '0xABC' }]),
           });
 
           rootMessenger.registerActionHandler(
@@ -962,9 +958,7 @@ describe('LegacyBackgroundApiService', () => {
             bridge: { updateTransportMethod: jest.fn() },
             entropySource: 'entropy-1',
             hdPath: "m/44'/60'/0'/0",
-            createAccounts: jest
-              .fn()
-              .mockResolvedValue([{ address: '0xABC' }]),
+            createAccounts: jest.fn().mockResolvedValue([{ address: '0xABC' }]),
           });
 
           rootMessenger.registerActionHandler(

@@ -1663,8 +1663,7 @@ export class LegacyBackgroundApiService {
   async attemptLedgerTransportCreation(): Promise<boolean> {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
-      async (keyring) =>
-        await (keyring as LedgerKeyringV2).attemptMakeApp(),
+      async (keyring) => await (keyring as LedgerKeyringV2).attemptMakeApp(),
     );
   }
 
@@ -1757,9 +1756,7 @@ export class LegacyBackgroundApiService {
         // `isUnlocked` is exposed by the Ledger V2 wrapper and, at runtime, by
         // the QR keyring; the QR V2 wrapper type does not declare it, so we
         // reach for it via a narrow structural cast.
-        return (
-          keyring as unknown as { isUnlocked(): boolean }
-        ).isUnlocked();
+        return (keyring as unknown as { isUnlocked(): boolean }).isUnlocked();
       },
     );
   }
@@ -1823,20 +1820,17 @@ export class LegacyBackgroundApiService {
    * @returns `true` when the device has been forgotten.
    */
   async forgetDevice(deviceName: string): Promise<boolean> {
-    return this.#withKeyringForDevice(
-      { name: deviceName },
-      async (keyring) => {
-        // V2 wrappers return `KeyringAccount[]` from `getAccounts()`; the
-        // remove-handler downstream expects raw addresses.
-        for (const account of await keyring.getAccounts()) {
-          this.onAccountRemoved(account.address);
-        }
+    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      // V2 wrappers return `KeyringAccount[]` from `getAccounts()`; the
+      // remove-handler downstream expects raw addresses.
+      for (const account of await keyring.getAccounts()) {
+        this.onAccountRemoved(account.address);
+      }
 
-        await keyring.forgetDevice();
+      await keyring.forgetDevice();
 
-        return true;
-      },
-    );
+      return true;
+    });
   }
 
   /**
@@ -1889,8 +1883,7 @@ export class LegacyBackgroundApiService {
         // via `keyring.setAccountToUnlock` + `addAccounts`). Fall back to
         // the keyring's `hdPath` so V2 `createAccounts` builds a valid
         // derivation path.
-        const effectiveHdPath =
-          hdPath ?? (keyring as LedgerKeyringV2).hdPath;
+        const effectiveHdPath = hdPath ?? (keyring as LedgerKeyringV2).hdPath;
         let createdAccount;
 
         switch (deviceName) {
@@ -1902,13 +1895,13 @@ export class LegacyBackgroundApiService {
                 ? `m/44'/60'/${index}'/0/0`
                 : `${effectiveHdPath}/${index}`
             ) as `m/${string}`;
-            [createdAccount] = await (keyring as LedgerKeyringV2).createAccounts(
-              {
-                type: 'bip44:derive-path',
-                entropySource,
-                derivationPath,
-              },
-            );
+            [createdAccount] = await (
+              keyring as LedgerKeyringV2
+            ).createAccounts({
+              type: 'bip44:derive-path',
+              entropySource,
+              derivationPath,
+            });
             break;
           }
           case HardwareDeviceNames.trezor:
@@ -2081,7 +2074,8 @@ export class LegacyBackgroundApiService {
         'KeyringController:withController',
         async (controller) => {
           const hasKeyring = controller.keyrings.some(
-            (entry) => (entry as unknown as { type: string }).type === keyringType,
+            (entry) =>
+              (entry as unknown as { type: string }).type === keyringType,
           );
           if (!hasKeyring) {
             await controller.addNewKeyring(keyringType);
