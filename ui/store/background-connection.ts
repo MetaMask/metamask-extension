@@ -112,6 +112,25 @@ export async function setBackgroundConnection(
 }
 
 /**
+ * Tear down the background RPC connection and clear messenger subscriptions.
+ * Called when a popup or sidepanel closes so port listeners do not retain the
+ * UI document in Firefox's cycle collector graph.
+ */
+export function teardownBackgroundConnection(): void {
+  if (!background) {
+    return;
+  }
+
+  if (notificationRouterAttached) {
+    background.removeOnNotification(routeMessengerEventNotification);
+    notificationRouterAttached = false;
+  }
+
+  messengerEventSubscriptions.clear();
+  background.close();
+}
+
+/**
  * Subscribe to a given event emitted by the background via the root messenger.
  *
  * Because callbacks cannot be sent to the background, we create the

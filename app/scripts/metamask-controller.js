@@ -6734,6 +6734,10 @@ export default class MetamaskController extends EventEmitter {
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
         onStartSendingPatchesOrStreamClosed();
+        // Defer patch tracking until the UI is ready to receive updates.
+        // Initial state is already sent via START_UI_SYNC; tracking earlier only
+        // accumulates large patch buffers when the popup closes during boot.
+        patchStore.init();
         uiReady = true;
         handleUpdate();
       },
@@ -6761,10 +6765,9 @@ export default class MetamaskController extends EventEmitter {
       if (!isStreamWritable(outStream)) {
         return;
       }
-      // Start tracking patches immediately after retrieving initial state for this UI connection
-      // to ensure we don't miss any patches, or include extra patches.
+      // Send full initial state for this UI connection. Patch tracking starts in
+      // startSendingPatches once the UI is ready to consume incremental updates.
       const initialState = this.getState();
-      patchStore.init();
 
       // send notification to client-side
       outStream.write({
@@ -7908,7 +7911,8 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   privateSendUpdate() {
-    this.emit('update', this.getState());
+    const state = this.getState();
+    this.emit('update', state);
   }
 
   /**

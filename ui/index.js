@@ -1,7 +1,7 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
-import { render } from 'react-dom';
+import { render, unmountComponentAtNode } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
@@ -30,6 +30,7 @@ import {
   setupLongTaskObserver,
   setupLongTaskSentryReporting,
   exposeLongTaskMetricsForTesting,
+  disconnectLongTaskObserver,
 } from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
@@ -51,11 +52,12 @@ import txHelper from './helpers/utils/tx-helper';
 import {
   setBackgroundConnection,
   submitRequestToBackground,
+  teardownBackgroundConnection,
 } from './store/background-connection';
+import { resetPerpsStreamManager, getPerpsStreamManager } from './providers/perps';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
-import { getPerpsStreamManager } from './providers/perps';
 import { createUIMessenger } from './messengers/ui-messenger';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
@@ -71,6 +73,17 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
  */
 const reduxStore = withResolvers();
 
+/** @type {Array<() => void>} */
+const uiTeardownCleanups = [];
+
+/** @type {ReturnType<typeof setInterval> | null} */
+let seedlessPasswordCheckIntervalId = null;
+
+/** @type {((data: import('@metamask/utils').JsonRpcNotification) => Promise<void>) | null} */
+let backgroundNotificationHandler = null;
+
+let uiTeardownCompleted = false;
+
 /**
  * Method to update backgroundConnection object use by UI
  *
@@ -82,7 +95,7 @@ export const connectToBackground = (
   handleStartUISync,
 ) => {
   setBackgroundConnection(backgroundConnection);
-  backgroundConnection.onNotification(async (data) => {
+  backgroundNotificationHandler = async (data) => {
     const { method } = data;
     if (method === 'sendUpdate') {
       const store = await reduxStore.promise;
@@ -96,8 +109,50 @@ export const connectToBackground = (
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(data)}`,
       );
     }
-  });
+  };
+  backgroundConnection.onNotification(backgroundNotificationHandler);
 };
+
+/**
+ * Release popup UI resources so Firefox can collect the document.
+ * Closes RPC notification listeners, intervals, observers, and React state.
+ *
+ * @param {HTMLElement | null | undefined} container - Root mount node to unmount.
+ */
+export function teardownMetamaskUi(container) {
+  if (uiTeardownCompleted) {
+    return;
+  }
+  uiTeardownCompleted = true;
+
+  if (seedlessPasswordCheckIntervalId) {
+    clearInterval(seedlessPasswordCheckIntervalId);
+    seedlessPasswordCheckIntervalId = null;
+  }
+
+  for (const cleanup of uiTeardownCleanups) {
+    try {
+      cleanup();
+    } catch (error) {
+      log.error('UI teardown cleanup failed', error);
+    }
+  }
+  uiTeardownCleanups.length = 0;
+
+  disconnectLongTaskObserver();
+  resetPerpsStreamManager();
+
+  teardownBackgroundConnection();
+  backgroundNotificationHandler = null;
+
+  if (container) {
+    try {
+      unmountComponentAtNode(container);
+    } catch (error) {
+      log.error('Failed to unmount MetaMask UI', error);
+    }
+  }
+}
 
 export async function launchMetamaskUi(opts) {
   const { backgroundConnection, initialState } = opts;
@@ -302,13 +357,14 @@ export async function runInitialActions(store) {
     };
     await validateSeedlessPasswordOutdated(initialState);
     // periodically check seedless password outdated when app UI is open
-    const pwdCheckIntervalId = setInterval(() => {
+    seedlessPasswordCheckIntervalId = setInterval(() => {
       const state = store.getState();
       const firstTimeFlowType = getFirstTimeFlowType(state);
       const isSocialLoginFlow = getIsSocialLoginFlow(state);
       if (firstTimeFlowType !== null && !isSocialLoginFlow) {
         // if the onboarding type is not social login, after wallet reset, we should stop checking for password outdated
-        clearInterval(pwdCheckIntervalId);
+        clearInterval(seedlessPasswordCheckIntervalId);
+        seedlessPasswordCheckIntervalId = null;
         return;
       }
       validateSeedlessPasswordOutdated(state);
@@ -425,13 +481,13 @@ function setupStateHooks(store) {
   // Long Task observer: 100% in test/debug, 10% sampled in production
   const longTaskSampleRate =
     process.env.IN_TEST || process.env.METAMASK_DEBUG ? 1 : 0.1;
-  setupLongTaskObserver(longTaskSampleRate);
+  uiTeardownCleanups.push(setupLongTaskObserver(longTaskSampleRate));
 
   // Report TBT to Sentry when popup becomes hidden (production + debug).
   // Sentry's browserTracingIntegration already creates per-task ui.long-task
   // spans; this adds aggregate TBT as a custom measurement alongside them.
   if (!process.env.IN_TEST) {
-    setupLongTaskSentryReporting();
+    uiTeardownCleanups.push(setupLongTaskSentryReporting());
   }
 
   // Expose metrics APIs for E2E benchmark harness

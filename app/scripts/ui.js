@@ -35,6 +35,7 @@ import {
   connectToBackground,
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
+  teardownMetamaskUi,
   // TODO: Remove restricted import
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui';
@@ -148,6 +149,39 @@ async function start() {
   trace({
     name: TraceName.BackgroundConnect,
     parentContext: traceContext,
+  });
+
+  let uiTornDown = false;
+
+  const teardownUiOnPageHide = (teardownSource = 'unknown') => {
+    if (uiTornDown) {
+      return;
+    }
+    uiTornDown = true;
+
+    for (const iframe of document.querySelectorAll('iframe')) {
+      try {
+        iframe.src = 'about:blank';
+        iframe.remove();
+      } catch (error) {
+        // Ignore teardown errors during page hide.
+      }
+    }
+
+    teardownMetamaskUi(container);
+
+    if (teardownSource !== 'port-disconnect') {
+      try {
+        extensionPort.disconnect();
+      } catch (error) {
+        // Ignore teardown errors during page hide.
+      }
+    }
+  };
+
+  window.addEventListener('pagehide', () => teardownUiOnPageHide('pagehide'));
+  extensionPort.onDisconnect.addListener(() => {
+    teardownUiOnPageHide('port-disconnect');
   });
 }
 
