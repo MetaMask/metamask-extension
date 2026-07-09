@@ -138,7 +138,9 @@ describe('NotificationServicesPushControllerInit', () => {
 
       expect(
         getControllerConfig(NotificationServicesPushControllerClassMock),
-      ).toEqual(expect.not.objectContaining({ appVersion: expect.any(String) }));
+      ).toEqual(
+        expect.not.objectContaining({ appVersion: expect.any(String) }),
+      );
     },
   );
 
