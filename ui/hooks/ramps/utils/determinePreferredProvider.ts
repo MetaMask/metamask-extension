@@ -7,7 +7,7 @@ import {
 export type CompletedOrderInfo = {
   providerId: string;
   completedAt: number;
-}
+};
 
 export function completedOrdersFromRampsOrders(
   orders: RampsOrder[],
@@ -26,7 +26,7 @@ export function completedOrdersFromRampsOrders(
 export type PreferredProviderResult = {
   provider: Provider;
   autoSelected: boolean;
-}
+};
 
 export function determinePreferredProvider(
   completedOrders: CompletedOrderInfo[],

@@ -69,8 +69,7 @@ describe('useRampsProviders', () => {
     const { rerender } = renderHook(
       () => useRampsProviders({ enableSideEffects: true }),
       {
-        wrapper: ({ children }) =>
-          createRampsTestWrapper(store)({ children }),
+        wrapper: ({ children }) => createRampsTestWrapper(store)({ children }),
       },
     );
 
