@@ -29,6 +29,10 @@ jest.mock('../../../helpers/api-client', () => ({
   },
 }));
 
+jest.mock('../../../selectors/multichain-transactions', () => ({
+  selectSelectedAccountGroupNonEvmAccounts: () => [],
+}));
+
 const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
 const expectedEvmAddress = selectedAddress;
 const expectedNetworks = ['eip155:1'];
@@ -178,7 +182,9 @@ describe('useTransactionsQuery', () => {
     );
   });
 
-  it('disables the query for non-EVM chain filters', () => {
+  // With the Solana activity offload flag on, a Solana chain filter is included
+  // in the query instead of disabling it (ponytail: local POC flag defaults on).
+  it('includes non-EVM chains in the query for non-EVM chain filters', () => {
     renderQueryHook(() =>
       useTransactionsQuery({
         chainId: 'solana:101',
@@ -190,12 +196,7 @@ describe('useTransactionsQuery', () => {
       mockGetV4MultiAccountTransactionsInfiniteQueryOptions,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
-        networks: [],
-      }),
-    );
-    expect(mockUseInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining({
-        enabled: false,
+        networks: ['solana:101'],
       }),
     );
   });

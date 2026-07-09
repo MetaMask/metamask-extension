@@ -181,12 +181,21 @@ const EXCLUDED_TRANSACTIONS = new Set(['SPAM_TOKEN']);
 // Transform and filter raw API response
 export function selectTransactions({
   address,
+  addresses,
   excludedTxHashes,
 }: {
   address: string;
+  // Full set of the selected group's addresses (EVM + non-EVM), used only for the
+  // inclusion filter; `address` stays the primary used for direction/amounts.
+  addresses?: string[];
   excludedTxHashes?: Set<string>;
 }) {
   const addr = address.toLowerCase();
+  const addrSet = new Set(
+    (addresses?.length ? addresses : [address]).map((item) =>
+      item.toLowerCase(),
+    ),
+  );
 
   return (
     data: InfiniteData<V4MultiAccountTransactionsResponse>,
@@ -195,10 +204,13 @@ export function selectTransactions({
     pages: data.pages.map((page) => ({
       ...page,
       data: page.data.reduce<TransactionViewModel[]>((result, raw) => {
-        // Filter out transactions not involving the current address
+        // Filter out transactions not involving any of the group's addresses
         const rawFrom = raw.from?.toLowerCase();
         const rawTo = raw.to?.toLowerCase();
-        if (rawFrom !== addr && rawTo !== addr) {
+        if (
+          !(rawFrom && addrSet.has(rawFrom)) &&
+          !(rawTo && addrSet.has(rawTo))
+        ) {
           return result;
         }
 

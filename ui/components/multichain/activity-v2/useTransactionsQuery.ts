@@ -6,13 +6,17 @@ import type { CaipChainId } from '@metamask/utils';
 import { getErrorBodyMessage } from '../../../../shared/lib/error';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { MINUTE } from '../../../../shared/constants/time';
+import { NON_EVM_ACTIVITY_FROM_API } from '../../../../shared/constants/non-evm-activity-offload';
 import { getUseExternalServices } from '../../../selectors';
 import { selectEvmAddress } from '../../../selectors/accounts';
+import { selectSelectedAccountGroupNonEvmAccounts } from '../../../selectors/multichain-transactions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { apiClient } from '../../../helpers/api-client';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import type { ActivityListFilter } from './helpers';
+
+const SUPPORTED_NON_EVM_SCOPES = ['eip155', 'tron'];
 
 const knownApiMessages = ['networks param contains no supported chains'];
 
@@ -33,7 +37,7 @@ function isKnownApiResponseError(error: unknown) {
 
   return Boolean(
     errorBodyMessage &&
-    knownApiMessages.some((message) => errorBodyMessage.includes(message)),
+      knownApiMessages.some((message) => errorBodyMessage.includes(message)),
   );
 }
 
@@ -68,44 +72,92 @@ function useTransactionParams(caipChainId?: CaipChainId) {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const locale = useSelector(getIntlLocale);
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
+  // The selected internal account is usually the group's EVM account, so read the
+  // whole account group (same SRP) to find its non-EVM account(s).
+  const groupNonEvmAccounts = useSelector(
+    selectSelectedAccountGroupNonEvmAccounts,
+  );
 
-  const evmNetworks = useMemo(() => {
+  const supportedNonEvmAccounts = useMemo(
+    () =>
+      groupNonEvmAccounts.filter((account) =>
+        SUPPORTED_NON_EVM_SCOPES.some((scope) =>
+          account.accountApiAddress.startsWith(`${scope}:`),
+        ),
+      ),
+    [groupNonEvmAccounts],
+  );
+
+  const nonEvmAccounts = useMemo(
+    () => (NON_EVM_ACTIVITY_FROM_API ? supportedNonEvmAccounts : []),
+    [supportedNonEvmAccounts],
+  );
+
+  const networks = useMemo(() => {
+    // With the offload on, request all enabled networks (EVM + non-EVM);
+    // otherwise EVM only.
+    const includeNetwork = (id: string) =>
+      id.startsWith('eip155:') ||
+      (NON_EVM_ACTIVITY_FROM_API &&
+        SUPPORTED_NON_EVM_SCOPES.some((scope) => id.startsWith(`${scope}:`)));
+
     if (caipChainId) {
-      return caipChainId.startsWith('eip155:') ? [caipChainId] : [];
+      return includeNetwork(caipChainId) ? [caipChainId] : [];
     }
-    return enabledNetworks.filter((id: string) => id.startsWith('eip155:'));
+    return enabledNetworks.filter(includeNetwork);
   }, [enabledNetworks, caipChainId]);
 
-  const accountAddresses = useMemo(
-    () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
-    [evmAddress],
+  const accountAddresses = useMemo(() => {
+    const addresses: string[] = [];
+    if (evmAddress) {
+      addresses.push(`eip155:0:${evmAddress}`);
+    }
+    nonEvmAccounts.forEach((account) =>
+      addresses.push(account.accountApiAddress),
+    );
+    return addresses;
+  }, [evmAddress, nonEvmAccounts]);
+
+  // Addresses used to filter the response to the selected group (both EVM and
+  // non-EVM), lowercased so base58/bech32 addresses compare consistently.
+  const filterAddresses = useMemo(
+    () =>
+      [
+        evmAddress,
+        ...nonEvmAccounts.map((account) => account.address.toLowerCase()),
+      ].filter(Boolean),
+    [evmAddress, nonEvmAccounts],
   );
+
+  console.log({ evmAddress, filterAddresses, accountAddresses, networks });
 
   return useMemo(
     () => ({
       evmAddress,
+      filterAddresses,
       accountAddresses,
       lang: getTransactionApiLanguage(locale),
-      networks: evmNetworks,
+      networks,
     }),
-    [evmAddress, accountAddresses, locale, evmNetworks],
+    [evmAddress, filterAddresses, accountAddresses, locale, networks],
   );
 }
 
 export function useTransactionsQuery(filter?: ActivityListFilter) {
+  console.log('useTransactionsQuery', { filter });
   const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, lang, networks } = useTransactionParams(
-    filter?.chainId,
-  );
+  const { evmAddress, filterAddresses, accountAddresses, lang, networks } =
+    useTransactionParams(filter?.chainId);
   const internalTxHashes = useSelector(selectRequiredTransactionHashes);
 
   const selectFn = useMemo(
     () =>
       selectTransactions({
         address: evmAddress,
+        addresses: filterAddresses,
         excludedTxHashes: internalTxHashes,
       }),
-    [evmAddress, internalTxHashes],
+    [evmAddress, filterAddresses, internalTxHashes],
   );
 
   const queryOptions =
@@ -115,6 +167,13 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
       includeTxMetadata: true,
       lang,
     });
+
+  console.log('useTransactionsQuery', {
+    useExternalServices,
+    networks,
+    accountAddresses,
+    queryOptions,
+  });
 
   return useInfiniteQuery({
     ...queryOptions,

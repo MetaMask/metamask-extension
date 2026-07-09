@@ -6090,7 +6090,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.3.0, @metamask/core-backend@npm:^6.3.2, @metamask/core-backend@npm:^6.3.3":
+"@metamask/core-backend@file:../core/packages/core-backend::locator=metamask-crx%40workspace%3A.":
+  version: 6.5.0
+  resolution: "@metamask/core-backend@file:../core/packages/core-backend#../core/packages/core-backend::hash=45a15a&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/accounts-controller": "npm:^39.0.4"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/multichain-account-service": "npm:^10.0.3"
+    "@metamask/profile-sync-controller": "npm:^28.2.0"
+    "@metamask/utils": "npm:^11.11.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    async-mutex: "npm:^0.5.0"
+    uuid: "npm:^8.3.2"
+  checksum: 10/bf9cfe054ac59d889b188e46ddeeeb859e4bd18962772a22807919746e071dce112c7d1730a2c43004937f40a9ac02514e98a0d4023a0bf7cf20ab0e754c3dda
+  languageName: node
+  linkType: hard
+
+"@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.3.2, @metamask/core-backend@npm:^6.3.3":
   version: 6.3.3
   resolution: "@metamask/core-backend@npm:6.3.3"
   dependencies:
@@ -7222,25 +7240,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-transactions-controller@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/multichain-transactions-controller@npm:7.1.0"
+"@metamask/multichain-transactions-controller@file:../core/packages/multichain-transactions-controller::locator=metamask-crx%40workspace%3A.":
+  version: 7.1.1
+  resolution: "@metamask/multichain-transactions-controller@file:../core/packages/multichain-transactions-controller#../core/packages/multichain-transactions-controller::hash=acfece&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/accounts-controller": "npm:^38.0.0"
+    "@metamask/accounts-controller": "npm:^39.0.4"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/keyring-api": "npm:^23.1.0"
+    "@metamask/core-backend": "npm:^6.3.3"
+    "@metamask/keyring-api": "npm:^23.3.0"
     "@metamask/keyring-internal-api": "npm:^11.0.1"
     "@metamask/keyring-snap-client": "npm:^9.0.2"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/polling-controller": "npm:^16.0.4"
+    "@metamask/polling-controller": "npm:^16.0.8"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/utils": "npm:^11.11.0"
     "@types/uuid": "npm:^8.3.0"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
-  checksum: 10/38e5be05c12e43cdab875f1f7c46fc8feaeacedff6bf0080dd90a7fa509b78c2f2168f8aca0f706c39725c76b735125c6b75649bc43d24010e5c63466d4c820b
+  checksum: 10/87cd86ac753b86a4301826672d20da8c97120e8e131a74cc64c7004a59a2718e79e4f0336a2b937a566187d2ac82be43bf8a4946c5ea150b8086dc5edaa017bf
   languageName: node
   linkType: hard
 
@@ -7477,7 +7496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^16.0.4, @metamask/polling-controller@npm:^16.0.6, @metamask/polling-controller@npm:^16.0.7":
+"@metamask/polling-controller@npm:^16.0.6, @metamask/polling-controller@npm:^16.0.7":
   version: 16.0.7
   resolution: "@metamask/polling-controller@npm:16.0.7"
   dependencies:
@@ -7488,6 +7507,20 @@ __metadata:
     fast-json-stable-stringify: "npm:^2.1.0"
     uuid: "npm:^8.3.2"
   checksum: 10/3c4c87cd5022cb350c5b074add8de166b7c14a1e2069b51aad4d7e25386e1b61d328331e6f1477f1093ae49357725d25717ffb40992afdd37985378656f9595a
+  languageName: node
+  linkType: hard
+
+"@metamask/polling-controller@npm:^16.0.8":
+  version: 16.0.8
+  resolution: "@metamask/polling-controller@npm:16.0.8"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  checksum: 10/3066522432099d9d69475f73b4468da5ce18eb92340cffba2581ed8f0c8dfdb517ae704448fb395bc9a7659409c5a94cfb8a809b56bd35d7cd87de1b2d948dd8
   languageName: node
   linkType: hard
 
@@ -8093,10 +8126,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.9.1":
+"@metamask/solana-wallet-snap@file:../snap-solana-wallet/packages/snap::locator=metamask-crx%40workspace%3A.":
   version: 2.9.1
-  resolution: "@metamask/solana-wallet-snap@npm:2.9.1"
-  checksum: 10/231656d193d49a15fe31048bde73f8c9bb60fa930c574a746b2b7882087040f8f2e83d21805de7f8f04000aec47ce61f36261156278efdd624c19fb9bcb90065
+  resolution: "@metamask/solana-wallet-snap@file:../snap-solana-wallet/packages/snap#../snap-solana-wallet/packages/snap::hash=cf2a17&locator=metamask-crx%40workspace%3A."
+  checksum: 10/5851e777210472a3fd9a2ed2c09043f3f1162abbe4394e2c2b67ce4737fb15407a583152acd85f679b66a7e7ea6294952f18b01a4394d21fb11735a13c8f7529
   languageName: node
   linkType: hard
 
@@ -8519,10 +8552,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.27.0":
+"@metamask/tron-wallet-snap@file:../snap-tron-wallet/packages/snap::locator=metamask-crx%40workspace%3A.":
   version: 1.27.0
-  resolution: "@metamask/tron-wallet-snap@npm:1.27.0"
-  checksum: 10/7555f647d89502aebe5f629242113203b123ab981b9a59105cc9ae9c404cfe3ee2ac10c7d246bb58c86f15b87a874ced0629bb91429f9cc01696ac22132a5da9
+  resolution: "@metamask/tron-wallet-snap@file:../snap-tron-wallet/packages/snap#../snap-tron-wallet/packages/snap::hash=c77df6&locator=metamask-crx%40workspace%3A."
+  checksum: 10/a1a9bb40c4b56d9144febdc1340c1936b5adafb89a0da0a050365d8783109630cd654e47c0b4f99421afb28d2763f2925869e39a4831f304b766581defd9a24b
   languageName: node
   linkType: hard
 
@@ -33051,7 +33084,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^6.3.0"
+    "@metamask/core-backend": ../core/packages/core-backend
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
@@ -33108,7 +33141,7 @@ __metadata:
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^3.1.4"
     "@metamask/multichain-network-controller": "npm:^3.1.0"
-    "@metamask/multichain-transactions-controller": "npm:^7.1.0"
+    "@metamask/multichain-transactions-controller": ../core/packages/multichain-transactions-controller
     "@metamask/name-controller": "npm:^9.1.0"
     "@metamask/network-controller": "npm:^33.0.0"
     "@metamask/network-enablement-controller": "npm:^5.3.0"
@@ -33151,7 +33184,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^17.0.0"
     "@metamask/snaps-sdk": "npm:^11.1.1"
     "@metamask/snaps-utils": "npm:^12.2.1"
-    "@metamask/solana-wallet-snap": "npm:^2.9.1"
+    "@metamask/solana-wallet-snap": ../snap-solana-wallet/packages/snap
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.2.0"
@@ -33165,7 +33198,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.4.2"
     "@metamask/transaction-controller": "npm:^68.1.1"
     "@metamask/transaction-pay-controller": "npm:^23.16.1"
-    "@metamask/tron-wallet-snap": "npm:^1.27.0"
+    "@metamask/tron-wallet-snap": ../snap-tron-wallet/packages/snap
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
     "@metamask/wallet": "npm:^3.0.0"

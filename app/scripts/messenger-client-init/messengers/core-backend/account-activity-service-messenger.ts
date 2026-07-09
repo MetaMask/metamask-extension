@@ -36,6 +36,7 @@ export function getAccountActivityServiceMessenger(
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
       'BackendWebSocketService:addChannelCallback',
       'BackendWebSocketService:removeChannelCallback',
+      'MultichainAccountService:getMultichainAccountGroup',
     ],
     events: [
       'AccountsController:selectedAccountChange',

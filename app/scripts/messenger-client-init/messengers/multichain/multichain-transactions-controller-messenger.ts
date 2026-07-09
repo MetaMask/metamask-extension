@@ -30,6 +30,8 @@ export function getMultichainTransactionsControllerMessenger(
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:accountTransactionsUpdated',
+      // Client-owned terminal tracking for non-EVM pending txs (offload POC).
+      'AccountActivityService:transactionUpdated',
     ],
     actions: [
       'AccountsController:listMultichainAccounts',

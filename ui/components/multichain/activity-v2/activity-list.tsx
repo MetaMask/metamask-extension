@@ -105,6 +105,18 @@ export const ActivityList = ({ filter }: Props) => {
       enabledNetworks.includes(tx.chain),
     );
 
+    // Reconcile the pending overlay (controller state) against API history:
+    // once the indexer returns the same transaction, drop the pending row so it
+    // is not rendered twice. Non-EVM tx `id` is the chain hash (Solana signature).
+    const apiHashes = new Set(
+      evmTransactions
+        .map((tx) => (tx as { hash?: string }).hash?.toLowerCase())
+        .filter(Boolean),
+    );
+    filteredNonEvmTransactions = filteredNonEvmTransactions.filter(
+      (tx) => !apiHashes.has(tx.id?.toLowerCase()),
+    );
+
     // Asset-page filtering: narrow by chain and asset scope
     if (filter) {
       const { chainId: filterChainId, assetScope } = filter;
