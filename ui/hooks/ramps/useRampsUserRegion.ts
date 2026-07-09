@@ -7,13 +7,13 @@ import {
 import { selectUserRegion } from '../../selectors/rampsController';
 import { setRampsUserRegion } from '../../store/controller-actions/ramps-controller';
 
-export interface UseRampsUserRegionResult {
+export type UseRampsUserRegionResult = {
   userRegion: UserRegion | null;
   setUserRegion: (
     region: string,
     options?: ExecuteRequestOptions,
   ) => Promise<UserRegion | null>;
-}
+};
 
 export function useRampsUserRegion(): UseRampsUserRegionResult {
   const userRegion = useSelector(selectUserRegion);

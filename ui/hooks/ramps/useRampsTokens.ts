@@ -8,13 +8,13 @@ import { selectTokens } from '../../selectors/rampsController';
 import { setRampsSelectedToken } from '../../store/controller-actions/ramps-controller';
 import { parseUserFacingError } from './utils/parseUserFacingError';
 
-export interface UseRampsTokensResult {
+export type UseRampsTokensResult = {
   tokens: TokensResponse | null;
   selectedToken: RampsToken | null;
   setSelectedToken: (assetId: string) => Promise<void>;
   isLoading: boolean;
   error: string | null;
-}
+};
 
 export function useRampsTokens(): UseRampsTokensResult {
   const tokensState = useSelector(selectTokens);

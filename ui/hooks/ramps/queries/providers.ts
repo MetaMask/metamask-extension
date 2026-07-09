@@ -2,9 +2,9 @@ import { queryOptions } from '@tanstack/react-query';
 import type { Provider } from '@metamask/ramps-controller';
 import { getRampsProviders } from '../../../store/controller-actions/ramps-controller';
 
-interface ProvidersQueryParams {
+type ProvidersQueryParams = {
   regionCode: string;
-}
+};
 
 export const rampsProvidersKeys = {
   all: () => ['ramps', 'providers'] as const,
