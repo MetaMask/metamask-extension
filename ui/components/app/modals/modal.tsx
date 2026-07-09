@@ -25,6 +25,9 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal from './fade-modal';
+import RampUnsupportedModal from './ramps/ramp-unsupported-modal';
+import EligibilityFailedModal from './ramps/eligibility-failed-modal';
+import RampsServiceDisruptionModal from './ramps/ramps-service-disruption-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -101,6 +104,48 @@ const MODALS: Record<string, ModalConfig> = {
 
   CONVERT_TOKEN_TO_NFT: {
     contents: <ConvertTokenToNftModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMP_UNSUPPORTED: {
+    contents: <RampUnsupportedModal />,
+    testId: 'ramp-unsupported-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_ELIGIBILITY_FAILED: {
+    contents: <EligibilityFailedModal />,
+    testId: 'ramp-eligibility-failed-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_SERVICE_DISRUPTION: {
+    contents: <RampsServiceDisruptionModal />,
+    testId: 'ramps-service-disruption-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
