@@ -117,6 +117,76 @@ export function useOnboardingCompletion() {
     [dispatch, navigate],
   );
 
+  const completeOnboardingWithSidePanel = useCallback(
+    async ({
+      deferredDeepLinkResult,
+      shouldOpenSidePanel,
+      autoCompleteWithoutUserGesture,
+    }: {
+      deferredDeepLinkResult: DeferredDeepLinkRoute | null;
+      shouldOpenSidePanel: boolean;
+      autoCompleteWithoutUserGesture: boolean;
+    }): Promise<boolean> => {
+      try {
+        const browserWithSidePanel = browser as BrowserWithSidePanel;
+        if (!browserWithSidePanel?.sidePanel?.open) {
+          return false;
+        }
+
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        if (!tabs || tabs.length === 0) {
+          return false;
+        }
+
+        // `browser.sidePanel.open()` requires a user gesture. Auto-complete
+        // runs from `useEffect`, so skip the call there. Navigate/Interstitial
+        // deferred deep links also skip opening so the popup can route first.
+        if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {
+          await browserWithSidePanel.sidePanel.open({
+            windowId: tabs[0].windowId,
+          });
+          setIsSidePanelOpen(true);
+        }
+
+        // Prefer the side panel on the next toolbar click after onboarding.
+        await dispatch(setUseSidePanelAsDefault(true));
+        await dispatch(setCompletedOnboardingWithSidepanel());
+
+        // Auto-complete passes `completedWithSidePanelFlow: false` so navigation
+        // uses popup rules (home redirect, `_blank` external redirects) even
+        // though the panel did not open in this popup context.
+        handleOnDoneNavigation(
+          deferredDeepLinkResult,
+          Boolean(deferredDeepLink),
+          !autoCompleteWithoutUserGesture,
+        );
+
+        return true;
+      } catch (error) {
+        // Unexpected `.open()` failure: fall through to popup completion below.
+        console.error('Error opening side panel:', error);
+        return false;
+      }
+    },
+    [deferredDeepLink, dispatch, handleOnDoneNavigation],
+  );
+
+  const completeOnboardingNormally = useCallback(
+    async (deferredDeepLinkResult: DeferredDeepLinkRoute | null) => {
+      await dispatch(setCompletedOnboarding());
+
+      handleOnDoneNavigation(
+        deferredDeepLinkResult,
+        Boolean(deferredDeepLink),
+        false,
+      );
+    },
+    [deferredDeepLink, dispatch, handleOnDoneNavigation],
+  );
+
   /**
    * Runs the shared onboarding "Done" flow from the completion page.
    *
@@ -206,53 +276,17 @@ export function useOnboardingCompletion() {
         }
 
         if (isSidePanelEnabled) {
-          try {
-            const browserWithSidePanel = browser as BrowserWithSidePanel;
-            if (browserWithSidePanel?.sidePanel?.open) {
-              const tabs = await browser.tabs.query({
-                active: true,
-                currentWindow: true,
-              });
-              if (tabs && tabs.length > 0) {
-                // `browser.sidePanel.open()` requires a user gesture. Auto-complete
-                // runs from `useEffect`, so skip the call there. Navigate/Interstitial
-                // deferred deep links also skip opening so the popup can route first.
-                if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {
-                  await browserWithSidePanel.sidePanel.open({
-                    windowId: tabs[0].windowId,
-                  });
-                  setIsSidePanelOpen(true);
-                }
-
-                // Prefer the side panel on the next toolbar click after onboarding.
-                await dispatch(setUseSidePanelAsDefault(true));
-                await dispatch(setCompletedOnboardingWithSidepanel());
-
-                // Auto-complete passes `completedWithSidePanelFlow: false` so navigation
-                // uses popup rules (home redirect, `_blank` external redirects) even
-                // though the panel did not open in this popup context.
-                handleOnDoneNavigation(
-                  deferredDeepLinkResult,
-                  Boolean(deferredDeepLink),
-                  !autoCompleteWithoutUserGesture,
-                );
-
-                return;
-              }
-            }
-          } catch (error) {
-            // Unexpected `.open()` failure: fall through to popup completion below.
-            console.error('Error opening side panel:', error);
+          const completedWithSidePanel = await completeOnboardingWithSidePanel({
+            deferredDeepLinkResult,
+            shouldOpenSidePanel,
+            autoCompleteWithoutUserGesture,
+          });
+          if (completedWithSidePanel) {
+            return;
           }
         }
 
-        await dispatch(setCompletedOnboarding());
-
-        handleOnDoneNavigation(
-          deferredDeepLinkResult,
-          Boolean(deferredDeepLink),
-          false,
-        );
+        await completeOnboardingNormally(deferredDeepLinkResult);
       } catch (error) {
         isFinishingOnboardingRef.current = false;
         throw error;
@@ -261,12 +295,13 @@ export function useOnboardingCompletion() {
     [
       accountTypeForMetrics,
       backupAndSyncOnboardingToggleState,
+      completeOnboardingNormally,
+      completeOnboardingWithSidePanel,
       createEventBuilder,
       deferredDeepLink,
       dispatch,
       externalServicesOnboardingToggleState,
       firstTimeFlowType,
-      handleOnDoneNavigation,
       isBasicFunctionalityToggleEnabled,
       isOnboardingCompleted,
       isOptedIn,
