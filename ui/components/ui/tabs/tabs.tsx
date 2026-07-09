@@ -97,15 +97,16 @@ export const Tabs = <TKey extends string = string>({
       : 0;
 
   useLayoutEffect(() => {
+    const childIndex = findChildByKey(activeTab);
+    const index = childIndex >= 0 ? childIndex : clampedIndex;
     const tabs = tabListRef.current?.querySelectorAll('[role="tab"]');
-    const tab = tabs?.[clampedIndex];
 
-    tab?.scrollIntoView({
+    tabs?.[index]?.scrollIntoView({
       behavior: 'smooth',
       inline: 'nearest',
       block: 'nearest',
     });
-  }, [clampedIndex]);
+  }, [activeTab, findChildByKey, clampedIndex]);
 
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== clampedIndex) {
