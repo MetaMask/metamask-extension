@@ -3863,7 +3863,10 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Testing
-      throwTestError: this.throwTestError.bind(this),
+      throwTestError: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:throwTestError',
+      ),
       captureTestError: this.captureTestError.bind(this),
 
       // NameController
@@ -8061,21 +8064,6 @@ export default class MetamaskController extends EventEmitter {
 
     releaseLock();
     return pendingNonce;
-  }
-
-  /**
-   * Throw an artificial error in a timeout handler for testing purposes.
-   *
-   * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
-   * use this for handling errors.
-   */
-  throwTestError(message) {
-    setTimeout(() => {
-      const error = new Error(message);
-      error.name = 'TestError';
-      throw error;
-    });
   }
 
   /**

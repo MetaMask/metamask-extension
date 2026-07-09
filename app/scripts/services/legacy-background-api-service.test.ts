@@ -3316,6 +3316,26 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('throwTestError', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('throws a TestError with the given message from a timeout handler', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.call('LegacyBackgroundApiService:throwTestError', 'boom');
+
+        expect(() => jest.runAllTimers()).toThrow(
+          expect.objectContaining({ name: 'TestError', message: 'boom' }),
+        );
+      });
+    });
+  });
 });
 
 /**
