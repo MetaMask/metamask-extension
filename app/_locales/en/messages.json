@@ -197,6 +197,52 @@
   "activity_approveSpendingCap_success_title": {
     "message": "Approved spending cap"
   },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "Activate trustline failed"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "Activating trustline $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "Trustline activated $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "Deactivate trustline failed"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "Deactivating trustline $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "Trustline deactivated $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_bridge_failed_description": {
     "message": "Bridge failed"
   },

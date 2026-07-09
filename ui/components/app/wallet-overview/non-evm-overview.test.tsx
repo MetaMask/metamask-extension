@@ -9,7 +9,6 @@ import { MultichainNativeAssets } from '../../../../shared/constants/multichain/
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -102,31 +101,6 @@ const mockNonEvmAccount = {
   type: BtcAccountType.P2wpkh,
 };
 
-const mockBtcChain = {
-  active: true,
-  chainId: MultichainNetworks.BITCOIN,
-  chainName: 'Bitcoin',
-  shortName: 'Bitcoin',
-  nativeTokenSupported: true,
-  isEvm: false,
-};
-
-const mockSolanaChain = {
-  active: true,
-  chainId: MultichainNetworks.SOLANA,
-  chainName: 'Solana',
-  shortName: 'Solana',
-  nativeTokenSupported: true,
-  isEvm: false,
-};
-
-// default chains do not include BTC
-const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
-  (chain) =>
-    chain.chainId !== MultichainNetworks.BITCOIN &&
-    chain.chainId !== MultichainNetworks.SOLANA,
-);
-
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
@@ -203,9 +177,6 @@ const mockMetamaskStore = {
     },
   },
 };
-const mockRampsStore = {
-  buyableChains: mockBuyableChainsEvmOnly,
-};
 
 function getStore(state?: Record<string, unknown>) {
   return configureMockStore([thunk])({
@@ -213,7 +184,6 @@ function getStore(state?: Record<string, unknown>) {
     localeMessages: {
       currentLocale: 'en-US',
     },
-    ramps: mockRampsStore,
     ...state,
   });
 }
@@ -325,7 +295,7 @@ describe('NonEvmOverview', () => {
     expect(buyButton).toBeInTheDocument();
   });
 
-  it('"Buy & Sell" button is disabled if BTC is not buyable and SOL is not buyable', () => {
+  it('keeps the "Buy & Sell" button enabled regardless of buyable chain state', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
@@ -333,56 +303,13 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BUY_BUTTON);
 
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
-  });
-
-  it('"Buy & Sell" button is enabled if BTC is buyable', () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <NonEvmOverview />,
-      storeWithBtcBuyable,
-    );
-
-    const buyButton = queryByTestId(BUY_BUTTON);
-
-    expect(buyButton).toBeInTheDocument();
-    expect(buyButton).not.toBeDisabled();
-  });
-
-  // TODO: Add solana buyable test
-  it.skip('"Buy & Sell" button is enabled if SOL is buyable', () => {
-    const storeWithSolanaBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockSolanaChain],
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <NonEvmOverview />,
-      storeWithSolanaBuyable,
-    );
-
-    const buyButton = queryByTestId(BUY_BUTTON);
-
-    expect(buyButton).toBeInTheDocument();
     expect(buyButton).not.toBeDisabled();
   });
 
   it('calls openBuyInPdapp when clicking on "Buy & Sell" button', async () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
-
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
-      storeWithBtcBuyable,
+      getStore(),
     );
 
     const buyButton = queryByTestId(BUY_BUTTON);
@@ -392,11 +319,7 @@ describe('NonEvmOverview', () => {
   });
 
   it('sends an event when clicking the Buy button', () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
+    const storeWithBtcBuyable = getStore();
 
     const mockTrackEvent = jest.fn();
     const mockMetaMetricsContext = {

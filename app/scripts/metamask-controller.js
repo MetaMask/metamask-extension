@@ -235,6 +235,8 @@ import {
   DefiReferralPartner,
   getPartnerByOrigin,
 } from '../../shared/constants/defi-referrals';
+import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -2970,7 +2972,10 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      toggleExternalServices: this.toggleExternalServices.bind(this),
+      toggleExternalServices: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:toggleExternalServices',
+      ),
       addToken: async ({
         address,
         symbol,
@@ -3464,11 +3469,17 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'NetworkOrderController:updateNetworksList',
       ),
-      updateAccountsList: this.updateAccountsList.bind(this),
+      updateAccountsList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountOrderController:updateAccountsList',
+      ),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
       setEnabledAllPopularNetworks:
         this.setEnabledAllPopularNetworks.bind(this),
-      updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
+      updateHiddenAccountsList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountOrderController:updateHiddenAccountsList',
+      ),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
 
@@ -3899,7 +3910,6 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Other
-      endTrace,
       isRelaySupported,
       isSendBundleSupported,
       openUpdateTabAndReload: () =>
@@ -6729,6 +6739,22 @@ export default class MetamaskController extends EventEmitter {
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          isTerminalBackendEnabled: () => {
+            const { remoteFeatureFlags } = this.controllerMessenger.call(
+              'RemoteFeatureFlagController:getState',
+            );
+            // Resolve through the same manifest-merged path as the UI selector
+            // (`getIsPerpsTerminalBackendEnabled`). Reading raw controller state
+            // here would ignore `.manifest-overrides.json`, so a manifest
+            // override could enable the Terminal backend in the UI while the
+            // bridge kept emitting un-enriched direct-provider market data.
+            const mergedFlags = getRemoteFeatureFlags({
+              metamask: { remoteFeatureFlags },
+            });
+            return isPerpsRemoteConfigSatisfied(
+              mergedFlags.perpsTerminalBackendEnabled,
+            );
+          },
           emit: (channel, data, extra) => {
             if (!perpsStream.isActive || !isStreamWritable(outStream)) {
               return;
@@ -8250,31 +8276,6 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  toggleExternalServices(useExternal) {
-    this.preferencesController.toggleExternalServices(useExternal);
-    const subscriptionState = this.controllerMessenger.call(
-      'SubscriptionController:getState',
-    );
-    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
-      subscriptionState.subscriptions,
-    );
-    if (useExternal) {
-      this.tokenDetectionController.enable();
-      this.gasFeeController.enableNonRPCGasFeeApis();
-      if (hasActiveShieldSubscription) {
-        this.shieldController.start();
-      }
-    } else {
-      this.tokenDetectionController.disable();
-      this.gasFeeController.disableNonRPCGasFeeApis();
-      // stop polling for the subscriptions if external services are disabled
-      this.subscriptionController.stopAllPolling();
-      if (hasActiveShieldSubscription) {
-        this.shieldController.stop();
-      }
-    }
-  }
-
   //=============================================================================
   // CONFIG
   //=============================================================================
@@ -8468,22 +8469,6 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  /**
-   * Updates the pinned accounts list
-   *
-   * @deprecated This method is deprecated and will be removed in the future.
-   * use AccountTreeController.setAccountGroupPinned instead
-   * @param {AccountAddress[]} pinnedAccountList - The list of accounts to update in the state.
-   */
-  updateAccountsList = (pinnedAccountList) => {
-    try {
-      this.accountOrderController.updateAccountsList(pinnedAccountList);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  };
-
   setEnabledNetworks = async (chainId) => {
     try {
       this.networkEnablementController.enableNetwork(chainId);
@@ -8504,22 +8489,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this.lookupSelectedNetworks();
-  };
-
-  /**
-   * Updates the hidden accounts list
-   *
-   * @deprecated This method is deprecated and will be removed in the future.
-   * use AccountTreeController.setAccountGroupHidden instead
-   * @param {AccountAddress[]} hiddenAccountList - The list of accounts to update in the state.
-   */
-  updateHiddenAccountsList = (hiddenAccountList) => {
-    try {
-      this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
   };
 
   /**
