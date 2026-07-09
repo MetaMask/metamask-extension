@@ -16,17 +16,17 @@ const mk = (over = {}) => ({ metamask: { ...baseMetamask, ...over } });
 describe('ramps selectors', () => {
   it('getRampsUserRegion returns the region', () => {
     const region = { country: { isoCode: 'US' }, state: null, regionCode: 'us' };
-    expect(getRampsUserRegion(mk({ userRegion: region }) as any)).toBe(region);
+    expect(getRampsUserRegion(mk({ userRegion: region }))).toBe(region);
   });
 
   it('getIsRampsGeolocationUnknown is true when resolved and region null', () => {
-    expect(getIsRampsGeolocationUnknown(mk() as any)).toBe(true);
+    expect(getIsRampsGeolocationUnknown(mk())).toBe(true);
   });
 
   it('getIsRampsGeolocationUnknown is false while countries are loading', () => {
     expect(
       getIsRampsGeolocationUnknown(
-        mk({ countries: { ...baseMetamask.countries, isLoading: true } }) as any,
+        mk({ countries: { ...baseMetamask.countries, isLoading: true } }),
       ),
     ).toBe(false);
   });
@@ -37,6 +37,6 @@ describe('ramps selectors', () => {
       state: null,
       regionCode: 'fr',
     };
-    expect(getIsRampRegionUnsupported(mk({ userRegion: region }) as any)).toBe(true);
+    expect(getIsRampRegionUnsupported(mk({ userRegion: region }))).toBe(true);
   });
 });
