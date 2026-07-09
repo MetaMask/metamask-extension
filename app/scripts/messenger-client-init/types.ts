@@ -8,6 +8,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
 import { Mutex } from 'async-mutex';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
@@ -238,6 +239,13 @@ export type MessengerClientInitRequest<
    *
    */
   sendUpdate: () => void;
+
+  /**
+   * Updates the NetworkEnablementController state.
+   */
+  updateNetworkEnablementState: (
+    callback: (state: NetworkEnablementControllerState) => void,
+  ) => void;
 };
 
 /**

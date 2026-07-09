@@ -14,6 +14,11 @@ import {
 } from '@metamask/transaction-controller';
 import { add0x, hexToBytes } from '@metamask/utils';
 import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import {
   EncAccountDataType,
   SecretType,
   RecoveryError,
@@ -476,6 +481,202 @@ describe('LegacyBackgroundApiService', () => {
             to: '0x123',
           }),
         ).rejects.toThrow('No network client available for gas estimation');
+      });
+    });
+  });
+
+  describe('addNetwork', () => {
+    const networkConfiguration = {
+      chainId: '0x1',
+    } as unknown as AddNetworkFields;
+    const addedNetwork = {
+      chainId: '0x1',
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [{ networkClientId: 'network-client-id' }],
+    } as unknown as NetworkConfiguration;
+
+    it('adds the network and sets it as active by default', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const addNetworkHandler = jest.fn().mockReturnValue(addedNetwork);
+        const setActiveNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          addNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:setActiveNetwork',
+          setActiveNetworkHandler,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          networkConfiguration,
+        );
+
+        expect(addNetworkHandler).toHaveBeenCalledWith(networkConfiguration);
+        expect(setActiveNetworkHandler).toHaveBeenCalledWith(
+          'network-client-id',
+        );
+        expect(result).toStrictEqual(addedNetwork);
+      });
+    });
+
+    it('adds the network without setting it as active and refreshes the selected networks', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const addNetworkHandler = jest.fn().mockReturnValue(addedNetwork);
+        const setActiveNetworkHandler = jest.fn();
+        const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          addNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:setActiveNetwork',
+          setActiveNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          networkConfiguration,
+          { setActive: false },
+        );
+
+        expect(addNetworkHandler).toHaveBeenCalledWith(networkConfiguration);
+        expect(setActiveNetworkHandler).not.toHaveBeenCalled();
+        // `lookupSelectedNetworks` runs after adding the network.
+        expect(lookupNetworkHandler).toHaveBeenCalledWith();
+        expect(result).toStrictEqual(addedNetwork);
+      });
+    });
+
+    it('restores the previous enabled network map when a network is enabled after adding', async () => {
+      const updateNetworkEnablementState = jest.fn();
+      await withService(
+        { options: { updateNetworkEnablementState } },
+        async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'NetworkController:addNetwork',
+            jest.fn().mockReturnValue(addedNetwork),
+          );
+          rootMessenger.registerActionHandler(
+            'NetworkEnablementController:getState',
+            jest.fn().mockReturnValue({
+              enabledNetworkMap: { eip155: { '0x1': true } },
+            }),
+          );
+          rootMessenger.registerActionHandler(
+            'NetworkController:getState',
+            jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+          );
+          rootMessenger.registerActionHandler(
+            'NetworkController:lookupNetwork',
+            jest.fn().mockResolvedValue(undefined),
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:addNetwork',
+            networkConfiguration,
+            { setActive: false },
+          );
+
+          // Simulate the NetworkEnablementController publishing a state change
+          // after the network is added.
+          rootMessenger.publish(
+            'NetworkEnablementController:stateChange',
+            {
+              enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
+            } as unknown as NetworkEnablementControllerState,
+            [],
+          );
+
+          expect(updateNetworkEnablementState).toHaveBeenCalledTimes(1);
+          const state = {
+            enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
+          };
+          updateNetworkEnablementState.mock.calls[0][0](state);
+          expect(state.enabledNetworkMap.eip155['0xa']).toBe(false);
+          expect(state.enabledNetworkMap.eip155['0x1']).toBe(true);
+        },
+      );
+    });
+
+    it('unsubscribes from the state change event and rethrows when adding the network fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          jest.fn().mockImplementation(() => {
+            throw new Error('add network failed');
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addNetwork',
+            networkConfiguration,
+            { setActive: false },
+          ),
+        ).rejects.toThrow('add network failed');
+
+        expect(lookupNetworkHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('lookupSelectedNetworks', () => {
+    it('looks up the global network and each enabled network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({
+            enabledNetworkMap: { eip155: { '0x1': true, '0xa': false } },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            networkConfigurationsByChainId: {
+              '0x1': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetworkHandler,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:lookupSelectedNetworks',
+        );
+
+        // Global lookup (no client id) plus one for the enabled `0x1` network.
+        expect(lookupNetworkHandler).toHaveBeenCalledWith();
+        expect(lookupNetworkHandler).toHaveBeenCalledWith('mainnet');
+        expect(lookupNetworkHandler).toHaveBeenCalledTimes(2);
       });
     });
   });
@@ -3288,6 +3489,10 @@ function getMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:getSelectedNetworkClient',
+      'NetworkController:addNetwork',
+      'NetworkController:setActiveNetwork',
+      'NetworkController:lookupNetwork',
+      'NetworkEnablementController:getState',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:setSelectedCurrency',
@@ -3367,6 +3572,7 @@ function getMessenger(
       'ShieldController:start',
       'ShieldController:stop',
     ],
+    events: ['NetworkEnablementController:stateChange'],
   });
 
   return serviceMessenger;
@@ -3400,6 +3606,7 @@ async function withService<ReturnValue>(
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
+    updateNetworkEnablementState: jest.fn(),
     ...options,
   });
   return await testFunction({ service, rootMessenger, serviceMessenger });

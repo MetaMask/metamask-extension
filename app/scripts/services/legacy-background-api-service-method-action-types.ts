@@ -98,6 +98,28 @@ export type LegacyBackgroundApiServiceEstimateGasAction = {
 };
 
 /**
+ * Adds a network and (optionally) sets it as the active network.
+ *
+ * @param networkConfiguration - The network configuration to add.
+ * @param options - Options for post-add behavior.
+ * @param options.setActive - Whether to switch to the added network.
+ * @returns The added network configuration.
+ */
+export type LegacyBackgroundApiServiceAddNetworkAction = {
+  type: `LegacyBackgroundApiService:addNetwork`;
+  handler: LegacyBackgroundApiService['addNetwork'];
+};
+
+/**
+ * Gathers metadata (primarily connectivity status) about the globally
+ * selected network as well as each enabled network and persists it to state.
+ */
+export type LegacyBackgroundApiServiceLookupSelectedNetworksAction = {
+  type: `LegacyBackgroundApiService:lookupSelectedNetworks`;
+  handler: LegacyBackgroundApiService['lookupSelectedNetworks'];
+};
+
+/**
  * Verifies the validity of the current vault's seed phrase.
  *
  * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -403,6 +425,8 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction
   | LegacyBackgroundApiServiceEstimateGasAction
+  | LegacyBackgroundApiServiceAddNetworkAction
+  | LegacyBackgroundApiServiceLookupSelectedNetworksAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
