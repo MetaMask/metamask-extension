@@ -1,4 +1,7 @@
-import { rampsPaymentMethodsKeys, rampsPaymentMethodsOptions } from './paymentMethods';
+import {
+  rampsPaymentMethodsKeys,
+  rampsPaymentMethodsOptions,
+} from './paymentMethods';
 
 jest.mock('../../../store/controller-actions/ramps-controller', () => ({
   getRampsPaymentMethods: jest.fn().mockResolvedValue({
