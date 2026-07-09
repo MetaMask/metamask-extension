@@ -30,6 +30,12 @@ type SmartTransactionsBannerAlertProps = {
   marginType?: MarginType;
 };
 
+const selectAlertEnabled = (state: {
+  metamask: { alertEnabledness?: { [key: string]: boolean } };
+}) =>
+  state.metamask.alertEnabledness?.[AlertTypes.smartTransactionsMigration] !==
+  false;
+
 export const SmartTransactionsBannerAlert = React.memo(
   ({ marginType = 'default' }: SmartTransactionsBannerAlertProps) => {
     const t = useI18nContext();
@@ -42,14 +48,7 @@ export const SmartTransactionsBannerAlert = React.memo(
       currentConfirmation = null;
     }
 
-    const alertEnabled = useSelector(
-      (state: {
-        metamask: { alertEnabledness?: { [key: string]: boolean } };
-      }) =>
-        state.metamask.alertEnabledness?.[
-          AlertTypes.smartTransactionsMigration
-        ] !== false,
-    );
+    const alertEnabled = useSelector(selectAlertEnabled);
 
     const smartTransactionsOptIn = useSelector(
       getSmartTransactionsOptInStatusInternal,
@@ -92,11 +91,7 @@ export const SmartTransactionsBannerAlert = React.memo(
             currentConfirmation?.type as TransactionType,
           );
 
-    if (!shouldRender) {
-      return null;
-    }
-
-    const getMarginStyle = () => {
+    const marginStyle = React.useMemo(() => {
       switch (marginType) {
         case 'none':
           return { margin: 0 };
@@ -107,7 +102,11 @@ export const SmartTransactionsBannerAlert = React.memo(
         default:
           return undefined;
       }
-    };
+    }, [marginType]);
+
+    if (!shouldRender) {
+      return null;
+    }
 
     return (
       <Box className="transaction-alerts">
@@ -115,7 +114,7 @@ export const SmartTransactionsBannerAlert = React.memo(
           severity={BannerAlertSeverity.Info}
           onClose={dismissAlert}
           data-testid="smart-transactions-banner-alert"
-          style={getMarginStyle()}
+          style={marginStyle}
         >
           <Text fontWeight={FontWeight.Bold}>
             {t('smartTransactionsEnabledTitle')}
