@@ -59,7 +59,7 @@ git push origin release
 # local tag would otherwise keep pointing at an old commit. When the tag is
 # not yet on origin, create it at the commit made above and let any push
 # failure surface instead of masking it as a benign re-run.
-remote_tag_sha="$(git ls-remote --tags origin "refs/tags/${version}" | awk '{print $1}')"
+remote_tag_sha="$(git ls-remote --tags origin "refs/tags/${version}^{}" | awk 'NR==1 { print $1; exit }')"
 if [[ -n "${remote_tag_sha}" ]]; then
   echo "Tag ${version} already exists on origin (${remote_tag_sha}); leaving immutable release tag untouched"
 else
