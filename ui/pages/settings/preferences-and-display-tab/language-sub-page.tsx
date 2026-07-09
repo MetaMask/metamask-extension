@@ -24,6 +24,7 @@ import locales from '../../../../app/_locales/index.json';
 import { isMaintainedLocale } from '../../../../shared/constants/locales';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { Divider } from '../shared';
+import { transitionBack } from '../../../components/ui/transition';
 
 type LocaleEntry = (typeof locales)[number];
 
@@ -50,7 +51,7 @@ const LanguageSubPage = () => {
 
   const handleSelect = (value: string) => {
     dispatch(updateCurrentLocale(value));
-    navigate(PREFERENCES_AND_DISPLAY_ROUTE);
+    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
   };
 
   const renderLocaleRows = (entries: LocaleEntry[]) =>

@@ -9,7 +9,9 @@ import {
   getSignatureControllerMessenger,
   SignatureControllerInitMessenger,
 } from '../messengers';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getRootMessenger } from '../../lib/messenger';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import { SignatureControllerInit } from './signature-controller-init';
 
 jest.mock('@metamask/signature-controller', () => ({
@@ -18,6 +20,12 @@ jest.mock('@metamask/signature-controller', () => ({
       on: jest.fn(),
     },
   })),
+}));
+
+jest.mock('../../controllers/analytics', () => ({
+  createEventBuilder: jest.requireActual('../../controllers/analytics')
+    .createEventBuilder,
+  trackEvent: jest.fn(),
 }));
 
 function getInitRequestMock(): jest.Mocked<
@@ -38,6 +46,12 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('SignatureControllerInit', () => {
+  const trackEventMock = jest.mocked(trackEvent);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('initializes the controller', () => {
     const { messengerClient } = SignatureControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(Object);
@@ -53,5 +67,30 @@ describe('SignatureControllerInit', () => {
       isDecodeSignatureRequestEnabled: expect.any(Function),
       trace: expect.any(Function),
     });
+  });
+
+  it('tracks cancelWithReason events through AnalyticsController', () => {
+    SignatureControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(SignatureController);
+    const { on } = controllerMock.mock.results[0].value.hub;
+    const cancelHandler = on.mock.calls.find(
+      ([eventName]: [string, unknown]) => eventName === 'cancelWithReason',
+    )?.[1];
+
+    cancelHandler?.({
+      metadata: { type: 'personal_sign' },
+      reason: 'user_rejected',
+    });
+
+    expect(trackEventMock).toHaveBeenCalledWith(
+      createEventBuilder('user_rejected')
+        .addCategory(MetaMetricsEventCategory.Transactions)
+        .addProperties({
+          action: 'Sign Request',
+          type: 'personal_sign',
+        })
+        .build(),
+    );
   });
 });

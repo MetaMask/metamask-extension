@@ -630,15 +630,13 @@
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "webpack>@webassemblyjs/ast": {

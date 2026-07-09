@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -14,9 +14,9 @@ import {
 } from '@metamask/design-system-react';
 import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../../hooks/useSegmentContext';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
@@ -77,7 +77,8 @@ const SupportListItem = ({
 export const PerpsSupportLearn = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const { track } = usePerpsEventTracking();
 
   const handleLearnPerps = useCallback(() => {
@@ -102,20 +103,16 @@ export const PerpsSupportLearn = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
     });
     trackEvent(
-      {
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
           url: SUPPORT_CONFIG.Url,
-          location: 'perps_support_learn',
-        },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
+          location: segmentContext.page?.title,
+        })
+        .build(),
     );
     globalThis.platform.openTab({ url: SUPPORT_CONFIG.Url });
-  }, [track, trackEvent]);
+  }, [createEventBuilder, segmentContext.page?.title, track, trackEvent]);
 
   const handleFeedback = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -127,21 +124,17 @@ export const PerpsSupportLearn = () => {
         PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
     });
     trackEvent(
-      {
-        category: MetaMetricsEventCategory.Feedback,
-        event: MetaMetricsEventName.ExternalLinkClicked,
-        properties: {
+      createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Feedback)
+        .addProperties({
           url: FEEDBACK_CONFIG.Url,
-          location: 'perps_support_learn',
+          location: segmentContext.page?.title,
           text: 'perps_feedback_survey',
-        },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
+        })
+        .build(),
     );
     globalThis.platform.openTab({ url: FEEDBACK_CONFIG.Url });
-  }, [track, trackEvent]);
+  }, [createEventBuilder, segmentContext.page?.title, track, trackEvent]);
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>

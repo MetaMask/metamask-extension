@@ -10,6 +10,7 @@ import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';
 
 const mockToggleExternalServices = jest.fn();
+const mockToggleBasicFunctionality = jest.fn();
 const mockOpenBasicFunctionalityModal = jest.fn();
 
 jest.mock('../../../store/actions', () => ({
@@ -17,6 +18,10 @@ jest.mock('../../../store/actions', () => ({
   toggleExternalServices: (val: boolean) => {
     mockToggleExternalServices(val);
     return { type: 'MOCK_ACTION' };
+  },
+  toggleBasicFunctionality: (val: boolean) => {
+    mockToggleBasicFunctionality(val);
+    return { type: 'MOCK_CONSOLIDATED_ACTION' };
   },
 }));
 
@@ -120,6 +125,32 @@ describe('BasicFunctionalityToggleItem', () => {
     fireEvent.click(screen.getByTestId('basic-functionality-toggle'));
 
     expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
+    expect(mockToggleBasicFunctionality).not.toHaveBeenCalled();
+    expect(mockOpenBasicFunctionalityModal).not.toHaveBeenCalled();
+  });
+
+  it('calls toggleBasicFunctionality when toggling on with the flag enabled', () => {
+    const storeDisabled = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useExternalServices: false,
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          extensionBasicFunctionalityToggle: true,
+        },
+        preferences: {
+          ...mockState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled: true,
+        },
+      },
+    });
+    renderWithProvider(<BasicFunctionalityToggleItem />, storeDisabled);
+
+    fireEvent.click(screen.getByTestId('basic-functionality-toggle'));
+
+    expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
+    expect(mockToggleExternalServices).not.toHaveBeenCalled();
     expect(mockOpenBasicFunctionalityModal).not.toHaveBeenCalled();
   });
 });
