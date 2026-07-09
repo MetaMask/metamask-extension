@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
@@ -156,17 +156,32 @@ export const TokenListItemComponent = ({
 
   // When the parent passes these props it has already read the selectors once
   // for the whole list. Switch to a no-op selector so this row does not create
-  // an independent Redux subscription for shared global data.
-  const marketDataFromStore = useSelector(
-    marketDataProp === undefined ? getMarketData : selectEmptyMarketData,
-  ) as MarketDataMap;
+  // an independent Redux subscription for shared global data. Memoize the
+  // selector references so they remain stable across renders as long as the
+  // prop presence (defined vs. undefined) does not change.
+  const marketDataSelector = useMemo(
+    () => (marketDataProp === undefined ? getMarketData : selectEmptyMarketData),
+    [marketDataProp],
+  );
+  const currencyRatesSelector = useMemo(
+    () =>
+      currencyRatesProp === undefined ? getCurrencyRates : selectEmptyCurrencyRates,
+    [currencyRatesProp],
+  );
+  const networkConfigurationsSelector = useMemo(
+    () =>
+      networkConfigurationsProp === undefined
+        ? getNetworkConfigurationsByChainId
+        : selectEmptyNetworkConfigurations,
+    [networkConfigurationsProp],
+  );
+
+  const marketDataFromStore = useSelector(marketDataSelector) as MarketDataMap;
   const currencyRatesFromStore = useSelector(
-    currencyRatesProp === undefined ? getCurrencyRates : selectEmptyCurrencyRates,
+    currencyRatesSelector,
   ) as CurrencyRatesMap;
   const networkConfigurationsFromStore = useSelector(
-    networkConfigurationsProp === undefined
-      ? getNetworkConfigurationsByChainId
-      : selectEmptyNetworkConfigurations,
+    networkConfigurationsSelector,
   ) as NetworkConfigurationsMap;
 
   // Prefer lifted props; fall back to store values for callers that have not
