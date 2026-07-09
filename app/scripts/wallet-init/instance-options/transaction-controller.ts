@@ -4,16 +4,19 @@ import {
   getAccountAddressRelationship,
   SavedGasFees,
   TransactionController,
-  TransactionControllerMessenger,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
-import { trace } from '../../../../shared/lib/trace';
+import type { Hex } from '@metamask/utils';
+import type { WalletOptions } from '@metamask/wallet';
+import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
-import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import type {
+  TransactionMetaEventPayload,
+  TransactionMetricsRequest,
+} from '../../../../shared/types/metametrics';
 import {
   handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
@@ -26,13 +29,31 @@ import {
 } from '../../lib/transaction/metrics';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { accountSupports7702 } from '../../lib/account-supports-7702';
-import { MessengerClientFlatState } from '../controller-list';
-import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
-import {
-  MessengerClientInitFunction,
-  MessengerClientInitResult,
-} from '../types';
+import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionControllerHooks } from '../../lib/transaction/hooks';
+import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
+
+type TransactionControllerInstanceOptions = NonNullable<
+  NonNullable<WalletOptions['instanceOptions']>['transactionController']
+>;
+
+type CheckFirstTimeInteractionRequest = {
+  chainId: number;
+  from: string;
+  to: string;
+};
+
+type GetTransactionControllerInstanceOptionsRequest = {
+  initMessenger: TransactionControllerInitMessenger;
+  getFlatState: () => MessengerClientFlatState;
+  getPermittedAccounts: (origin?: string) => string[] | Promise<string[]>;
+  getTransactionMetricsRequest: () => TransactionMetricsRequest;
+};
+
+type SetupTransactionControllerListenersRequest = {
+  getTransactionMetricsRequest: () => TransactionMetricsRequest;
+  messenger: TransactionControllerInitMessenger;
+};
 
 const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
   TransactionType.swap,
@@ -43,30 +64,20 @@ const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
   TransactionType.perpsRelayDeposit,
   TransactionType.predictRelayDeposit,
 ];
-type CheckFirstTimeInteractionRequest = {
-  from: string;
-  to: string;
-  chainId: number;
-};
 
-export const TransactionControllerInit: MessengerClientInitFunction<
-  TransactionController,
-  TransactionControllerMessenger,
-  TransactionControllerInitMessenger
-> = (request) => {
-  const {
-    controllerMessenger,
-    initMessenger,
-    getFlatState,
-    getPermittedAccounts,
-    getTransactionMetricsRequest,
-    persistedState,
-  } = request;
-
-  const messengerClient: TransactionController = new TransactionController({
-    // @ts-expect-error Controller type does not support undefined return value
-    getPermittedAccounts,
-    getSavedGasFees: getSavedGasFees.bind(null, { messenger: initMessenger }),
+export function getTransactionControllerInstanceOptions({
+  initMessenger,
+  getFlatState,
+  getPermittedAccounts,
+  getTransactionMetricsRequest,
+}: GetTransactionControllerInstanceOptionsRequest): TransactionControllerInstanceOptions {
+  return {
+    disableSwaps: false,
+    getPermittedAccounts: async (origin?: string) =>
+      getPermittedAccounts(origin),
+    getSavedGasFees: getSavedGasFees.bind(null, {
+      messenger: initMessenger,
+    }),
     getSimulationConfig: getSimulationConfig.bind(null, {
       messenger: initMessenger,
     }),
@@ -75,9 +86,6 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       getTransactionMetricsRequest,
       messenger: initMessenger,
     }),
-    getNetworkClientRegistry: () =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      initMessenger.call('NetworkController:getNetworkClientRegistry') as any,
     isAutomaticGasFeeUpdateEnabled,
     isEIP7702GasFeeTokensEnabled: isEIP7702GasFeeTokensEnabled.bind(null, {
       getFlatState,
@@ -89,23 +97,128 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     isSimulationEnabled: () =>
       initMessenger.call('PreferencesController:getState')
         .useTransactionSimulations,
-    messenger: controllerMessenger,
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
-    state: persistedState.TransactionController,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
-    // @ts-expect-error Controller uses string for names rather than enum
-    trace,
-  });
+    trace: traceAsControllerCallback,
+  };
+}
 
-  addTransactionControllerListeners(
-    initMessenger,
-    getTransactionMetricsRequest,
+export function setupTransactionControllerListeners({
+  getTransactionMetricsRequest,
+  messenger,
+}: SetupTransactionControllerListenersRequest) {
+  messenger.subscribe(
+    'TransactionController:postTransactionBalanceUpdated',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    (...args) =>
+      handlePostTransactionBalanceUpdate(
+        getTransactionMetricsRequest(),
+        ...args,
+      ),
   );
 
-  const api = getApi(messengerClient);
+  messenger.subscribe(
+    'TransactionController:unapprovedTransactionAdded',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    (transactionMeta) =>
+      handleTransactionAdded(getTransactionMetricsRequest(), {
+        transactionMeta,
+      }),
+  );
 
-  return { messengerClient, api, memStateKey: 'TxController' };
-};
+  messenger.subscribe(
+    'TransactionController:transactionApproved',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    (...args) =>
+      handleTransactionApproved(getTransactionMetricsRequest(), ...args),
+  );
+
+  messenger.subscribe(
+    'TransactionController:transactionDropped',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    (...args) =>
+      handleTransactionDropped(getTransactionMetricsRequest(), ...args),
+  );
+
+  messenger.subscribe(
+    'TransactionController:transactionConfirmed',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    (transactionMeta) =>
+      handleTransactionConfirmed(
+        getTransactionMetricsRequest(),
+        transactionMeta as TransactionMetaEventPayload,
+      ),
+  );
+
+  messenger.subscribe(
+    'TransactionController:transactionFailed',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    (...args) =>
+      handleTransactionFailed(getTransactionMetricsRequest(), ...args),
+  );
+
+  messenger.subscribe(
+    'TransactionController:transactionRejected',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    (...args) =>
+      handleTransactionRejected(getTransactionMetricsRequest(), ...args),
+  );
+
+  messenger.subscribe(
+    'TransactionController:transactionSubmitted',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    (...args) =>
+      handleTransactionSubmitted(getTransactionMetricsRequest(), ...args),
+  );
+}
+
+export function getTransactionControllerApi(
+  transactionController: TransactionController,
+) {
+  return {
+    abortTransactionSigning: transactionController.abortTransactionSigning.bind(
+      transactionController,
+    ),
+    getLayer1GasFee: transactionController.getLayer1GasFee.bind(
+      transactionController,
+    ),
+    getTransactions: transactionController.getTransactions.bind(
+      transactionController,
+    ),
+    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
+      transactionController,
+    ),
+    updateAtomicBatchData: transactionController.updateAtomicBatchData.bind(
+      transactionController,
+    ),
+    updateBatchTransactions: transactionController.updateBatchTransactions.bind(
+      transactionController,
+    ),
+    updateEditableParams: transactionController.updateEditableParams.bind(
+      transactionController,
+    ),
+    updatePreviousGasParams: transactionController.updatePreviousGasParams.bind(
+      transactionController,
+    ),
+    updateSelectedGasFeeToken:
+      transactionController.updateSelectedGasFeeToken.bind(
+        transactionController,
+      ),
+    updateTransactionGasFees:
+      transactionController.updateTransactionGasFees.bind(
+        transactionController,
+      ),
+    checkFirstTimeInteraction,
+  };
+}
 
 /**
  * Returns whether the sender has no prior on-chain interaction with `to` on `chainId`,
@@ -121,97 +234,6 @@ async function checkFirstTimeInteraction(
   } catch {
     return undefined;
   }
-}
-
-function getApi(
-  messengerClient: TransactionController,
-): MessengerClientInitResult<TransactionController>['api'] {
-  return {
-    abortTransactionSigning:
-      messengerClient.abortTransactionSigning.bind(messengerClient),
-    getLayer1GasFee: messengerClient.getLayer1GasFee.bind(messengerClient),
-    getTransactions: messengerClient.getTransactions.bind(messengerClient),
-    isAtomicBatchSupported:
-      messengerClient.isAtomicBatchSupported.bind(messengerClient),
-    updateAtomicBatchData:
-      messengerClient.updateAtomicBatchData.bind(messengerClient),
-    updateBatchTransactions:
-      messengerClient.updateBatchTransactions.bind(messengerClient),
-    updateEditableParams:
-      messengerClient.updateEditableParams.bind(messengerClient),
-    updatePreviousGasParams:
-      messengerClient.updatePreviousGasParams.bind(messengerClient),
-    updateSelectedGasFeeToken:
-      messengerClient.updateSelectedGasFeeToken.bind(messengerClient),
-    updateTransactionGasFees:
-      messengerClient.updateTransactionGasFees.bind(messengerClient),
-    checkFirstTimeInteraction,
-  };
-}
-
-function addTransactionControllerListeners(
-  initMessenger: TransactionControllerInitMessenger,
-  getTransactionMetricsRequest: () => TransactionMetricsRequest,
-) {
-  const transactionMetricsRequest = getTransactionMetricsRequest();
-
-  initMessenger.subscribe(
-    'TransactionController:postTransactionBalanceUpdated',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:unapprovedTransactionAdded',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (transactionMeta) =>
-      handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionApproved',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionApproved.bind(null, transactionMetricsRequest),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionDropped',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionDropped.bind(null, transactionMetricsRequest),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionConfirmed',
-    // @ts-expect-error Error is string in metrics code but TransactionError in TransactionMeta type from controller
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionConfirmed.bind(null, transactionMetricsRequest),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionFailed',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionFailed.bind(null, transactionMetricsRequest),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionRejected',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionRejected.bind(null, transactionMetricsRequest),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionSubmitted',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionSubmitted.bind(null, transactionMetricsRequest),
-  );
 }
 
 function getSavedGasFees(
@@ -262,7 +284,6 @@ async function isEIP7702GasFeeTokensEnabled(
   const { chainId, isExternalSign } = transactionMeta;
   const uiState = getUIState(getFlatState());
 
-  // @ts-expect-error Smart transaction selector types does not match controller state
   const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
 
   const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
@@ -285,8 +306,10 @@ function getKeyringController(messenger: TransactionControllerInitMessenger) {
   };
 }
 
-function getUIState(flatState: MessengerClientFlatState) {
-  return { metamask: flatState };
+function getUIState(
+  flatState: MessengerClientFlatState,
+): Parameters<typeof getIsSmartTransaction>[0] {
+  return { metamask: flatState } as Parameters<typeof getIsSmartTransaction>[0];
 }
 
 function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
