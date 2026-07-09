@@ -88,6 +88,20 @@ const goToOnboardingWelcomeLoginPage = async ({
   return startOnboardingPage;
 };
 
+const assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions = async (
+  startOnboardingPage: StartOnboardingPage,
+): Promise<void> => {
+  await startOnboardingPage.clickCreateWalletButton();
+  await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible();
+};
+
+const assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions = async (
+  startOnboardingPage: StartOnboardingPage,
+): Promise<void> => {
+  await startOnboardingPage.clickImportWalletButton();
+  await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible('import');
+};
+
 /**
  * Skip the passkey setup page when it is presented during onboarding.
  *
@@ -145,7 +159,10 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
   });
 
   const originalWindowHandle = await driver.getCurrentWindowHandle();
-  await startOnboardingPage.createWalletWithSocialLogin(authConnection);
+  await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickCreateWalletSocialLoginButton(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
@@ -195,7 +212,10 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   });
 
   const originalWindowHandle = await driver.getCurrentWindowHandle();
-  await startOnboardingPage.importWalletWithSocialLogin(authConnection);
+  await assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickImportWalletSocialLoginButton(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
@@ -265,7 +285,12 @@ export const createNewWalletOnboardingFlow = async ({
     ...metricsOptions,
     needNavigateToNewPage,
   });
-  await startOnboardingPage.createWalletWithSrp(socialLoginEnabled);
+  await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
+    startOnboardingPage,
+  );
+  if (socialLoginEnabled) {
+    await startOnboardingPage.clickCreateWithSrpButton();
+  }
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
@@ -315,7 +340,10 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
     needNavigateToNewPage,
     dataCollectionForMarketing,
   });
-  await startOnboardingPage.createWalletWithSrp();
+  await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickCreateWithSrpButton();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
@@ -407,7 +435,10 @@ export const importSRPOnboardingFlow = async ({
     ...metricsOptions,
     needNavigateToNewPage,
   });
-  await startOnboardingPage.importWallet();
+  await assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickImportWithSrpButton();
 
   const onboardingSrpPage = new OnboardingSrpPage(driver);
   await onboardingSrpPage.checkPageIsLoaded();
@@ -499,7 +530,10 @@ export const completeOnboardingWithPasskey = async ({
     needNavigateToNewPage: true,
     dataCollectionForMarketing: false,
   });
-  await startOnboardingPage.createWalletWithSrp();
+  await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickCreateWithSrpButton();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
@@ -558,7 +592,10 @@ export const completeImportSRPOnboardingWithPasskey = async ({
     needNavigateToNewPage: true,
     dataCollectionForMarketing: false,
   });
-  await startOnboardingPage.importWallet();
+  await assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickImportWithSrpButton();
 
   const onboardingSrpPage = new OnboardingSrpPage(driver);
   await onboardingSrpPage.checkPageIsLoaded();

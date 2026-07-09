@@ -113,6 +113,25 @@ describe('MetaMask onboarding', function () {
     );
   });
 
+  it('opens Terms of Use and Privacy notice links from login options', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.checkLoginPageIsLoaded();
+        await startOnboardingPage.clickCreateWalletButton();
+        await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible();
+        await startOnboardingPage.clickTermsOfUseLinkAndVerifyExpectedUrlOpens();
+        await startOnboardingPage.clickPrivacyNoticeLinkAndVerifyExpectedUrlOpens();
+      },
+    );
+  });
+
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
     await withFixtures(
       {
