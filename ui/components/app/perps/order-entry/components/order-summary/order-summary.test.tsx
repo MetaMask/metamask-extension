@@ -67,7 +67,9 @@ describe('OrderSummary', () => {
         screen.getByTestId('perps-order-summary-margin-tooltip-label'),
       ).toHaveClass('border-dotted');
       expect(
-        screen.getByTestId('perps-order-summary-liquidation-price-tooltip-label'),
+        screen.getByTestId(
+          'perps-order-summary-liquidation-price-tooltip-label',
+        ),
       ).toHaveClass('border-dotted');
       expect(
         screen.getByTestId('perps-order-summary-fees-tooltip-label'),
@@ -264,7 +266,7 @@ describe('OrderSummary', () => {
         <OrderSummary
           marginRequired="$1,000.00"
           estimatedFees={0.5}
-          originalEstimatedFees={1.0}
+          originalEstimatedFees={1}
           liquidationPrice="$42,500.00"
           metamaskFeeRateDiscountPercentage={50}
         />,
@@ -318,7 +320,7 @@ describe('OrderSummary', () => {
         <OrderSummary
           marginRequired="$1,000.00"
           estimatedFees={null}
-          originalEstimatedFees={1.0}
+          originalEstimatedFees={1}
           liquidationPrice="$42,500.00"
           metamaskFeeRateDiscountPercentage={50}
         />,
