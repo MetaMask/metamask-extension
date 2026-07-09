@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import type { Transaction } from '@metamask/keyring-api';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
@@ -45,7 +45,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventLinkType,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName } from '../../../helpers/utils/util';
 import {
@@ -80,7 +80,7 @@ const MultichainBridgeTransactionDetailsModal = ({
   onClose,
 }: MultichainBridgeTransactionDetailsModalProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const { quote, status } = bridgeHistoryItem;
 
@@ -525,21 +525,22 @@ const MultichainBridgeTransactionDetailsModal = ({
                 url: getChainExplorerUrl(id, srcNetwork?.chainId),
               });
 
-              trackEvent({
-                event: MetaMetricsEventName.ExternalLinkClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  link_type: MetaMetricsEventLinkType.AccountTracker,
-                  location: 'Transaction Details',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  url_domain: getURLHostName(
-                    getChainExplorerUrl(id, srcNetwork?.chainId),
-                  ),
-                },
-              });
+              trackEvent(
+                createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+                  .addCategory(MetaMetricsEventCategory.Navigation)
+                  .addProperties({
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    link_type: MetaMetricsEventLinkType.AccountTracker,
+                    location: 'Transaction Details',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    url_domain: getURLHostName(
+                      getChainExplorerUrl(id, srcNetwork?.chainId),
+                    ),
+                  })
+                  .build(),
+              );
             }}
             endIconName={IconName.Export}
           >

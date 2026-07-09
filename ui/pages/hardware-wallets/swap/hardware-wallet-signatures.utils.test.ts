@@ -1,7 +1,9 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { providerErrors } from '@metamask/rpc-errors';
 import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
 import { SignatureStepStatus } from './types';
 import {
+  cleanupPendingApproval,
   getStepStatus,
   hasApprovalTxForRequestId,
   getTitle,
@@ -11,6 +13,15 @@ import {
   isQrHardwareSignRequest,
   getTransactionField,
 } from './hardware-wallet-signatures.utils';
+
+jest.mock('../../../store/actions', () => ({
+  rejectPendingApproval: jest.fn(() => 'REJECT_ACTION'),
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const mockRejectPendingApproval = jest.requireMock(
+  '../../../store/actions',
+).rejectPendingApproval;
 
 const t = (key: string, params?: (string | undefined)[]) => {
   if (params) {
@@ -209,7 +220,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwAllSetTitle');
+      ).toBe('hardwareAllSetTitle');
     });
 
     it('returns rejected title', () => {
@@ -219,7 +230,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwTransactionRejected');
+      ).toBe('hardwareTransactionRejected');
     });
 
     it('returns failed title', () => {
@@ -239,7 +250,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwDeviceDisconnected');
+      ).toBe('hardwareDeviceDisconnected');
     });
 
     it('returns almost there title when needs two confirmations and awaiting final', () => {
@@ -249,7 +260,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: true,
           t,
         }),
-      ).toBe('bridgeHwAlmostThereTitle');
+      ).toBe('hardwareAlmostThereTitle');
     });
 
     it('returns default confirm title', () => {
@@ -283,7 +294,7 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSentAmount[1.5,ETH]');
+      ).toBe('hardwareSentAmount[1.5,ETH]');
     });
 
     it('returns sending amount when active', () => {
@@ -295,7 +306,7 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSendingAmount[1.5,ETH]');
+      ).toBe('hardwareSendingAmount[1.5,ETH]');
     });
 
     it('returns send amount when pending', () => {
@@ -307,7 +318,7 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSendAmount[1.5,ETH]');
+      ).toBe('hardwareSendAmount[1.5,ETH]');
     });
   });
 
@@ -319,7 +330,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('bridgeHwRejected');
+      ).toBe('hardwareRejected');
     });
 
     it('returns reconnect text', () => {
@@ -329,7 +340,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('bridgeHwReconnectDevice');
+      ).toBe('hardwareReconnectDevice');
     });
 
     it('returns failed text', () => {
@@ -349,7 +360,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('bridgeHwSpender[0x12345...45678]');
+      ).toBe('hardwareSpender[0x12345...45678]');
     });
 
     it('returns undefined when no spender address', () => {
@@ -370,7 +381,7 @@ describe('hardware-wallet-signatures utils', () => {
           toAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('bridgeHwToAddress[0x12345...45678]');
+      ).toBe('hardwareToAddress[0x12345...45678]');
     });
 
     it('returns undefined when no to address', () => {
@@ -493,6 +504,27 @@ describe('hardware-wallet-signatures utils', () => {
 
     it('returns undefined when field value is not a string', () => {
       expect(getTransactionField({ from: 123 }, 'from')).toBeUndefined();
+    });
+  });
+
+  describe('cleanupPendingApproval', () => {
+    const dispatch = jest.fn();
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('dispatches rejectPendingApproval with a user-rejected error', () => {
+      cleanupPendingApproval(dispatch as never, 'approval-123');
+
+      expect(mockRejectPendingApproval).toHaveBeenCalledWith(
+        'approval-123',
+        expect.objectContaining({
+          code: providerErrors.userRejectedRequest().code,
+          message: providerErrors.userRejectedRequest().message,
+        }),
+      );
+      expect(dispatch).toHaveBeenCalledWith('REJECT_ACTION');
     });
   });
 });

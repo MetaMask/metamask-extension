@@ -4199,7 +4199,8 @@
     "message": "계속"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "다시 연결"
+    "message": "다시 연결",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "하드웨어 지갑이 USB를 통해 정상적으로 연결되었는지 확인하세요"
@@ -4413,6 +4414,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "눌러서 잠금해제된 서클 공개"
+  },
+  "home": {
+    "message": "홈",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "이 토큰은 허니팟 위험이 있을 수 있습니다. 상호작용 전에 신중히 조사하여 잠재적인 손실을 예방하세요."
@@ -4758,6 +4763,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledger 장치를 연결하고 이더리움 앱을 선택하세요."
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "계속하려면 Ledger 장치에서 앱을 열어 주세요"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "이더리움 앱이 닫혀 있습니다"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Ledger 장치 찾음"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "계속하려면 Ledger 장치의 잠금을 해제하세요"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger 잠김"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "이더리움 앱을 설치하고 실행하세요"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Ledger 장치를 잠금 해제하세요"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "장치 찾을 수 없음"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "장치를 분리한 후 다시 연결하세요"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger 응답 없음"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "문제가 발생했습니다"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "검색하는 동안 잠시 기다려 주세요..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "장치 찾는 중"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger 장치를 열지 못했습니다. Ledger가 다른 소프트웨어에 연결되어 있을 수 있습니다. Ledger Live 또는 Ledger 장치에 연결된 다른 응용 프로그램을 닫고 다시 연결하세요."
@@ -8403,6 +8447,15 @@
   },
   "save": {
     "message": "저장"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "계속"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "지원팀에 문의"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "현재 사기를 당하고 있을 수 있습니다"
   },
   "scanInstructions": {
     "message": "QR 코드를 카메라 앞에 놓으세요"
