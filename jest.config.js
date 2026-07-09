@@ -73,7 +73,10 @@ module.exports = {
     '<rootDir>/test/setup.js',
     '<rootDir>/test/env.js',
   ],
-  setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
+  setupFilesAfterEnv: [
+    '<rootDir>/test/jest/strict-mode.js',
+    '<rootDir>/test/jest/setup.js',
+  ],
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
     '<rootDir>/app/offscreen/**/*.test.(js|ts|tsx)',

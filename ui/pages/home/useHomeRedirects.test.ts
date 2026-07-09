@@ -211,6 +211,32 @@ describe('usePendingRedirectRoute', () => {
     });
     expect(clearPendingRedirectRoute).toHaveBeenCalled();
   });
+
+  it('does not redirect again after pending route is cleared on remount', () => {
+    const setRedirectAfterDefaultPage = jest.fn();
+    const clearPendingRedirectRoute = jest.fn();
+    const route = { path: '/shield-plan' };
+
+    const { rerender } = renderHook(
+      ({ pending }: { pending: { path: string } | null }) =>
+        usePendingRedirectRoute({
+          pendingRedirectRoute: pending,
+          setRedirectAfterDefaultPage,
+          clearPendingRedirectRoute,
+        }),
+      { initialProps: { pending: route } },
+    );
+
+    expect(setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
+    expect(clearPendingRedirectRoute).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      rerender({ pending: null });
+    });
+
+    expect(setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
+    expect(clearPendingRedirectRoute).toHaveBeenCalledTimes(1);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -404,5 +430,38 @@ describe('useLastVisitedPerpsRoute', () => {
       path: '/perps/market/BTC',
     });
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('does not redirect again after perps route is cleared on remount', () => {
+    const setRedirectAfterDefaultPage = jest.fn();
+    const clearLastVisitedPerpsRoute = jest.fn();
+    const route = {
+      path: '/perps/market/BTC',
+      timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+    };
+
+    const { rerender } = renderHook(
+      ({
+        lastVisited,
+      }: {
+        lastVisited: { path: string; timestamp: number } | null;
+      }) =>
+        useLastVisitedPerpsRoute({
+          lastVisitedPerpsRoute: lastVisited,
+          setRedirectAfterDefaultPage,
+          clearLastVisitedPerpsRoute,
+        }),
+      { initialProps: { lastVisited: route } },
+    );
+
+    expect(setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
+    expect(clearLastVisitedPerpsRoute).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      rerender({ lastVisited: null });
+    });
+
+    expect(setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
+    expect(clearLastVisitedPerpsRoute).toHaveBeenCalledTimes(1);
   });
 });

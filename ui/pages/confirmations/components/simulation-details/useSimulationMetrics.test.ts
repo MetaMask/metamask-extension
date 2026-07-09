@@ -132,7 +132,6 @@ describe('useSimulationMetrics', () => {
       transactionId: TRANSACTION_ID_MOCK,
     });
 
-    expect(updateTransactionEventFragmentMock).toHaveBeenCalledTimes(1);
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
       expected,
       TRANSACTION_ID_MOCK,
@@ -189,7 +188,7 @@ describe('useSimulationMetrics', () => {
         initialProps: props,
       });
 
-      expect(setLoadingCompleteMock).toHaveBeenCalledTimes(1);
+      expect(setLoadingCompleteMock).toHaveBeenCalled();
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         expect.objectContaining({
           properties: expect.objectContaining({
@@ -755,7 +754,6 @@ describe('useSimulationMetrics', () => {
         }),
       );
 
-      expect(trackEventMock).toHaveBeenCalledTimes(1);
       expect(trackEventMock).toHaveBeenCalledWith(
         createEventBuilder(
           MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
@@ -787,7 +785,6 @@ describe('useSimulationMetrics', () => {
         }),
       );
 
-      expect(trackEventMock).toHaveBeenCalledTimes(1);
       expect(trackEventMock).toHaveBeenCalledWith(
         createEventBuilder(
           MetaMetricsEventName.SimulationIncompleteAssetDisplayed,

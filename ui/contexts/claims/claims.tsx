@@ -39,36 +39,54 @@ export const ClaimsProvider = ({ children }: ClaimsProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchClaims = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const claimsData = await getShieldClaims();
-      // sort claims by createdAt descending
-      const sortedClaims = claimsData
-        .sort((a: Claim, b: Claim) => {
-          const dateA = new Date(a.createdAt).getTime();
-          const dateB = new Date(b.createdAt).getTime();
-          return dateB - dateA;
-        })
-        .map((claim: Claim) => {
-          const numberChain = Number(claim.chainId);
-          const chainId = isNaN(numberChain) ? '' : numberToHex(numberChain);
-          return {
-            ...claim,
-            chainId,
-          };
-        });
-      setClaims(sortedClaims);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const fetchClaims = useCallback(
+    async (isCancelled: () => boolean = () => false) => {
+      try {
+        if (isCancelled()) {
+          return;
+        }
+        setIsLoading(true);
+        setError(null);
+        const claimsData = await getShieldClaims();
+        if (isCancelled()) {
+          return;
+        }
+        const sortedClaims = claimsData
+          .sort((a: Claim, b: Claim) => {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateB - dateA;
+          })
+          .map((claim: Claim) => {
+            const numberChain = Number(claim.chainId);
+            const chainId = isNaN(numberChain) ? '' : numberToHex(numberChain);
+            return {
+              ...claim,
+              chainId,
+            };
+          });
+        setClaims(sortedClaims);
+      } catch (err) {
+        if (!isCancelled()) {
+          setError(err as Error);
+        }
+      } finally {
+        if (!isCancelled()) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
-    fetchClaims();
+    let cancelled = false;
+
+    fetchClaims(() => cancelled);
+
+    return () => {
+      cancelled = true;
+    };
   }, [fetchClaims]);
 
   const pendingClaims = useMemo(() => {
@@ -93,7 +111,7 @@ export const ClaimsProvider = ({ children }: ClaimsProviderProps) => {
       rejectedClaims,
       isLoading,
       error,
-      refetchClaims: fetchClaims,
+      refetchClaims: () => fetchClaims(),
     }),
     [
       claims,

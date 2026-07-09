@@ -40,13 +40,21 @@ import { HomeNotificationsContainer } from './home-notifications-container';
 import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
 import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 import {
-  useRedirectAfterDefaultPage,
-  usePendingRedirectRoute,
   useLastVisitedPerpsRoute,
+  usePendingRedirectRoute,
+  useRedirectAfterDefaultPage,
   type PendingRedirectRoute,
   type RedirectAfterDefaultPage,
   type LastVisitedPerpsRoute,
 } from './useHomeRedirects';
+
+/** Survives StrictMode remounts within the same extension session. */
+let hasLookupSelectedNetworksRun = false;
+
+/** @internal */
+export function resetLookupSelectedNetworksForTesting(): void {
+  hasLookupSelectedNetworksRun = false;
+}
 
 export type HomeProps = {
   navigate?: NavigateFunction;
@@ -114,6 +122,10 @@ export default function Home({
   });
 
   useEffect(() => {
+    if (hasLookupSelectedNetworksRun) {
+      return;
+    }
+    hasLookupSelectedNetworksRun = true;
     lookupSelectedNetworks();
   }, [lookupSelectedNetworks]);
 

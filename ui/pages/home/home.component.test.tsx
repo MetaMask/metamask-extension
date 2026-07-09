@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import Home from './home.component';
+import Home, { resetLookupSelectedNetworksForTesting } from './home.component';
 
 jest.mock('../../components/multichain', () => ({
   AccountOverview: () => null,
@@ -115,6 +115,10 @@ function renderHome(overrides: Record<string, unknown> = {}) {
 }
 
 describe('Home — smoke and early-return guards', () => {
+  beforeEach(() => {
+    resetLookupSelectedNetworksForTesting();
+  });
+
   it('renders without crashing', () => {
     const { container } = renderHome();
     expect(container).toBeTruthy();
@@ -129,5 +133,11 @@ describe('Home — smoke and early-return guards', () => {
   it('renders nothing when notificationClosing is true', () => {
     const { container } = renderHome({ notificationClosing: true });
     expect(container.firstChild).toBeNull();
+  });
+
+  it('calls lookupSelectedNetworks once per session under StrictMode', () => {
+    const lookupSelectedNetworks = jest.fn();
+    renderHome({ lookupSelectedNetworks });
+    expect(lookupSelectedNetworks).toHaveBeenCalledTimes(1);
   });
 });

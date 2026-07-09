@@ -115,7 +115,7 @@ describe('RecipientFilterInput', () => {
   it('calls useI18nContext hook', () => {
     render(<RecipientFilterInput searchQuery="" onChange={mockOnChange} />);
 
-    expect(mockUseI18nContext).toHaveBeenCalledTimes(1);
+    expect(mockUseI18nContext).toHaveBeenCalled();
   });
 
   it('updates value when searchQuery prop changes', () => {

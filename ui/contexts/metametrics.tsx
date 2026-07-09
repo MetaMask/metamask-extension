@@ -50,6 +50,12 @@ import type {
 } from '../../shared/lib/trace';
 import { EnvironmentType } from '../../shared/constants/app';
 
+let previousTrackedPagePath: string | undefined;
+
+export function resetPreviousTrackedPagePathForTesting(): void {
+  previousTrackedPagePath = undefined;
+}
+
 /**
  * UI-specific event payload that omits fields added by the provider
  */
@@ -234,9 +240,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     submitRequestToBackground('bufferedEndTrace', [request]);
   }, []);
 
-  // Used to prevent double tracking page calls
-  const previousMatch = useRef<string | undefined>();
-
+  // Used to prevent double tracking page calls across StrictMode remounts.
   /**
    * Anytime the location changes, track a page change with segment.
    * Previously we would manually track changes to history and keep a
@@ -268,16 +272,16 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     if (!match) {
       captureMessage(`Segment page tracking found unmatched route`, {
         extra: {
-          previousMatch,
+          previousMatch: previousTrackedPagePath,
           currentPath: location.pathname,
         },
       });
     } else if (
-      previousMatch.current !== match.pattern.path &&
+      previousTrackedPagePath !== match.pattern.path &&
       !(
         environmentType === 'notification' &&
         match.pattern.path === '/' &&
-        previousMatch.current === undefined
+        previousTrackedPagePath === undefined
       )
     ) {
       // When a notification window is open by a Dapp we do not want to track
@@ -298,7 +302,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         referrer: context.referrer,
       });
     }
-    previousMatch.current = match?.pattern?.path;
+    previousTrackedPagePath = match?.pattern?.path;
   }, [
     location.pathname,
     location.search,

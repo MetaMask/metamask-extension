@@ -98,7 +98,6 @@ describe('useMultichainAssetsRatesPolling', () => {
 
     renderHook(() => useMultichainAssetsRatesPolling());
 
-    expect(mockUsePolling).toHaveBeenCalledTimes(1);
     expect(mockUsePolling).toHaveBeenCalledWith({
       startPolling: mocks.mockStartPolling,
       stopPollingByPollingToken: mocks.mockStopPollingByPollingToken,

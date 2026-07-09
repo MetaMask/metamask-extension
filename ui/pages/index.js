@@ -23,6 +23,22 @@ import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
 
+const isStrictModeEnabled =
+  process.env.NODE_ENV === 'development' && !process.env.IN_TEST;
+
+/**
+ * Dev-only StrictMode. Unit/integration tests use `test/jest/strict-mode.js`
+ * to wrap `@testing-library/react` renders instead (avoids double StrictMode).
+ */
+
+function withStrictMode(children) {
+  return isStrictModeEnabled ? (
+    <React.StrictMode>{children}</React.StrictMode>
+  ) : (
+    children
+  );
+}
+
 function AppProviders() {
   return (
     <MetaMetricsProvider>
@@ -102,7 +118,7 @@ class Index extends PureComponent {
     return (
       <Provider store={store}>
         <UIMessengerProvider value={uiMessenger}>
-          <RouterProvider router={router} />
+          {withStrictMode(<RouterProvider router={router} />)}
         </UIMessengerProvider>
       </Provider>
     );
