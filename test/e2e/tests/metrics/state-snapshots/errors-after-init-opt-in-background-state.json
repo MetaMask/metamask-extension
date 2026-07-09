@@ -331,6 +331,17 @@
   },
   "ProfileMetricsController": "object",
   "QrSyncController": "object",
+  "RampsController": {
+    "userRegion": null,
+    "countries": "object",
+    "providers": "object",
+    "tokens": "object",
+    "paymentMethods": "object",
+    "requests": "object",
+    "nativeProviders": "object",
+    "orders": "object",
+    "providerAutoSelected": "boolean"
+  },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
     "localOverrides": "object",
