@@ -48,7 +48,7 @@ export const OrderCard = ({
   const navigate = useNavigate();
   const t = useI18nContext();
   // Title uses the full asset name; the size line keeps the ticker as its unit.
-  const displayName = assetName || getDisplayName(order.symbol);
+  const displayName = getDisplayName(assetName || order.symbol);
   const displaySymbol = getDisplayName(order.symbol);
   const isTriggerBasedOrder =
     order.isTrigger === true || order.isPositionTpsl === true;

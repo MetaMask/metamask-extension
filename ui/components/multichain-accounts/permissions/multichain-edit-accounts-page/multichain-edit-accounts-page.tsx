@@ -20,7 +20,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { MultichainAccountList } from '../../multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
@@ -60,7 +60,7 @@ export const MultichainEditAccountsPage = ({
   snapsPermissionsRequestType = SnapsPermissionsRequestType.None,
 }: MultichainEditAccountsPageProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
     defaultSelectedAccountGroups,
   );
@@ -118,20 +118,22 @@ export const MultichainEditAccountsPage = ({
     );
 
     onSubmit(selectedAccountGroups);
-    trackEvent({
-      category: MetaMetricsEventCategory.Permissions,
-      event: MetaMetricsEventName.UpdatePermissionedAccounts,
-      properties: {
-        addedAccounts: addedAccounts.length,
-        removedAccounts: removedAccounts.length,
-        location: 'Edit Accounts Modal',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.UpdatePermissionedAccounts)
+        .addCategory(MetaMetricsEventCategory.Permissions)
+        .addProperties({
+          addedAccounts: addedAccounts.length,
+          removedAccounts: removedAccounts.length,
+          location: 'Edit Accounts Modal',
+        })
+        .build(),
+    );
   }, [
     selectedAccountGroups,
     defaultSelectedAccountGroups,
     onSubmit,
     trackEvent,
+    createEventBuilder,
   ]);
 
   return (

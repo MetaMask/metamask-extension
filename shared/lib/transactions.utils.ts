@@ -3,6 +3,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { isStrictHexString } from '@metamask/utils';
+
+export function isValidTransactionHash(hash: string) {
+  return hash.length === 66 && isStrictHexString(hash);
+}
 
 /**
  * Determines if a transaction is a batch transaction.

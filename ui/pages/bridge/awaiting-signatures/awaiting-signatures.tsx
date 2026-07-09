@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import isEqual from 'lodash/isEqual';
 import { isCrossChain } from '@metamask/bridge-controller';
 
 import {
@@ -44,10 +43,10 @@ export default function AwaitingSignatures() {
   // Navigate to activity tab when QR scan is completed
   useNavigateOnQrScanComplete();
   const fromAmount = activeQuote?.sentAmount?.amount;
-  const fromToken = useSelector(getFromToken, isEqual);
-  const toToken = useSelector(getToToken, isEqual);
-  const fromChain = useSelector(getFromChain, isEqual);
-  const toChain = useSelector(getToChain, isEqual);
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken);
+  const fromChain = useSelector(getFromChain);
+  const toChain = useSelector(getToChain);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = Boolean(activeQuote?.approval);

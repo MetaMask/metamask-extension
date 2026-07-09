@@ -6,7 +6,7 @@ import {
   mapKeyringTransaction,
 } from './keyring-transaction';
 
-const STELLAR_USDC_ASSET = `${MultichainNetworks.STELLAR}/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN`;
+const STELLAR_USDC_ASSET = `stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN`;
 
 describe('mapKeyringTransaction', () => {
   it('maps keyring send transactions with token amount data', () => {
@@ -308,7 +308,7 @@ describe('mapKeyringTransaction', () => {
     const item = mapKeyringTransaction({
       transaction: {
         id: 'trustline-approve-id',
-        chain: MultichainNetworks.STELLAR,
+        chain: 'stellar:pubnet',
         account: '00000000-0000-4000-8000-000000000000',
         status: TransactionStatus.Confirmed,
         timestamp: 1716367781,
@@ -335,14 +335,14 @@ describe('mapKeyringTransaction', () => {
 
     expect(item).toMatchObject({
       type: 'assetActivation',
-      chainId: MultichainNetworks.STELLAR,
+      chainId: 'stellar:pubnet',
       status: 'success',
       timestamp: 1716367781000,
       hash: 'trustline-approve-id',
       data: {
         from: 'owner-address',
         token: {
-          amount: '0',
+          amount: undefined,
           assetId: STELLAR_USDC_ASSET,
           direction: 'out',
           symbol: 'USDC',
@@ -355,7 +355,7 @@ describe('mapKeyringTransaction', () => {
     const item = mapKeyringTransaction({
       transaction: {
         id: 'trustline-disapprove-id',
-        chain: MultichainNetworks.STELLAR,
+        chain: 'stellar:pubnet',
         account: '00000000-0000-4000-8000-000000000000',
         status: TransactionStatus.Confirmed,
         timestamp: 1716367781,
@@ -382,14 +382,14 @@ describe('mapKeyringTransaction', () => {
 
     expect(item).toMatchObject({
       type: 'assetDeactivation',
-      chainId: MultichainNetworks.STELLAR,
+      chainId: 'stellar:pubnet',
       status: 'success',
       timestamp: 1716367781000,
       hash: 'trustline-disapprove-id',
       data: {
         from: 'owner-address',
         token: {
-          amount: '0',
+          amount: undefined,
           assetId: STELLAR_USDC_ASSET,
           direction: 'out',
           symbol: 'USDC',

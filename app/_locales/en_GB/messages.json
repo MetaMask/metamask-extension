@@ -197,6 +197,52 @@
   "activity_approveSpendingCap_success_title": {
     "message": "Approved spending cap"
   },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "Activate trustline failed"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "Activating trustline $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "Trustline activated $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "Deactivate trustline failed"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "Deactivating trustline $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "Trustline deactivated $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_bridge_failed_description": {
     "message": "Bridge failed"
   },
@@ -1078,9 +1124,6 @@
   },
   "addAccount": {
     "message": "Add account"
-  },
-  "addAcquiredTokens": {
-    "message": "Add the tokens you've acquired using MetaMask"
   },
   "addAlias": {
     "message": "Add alias"
@@ -3104,9 +3147,6 @@
   "customSlippage": {
     "message": "Custom"
   },
-  "customToken": {
-    "message": "Custom token"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn about $1"
   },
@@ -3655,9 +3695,6 @@
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
-  "enableFromSettings": {
-    "message": " Enable it from Settings."
-  },
   "enableSmartContractAccount": {
     "message": "Use smart account"
   },
@@ -3684,9 +3721,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "The RPC URL you have entered returned a different chain ID ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Enhanced token detection is currently available on $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:"
@@ -4584,15 +4618,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
-  "importTokenQuestion": {
-    "message": "Import token?"
-  },
-  "importTokenWarning": {
-    "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
-  },
-  "importTokensCamelCase": {
-    "message": "Import tokens"
-  },
   "importTokensError": {
     "message": "We could not import the tokens. Please try again later."
   },
@@ -4941,9 +4966,6 @@
   },
   "lightTheme": {
     "message": "Light"
-  },
-  "likeToImportToken": {
-    "message": "Would you like to import this token?"
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
@@ -5515,9 +5537,6 @@
   },
   "musdTermsApply": {
     "message": "Terms apply."
-  },
-  "mustSelectOne": {
-    "message": "Must select at least 1 token."
   },
   "name": {
     "message": "Name"
@@ -10730,9 +10749,6 @@
   },
   "tokenDecimal": {
     "message": "Token decimal"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "Token decimal required. Find it on: $1"
   },
   "tokenDetails": {
     "message": "Token details"

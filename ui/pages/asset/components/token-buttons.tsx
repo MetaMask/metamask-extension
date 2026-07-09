@@ -23,14 +23,10 @@ import {
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { useAssetActivation } from '../hooks/useAssetActivation';
-import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
   token,
@@ -55,7 +51,6 @@ const TokenButtons = ({
 
   const currentChainId = token.chainId;
 
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
 
@@ -131,92 +126,60 @@ const TokenButtons = ({
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 
-  const {
-    deactivateAsset,
-    canDeactivate,
-    dismissErrorMessage,
-    isDeactivating,
-    errorMessage,
-  } = useAssetActivation({
-    asset: token,
-  });
   return (
-    <>
-      <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
-        <IconButton
-          className="token-overview__button"
-          Icon={
-            <Icon
-              name={IconName.Dollar}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          }
-          label={t('buy')}
-          data-testid="token-overview-buy"
-          onClick={handleBuyAndSellOnClick}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          disabled={token.isERC721 || !isBuyableChain}
-        />
-
-        {shouldShowSendButton ? (
-          <IconButton
-            className="token-overview__button"
-            onClick={handleSendOnClick}
-            Icon={
-              <Icon
-                name={IconName.Send}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            }
-            label={t('send')}
-            data-testid="eth-overview-send"
-            disabled={
-              token.isERC721 ||
-              (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
-            }
+    <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
+      <IconButton
+        className="token-overview__button"
+        Icon={
+          <Icon
+            name={IconName.Dollar}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
-        ) : null}
-
-        <IconButton
-          className="token-overview__button"
-          Icon={
-            <Icon
-              name={IconName.SwapVertical}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          }
-          onClick={handleSwapOnClick}
-          data-testid="token-overview-swap"
-          label={t('swap')}
-          disabled={!isExternalServicesEnabled || isMarketClosed}
-        />
-
-        {canDeactivate ? (
-          <IconButton
-            className="token-overview__button"
-            Icon={
-              <Icon
-                name={IconName.Trash}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            }
-            onClick={deactivateAsset}
-            data-testid="token-overview-deactivate-asset"
-            label={t('assetDeactivate') as string}
-            disabled={isDeactivating}
-          />
-        ) : null}
-      </Box>
-      <AssetActivationErrorToast
-        message={errorMessage}
-        onClose={dismissErrorMessage}
+        }
+        label={t('buy')}
+        data-testid="token-overview-buy"
+        onClick={handleBuyAndSellOnClick}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        disabled={token.isERC721}
       />
-    </>
+
+      {shouldShowSendButton ? (
+        <IconButton
+          className="token-overview__button"
+          onClick={handleSendOnClick}
+          Icon={
+            <Icon
+              name={IconName.Send}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          label={t('send')}
+          data-testid="eth-overview-send"
+          disabled={
+            token.isERC721 ||
+            (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+          }
+        />
+      ) : null}
+
+      <IconButton
+        className="token-overview__button"
+        Icon={
+          <Icon
+            name={IconName.SwapVertical}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
+        }
+        onClick={handleSwapOnClick}
+        data-testid="token-overview-swap"
+        label={t('swap')}
+        disabled={!isExternalServicesEnabled || isMarketClosed}
+      />
+    </Box>
   );
 };
 

@@ -25,18 +25,18 @@ import {
   getShowDefaultAddressPreference,
 } from '../../../selectors';
 import { setShowDefaultAddress } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 const METRICS_LOCATION = 'Account Hover Menu';
 
 export const DefaultAddress = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   const defaultAddressScope = useSelector(
@@ -72,15 +72,16 @@ export const DefaultAddress = () => {
               size={TextButtonSize.BodyXs}
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
-                trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: MetaMetricsEventName.NavSettingsOpened,
-                  properties: {
-                    location: METRICS_LOCATION,
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    settings_type: 'show_default_address',
-                  },
-                });
+                trackEvent(
+                  createEventBuilder(MetaMetricsEventName.NavSettingsOpened)
+                    .addCategory(MetaMetricsEventCategory.Navigation)
+                    .addProperties({
+                      location: METRICS_LOCATION,
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      settings_type: 'show_default_address',
+                    })
+                    .build(),
+                );
                 navigate(
                   `${PREFERENCES_AND_DISPLAY_ROUTE}#show-default-address`,
                 );
@@ -96,17 +97,18 @@ export const DefaultAddress = () => {
           onToggle={(value: boolean) => {
             const newValue = !value;
             dispatch(setShowDefaultAddress(newValue));
-            trackEvent({
-              category: MetaMetricsEventCategory.Settings,
-              event: MetaMetricsEventName.SettingsUpdated,
-              properties: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                default_address_network: defaultAddressScope,
-                location: METRICS_LOCATION,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                show_default_address: newValue,
-              },
-            });
+            trackEvent(
+              createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+                .addCategory(MetaMetricsEventCategory.Settings)
+                .addProperties({
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  default_address_network: defaultAddressScope,
+                  location: METRICS_LOCATION,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  show_default_address: newValue,
+                })
+                .build(),
+            );
           }}
           dataTestId="show-default-address-toggle"
         />

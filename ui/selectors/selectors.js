@@ -2078,7 +2078,7 @@ const unapprovedTransactionSelectorFactory =
   createParameterizedDeepEqualSelector(20);
 
 export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
-  (state) => getUnapprovedTransactions(state),
+  getUnapprovedTransactions,
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => unapprovedTxs?.[transactionId],
 );
@@ -3334,10 +3334,10 @@ export function getUseCurrencyRateCheck(state) {
 }
 
 export function getNames(state) {
-  return state.metamask.names || {};
+  return state.metamask.names ?? EMPTY_OBJECT;
 }
 export function getNameSources(state) {
-  return state.metamask.nameSources || {};
+  return state.metamask.nameSources ?? EMPTY_OBJECT;
 }
 
 export function getMetaMetricsDataDeletionId(state) {
