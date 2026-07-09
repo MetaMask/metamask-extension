@@ -61,19 +61,6 @@ jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
   useShouldShowSpeedUp: jest.fn(),
 }));
 
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: jest.fn(),
-      createEventBuilder,
-    }),
-  };
-});
-
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
