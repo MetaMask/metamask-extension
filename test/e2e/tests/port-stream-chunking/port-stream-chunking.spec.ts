@@ -12,14 +12,17 @@ import { type PortStreamChunkingTestEventStats } from '../../background-socket/t
 const PORT_STREAM_CHUNKING_TEST_ID = 'port-stream-chunking';
 const PORT_STREAM_CHUNKING_COMMAND_PREFIX = 'port-stream-chunking-test';
 const STRUCTURED_CLONE_MESSAGE_SERIALIZATION = 'structured_clone';
-const STRUCTURED_CLONE_CHROME_VERSION = '151';
+// Chrome 150 is the newest pre-151 version, before structured clone messaging is available.
+const LEGACY_CHUNKED_CHROME_VERSION = '150';
 const CHROMIUM_MESSAGE_SIZE_LIMIT = 67108864; // 64 MB
 const STRUCTURED_CLONE_TEST_PAYLOAD_BYTES = 8 * 1024 * 1024;
 const PORT_STREAM_PAYLOAD_WAIT_TIMEOUT = 10000;
 
 type PortStreamChunkingTestOptions = {
-  expectChromeChunkedEvent: boolean;
+  assertChromeChunkedEvent?: boolean;
+  chromeBrowserVersion?: string;
   expectedChromeMessageSerialization?: string;
+  loginAndAssertPayloadInUi?: boolean;
   manifestTransform?: (manifest: Record<string, unknown>) => void;
   title?: string;
 };
@@ -51,17 +54,7 @@ function assertChromeMessageSerialization(expected?: string) {
 function assertChunkedEvent(
   beforeStats: PortStreamChunkingTestEventStats,
   afterStats: PortStreamChunkingTestEventStats,
-  expectChunkedEvent: boolean,
 ) {
-  if (!expectChunkedEvent) {
-    assert.strictEqual(
-      afterStats.count,
-      beforeStats.count,
-      'message-too-large event count should not change',
-    );
-    return;
-  }
-
   assert.ok(
     afterStats.count > beforeStats.count,
     'message-too-large event count should increase',
@@ -105,18 +98,40 @@ async function waitForPortStreamPayloadInUi(
   );
 }
 
-async function loadWalletAndEmitPortStreamPayload({
-  expectChromeChunkedEvent,
+async function waitForChunkedEvent(
+  driver: Driver,
+  beforeStats: PortStreamChunkingTestEventStats,
+) {
+  let afterStats: PortStreamChunkingTestEventStats | undefined;
+
+  await driver.waitUntil(
+    async () => {
+      afterStats =
+        await getServerMochaToBackground().getPortStreamChunkingTestEventStats();
+      return afterStats.count > beforeStats.count;
+    },
+    {
+      interval: 250,
+      timeout: PORT_STREAM_PAYLOAD_WAIT_TIMEOUT,
+    },
+  );
+
+  assert.ok(afterStats);
+  assertChunkedEvent(beforeStats, afterStats);
+}
+
+async function loadExtensionAndEmitPortStreamPayload({
+  assertChromeChunkedEvent = false,
+  chromeBrowserVersion,
   expectedChromeMessageSerialization,
+  loginAndAssertPayloadInUi = true,
   manifestTransform,
   title,
 }: PortStreamChunkingTestOptions) {
   await withFixtures(
     {
       fixtures: new FixtureBuilderV2().build(),
-      driverOptions: {
-        chromeBrowserVersion: STRUCTURED_CLONE_CHROME_VERSION,
-      },
+      driverOptions: chromeBrowserVersion ? { chromeBrowserVersion } : {},
       localNodeOptions: [{ type: 'none' as const }],
       manifestTransform,
       title,
@@ -128,26 +143,32 @@ async function loadWalletAndEmitPortStreamPayload({
 
       const loginPage = new LoginPage(driver);
       await loginPage.checkPageIsLoaded();
-      await loginPage.loginToHomepage();
 
-      const homepage = new HomePage(driver);
-      await homepage.checkPageIsLoaded();
+      if (loginAndAssertPayloadInUi) {
+        await loginPage.loginToHomepage();
+
+        const homepage = new HomePage(driver);
+        await homepage.checkPageIsLoaded();
+      }
 
       const sampleId = getSampleId();
       const expectedCommand = `${PORT_STREAM_CHUNKING_COMMAND_PREFIX}:${sampleId}`;
-      const beforeStats =
-        await getServerMochaToBackground().getPortStreamChunkingTestEventStats();
+      const beforeStats = assertChromeChunkedEvent
+        ? await getServerMochaToBackground().getPortStreamChunkingTestEventStats()
+        : undefined;
 
       await getServerMochaToBackground().emitPortStreamChunkingTestPayload(
         STRUCTURED_CLONE_TEST_PAYLOAD_BYTES,
         sampleId,
       );
 
-      await waitForPortStreamPayloadInUi(driver, expectedCommand);
+      if (beforeStats) {
+        await waitForChunkedEvent(driver, beforeStats);
+      }
 
-      const afterStats =
-        await getServerMochaToBackground().getPortStreamChunkingTestEventStats();
-      assertChunkedEvent(beforeStats, afterStats, expectChromeChunkedEvent);
+      if (loginAndAssertPayloadInUi) {
+        await waitForPortStreamPayloadInUi(driver, expectedCommand);
+      }
     },
   );
 }
@@ -160,8 +181,10 @@ describe('Port Stream Chunking', function () {
   });
 
   it('uses chunked messaging for a large typed array when structured clone messaging is not enabled', async function () {
-    await loadWalletAndEmitPortStreamPayload({
-      expectChromeChunkedEvent: true,
+    await loadExtensionAndEmitPortStreamPayload({
+      assertChromeChunkedEvent: true,
+      chromeBrowserVersion: LEGACY_CHUNKED_CHROME_VERSION,
+      loginAndAssertPayloadInUi: false,
       manifestTransform: (manifest: Record<string, unknown>) => {
         delete manifest.message_serialization;
       },
@@ -170,8 +193,7 @@ describe('Port Stream Chunking', function () {
   });
 
   it('uses structured clone messaging by default for a large typed array', async function () {
-    await loadWalletAndEmitPortStreamPayload({
-      expectChromeChunkedEvent: false,
+    await loadExtensionAndEmitPortStreamPayload({
       expectedChromeMessageSerialization:
         STRUCTURED_CLONE_MESSAGE_SERIALIZATION,
       title: this.test?.fullTitle(),

@@ -31,7 +31,7 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
-    chromeBrowserVersion = process.env.SELENIUM_CHROME_VERSION || '126',
+    chromeBrowserVersion = process.env.SELENIUM_CHROME_VERSION || '151',
     isBenchmark = false,
   }) {
     const args = [
