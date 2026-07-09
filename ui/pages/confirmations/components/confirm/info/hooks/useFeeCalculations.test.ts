@@ -229,6 +229,25 @@ describe('useFeeCalculations', () => {
     `);
   });
 
+  it('adds container overhead to pre-wrap gas limit for estimates when enforced simulations are enabled', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    }) as TransactionMeta;
+
+    transactionMeta.layer1GasFee = '0x10000000000000';
+    transactionMeta.txParamsOriginal = { ...transactionMeta.txParams };
+    transactionMeta.txParams.gas = '0xbb77';
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useFeeCalculations(transactionMeta),
+      mockState,
+    );
+
+    expect(result.current.estimatedFeeNativeHex).toBe('0x107ca3d8122c95');
+    expect(result.current.maxFeeHex).toBe('0x107ca3d8122c95');
+  });
+
   it('displays "< 0.0001" for very small non-zero estimated and max fees', () => {
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,

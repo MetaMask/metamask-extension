@@ -1,7 +1,12 @@
 import { TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import { Hex, add0x } from '@metamask/utils';
 
+import {
+  addHexes,
+  subtractHexes,
+} from '../../../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import { toHex } from '../../../../../shared/lib/delegation/utils';
 import { useDappSwapContextOptional } from '../../context/dapp-swap';
 import { HEX_ZERO } from '../../components/confirm/info/shared/constants';
@@ -12,11 +17,9 @@ import { HEX_ZERO } from '../../components/confirm/info/shared/constants';
  * gas fee modal option hooks so the same value is used everywhere.
  *
  * @param transactionMeta - The transaction being displayed.
- * @returns An object with `gasLimit` (the selected gas limit) and
+ * @returns An object with `gasLimit` (the selected display gas limit) and
  * `quotedGasLimit` (the swap-quoted gas limit if applicable, otherwise
- * `undefined`; exposed for callers that still need it such as
- * `useTransactionGasFeeEstimate`). When `containerTypes` is set (e.g.
- * enforced simulations) `gasLimit` resolves to the wrapped `txParams.gas`.
+ * `undefined`).
  */
 export function useTransactionGasLimit(transactionMeta: TransactionMeta): {
   gasLimit: Hex;
@@ -35,27 +38,45 @@ export function useTransactionGasLimit(transactionMeta: TransactionMeta): {
     ) as Hex;
   }
 
-  // When container types are set (e.g. enforced simulations), the gas limit
-  // has been re-estimated for the wrapped transaction, so we use
-  // `txParams.gas` directly. `gasUsed` / `gasLimitNoBuffer` reflect the
-  // pre-wrap estimate and would understate the fee.
-  const hasContainerTypes = (transactionMeta?.containerTypes?.length ?? 0) > 0;
-
   // `gasUsed` is the gas limit actually used by the transaction in the
-  // simulation environment.
+  // simulation environment. Start with the pre-wrap display value, then add
+  // only the container overhead so the fee reflects the protected transaction
+  // without losing optimized/quoted gas for the underlying action.
   const gasLimit = (
-    hasContainerTypes
-      ? transactionMeta?.txParams?.gas || HEX_ZERO
-      : quotedGasLimit ||
-        transactionMeta?.gasUsed ||
-        // While estimating gas for the transaction we add 50% gas limit
-        // buffer. With `gasLimitNoBuffer` that buffer is removed. See PR
-        // https://github.com/MetaMask/metamask-extension/pull/29502 for
-        // more details.
-        transactionMeta?.gasLimitNoBuffer ||
-        transactionMeta?.txParams?.gas ||
-        HEX_ZERO
+    quotedGasLimit ||
+    transactionMeta?.gasUsed ||
+    // While estimating gas for the transaction we add 50% gas limit
+    // buffer. With `gasLimitNoBuffer` that buffer is removed. See PR
+    // https://github.com/MetaMask/metamask-extension/pull/29502 for
+    // more details.
+    transactionMeta?.gasLimitNoBuffer ||
+    transactionMeta?.txParamsOriginal?.gas ||
+    transactionMeta?.txParams?.gas ||
+    HEX_ZERO
   ) as Hex;
 
-  return { gasLimit, quotedGasLimit };
+  return {
+    gasLimit: addContainerGasOverhead(gasLimit, transactionMeta),
+    quotedGasLimit,
+  };
+}
+
+function addContainerGasOverhead(
+  gasLimit: Hex,
+  transactionMeta: TransactionMeta,
+): Hex {
+  const hasContainerTypes = (transactionMeta.containerTypes?.length ?? 0) > 0;
+  const originalGas = transactionMeta.txParamsOriginal?.gas;
+  const wrappedGas = transactionMeta.txParams?.gas;
+
+  if (!hasContainerTypes || !originalGas || !wrappedGas) {
+    return gasLimit;
+  }
+
+  if (!new Numeric(wrappedGas, 16).greaterThan(originalGas, 16)) {
+    return gasLimit;
+  }
+
+  const overhead = subtractHexes(wrappedGas, originalGas);
+  return add0x(addHexes(gasLimit, overhead)) as Hex;
 }
