@@ -121,6 +121,7 @@ import { MultichainAccountAddressListPage } from '../multichain-accounts/multich
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
+import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
@@ -628,6 +629,12 @@ export default function Routes() {
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
     useMultichainAccountsIntroModal(isUnlocked, location);
+
+  // Close the side panel when a wallet reset is in progress and the wallet
+  // becomes unlocked on another MetaMask surface. The side panel keeps its own
+  // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
+  // onboarding and trigger the onboarding lock trap.
+  useCloseSidePanelOnWalletReset();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
