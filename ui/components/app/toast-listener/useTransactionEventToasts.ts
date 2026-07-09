@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -60,6 +61,25 @@ function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
 }
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
+
+function isPendingToastStatus(
+  transactionMeta: TransactionMeta,
+  status: string,
+) {
+  if (status === TransactionStatus.submitted) {
+    return true;
+  }
+
+  // Ported from MusdConversionToast which included pre-broadcast stage
+  if (transactionMeta.type === TransactionType.musdConversion) {
+    return (
+      status === TransactionStatus.approved ||
+      status === TransactionStatus.signed
+    );
+  }
+
+  return false;
+}
 
 const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
@@ -130,8 +150,10 @@ export function useTransactionEventToasts(): void {
       const toastId = generateToastId(id);
       const props = { transactionId: id };
 
-      if (status === 'submitted' && shouldShowPendingToast(id)) {
-        showPendingToast(toastId, props);
+      if (isPendingToastStatus(transactionMeta, status)) {
+        if (shouldShowPendingToast(id)) {
+          showPendingToast(toastId, props);
+        }
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
         showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
