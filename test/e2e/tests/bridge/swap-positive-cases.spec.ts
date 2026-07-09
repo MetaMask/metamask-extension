@@ -16,6 +16,35 @@ import {
   mockTokensWithSecurityData,
 } from './bridge-test-utils';
 
+const getRequestedToCompletedEvents = <Event extends { event?: string }>(
+  events: Event[],
+  expectedEvents: string[],
+): Event[] => {
+  const firstExpectedEvent = expectedEvents[0];
+  assert.ok(firstExpectedEvent, 'Expected at least one event');
+  const quotesRequestedEventIndex = events.findIndex(
+    ({ event }) => event === firstExpectedEvent,
+  );
+  assert.notEqual(
+    quotesRequestedEventIndex,
+    -1,
+    `${firstExpectedEvent} event not found`,
+  );
+  const expectedEventSet = new Set(expectedEvents);
+  const requestedToCompletedEvents = events
+    .slice(quotesRequestedEventIndex)
+    .filter(({ event }) => event !== undefined && expectedEventSet.has(event))
+    .slice(0, expectedEvents.length);
+  assert.equal(
+    requestedToCompletedEvents.length,
+    expectedEvents.length,
+    `Expected ${expectedEvents.join(', ')} events, but got ${requestedToCompletedEvents
+      .map(({ event }) => event)
+      .join(', ')}`,
+  );
+  return requestedToCompletedEvents;
+};
+
 describe('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
   it('updates recommended swap quote incrementally when SSE events are received', async function () {
@@ -26,7 +55,6 @@ describe('Swap tests', function (this: Suite) {
           ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           refreshRate: 30000,
         },
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -48,6 +76,8 @@ describe('Swap tests', function (this: Suite) {
           },
           submitDelay: 10000,
           expectedDestAmount: '3,839',
+          expectedDetailsDestAmount: '3,839.4478',
+          expectedActivityAmount: '+3,839.4478',
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -58,13 +88,16 @@ describe('Swap tests', function (this: Suite) {
           (e) => e?.event === 'Transaction Finalized',
         );
 
-        const requestedToCompletedEvents = unifiedSwapBridgeEvents.slice(6);
         const expectedEvents = [
           'Unified SwapBridge Quotes Requested',
           'Unified SwapBridge Quotes Received',
           'Unified SwapBridge Submitted',
           'Unified SwapBridge Completed',
         ];
+        const requestedToCompletedEvents = getRequestedToCompletedEvents(
+          unifiedSwapBridgeEvents,
+          expectedEvents,
+        );
         requestedToCompletedEvents.forEach((e, idx) => {
           assert.ok(
             e.event === expectedEvents[idx],
@@ -104,7 +137,6 @@ describe('Swap tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -125,20 +157,24 @@ describe('Swap tests', function (this: Suite) {
             tokenTo: 'MUSD',
           },
           expectedDestAmount: '0.369',
+          expectedDetailsDestAmount: '0.3695',
+          expectedActivityAmount: '+0.3695',
           skipStatusPage: true,
         });
 
         const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
           (e) => e?.event?.includes('Unified SwapBridge'),
         );
-        const requestedToCompletedEvents = events.slice(6);
-
         const expectedEvents = [
           'Unified SwapBridge Quotes Requested',
           'Unified SwapBridge Quotes Received',
           'Unified SwapBridge Submitted',
           'Unified SwapBridge Completed',
         ];
+        const requestedToCompletedEvents = getRequestedToCompletedEvents(
+          events,
+          expectedEvents,
+        );
         requestedToCompletedEvents.forEach((e, idx) => {
           assert.ok(
             e.event === expectedEvents[idx],
@@ -220,8 +256,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved token alert modal and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -233,6 +267,8 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
+          expectedDestAmount: '0.3695',
+          expectedActivityAmount: '+0.3695',
         });
       },
     );
@@ -313,8 +349,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved all confirmation alerts and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -326,6 +360,8 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
+          expectedDestAmount: '3,839.4478',
+          expectedActivityAmount: '+3,839.4478',
         });
       },
     );
@@ -395,8 +431,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved all alerts and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -408,6 +442,8 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
+          expectedDestAmount: '0.3695',
+          expectedActivityAmount: '+0.3695',
         });
       },
     );

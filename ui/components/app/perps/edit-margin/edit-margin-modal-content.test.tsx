@@ -12,6 +12,26 @@ const mockReplacePerpsToastByKey = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 const mockUsePerpsMarginCalculations = jest.fn();
 
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
+
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
@@ -220,6 +240,46 @@ describe('EditMarginModalContent', () => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks the liquidation price and available amount when privacy mode is enabled', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        privacyStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-edit-margin-available-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('masks the liquidation price comparison values when privacy mode is enabled', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        privacyStore,
+      );
+
+      const amountInput = screen.getByPlaceholderText('0.00');
+      fireEvent.change(amountInput, { target: { value: '100' } });
+
+      expect(
+        screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+      ).toHaveTextContent('••••••');
     });
   });
 });

@@ -5,10 +5,8 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
-import type {
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-} from '../../../../shared/constants/metametrics';
+import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
+import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
 import type {
   TraceRequest,
   EndTraceRequest,
@@ -38,7 +36,8 @@ export type OAuthServiceAction =
   | OAuthServiceMethodActions
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerGetAccessTokenAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | GeolocationControllerGetGeolocationAction;
 
 /**
  * All possible events that the OAuthService can emit.
@@ -109,30 +108,10 @@ export type LoginHandlerOptions = {
   scopes?: string[];
 };
 
-export type OAuthLoginEnv = {
-  /**
-   * The Google Client ID for the OAuth login.
-   */
-  googleClientId: string;
-
-  /**
-   * The Apple Client ID for the OAuth login.
-   */
-  appleClientId: string;
-
-  /**
-   * The Telegram Client ID for the OAuth login.
-   */
-  telegramClientId: string;
-
-  /**
-   * The profile-sync environment used by the Telegram login flow to derive its
-   * auth and OIDC endpoints.
-   */
-  profileSyncEnv: ProfileSyncEnv;
-};
-
 export type OAuthConfig = {
+  googleClientId: string;
+  appleClientId: string;
+  telegramClientId: string;
   googleAuthConnectionId: string;
   googleGroupedAuthConnectionId: string;
   appleAuthConnectionId: string;
@@ -141,6 +120,11 @@ export type OAuthConfig = {
   telegramGroupedAuthConnectionId: string;
   authServerUrl: string;
   web3AuthNetwork: Web3AuthNetwork;
+  /**
+   * The profile-sync environment used by the Telegram login flow to derive its
+   * auth and OIDC endpoints.
+   */
+  profileSyncEnv: ProfileSyncEnv;
 };
 
 export type OAuthServiceMessenger = Messenger<
@@ -154,11 +138,6 @@ export type OAuthServiceOptions = {
    * The messenger used to communicate with other services and controllers.
    */
   messenger: OAuthServiceMessenger;
-
-  /**
-   * The environment variables required for the OAuth login and get JWT Token.
-   */
-  env: OAuthLoginEnv;
 
   /**
    * The WebAuthenticator to use for the OAuth login.
@@ -180,22 +159,19 @@ export type OAuthServiceOptions = {
   bufferedEndTrace: (request: EndTraceRequest) => void;
 
   /**
-   * Track a MetaMetrics event
-   */
-  trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => void;
-
-  /**
    * Add an event before metrics opt-in (for buffering before user consent)
    */
   addEventBeforeMetricsOptIn: (event: MetaMetricsEventPayload) => void;
 
   /**
-   * Get whether the user has opted into MetaMetrics
+   * Get whether the user has completed the analytics onboarding prompt
    */
-  getParticipateInMetaMetrics: () => boolean | null;
+  getCompletedMetaMetricsOnboarding: () => boolean;
+
+  /**
+   * Get whether the user has opted into analytics
+   */
+  getOptedIn: () => boolean;
 
   /**
    * Persist the temporary Telegram profile-sync JWT until the SRP profile is

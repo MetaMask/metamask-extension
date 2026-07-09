@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
 import {
   checkHardwareWalletPermission,
   getConnectedDevices,
@@ -48,6 +49,7 @@ export const useHardwareWalletAutoConnect = ({
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
   const location = useLocation();
   const isOnAutoConnectRoute = isHardwareWalletRoute(location.pathname);
+  const isOnRepairRoute = location.pathname === HARDWARE_WALLET_REPAIR_ROUTE;
 
   const {
     adapterRef,
@@ -56,12 +58,14 @@ export const useHardwareWalletAutoConnect = ({
     connectRef,
     hasAutoConnectedRef,
     lastConnectedAccountRef,
+    isSigningInProgressRef,
   } = refs;
 
   useEffect(
     () => {
       if (
         !isHardwareWalletAccount ||
+        isOnRepairRoute ||
         !walletType ||
         hardwareConnectionPermissionState ===
           HardwareConnectionPermissionState.Denied
@@ -146,6 +150,19 @@ export const useHardwareWalletAutoConnect = ({
           return;
         }
 
+        // WORKAROUND: The Trezor Connect SDK (offscreen document) closes its
+        // WebUSB transport after signing, which fires a native disconnect event
+        // indistinguishable from a physical unplug — even
+        // navigator.usb.getDevices() returns empty. Suppress teardown while
+        // signing is in flight. Real physical disconnects during signing will
+        // cause the signing operation to fail, which the tracker
+        // (useHwSignTracker in batch mode) handles via TransactionFailed.
+        //
+        // See isSigningInProgressRef in HardwareWalletStateManager for details.
+        if (isSigningInProgressRef.current) {
+          return;
+        }
+
         handleDisconnect();
 
         const currentPermissionState =
@@ -216,6 +233,7 @@ export const useHardwareWalletAutoConnect = ({
       isWebHidAvailable,
       isWebUsbAvailable,
       handleDisconnect,
+      isOnRepairRoute,
       isOnAutoConnectRoute,
       setHardwareConnectionPermissionState,
       updateConnectionState,
@@ -228,6 +246,7 @@ export const useHardwareWalletAutoConnect = ({
     () => {
       if (
         !isHardwareWalletAccount ||
+        isOnRepairRoute ||
         !walletType ||
         hardwareConnectionPermissionState !==
           HardwareConnectionPermissionState.Granted
@@ -299,6 +318,7 @@ export const useHardwareWalletAutoConnect = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isHardwareWalletAccount,
+      isOnRepairRoute,
       accountAddress,
       walletType,
       hardwareConnectionPermissionState,

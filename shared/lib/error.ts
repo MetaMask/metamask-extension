@@ -28,6 +28,47 @@ export function getErrorMessage(error: unknown): string {
     : _getErrorMessage(error);
 }
 
+/**
+ * Extract a human-readable message from an unknown thrown value.
+ *
+ * Unlike {@link getErrorMessage}, plain objects without a string `message`
+ * are JSON-stringified so RPC/offscreen boundaries preserve useful detail
+ * instead of `[object Object]`.
+ *
+ * @param error - The value to inspect.
+ * @returns A string representation safe for error messages.
+ */
+export function extractMessageFromUnknownError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'object' && error !== null) {
+    const errorLike = error as { message?: unknown };
+    const { message } = errorLike;
+    if (typeof message === 'string') {
+      return message;
+    }
+    if (
+      typeof message === 'number' ||
+      typeof message === 'boolean' ||
+      typeof message === 'bigint'
+    ) {
+      return String(message);
+    }
+
+    try {
+      return JSON.stringify(error, (_key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      );
+    } catch {
+      return String(error);
+    }
+  }
+
+  return String(error);
+}
+
 export function logErrorWithMessage(error: unknown) {
   log.error(isErrorWithMessage(error) ? getErrorMessage(error) : error);
 }

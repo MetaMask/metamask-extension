@@ -5,11 +5,14 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import {
+  createDeepEqualSelector,
+  createShallowResultSelector,
+} from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
-import { EMPTY_OBJECT } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
   metamask: {
@@ -55,9 +58,19 @@ export const getApprovalRequestsByType = (
   return pendingApprovalRequests;
 };
 
-export function getApprovalFlows(state: ApprovalsMetaMaskState) {
-  return state.metamask.approvalFlows;
-}
+const getApprovalFlowsFromState = (state: ApprovalsMetaMaskState) =>
+  state.metamask.approvalFlows;
+
+export const getApprovalFlows = createShallowResultSelector(
+  getApprovalFlowsFromState,
+  (approvalFlows) => {
+    if (!approvalFlows?.length) {
+      return EMPTY_ARRAY;
+    }
+
+    return [...approvalFlows];
+  },
+);
 
 export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
   return (state.metamask.approvalFlows?.length ?? 0) > 0;
@@ -81,7 +94,7 @@ const getSkipSmartTransactionStatusPage = createSelector(
   (remoteFeatureFlags) =>
     getBooleanFeatureFlag(
       remoteFeatureFlags?.extensionSkipTransactionStatusPage,
-      false,
+      true,
     ),
 );
 

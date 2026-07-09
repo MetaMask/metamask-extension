@@ -1,15 +1,17 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_ID, NETWORK_CLIENT_ID } from '../../constants';
 import {
   BSC_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
+import { mockTokenMetadataApis } from './utils/mocks';
 
 const BSC_BAT_ADDRESS = '0x0d8775f648430679a709e98d2b0cb6250d2887ef';
+const BSC_BAT_ASSET_ID = `eip155:56/erc20:${BSC_BAT_ADDRESS}`;
 
 const BSC_BAT_TOKEN_LIST_ENTRY = {
   [BSC_BAT_ADDRESS]: {
@@ -24,28 +26,49 @@ const BSC_BAT_TOKEN_LIST_ENTRY = {
 };
 
 describe('Add existing token using search', function () {
-  // Mock call to core to fetch BAT token price
+  // Mock all spot-price requests for BSC (BNB native + BAT)
   async function mockPriceFetch(
     mockServer: Mockttp,
   ): Promise<MockedEndpoint[]> {
     return [
       await mockServer
         .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-        .withQuery({
-          assetIds:
-            'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-          vsCurrency: 'ETH',
-        })
-        .thenCallback(() => {
-          return {
-            statusCode: 200,
-            json: {
-              'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
-                eth: 0.0001,
-              },
+        .always()
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:56/slip44:60': {
+              price: 600,
+              marketCap: 90000000000,
+              pricePercentChange1d: 0,
             },
-          };
-        }),
+            'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
+              price: 0.18,
+              marketCap: 270000000,
+              pricePercentChange1d: 0,
+            },
+          },
+        })),
+      await mockServer
+        .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+        .always()
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            usd: {
+              name: 'US Dollar',
+              ticker: 'usd',
+              value: 1,
+              currencyType: 'fiat',
+            },
+            bnb: {
+              name: 'BNB',
+              ticker: 'bnb',
+              value: 1 / 600,
+              currencyType: 'crypto',
+            },
+          },
+        })),
     ];
   }
 
@@ -90,10 +113,101 @@ describe('Add existing token using search', function () {
     ];
   }
 
+  async function mockSupportedNetworks(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> {
+    return [
+      await mockServer
+        .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            fullSupport: ['eip155:56'],
+          },
+        })),
+    ];
+  }
+
+  async function mockTokensAssets(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> {
+    return [
+      await mockServer
+        .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: [
+            {
+              assetId: 'eip155:56/slip44:714',
+              name: 'BNB',
+              symbol: 'BNB',
+              decimals: 18,
+            },
+            {
+              assetId:
+                'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+              name: 'Basic Attention Token',
+              symbol: 'BAT',
+              decimals: 18,
+            },
+          ],
+        })),
+    ];
+  }
+
+  async function mockTokenSearch(mockServer: Mockttp): Promise<MockedEndpoint> {
+    return mockServer
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const query = (url.searchParams.get('query') ?? '')
+          .trim()
+          .toLowerCase();
+        const data =
+          query === 'bat'
+            ? [
+                {
+                  assetId: `eip155:56/erc20:${BSC_BAT_ADDRESS}`,
+                  symbol: 'BAT',
+                  name: 'Basic Attention Token',
+                  decimals: 18,
+                },
+              ]
+            : [];
+        return {
+          statusCode: 200,
+          json: {
+            data,
+            count: data.length,
+            totalCount: data.length,
+            pageInfo: { hasNextPage: false, endCursor: '' },
+          },
+        };
+      });
+  }
+
   async function mockBscApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
     return [
       ...(await mockPriceFetch(mockServer)),
       ...(await mockBscBridgeApi(mockServer)),
+      ...(await mockSupportedNetworks(mockServer)),
+      ...(await mockTokensAssets(mockServer)),
+      ...(await mockTokenMetadataApis(
+        mockServer,
+        [
+          {
+            address: BSC_BAT_ADDRESS,
+            symbol: 'BAT',
+            name: 'Basic Attention Token',
+            decimals: 18,
+            chainId: 56,
+            balance: '1',
+          },
+        ],
+        { includeAssetsV3: false },
+      )),
+      await mockTokenSearch(mockServer),
     ];
   }
   it('renders the balance for the chosen token', async function () {
@@ -115,25 +229,48 @@ describe('Add existing token using search', function () {
           .withTokenListControllerStorageServiceData([
             { chainId: CHAIN_IDS.BSC, data: BSC_BAT_TOKEN_LIST_ENTRY },
           ])
+          .withAssetsController({
+            customAssets: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: [BSC_BAT_ASSET_ID],
+            },
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                [BSC_BAT_ASSET_ID]: { amount: '1' },
+              },
+            },
+            assetsInfo: {
+              [BSC_BAT_ASSET_ID]: {
+                aggregators: [],
+                decimals: 18,
+                name: 'Basic Attention Token',
+                symbol: 'BAT',
+                type: 'erc20',
+              },
+            },
+          })
           .build(),
         localNodeOptions: {
           chainId: parseInt(CHAIN_IDS.BSC, 16),
+        },
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: true,
+          },
         },
         title: this.test?.fullTitle(),
         testSpecificMock: mockBscApis,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenAmountIsDisplayed('25 BNB');
-        await assetListPage.importTokenBySearch({
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.importTokenBySearch({
           tokenName: 'BAT',
           networkName: BSC_DISPLAY_NAME,
         });
-        await assetListPage.checkTokenAmountInTokenDetailsModal(
+        await tokensTab.checkTokenAmountInTokenDetailsModal(
           'Basic Attention Token',
-          '0 BAT',
+          '1 BAT',
         );
       },
     );

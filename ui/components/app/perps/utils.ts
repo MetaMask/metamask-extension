@@ -465,7 +465,7 @@ export const filterMarketsByQuery = (
 };
 
 /**
- * Check if a market is an allowed HIP-3 market (stocks, commodities, forex)
+ * Check if a market is an allowed HIP-3 market
  *
  * HIP-3 markets are identified by having a marketSource that matches one of
  * the allowed HIP-3 DEX providers from the feature flag.
@@ -509,6 +509,26 @@ export function getPnlDisplayColor(pnl: number): TextColor {
     return TextColor.ErrorDefault;
   }
   return TextColor.TextDefault;
+}
+
+/**
+ * Neutralizes a semantic (success/error) text color when the value it's
+ * applied to is currently masked (e.g. by privacy mode). This prevents the
+ * color itself from leaking whether a P&L/return figure is positive or
+ * negative while the value is hidden behind dots.
+ *
+ * @param color - The color to use when the value is visible
+ * @param isHidden - Whether the value is currently masked
+ * @returns `TextColor.TextDefault` when hidden, otherwise the given color
+ * @example
+ * getPrivacyAwareColor(TextColor.SuccessDefault, true) // → TextColor.TextDefault
+ * getPrivacyAwareColor(TextColor.SuccessDefault, false) // → TextColor.SuccessDefault
+ */
+export function getPrivacyAwareColor(
+  color: TextColor,
+  isHidden: boolean | undefined,
+): TextColor {
+  return isHidden ? TextColor.TextDefault : color;
 }
 
 /**

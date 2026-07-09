@@ -5,7 +5,7 @@ import {
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
-  getIsTelegramLoginFeatureEnabled,
+  getIsBasicFunctionalityConsolidationEnabledInBuild,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -64,42 +64,6 @@ describe('getIsSeedlessOnboardingFeatureEnabled', () => {
   });
 });
 
-describe('getIsTelegramLoginFeatureEnabled', () => {
-  let originalSeedlessOnboardingEnabled: string | undefined;
-  let originalTelegramLoginEnabled: string | undefined;
-
-  beforeAll(() => {
-    originalSeedlessOnboardingEnabled = process.env.SEEDLESS_ONBOARDING_ENABLED;
-    originalTelegramLoginEnabled = process.env.TELEGRAM_LOGIN_ENABLED;
-  });
-
-  afterAll(() => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = originalSeedlessOnboardingEnabled;
-    process.env.TELEGRAM_LOGIN_ENABLED = originalTelegramLoginEnabled;
-  });
-
-  it('returns true when both seedless onboarding and Telegram login are enabled', () => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
-    process.env.TELEGRAM_LOGIN_ENABLED = 'true';
-
-    expect(getIsTelegramLoginFeatureEnabled()).toBe(true);
-  });
-
-  it('returns false when Telegram login is enabled but seedless onboarding is disabled', () => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'false';
-    process.env.TELEGRAM_LOGIN_ENABLED = 'true';
-
-    expect(getIsTelegramLoginFeatureEnabled()).toBe(false);
-  });
-
-  it('returns false when seedless onboarding is enabled but Telegram login is disabled', () => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
-    process.env.TELEGRAM_LOGIN_ENABLED = 'false';
-
-    expect(getIsTelegramLoginFeatureEnabled()).toBe(false);
-  });
-});
-
 describe('isGatorPermissionsRevocationFeatureEnabled', () => {
   it('should return true when GATOR_PERMISSIONS_REVOCATION_ENABLED is "true"', () => {
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED = 'true';
@@ -141,6 +105,33 @@ describe('getIsAssetsUnifiedStateIncludedInBuild', () => {
   it('returns false when ASSETS_UNIFIED_STATE_ENABLED is undefined', () => {
     delete process.env.ASSETS_UNIFIED_STATE_ENABLED;
     expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(false);
+  });
+});
+
+describe('getIsBasicFunctionalityConsolidationEnabledInBuild', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.BFT_CONSOLIDATION_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.BFT_CONSOLIDATION_ENABLED = originalValue;
+  });
+
+  it('returns true when BFT_CONSOLIDATION_ENABLED is "true"', () => {
+    process.env.BFT_CONSOLIDATION_ENABLED = 'true';
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(true);
+  });
+
+  it('returns false when BFT_CONSOLIDATION_ENABLED is "false"', () => {
+    process.env.BFT_CONSOLIDATION_ENABLED = 'false';
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(false);
+  });
+
+  it('returns false when BFT_CONSOLIDATION_ENABLED is undefined', () => {
+    delete process.env.BFT_CONSOLIDATION_ENABLED;
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(false);
   });
 });
 

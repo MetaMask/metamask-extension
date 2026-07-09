@@ -1,22 +1,24 @@
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
+  mockTronSwapApisWithoutFeeEstimation,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
+import { buildTronFixtures } from './unified-tron-assets';
 
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildTronFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApis,
         ignoredConsoleErrors: [
@@ -31,8 +33,9 @@ describe('Swap on Tron', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '6.07' });
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
@@ -54,10 +57,46 @@ describe('Swap on Tron', function () {
     );
   });
 
+  it('Swap disabled when Tron network fees cannot be estimated', async function () {
+    await withFixtures(
+      {
+        fixtures: buildTronFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockTronSwapApisWithoutFeeEstimation,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByNameWithWait('Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
+
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.createSwap({
+          amount: 1,
+          swapTo: 'USDT',
+          swapFrom: 'TRX',
+          network: 'Tron',
+        });
+
+        await swapPage.checkQuoteIsDisplayedWithoutNetworkFee();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
+      },
+    );
+  });
+
   it('No quotes available for the pair', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildTronFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApisNoQuotes,
       },
@@ -69,8 +108,9 @@ describe('Swap on Tron', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '6.07' });
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();

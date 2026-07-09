@@ -56,16 +56,7 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Restore .metamask folder
-        id: restore-metamask
-        uses: actions/cache/restore@v5
-        with:
-          path: .metamask
-          key: .metamask-${{ hashFiles('yarn.lock') }}
-          fail-on-cache-miss: false
-
-      - name: Install anvil if cache missed
-        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
+      - name: Install anvil
         run: yarn mm-foundryup
         shell: bash
 
@@ -250,23 +241,38 @@ jobs:
           merge-multiple: true
 
       # skip-benchmark-gate label: convenience escape hatch for Phase 2–3.
+      # Honored on pull_request runs and on release/* push runs (RC validation)
+      # by resolving the open PR(s) containing the commit; never on main pushes.
+      # Labels are read at run time, so re-running this job picks up a label
+      # added after the failure.
       # Remove when graduating to Phase 4 (required check) — at that point,
       # use admin bypass or update thresholds instead.
       - name: Check for skip label
         id: skip-check
         continue-on-error: true
-        if: >-
-          ${{
-            steps.download-benchmarks.outcome == 'success' &&
-            github.event_name == 'pull_request'
-          }}
+        if: ${{ steps.download-benchmarks.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_REF: ${{ github.ref }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
-          LABELS=$(gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels --jq '.[].name')
-          if echo "$LABELS" | grep -qx 'skip-benchmark-gate'; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
+          if [ "$EVENT_NAME" = 'pull_request' ]; then
+            PR_NUMBERS="$EVENT_PR_NUMBER"
+          elif [[ "$EVENT_REF" == refs/heads/release/* ]]; then
+            PR_NUMBERS=$(gh api "repos/$REPO/commits/$COMMIT_SHA/pulls" --jq '.[] | select(.state == "open") | .number')
+          else
+            PR_NUMBERS=''
           fi
+          for pr in $PR_NUMBERS; do
+            LABELS=$(gh api "repos/$REPO/issues/$pr/labels" --jq '.[].name')
+            if echo "$LABELS" | grep -qx 'skip-benchmark-gate'; then
+              echo "skip-benchmark-gate label found on PR #$pr — skipping quality gate"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            fi
+          done
         shell: bash
 
       - name: Run quality gate
@@ -298,7 +304,6 @@ jobs:
     timeout-minutes: 10
     environment: ${{ github.ref_name == github.event.repository.default_branch && 'default-branch' || 'release-ci' }}
     env:
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
       HEAD_COMMIT_HASH: ${{ github.sha }}
       OWNER: ${{ github.repository_owner }}
       BRANCH_NAME: ${{ github.ref_name }}
@@ -315,6 +320,16 @@ jobs:
           path: benchmark-results/
           merge-multiple: true
 
+      - name: Get token
+        id: token
+        if: steps.download-perf-benchmark.outcome == 'success'
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension_benchmark_stats
+          permissions: |
+            contents: write
+
       - name: Commit performance stats to extension_benchmark_stats
         if: steps.download-perf-benchmark.outcome == 'success'
         continue-on-error: true
@@ -322,3 +337,4 @@ jobs:
         env:
           BENCHMARK_DATA_TYPE: performance
           BENCHMARK_RESULTS_DIR: benchmark-results
+          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ steps.token.outputs.token }}

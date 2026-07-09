@@ -2,11 +2,11 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import AssetsSettingsPage from '../../page-objects/pages/settings/assets-settings-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 describe('Hide tokens without balance', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,15 +20,20 @@ describe('Hide tokens without balance', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         smartContract,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: true,
+          },
+        },
       },
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.importCustomTokenByChain(
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         );
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
           'TST2',
@@ -36,7 +41,7 @@ describe('Hide tokens without balance', function (this: Suite) {
         );
 
         // Verify that both zero-balance tokens and non-zero-balance tokens are displayed by default
-        const tokenList = new AssetListPage(driver);
+        const tokenList = new TokensTab(driver);
         await tokenList.checkTokenItemNumber(3);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('TST');
@@ -47,8 +52,7 @@ describe('Hide tokens without balance', function (this: Suite) {
         const assetsSettings = new AssetsSettingsPage(driver);
         await assetsSettings.checkAssetsPageIsLoaded();
         await assetsSettings.toggleHideTokensWithoutBalance();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // Check that tokens with zero balances are hidden, tokens with non-zero balances remain visible
         await new HomePage(driver).checkPageIsLoaded();

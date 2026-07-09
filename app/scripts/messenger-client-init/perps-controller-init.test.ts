@@ -4,9 +4,11 @@ import {
   type PerpsPlatformDependencies,
 } from '@metamask/perps-controller';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+  PerpsAnalyticsEvent,
+} from '../../../shared/constants/perps-events';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import {
   createPerpsInfrastructure,
   type InfrastructureDeps,
@@ -15,6 +17,16 @@ import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsControllerInit } from './perps-controller-init';
 import type { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 import type { MessengerClientInitRequest } from './types';
+
+const mockTrackAnalyticsEvent = jest.fn();
+
+jest.mock('../controllers/analytics', () => {
+  const actual = jest.requireActual('../controllers/analytics');
+  return {
+    ...actual,
+    trackEvent: (...args: unknown[]) => mockTrackAnalyticsEvent(...args),
+  };
+});
 
 jest.mock('@metamask/perps-controller', () => ({
   getDefaultPerpsControllerState: jest.fn().mockReturnValue({
@@ -102,6 +114,8 @@ jest.mock('@metamask/perps-controller', () => ({
     clearPendingTransactionRequests: jest.fn(),
     saveOrderBookGrouping: jest.fn(),
     getOrderBookGrouping: jest.fn(),
+    getMaxSlippage: jest.fn(),
+    setMaxSlippage: jest.fn(),
     getActiveProvider: jest.fn().mockReturnValue({
       getUserHistory: jest.fn(),
       getUserNonFundingLedgerUpdates: jest.fn(),
@@ -288,10 +302,9 @@ describe('PerpsControllerInit', () => {
       expect(constructorCall.state).toBe(persistedState);
     });
 
-    it('calls createPerpsInfrastructure with trackEvent', () => {
+    it('calls createPerpsInfrastructure without messenger trackEvent delegation', () => {
       PerpsControllerInit(getInitRequestMock());
       expect(createPerpsInfrastructure).toHaveBeenCalledWith({
-        trackEvent: expect.any(Function),
         getStorageItem: expect.any(Function),
         setStorageItem: expect.any(Function),
         removeStorageItem: expect.any(Function),
@@ -332,31 +345,36 @@ describe('PerpsControllerInit', () => {
       );
     });
 
-    it('trackEvent from createPerpsInfrastructure delegates to MetaMetricsController:trackEvent', () => {
-      const call = jest.fn();
+    it('trackPerpsEvent from createPerpsInfrastructure delegates to AnalyticsController trackEvent', () => {
       const request = getInitRequestMock();
-      request.controllerMessenger = {
-        call,
-      } as unknown as PerpsControllerMessenger;
 
       jest
         .mocked(createPerpsInfrastructure)
         .mockImplementationOnce((deps: InfrastructureDeps) => {
-          deps.trackEvent({
-            event: MetaMetricsEventName.PerpsScreenViewed,
-            category: MetaMetricsEventCategory.Perps,
-            properties: {},
-          });
-          return {} as PerpsPlatformDependencies;
+          const actual = jest.requireActual(
+            '../controllers/perps/infrastructure',
+          ) as typeof import('../controllers/perps/infrastructure');
+          const infrastructure = actual.createPerpsInfrastructure(deps);
+          infrastructure.metrics.trackPerpsEvent(
+            PerpsAnalyticsEvent.ScreenViewed,
+            {
+              [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+                PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+            },
+          );
+          return infrastructure;
         });
 
       PerpsControllerInit(request);
 
-      expect(call).toHaveBeenCalledWith(
-        'MetaMetricsController:trackEvent',
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
-          category: MetaMetricsEventCategory.Perps,
+          name: PerpsAnalyticsEvent.ScreenViewed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+          }),
         }),
       );
     });
@@ -581,6 +599,8 @@ describe('PerpsControllerInit', () => {
       ],
       ['perpsSaveOrderBookGrouping', 'saveOrderBookGrouping'],
       ['perpsGetOrderBookGrouping', 'getOrderBookGrouping'],
+      ['perpsGetMaxSlippage', 'getMaxSlippage'],
+      ['perpsSetMaxSlippage', 'setMaxSlippage'],
       ['perpsClearDepositResult', 'clearDepositResult'],
       ['perpsClearWithdrawResult', 'clearWithdrawResult'],
       ['perpsGetBlockExplorerUrl', 'getBlockExplorerUrl'],

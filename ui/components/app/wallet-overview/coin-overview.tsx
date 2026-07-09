@@ -6,10 +6,11 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box, ButtonLink, IconName } from '../../component-library';
+import { Box, Skeleton } from '@metamask/design-system-react';
+import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -27,8 +28,9 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
@@ -48,11 +50,11 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
-import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { BalanceEmptyState } from '../balance-empty-state';
 import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
+import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -64,7 +66,6 @@ export type CoinOverviewProps = {
   classPrefix?: string;
   chainId: CaipChainId | Hex;
   isBridgeChain: boolean;
-  isBuyableChain: boolean;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
 };
@@ -143,10 +144,10 @@ export const LegacyAggregatedBalance = ({
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable && isZeroAmount(balanceToDisplay)
       }
-      marginBottom={1}
+      className="mb-1"
     >
       <UserPreferencedCurrencyDisplay
         style={{ display: 'contents' }}
@@ -178,16 +179,19 @@ export const CoinOverview = ({
   classPrefix = 'coin',
   chainId,
   isBridgeChain,
-  isBuyableChain,
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const dispatch = useDispatch();
@@ -200,6 +204,9 @@ export const CoinOverview = ({
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const isTestnet = useSelector(getMultichainIsTestnet);
 
+  const period = '1d';
+  const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay(period);
+
   useRewardsModal();
 
   // Only show empty state when Receive can act (selectedAccountGroup exists);
@@ -208,7 +215,8 @@ export const CoinOverview = ({
     Boolean(selectedAccountGroup) &&
     !isTestnet &&
     !balanceIsCached &&
-    !hasBalance;
+    !hasBalance &&
+    !balanceIsLoading;
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -218,34 +226,36 @@ export const CoinOverview = ({
     const url = getPortfolioUrl(
       'explore/tokens',
       'ext_portfolio_button',
-      metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
+      analyticsId,
+      isMetaMetricsEnabled === true,
+      isMarketingEnabled === true,
     );
     global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: 'Home',
-        text: 'Portfolio',
-      },
-    });
-  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'Home',
+          text: 'Portfolio',
+        })
+        .build(),
+    );
+  }, [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
-    trackEvent({
-      event: MetaMetricsEventName.NavReceiveButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        text: 'Receive',
-        location: 'balance_empty_state',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavReceiveButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          text: 'Receive',
+          location: 'balance_empty_state',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+        })
+        .build(),
+    );
 
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
@@ -273,7 +283,7 @@ export const CoinOverview = ({
     return (
       <Box className="wallet-overview__currency-wrapper">
         <AccountGroupBalanceChange
-          period="1d"
+          period={period}
           trailingChild={renderPercentageAndAmountChangeTrail}
         />
       </Box>
@@ -292,6 +302,7 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       balance={
         shouldShowBalanceEmptyState ? (
           <BalanceEmptyState
@@ -322,6 +333,7 @@ export const CoinOverview = ({
           </Tooltip>
         )
       }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       buttons={
         <CoinButtons
           {...{
@@ -331,7 +343,6 @@ export const CoinOverview = ({
             isSwapsChain,
             isSigningEnabled,
             isBridgeChain,
-            isBuyableChain,
             classPrefix,
           }}
         />

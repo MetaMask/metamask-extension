@@ -11,13 +11,6 @@ export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
   return process.env.SEEDLESS_ONBOARDING_ENABLED?.toString() === 'true';
 };
 
-export const getIsTelegramLoginFeatureEnabled = (): boolean => {
-  return (
-    getIsSeedlessOnboardingFeatureEnabled() &&
-    process.env.TELEGRAM_LOGIN_ENABLED?.toString() === 'true'
-  );
-};
-
 export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
   return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
 };
@@ -41,6 +34,17 @@ export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
   return process.env.ASSETS_UNIFIED_STATE_ENABLED?.toString() === 'true';
 };
 
+/**
+ * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`): controls whether onboarding
+ * assigns new users to the consolidated Basic Functionality experience. This
+ * is intentionally separate from the remote rollout flag because onboarding
+ * completes before remote feature flags are reliably available.
+ */
+export const getIsBasicFunctionalityConsolidationEnabledInBuild =
+  (): boolean => {
+    return process.env.BFT_CONSOLIDATION_ENABLED?.toString() === 'true';
+  };
+
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };
@@ -49,6 +53,15 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
   return (
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
   );
+};
+
+/**
+ * Compile-time gate (`ADD_DEVICE_SYNC_ENABLED`): when true the
+ * Add Device tab is shown in Settings, allowing users to pair a second device
+ * via QR code scan and verification code.
+ */
+export const getIsAddDeviceSyncEnabled = (): boolean => {
+  return process.env.ADD_DEVICE_SYNC_ENABLED?.toString() === 'true';
 };
 
 /**

@@ -27,6 +27,7 @@ describe('useHardwareWalletConnection', () => {
     connectRef: { current: (() => Promise<void>) | null };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
+    isSigningInProgressRef: { current: boolean };
   };
   let mockSetters: {
     setConnectionState: jest.Mock;
@@ -55,6 +56,7 @@ describe('useHardwareWalletConnection', () => {
       connectRef: { current: null },
       walletTypeRef: { current: HardwareWalletType.Ledger },
       previousWalletTypeRef: { current: null },
+      isSigningInProgressRef: { current: false },
     };
 
     mockSetters = {
@@ -349,6 +351,26 @@ describe('useHardwareWalletConnection', () => {
       expect(mockRefs.adapterRef.current).toBeNull();
     });
 
+    it('clears signing progress when disconnecting', async () => {
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockRefs.adapterRef.current = mockAdapter;
+      mockRefs.isSigningInProgressRef.current = true;
+
+      const { result } = setupHook();
+
+      await act(async () => {
+        await result.current.disconnect();
+      });
+
+      expect(mockRefs.isSigningInProgressRef.current).toBe(false);
+    });
+
     it('does not update state when new connection started during disconnect', async () => {
       const oldAdapter = new MockHardwareWalletAdapter({
         onDisconnect: mockHandleDisconnect,
@@ -563,6 +585,36 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         ConnectionState.ready(),
       );
+    });
+
+    it('connects with the current wallet type ref when selected account wallet type is unavailable', async () => {
+      mockRefs.adapterRef.current = null;
+      mockRefs.walletTypeRef.current = HardwareWalletType.Trezor;
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
+        mockAdapter,
+      );
+
+      const { result } = setupHook();
+
+      let ready: boolean | undefined;
+      await act(async () => {
+        ready = await result.current.ensureDeviceReady();
+      });
+
+      expect(ready).toBe(true);
+      expect(createAdapterForHardwareWalletType).toHaveBeenCalledWith(
+        HardwareWalletType.Trezor,
+        expect.any(Object),
+      );
+      expect(mockAdapter.connectMock).toHaveBeenCalled();
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalled();
     });
 
     it('verifies device when already connected', async () => {

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -15,7 +16,7 @@ const MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR = new Date(
 ).getTime();
 
 // TRX balance in SUN (1 TRX = 1,000,000 SUN)
-export const TRX_BALANCE = 6072392; // ~6.07 TRX
+export const TRX_BALANCE = 106072392; // ~106.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
 
@@ -872,6 +873,18 @@ export async function mockTronAssets(
     }));
 }
 
+export async function mockTronGetReward(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getReward'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { reward: 0 },
+    }));
+}
+
 export async function mockTronGetBlock(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
@@ -1195,6 +1208,150 @@ export async function mockBridgeGetTronQuoteEmpty(
     }));
 }
 
+export async function mockTronGetChainParameters(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl('/wallet/getchainparameters'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        chainParameter: [
+          { key: 'getMaintenanceTimeInterval', value: 21600000 },
+          { key: 'getAccountUpgradeCost', value: 9999000000 },
+          { key: 'getCreateNewAccountFeeInSystemContract', value: 1000000 },
+          { key: 'getCreateAccountFee', value: 100000 },
+          { key: 'getTransactionFee', value: 1000 },
+          { key: 'getAssetIssueFee', value: 1024000000 },
+          { key: 'getEnergyFee', value: 420 },
+          { key: 'getTotalEnergyLimit', value: 180000000000 },
+          { key: 'getAllowTvmTransferTrc10', value: 1 },
+          { key: 'getTotalEnergyCurrentLimit', value: 180000000000 },
+          { key: 'getAllowMultiSign', value: 1 },
+          { key: 'getAllowAdaptivEnergy', value: 1 },
+        ],
+      },
+    }));
+}
+
+export async function mockTronGetNextMaintenanceTime(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getnextmaintenancetime'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { num: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR },
+    }));
+}
+
+export async function mockTronTriggerConstantContract(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/triggerconstantcontract'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        result: { result: true },
+        energy_used: 1000,
+        energy_penalty: 0,
+        constant_result: [
+          '0000000000000000000000000000000000000000000000000000000000000001',
+        ],
+        transaction: {
+          ret: [{}],
+          visible: false,
+          txID: 'mock_trigger_constant_txid',
+          raw_data: {
+            contract: [],
+            ref_block_bytes: 'f733',
+            ref_block_hash: 'ff89d72ddc1ce1ea',
+            expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+            timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+          },
+          raw_data_hex: '',
+        },
+      },
+    }));
+}
+
+export async function mockTronGetContract(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getcontract'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {},
+    }));
+}
+
+/**
+ * Mocks the accounts API v2 supportedNetworks (**EVM only**).
+ *
+ * Tron balances in these E2E flows come from mocked Tron RPC
+ * (`mockTronGetAccount` and related mocks in this file), not Accounts API v5.
+ *
+ * @param mockServer
+ */
+export async function mockAccountsApiV2WithTron(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .always()
+    .thenJson(200, {
+      fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
+      partialSupport: { balances: [42220, 43114] },
+    });
+}
+
+/**
+ * Mocks the accounts API v5 multiaccount balances (**EVM only**).
+ *
+ * Seeds localhost ETH for login balance validation. Tron TRX/TRC20 balances
+ * come from Tron RPC mocks, not Accounts API v5.
+ *
+ * @param mockServer
+ * @param _mockZeroBalance - Unused; Tron zero/non-zero balances use RPC mocks.
+ */
+export async function mockAccountsApiV5WithTron(
+  mockServer: Mockttp,
+  _mockZeroBalance?: boolean,
+): Promise<MockedEndpoint> {
+  const balances = [
+    {
+      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+      assetId: 'eip155:1337/slip44:1',
+      balance: '25',
+    },
+    {
+      accountId: `eip155:1:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+      assetId: 'eip155:1/slip44:60',
+      balance: '25',
+    },
+  ];
+
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: balances.length,
+        unprocessedNetworks: [],
+        balances,
+      },
+    }));
+}
+
 export async function mockTronApis(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
@@ -1202,7 +1359,10 @@ export async function mockTronApis(
   return [
     await mockTokensV2SupportedNetworks(mockServer),
     await mockTokensV3Assets(mockServer),
+    await mockAccountsApiV2WithTron(mockServer),
+    await mockAccountsApiV5WithTron(mockServer, mockZeroBalance),
     await mockTronFeatureFlags(mockServer),
+    await mockTronGetReward(mockServer),
     await mockTronGetBlock(mockServer),
     await mockTronGetNowBlock(mockServer),
     await mockTronGetBlockByNum(mockServer),
@@ -1226,6 +1386,10 @@ export async function mockTronSwapApis(
     ...(await mockTronApis(mockServer, mockZeroBalance)),
     await mockBridgeGetTronTokens(mockServer),
     await mockBridgeGetTronQuote(mockServer),
+    await mockTronGetChainParameters(mockServer),
+    await mockTronGetNextMaintenanceTime(mockServer),
+    await mockTronTriggerConstantContract(mockServer),
+    await mockTronGetContract(mockServer),
   ];
 }
 
@@ -1237,5 +1401,16 @@ export async function mockTronSwapApisNoQuotes(
     ...(await mockTronApis(mockServer, mockZeroBalance)),
     await mockBridgeGetTronTokens(mockServer),
     await mockBridgeGetTronQuoteEmpty(mockServer),
+  ];
+}
+
+export async function mockTronSwapApisWithoutFeeEstimation(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint[]> {
+  return [
+    ...(await mockTronApis(mockServer, mockZeroBalance)),
+    await mockBridgeGetTronTokens(mockServer),
+    await mockBridgeGetTronQuote(mockServer),
   ];
 }

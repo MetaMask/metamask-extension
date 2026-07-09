@@ -12,9 +12,10 @@ describe('getArtifactLinks', () => {
       '42',
     );
 
-    expect(links.bundleSizeStats.url).toBe(
-      `${HOST}/bundle-size/bundle_size.json`,
+    expect(links.bundleSizeDebug.url).toBe(
+      `${HOST}/bundle-size/chrome.debug.json`,
     );
+    expect(links.bundleSizeStats.url).toBe(`${HOST}/bundle-size/chrome.json`);
     expect(links.interactionStats.url).toBe(
       `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
     );
@@ -105,7 +106,7 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('storybook:');
   });
 
-  it('includes a bundle analyzer link', () => {
+  it('includes bundle size and bundle analyzer links', () => {
     const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
@@ -114,6 +115,9 @@ describe('buildArtifactsBody', () => {
       buildsFromSha: 'abc1234',
     });
 
+    expect(result).toContain(
+      `<a href="${HOST}/bundle-size/chrome.debug.json">Bundle Size Stats</a>`,
+    );
     expect(result).toContain(
       `<a href="${HOST}/build-dist-webpack/bundle-analyzer/report.html">Bundle Analyzer</a>`,
     );

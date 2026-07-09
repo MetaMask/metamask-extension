@@ -3,6 +3,7 @@ import { Wallet } from '@metamask/wallet';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
+  MessengerClientApi,
   MessengerClientByName,
   MessengerClientInitFunction,
   MessengerClientInitRequest,
@@ -21,7 +22,7 @@ export type TaggedApiMethod = ((...args: unknown[]) => unknown) & {
 /** Result of initializing messenger clients. */
 export type InitMessengerClientsResult = {
   /** All API methods exposed by the messenger clients. */
-  messengerClientApi: Record<string, MessengerClient>;
+  messengerClientApi: Record<string, MessengerClientApi>;
 
   /** All controllers that provided a memory state key. */
   controllerMemState: Record<string, MessengerClient>;
@@ -65,7 +66,7 @@ export type MessengerClientsToInitialize =
   | 'GeolocationController'
   | 'PerpsController'
   | 'PPOMController'
-  | 'TransactionController'
+  | 'QrSyncController'
   | 'TransactionPayController'
   | 'UserStorageController';
 
@@ -108,7 +109,9 @@ export function initMessengerClients({
 }): InitMessengerClientsResult {
   log('Initializing messenger clients', Object.keys(initFunctions).length);
 
-  const partialMessengerClientsByName: Partial<MessengerClientByName> = {};
+  const partialMessengerClientsByName: Partial<
+    Record<MessengerClientName, MessengerClient>
+  > = {};
 
   const controllerPersistedState: Record<string, MessengerClient> = {};
   const controllerMemState: Record<string, MessengerClient> = {};
@@ -176,7 +179,6 @@ export function initMessengerClients({
         ? undefined
         : (memStateKeyRaw ?? messengerClientName);
 
-    // @ts-expect-error: Union too complex.
     partialMessengerClientsByName[messengerClientName] = messengerClient;
 
     messengerClientApi = {

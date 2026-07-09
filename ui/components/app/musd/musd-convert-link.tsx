@@ -5,13 +5,7 @@
  * Shows "Get X% bonus" text and navigates to the mUSD conversion flow.
  */
 
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
@@ -24,7 +18,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversion } from '../../../hooks/musd';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
@@ -68,15 +62,15 @@ export type MusdConvertLinkProps = {
  * @param options0.ctaText
  * @param options0.entryPoint
  */
-export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
+export const MusdConvertLink = ({
   tokenAddress,
   chainId,
   tokenSymbol,
   ctaText,
   entryPoint = 'token_list',
-}) => {
+}: MusdConvertLinkProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { startConversionFlow, educationSeen } = useMusdConversion();
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -114,20 +108,24 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
       const eventLocation =
         musdConversionFlowEntryPointToCtaEventLocation(entryPoint);
 
-      trackEvent({
-        event: MetaMetricsEventName.MusdConversionCtaClicked,
-        category: MetaMetricsEventCategory.Tokens,
-        properties: createMusdCtaClickedEventProperties({
-          location: eventLocation,
-          redirectsTo,
-          ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
-          ctaText: displayText,
-          chainId,
-          chainName: networkName,
-          assetSymbol: tokenSymbol,
-          clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
-        }),
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.MusdConversionCtaClicked)
+          .addCategory(MetaMetricsEventCategory.Tokens)
+          .addProperties(
+            createMusdCtaClickedEventProperties({
+              location: eventLocation,
+              redirectsTo,
+              ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
+              ctaText: displayText,
+              chainId,
+              chainName: networkName,
+              assetSymbol: tokenSymbol,
+              clickTarget:
+                MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
+            }),
+          )
+          .build(),
+      );
 
       try {
         await startConversionFlow({
@@ -152,6 +150,7 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
       entryPoint,
       educationSeen,
       networkName,
+      createEventBuilder,
       trackEvent,
       startConversionFlow,
     ],

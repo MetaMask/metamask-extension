@@ -33,25 +33,27 @@ import {
 } from '@metamask/utils';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
+import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
 import { ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   TokenFiatDisplayInfo,
   type TokenWithFiatAmount,
 } from '../../../components/app/assets/types';
-import { ActivityList } from '../../../components/multichain/activity-v2/activity-list';
+import { ActivityList as ActivityListV2 } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { ActivityList as ActivityListV3 } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -60,8 +62,9 @@ import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsSwapsChain,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
@@ -69,6 +72,7 @@ import {
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
+import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
 import {
   getImageForChainId,
   getMultichainIsTestnet,
@@ -92,6 +96,7 @@ import {
 } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
+import { processAssetParams } from '../util';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -111,8 +116,8 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
   // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
@@ -154,13 +159,20 @@ const AssetPage = ({
 
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
   const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
+  const isActivityListRedesignEnabled = useSelector(
+    getIsActivityListRedesignEnabled,
+  );
 
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
 
   let address =
     (() => {
@@ -185,6 +197,7 @@ const AssetPage = ({
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
       item.assetId.toLowerCase() === address.toLowerCase() ||
+      isArcUsdcForBridge(chainId, address, item) ||
       // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
       (!address && !isEvm && item.isNative),
   );
@@ -202,9 +215,9 @@ const AssetPage = ({
       getPortfolioUrl(
         '',
         'asset_page',
-        metaMetricsId,
-        isMetaMetricsEnabled,
-        isMarketingEnabled,
+        analyticsId,
+        isMetaMetricsEnabled === true,
+        isMarketingEnabled === true,
         selectedAccount.address,
         'spending-caps',
       ),
@@ -212,13 +225,16 @@ const AssetPage = ({
       selectedAccount.address,
       isMarketingEnabled,
       isMetaMetricsEnabled,
-      metaMetricsId,
+      analyticsId,
     ],
   );
 
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const caipAssetId = isEvm
+    ? toAssetId(address, caipChainId)
+    : (decodedAsset as CaipAssetType);
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
@@ -307,7 +323,7 @@ const AssetPage = ({
         <Box flexDirection={BoxFlexDirection.Row}>
           <ButtonIcon
             color={IconColor.IconDefault}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back') as string}
             iconName={IconName.ArrowLeft}
             onClick={() => transitionBack(() => navigate(-1))}
@@ -339,7 +355,6 @@ const AssetPage = ({
             {...{
               account: selectedAccount,
               trackingLocation: 'asset-page',
-              isBuyableChain,
               isSigningEnabled,
               isSwapsChain,
               isBridgeChain,
@@ -571,18 +586,26 @@ const AssetPage = ({
             >
               {t('yourActivity')}
             </Text>
-            <ActivityList
-              filter={{
-                chainId: caipChainId,
-                assetScope:
-                  type === AssetType.native
-                    ? {
-                        kind: 'native',
-                        ...(!isEvm && { caipAssetType: address }),
-                      }
-                    : { kind: 'token', tokenAddress: address },
-              }}
-            />
+            {isActivityListRedesignEnabled && caipAssetId ? (
+              <ActivityListV3
+                filter={{
+                  assetId: caipAssetId,
+                }}
+              />
+            ) : (
+              <ActivityListV2
+                filter={{
+                  chainId: caipChainId,
+                  assetScope:
+                    type === AssetType.native
+                      ? {
+                          kind: 'native',
+                          ...(!isEvm && { caipAssetType: address }),
+                        }
+                      : { kind: 'token', tokenAddress: address },
+                }}
+              />
+            )}
           </Box>
         </Box>
       </Box>

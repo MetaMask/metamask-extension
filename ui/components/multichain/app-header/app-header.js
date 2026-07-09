@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { matchPath } from 'react-router-dom';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -25,9 +25,7 @@ import { Box } from '../../component-library';
 import { getUnapprovedTransactions } from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -41,7 +39,7 @@ import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 import { AppHeaderLockedContent } from './app-header-locked-content';
 
 export const AppHeader = ({ location }) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
@@ -95,15 +93,16 @@ export const AppHeader = ({ location }) => {
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
     dispatch(toggleNetworkMenu());
-    trackEvent({
-      event: MetaMetricsEventName.NavNetworkMenuOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'App header',
-        chain_id: chainId,
-      },
-    });
-  }, [chainId, dispatch, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavNetworkMenuOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'App header',
+          chain_id: chainId,
+        })
+        .build(),
+    );
+  }, [chainId, dispatch, trackEvent, createEventBuilder]);
 
   const unlockedStyling = {
     alignItems: AlignItems.center,

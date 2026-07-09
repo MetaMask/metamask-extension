@@ -22,6 +22,7 @@ export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
   'MetaMetricsController',
+  'AnalyticsController',
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
@@ -690,14 +691,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    *
    * @param options - An object containing options for the retrieval.
    * @param options.validateVault - A flag indicating whether to validate the vault
+   * @param options.reportErrors - Whether read errors should be reported to Sentry.
    * @returns The current state of the local store or null if the store is empty.
    * @throws Error if the vault is missing and a backup vault is found in IndexedDB.
    * @throws Error if the local store is not open.
    */
   async get({
     validateVault,
+    reportErrors = true,
   }: {
     validateVault: boolean;
+    reportErrors?: boolean;
   }): Promise<MetaMaskStorageStructure | undefined> {
     await this.open();
 
@@ -720,13 +724,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             'Error retrieving the current state of the local store:',
             localStoreError,
           );
-          // Custom fingerprint prevents Sentry's deduplication from dropping
-          // this event when other persistence errors with the same underlying
-          // error message (e.g., "An unexpected error occurred") are reported.
-          captureException(localStoreError, {
-            tags: { 'persistence.error': 'get-failed' },
-            fingerprint: ['persistence-error', 'get-failed'],
-          });
+          if (reportErrors) {
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(localStoreError, {
+              tags: { 'persistence.error': 'get-failed' },
+              fingerprint: ['persistence-error', 'get-failed'],
+            });
+          }
         }
 
         if (validateVault) {
@@ -847,18 +853,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     if (!backupDb) {
       return undefined;
     }
-    const [
-      KeyringController,
-      AppMetadataController,
-      MetaMetricsController,
-      meta,
-    ] = await backupDb.get([...backedUpStateKeys, `meta`]);
-    return {
-      KeyringController,
-      AppMetadataController,
-      MetaMetricsController,
-      meta: meta as MetaData | undefined,
-    };
+    const values = await backupDb.get([...backedUpStateKeys, `meta`]);
+    const backup: Backup = {};
+    backedUpStateKeys.forEach((key, index) => {
+      backup[key] = values[index];
+    });
+    backup.meta = values[backedUpStateKeys.length] as MetaData | undefined;
+    return backup;
   }
 
   /**

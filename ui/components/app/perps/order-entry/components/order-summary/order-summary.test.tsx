@@ -161,6 +161,24 @@ describe('OrderSummary', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('announces the exceed state to screen readers when slippage exceeds the cap', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+          showSlippageRow
+          slippageDisplay="Est: 0.14% / Max: 0.1%"
+          exceedsMaxSlippage
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-order-slippage-exceeds-indicator'),
+      ).toHaveTextContent(messages.perpsSlippageExceeded.message);
+    });
+
     it('does not show discounted fee when estimatedFees is null even if a discount is active', () => {
       renderWithProvider(
         <OrderSummary
@@ -179,6 +197,38 @@ describe('OrderSummary', () => {
       expect(
         screen.getByTestId('perps-order-summary-estimated-fees'),
       ).toHaveTextContent('-');
+    });
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks liquidation price and margin when privacy mode is enabled', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired="$1,000.00"
+          estimatedFees={0.5}
+          liquidationPrice="$42,500.00"
+        />,
+        privacyStore,
+      );
+
+      expect(screen.queryByText('$1,000.00')).not.toBeInTheDocument();
+      expect(screen.queryByText('$42,500.00')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-summary-margin-required'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-order-summary-liquidation-price'),
+      ).toHaveTextContent('••••••');
     });
   });
 });

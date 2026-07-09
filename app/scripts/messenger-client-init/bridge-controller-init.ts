@@ -3,9 +3,11 @@ import {
   BridgeController,
   BridgeControllerMessenger,
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { TransactionController } from '@metamask/transaction-controller';
+import type { Json } from '@metamask/utils';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import {
   ASSETS_UNIFY_STATE_FLAG,
@@ -18,6 +20,11 @@ import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
+import {
+  getActiveTabDomainAllowlist,
+  getActiveTabDomainForMetrics,
+} from '../../../shared/lib/active-tab-domain-metrics';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
 
@@ -26,7 +33,6 @@ import { BridgeControllerInitMessenger } from './messengers';
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.initMessenger - The messenger to use for initialization.
  * @param request.getMessengerClient
  * @returns The initialized controller.
  */
@@ -34,7 +40,7 @@ export const BridgeControllerInit: MessengerClientInitFunction<
   BridgeController,
   BridgeControllerMessenger,
   BridgeControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, getMessengerClient }) => {
+> = ({ controllerMessenger, getMessengerClient }) => {
   const transactionController = getMessengerClient(
     'TransactionController',
   ) as TransactionController;
@@ -94,15 +100,53 @@ export const BridgeControllerInit: MessengerClientInitFunction<
 
     trackMetaMetricsFn: (event, properties) => {
       const actionId = (Date.now() + Math.random()).toString();
-      initMessenger.call('MetaMetricsController:trackEvent', {
-        category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
-        event,
-        properties: {
-          ...(properties ?? {}),
-          environmentType: getEnvironmentType(),
-          actionId,
-        },
-      });
+
+      let activeTabDomain: string | undefined;
+      try {
+        // Track active tab domain for Submitted and ButtonClicked events
+        if (
+          event === UnifiedSwapBridgeEventName.Submitted ||
+          event === UnifiedSwapBridgeEventName.ButtonClicked
+        ) {
+          const appStateController = getMessengerClient('AppStateController');
+          const remoteFeatureFlagController = getMessengerClient(
+            'RemoteFeatureFlagController',
+          );
+          const activeTabOrigin =
+            appStateController?.state?.appActiveTab?.origin;
+          const allowlist = getActiveTabDomainAllowlist(
+            remoteFeatureFlagController?.state,
+          );
+          activeTabDomain = getActiveTabDomainForMetrics(
+            activeTabOrigin,
+            allowlist,
+          );
+        }
+      } catch {
+        // Intentionally empty
+      }
+
+      const propertiesObj = (properties ?? {}) as Record<string, Json> & {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type?: string;
+      };
+
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY)
+          .addProperties({
+            ...propertiesObj,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
+            actionId,
+          })
+          .build({
+            // UI events (e.g. ButtonClicked) pass environment_type explicitly;
+            // background events fall back to getEnvironmentType() → 'background'.
+            environmentType:
+              propertiesObj.environment_type ?? getEnvironmentType(),
+          }),
+      );
     },
 
     // @ts-expect-error: `trace` function type does not match the expected type.

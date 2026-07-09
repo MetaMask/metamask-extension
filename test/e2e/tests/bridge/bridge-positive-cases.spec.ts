@@ -22,7 +22,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
@@ -41,6 +40,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
+          expectedActivityAmount: '+0.01567',
         });
 
         await bridgeTransaction({
@@ -54,6 +54,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 3,
           expectedDestAmount: '1,642',
+          expectedActivityAmount: '+1,642.0043',
         });
         await bridgeTransaction({
           driver,
@@ -66,6 +67,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 4,
           expectedDestAmount: '0.991',
+          expectedActivityAmount: '+0.9912',
         });
 
         await homePage.goToTokensTab();
@@ -83,6 +85,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 6,
           expectedDestAmount: '9.9',
+          expectedActivityAmount: '+9.8996',
         });
       },
     );
@@ -93,7 +96,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -124,7 +126,7 @@ describe('Bridge tests', function (this: Suite) {
         // check if the Linea network is selected
         await networkManager.openNetworkManager();
         await driver.delay(veryLargeDelayMs);
-
+        await networkManager.selectTab('Popular');
         await networkManager.checkAllPopularNetworksIsSelected();
       },
     );
@@ -135,7 +137,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -156,6 +157,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 2,
           expectedDestAmount: '9.9',
+          expectedActivityAmount: '+9.8996',
         });
         const finalQuoteRequestTimestamp = Date.now();
         const bridgePage = new BridgeQuotePage(driver);
@@ -178,7 +180,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -210,7 +211,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -245,7 +245,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -283,7 +282,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isProtectedByEnforcedSimulations } from '../../../pages/confirmations/utils/confirm';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getAccountName,
   getAddressBook,
@@ -62,5 +63,22 @@ const ConnectedTransactionListItemDetails = connect(
 
 export default function TransactionListItemDetailsContainer(props) {
   const navigate = useNavigate();
-  return <ConnectedTransactionListItemDetails {...props} navigate={navigate} />;
+  const { trackEvent, createEventBuilder } = useAnalytics();
+
+  const trackLegacyEvent = (payload) => {
+    trackEvent(
+      createEventBuilder(payload.event)
+        .addCategory(payload.category)
+        .addProperties(payload.properties ?? {})
+        .build(),
+    );
+  };
+
+  return (
+    <ConnectedTransactionListItemDetails
+      {...props}
+      navigate={navigate}
+      trackEvent={trackLegacyEvent}
+    />
+  );
 }

@@ -1,5 +1,6 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
+  FeatureId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
@@ -38,7 +39,7 @@ jest.mock('react-redux', () => ({
 
 const resetInputFieldsSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
-const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
+const MOCK_ANALYTICS_ID = '0xtestMetaMetricsId';
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
 const renderUseBridging = (mockStoreState: object, pathname?: string) =>
@@ -64,28 +65,24 @@ describe('useBridging', () => {
         BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         'Home',
-        false,
         { token: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
       ],
       [
         BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         MetaMetricsSwapsEventSource.TokenView,
-        false,
         { token: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
       ],
       [
         BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
-        false,
         { token: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM) },
       ],
       [
         BRIDGE_PREPARE_PATH,
         { ...getNativeAssetForChainId(CHAIN_IDS.OPTIMISM), chainId: 123 },
         MetaMetricsSwapsEventSource.TokenView,
-        false,
       ],
       [
         BRIDGE_PREPARE_PATH,
@@ -94,7 +91,6 @@ describe('useBridging', () => {
           chainId: 243,
         },
         MetaMetricsSwapsEventSource.TokenView,
-        false,
       ],
       [
         BRIDGE_PREPARE_PATH,
@@ -110,7 +106,6 @@ describe('useBridging', () => {
           decimals: 18,
         },
         MetaMetricsSwapsEventSource.TokenView,
-        true,
         {
           token: {
             iconUrl: 'https://icon.url',
@@ -134,11 +129,13 @@ describe('useBridging', () => {
         expectedUrl: string,
         token: Record<string, unknown>,
         location: string,
-        isSwap: boolean,
         expectedState: { token: { chainId: string } | null } = { token: null },
       ) => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const setBridgeLocationSpy = jest
+          .spyOn(bridgeActions, 'setBridgeLocation')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
           .spyOn(bridgeActions, 'resetInputFields')
@@ -151,7 +148,7 @@ describe('useBridging', () => {
           createBridgeMockStore({
             metamaskStateOverrides: {
               useExternalServices: true,
-              metaMetricsId: MOCK_METAMETRICS_ID,
+              analyticsId: MOCK_ANALYTICS_ID,
               enabledNetworkMap: {
                 eip155: {
                   '1': true,
@@ -187,9 +184,9 @@ describe('useBridging', () => {
           }),
         );
 
-        result.current.openBridgeExperience(location, token, isSwap);
+        result.current.openBridgeExperience(location, token);
 
-        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
@@ -200,11 +197,24 @@ describe('useBridging', () => {
               token_symbol_source: token?.symbol ?? 'ETH',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: '',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
-          [UnifiedSwapBridgeEventName.PageViewed, {}],
+          [
+            UnifiedSwapBridgeEventName.PageViewed,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
+            },
+          ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+        expect(setBridgeLocationSpy).toHaveBeenCalledWith(location);
 
         expect(mockUseNavigate).toHaveBeenCalledWith(
           { pathname: expectedUrl, search: '' },
@@ -224,6 +234,114 @@ describe('useBridging', () => {
         expect(openTabSpy).not.toHaveBeenCalled();
       },
     );
+
+    it('sets the to query param when destTokenAssetId is provided', async () => {
+      jest
+        .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+        .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+      jest
+        .spyOn(bridgeActions, 'resetInputFields')
+        .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+      jest
+        .spyOn(bridgeActions, 'resetBridgeController')
+        .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+
+      const sourceToken = {
+        symbol: 'ETH',
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: CHAIN_IDS.MAINNET,
+      };
+      const destTokenAssetId =
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+
+      const { result } = renderUseBridging(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            useExternalServices: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            enabledNetworkMap: {
+              eip155: { '1': true, '10': true, '56': true },
+            },
+          },
+          featureFlagOverrides: {
+            bridgeConfig: {
+              refreshRate: 5000,
+              minimumVersion: '0.0.0',
+              maxRefreshCount: 5,
+              chainRanking: [
+                { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+                { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+                { chainId: formatChainIdToCaip(CHAIN_IDS.BSC) },
+              ],
+            },
+          },
+        }),
+      );
+
+      result.current.openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        sourceToken,
+        destTokenAssetId,
+      );
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: expect.stringContaining(
+            `to=${encodeURIComponent(destTokenAssetId)}`,
+          ),
+        }),
+        expect.anything(),
+      );
+    });
+
+    it('does not set the to query param when destTokenAssetId is undefined', async () => {
+      jest
+        .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+        .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+      jest
+        .spyOn(bridgeActions, 'resetInputFields')
+        .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+      jest
+        .spyOn(bridgeActions, 'resetBridgeController')
+        .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+
+      const sourceToken = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
+
+      const { result } = renderUseBridging(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            useExternalServices: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            enabledNetworkMap: {
+              eip155: { '1': true, '10': true, '56': true },
+            },
+          },
+          featureFlagOverrides: {
+            bridgeConfig: {
+              refreshRate: 5000,
+              minimumVersion: '0.0.0',
+              maxRefreshCount: 5,
+              chainRanking: [
+                { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+                { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+                { chainId: formatChainIdToCaip(CHAIN_IDS.BSC) },
+              ],
+            },
+          },
+        }),
+      );
+
+      result.current.openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        sourceToken,
+        undefined,
+      );
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({ search: '' }),
+        expect.anything(),
+      );
+    });
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
@@ -362,6 +480,9 @@ describe('useBridging', () => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const setBridgeLocationSpy = jest
+          .spyOn(bridgeActions, 'setBridgeLocation')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
           .spyOn(bridgeActions, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -378,7 +499,7 @@ describe('useBridging', () => {
                 { chainId: CHAIN_IDS.BSC },
                 { chainId: CHAIN_IDS.OPTIMISM },
               ),
-              metaMetricsId: MOCK_METAMETRICS_ID,
+              analyticsId: MOCK_ANALYTICS_ID,
               enabledNetworkMap: {
                 eip155: {
                   '10': true,
@@ -413,10 +534,10 @@ describe('useBridging', () => {
           }),
         );
 
-        result.current.openBridgeExperience(location, token, true);
+        result.current.openBridgeExperience(location, token);
 
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
-        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
@@ -426,11 +547,24 @@ describe('useBridging', () => {
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token?.symbol ?? 'ETH',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
-          [UnifiedSwapBridgeEventName.PageViewed, {}],
+          [
+            UnifiedSwapBridgeEventName.PageViewed,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
+            },
+          ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+        expect(setBridgeLocationSpy).toHaveBeenCalledWith(location);
 
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           replace: false,

@@ -53,6 +53,12 @@ export const PERPS_CONSTANTS = {
 } as const;
 
 /**
+ * Collateral asset used to settle perps positions. Shown in market pair labels
+ * such as "BTC-USDC perp".
+ */
+export const PERPS_COLLATERAL_SYMBOL = 'USDC';
+
+/**
  * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).
  * Partial closes below this amount fail with ORDER_SIZE_MIN; full closes omit this check.
  * Duplicates TRADING_DEFAULTS.amount in @metamask/perps-controller until a shared export exists.
@@ -80,7 +86,8 @@ export const MARKET_SORTING_CONFIG = {
 /**
  * HIP-3 market configuration
  *
- * HIP-3 markets are non-crypto assets (stocks, commodities, forex) available
+ * HIP-3 markets are non-crypto assets (stock, pre-IPO, index, ETF,
+ * commodity, forex) available
  * through partner DEX integrations. Each source identifier corresponds to a
  * specific DEX provider.
  *
@@ -106,91 +113,3 @@ export const HIP3_MARKET_CONFIG = {
     return Boolean(marketSource && allowedSources.has(marketSource));
   },
 } as const;
-
-/**
- * HIP-3 market type for asset classification
- */
-export type Hip3MarketType = 'equity' | 'commodity' | 'forex';
-
-/**
- * HIP-3 asset market type classifications (PRODUCTION DEFAULT)
- *
- * This is the production default configuration, can be overridden via feature flag
- * (remoteFeatureFlags.perpsAssetMarketTypes) for dynamic control.
- *
- * Maps asset symbols (e.g., "xyz:TSLA") to their market type for badge display.
- *
- * Market type determines the badge shown in the UI:
- * - 'equity': STOCK badge (stocks like TSLA, NVDA)
- * - 'commodity': COMMODITY badge (commodities like GOLD)
- * - 'forex': FOREX badge (forex pairs)
- * - undefined: No badge for crypto or unmapped assets
- *
- * Format: 'dex:SYMBOL' → MarketType
- * This allows flexible per-asset classification.
- * Assets not listed here will have no market type (undefined).
- */
-export const HIP3_ASSET_MARKET_TYPES: Record<string, Hip3MarketType> = {
-  // xyz DEX - Equities
-  'xyz:TSLA': 'equity',
-  'xyz:NVDA': 'equity',
-  'xyz:XYZ100': 'equity',
-  'xyz:INTC': 'equity',
-  'xyz:MU': 'equity',
-  'xyz:CRCL': 'equity',
-  'xyz:HOOD': 'equity',
-  'xyz:SNDK': 'equity',
-  'xyz:GOOGL': 'equity',
-  'xyz:COIN': 'equity',
-  'xyz:ORCL': 'equity',
-  'xyz:AMZN': 'equity',
-  'xyz:PLTR': 'equity',
-  'xyz:AAPL': 'equity',
-  'xyz:META': 'equity',
-  'xyz:AMD': 'equity',
-  'xyz:MSFT': 'equity',
-  'xyz:BABA': 'equity',
-  'xyz:RIVN': 'equity',
-  'xyz:NFLX': 'equity',
-  'xyz:COST': 'equity',
-  'xyz:LLY': 'equity',
-  'xyz:TSM': 'equity',
-  'xyz:SKHX': 'equity',
-  'xyz:MSTR': 'equity',
-  'xyz:CRWV': 'equity',
-  'xyz:SMSN': 'equity',
-
-  // xyz DEX - Commodities
-  'xyz:GOLD': 'commodity',
-  'xyz:SILVER': 'commodity',
-  'xyz:CL': 'commodity',
-  'xyz:COPPER': 'commodity',
-  'xyz:ALUMINIUM': 'commodity',
-  'xyz:URANIUM': 'commodity',
-  'xyz:USAR': 'commodity',
-  'xyz:NATGAS': 'commodity',
-  'xyz:PLATINUM': 'commodity',
-
-  // xyz DEX - Forex
-  'xyz:EUR': 'forex',
-  'xyz:JPY': 'forex',
-} as const;
-
-/**
- * Get the market type for a given asset symbol.
- *
- * Looks up the symbol in HIP3_ASSET_MARKET_TYPES mapping.
- * Falls back to the market's own marketType property if not found in the mapping.
- *
- * @param symbol - The asset symbol (e.g., 'xyz:TSLA')
- * @param fallbackMarketType - Optional fallback from the market data
- * @returns The market type or undefined
- */
-export const getHip3MarketType = (
-  symbol: string,
-  fallbackMarketType?: string,
-): Hip3MarketType | undefined => {
-  return (
-    HIP3_ASSET_MARKET_TYPES[symbol] ?? (fallbackMarketType as Hip3MarketType)
-  );
-};

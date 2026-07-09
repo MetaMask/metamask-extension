@@ -5,7 +5,7 @@ import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =
@@ -42,8 +42,9 @@ export function withTransactionEnvelopeTypeFixtures(
       fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
-          metaMetricsId: MOCK_META_METRICS_ID,
-          participateInMetaMetrics: true,
+          analyticsId: MOCK_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         })
         .build(),
       localNodeOptions:
@@ -52,6 +53,11 @@ export function withTransactionEnvelopeTypeFixtures(
           : {},
       ...(smartContract && { smartContract }),
       testSpecificMock: combinedMocks,
+      manifestFlags: {
+        remoteFeatureFlags: {
+          extensionUxTokenManagementFilter: true,
+        },
+      },
       title,
     },
     testFunction,
@@ -74,8 +80,9 @@ export function withSignatureFixtures(
       fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
-          metaMetricsId: MOCK_META_METRICS_ID,
-          participateInMetaMetrics: true,
+          analyticsId: MOCK_ANALYTICS_ID,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         })
         .build(),
       testSpecificMock: mocks,

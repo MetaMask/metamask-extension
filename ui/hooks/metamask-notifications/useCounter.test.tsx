@@ -17,7 +17,6 @@ const mockStore = configureStore(middlewares);
 const mockState = {
   metamask: {
     isMetamaskNotificationsEnabled: true,
-    isFeatureAnnouncementsEnabled: true,
     metamaskNotificationsList: [
       {
         type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
@@ -80,46 +79,12 @@ describe('useUnreadNotificationsCounter', () => {
     });
     expect(result.current.notificationsUnreadCount).toBe(2);
   });
-
-  it('should return zero when metamask notifications are disabled', () => {
-    const disabledState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        isMetamaskNotificationsEnabled: false,
-        isFeatureAnnouncementsEnabled: false,
-      },
-    };
-    const { result } = renderHook(() => useUnreadNotificationsCounter(), {
-      wrapper: ({ children }) => (
-        <Provider store={mockStore(disabledState)}>{children}</Provider>
-      ),
-    });
-    expect(result.current.notificationsUnreadCount).toBe(0);
-  });
 });
 
 describe('useReadNotificationsCounter', () => {
   it('should return the correct read notifications count', () => {
     const { result } = renderHook(() => useReadNotificationsCounter(), {
       wrapper,
-    });
-    expect(result.current.notificationsReadCount).toBe(0);
-  });
-
-  it('should return zero when metamask notifications are disabled', () => {
-    const disabledState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        isMetamaskNotificationsEnabled: false,
-        isFeatureAnnouncementsEnabled: false,
-      },
-    };
-    const { result } = renderHook(() => useReadNotificationsCounter(), {
-      wrapper: ({ children }) => (
-        <Provider store={mockStore(disabledState)}>{children}</Provider>
-      ),
     });
     expect(result.current.notificationsReadCount).toBe(0);
   });

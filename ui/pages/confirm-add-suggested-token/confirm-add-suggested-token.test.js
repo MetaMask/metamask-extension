@@ -15,6 +15,20 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import ConfirmAddSuggestedToken from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -133,7 +147,7 @@ const renderComponent = (tokens = []) => {
       mostRecentOverviewPage: '/',
     },
   });
-  return renderWithProvider(<ConfirmAddSuggestedToken />, store);
+  return { ...renderWithProvider(<ConfirmAddSuggestedToken />, store), store };
 };
 
 describe('ConfirmAddSuggestedToken Component', () => {
@@ -252,5 +266,22 @@ describe('ConfirmAddSuggestedToken Component', () => {
         screen.getByText(messages.reusedTokenNameWarning.message),
       ).toBeInTheDocument();
     });
+  });
+
+  it('navigates to the overview page when suggested tokens are cleared after mount', () => {
+    const { store } = renderComponent();
+
+    mockNavigate.mockClear();
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          pendingApprovals: {},
+        },
+      });
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

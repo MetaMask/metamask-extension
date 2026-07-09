@@ -25,6 +25,19 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 describe('Manage Shield Plan Page', () => {
   const STATE_MOCK = {
     ...mockState,

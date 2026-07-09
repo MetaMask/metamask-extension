@@ -3,19 +3,20 @@ import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
-import { Skeleton } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  Skeleton,
+} from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
   selectBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
-import {
-  AlignItems,
-  Display,
-  FlexWrap,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../../component-library';
+import { TextVariant } from '../../../../helpers/constants/design-system';
+import { SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
@@ -40,13 +41,13 @@ export type AccountGroupBalanceProps = {
   chainId: CaipChainId | Hex;
 };
 
-export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
+export const AccountGroupBalance = ({
   classPrefix,
   balanceIsCached,
   handleSensitiveToggle,
   balance,
   chainId,
-}) => {
+}: AccountGroupBalanceProps) => {
   const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
@@ -160,13 +161,17 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
       data-testid="account-group-balance-skeleton"
     >
       <Box
-        className={classnames(`${classPrefix}-overview__primary-balance`, {
-          [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
-        })}
+        className={classnames(
+          'flex',
+          `${classPrefix}-overview__primary-balance`,
+          {
+            [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
+          },
+        )}
         data-testid={`${classPrefix}-overview__primary-currency`}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        flexWrap={FlexWrap.Wrap}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        flexWrap={BoxFlexWrap.Wrap}
       >
         <SensitiveText
           ellipsis
