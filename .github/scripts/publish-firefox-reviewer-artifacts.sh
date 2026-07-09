@@ -21,7 +21,7 @@ set -euo pipefail
 # Pin firefox-bundle-script tooling (prepare_release.sh + scripts). Bump via PR
 # when tooling changes; merge MetaMask/firefox-bundle-script before release use.
 # INFRA-3753: includes BUNDLE_SH_GIT_REF / per-version tag support.
-FIREFOX_BUNDLE_SCRIPT_REF="a5a5b047f0eabd0f08a7a8a26b94a19c8ede6b57"
+FIREFOX_BUNDLE_SCRIPT_REF="4bc41d91e1a9c9ccf39ea4a9338bee39db71790e"
 
 MODE="${1:-}"
 if [[ "${MODE}" != "package" && "${MODE}" != "upload" ]]; then
