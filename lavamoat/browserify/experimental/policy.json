@@ -3032,6 +3032,7 @@
       "packages": {
         "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": true,
         "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": true,
+        "@metamask/perps-controller>@nktkas/hyperliquid>decimal.js": true,
         "@metamask/perps-controller>@nktkas/hyperliquid>valibot": true
       }
     },
@@ -7041,6 +7042,12 @@
         "atob": true,
         "btoa": true,
         "navigator": true
+      }
+    },
+    "@metamask/perps-controller>@nktkas/hyperliquid>decimal.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
       }
     }
   }
