@@ -5,7 +5,6 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import { EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
@@ -81,13 +80,6 @@ export const selectPendingApprovalsForNavigation = createSelector(
   pendingApprovalsSortedSelector,
   (sortedPendingApprovals) =>
     sortedPendingApprovals.filter((approval, index) => {
-      if (
-        approval.type ===
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
-      ) {
-        return false;
-      }
-
       if (
         isWatchNftApproval(approval) &&
         sortedPendingApprovals.findIndex(isWatchNftApproval) !== index

@@ -4,11 +4,9 @@ import {
   toastListenerCapabilities,
   useTransactionEventToasts,
 } from './useTransactionEventToasts';
-import { useResolveSmartTransactionApprovals } from './useResolveSmartTransactionApprovals';
 
 const TransactionEventToastListenerInner = () => {
   useTransactionEventToasts();
-  useResolveSmartTransactionApprovals();
   return null;
 };
 
