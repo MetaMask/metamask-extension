@@ -61,6 +61,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.38.2]
 
+### Fixed
+
+- Fixed a failed swap when smart account upgrade is required (#44291)
+
 ## [13.38.1]
 
 ### Changed
