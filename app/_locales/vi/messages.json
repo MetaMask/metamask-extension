@@ -4199,7 +4199,8 @@
     "message": "Tiếp tục"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Kết nối lại"
+    "message": "Kết nối lại",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Đảm bảo ví cứng của bạn được kết nối đúng cách qua USB"

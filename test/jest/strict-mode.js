@@ -1,10 +1,15 @@
 /**
- * Wraps `@testing-library/react` and `@testing-library/react-hooks` in
- * React.StrictMode so unit tests exercise the same double-mount cycle as dev.
- * App entry (`ui/pages/index.js`) skips its own StrictMode when `IN_TEST` is
- * set to avoid nesting two StrictMode boundaries in integration renders.
+ * Optional helpers for wrapping renders in React.StrictMode.
+ *
+ * Do not register this file in `jest.config.js` setupFilesAfterEnv — enabling
+ * StrictMode globally breaks many existing unit tests that assume a single mount
+ * (mock call counts, mockReturnValueOnce, memo reference checks, etc.).
+ *
+ * Import and use `renderInStrictMode` in tests that specifically verify
+ * StrictMode-safe behavior instead.
  */
 jest.mock('@testing-library/react', () => {
+  // eslint-disable-next-line n/global-require -- required inside jest.mock factory
   const React = require('react');
   const actual = jest.requireActual('@testing-library/react');
 
@@ -41,6 +46,7 @@ jest.mock('@testing-library/react', () => {
 });
 
 jest.mock('@testing-library/react-hooks', () => {
+  // eslint-disable-next-line n/global-require -- required inside jest.mock factory
   const React = require('react');
   const actual = jest.requireActual('@testing-library/react-hooks');
 

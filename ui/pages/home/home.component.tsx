@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import {
   Navigate,
   type NavigateFunction,
@@ -32,7 +32,8 @@ import { ShieldEntryModalContainer } from '../../components/app/shield-entry-mod
 import { RewardsModalContainer } from '../../components/app/rewards/onboarding/rewards-modal-container';
 import { Pna25ModalContainer } from '../../components/app/modals/pna25-modal/pna25-modal-container';
 import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { ConnectedStatusPopoverContainer } from './connected-status-popover-container';
 import { DeeplinkQrCodeModalContainer } from './deeplink-qrcode-modal-container';
 import { ShieldCohortContainer } from './shield-cohort-container';
@@ -93,7 +94,8 @@ export default function Home({
   lastVisitedPerpsRoute,
   clearLastVisitedPerpsRoute,
 }: HomeProps) {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
 
   // Close the notification popup when `notificationClosing` becomes true.
   useEffect(() => {
@@ -132,15 +134,16 @@ export default function Home({
   const onSupportLinkClick = useCallback(() => {
     if (isMain()) {
       trackEvent(
-        {
-          category: MetaMetricsEventCategory.Home,
-          event: MetaMetricsEventName.SupportLinkClicked,
-          properties: { url: SUPPORT_LINK },
-        },
-        { contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle] },
+        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+          .addCategory(MetaMetricsEventCategory.Home)
+          .addProperties({
+            url: SUPPORT_LINK,
+            [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
+          })
+          .build(),
       );
     }
-  }, [trackEvent]);
+  }, [createEventBuilder, segmentContext.page?.title, trackEvent]);
 
   if (forgottenPassword) {
     return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
