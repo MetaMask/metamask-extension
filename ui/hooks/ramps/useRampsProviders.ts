@@ -7,7 +7,10 @@ import {
   selectRampsOrdersForSelectedAccount,
   selectUserRegion,
 } from '../../selectors/rampsController';
-import { setRampsSelectedProvider } from '../../store/controller-actions/ramps-controller';
+import {
+  setRampsSelectedPaymentMethod,
+  setRampsSelectedProvider,
+} from '../../store/controller-actions/ramps-controller';
 import {
   completedOrdersFromRampsOrders,
   determinePreferredProvider,
@@ -42,6 +45,12 @@ export function useRampsProviders(options?: {
   const regionCode = userRegion?.regionCode ?? '';
   const queryClient = useQueryClient();
 
+  const setSelectedProvider = useCallback(
+    (provider: Provider | null, setOptions?: { autoSelected?: boolean }) =>
+      setRampsSelectedProvider(provider?.id ?? null, setOptions),
+    [],
+  );
+
   const prevRegionRef = useRef(regionCode);
   useEffect(() => {
     if (
@@ -49,13 +58,18 @@ export function useRampsProviders(options?: {
       regionCode &&
       prevRegionRef.current !== regionCode
     ) {
+      const previousRegion = prevRegionRef.current;
       prevRegionRef.current = regionCode;
       queryClient.invalidateQueries({
         queryKey: ['ramps'],
         refetchType: 'none',
       });
+      if (previousRegion) {
+        setSelectedProvider(null);
+        setRampsSelectedPaymentMethod(null);
+      }
     }
-  }, [enableSideEffects, regionCode, queryClient]);
+  }, [enableSideEffects, regionCode, queryClient, setSelectedProvider]);
 
   const providersQuery = useQuery({
     ...rampsQueries.providers.options({ regionCode }),
@@ -73,19 +87,20 @@ export function useRampsProviders(options?: {
     [controllerOrders],
   );
 
-  const setSelectedProvider = useCallback(
-    (provider: Provider | null, setOptions?: { autoSelected?: boolean }) =>
-      setRampsSelectedProvider(provider?.id ?? null, setOptions),
-    [],
-  );
-
   useEffect(() => {
+    if (!enableSideEffects || !providers?.length) {
+      return;
+    }
+
     if (
-      enableSideEffects &&
-      providers &&
-      providers.length > 0 &&
-      !selectedProvider
+      selectedProvider &&
+      !providers.some((provider) => provider.id === selectedProvider.id)
     ) {
+      setSelectedProvider(null);
+      return;
+    }
+
+    if (!selectedProvider) {
       const result = determinePreferredProvider(completedOrders, providers);
       if (result) {
         setSelectedProvider(result.provider, {

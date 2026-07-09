@@ -3,7 +3,7 @@
 exports[`useRampsProviders matches snapshot 1`] = `
 {
   "error": null,
-  "isLoading": true,
+  "isLoading": false,
   "providers": [],
   "selectedProvider": null,
   "setSelectedProvider": [Function],

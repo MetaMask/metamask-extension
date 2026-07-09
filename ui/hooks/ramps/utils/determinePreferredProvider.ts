@@ -4,7 +4,7 @@ import {
   RampsOrderStatus,
 } from '@metamask/ramps-controller';
 
-export interface CompletedOrderInfo {
+export type CompletedOrderInfo = {
   providerId: string;
   completedAt: number;
 }
@@ -23,7 +23,7 @@ export function completedOrdersFromRampsOrders(
     }, []);
 }
 
-export interface PreferredProviderResult {
+export type PreferredProviderResult = {
   provider: Provider;
   autoSelected: boolean;
 }
@@ -54,7 +54,7 @@ export function determinePreferredProvider(
     provider.id?.toLowerCase().includes('transak'),
   );
   if (transakProvider) {
-    return { provider: transakProvider, autoSelected: false };
+    return { provider: transakProvider, autoSelected: true };
   }
 
   return null;
