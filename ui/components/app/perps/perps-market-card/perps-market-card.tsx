@@ -11,6 +11,8 @@ import {
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import {
   formatSignedChangePercent,
@@ -43,7 +45,10 @@ export const PerpsMarketCard = ({
   onClick,
   'data-testid': testId,
 }: PerpsMarketCardProps) => {
-  const displaySymbol = getDisplayName(name || symbol);
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
+  const displaySymbol = getDisplayName(
+    showFullAssetNames ? name || symbol : symbol,
+  );
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);
   const changeColor = getChangeColor(displayChange24hPercent);
 
