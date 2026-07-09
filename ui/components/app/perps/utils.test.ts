@@ -18,6 +18,7 @@ import {
   getTransactionStatusColor,
   getTransactionAmountColor,
   getPnlDisplayColor,
+  getPrivacyAwareColor,
   parseVolume,
   hasVolume,
   formatRoePercent,
@@ -604,6 +605,32 @@ describe('Perps Utils', () => {
 
     it('returns TextDefault for zero PnL', () => {
       expect(getPnlDisplayColor(0)).toBe(TextColor.TextDefault);
+    });
+  });
+
+  describe('getPrivacyAwareColor', () => {
+    it('returns the given color when the value is not hidden', () => {
+      expect(getPrivacyAwareColor(TextColor.SuccessDefault, false)).toBe(
+        TextColor.SuccessDefault,
+      );
+      expect(getPrivacyAwareColor(TextColor.ErrorDefault, false)).toBe(
+        TextColor.ErrorDefault,
+      );
+    });
+
+    it('returns TextDefault when the value is hidden, regardless of the given color', () => {
+      expect(getPrivacyAwareColor(TextColor.SuccessDefault, true)).toBe(
+        TextColor.TextDefault,
+      );
+      expect(getPrivacyAwareColor(TextColor.ErrorDefault, true)).toBe(
+        TextColor.TextDefault,
+      );
+    });
+
+    it('treats an undefined isHidden as not hidden', () => {
+      expect(getPrivacyAwareColor(TextColor.SuccessDefault, undefined)).toBe(
+        TextColor.SuccessDefault,
+      );
     });
   });
 

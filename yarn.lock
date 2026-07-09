@@ -8385,9 +8385,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/wallet@npm:6.0.0"
+"@metamask/wallet@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/wallet@npm:7.0.0"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.4"
     "@metamask/address-book-controller": "npm:^7.1.2"
@@ -8397,13 +8397,14 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-controller": "npm:^27.1.0"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/storage-service": "npm:^1.0.2"
+    "@metamask/transaction-controller": "npm:^68.2.2"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/8e28ce2bb4df229202e1c17c80c163ad7df08f41302e2cdb3c7edacd9ad38e0863dbc297fabda22665a9978434029f39171e3cb2179829985538b3fb96957a14
+  checksum: 10/d7f0375c84406d1c4bc1dcf4f80d5a8b22aa231de2cb475dfaeeec47ffcafa41a9112b3c350763dda147d3e674dce450e84e2c6523c87618cf86015bb7128aab
   languageName: node
   linkType: hard
 
@@ -33084,12 +33085,12 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.5.2"
-    "@metamask/transaction-controller": "npm:^68.1.1"
+    "@metamask/transaction-controller": "npm:^68.2.2"
     "@metamask/transaction-pay-controller": "npm:^23.17.2"
     "@metamask/tron-wallet-snap": "npm:^1.29.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
-    "@metamask/wallet": "npm:^6.0.0"
+    "@metamask/wallet": "npm:^7.0.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"

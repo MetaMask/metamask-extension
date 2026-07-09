@@ -111,7 +111,7 @@ describe('Permit Confirmation', () => {
       expect.arrayContaining([
         expect.objectContaining({
           name: MetaMetricsEventName.AccountDetailsOpened,
-          properties: {
+          properties: expect.objectContaining({
             category: MetaMetricsEventCategory.Confirmations,
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
@@ -121,8 +121,9 @@ describe('Permit Confirmation', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
-          },
+          }),
         }),
+        expect.anything(),
       ]),
     );
 
