@@ -17,10 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import {
-  Popover,
-  PopoverPosition,
-} from '../../../../../component-library';
+import { Popover, PopoverPosition } from '../../../../../component-library';
 import { formatPerpsFeeRate } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';

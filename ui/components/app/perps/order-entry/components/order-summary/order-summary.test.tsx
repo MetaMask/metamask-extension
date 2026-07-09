@@ -23,7 +23,9 @@ function showTooltip(
   triggerContainerTestId: string,
   event: 'hover' | 'focus' = 'hover',
 ) {
-  const tooltipTrigger = screen.getByTestId(`${triggerContainerTestId}-trigger`);
+  const tooltipTrigger = screen.getByTestId(
+    `${triggerContainerTestId}-trigger`,
+  );
 
   if (event === 'focus') {
     fireEvent.focus(tooltipTrigger);
