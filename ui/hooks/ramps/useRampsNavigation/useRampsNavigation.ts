@@ -60,16 +60,20 @@ export default function useRampsNavigation() {
         dispatch(showModal({ name: 'RAMP_UNSUPPORTED' }));
         return;
       }
-      // 4. Providers/tokens fetched but empty (fail-open if not yet fetched).
-      const providersEmpty = !providers.isLoading && providers.data.length === 0;
-      const tokensFetchedEmpty =
-        !tokens.isLoading &&
-        tokens.data !== null &&
-        tokens.data.topTokens.length === 0 &&
-        tokens.data.allTokens.length === 0;
-      if (providersEmpty || tokensFetchedEmpty) {
-        dispatch(showModal({ name: 'RAMP_UNSUPPORTED' }));
-        return;
+      // 4. Providers/tokens fetched but empty. `tokens.data === null` means
+      // providers/tokens haven't been fetched yet (fetched together by the
+      // native flow), so fail open and skip this check entirely until then.
+      if (tokens.data !== null) {
+        const providersEmpty =
+          !providers.isLoading && providers.data.length === 0;
+        const tokensEmpty =
+          !tokens.isLoading &&
+          (tokens.data.topTokens?.length ?? 0) === 0 &&
+          (tokens.data.allTokens?.length ?? 0) === 0;
+        if (providersEmpty || tokensEmpty) {
+          dispatch(showModal({ name: 'RAMP_UNSUPPORTED' }));
+          return;
+        }
       }
 
       // 5. Proceed. Destination stays Portfolio until native pages (TRAM-3714+).

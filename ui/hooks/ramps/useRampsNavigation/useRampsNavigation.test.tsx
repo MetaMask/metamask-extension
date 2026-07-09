@@ -138,4 +138,18 @@ describe('useRampsNavigation goToBuy', () => {
     result.current.goToBuy('0x1');
     expect(openTab).toHaveBeenCalled();
   });
+
+  it('providers/tokens never fetched (default state) → fails open and proceeds', () => {
+    // RampsController's never-fetched default: providers.data === [] and
+    // tokens.data === null. This must NOT be treated as "fetched and empty".
+    const { result, getModalName } = run(
+      buildState({
+        providers: { data: [], selected: null, isLoading: false, error: null },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+    result.current.goToBuy('0x1');
+    expect(openTab).toHaveBeenCalled();
+    expect(getModalName()).toBeNull();
+  });
 });
