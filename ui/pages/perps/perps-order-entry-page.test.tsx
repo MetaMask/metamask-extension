@@ -1300,6 +1300,9 @@ describe('PerpsOrderEntryPage', () => {
             symbol: 'ETH',
             isBuy: true,
             orderType: 'market',
+            trackingData: expect.objectContaining({
+              hlFeeRate: 0.00145,
+            }),
           }),
         ],
       );
@@ -1436,6 +1439,7 @@ describe('PerpsOrderEntryPage', () => {
             trackingData: expect.objectContaining({
               totalFee: expect.any(Number),
               marketPrice: 3025.5,
+              hlFeeRate: 0.00145,
             }),
           }),
         ],
@@ -1670,6 +1674,9 @@ describe('PerpsOrderEntryPage', () => {
           expect.objectContaining({
             symbol: 'ETH',
             orderType: 'market',
+            trackingData: expect.objectContaining({
+              hlFeeRate: 0.00145,
+            }),
           }),
         ]),
       );

@@ -397,6 +397,7 @@ describe('ReversePositionModal', () => {
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
                 marketPrice: 2900,
+                hlFeeRate: 0.0001,
               }),
             }),
           ],
@@ -456,6 +457,7 @@ describe('ReversePositionModal', () => {
                 marketPrice: 2900,
                 vipTier: 2,
                 vipDiscount: 50,
+                hlFeeRate: 0.0001,
               }),
             }),
           ],
@@ -489,6 +491,7 @@ describe('ReversePositionModal', () => {
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
                 marketPrice: 45000,
+                hlFeeRate: 0.0001,
               }),
             }),
           ],
@@ -711,6 +714,7 @@ describe('ReversePositionModal', () => {
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
                 marketPrice: expect.any(Number),
+                hlFeeRate: 0.0001,
               }),
             }),
           ],

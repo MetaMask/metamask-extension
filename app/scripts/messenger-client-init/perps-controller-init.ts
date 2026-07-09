@@ -51,6 +51,9 @@ export const PerpsControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const storageNamespace = 'PerpsController';
   let isDisconnecting = false;
+  // Ref so metrics can close over the controller after construction
+  // (trackPerpsEvent runs only after init; infrastructure is created first).
+  const messengerClientRef: { current?: PerpsController } = {};
   const infrastructure = createPerpsInfrastructure({
     getStorageItem: (key: string) =>
       controllerMessenger.call(
@@ -78,6 +81,10 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         caipAccountId,
         baseFeeBips,
       ),
+    mergeAttributionContext: (properties) =>
+      messengerClientRef.current
+        ? messengerClientRef.current.mergeAttributionContext(properties)
+        : (properties ?? {}),
   });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
@@ -108,6 +115,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });
+  messengerClientRef.current = messengerClient;
 
   const api = getApi(
     messengerClient,

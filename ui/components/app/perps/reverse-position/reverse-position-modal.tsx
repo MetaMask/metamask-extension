@@ -167,6 +167,7 @@ export const ReversePositionModal = ({
               marketPrice: currentPrice,
               vipTier,
               vipDiscount: metamaskFeeRateDiscountPercentage,
+              hlFeeRate: feeRate,
             }),
           },
         ]);
@@ -213,6 +214,7 @@ export const ReversePositionModal = ({
     currentPrice,
     vipTier,
     metamaskFeeRateDiscountPercentage,
+    feeRate,
     buildTrackingData,
   ]);
 

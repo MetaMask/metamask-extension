@@ -97,6 +97,14 @@ export type InfrastructureDeps = {
     caipAccountId: `${string}:${string}:${string}`,
     baseFeeBips: number,
   ) => Promise<number | null>;
+  /**
+   * Merges controller-stored UTM attribution into event properties before
+   * MetaMetrics emission (TAT-3463). Optional so unit tests can omit it;
+   * production wiring supplies PerpsController.mergeAttributionContext.
+   */
+  mergeAttributionContext?: (
+    properties?: PerpsAnalyticsProperties,
+  ) => PerpsAnalyticsProperties;
 };
 
 const debugLog = createProjectLogger('perps');
@@ -166,7 +174,9 @@ function createDebugLogger(): PerpsDebugLogger {
   return { log: debugLog };
 }
 
-function createMetrics(): PerpsMetrics {
+function createMetrics(
+  mergeAttributionContext?: InfrastructureDeps['mergeAttributionContext'],
+): PerpsMetrics {
   return {
     // isEnabled always true: AnalyticsController.trackEvent is a no-op when the
     // user has not opted into analytics, so consent filtering is enforced at
@@ -177,11 +187,17 @@ function createMetrics(): PerpsMetrics {
       event: PerpsAnalyticsEvent,
       properties: PerpsAnalyticsProperties,
     ) => {
+      // Merge stored UTM context into every controller-emitted event so AC3
+      // attribution reaches MetaMetrics (TradingService only attaches
+      // entry/discovery/hlFeeRate from trackingData, not UTM).
+      const attributedProperties = mergeAttributionContext
+        ? mergeAttributionContext(properties)
+        : properties;
       trackEvent(
         createEventBuilder(event)
           .addCategory(MetaMetricsEventCategory.Perps)
           .addProperties({
-            ...properties,
+            ...attributedProperties,
             [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
           })
           .build(),
@@ -386,7 +402,7 @@ export function createPerpsInfrastructure(
   return {
     logger: createLogger(deps),
     debugLogger: createDebugLogger(),
-    metrics: createMetrics(),
+    metrics: createMetrics(deps.mergeAttributionContext),
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),

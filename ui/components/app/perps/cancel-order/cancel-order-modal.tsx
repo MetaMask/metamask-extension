@@ -35,6 +35,7 @@ import {
 } from '../utils/formatPerpsDisplayPrice';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { usePerpsEligibility } from '../../../../hooks/perps';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, formatOrderType } from '../utils';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
@@ -64,6 +65,7 @@ export const CancelOrderModal = ({
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();
   const { isEligible } = usePerpsEligibility();
+  const { buildTrackingData } = usePerpsAttribution();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,7 +125,18 @@ export const CancelOrderModal = ({
         success: boolean;
         error?: string;
       }>('perpsCancelOrder', [
-        { orderId: order.orderId, symbol: order.symbol },
+        {
+          orderId: order.orderId,
+          symbol: order.symbol,
+          // Attribution-only trackingData — cancel has no fee/notional; zeros
+          // satisfy TrackingData while entry/discovery come from flow context.
+          trackingData: buildTrackingData({
+            totalFee: 0,
+            marketPrice: parseFloat(order.price) || 0,
+            vipTier: null,
+            vipDiscount: undefined,
+          }),
+        },
       ]);
       if (!result?.success) {
         throw new Error(result?.error ?? t('somethingWentWrong'));
@@ -145,6 +158,8 @@ export const CancelOrderModal = ({
     isEligible,
     order.orderId,
     order.symbol,
+    order.price,
+    buildTrackingData,
     onClose,
     replacePerpsToastByKey,
     t,

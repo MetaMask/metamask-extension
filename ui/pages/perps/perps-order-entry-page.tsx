@@ -1136,6 +1136,7 @@ const PerpsOrderEntryPage = () => {
             marketPrice: currentPrice,
             vipTier,
             vipDiscount: metamaskFeeRateDiscountPercentage,
+            hlFeeRate: closeFeeRate,
           });
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
@@ -1220,6 +1221,7 @@ const PerpsOrderEntryPage = () => {
         marketPrice: currentPrice,
         vipTier,
         vipDiscount: metamaskFeeRateDiscountPercentage,
+        hlFeeRate: closeFeeRate,
       });
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the

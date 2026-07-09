@@ -219,6 +219,34 @@ describe('createPerpsInfrastructure', () => {
       );
     });
 
+    it('merges attribution context into trackPerpsEvent properties when provided', () => {
+      const mergeAttributionContext = jest.fn(
+        (properties?: Record<string, unknown>) => ({
+          ...properties,
+          [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'campaign-a',
+        }),
+      );
+      const infrastructure = createPerpsInfrastructure(
+        getDeps({ mergeAttributionContext }),
+      );
+
+      infrastructure.metrics.trackPerpsEvent(PerpsAnalyticsEvent.TradeTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+      });
+
+      expect(mergeAttributionContext).toHaveBeenCalledWith({
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+            [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'campaign-a',
+          }),
+        }),
+      );
+    });
+
     it('reports metrics as enabled', () => {
       const infrastructure = createPerpsInfrastructure(getDeps());
       expect(infrastructure.metrics.isEnabled()).toBe(true);

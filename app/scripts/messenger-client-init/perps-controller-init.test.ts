@@ -322,6 +322,7 @@ describe('PerpsControllerInit', () => {
         removeStorageItem: expect.any(Function),
         isDisconnecting: expect.any(Function),
         getPerpsDiscountForAccount: expect.any(Function),
+        mergeAttributionContext: expect.any(Function),
       });
     });
 
@@ -1051,6 +1052,35 @@ describe('PerpsControllerInit', () => {
       expect(messengerClient.mergeAttributionContext).toHaveBeenCalledWith(
         properties,
       );
+    });
+
+    it('wires mergeAttributionContext into createPerpsInfrastructure so metrics can merge UTM', () => {
+      let capturedDeps: InfrastructureDeps | undefined;
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      const { messengerClient } = initWithApi();
+      expect(capturedDeps?.mergeAttributionContext).toEqual(
+        expect.any(Function),
+      );
+
+      (messengerClient.mergeAttributionContext as jest.Mock).mockReturnValue({
+        [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'newsletter',
+      });
+      const merged = capturedDeps?.mergeAttributionContext?.({
+        asset: 'ETH',
+      });
+
+      expect(messengerClient.mergeAttributionContext).toHaveBeenCalledWith({
+        asset: 'ETH',
+      });
+      expect(merged).toEqual({
+        [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'newsletter',
+      });
     });
   });
 });

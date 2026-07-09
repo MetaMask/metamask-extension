@@ -25,6 +25,16 @@ jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => ({
+      ...input,
+      entryPoint: 'homescreen_tab',
+      discoverySource: 'market_list',
+    }),
+  }),
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CANCEL_ORDER_FAILED: 'perpsToastCancelOrderFailed',
@@ -296,7 +306,7 @@ describe('CancelOrderModal', () => {
   });
 
   describe('cancel action', () => {
-    it('calls perpsCancelOrder with orderId and symbol on button click', async () => {
+    it('calls perpsCancelOrder with orderId, symbol, and trackingData on button click', async () => {
       const user = userEvent.setup();
       renderWithProvider(
         <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
@@ -308,7 +318,18 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsCancelOrder',
-          [{ orderId: baseOrder.orderId, symbol: baseOrder.symbol }],
+          [
+            {
+              orderId: baseOrder.orderId,
+              symbol: baseOrder.symbol,
+              trackingData: expect.objectContaining({
+                totalFee: 0,
+                marketPrice: expect.any(Number),
+                entryPoint: 'homescreen_tab',
+                discoverySource: 'market_list',
+              }),
+            },
+          ],
         );
       });
 
