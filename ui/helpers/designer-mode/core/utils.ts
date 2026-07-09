@@ -169,7 +169,10 @@ export function buildDomPath(el: HTMLElement): string {
         (s) => s.tagName === node.tagName,
       );
       if (siblings.length > 1) {
-        selector += `:nth-child(${siblings.indexOf(node) + 1})`;
+        // The index is among same-tag siblings, which is :nth-of-type
+        // semantics — :nth-child counts every child and would produce a
+        // selector that doesn't match the node in mixed markup.
+        selector += `:nth-of-type(${siblings.indexOf(node) + 1})`;
       }
     }
     parts.unshift(selector);

@@ -58,7 +58,7 @@ describe('buildDomPath', () => {
     parent.remove();
   });
 
-  it('adds nth-child when same-tag siblings exist', () => {
+  it('adds nth-of-type when same-tag siblings exist', () => {
     const parent = document.createElement('ul');
     const first = document.createElement('li');
     const second = document.createElement('li');
@@ -66,7 +66,25 @@ describe('buildDomPath', () => {
     parent.appendChild(second);
     document.body.appendChild(parent);
 
-    expect(buildDomPath(second)).toContain('li:nth-child(2)');
+    expect(buildDomPath(second)).toContain('li:nth-of-type(2)');
+
+    parent.remove();
+  });
+
+  it('uses type-relative indexes in mixed markup so the selector matches', () => {
+    const parent = document.createElement('div');
+    const heading = document.createElement('h2');
+    const first = document.createElement('p');
+    const second = document.createElement('p');
+    parent.appendChild(heading); // occupies :nth-child(1)
+    parent.appendChild(first);
+    parent.appendChild(second);
+    document.body.appendChild(parent);
+
+    const path = buildDomPath(second);
+
+    expect(path).toContain('p:nth-of-type(2)');
+    expect(parent.querySelector('p:nth-of-type(2)')).toBe(second);
 
     parent.remove();
   });

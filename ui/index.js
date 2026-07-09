@@ -255,7 +255,10 @@ async function startApp(metamaskState, opts) {
   // The flag is inlined as boolean `true` by the webpack build's coercion and
   // as the string 'true' elsewhere — accept both so the gate can't silently
   // no-op (matches the truthy-check convention used for other flags).
-  if (process.env.DESIGNER_MODE === true || process.env.DESIGNER_MODE === 'true') {
+  if (
+    process.env.DESIGNER_MODE === true ||
+    process.env.DESIGNER_MODE === 'true'
+  ) {
     log.warn('[designer-mode] flag on — loading inspector…');
     import('./helpers/designer-mode')
       .then(({ initDesignerMode }) => {

@@ -66,8 +66,16 @@ export class DesignerModeCore {
 
     this.overlay.setOnSelect((info, el) => {
       if (!info || !el) {
-        this.panel.hide();
         this.selectedEl = null;
+        // Selection cleared (Escape / clicking the locked element again) while
+        // inspector mode is still active: drop back to the compact panel, same
+        // as the header Unlock button. hide() would leave the overlay capturing
+        // clicks with no visible UI until the next Ctrl+Shift+D.
+        if (this.isActive) {
+          this.panel.showCompact();
+        } else {
+          this.panel.hide();
+        }
         return;
       }
       this.selectedEl = el;
