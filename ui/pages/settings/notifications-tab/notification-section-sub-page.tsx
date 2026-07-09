@@ -26,7 +26,7 @@ import { getNotificationsSettingsSectionConfigs } from '../../notifications-sett
 
 export const NotificationSectionSubPage = () => {
   const navigate = useNavigate();
-  const { sectionType } = useParams<{ sectionType: string }>();
+  const { categoryId } = useParams<{ categoryId: string }>();
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -44,9 +44,9 @@ export const NotificationSectionSubPage = () => {
   const section = useMemo(
     () =>
       getNotificationsSettingsSectionConfigs(categories).find(
-        (config) => config.type === sectionType,
+        (config) => config.categoryId === categoryId,
       ),
-    [categories, sectionType],
+    [categories, categoryId],
   );
 
   // Every section is sourced from the BE category catalog - without this, a

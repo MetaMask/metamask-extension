@@ -1,39 +1,41 @@
-import {
-  NotificationCategoryId,
-  type NotificationCategoryMetadata,
-} from './notification-categories-types';
+import type { NotificationCategoryMetadata } from './notification-categories-types';
 
 const CATEGORIES_BY_LOCALE: Record<string, NotificationCategoryMetadata[]> = {
   en: [
     {
-      id: NotificationCategoryId.WalletActivity,
+      categoryId: 'walletActivity',
+      ausKeys: ['walletActivity'],
       label: 'Wallet activity',
       description: 'Buys, sells, transfers, and swaps',
       icon: 'Clock',
     },
     {
-      id: NotificationCategoryId.Perps,
+      categoryId: 'tradingActivity',
+      ausKeys: ['perps'],
       label: 'Trading activity',
       description:
         'Perps position changes, liquidations, funding rates, and margin updates',
       icon: 'Candlestick',
     },
     {
-      id: NotificationCategoryId.SocialAI,
+      categoryId: 'tradingSignals',
+      ausKeys: ['socialAI'],
       label: 'Trading signals',
       description:
         'Updates from traders and assets you follow, plus curated market news',
       icon: 'Flash',
     },
     {
-      id: NotificationCategoryId.Marketing,
+      categoryId: 'updatesAndRewards',
+      ausKeys: ['marketing'],
       label: 'Updates and rewards',
       description:
         'Product updates, feature announcements, and new rewards campaigns',
       icon: 'Campaign',
     },
     {
-      id: NotificationCategoryId.AgenticCli,
+      categoryId: 'agenticCli',
+      ausKeys: ['agenticCli'],
       label: 'Agentic CLI',
       description:
         'CLI connection requests, approvals, and session updates for Agentic',

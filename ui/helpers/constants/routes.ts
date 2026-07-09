@@ -126,7 +126,7 @@ export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
 export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
 export const NOTIFICATIONS_SETTINGS_SECTION_ROUTE =
-  '/settings/notifications/:sectionType';
+  '/settings/notifications/:categoryId';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';

@@ -5,7 +5,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNotificationCategories } from '../../hooks/metamask-notifications/useNotificationCategories';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { FilterTabBar, type FilterTab } from '../../components/ui/filter-tab-bar';
-import { NotificationCategoryId } from './notification-categories-types';
+import { ALL_NOTIFICATIONS_CATEGORY_ID } from './notification-categories-types';
 
 export const NOTIFICATIONS_CATEGORY_TEST_IDS = {
   ALL: 'notifications-category-all',
@@ -29,8 +29,8 @@ const CategoryTabsSkeleton = () => (
 );
 
 type NotificationsCategoryProps = {
-  /** Called with the selected category whenever the user picks a tab. */
-  onSelect: (category: NotificationCategoryId) => void;
+  /** Called with the selected category id whenever the user picks a tab. */
+  onSelect: (categoryId: string) => void;
 };
 
 /**
@@ -39,7 +39,7 @@ type NotificationsCategoryProps = {
  * catalog and only appear when MetaMask notifications are enabled.
  *
  * @param props - The component props.
- * @param props.onSelect - Called with the selected category when a tab is picked.
+ * @param props.onSelect - Called with the selected category id when a tab is picked.
  * @returns The rendered category tab bar.
  */
 export const NotificationsCategory = ({
@@ -51,13 +51,14 @@ export const NotificationsCategory = ({
   );
   const { categories, isLoading: isLoadingCategories } =
     useNotificationCategories();
-  const [selectedCategory, setSelectedCategory] =
-    useState<NotificationCategoryId>(NotificationCategoryId.All);
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    ALL_NOTIFICATIONS_CATEGORY_ID,
+  );
 
   const tabs = useMemo<FilterTab[]>(() => {
     const items: FilterTab[] = [
       {
-        key: NotificationCategoryId.All,
+        key: ALL_NOTIFICATIONS_CATEGORY_ID,
         label: t('all'),
         testId: NOTIFICATIONS_CATEGORY_TEST_IDS.ALL,
       },
@@ -66,9 +67,9 @@ export const NotificationsCategory = ({
     if (isMetamaskNotificationsEnabled) {
       items.push(
         ...categories.map((category) => ({
-          key: category.id,
+          key: category.categoryId,
           label: category.label,
-          testId: `notifications-category-${category.id}`,
+          testId: `notifications-category-${category.categoryId}`,
         })),
       );
     }
@@ -77,9 +78,8 @@ export const NotificationsCategory = ({
   }, [categories, isMetamaskNotificationsEnabled, t]);
 
   const handleSelect = (key: string) => {
-    const category = key as NotificationCategoryId;
-    setSelectedCategory(category);
-    onSelect(category);
+    setSelectedCategory(key);
+    onSelect(key);
   };
 
   const isLoadingCategoryTabs =
@@ -93,11 +93,15 @@ export const NotificationsCategory = ({
 
   return (
     <Box className="flex flex-shrink-0 flex-row gap-2 overflow-x-auto px-4 py-1">
-      {isLoadingCategoryTabs ? <CategoryTabsSkeleton /> : <FilterTabBar
-        tabs={tabs}
-        selectedKey={selectedCategory}
-        onSelect={handleSelect}
-      />}
+      {isLoadingCategoryTabs ? (
+        <CategoryTabsSkeleton />
+      ) : (
+        <FilterTabBar
+          tabs={tabs}
+          selectedKey={selectedCategory}
+          onSelect={handleSelect}
+        />
+      )}
     </Box>
   );
 };

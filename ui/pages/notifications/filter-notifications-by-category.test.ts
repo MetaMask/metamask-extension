@@ -1,50 +1,51 @@
-import {
-  TRIGGER_TYPES,
-  type INotification,
-} from '@metamask/notification-services-controller/notification-services';
-import { NotificationCategoryId } from './notification-categories-types';
+import type { INotification } from '@metamask/notification-services-controller/notification-services';
+import { ALL_NOTIFICATIONS_CATEGORY_ID } from './notification-categories-types';
 import { filterNotificationsByCategory } from './notifications';
 
-const buildNotification = (type: TRIGGER_TYPES) =>
+const buildNotification = (id: string, category?: string) =>
   ({
-    id: `${type}-notification`,
+    id,
     createdAt: new Date().toISOString(),
     isRead: false,
-    type,
+    category,
   }) as unknown as INotification;
 
 describe('filterNotificationsByCategory', () => {
   const walletActivityNotification = buildNotification(
-    TRIGGER_TYPES.ETH_SENT,
+    'wallet-activity-notification',
+    'walletActivity',
   );
   const marketingNotification = buildNotification(
-    TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+    'marketing-notification',
+    'updatesAndRewards',
   );
-  const notifications = [walletActivityNotification, marketingNotification];
+  const uncategorizedNotification = buildNotification('uncategorized-notification');
+  const notifications = [
+    walletActivityNotification,
+    marketingNotification,
+    uncategorizedNotification,
+  ];
 
   it('returns every notification for the All category', () => {
     expect(
-      filterNotificationsByCategory(NotificationCategoryId.All, notifications),
+      filterNotificationsByCategory(
+        ALL_NOTIFICATIONS_CATEGORY_ID,
+        notifications,
+      ),
     ).toEqual(notifications);
   });
 
-  it('returns only notifications matching the selected category', () => {
+  it('returns only notifications whose BE-assigned category matches', () => {
     expect(
-      filterNotificationsByCategory(
-        NotificationCategoryId.WalletActivity,
-        notifications,
-      ),
+      filterNotificationsByCategory('walletActivity', notifications),
     ).toEqual([walletActivityNotification]);
 
     expect(
-      filterNotificationsByCategory(
-        NotificationCategoryId.Marketing,
-        notifications,
-      ),
+      filterNotificationsByCategory('updatesAndRewards', notifications),
     ).toEqual([marketingNotification]);
 
     expect(
-      filterNotificationsByCategory(NotificationCategoryId.Perps, notifications),
+      filterNotificationsByCategory('tradingActivity', notifications),
     ).toEqual([]);
   });
 });

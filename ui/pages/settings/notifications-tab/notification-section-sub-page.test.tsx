@@ -17,10 +17,6 @@ import {
 import { useNotificationCategories } from '../../../hooks/metamask-notifications/useNotificationCategories';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { NotificationCategoryId } from '../../notifications/notification-categories-types';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getNotificationsSettingsSectionRoute } from '../../notifications-settings/notifications-settings-routes';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
@@ -109,8 +105,8 @@ jest.mock(
 
 const mockStore = configureMockStore([thunk]);
 
-const setSectionType = (sectionType: NotificationsSettingsSectionType) =>
-  jest.mocked(useParams).mockReturnValue({ sectionType });
+const setCategoryId = (categoryId: string) =>
+  jest.mocked(useParams).mockReturnValue({ categoryId });
 
 const createInternalAccount = ({
   id,
@@ -143,7 +139,7 @@ describe('NotificationSectionSubPage', () => {
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
       .mockImplementation(() => undefined);
-    setSectionType(NotificationCategoryId.WalletActivity);
+    setCategoryId('walletActivity');
     jest.mocked(useAccountSettingsProps).mockReturnValue({
       data: {},
       initialLoading: false,
@@ -197,7 +193,7 @@ describe('NotificationSectionSubPage', () => {
     renderWithProvider(
       <NotificationSectionSubPage />,
       store,
-      getNotificationsSettingsSectionRoute(NotificationCategoryId.WalletActivity),
+      getNotificationsSettingsSectionRoute('walletActivity'),
     );
 
     expect(
@@ -318,7 +314,7 @@ describe('NotificationSectionSubPage', () => {
     renderWithProvider(
       <NotificationSectionSubPage />,
       store,
-      getNotificationsSettingsSectionRoute(NotificationCategoryId.WalletActivity),
+      getNotificationsSettingsSectionRoute('walletActivity'),
     );
 
     expect(
@@ -420,7 +416,7 @@ describe('NotificationSectionSubPage', () => {
     renderWithProvider(
       <NotificationSectionSubPage />,
       store,
-      getNotificationsSettingsSectionRoute(NotificationCategoryId.WalletActivity),
+      getNotificationsSettingsSectionRoute('walletActivity'),
     );
 
     fireEvent.click(
@@ -522,7 +518,7 @@ describe('NotificationSectionSubPage', () => {
     renderWithProvider(
       <NotificationSectionSubPage />,
       store,
-      getNotificationsSettingsSectionRoute(NotificationCategoryId.WalletActivity),
+      getNotificationsSettingsSectionRoute('walletActivity'),
     );
 
     expect(
@@ -550,11 +546,11 @@ describe('NotificationSectionSubPage', () => {
       });
 
     const renderSection = (
-      section: NotificationsSettingsSectionType,
+      categoryId: string,
       preferences: NotificationPreferences,
     ) => {
       const updatePreference = jest.fn();
-      setSectionType(section);
+      setCategoryId(categoryId);
       jest.mocked(useNotificationPreferences).mockReturnValue({
         preferences,
         hasNotificationPreferences: true,
@@ -568,25 +564,32 @@ describe('NotificationSectionSubPage', () => {
       renderWithProvider(
         <NotificationSectionSubPage />,
         buildStore(),
-        getNotificationsSettingsSectionRoute(section),
+        getNotificationsSettingsSectionRoute(categoryId),
       );
       return updatePreference;
     };
 
+    // `categoryId` intentionally differs from `ausKey` for a couple of
+    // these (per `createMockNotificationCategories`) to prove the write
+    // targets the AUS key, not the free-form category id.
     const cases: {
-      section: NotificationsSettingsSectionType;
+      categoryId: string;
+      ausKey: string;
       preferences: NotificationPreferences;
     }[] = [
       {
-        section: NotificationCategoryId.WalletActivity,
+        categoryId: 'walletActivity',
+        ausKey: 'walletActivity',
         preferences: createMockNotificationPreferences(),
       },
       {
-        section: NotificationCategoryId.Marketing,
+        categoryId: 'updatesAndRewards',
+        ausKey: 'marketing',
         preferences: createMockNotificationPreferences(),
       },
       {
-        section: NotificationCategoryId.AgenticCli,
+        categoryId: 'agenticCli',
+        ausKey: 'agenticCli',
         preferences: {
           ...createMockNotificationPreferences(),
           agenticCli: {
@@ -598,7 +601,8 @@ describe('NotificationSectionSubPage', () => {
       ...(getIsPerpsIncludedInBuild()
         ? [
             {
-              section: NotificationCategoryId.Perps as NotificationsSettingsSectionType,
+              categoryId: 'tradingActivity',
+              ausKey: 'perps',
               preferences: createMockNotificationPreferences(),
             },
           ]
@@ -607,24 +611,26 @@ describe('NotificationSectionSubPage', () => {
 
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each(cases)(
-      'writes the $section in-app and push toggles to their own preference fields',
-      ({ section, preferences }: (typeof cases)[number]) => {
-        const updatePreference = renderSection(section, preferences);
+      'writes the $categoryId category toggles to its $ausKey AUS key',
+      ({ categoryId, ausKey, preferences }: (typeof cases)[number]) => {
+        const updatePreference = renderSection(categoryId, preferences);
 
         fireEvent.click(
-          screen.getByTestId(`${section}-in-app-notifications-toggle-input`),
+          screen.getByTestId(
+            `${categoryId}-in-app-notifications-toggle-input`,
+          ),
         );
         expect(updatePreference).toHaveBeenCalledWith(
-          section,
+          ausKey,
           'inAppNotificationsEnabled',
           false,
         );
 
         fireEvent.click(
-          screen.getByTestId(`${section}-push-notifications-toggle-input`),
+          screen.getByTestId(`${categoryId}-push-notifications-toggle-input`),
         );
         expect(updatePreference).toHaveBeenCalledWith(
-          section,
+          ausKey,
           'pushNotificationsEnabled',
           false,
         );

@@ -3,10 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import {
-  NotificationCategoryId,
-  type NotificationCategoryMetadata,
-} from './notification-categories-types';
+import type { NotificationCategoryMetadata } from './notification-categories-types';
 import {
   NotificationsCategory,
   NOTIFICATIONS_CATEGORY_TEST_IDS,
@@ -21,25 +18,29 @@ const mockFetchNotificationCategories = jest.mocked(
 
 const MOCK_CATEGORIES: NotificationCategoryMetadata[] = [
   {
-    id: NotificationCategoryId.WalletActivity,
+    categoryId: 'walletActivity',
+    ausKeys: ['walletActivity'],
     label: 'Wallet activity',
     description: 'Buys, sells, transfers, and swaps',
     icon: 'Clock',
   },
   {
-    id: NotificationCategoryId.Perps,
+    categoryId: 'tradingActivity',
+    ausKeys: ['perps'],
     label: 'Trading activity',
     description: 'Perps position changes',
     icon: 'Candlestick',
   },
   {
-    id: NotificationCategoryId.SocialAI,
+    categoryId: 'tradingSignals',
+    ausKeys: ['socialAI'],
     label: 'Trading signals',
     description: 'Updates from traders you follow',
     icon: 'Flash',
   },
   {
-    id: NotificationCategoryId.Marketing,
+    categoryId: 'updatesAndRewards',
+    ausKeys: ['marketing'],
     label: 'Updates and rewards',
     description: 'Product updates and rewards campaigns',
     icon: 'Megaphone',
@@ -99,6 +100,6 @@ describe('NotificationsCategory', () => {
 
     fireEvent.click(await findByText('Trading activity'));
 
-    expect(onSelect).toHaveBeenCalledWith(NotificationCategoryId.Perps);
+    expect(onSelect).toHaveBeenCalledWith('tradingActivity');
   });
 });

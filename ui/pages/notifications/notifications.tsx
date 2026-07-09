@@ -32,10 +32,10 @@ import {
   getNotificationPreferences,
 } from '../../store/actions';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
-import { NotificationCategoryId } from './notification-categories-types';
+import { ALL_NOTIFICATIONS_CATEGORY_ID } from './notification-categories-types';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NotificationsCategory } from './notifications-category';
-import { deriveNotificationCategory } from './derive-notification-category';
+import { getNotificationCategoryId } from './get-notification-category-id';
 
 const useFeatureAnnouncementsEnabled = () => {
   const dispatch = useDispatch();
@@ -158,15 +158,15 @@ export const filterNotifications = (
 };
 
 export const filterNotificationsByCategory = (
-  category: NotificationCategoryId,
+  category: string,
   notifications: INotification[],
 ) => {
-  if (category === NotificationCategoryId.All) {
+  if (category === ALL_NOTIFICATIONS_CATEGORY_ID) {
     return notifications;
   }
 
   return notifications.filter(
-    (notification) => deriveNotificationCategory(notification) === category,
+    (notification) => getNotificationCategoryId(notification) === category,
   );
 };
 
@@ -192,8 +192,9 @@ export default function Notifications() {
   const { isLoading, error } = useMetamaskNotificationsContext();
 
   const activeTab = TAB_KEYS.ALL;
-  const [selectedCategory, setSelectedCategory] =
-    useState<NotificationCategoryId>(NotificationCategoryId.All);
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    ALL_NOTIFICATIONS_CATEGORY_ID,
+  );
   const combinedNotifications = useCombinedNotifications();
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
