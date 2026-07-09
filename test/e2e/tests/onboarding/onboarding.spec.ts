@@ -293,10 +293,7 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
         const tokensTab = new TokensTab(driver);
-        await tokensTab.checkNetworkFilterText(networkName);
 
         // Check for network addition toast
         // Note: With sidepanel enabled, appState is lost during page reload,
@@ -309,6 +306,9 @@ describe('MetaMask onboarding', function () {
         } else {
           await homePage.checkAddNetworkMessageIsDisplayed(networkName);
         }
+
+        await homePage.checkPageIsLoaded();
+        await tokensTab.checkNetworkFilterText(networkName);
       },
     );
   });
@@ -359,6 +359,7 @@ describe('MetaMask onboarding', function () {
             completedOnboarding: false,
             firstTimeFlowType: FirstTimeFlowType.restore,
             seedPhraseBackedUp: null,
+            hasSeenOnboardingCompletionPage: false,
           })
           .withMetaMetricsController({
             completedMetaMetricsOnboarding: false,

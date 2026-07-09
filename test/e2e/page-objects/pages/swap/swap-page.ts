@@ -85,6 +85,11 @@ class SwapPage {
     text: 'Swap',
   };
 
+  private readonly insufficientFundsButton = {
+    text: 'Insufficient funds',
+    css: '[data-testid="bridge-cta-button"]',
+  };
+
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
   private readonly networkFees = '[data-testid="network-fees"]';
@@ -249,6 +254,22 @@ class SwapPage {
       [this.networkFees, this.slippageEditButton, this.minimumReceived],
       options,
     );
+  }
+
+  async checkQuoteIsDisplayedWithoutNetworkFee(options?: {
+    timeout?: number;
+  }): Promise<void> {
+    await this.driver.waitForMultipleSelectors(
+      [this.slippageEditButton, this.minimumReceived, this.reviewToAmount],
+      options,
+    );
+  }
+
+  async checkInsufficientFundsButtonIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.insufficientFundsButton);
+    await this.driver.waitForSelector(this.submitSwapButton, {
+      state: 'disabled',
+    });
   }
 
   async checkQuoteIsGasIncluded(): Promise<void> {

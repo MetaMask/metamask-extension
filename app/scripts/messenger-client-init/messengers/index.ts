@@ -1,6 +1,8 @@
 import { noop } from 'lodash';
-import { getAnalyticsMessenger } from '../../controllers/analytics';
-import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
+import {
+  getAnalyticsControllerInitMessenger,
+  getAnalyticsControllerMessenger,
+} from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -20,10 +22,6 @@ import {
   getSnapRegistryControllerMessenger,
   getWebSocketServiceMessenger,
 } from './snaps';
-import {
-  getTransactionControllerMessenger,
-  getTransactionControllerInitMessenger,
-} from './transaction-controller-messenger';
 import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
@@ -355,7 +353,7 @@ export const MESSENGER_FACTORIES = {
   },
   AnalyticsController: {
     getMessenger: getAnalyticsControllerMessenger,
-    getInitMessenger: getAnalyticsMessenger,
+    getInitMessenger: getAnalyticsControllerInitMessenger,
   },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,
@@ -652,10 +650,6 @@ export const MESSENGER_FACTORIES = {
   TokensController: {
     getMessenger: getTokensControllerMessenger,
     getInitMessenger: getTokensControllerInitMessenger,
-  },
-  TransactionController: {
-    getMessenger: getTransactionControllerMessenger,
-    getInitMessenger: getTransactionControllerInitMessenger,
   },
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,

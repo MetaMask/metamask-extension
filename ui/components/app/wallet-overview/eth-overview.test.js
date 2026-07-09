@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -9,7 +9,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import useMultiPolling from '../../../hooks/useMultiPolling';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -64,6 +63,17 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
+}));
+
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
+  RampsMetaMaskEntry: {
+    BuySellButton: 'ext_buy_sell_button',
+  },
 }));
 
 const mockGetIntlLocale = getIntlLocale;
@@ -205,9 +215,6 @@ describe('EthOverview', () => {
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
-    },
-    ramps: {
-      buyableChains: defaultBuyableChains,
     },
   };
 
@@ -411,7 +418,7 @@ describe('EthOverview', () => {
       expect(buyButton).toBeInTheDocument();
     });
 
-    it('should have the Buy native token button disabled if chain id is not part of supported buyable chains', () => {
+    it('should keep the Buy native token button enabled on unsupported chains', () => {
       const mockedStoreWithUnbuyableChainId = {
         ...mockStore,
         metamask: {
@@ -434,36 +441,10 @@ describe('EthOverview', () => {
       );
       const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
       expect(buyButton).toBeInTheDocument();
-      expect(buyButton).toBeDisabled();
-    });
-
-    it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
-      const mockedStoreWithUnbuyableChainId = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
-          accountsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
-            },
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithUnbuyableChainId,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-      const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
-      expect(buyButton).toBeInTheDocument();
       expect(buyButton).not.toBeDisabled();
     });
 
-    it('should open the Buy native token URI when clicking on Buy button for a buyable chain ID', async () => {
+    it('should open the in-extension buy flow when clicking on Buy button', async () => {
       const mockedStoreWithBuyableChainId = {
         ...mockStore,
         metamask: {
@@ -490,15 +471,7 @@ describe('EthOverview', () => {
       expect(buyButton).not.toBeDisabled();
 
       fireEvent.click(buyButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            `/buy?metamaskEntry=ext_buy_sell_button`,
-          ),
-        }),
-      );
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
     });
   });
 
