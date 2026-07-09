@@ -64,6 +64,7 @@ declare module 'react-tippy' {
     shown?: () => void;
     beforeHidden?: () => void;
     hidden?: () => void;
+    onHidden?: () => void;
     theme?: Theme;
     className?: string;
     style?: React.CSSProperties;

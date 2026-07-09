@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import { I18nContext } from '../../../contexts/i18n';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SuccessPill } from '../../component-library';
 import CurrencyDisplay from '../../ui/currency-display';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -11,64 +11,32 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { RecipientWithAddress } from '../../ui/sender-to-recipient/sender-to-recipient.component';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
-export default class TransactionBreakdown extends PureComponent {
-  static contextType = I18nContext;
+function TransactionBreakdown({
+  showFiat = true,
+  className,
+  nativeCurrency,
+  nonce,
+  primaryCurrency,
+  isTokenApprove,
+  isGasFeeSponsored,
+  gas,
+  gasPrice,
+  maxFeePerGas,
+  gasUsed,
+  totalInHex,
+  baseFee,
+  priorityFee,
+  hexGasTotal,
+  isEIP1559Transaction,
+  l1HexGasTotal,
+  sourceAmountFormatted,
+  destinationAmountFormatted,
+  gasPaidByAddress,
+  chainId,
+}) {
+  const t = useI18nContext();
 
-  static propTypes = {
-    className: PropTypes.string,
-    nativeCurrency: PropTypes.string,
-    showFiat: PropTypes.bool,
-    nonce: PropTypes.string,
-    primaryCurrency: PropTypes.string,
-    isTokenApprove: PropTypes.bool,
-    isGasFeeSponsored: PropTypes.bool,
-    gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    maxFeePerGas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    hexGasTotal: PropTypes.string,
-    isEIP1559Transaction: PropTypes.bool,
-    l1HexGasTotal: PropTypes.string,
-    sourceAmountFormatted: PropTypes.string,
-    destinationAmountFormatted: PropTypes.string,
-    gasPaidByAddress: PropTypes.string,
-    chainId: PropTypes.string,
-  };
-
-  static defaultProps = {
-    showFiat: true,
-  };
-
-  render() {
-    const t = this.context;
-    const {
-      gas,
-      gasPrice,
-      maxFeePerGas,
-      primaryCurrency,
-      className,
-      nonce,
-      nativeCurrency,
-      showFiat,
-      totalInHex,
-      gasUsed,
-      isTokenApprove,
-      baseFee,
-      priorityFee,
-      hexGasTotal,
-      isEIP1559Transaction,
-      isGasFeeSponsored,
-      l1HexGasTotal,
-      sourceAmountFormatted,
-      destinationAmountFormatted,
-      gasPaidByAddress,
-      chainId,
-    } = this.props;
-
-    return (
+  return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">{t('transaction')}</div>
         {nonce !== undefined && (
@@ -307,6 +275,31 @@ export default class TransactionBreakdown extends PureComponent {
           </>
         )}
       </div>
-    );
-  }
+  );
 }
+
+TransactionBreakdown.propTypes = {
+  className: PropTypes.string,
+  nativeCurrency: PropTypes.string,
+  showFiat: PropTypes.bool,
+  nonce: PropTypes.string,
+  primaryCurrency: PropTypes.string,
+  isTokenApprove: PropTypes.bool,
+  isGasFeeSponsored: PropTypes.bool,
+  gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  maxFeePerGas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  hexGasTotal: PropTypes.string,
+  isEIP1559Transaction: PropTypes.bool,
+  l1HexGasTotal: PropTypes.string,
+  sourceAmountFormatted: PropTypes.string,
+  destinationAmountFormatted: PropTypes.string,
+  gasPaidByAddress: PropTypes.string,
+  chainId: PropTypes.string,
+};
+
+export default memo(TransactionBreakdown);

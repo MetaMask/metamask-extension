@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { memo } from 'react';
 import classnames from 'clsx';
 import { SubjectType } from '@metamask/permission-controller';
 import SiteOrigin from '../../ui/site-origin';
@@ -9,31 +9,19 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-export default class PermissionsConnectHeader extends Component {
-  static propTypes = {
-    className: PropTypes.string,
-    iconUrl: PropTypes.string,
-    iconName: PropTypes.string.isRequired,
-    siteOrigin: PropTypes.string.isRequired,
-    headerTitle: PropTypes.node,
-    boxProps: PropTypes.shape({ ...Box.propTypes }),
-    headerText: PropTypes.string,
-    leftIcon: PropTypes.node,
-    rightIcon: PropTypes.node,
-    subjectType: PropTypes.string,
-  };
-
-  static defaultProps = {
-    iconUrl: null,
-    headerTitle: '',
-    headerText: '',
-    boxProps: {},
-  };
-
-  renderHeaderIcon() {
-    const { iconUrl, iconName, siteOrigin, leftIcon, rightIcon, subjectType } =
-      this.props;
-
+function PermissionsConnectHeader({
+  className,
+  iconUrl = null,
+  iconName,
+  siteOrigin,
+  headerTitle = '',
+  boxProps = {},
+  headerText = '',
+  leftIcon,
+  rightIcon,
+  subjectType,
+}) {
+  const renderHeaderIcon = () => {
     if (subjectType === SubjectType.Snap) {
       return null;
     }
@@ -51,21 +39,33 @@ export default class PermissionsConnectHeader extends Component {
         />
       </div>
     );
-  }
+  };
 
-  render() {
-    const { boxProps, className, headerTitle, headerText } = this.props;
-    return (
-      <Box
-        className={classnames('permissions-connect-header', className)}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        justifyContent={JustifyContent.center}
-        {...boxProps}
-      >
-        {this.renderHeaderIcon()}
-        <div className="permissions-connect-header__title">{headerTitle}</div>
-        <div className="permissions-connect-header__subtitle">{headerText}</div>
-      </Box>
-    );
-  }
+  return (
+    <Box
+      className={classnames('permissions-connect-header', className)}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+      justifyContent={JustifyContent.center}
+      {...boxProps}
+    >
+      {renderHeaderIcon()}
+      <div className="permissions-connect-header__title">{headerTitle}</div>
+      <div className="permissions-connect-header__subtitle">{headerText}</div>
+    </Box>
+  );
 }
+
+PermissionsConnectHeader.propTypes = {
+  className: PropTypes.string,
+  iconUrl: PropTypes.string,
+  iconName: PropTypes.string.isRequired,
+  siteOrigin: PropTypes.string.isRequired,
+  headerTitle: PropTypes.node,
+  boxProps: PropTypes.shape({ ...Box.propTypes }),
+  headerText: PropTypes.string,
+  leftIcon: PropTypes.node,
+  rightIcon: PropTypes.node,
+  subjectType: PropTypes.string,
+};
+
+export default memo(PermissionsConnectHeader);
