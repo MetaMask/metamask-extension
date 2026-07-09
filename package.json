@@ -381,7 +381,7 @@
     "@metamask/eth-ledger-bridge-keyring": "^12.1.0",
     "@metamask/eth-qr-keyring": "^2.1.0",
     "@metamask/eth-sig-util": "^8.2.0",
-    "@metamask/eth-snap-keyring": "^23.0.0",
+    "@metamask/eth-snap-keyring": "^23.0.1",
     "@metamask/eth-token-tracker": "^10.0.2",
     "@metamask/eth-trezor-keyring": "^10.1.0",
     "@metamask/etherscan-link": "^3.0.0",
