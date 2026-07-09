@@ -25,11 +25,12 @@
   &::before {
     inset-inline-start: 0;
     margin-inline-end: calc(-1 * (1rem + var(--tabs-list-fade-size)));
-    background: linear-gradient(
-      to right,
-      var(--color-background-default),
-      transparent
-    );
+    background:
+      linear-gradient(
+        to right,
+        var(--color-background-default),
+        transparent
+      );
 
     @container scroll-state(scrollable: inline-start) {
       opacity: 1;
@@ -39,11 +40,12 @@
   &::after {
     inset-inline-end: 0;
     margin-inline-start: calc(-1 * (1rem + var(--tabs-list-fade-size)));
-    background: linear-gradient(
-      to right,
-      transparent,
-      var(--color-background-default)
-    );
+    background:
+      linear-gradient(
+        to right,
+        transparent,
+        var(--color-background-default)
+      );
 
     @container scroll-state(scrollable: inline-end) {
       opacity: 1;
