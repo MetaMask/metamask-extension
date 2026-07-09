@@ -100,7 +100,10 @@ describe('ReactInspectorAdapter', () => {
       type: myComponent,
       source: { fileName: 'ui/components/my-component.tsx', lineNumber: 5 },
     });
-    const fragmentFiber = makeFiber({ type: fragmentInternal, parent: grandparent });
+    const fragmentFiber = makeFiber({
+      type: fragmentInternal,
+      parent: grandparent,
+    });
     const hostFiber = makeFiber({ type: 'div', parent: fragmentFiber });
     attachFiber(el, hostFiber);
 

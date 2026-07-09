@@ -177,7 +177,9 @@ const dispatchKeydown = (
   key: string,
   init: KeyboardEventInit = {},
 ) => {
-  el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, ...init }));
+  el.dispatchEvent(
+    new KeyboardEvent('keydown', { key, bubbles: true, ...init }),
+  );
 };
 
 const dispatchMouse = (el: EventTarget, type: string, x: number, y: number) => {
@@ -432,9 +434,9 @@ describe('PanelController', () => {
       (plainPill.querySelector('.pill-x') as HTMLElement).click();
 
       expect(el.classList.contains('plainclass')).toBe(false);
-      expect(
-        shadow.querySelector('.edits-banner-text')?.textContent,
-      ).toContain(CLASSES_KEY);
+      expect(shadow.querySelector('.edits-banner-text')?.textContent).toContain(
+        CLASSES_KEY,
+      );
       expect(
         findSection(shadow, 'Classes').querySelectorAll('.pill'),
       ).toHaveLength(2);
@@ -541,9 +543,9 @@ describe('PanelController', () => {
       dispatchKeydown(input, 'Enter');
 
       expect(el.style.display).toBe('block');
-      expect(
-        shadow.querySelector('.edits-banner-text')?.textContent,
-      ).toContain('display');
+      expect(shadow.querySelector('.edits-banner-text')?.textContent).toContain(
+        'display',
+      );
     });
 
     it('restores the original value on Escape', () => {
@@ -576,9 +578,9 @@ describe('PanelController', () => {
       input.dispatchEvent(new FocusEvent('blur'));
 
       expect(el.style.position).toBe('absolute');
-      expect(
-        shadow.querySelector('.edits-banner-text')?.textContent,
-      ).toContain('position');
+      expect(shadow.querySelector('.edits-banner-text')?.textContent).toContain(
+        'position',
+      );
     });
 
     it('increments numeric values with arrow keys', () => {
@@ -635,9 +637,9 @@ describe('PanelController', () => {
       controller.applyEdit('height', '60px', el);
       controller.applyEdit('display', 'block', el);
 
-      expect(
-        shadow.querySelector('.edits-banner-text')?.textContent,
-      ).toContain('+1 more');
+      expect(shadow.querySelector('.edits-banner-text')?.textContent).toContain(
+        '+1 more',
+      );
     });
   });
 
@@ -698,9 +700,9 @@ describe('PanelController', () => {
       input.dispatchEvent(new FocusEvent('blur'));
 
       expect(el.style.marginTop).toBe('12px');
-      expect(
-        shadow.querySelector('.edits-banner-text')?.textContent,
-      ).toContain('margin-top');
+      expect(shadow.querySelector('.edits-banner-text')?.textContent).toContain(
+        'margin-top',
+      );
     });
 
     it('keeps non-numeric values as-is on blur', () => {
