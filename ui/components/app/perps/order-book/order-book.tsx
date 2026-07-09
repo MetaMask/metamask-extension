@@ -276,7 +276,7 @@ export const PerpsOrderBook = ({
           aria-controls={configModalId}
           aria-label={t('perpsOrderBookConfigTitle')}
           onClick={() => setIsConfigOpen(true)}
-          className="flex flex-row items-center gap-1 cursor-pointer rounded-md px-1 py-0.5 hover:bg-muted"
+          className="flex flex-row items-center gap-1 cursor-pointer rounded-md border border-muted px-2 py-0.5 hover:bg-muted"
           data-testid={`${dataTestId}-grouping-trigger`}
         >
           <Text
