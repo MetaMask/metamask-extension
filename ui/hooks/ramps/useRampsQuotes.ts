@@ -1,6 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { BuyWidget, Quote, QuotesResponse } from '@metamask/ramps-controller';
+import type {
+  BuyWidget,
+  Quote,
+  QuotesResponse,
+} from '@metamask/ramps-controller';
 import {
   getRampsBuyWidgetData,
   getRampsQuotes,
@@ -9,7 +13,7 @@ import {
 import { rampsQueries } from './queries';
 import type { RampsQueryStatus } from './useRampsPaymentMethods';
 
-export interface UseRampsQuotesResult {
+export type UseRampsQuotesResult = {
   getQuotes: (options: GetRampsQuotesParams) => Promise<QuotesResponse>;
   getBuyWidgetData: (quote: Quote) => Promise<BuyWidget | null>;
   data: QuotesResponse | null;
@@ -17,7 +21,7 @@ export interface UseRampsQuotesResult {
   status: RampsQueryStatus;
   isSuccess: boolean;
   error: unknown | null;
-}
+};
 
 export function useRampsQuotes(
   options?: GetRampsQuotesParams | null,

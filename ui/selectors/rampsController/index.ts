@@ -35,8 +35,7 @@ export const selectRampsControllerState = createSelector(
   (state: RampsState) => state.metamask,
   (metamask): Partial<RampsControllerState> => ({
     userRegion: metamask.userRegion ?? null,
-    countries:
-      metamask.countries ?? createDefaultResourceState<Country[]>([]),
+    countries: metamask.countries ?? createDefaultResourceState<Country[]>([]),
     providers:
       metamask.providers ??
       createDefaultResourceState<Provider[], Provider | null>([], null),
@@ -89,10 +88,7 @@ export const selectPaymentMethods = createSelector(
   (state: RampsState) => state.metamask.paymentMethods,
   (paymentMethods): ResourceState<PaymentMethod[], PaymentMethod | null> =>
     paymentMethods ??
-    createDefaultResourceState<PaymentMethod[], PaymentMethod | null>(
-      [],
-      null,
-    ),
+    createDefaultResourceState<PaymentMethod[], PaymentMethod | null>([], null),
 );
 
 export const selectRampsOrders = createSelector(

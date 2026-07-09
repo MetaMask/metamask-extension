@@ -10,14 +10,14 @@ import {
   removeRampsOrder,
 } from '../../store/controller-actions/ramps-controller';
 
-export interface AddPrecreatedOrderParams {
+export type AddPrecreatedOrderParams = {
   orderId: string;
   providerCode: string;
   walletAddress: string;
   chainId?: string;
-}
+};
 
-export interface UseRampsOrdersResult {
+export type UseRampsOrdersResult = {
   orders: RampsOrder[];
   getOrderById: (providerOrderId: string) => RampsOrder | undefined;
   addOrder: (order: RampsOrder) => Promise<void>;
@@ -33,7 +33,7 @@ export interface UseRampsOrdersResult {
     callbackUrl: string,
     wallet: string,
   ) => Promise<RampsOrder>;
-}
+};
 
 function extractOrderCode(providerOrderId: string): string {
   const parts = providerOrderId.split('/');
@@ -51,10 +51,7 @@ export function useRampsOrders(): UseRampsOrdersResult {
     [orders],
   );
 
-  const addOrder = useCallback(
-    (order: RampsOrder) => addRampsOrder(order),
-    [],
-  );
+  const addOrder = useCallback((order: RampsOrder) => addRampsOrder(order), []);
 
   const addPrecreatedOrder = useCallback(
     (params: AddPrecreatedOrderParams) => addRampsPrecreatedOrder(params),

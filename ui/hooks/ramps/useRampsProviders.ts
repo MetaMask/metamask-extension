@@ -15,7 +15,7 @@ import {
 import { parseUserFacingError } from './utils/parseUserFacingError';
 import { rampsQueries } from './queries';
 
-export interface UseRampsProvidersResult {
+export type UseRampsProvidersResult = {
   providers: Provider[];
   selectedProvider: Provider | null;
   setSelectedProvider: (
@@ -24,7 +24,7 @@ export interface UseRampsProvidersResult {
   ) => Promise<void>;
   isLoading: boolean;
   error: string | null;
-}
+};
 
 export function useRampsProviders(options?: {
   enableSideEffects?: boolean;
@@ -102,16 +102,13 @@ export function useRampsProviders(options?: {
   ]);
 
   let error: string | null = null;
-  if (providersQuery?.error != null) {
+  if (providersQuery?.error) {
     error = parseUserFacingError(
       providersQuery.error,
       'Failed to load providers',
     );
   } else if (providersStateError) {
-    error = parseUserFacingError(
-      providersState,
-      'Failed to load providers',
-    );
+    error = parseUserFacingError(providersState, 'Failed to load providers');
   }
 
   return {

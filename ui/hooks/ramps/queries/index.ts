@@ -1,4 +1,7 @@
-import { rampsPaymentMethodsKeys, rampsPaymentMethodsOptions } from './paymentMethods';
+import {
+  rampsPaymentMethodsKeys,
+  rampsPaymentMethodsOptions,
+} from './paymentMethods';
 import { rampsProvidersKeys, rampsProvidersOptions } from './providers';
 import { rampsQuotesKeys, rampsQuotesOptions } from './quotes';
 

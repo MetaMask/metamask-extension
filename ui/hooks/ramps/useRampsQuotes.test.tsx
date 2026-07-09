@@ -17,7 +17,9 @@ jest.mock('@tanstack/react-query', () => {
 
 jest.mock('../../store/controller-actions/ramps-controller', () => ({
   getRampsQuotes: jest.fn().mockResolvedValue({ quotes: [] }),
-  getRampsBuyWidgetData: jest.fn().mockResolvedValue({ url: 'https://example.com' }),
+  getRampsBuyWidgetData: jest
+    .fn()
+    .mockResolvedValue({ url: 'https://example.com' }),
 }));
 
 const mockedUseQuery = jest.mocked(useQuery);

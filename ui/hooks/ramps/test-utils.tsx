@@ -47,9 +47,7 @@ export const rampsMockMetamaskState = {
 
 const mockStoreFactory = configureStore([]);
 
-export function createRampsMockStore(
-  overrides: Record<string, unknown> = {},
-) {
+export function createRampsMockStore(overrides: Record<string, unknown> = {}) {
   return mockStoreFactory({
     metamask: {
       ...rampsMockMetamaskState,

@@ -1,8 +1,5 @@
 import * as BackgroundConnectionModule from '../background-connection';
-import {
-  getRampsQuotes,
-  setRampsUserRegion,
-} from './ramps-controller';
+import { getRampsQuotes, setRampsUserRegion } from './ramps-controller';
 
 jest.mock('../background-connection');
 

@@ -1,7 +1,16 @@
-import { useRampsUserRegion, type UseRampsUserRegionResult } from './useRampsUserRegion';
-import { useRampsProviders, type UseRampsProvidersResult } from './useRampsProviders';
+import {
+  useRampsUserRegion,
+  type UseRampsUserRegionResult,
+} from './useRampsUserRegion';
+import {
+  useRampsProviders,
+  type UseRampsProvidersResult,
+} from './useRampsProviders';
 import { useRampsTokens, type UseRampsTokensResult } from './useRampsTokens';
-import { useRampsCountries, type UseRampsCountriesResult } from './useRampsCountries';
+import {
+  useRampsCountries,
+  type UseRampsCountriesResult,
+} from './useRampsCountries';
 import {
   useRampsPaymentMethods,
   type UseRampsPaymentMethodsResult,
@@ -9,7 +18,7 @@ import {
 import { useRampsQuotes, type UseRampsQuotesResult } from './useRampsQuotes';
 import { useRampsOrders, type UseRampsOrdersResult } from './useRampsOrders';
 
-export interface UseRampsControllerResult {
+export type UseRampsControllerResult = {
   userRegion: UseRampsUserRegionResult['userRegion'];
   setUserRegion: UseRampsUserRegionResult['setUserRegion'];
   selectedProvider: UseRampsProvidersResult['selectedProvider'];
@@ -41,7 +50,7 @@ export interface UseRampsControllerResult {
   removeOrder: UseRampsOrdersResult['removeOrder'];
   refreshOrder: UseRampsOrdersResult['refreshOrder'];
   getOrderFromCallback: UseRampsOrdersResult['getOrderFromCallback'];
-}
+};
 
 export function useRampsController(): UseRampsControllerResult {
   const { userRegion, setUserRegion } = useRampsUserRegion();

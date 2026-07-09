@@ -1,4 +1,3 @@
-import { submitRequestToBackground } from '../background-connection';
 import type {
   BuyWidget,
   ExecuteRequestOptions,
@@ -9,6 +8,7 @@ import type {
   RampsOrder,
   UserRegion,
 } from '@metamask/ramps-controller';
+import { submitRequestToBackground } from '../background-connection';
 
 export async function setRampsUserRegion(
   region: string,
@@ -58,10 +58,7 @@ export async function getRampsPaymentMethods(
     provider?: string;
   },
 ) {
-  return submitRequestToBackground('getRampsPaymentMethods', [
-    region,
-    options,
-  ]);
+  return submitRequestToBackground('getRampsPaymentMethods', [region, options]);
 }
 
 export type GetRampsQuotesParams = {
@@ -102,9 +99,7 @@ export async function addRampsOrder(order: RampsOrder): Promise<void> {
   return submitRequestToBackground('addRampsOrder', [order]);
 }
 
-export async function removeRampsOrder(
-  providerOrderId: string,
-): Promise<void> {
+export async function removeRampsOrder(providerOrderId: string): Promise<void> {
   return submitRequestToBackground('removeRampsOrder', [providerOrderId]);
 }
 

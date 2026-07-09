@@ -15,7 +15,7 @@ import { parseUserFacingError } from './utils/parseUserFacingError';
 
 export type RampsQueryStatus = 'idle' | 'loading' | 'success' | 'error';
 
-export interface UseRampsPaymentMethodsResult {
+export type UseRampsPaymentMethodsResult = {
   paymentMethods: PaymentMethod[];
   selectedPaymentMethod: PaymentMethod | null;
   setSelectedPaymentMethod: (
@@ -26,7 +26,7 @@ export interface UseRampsPaymentMethodsResult {
   status: RampsQueryStatus;
   isSuccess: boolean;
   error: string | null;
-}
+};
 
 export function useRampsPaymentMethods(): UseRampsPaymentMethodsResult {
   const { selected: selectedPaymentMethod } = useSelector(selectPaymentMethods);
@@ -36,8 +36,8 @@ export function useRampsPaymentMethods(): UseRampsPaymentMethodsResult {
 
   const queryEnabled = Boolean(
     userRegion?.regionCode &&
-      userRegion?.country?.currency &&
-      selectedProvider?.id,
+    userRegion?.country?.currency &&
+    selectedProvider?.id,
   );
 
   const paymentMethodsQuery = useQuery({
@@ -85,10 +85,10 @@ export function useRampsPaymentMethods(): UseRampsPaymentMethodsResult {
 
   const isAutoSelecting = Boolean(
     paymentMethodsQuery.data?.length &&
-      (!selectedPaymentMethod ||
-        paymentMethodsQuery.data.every(
-          (method) => method.id !== selectedPaymentMethod.id,
-        )),
+    (!selectedPaymentMethod ||
+      paymentMethodsQuery.data.every(
+        (method) => method.id !== selectedPaymentMethod.id,
+      )),
   );
 
   const status = useMemo<RampsQueryStatus>(() => {
@@ -116,13 +116,12 @@ export function useRampsPaymentMethods(): UseRampsPaymentMethodsResult {
     isFetching: paymentMethodsQuery.isFetching,
     status,
     isSuccess: status === 'success',
-    error:
-      paymentMethodsQuery.error != null
-        ? parseUserFacingError(
-            paymentMethodsQuery.error,
-            'Failed to load payment methods',
-          )
-        : null,
+    error: paymentMethodsQuery.error
+      ? parseUserFacingError(
+          paymentMethodsQuery.error,
+          'Failed to load payment methods',
+        )
+      : null,
   };
 }
 

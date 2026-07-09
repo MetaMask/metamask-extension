@@ -10,7 +10,7 @@ type PaymentMethodsQueryParams = {
   fiat: string;
   assetId: string;
   providerId: string;
-}
+};
 
 export const rampsPaymentMethodsKeys = {
   all: () => ['ramps', 'paymentMethods'] as const,
