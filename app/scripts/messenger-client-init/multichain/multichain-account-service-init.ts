@@ -53,8 +53,10 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     new XlmAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
 
-  // Set default to false, then let the feature flag controller enable it if needed.
-  xlmProvider.setEnabled(false);
+  xlmProvider.setEnabled(true);
+
+  // // Set default to false, then let the feature flag controller enable it if needed.
+  // xlmProvider.setEnabled(false);
 
   const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
@@ -104,13 +106,8 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.stellarAccounts,
   );
 
-  // Defer enabling Stellar provider to avoid race condition with SnapKeyring registration
-  // on first load. This allows the SnapKeyring handler to be registered before the Snap
-  // tries to sync accounts.
   if (initialStellarEnabled) {
-    Promise.resolve().then(() => {
-      xlmProvider.setEnabled(true);
-    });
+     xlmProvider.setEnabled(true);
   }
 
   // Subscribe to feature flag changes
