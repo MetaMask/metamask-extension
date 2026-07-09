@@ -94,8 +94,12 @@ export function useOnboardingCompletion() {
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
         ) {
           if (completedWithSidePanelFlow) {
+            // User completed onboarding with the side panel opened: navigate directly to the external URL
             window.location.assign(deferredDeepLinkResult.url);
           } else {
+            // User completed onboarding without the side panel: opening the external URL in a new tab
+            // prevents them from finishing their setup on an external website. Instead, we keep them
+            // in the onboarding flow by navigating to the home page while opening the link separately.
             window.open(deferredDeepLinkResult.url, '_blank');
             navigate(DEFAULT_ROUTE);
           }
@@ -259,6 +263,9 @@ export function useOnboardingCompletion() {
           );
         }
 
+        // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
+        // Since we will track the `Metrics Opt In/Out` event even when optedIn is false,
+        // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
         if (!isOnboardingCompleted) {
           trackEvent(
             createEventBuilder(
