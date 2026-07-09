@@ -213,7 +213,7 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.ts'));
+const Home = mmLazy(() => import('../home/home.tsx'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
