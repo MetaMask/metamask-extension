@@ -6,13 +6,13 @@ import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection } from '../components/sections';
 import { TokenHeader } from '../components/token-header';
 
-export function ApprovalDetails({
+export function AssetActivationDetails({
   item,
 }: {
   item: Extract<
     ActivityListItem,
     {
-      type: 'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap';
+      type: 'assetActivation' | 'assetDeactivation';
     }
   >;
 }) {
