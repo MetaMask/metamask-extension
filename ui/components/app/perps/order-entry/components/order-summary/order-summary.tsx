@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   BoxFlexDirection,
@@ -13,6 +15,7 @@ import {
   IconSize,
   twMerge,
 } from '@metamask/design-system-react';
+import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';
@@ -45,6 +48,7 @@ export const OrderSummary = ({
   isSlippageRowDisabled = false,
 }: OrderSummaryProps) => {
   const t = useI18nContext();
+  const { privacyMode } = useSelector(getPreferences);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -57,13 +61,14 @@ export const OrderSummary = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsLiquidationPrice')}
         </Text>
-        <Text
+        <SensitiveText
           variant={TextVariant.BodySm}
           color={TextColor.TextDefault}
+          isHidden={privacyMode}
           data-testid="perps-order-summary-liquidation-price"
         >
           {liquidationPrice ?? '-'}
-        </Text>
+        </SensitiveText>
       </Box>
 
       {showSlippageRow && (
@@ -126,13 +131,14 @@ export const OrderSummary = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsMargin')}
         </Text>
-        <Text
+        <SensitiveText
           variant={TextVariant.BodySm}
           color={TextColor.TextDefault}
+          isHidden={privacyMode}
           data-testid="perps-order-summary-margin-required"
         >
           {marginRequired ?? '-'}
-        </Text>
+        </SensitiveText>
       </Box>
 
       {/* Fees */}

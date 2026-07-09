@@ -167,11 +167,10 @@ export const ChainlistNetworkPicker = ({
 
           return (
             <button
-              className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
               data-testid="networks-page-chainlist-network"
               key={`${network.chainId}-${network.name}`}
               onClick={() => onSelect(network, searchValue.trim() || undefined)}
-              type="button"
             >
               {networkImageUrl ? (
                 <AvatarNetwork

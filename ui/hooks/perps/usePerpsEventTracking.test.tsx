@@ -3,30 +3,26 @@ import React from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from './usePerpsEventTracking';
 
-const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+const mockTrackEvent = jest.fn();
 
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn().mockResolvedValue(undefined),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
-
-const wrapper = ({
-  children,
-}: React.PropsWithChildren<{ conditions?: boolean }>) =>
-  React.createElement(
-    MetaMetricsContext.Provider,
-    { value: mockMetaMetricsContext },
-    children,
+jest.mock('../useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
   );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 describe('usePerpsEventTracking', () => {
   beforeEach(() => {
@@ -35,7 +31,7 @@ describe('usePerpsEventTracking', () => {
 
   describe('imperative API', () => {
     it('calls trackEvent with Perps category and timestamp in properties', () => {
-      const { result } = renderHook(() => usePerpsEventTracking(), { wrapper });
+      const { result } = renderHook(() => usePerpsEventTracking());
 
       result.current.track(MetaMetricsEventName.PerpsScreenViewed, {
         screen_type: 'market_list',
@@ -43,12 +39,13 @@ describe('usePerpsEventTracking', () => {
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.PerpsScreenViewed,
-        category: MetaMetricsEventCategory.Perps,
+        name: MetaMetricsEventName.PerpsScreenViewed,
         properties: {
+          category: MetaMetricsEventCategory.Perps,
           screen_type: 'market_list',
           [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
         },
+        sensitiveProperties: {},
       });
     });
   });
@@ -63,7 +60,6 @@ describe('usePerpsEventTracking', () => {
             properties: { screen_type: 'trading' },
           }),
         {
-          wrapper,
           initialProps: { conditions: false },
         },
       );
@@ -74,12 +70,13 @@ describe('usePerpsEventTracking', () => {
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.PerpsScreenViewed,
-        category: MetaMetricsEventCategory.Perps,
+        name: MetaMetricsEventName.PerpsScreenViewed,
         properties: {
+          category: MetaMetricsEventCategory.Perps,
           screen_type: 'trading',
           [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
         },
+        sensitiveProperties: {},
       });
     });
 
@@ -91,7 +88,6 @@ describe('usePerpsEventTracking', () => {
             conditions,
           }),
         {
-          wrapper,
           initialProps: { conditions: true },
         },
       );
@@ -112,7 +108,6 @@ describe('usePerpsEventTracking', () => {
             conditions,
           }),
         {
-          wrapper,
           initialProps: { conditions: true },
         },
       );
@@ -134,7 +129,6 @@ describe('usePerpsEventTracking', () => {
             resetKey,
           }),
         {
-          wrapper,
           initialProps: { conditions: true, resetKey: 'BTC' },
         },
       );
@@ -157,7 +151,6 @@ describe('usePerpsEventTracking', () => {
             resetKey,
           }),
         {
-          wrapper,
           initialProps: { conditions: false, resetKey: 'BTC' },
         },
       );

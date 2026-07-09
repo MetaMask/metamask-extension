@@ -1,19 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../lib/messenger';
-import {
-  getTransactionControllerInitMessenger,
-  getTransactionControllerMessenger,
-} from './transaction-controller-messenger';
-
-describe('getTransactionControllerMessenger', () => {
-  it('returns a restricted messenger', () => {
-    const messenger = getRootMessenger<never, never>();
-    const transactionControllerMessenger =
-      getTransactionControllerMessenger(messenger);
-
-    expect(transactionControllerMessenger).toBeInstanceOf(Messenger);
-  });
-});
+import { getTransactionControllerInitMessenger } from './transaction-controller-messenger';
 
 describe('getTransactionControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
