@@ -26,6 +26,23 @@ export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
 };
 
 /**
+ * Refreshes and returns the assets for the given accounts via the
+ * AssetsController (force-updating from remote sources).
+ *
+ * No-ops when the assets unify state feature is not enabled, since the
+ * AssetsController is not registered in that case.
+ *
+ * @param accounts - The accounts to fetch assets for.
+ * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
+ * @returns The assets for the given accounts, or `undefined` when the feature
+ * is not enabled.
+ */
+export type LegacyBackgroundApiServiceGetAssetsAction = {
+  type: `LegacyBackgroundApiService:getAssets`;
+  handler: LegacyBackgroundApiService['getAssets'];
+};
+
+/**
  * Determines if the given endpoint URL is a public endpoint URL.
  *
  * @param endpointUrl - The endpoint URL to check.
@@ -396,6 +413,7 @@ export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
 export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
+  | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
