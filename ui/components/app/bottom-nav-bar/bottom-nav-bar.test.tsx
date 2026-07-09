@@ -9,6 +9,7 @@ import {
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
+import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import { BottomNavBar } from './bottom-nav-bar';
 
 const mockNavigate = jest.fn();
@@ -17,10 +18,17 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const mockNavigateToBridgePage = jest.fn();
 jest.mock('../../../hooks/bridge/useBridgeNavigation', () => ({
   useBridgeNavigation: () => ({
-    navigateToBridgePage: mockNavigateToBridgePage,
+    navigateToDefaultRoute: jest.fn(),
+  }),
+}));
+
+const mockOpenBridgeExperience = jest.fn();
+jest.mock('../../../hooks/bridge/useBridging', () => ({
+  __esModule: true,
+  default: () => ({
+    openBridgeExperience: mockOpenBridgeExperience,
   }),
 }));
 
@@ -175,11 +183,9 @@ describe('BottomNavBar', () => {
       const { getByTestId } = renderBottomNavBar();
 
       fireEvent.click(getByTestId('bottom-nav-swaps'));
-      expect(mockNavigateToBridgePage).toHaveBeenCalledWith({
-        token: null,
-        search: expect.any(URLSearchParams),
-        isEntrypoint: true,
-      });
+      expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
+        MetaMetricsSwapsEventSource.MainView,
+      );
     });
 
     it('navigates to the activity route when Activity is clicked', () => {

@@ -17,9 +17,10 @@ import {
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
+import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import useBridging from '../../../hooks/bridge/useBridging';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -69,7 +70,7 @@ export function BottomNavBar() {
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
-  const { navigateToBridgePage } = useBridgeNavigation();
+  const { openBridgeExperience } = useBridging();
 
   const { isHome, isPerps, isSwaps, isActivity } =
     getActiveBottomNavTabs(pathname);
@@ -88,13 +89,8 @@ export function BottomNavBar() {
   );
 
   const handleSwapsClick = useCallback(
-    () =>
-      navigateToBridgePage({
-        token: null,
-        search: new URLSearchParams(''),
-        isEntrypoint: true,
-      }),
-    [navigateToBridgePage],
+    () => openBridgeExperience(MetaMetricsSwapsEventSource.MainView),
+    [openBridgeExperience],
   );
 
   const handleActivityClick = useCallback(
