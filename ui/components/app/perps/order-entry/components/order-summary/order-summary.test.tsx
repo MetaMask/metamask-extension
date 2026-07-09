@@ -23,15 +23,12 @@ function showTooltip(
   triggerContainerTestId: string,
   event: 'hover' | 'focus' = 'hover',
 ) {
-  const triggerContainer = screen.getByTestId(triggerContainerTestId);
-  const tooltipTrigger = triggerContainer.querySelector('[data-tooltipped]');
-
-  expect(tooltipTrigger).not.toBeNull();
+  const tooltipTrigger = screen.getByTestId(`${triggerContainerTestId}-trigger`);
 
   if (event === 'focus') {
-    fireEvent.focus(tooltipTrigger as HTMLElement);
+    fireEvent.focus(tooltipTrigger);
   } else {
-    fireEvent.mouseEnter(tooltipTrigger as HTMLElement);
+    fireEvent.mouseEnter(tooltipTrigger);
   }
 }
 
@@ -69,19 +66,25 @@ describe('OrderSummary', () => {
       expect(
         within(
           screen.getByTestId('perps-order-summary-margin-tooltip-label'),
-        ).getByTestId('info-tooltip'),
+        ).getByRole('button', {
+          name: `${messages.perpsMargin.message} info`,
+        }),
       ).toBeInTheDocument();
       expect(
         within(
           screen.getByTestId(
             'perps-order-summary-liquidation-price-tooltip-label',
           ),
-        ).getByTestId('info-tooltip'),
+        ).getByRole('button', {
+          name: `${messages.perpsLiquidationPrice.message} info`,
+        }),
       ).toBeInTheDocument();
       expect(
         within(
           screen.getByTestId('perps-order-summary-fees-tooltip-label'),
-        ).getByTestId('info-tooltip'),
+        ).getByRole('button', {
+          name: `${messages.perpsFees.message} info`,
+        }),
       ).toBeInTheDocument();
       expect(
         screen.queryByTestId('perps-order-summary-margin-tooltip'),

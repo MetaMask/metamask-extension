@@ -17,10 +17,23 @@ import {
 } from '@metamask/design-system-react';
 import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import InfoTooltip from '../../../../../ui/info-tooltip';
+import {
+  Popover,
+  PopoverPosition,
+} from '../../../../../component-library';
 import { formatPerpsFeeRate } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';
+
+const TOOLTIP_POPOVER_STYLE = {
+  zIndex: 1051,
+  backgroundColor: 'var(--color-text-default)',
+  paddingTop: '12px',
+  paddingBottom: '12px',
+  paddingLeft: '16px',
+  paddingRight: '16px',
+  maxWidth: 250,
+} as const;
 
 type TooltipLabelProps = {
   label: string;
@@ -28,19 +41,58 @@ type TooltipLabelProps = {
   testId: string;
 };
 
-const TooltipLabel = ({ label, tooltip, testId }: TooltipLabelProps) => (
-  <Box
-    flexDirection={BoxFlexDirection.Row}
-    alignItems={BoxAlignItems.Center}
-    gap={1}
-    data-testid={testId}
-  >
-    <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-      {label}
-    </Text>
-    <InfoTooltip position="top" contentText={tooltip} />
-  </Box>
-);
+const TooltipLabel = ({ label, tooltip, testId }: TooltipLabelProps) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+
+  const handleOpen = React.useCallback(() => setIsOpen(true), []);
+  const handleClose = React.useCallback(() => setIsOpen(false), []);
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={1}
+      data-testid={testId}
+    >
+      <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        {label}
+      </Text>
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-label={`${label} info`}
+        data-testid={`${testId}-trigger`}
+        onMouseEnter={handleOpen}
+        onMouseLeave={handleClose}
+        onFocus={handleOpen}
+        onBlur={handleClose}
+        className="inline-flex cursor-help border-0 bg-transparent p-0"
+      >
+        <Icon
+          name={IconName.Info}
+          size={IconSize.Sm}
+          color={IconColor.IconAlternative}
+        />
+      </button>
+      <Popover
+        isOpen={isOpen}
+        position={PopoverPosition.TopStart}
+        referenceElement={triggerRef.current}
+        hasArrow
+        flip
+        preventOverflow
+        isPortal
+        offset={[-32, 8]}
+        onPressEscKey={handleClose}
+        onClickOutside={handleClose}
+        style={TOOLTIP_POPOVER_STYLE}
+      >
+        {tooltip}
+      </Popover>
+    </Box>
+  );
+};
 
 type TooltipBodyProps = {
   children: React.ReactNode;
@@ -66,8 +118,20 @@ type FeeTooltipRowProps = {
 
 const FeeTooltipRow = ({ label, value }: FeeTooltipRowProps) => (
   <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-4">
-    <span className="leading-5">{label}</span>
-    <span className="text-right leading-5">{value}</span>
+    <Text
+      variant={TextVariant.BodySm}
+      color={TextColor.InfoInverse}
+      className="leading-5"
+    >
+      {label}
+    </Text>
+    <Text
+      variant={TextVariant.BodySm}
+      color={TextColor.InfoInverse}
+      className="text-right leading-5"
+    >
+      {value}
+    </Text>
   </div>
 );
 
@@ -120,9 +184,13 @@ export const OrderSummary = ({
           testId="perps-order-summary-liquidation-price-tooltip-label"
           tooltip={
             <TooltipBody testId="perps-order-summary-liquidation-price-tooltip">
-              <span className="leading-5">
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.InfoInverse}
+                className="leading-5"
+              >
                 {t('perpsLiquidationPriceTooltip')}
-              </span>
+              </Text>
             </TooltipBody>
           }
         />
@@ -198,7 +266,13 @@ export const OrderSummary = ({
           testId="perps-order-summary-margin-tooltip-label"
           tooltip={
             <TooltipBody testId="perps-order-summary-margin-tooltip">
-              <span className="leading-5">{t('perpsMarginTooltip')}</span>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.InfoInverse}
+                className="leading-5"
+              >
+                {t('perpsMarginTooltip')}
+              </Text>
             </TooltipBody>
           }
         />
