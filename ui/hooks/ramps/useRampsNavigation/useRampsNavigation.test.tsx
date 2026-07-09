@@ -84,8 +84,14 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('geolocation unknown → shows RAMPS_ELIGIBILITY_FAILED', () => {
+    // Countries must have actually loaded (non-empty data) with region still
+    // null for step 1 to legitimately fire; empty/never-fetched countries
+    // must fail open (see ui/selectors/ramps.ts getIsRampsGeolocationUnknown).
     const { result, getModalName } = run(
-      buildState({ userRegion: null, countries: loaded }),
+      buildState({
+        userRegion: null,
+        countries: { ...loaded, data: [region.country] },
+      }),
     );
     result.current.goToBuy('0x1');
     expect(getModalName()).toBe('RAMPS_ELIGIBILITY_FAILED');

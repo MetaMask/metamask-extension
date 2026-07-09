@@ -19,8 +19,34 @@ describe('ramps selectors', () => {
     expect(getRampsUserRegion(mk({ userRegion: region }))).toBe(region);
   });
 
-  it('getIsRampsGeolocationUnknown is true when resolved and region null', () => {
-    expect(getIsRampsGeolocationUnknown(mk())).toBe(true);
+  it('getIsRampsGeolocationUnknown is false on the never-fetched default state (fail open)', () => {
+    expect(getIsRampsGeolocationUnknown(mk())).toBe(false);
+  });
+
+  it('getIsRampsGeolocationUnknown is false when countries fetch errored (fail open)', () => {
+    expect(
+      getIsRampsGeolocationUnknown(
+        mk({
+          countries: {
+            ...baseMetamask.countries,
+            error: new Error('failed to fetch countries'),
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('getIsRampsGeolocationUnknown is true once countries have loaded and region is still null', () => {
+    expect(
+      getIsRampsGeolocationUnknown(
+        mk({
+          countries: {
+            ...baseMetamask.countries,
+            data: [{ isoCode: 'US' }],
+          },
+        }),
+      ),
+    ).toBe(true);
   });
 
   it('getIsRampsGeolocationUnknown is false while countries are loading', () => {

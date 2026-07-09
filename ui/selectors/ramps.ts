@@ -68,7 +68,11 @@ export const getIsRampRegionUnsupported = createSelector(
 );
 
 /**
- * Determines if geolocation is unknown (region resolution complete but userRegion is null).
+ * Determines if geolocation is unknown. This is only true once countries
+ * have actually loaded (`countries.data` non-empty) and userRegion is still
+ * null — i.e. region resolution demonstrably completed without a match.
+ * Never-fetched, still-loading, or errored countries states fail open
+ * (return false) rather than blocking the user.
  *
  * @param state - The Redux state.
  * @returns True if geolocation is unknown, false otherwise.
@@ -76,5 +80,8 @@ export const getIsRampRegionUnsupported = createSelector(
 export const getIsRampsGeolocationUnknown = createSelector(
   getRampsUserRegion,
   getRampsCountries,
-  (userRegion, countries) => userRegion === null && !countries?.isLoading,
+  (userRegion, countries) =>
+    userRegion === null &&
+    !countries?.isLoading &&
+    (countries?.data?.length ?? 0) > 0,
 );
