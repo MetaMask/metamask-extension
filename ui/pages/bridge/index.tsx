@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
+  ButtonIcon,
+  ButtonIconSize,
   FontWeight,
+  IconName,
   Text,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
@@ -14,11 +17,6 @@ import {
   AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../components/component-library';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
