@@ -3,7 +3,15 @@ import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import { setBackgroundConnection } from '../../store/background-connection';
 import Home from './home';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 jest.mock('../../components/multichain/app-header', () => ({
   AppHeader: () => <div data-testid="mock-app-header" />,
@@ -113,11 +121,12 @@ function renderHome(storeOverrides: Record<string, unknown> = {}) {
   return renderWithProvider(<Home />, store);
 }
 
-describe('Home', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+beforeEach(() => {
+  jest.clearAllMocks();
+  setBackgroundConnection(backgroundConnectionMock as never);
+});
 
+describe('Home', () => {
   it('renders AppHeader and DappConnectionControlBar', () => {
     const { getByTestId } = renderHome();
     expect(getByTestId('mock-app-header')).toBeInTheDocument();

@@ -5527,9 +5527,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:10.0.1":
-  version: 10.0.1
-  resolution: "@metamask/assets-controller@npm:10.0.1"
+"@metamask/assets-controller@npm:^10.0.1, @metamask/assets-controller@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@metamask/assets-controller@npm:10.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5545,7 +5545,7 @@ __metadata:
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/keyring-internal-api": "npm:^11.0.1"
     "@metamask/keyring-snap-client": "npm:^9.0.2"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/network-enablement-controller": "npm:^5.4.1"
     "@metamask/permission-controller": "npm:^13.1.1"
@@ -5560,44 +5560,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/884f7e9df63629ca4b5bfacd4a65cb01ac76e873e70e1f6186addde3cc8ad5ae8e6ef8a145929797c68bb94c8da8bc56fd27a48555a8db918729d21196e0a6fb
-  languageName: node
-  linkType: hard
-
-"@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch":
-  version: 10.0.1
-  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch::version=10.0.1&hash=4676d1"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/account-tree-controller": "npm:^7.5.3"
-    "@metamask/accounts-controller": "npm:^39.0.4"
-    "@metamask/assets-controllers": "npm:^109.3.0"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/client-controller": "npm:^1.0.1"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^6.5.0"
-    "@metamask/keyring-api": "npm:^23.3.0"
-    "@metamask/keyring-controller": "npm:^27.1.0"
-    "@metamask/keyring-internal-api": "npm:^11.0.1"
-    "@metamask/keyring-snap-client": "npm:^9.0.2"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/network-enablement-controller": "npm:^5.4.1"
-    "@metamask/permission-controller": "npm:^13.1.1"
-    "@metamask/phishing-controller": "npm:^17.2.0"
-    "@metamask/polling-controller": "npm:^16.0.8"
-    "@metamask/preferences-controller": "npm:^23.1.0"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^68.2.2"
-    "@metamask/utils": "npm:^11.11.0"
-    async-mutex: "npm:^0.5.0"
-    bignumber.js: "npm:^9.1.2"
-    lodash: "npm:^4.17.21"
-    p-limit: "npm:^3.1.0"
-  checksum: 10/8b0ce9b7d1169290f52dc5a0a2a4d201d54ea8b1f9df46f5fa17723fe00666da4e0ff16396b20e35b7faeb31f2f67f652b12e5bd9034d3aa9f3417add4bf6171
+  checksum: 10/5b87620a3f62120ed8f76b0a2263b997ad41b2821e713dbf86b0208f07321c7a0a6fd0074a1b38d2e44315886d2d50b85f7b64a6fa451656f836353efbd641b9
   languageName: node
   linkType: hard
 
@@ -6040,12 +6003,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.30.0":
-  version: 0.30.0
-  resolution: "@metamask/design-system-react@npm:0.30.0"
+"@metamask/design-system-react@npm:^0.32.0":
+  version: 0.32.0
+  resolution: "@metamask/design-system-react@npm:0.32.0"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
-    "@metamask/design-system-shared": "npm:^0.26.0"
+    "@metamask/design-system-shared": "npm:^0.28.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6057,18 +6020,18 @@ __metadata:
     "@metamask/utils": ^11.11.0
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/5e18c85336903ad9f99f52911874146054eebf92bf38052f5aeacec79e06458fc9f355960d15f3d5976b3c60f3ffdf7f36d3e8a9d7c1dc1b8fc80979ec674035
+  checksum: 10/95861ccd02b3ed6bb6756db0d1c600f2e656b80a9d78c7169a1a975d6c20c901f5cdb107107e3dbad2dcd9234e0c73bdfce69d677bd2da834e451733958a9d87
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.26.0":
-  version: 0.26.0
-  resolution: "@metamask/design-system-shared@npm:0.26.0"
+"@metamask/design-system-shared@npm:^0.28.0":
+  version: 0.28.0
+  resolution: "@metamask/design-system-shared@npm:0.28.0"
   dependencies:
     "@metamask/utils": "npm:^11.11.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/49103aa0e2d4d53589197daf0992fb2bf158ce2bdef8e52087c859492aaa8f2a860708fa18edfa74c793e53c19a924d6a6ecf9e5e4788b89123c18a340001a42
+  checksum: 10/5a478a1e7da1648a8ecc9ed94d74ebbbc4ff34921f93d3bdd0f64fbe2bd048fe3f6a93ce7d8be8f928471b5630486899eccd0d83d1dfacef6a0087174ab34f52
   languageName: node
   linkType: hard
 
@@ -6089,10 +6052,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^8.6.0":
-  version: 8.6.0
-  resolution: "@metamask/design-tokens@npm:8.6.0"
-  checksum: 10/9eca298b84338d24c3748d32b4f0e0e5fb1ec12091e459a1b1f4ae0fff187ee1588c5cbeb2865bdbdc1c61e877f0e09a771781feadb3deb984561ba10fc44b47
+"@metamask/design-tokens@npm:^8.7.0":
+  version: 8.7.0
+  resolution: "@metamask/design-tokens@npm:8.7.0"
+  checksum: 10/5fa880ef16c2225d378a3dddf6e73b5b260cdd49722337ab894228df33b905042279252da52c5634897cbd2beb81bd93f7dda7cbb2dd94f17c2bd0aa3e6d1295
   languageName: node
   linkType: hard
 
@@ -32973,7 +32936,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch"
+    "@metamask/assets-controller": "npm:^10.1.0"
     "@metamask/assets-controllers": "npm:^109.2.1"
     "@metamask/authenticated-user-storage": "npm:^2.1.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
@@ -32998,10 +32961,10 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
-    "@metamask/design-system-react": "npm:^0.30.0"
-    "@metamask/design-system-shared": "npm:^0.26.0"
+    "@metamask/design-system-react": "npm:^0.32.0"
+    "@metamask/design-system-shared": "npm:^0.28.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.10.0"
-    "@metamask/design-tokens": "npm:^8.6.0"
+    "@metamask/design-tokens": "npm:^8.7.0"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.4"

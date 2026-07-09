@@ -35,7 +35,6 @@ import { AppHeader } from '../../components/multichain/app-header';
 import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
-import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
@@ -74,7 +73,8 @@ function useHomeState() {
     (state: MetaMaskReduxState) => state.metamask.forgottenPassword,
   );
   const useExternalServices = useSelector(getUseExternalServices);
-  const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
+  const envType = getEnvironmentType();
+  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const hasApprovalFlows = useSelector(
     (state: MetaMaskReduxState) => (getApprovalFlows(state)?.length ?? 0) > 0,
@@ -88,7 +88,6 @@ function useHomeState() {
   const pendingRedirectRoute = useSelector(getPendingRedirectRoute);
   const lastVisitedPerpsRoute = useSelector(getLastVisitedPerpsRoute);
   const redirectAfterDefaultPage = useSelector(getRedirectAfterDefaultPage);
-  const envType = getEnvironmentType();
 
   const notificationClosing = useMemo(
     () =>
@@ -128,7 +127,6 @@ function useHomeActions() {
       clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
       clearRedirectAfterDefaultPageAction: () =>
         dispatch(clearRedirectAfterDefaultPage()),
-      fetchBuyableChainsAction: () => dispatch(fetchBuyableChains()),
       lookupSelectedNetworksAction: () => dispatch(lookupSelectedNetworks()),
       setBasicFunctionalityModalOpen: () =>
         dispatch(openBasicFunctionalityModal()),
@@ -157,7 +155,6 @@ export default function Home() {
     clearLastVisitedPerpsRoute,
     clearPendingRedirectRoute,
     clearRedirectAfterDefaultPageAction,
-    fetchBuyableChainsAction,
     lookupSelectedNetworksAction,
     setBasicFunctionalityModalOpen,
     setRedirectAfterDefaultPageAction,
@@ -189,9 +186,8 @@ export default function Home() {
   });
 
   useEffect(() => {
-    fetchBuyableChainsAction();
     lookupSelectedNetworksAction();
-  }, [fetchBuyableChainsAction, lookupSelectedNetworksAction]);
+  }, [lookupSelectedNetworksAction]);
 
   const onSupportLinkClick = useCallback(() => {
     if (isMain()) {
