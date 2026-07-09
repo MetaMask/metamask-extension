@@ -350,7 +350,8 @@
       "error: Warning: React does not recognize": 1
     },
     "ui/components/component-library/file-uploader/file-uploader.test.tsx": {
-      "React: Missing key props in lists": 1
+      "React: Missing key props in lists": 1,
+      "error: Warning: Component \"FileInput\" contains the": 1
     },
     "ui/components/component-library/select-wrapper/select-wrapper.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6
@@ -433,6 +434,12 @@
     },
     "ui/components/multichain/global-menu-drawer/global-menu-drawer.test.tsx": {
       "Reselect: Input stability warnings": 4
+    },
+    "ui/components/multichain/import-account/import-account.test.tsx": {
+      "error: Warning: Component \"FileInput\" contains the": 1
+    },
+    "ui/components/multichain/import-account/json.test.tsx": {
+      "error: Warning: Component \"FileInput\" contains the": 1
     },
     "ui/components/multichain/import-nfts-modal/import-nfts-modal.test.js": {
       "error: Warning: React does not recognize": 1
@@ -1086,7 +1093,8 @@
     },
     "ui/pages/shield/transaction-shield/claims-form/claims-form.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
-      "React: Act warnings (component updates not wrapped)": 8
+      "React: Act warnings (component updates not wrapped)": 8,
+      "error: Warning: Component \"FileInput\" contains the": 1
     },
     "ui/pages/shield/transaction-shield/manage-shield-plan/manage-shield-plan.test.tsx": {
       "MetaMask: Background connection not initialized": 2,

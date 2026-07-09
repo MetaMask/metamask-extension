@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { memo, type CSSProperties, type ReactNode } from 'react';
-import {
-  Tooltip as ReactTippy,
-  type Position,
-  type Size,
-} from 'react-tippy';
+import { Tooltip as ReactTippy, type Position, type Size } from 'react-tippy';
 
 const Tooltip = ({
   arrow = true,

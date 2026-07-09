@@ -1,5 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,

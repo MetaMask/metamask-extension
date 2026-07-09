@@ -86,10 +86,7 @@ function ConnectedAccountsList({
       onShowOptions={() => showAccountOptions(address)}
       show={accountWithOptionsShown === address}
     >
-      <MenuItem
-        iconNameLegacy={IconName.Logout}
-        onClick={disconnectAccount}
-      >
+      <MenuItem iconNameLegacy={IconName.Logout} onClick={disconnectAccount}>
         {t('disconnectThisAccount')}
       </MenuItem>
     </ConnectedAccountsListOptions>

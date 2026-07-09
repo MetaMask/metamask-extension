@@ -1,6 +1,8 @@
 import React, {
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useRef,
   useState,
 } from 'react';
@@ -16,24 +18,27 @@ function removeLeadingZeroes(str) {
 
 const DECIMAL_INPUT_REGEX = /^\d*(\.|,)?\d*$/u;
 
-function UnitInput({
-  className,
-  dataTestId,
-  children,
-  actionComponent,
-  error,
-  onChange,
-  onBlur,
-  placeholder = '0',
-  suffix,
-  hideSuffix,
-  value: valueProp = '',
-  keyPressRegex = DECIMAL_INPUT_REGEX,
-  isDisabled,
-  isFocusOnInput,
-  onPaste,
-  'data-testid': dataTestIdProp,
-}) {
+const UnitInput = forwardRef(function UnitInput(
+  {
+    className,
+    dataTestId,
+    children,
+    actionComponent,
+    error,
+    onChange,
+    onBlur,
+    placeholder = '0',
+    suffix,
+    hideSuffix,
+    value: valueProp = '',
+    keyPressRegex = DECIMAL_INPUT_REGEX,
+    isDisabled,
+    isFocusOnInput,
+    onPaste,
+    'data-testid': dataTestIdProp,
+  },
+  ref,
+) {
   const unitInputRef = useRef(null);
   const previousValuePropRef = useRef(valueProp);
   const [value, setValue] = useState(valueProp);
@@ -48,6 +53,16 @@ function UnitInput({
     const { offsetWidth, scrollWidth } = unitInput;
     return scrollWidth - offsetWidth > INPUT_HORIZONTAL_PADDING;
   }, []);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      updateIsOverflowing: () => {
+        setIsOverflowing(getIsOverflowing());
+      },
+    }),
+    [getIsOverflowing],
+  );
 
   useEffect(() => {
     if (Number(valueProp) !== Number(previousValuePropRef.current)) {
@@ -175,7 +190,7 @@ function UnitInput({
       {actionComponent}
     </div>
   );
-}
+});
 
 UnitInput.propTypes = {
   className: PropTypes.string,

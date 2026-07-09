@@ -37,244 +37,238 @@ function TransactionBreakdown({
   const t = useI18nContext();
 
   return (
-      <div className={classnames('transaction-breakdown', className)}>
-        <div className="transaction-breakdown__title">{t('transaction')}</div>
-        {nonce !== undefined && (
-          <TransactionBreakdownRow divider title={t('nonce')}>
-            <HexToDecimal
-              className="transaction-breakdown__value"
-              value={nonce}
-            />
-          </TransactionBreakdownRow>
-        )}
-        {sourceAmountFormatted && (
-          <TransactionBreakdownRow title={t('amountSent')}>
-            <span
-              className="transaction-breakdown__value transaction-breakdown__value--amount"
-              data-testid="transaction-breakdown-value-amount"
-            >
-              {sourceAmountFormatted}
-            </span>
-          </TransactionBreakdownRow>
-        )}
-        {destinationAmountFormatted && (
-          <TransactionBreakdownRow title={t('amountReceived')}>
-            <span
-              className="transaction-breakdown__value transaction-breakdown__value--amount"
-              data-testid="transaction-breakdown-value-amount"
-            >
-              {destinationAmountFormatted}
-            </span>
-          </TransactionBreakdownRow>
-        )}
-        {!sourceAmountFormatted && (
-          <TransactionBreakdownRow
-            title={isTokenApprove ? t('spendingCap') : t('amount')}
+    <div className={classnames('transaction-breakdown', className)}>
+      <div className="transaction-breakdown__title">{t('transaction')}</div>
+      {nonce !== undefined && (
+        <TransactionBreakdownRow divider title={t('nonce')}>
+          <HexToDecimal
+            className="transaction-breakdown__value"
+            value={nonce}
+          />
+        </TransactionBreakdownRow>
+      )}
+      {sourceAmountFormatted && (
+        <TransactionBreakdownRow title={t('amountSent')}>
+          <span
+            className="transaction-breakdown__value transaction-breakdown__value--amount"
+            data-testid="transaction-breakdown-value-amount"
           >
-            <span
-              className="transaction-breakdown__value transaction-breakdown__value--amount"
-              data-testid="transaction-breakdown-value-amount"
-            >
-              {primaryCurrency}
-            </span>
-          </TransactionBreakdownRow>
-        )}
+            {sourceAmountFormatted}
+          </span>
+        </TransactionBreakdownRow>
+      )}
+      {destinationAmountFormatted && (
+        <TransactionBreakdownRow title={t('amountReceived')}>
+          <span
+            className="transaction-breakdown__value transaction-breakdown__value--amount"
+            data-testid="transaction-breakdown-value-amount"
+          >
+            {destinationAmountFormatted}
+          </span>
+        </TransactionBreakdownRow>
+      )}
+      {!sourceAmountFormatted && (
+        <TransactionBreakdownRow
+          title={isTokenApprove ? t('spendingCap') : t('amount')}
+        >
+          <span
+            className="transaction-breakdown__value transaction-breakdown__value--amount"
+            data-testid="transaction-breakdown-value-amount"
+          >
+            {primaryCurrency}
+          </span>
+        </TransactionBreakdownRow>
+      )}
 
-        {isGasFeeSponsored && (
-          <TransactionBreakdownRow title={t('networkFee')}>
-            <SuccessPill
-              label={t('paidByMetaMask')}
-              className="transaction-breakdown__value"
-            />
-          </TransactionBreakdownRow>
-        )}
-        {!isGasFeeSponsored && (
-          <>
-            {gasPaidByAddress && (
-              // TODO: Use i18n
-              <TransactionBreakdownRow title="Gas Paid By">
-                <RecipientWithAddress
-                  checksummedRecipientAddress={gasPaidByAddress}
-                />
-              </TransactionBreakdownRow>
+      {isGasFeeSponsored && (
+        <TransactionBreakdownRow title={t('networkFee')}>
+          <SuccessPill
+            label={t('paidByMetaMask')}
+            className="transaction-breakdown__value"
+          />
+        </TransactionBreakdownRow>
+      )}
+      {!isGasFeeSponsored && (
+        <>
+          {gasPaidByAddress && (
+            // TODO: Use i18n
+            <TransactionBreakdownRow title="Gas Paid By">
+              <RecipientWithAddress
+                checksummedRecipientAddress={gasPaidByAddress}
+              />
+            </TransactionBreakdownRow>
+          )}
+          <TransactionBreakdownRow
+            title={
+              l1HexGasTotal
+                ? t('transactionHistoryL2GasLimitLabel')
+                : `${t('gasLimit')} (${t('units')})`
+            }
+            className="transaction-breakdown__row-title"
+          >
+            {typeof gas === 'undefined' ? (
+              '?'
+            ) : (
+              <HexToDecimal
+                className="transaction-breakdown__value"
+                value={gas}
+              />
             )}
+          </TransactionBreakdownRow>
+
+          {typeof gasUsed === 'string' && (
+            <TransactionBreakdownRow
+              title={`${t('gasUsed')} (${t('units')})`}
+              className="transaction-breakdown__row-title"
+            >
+              <HexToDecimal
+                className="transaction-breakdown__value"
+                value={gasUsed}
+              />
+            </TransactionBreakdownRow>
+          )}
+
+          {isEIP1559Transaction && typeof baseFee !== 'undefined' && (
+            <TransactionBreakdownRow title={t('transactionHistoryBaseFee')}>
+              <CurrencyDisplay
+                className="transaction-breakdown__value"
+                data-testid="transaction-breakdown__base-fee"
+                currency={nativeCurrency}
+                denomination={EtherDenomination.GWEI}
+                value={baseFee}
+                numberOfDecimals={10}
+                hideLabel
+              />
+            </TransactionBreakdownRow>
+          )}
+
+          {isEIP1559Transaction && typeof priorityFee !== 'undefined' && (
+            <TransactionBreakdownRow title={t('transactionHistoryPriorityFee')}>
+              <CurrencyDisplay
+                className="transaction-breakdown__value"
+                data-testid="transaction-breakdown__priority-fee"
+                currency={nativeCurrency}
+                denomination={EtherDenomination.GWEI}
+                value={priorityFee}
+                numberOfDecimals={10}
+                hideLabel
+              />
+            </TransactionBreakdownRow>
+          )}
+
+          {!isEIP1559Transaction && (
             <TransactionBreakdownRow
               title={
                 l1HexGasTotal
-                  ? t('transactionHistoryL2GasLimitLabel')
-                  : `${t('gasLimit')} (${t('units')})`
+                  ? t('transactionHistoryL2GasPriceLabel')
+                  : t('advancedGasPriceTitle')
               }
-              className="transaction-breakdown__row-title"
             >
-              {typeof gas === 'undefined' ? (
+              {typeof gasPrice === 'undefined' ? (
                 '?'
               ) : (
-                <HexToDecimal
+                <CurrencyDisplay
                   className="transaction-breakdown__value"
-                  value={gas}
+                  data-testid="transaction-breakdown__gas-price"
+                  currency={nativeCurrency}
+                  denomination={EtherDenomination.GWEI}
+                  value={gasPrice}
+                  numberOfDecimals={9}
+                  hideLabel
                 />
               )}
             </TransactionBreakdownRow>
+          )}
 
-            {typeof gasUsed === 'string' && (
-              <TransactionBreakdownRow
-                title={`${t('gasUsed')} (${t('units')})`}
-                className="transaction-breakdown__row-title"
-              >
-                <HexToDecimal
-                  className="transaction-breakdown__value"
-                  value={gasUsed}
-                />
-              </TransactionBreakdownRow>
-            )}
-
-            {isEIP1559Transaction && typeof baseFee !== 'undefined' && (
-              <TransactionBreakdownRow title={t('transactionHistoryBaseFee')}>
-                <CurrencyDisplay
-                  className="transaction-breakdown__value"
-                  data-testid="transaction-breakdown__base-fee"
-                  currency={nativeCurrency}
-                  denomination={EtherDenomination.GWEI}
-                  value={baseFee}
-                  numberOfDecimals={10}
-                  hideLabel
-                />
-              </TransactionBreakdownRow>
-            )}
-
-            {isEIP1559Transaction && typeof priorityFee !== 'undefined' && (
-              <TransactionBreakdownRow
-                title={t('transactionHistoryPriorityFee')}
-              >
-                <CurrencyDisplay
-                  className="transaction-breakdown__value"
-                  data-testid="transaction-breakdown__priority-fee"
-                  currency={nativeCurrency}
-                  denomination={EtherDenomination.GWEI}
-                  value={priorityFee}
-                  numberOfDecimals={10}
-                  hideLabel
-                />
-              </TransactionBreakdownRow>
-            )}
-
-            {!isEIP1559Transaction && (
-              <TransactionBreakdownRow
-                title={
-                  l1HexGasTotal
-                    ? t('transactionHistoryL2GasPriceLabel')
-                    : t('advancedGasPriceTitle')
-                }
-              >
-                {typeof gasPrice === 'undefined' ? (
-                  '?'
-                ) : (
-                  <CurrencyDisplay
-                    className="transaction-breakdown__value"
-                    data-testid="transaction-breakdown__gas-price"
-                    currency={nativeCurrency}
-                    denomination={EtherDenomination.GWEI}
-                    value={gasPrice}
-                    numberOfDecimals={9}
-                    hideLabel
-                  />
-                )}
-              </TransactionBreakdownRow>
-            )}
-
-            {isEIP1559Transaction && (
-              <TransactionBreakdownRow
-                title={t('transactionHistoryTotalGasFee')}
-              >
-                <UserPreferencedCurrencyDisplay
-                  className="transaction-breakdown__value"
-                  data-testid="transaction-breakdown__effective-gas-price"
-                  currency={nativeCurrency}
-                  denomination={EtherDenomination.ETH}
-                  numberOfDecimals={6}
-                  value={hexGasTotal}
-                  type={PRIMARY}
-                  chainId={chainId}
-                />
-                {showFiat && (
-                  <UserPreferencedCurrencyDisplay
-                    className="transaction-breakdown__value"
-                    type={SECONDARY}
-                    value={hexGasTotal}
-                    chainId={chainId}
-                  />
-                )}
-              </TransactionBreakdownRow>
-            )}
-
-            {isEIP1559Transaction && (
-              <TransactionBreakdownRow
-                divider
-                title={t('transactionHistoryMaxFeePerGas')}
-              >
-                <UserPreferencedCurrencyDisplay
-                  className="transaction-breakdown__value"
-                  currency={nativeCurrency}
-                  denomination={EtherDenomination.ETH}
-                  numberOfDecimals={9}
-                  value={maxFeePerGas}
-                  type={PRIMARY}
-                  chainId={chainId}
-                />
-                {showFiat && (
-                  <UserPreferencedCurrencyDisplay
-                    className="transaction-breakdown__value"
-                    type={SECONDARY}
-                    value={maxFeePerGas}
-                    chainId={chainId}
-                  />
-                )}
-              </TransactionBreakdownRow>
-            )}
-
-            {l1HexGasTotal && (
-              <TransactionBreakdownRow
-                title={t('transactionHistoryL1GasLabel')}
-              >
-                <UserPreferencedCurrencyDisplay
-                  className="transaction-breakdown__value"
-                  data-testid="transaction-breakdown__l1-gas-total"
-                  numberOfDecimals={18}
-                  value={l1HexGasTotal}
-                  type={PRIMARY}
-                  chainId={chainId}
-                />
-                {showFiat && (
-                  <UserPreferencedCurrencyDisplay
-                    className="transaction-breakdown__value"
-                    type={SECONDARY}
-                    value={l1HexGasTotal}
-                    chainId={chainId}
-                  />
-                )}
-              </TransactionBreakdownRow>
-            )}
-
-            <TransactionBreakdownRow title={t('total')}>
+          {isEIP1559Transaction && (
+            <TransactionBreakdownRow title={t('transactionHistoryTotalGasFee')}>
               <UserPreferencedCurrencyDisplay
-                className="transaction-breakdown__value transaction-breakdown__value--eth-total"
+                className="transaction-breakdown__value"
+                data-testid="transaction-breakdown__effective-gas-price"
+                currency={nativeCurrency}
+                denomination={EtherDenomination.ETH}
+                numberOfDecimals={6}
+                value={hexGasTotal}
                 type={PRIMARY}
-                value={totalInHex}
-                numberOfDecimals={l1HexGasTotal ? 18 : null}
                 chainId={chainId}
               />
               {showFiat && (
                 <UserPreferencedCurrencyDisplay
                   className="transaction-breakdown__value"
                   type={SECONDARY}
-                  value={totalInHex}
+                  value={hexGasTotal}
                   chainId={chainId}
                 />
               )}
             </TransactionBreakdownRow>
-          </>
-        )}
-      </div>
+          )}
+
+          {isEIP1559Transaction && (
+            <TransactionBreakdownRow
+              divider
+              title={t('transactionHistoryMaxFeePerGas')}
+            >
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                currency={nativeCurrency}
+                denomination={EtherDenomination.ETH}
+                numberOfDecimals={9}
+                value={maxFeePerGas}
+                type={PRIMARY}
+                chainId={chainId}
+              />
+              {showFiat && (
+                <UserPreferencedCurrencyDisplay
+                  className="transaction-breakdown__value"
+                  type={SECONDARY}
+                  value={maxFeePerGas}
+                  chainId={chainId}
+                />
+              )}
+            </TransactionBreakdownRow>
+          )}
+
+          {l1HexGasTotal && (
+            <TransactionBreakdownRow title={t('transactionHistoryL1GasLabel')}>
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                data-testid="transaction-breakdown__l1-gas-total"
+                numberOfDecimals={18}
+                value={l1HexGasTotal}
+                type={PRIMARY}
+                chainId={chainId}
+              />
+              {showFiat && (
+                <UserPreferencedCurrencyDisplay
+                  className="transaction-breakdown__value"
+                  type={SECONDARY}
+                  value={l1HexGasTotal}
+                  chainId={chainId}
+                />
+              )}
+            </TransactionBreakdownRow>
+          )}
+
+          <TransactionBreakdownRow title={t('total')}>
+            <UserPreferencedCurrencyDisplay
+              className="transaction-breakdown__value transaction-breakdown__value--eth-total"
+              type={PRIMARY}
+              value={totalInHex}
+              numberOfDecimals={l1HexGasTotal ? 18 : null}
+              chainId={chainId}
+            />
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                type={SECONDARY}
+                value={totalInHex}
+                chainId={chainId}
+              />
+            )}
+          </TransactionBreakdownRow>
+        </>
+      )}
+    </div>
   );
 }
 
