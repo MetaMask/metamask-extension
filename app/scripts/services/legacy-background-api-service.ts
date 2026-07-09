@@ -30,6 +30,7 @@ import {
   AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
+  AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
@@ -42,11 +43,27 @@ import {
   TransactionControllerUpdateEditableParamsAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
-import { CurrencyRateControllerSetCurrentCurrencyAction } from '@metamask/assets-controllers';
-import { AssetsControllerSetSelectedCurrencyAction } from '@metamask/assets-controller';
+import {
+  CurrencyRateControllerSetCurrentCurrencyAction,
+  TokenDetectionControllerDisableAction,
+  TokenDetectionControllerEnableAction,
+} from '@metamask/assets-controllers';
+import {
+  AccountId,
+  Asset,
+  AssetsControllerGetAssetsAction,
+  AssetsControllerSetSelectedCurrencyAction,
+  Caip19AssetId,
+} from '@metamask/assets-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
+  PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerTestOriginAction,
+} from '@metamask/phishing-controller';
+import {
+  ApprovalControllerAcceptRequestAction,
   ApprovalControllerGetStateAction,
   ApprovalControllerRejectRequestAction,
   ApprovalRequestNotFoundError,
@@ -90,6 +107,9 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { SnapInterfaceControllerDeleteInterfaceAction } from '@metamask/snaps-controllers';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
@@ -99,12 +119,23 @@ import {
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
 } from '@metamask/account-tree-controller';
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
 import {
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
-import { SubscriptionControllerStopAllPollingAction } from '@metamask/subscription-controller';
+import {
+  SubscriptionControllerGetStateAction,
+  SubscriptionControllerStopAllPollingAction,
+} from '@metamask/subscription-controller';
+import {
+  ShieldControllerStartAction,
+  ShieldControllerStopAction,
+} from '@metamask/shield-controller';
+import {
+  GasFeeControllerDisableNonRPCGasFeeApisAction,
+  GasFeeControllerEnableNonRPCGasFeeApisAction,
+} from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { cloneDeep } from 'lodash';
 import {
@@ -112,12 +143,16 @@ import {
   isPublicEndpointUrl,
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import {
   ASSETS_UNIFY_STATE_VERSION_1,
   AssetsUnifyStateFeatureFlag,
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
@@ -125,9 +160,13 @@ import {
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
+import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
-import { TransactionControllerInitMessenger } from '../messenger-client-init/messengers/transaction-controller-messenger';
-import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
+import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
+import {
+  PreferencesControllerSetPasswordForgottenAction,
+  PreferencesControllerToggleExternalServicesAction,
+} from '../controllers/preferences-controller-method-action-types';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerCreateEventFragmentAction,
@@ -158,28 +197,35 @@ const MESSENGER_EXPOSED_METHODS = [
   'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
+  'getAssets',
   'getCode',
   'getGlobalChainId',
   'getNextNonce',
   'getOpenMetamaskTabsIds',
+  'getPhishingResult',
   'getRequestAccountTabIds',
   'getSeedPhrase',
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
+  'isSendBundleSupported',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'rejectAllPendingApprovals',
   'rejectPendingApproval',
   'rejectPermissionsRequest',
   'removeAccount',
   'removePermissionsFor',
   'resetAccount',
+  'setAccountLabel',
   'setCurrentCurrency',
   'setLocked',
   'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
+  'throwTestError',
+  'toggleExternalServices',
   'unMarkPasswordForgotten',
   'upsertTransactionUIMetricsFragment',
 ] as const;
@@ -196,17 +242,22 @@ type AllowedActions =
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
+  | ApprovalControllerAcceptRequestAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AssetsControllerGetAssetsAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
+  | GasFeeControllerDisableNonRPCGasFeeApisAction
+  | GasFeeControllerEnableNonRPCGasFeeApisAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
   | KeyringControllerExportAccountAction
@@ -241,7 +292,10 @@ type AllowedActions =
   | PermissionControllerRejectPermissionsRequestAction
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
+  | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerTestOriginAction
   | PreferencesControllerSetPasswordForgottenAction
+  | PreferencesControllerToggleExternalServicesAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
@@ -256,8 +310,14 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | ShieldControllerStartAction
+  | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
+  | SnapInterfaceControllerDeleteInterfaceAction
+  | SubscriptionControllerGetStateAction
   | SubscriptionControllerStopAllPollingAction
+  | TokenDetectionControllerDisableAction
+  | TokenDetectionControllerEnableAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
@@ -394,6 +454,32 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Refreshes and returns the assets for the given accounts via the
+   * AssetsController (force-updating from remote sources).
+   *
+   * No-ops when the assets unify state feature is not enabled, since the
+   * AssetsController is not registered in that case.
+   *
+   * @param accounts - The accounts to fetch assets for.
+   * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
+   * @returns The assets for the given accounts, or `undefined` when the feature
+   * is not enabled.
+   */
+  async getAssets(
+    accounts: InternalAccount[],
+    options?: Parameters<AssetsControllerGetAssetsAction['handler']>[1],
+  ): Promise<Record<AccountId, Record<Caip19AssetId, Asset>> | undefined> {
+    if (!this.isAssetsUnifyStateEnabled()) {
+      return undefined;
+    }
+
+    return await this.#messenger.call('AssetsController:getAssets', accounts, {
+      ...options,
+      forceUpdate: true,
+    });
+  }
+
+  /**
    * Determines if the given endpoint URL is a public endpoint URL.
    *
    * @param endpointUrl - The endpoint URL to check.
@@ -401,6 +487,16 @@ export class LegacyBackgroundApiService {
    */
   isPublicEndpointUrl(endpointUrl: string): boolean {
     return isPublicEndpointUrl(endpointUrl, this.#infuraProjectId);
+  }
+
+  /**
+   * Determines whether the sendBundle feature is supported for the given chain.
+   *
+   * @param chainId - The chain ID to check.
+   * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
+   */
+  async isSendBundleSupported(chainId: Hex): Promise<boolean> {
+    return await isSendBundleSupported(chainId);
   }
 
   /**
@@ -419,6 +515,21 @@ export class LegacyBackgroundApiService {
    */
   getOpenMetamaskTabsIds(): Record<string, number> {
     return this.#getOpenMetamaskTabsIds();
+  }
+
+  /**
+   * Updates the phishing lists if necessary and then checks whether the given
+   * website is a known phishing site.
+   *
+   * @param website - The website origin to check.
+   * @returns The phishing detection result.
+   */
+  async getPhishingResult(
+    website: string,
+  ): Promise<ReturnType<PhishingControllerTestOriginAction['handler']>> {
+    await this.#messenger.call('PhishingController:maybeUpdateState');
+
+    return this.#messenger.call('PhishingController:testOrigin', website);
   }
 
   /**
@@ -613,6 +724,27 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call('KeyringController:removeAccount', address);
 
     return address;
+  }
+
+  /**
+   * Sets the label for the account at the given address.
+   *
+   * @param address - The address of the account to set the label for.
+   * @param label - The label to set for the account.
+   */
+  setAccountLabel(address: string, label: string): void {
+    const account = this.#messenger.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
+    if (account === undefined) {
+      throw new Error(`No account found for address: ${address}`);
+    }
+    this.#messenger.call(
+      'AccountsController:setAccountName',
+      account.id,
+      label,
+    );
   }
 
   /**
@@ -1408,6 +1540,117 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Rejects all pending approval requests.
+   *
+   * Snap dialogs and account confirmations are accepted with a falsy value and
+   * their interface deleted where applicable, while all other approvals are
+   * rejected with a user-rejected-request error.
+   */
+  rejectAllPendingApprovals(): void {
+    const { pendingApprovals } = this.#messenger.call(
+      'ApprovalController:getState',
+    );
+
+    const approvalRequests = Object.values(pendingApprovals);
+
+    for (const approvalRequest of approvalRequests) {
+      const { id, type, origin } = approvalRequest;
+      const interfaceId = approvalRequest.requestData?.id as string;
+
+      switch (type) {
+        case ApprovalType.SnapDialogAlert:
+        case ApprovalType.SnapDialogPrompt:
+        case DIALOG_APPROVAL_TYPES.default:
+          log.debug('Rejecting snap dialog', { id, interfaceId, origin, type });
+          this.#messenger.call('ApprovalController:acceptRequest', id, null);
+          this.#messenger.call(
+            'SnapInterfaceController:deleteInterface',
+            interfaceId,
+          );
+          break;
+
+        case ApprovalType.SnapDialogConfirmation:
+          log.debug('Rejecting snap confirmation', {
+            id,
+            interfaceId,
+            origin,
+            type,
+          });
+          this.#messenger.call('ApprovalController:acceptRequest', id, false);
+          this.#messenger.call(
+            'SnapInterfaceController:deleteInterface',
+            interfaceId,
+          );
+          break;
+
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
+          log.debug('Rejecting snap account confirmation', {
+            id,
+            origin,
+            type,
+          });
+          this.#messenger.call('ApprovalController:acceptRequest', id, false);
+          break;
+
+        default:
+          log.debug('Rejecting pending approval', { id, origin, type });
+          this.#messenger.call(
+            'ApprovalController:rejectRequest',
+            id,
+            providerErrors.userRejectedRequest({
+              data: {
+                cause: 'rejectAllApprovals',
+              },
+            }),
+          );
+          break;
+      }
+    }
+  }
+
+  /**
+   * Toggles external services on or off.
+   *
+   * When enabled, token detection and non-RPC gas fee APIs are started, and the
+   * shield service is started if the user has an active shield subscription.
+   * When disabled, those services are stopped, subscription polling is halted,
+   * and the shield service is stopped if applicable.
+   *
+   * @param useExternal - Whether external services should be enabled.
+   */
+  toggleExternalServices(useExternal: boolean): void {
+    this.#messenger.call(
+      'PreferencesController:toggleExternalServices',
+      useExternal,
+    );
+
+    const subscriptionState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+      subscriptionState.subscriptions,
+    );
+
+    if (useExternal) {
+      this.#messenger.call('TokenDetectionController:enable');
+      this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
+      if (hasActiveShieldSubscription) {
+        this.#messenger.call('ShieldController:start');
+      }
+    } else {
+      this.#messenger.call('TokenDetectionController:disable');
+      this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
+      // stop polling for the subscriptions if external services are disabled
+      this.#messenger.call('SubscriptionController:stopAllPolling');
+      if (hasActiveShieldSubscription) {
+        this.#messenger.call('ShieldController:stop');
+      }
+    }
+  }
+
+  /**
    * Accepts a permissions request. Silently ignores the request if it can no
    * longer be found.
    *
@@ -1424,5 +1667,20 @@ export class LegacyBackgroundApiService {
         throw error;
       }
     }
+  }
+
+  /**
+   * Throw an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * use this for handling errors.
+   */
+  throwTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      throw error;
+    });
   }
 }

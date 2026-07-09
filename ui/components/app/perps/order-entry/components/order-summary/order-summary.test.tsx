@@ -199,4 +199,36 @@ describe('OrderSummary', () => {
       ).toHaveTextContent('-');
     });
   });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks liquidation price and margin when privacy mode is enabled', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired="$1,000.00"
+          estimatedFees={0.5}
+          liquidationPrice="$42,500.00"
+        />,
+        privacyStore,
+      );
+
+      expect(screen.queryByText('$1,000.00')).not.toBeInTheDocument();
+      expect(screen.queryByText('$42,500.00')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-summary-margin-required'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-order-summary-liquidation-price'),
+      ).toHaveTextContent('••••••');
+    });
+  });
 });

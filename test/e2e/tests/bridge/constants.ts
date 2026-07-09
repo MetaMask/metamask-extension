@@ -50,11 +50,6 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
   },
 };
 
-export const LOCATOR = {
-  MM_IMPORT_TOKENS_MODAL: (suffix: string) =>
-    `[data-testid="import-tokens-modal-${suffix}"]`,
-};
-
 export const ETH_CONVERSION_RATE_USD = 1;
 export const MOCK_CURRENCY_RATES = {
   currencyRates: {

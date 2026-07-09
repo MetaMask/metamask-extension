@@ -45,7 +45,7 @@ const CHAINLIST_SCROLL_THRESHOLD_PX = 120;
 type ChainlistNetworkPickerProps = {
   existingNetworkChainIds: Set<string>;
   existingNetworkNamesByChainId: Record<string, string>;
-  onSelect: (network: ChainlistNetwork) => void;
+  onSelect: (network: ChainlistNetwork, searchQuery?: string) => void;
 };
 
 export const ChainlistNetworkPicker = ({
@@ -146,11 +146,10 @@ export const ChainlistNetworkPicker = ({
 
           return (
             <button
-              className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
               data-testid="networks-page-chainlist-network"
               key={`${network.chainId}-${network.name}`}
-              onClick={() => onSelect(network)}
-              type="button"
+              onClick={() => onSelect(network, searchValue.trim() || undefined)}
             >
               {networkImageUrl ? (
                 <AvatarNetwork
