@@ -53,16 +53,15 @@ describe('Deep Link - /swap Route', function () {
             await homePage.checkPageIsLoaded();
           }
 
-          // navigate to the route and make sure it
-          // redirects to the deep link interstitial page
+          // navigate to the route
           const preparedUrl = await prepareDeepLinkUrl({
             route,
             signed,
             privateKey: keyPair.privateKey,
           });
 
-          // Navigate through deep link interstitial, complete login if locked,
-          // and verify the swap page has been loaded!
+          // Navigate through the deep link flow, complete login if locked,
+          // and verify the swap page has been loaded.
           await navigateDeepLinkToDestination(
             driver,
             preparedUrl,

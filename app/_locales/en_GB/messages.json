@@ -1175,7 +1175,7 @@
     "message": "Add friends and addresses you trust"
   },
   "addFromChainlist": {
-    "message": "Add from Chainlist"
+    "message": "Add from ChainList"
   },
   "addFunds": {
     "message": "Add funds"
@@ -2528,6 +2528,14 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
+  },
+  "chainlistLearnHowToStaySafe": {
+    "message": "Learn how to stay safe.",
+    "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
+  },
+  "chainlistNetworkDataSourceBanner": {
+    "message": "Network data comes from ChainList. Always verify before adding. $1",
+    "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
   },
   "chainlistNetworkDetails": {
     "message": "Symbol: $1 · ID: $2",
@@ -10920,6 +10928,9 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "transactionIdCopied": {
+    "message": "Transaction ID copied"
   },
   "transactionIdLabel": {
     "message": "Transaction ID",

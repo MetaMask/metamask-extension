@@ -246,10 +246,10 @@ export const NetworksPage = () => {
         return;
       }
 
-      const rpcEndpoints = getUsableUrls(network.rpc).map((url) => ({
-        url,
-        type: RpcEndpointType.Custom,
-      }));
+      const primaryRpcUrl = getUsableUrls(network.rpc)[0];
+      const rpcEndpoints = primaryRpcUrl
+        ? [{ url: primaryRpcUrl, type: RpcEndpointType.Custom }]
+        : [];
       const blockExplorerUrls = getUsableUrls(
         network.explorers?.map((explorer) => explorer.url ?? '') ?? [],
       );
