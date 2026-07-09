@@ -33,6 +33,7 @@ import {
 } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
@@ -44,6 +45,15 @@ import {
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
 
 jest.mock('../lib/transaction/containers/enforced-simulations');
+
+jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
+  ...jest.requireActual('../../../shared/lib/shield/subscription-utils'),
+  getIsShieldSubscriptionActive: jest.fn(),
+}));
+
+const mockGetIsShieldSubscriptionActive = jest.mocked(
+  getIsShieldSubscriptionActive,
+);
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -246,6 +256,96 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('getAssets', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    it('fetches assets from the AssetsController with forceUpdate when the feature is enabled', async () => {
+      const accounts = [{ id: 'account-1' }] as never;
+      const options = { chainIds: ['eip155:1'] };
+      const assets = { 'account-1': {} };
+
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const getAssetsHandler = jest.fn().mockResolvedValue(assets);
+        rootMessenger.registerActionHandler(
+          'AssetsController:getAssets',
+          getAssetsHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:getAssets',
+            accounts,
+            options as never,
+          ),
+        ).resolves.toStrictEqual(assets);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AssetsController:getAssets',
+          accounts,
+          { ...options, forceUpdate: true },
+        );
+      });
+    });
+
+    it('resolves to undefined and does not call the AssetsController when the feature is not enabled', async () => {
+      const accounts = [{ id: 'account-1' }] as never;
+
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const getAssetsHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:getAssets',
+          getAssetsHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:getAssets', accounts),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AssetsController:getAssets',
+          expect.anything(),
+          expect.anything(),
+        );
+        expect(getAssetsHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('isPublicEndpointUrl', () => {
     it('returns true for a public endpoint URL', async () => {
       await withService(({ rootMessenger }) => {
@@ -311,6 +411,35 @@ describe('LegacyBackgroundApiService', () => {
           expect(mockGetOpenMetamaskTabsIds).toHaveBeenCalled();
         },
       );
+    });
+  });
+
+  describe('getPhishingResult', () => {
+    it('updates the phishing state and returns the test result for the website', async () => {
+      const website = 'https://example.com';
+      const phishingResult = { result: false, type: 'all' };
+      const mockMaybeUpdateState = jest.fn();
+      const mockTestOrigin = jest.fn().mockReturnValue(phishingResult);
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PhishingController:maybeUpdateState',
+          mockMaybeUpdateState,
+        );
+        rootMessenger.registerActionHandler(
+          'PhishingController:testOrigin',
+          mockTestOrigin,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getPhishingResult',
+          website,
+        );
+
+        expect(mockMaybeUpdateState).toHaveBeenCalled();
+        expect(mockTestOrigin).toHaveBeenCalledWith(website);
+        expect(result).toBe(phishingResult);
+      });
     });
   });
 
@@ -3074,6 +3203,168 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('toggleExternalServices', () => {
+    afterEach(() => {
+      mockGetIsShieldSubscriptionActive.mockReset();
+    });
+
+    /**
+     * Registers handlers for all actions used by `toggleExternalServices`.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @returns The registered mock handlers, keyed by action.
+     */
+    function registerToggleExternalServicesHandlers(
+      rootMessenger: RootMessenger,
+    ) {
+      const handlers = {
+        toggleExternalServices: jest.fn(),
+        getState: jest.fn().mockReturnValue({ subscriptions: [] }),
+        enableTokenDetection: jest.fn(),
+        disableTokenDetection: jest.fn(),
+        enableGasFeeApis: jest.fn(),
+        disableGasFeeApis: jest.fn(),
+        stopAllPolling: jest.fn(),
+        startShield: jest.fn(),
+        stopShield: jest.fn(),
+      };
+      rootMessenger.registerActionHandler(
+        'PreferencesController:toggleExternalServices',
+        handlers.toggleExternalServices,
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:getState',
+        handlers.getState,
+      );
+      rootMessenger.registerActionHandler(
+        'TokenDetectionController:enable',
+        handlers.enableTokenDetection,
+      );
+      rootMessenger.registerActionHandler(
+        'TokenDetectionController:disable',
+        handlers.disableTokenDetection,
+      );
+      rootMessenger.registerActionHandler(
+        'GasFeeController:enableNonRPCGasFeeApis',
+        handlers.enableGasFeeApis,
+      );
+      rootMessenger.registerActionHandler(
+        'GasFeeController:disableNonRPCGasFeeApis',
+        handlers.disableGasFeeApis,
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:stopAllPolling',
+        handlers.stopAllPolling,
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:start',
+        handlers.startShield,
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:stop',
+        handlers.stopShield,
+      );
+      return handlers;
+    }
+
+    it('enables external services and starts shield when a subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(true);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          true,
+        );
+
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(true);
+        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.startShield).toHaveBeenCalledTimes(1);
+        expect(handlers.disableTokenDetection).not.toHaveBeenCalled();
+        expect(handlers.stopAllPolling).not.toHaveBeenCalled();
+        expect(handlers.stopShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('enables external services without starting shield when no subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(false);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          true,
+        );
+
+        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.startShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('disables external services and stops shield when a subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(true);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          false,
+        );
+
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(false);
+        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
+        expect(handlers.stopShield).toHaveBeenCalledTimes(1);
+        expect(handlers.enableTokenDetection).not.toHaveBeenCalled();
+        expect(handlers.startShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('disables external services without stopping shield when no subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(false);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          false,
+        );
+
+        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
+        expect(handlers.stopShield).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('throwTestError', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('throws a TestError with the given message from a timeout handler', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.call('LegacyBackgroundApiService:throwTestError', 'boom');
+
+        expect(() => jest.runAllTimers()).toThrow(
+          expect.objectContaining({ name: 'TestError', message: 'boom' }),
+        );
+      });
+    });
+  });
 });
 
 /**
@@ -3138,6 +3429,7 @@ function getMessenger(
       'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
+      'AssetsController:getAssets',
       'AssetsController:setSelectedCurrency',
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
@@ -3206,6 +3498,16 @@ function getMessenger(
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',
+      'PhishingController:maybeUpdateState',
+      'PhishingController:testOrigin',
+      'PreferencesController:toggleExternalServices',
+      'SubscriptionController:getState',
+      'TokenDetectionController:enable',
+      'TokenDetectionController:disable',
+      'GasFeeController:enableNonRPCGasFeeApis',
+      'GasFeeController:disableNonRPCGasFeeApis',
+      'ShieldController:start',
+      'ShieldController:stop',
     ],
   });
 

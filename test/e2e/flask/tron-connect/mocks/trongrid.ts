@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { Mockttp } from 'mockttp';
 import { TRANSACTION_HASH_MOCK } from '../common-tron';
 
@@ -156,11 +157,17 @@ const accountResourcesResponse = {
   TotalEnergyWeight: 19125511029,
 };
 
-const blockResponse = {
-  blockID: 'xxxxxxxx',
+// The block number and blockID must stay consistent with the transaction's
+// TAPOS reference (`ref_block_bytes` / `ref_block_hash`) returned by
+// `mockTriggerSmartContract`, otherwise the snap's `isTransactionExpired` check
+// treats the transaction as expired and disables the Confirm button:
+//   - number % 65536 === 0x8b15  → getRefBlockBytes(number) === '8b15'
+//   - blockID.slice(16, 32)      === '5fca48bd51bf3f1d' (ref_block_hash)
+const buildBlockResponse = () => ({
+  blockID: '00000000039d8b155fca48bd51bf3f1d00000000000000000000000000000000',
   block_header: {
     raw_data: {
-      number: 60677731,
+      number: 60656405,
       txTrieRoot:
         '0000000000000000000000000000000000000000000000000000000000000000',
       witness_address: '41ce9b5acfce023822bcdf302333668cce2ba60bca',
@@ -173,22 +180,22 @@ const blockResponse = {
     witness_signature:
       '354261801bf88973cc144d74d81f90e3ebeb8ea6029b42412757e7e996df6d3a2ad22db54675d77be3774cc067e47f374a9bc8ffbdeb0cb62c6057be26201c9000',
   },
-};
+});
 
 export const mockGetBlock = (mockServer: Mockttp) =>
   mockServer
     .forPost(`${TRONGRID_API_URL}/wallet/getblock`)
-    .thenJson(200, blockResponse);
+    .thenCallback(() => ({ statusCode: 200, json: buildBlockResponse() }));
 
 export const mockGetNowBlock = (mockServer: Mockttp) =>
   mockServer
     .forPost(`${TRONGRID_API_URL}/wallet/getnowblock`)
-    .thenJson(200, blockResponse);
+    .thenCallback(() => ({ statusCode: 200, json: buildBlockResponse() }));
 
 export const mockGetBlockByNum = (mockServer: Mockttp) =>
   mockServer
     .forPost(`${TRONGRID_API_URL}/wallet/getblockbynum`)
-    .thenJson(200, blockResponse);
+    .thenCallback(() => ({ statusCode: 200, json: buildBlockResponse() }));
 
 // TODO: Check why we had to mock this. Do we intend this call to be routed through Infura
 // instead of Trongrid ?
@@ -196,7 +203,7 @@ export const mockGetNowBlockInfura = (mockServer: Mockttp) =>
   mockServer
     .forGet(/tron-mainnet\.infura\.io\/v3\/.*\/wallet\/getnowblock/u)
     .always()
-    .thenJson(200, blockResponse);
+    .thenCallback(() => ({ statusCode: 200, json: buildBlockResponse() }));
 
 export const mockBroadcastTransaction = (mockServer: Mockttp) =>
   mockServer
@@ -206,40 +213,97 @@ export const mockBroadcastTransaction = (mockServer: Mockttp) =>
       txid: TRANSACTION_HASH_MOCK,
     });
 
+/**
+ * Encodes an unsigned integer as a protobuf LEB128 varint hex string.
+ *
+ * @param value - The value to encode.
+ * @returns The lowercase hex encoding of the varint.
+ */
+/* eslint-disable no-bitwise */
+const encodeVarintHex = (value: number): string => {
+  let remaining = BigInt(value);
+  const bytes: number[] = [];
+  do {
+    let byte = Number(remaining & 0x7fn);
+    remaining >>= 7n;
+    if (remaining > 0n) {
+      byte |= 0x80;
+    }
+    bytes.push(byte);
+  } while (remaining > 0n);
+  return bytes.map((byte) => byte.toString(16).padStart(2, '0')).join('');
+};
+/* eslint-enable no-bitwise */
+
+// The original hardcoded timestamps baked into the static `raw_data_hex` below.
+// They are rewritten to fresh values on every request so the snap's TAPOS/
+// expiration check (`isTransactionExpired`) does not reject the transaction as
+// expired — which would disable the confirmation's Confirm button and surface
+// the "This transaction was reverted during simulation" banner.
+const STATIC_EXPIRATION_MS = 1768469721000;
+const STATIC_TIMESTAMP_MS = 1768469664343;
+const STATIC_RAW_DATA_HEX =
+  '0a028b1522085fca48bd51bf3f1d40a8df8988bc335aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a1541588c5216750cceaad16cf5a757e3f7b32835a5e1121541a614f803b6fd780986a42c78ec9c7f77e6ded13c2244a9059cbb00000000000000000000000032f9c0c487f21716b7a8f12906b7528899026558000000000000000000000000000000000000000000000000000000000754d4c070d7a48688bc33900180c2d72f';
+
 export const mockTriggerSmartContract = (mockServer: Mockttp) =>
   mockServer
     .forPost(`${TRONGRID_API_URL}/wallet/triggersmartcontract`)
-    .thenJson(200, {
-      result: {
-        result: true,
-      },
-      transaction: {
-        visible: false,
-        txID: 'c58a836f6a2a06f56b3fa35cc64513499c7b3ee4b1045760a66128842868f49c',
-        raw_data: {
-          contract: [
-            {
-              parameter: {
-                value: {
-                  data: 'a9059cbb00000000000000000000000032f9c0c487f21716b7a8f12906b7528899026558000000000000000000000000000000000000000000000000000000000754d4c0',
-                  owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
-                  contract_address:
-                    '41a614f803b6fd780986a42c78ec9c7f77e6ded13c',
+    .thenCallback(() => {
+      const now = Date.now();
+      const timestamp = now;
+      // Keep well within Tron's TAPOS validity window (< 24h ahead, > the
+      // snap's ~9s freshness buffer). Both timestamps stay 6-byte varints for
+      // realistic dates, so the in-place hex rewrite preserves byte length.
+      const expiration = now + 10 * 60 * 1000;
+
+      const rawDataHex = STATIC_RAW_DATA_HEX.replace(
+        encodeVarintHex(STATIC_EXPIRATION_MS),
+        encodeVarintHex(expiration),
+      ).replace(
+        encodeVarintHex(STATIC_TIMESTAMP_MS),
+        encodeVarintHex(timestamp),
+      );
+
+      const txID = createHash('sha256')
+        .update(Buffer.from(rawDataHex, 'hex'))
+        .digest('hex');
+
+      return {
+        statusCode: 200,
+        json: {
+          result: {
+            result: true,
+          },
+          transaction: {
+            visible: false,
+            txID,
+            raw_data: {
+              contract: [
+                {
+                  parameter: {
+                    value: {
+                      data: 'a9059cbb00000000000000000000000032f9c0c487f21716b7a8f12906b7528899026558000000000000000000000000000000000000000000000000000000000754d4c0',
+                      owner_address:
+                        '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
+                      contract_address:
+                        '41a614f803b6fd780986a42c78ec9c7f77e6ded13c',
+                    },
+                    type_url:
+                      'type.googleapis.com/protocol.TriggerSmartContract',
+                  },
+                  type: 'TriggerSmartContract',
                 },
-                type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
-              },
-              type: 'TriggerSmartContract',
+              ],
+              ref_block_bytes: '8b15',
+              ref_block_hash: '5fca48bd51bf3f1d',
+              expiration,
+              fee_limit: 100000000,
+              timestamp,
             },
-          ],
-          ref_block_bytes: '8b15',
-          ref_block_hash: '5fca48bd51bf3f1d',
-          expiration: 1768469721000,
-          fee_limit: 100000000,
-          timestamp: 1768469664343,
+            raw_data_hex: rawDataHex,
+          },
         },
-        raw_data_hex:
-          '0a028b1522085fca48bd51bf3f1d40a8df8988bc335aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a1541588c5216750cceaad16cf5a757e3f7b32835a5e1121541a614f803b6fd780986a42c78ec9c7f77e6ded13c2244a9059cbb00000000000000000000000032f9c0c487f21716b7a8f12906b7528899026558000000000000000000000000000000000000000000000000000000000754d4c070d7a48688bc33900180c2d72f',
-      },
+      };
     });
 
 export const mockAccountRequest = (mockServer: Mockttp) =>

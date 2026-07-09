@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getMultichainAccountUrl,
@@ -52,12 +51,13 @@ export type ViewExplorerMenuItemProps = {
   account: InternalAccount;
 };
 
+type TrackEvent = ReturnType<typeof useAnalytics>['trackEvent'];
 type CreateEventBuilder = ReturnType<typeof useAnalytics>['createEventBuilder'];
 
 export const openBlockExplorer = (
   addressLink: string,
   metricsLocation: string,
-  trackEvent: (built: AnalyticsEvent) => void,
+  trackEvent: TrackEvent,
   createEventBuilder: CreateEventBuilder,
   closeMenu?: () => void,
 ) => {

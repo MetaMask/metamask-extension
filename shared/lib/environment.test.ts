@@ -5,6 +5,7 @@ import {
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
+  getIsBasicFunctionalityConsolidationEnabledInBuild,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -104,6 +105,33 @@ describe('getIsAssetsUnifiedStateIncludedInBuild', () => {
   it('returns false when ASSETS_UNIFIED_STATE_ENABLED is undefined', () => {
     delete process.env.ASSETS_UNIFIED_STATE_ENABLED;
     expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(false);
+  });
+});
+
+describe('getIsBasicFunctionalityConsolidationEnabledInBuild', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.BFT_CONSOLIDATION_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.BFT_CONSOLIDATION_ENABLED = originalValue;
+  });
+
+  it('returns true when BFT_CONSOLIDATION_ENABLED is "true"', () => {
+    process.env.BFT_CONSOLIDATION_ENABLED = 'true';
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(true);
+  });
+
+  it('returns false when BFT_CONSOLIDATION_ENABLED is "false"', () => {
+    process.env.BFT_CONSOLIDATION_ENABLED = 'false';
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(false);
+  });
+
+  it('returns false when BFT_CONSOLIDATION_ENABLED is undefined', () => {
+    delete process.env.BFT_CONSOLIDATION_ENABLED;
+    expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(false);
   });
 });
 

@@ -197,6 +197,52 @@
   "activity_approveSpendingCap_success_title": {
     "message": "Approved spending cap"
   },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "Activate trustline failed"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "Activating trustline $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "Trustline activated $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "Deactivate trustline failed"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "Deactivating trustline $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "Trustline deactivated $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_bridge_failed_description": {
     "message": "Bridge failed"
   },
@@ -1078,9 +1124,6 @@
   },
   "addAccount": {
     "message": "Add account"
-  },
-  "addAcquiredTokens": {
-    "message": "Add the tokens you've acquired using MetaMask"
   },
   "addAlias": {
     "message": "Add alias"
@@ -3116,9 +3159,6 @@
   "customSlippage": {
     "message": "Custom"
   },
-  "customToken": {
-    "message": "Custom token"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn about $1"
   },
@@ -3667,9 +3707,6 @@
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
-  "enableFromSettings": {
-    "message": " Enable it from Settings."
-  },
   "enableSmartContractAccount": {
     "message": "Use smart account"
   },
@@ -3696,9 +3733,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "The RPC URL you have entered returned a different chain ID ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Enhanced token detection is currently available on $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:"
@@ -4653,15 +4687,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
-  "importTokenQuestion": {
-    "message": "Import token?"
-  },
-  "importTokenWarning": {
-    "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
-  },
-  "importTokensCamelCase": {
-    "message": "Import tokens"
-  },
   "importTokensError": {
     "message": "We could not import the tokens. Please try again later."
   },
@@ -5010,9 +5035,6 @@
   },
   "lightTheme": {
     "message": "Light"
-  },
-  "likeToImportToken": {
-    "message": "Would you like to import this token?"
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
@@ -5584,9 +5606,6 @@
   },
   "musdTermsApply": {
     "message": "Terms apply."
-  },
-  "mustSelectOne": {
-    "message": "Must select at least 1 token."
   },
   "name": {
     "message": "Name"
@@ -8624,6 +8643,106 @@
   "save": {
     "message": "Save"
   },
+  "scamQuestionnaireContinue": {
+    "message": "Continue"
+  },
+  "scamQuestionnaireHeaderTitle": {
+    "message": "Security check"
+  },
+  "scamQuestionnaireQ1No": {
+    "message": "No, I know this person in real life"
+  },
+  "scamQuestionnaireQ1Subtitle": {
+    "message": "This includes dating apps, social media, and group chats—even if you've spoken on video."
+  },
+  "scamQuestionnaireQ1Title": {
+    "message": "Did someone you only know online tell you to send this?"
+  },
+  "scamQuestionnaireQ1Yes": {
+    "message": "Yes, someone I met online told me to send this"
+  },
+  "scamQuestionnaireQ2GoodsSubtitle": {
+    "message": "Paying a merchant for something I'm receiving"
+  },
+  "scamQuestionnaireQ2GoodsTitle": {
+    "message": "Buying goods or services"
+  },
+  "scamQuestionnaireQ2GovernmentSubtitle": {
+    "message": "Fines, taxes, or official fees requested in crypto"
+  },
+  "scamQuestionnaireQ2GovernmentTitle": {
+    "message": "Paying the police or a government agency"
+  },
+  "scamQuestionnaireQ2HelpingSubtitle": {
+    "message": "Sending money to a partner, family member, or friend in need"
+  },
+  "scamQuestionnaireQ2HelpingTitle": {
+    "message": "Helping someone I care about"
+  },
+  "scamQuestionnaireQ2InvestmentSubtitle": {
+    "message": "Buying crypto, tokens, or a financial opportunity"
+  },
+  "scamQuestionnaireQ2InvestmentTitle": {
+    "message": "Investment"
+  },
+  "scamQuestionnaireQ2JobSubtitle": {
+    "message": "Onboarding fees, equipment, or task payments"
+  },
+  "scamQuestionnaireQ2JobTitle": {
+    "message": "A job opportunity or work-related"
+  },
+  "scamQuestionnaireQ2SelfTransferSubtitle": {
+    "message": "Self-transfer or moving to cold storage"
+  },
+  "scamQuestionnaireQ2SelfTransferTitle": {
+    "message": "Moving funds between my own wallets"
+  },
+  "scamQuestionnaireQ2Subtitle": {
+    "message": "Choose the option that best describes this payment."
+  },
+  "scamQuestionnaireQ2Title": {
+    "message": "What's this payment for?"
+  },
+  "scamQuestionnaireQ3No": {
+    "message": "No, I am doing this entirely on my own"
+  },
+  "scamQuestionnaireQ3Subtitle": {
+    "message": "This could be over a phone call, video chat, or sharing your screen."
+  },
+  "scamQuestionnaireQ3Title": {
+    "message": "Is someone guiding you through this transaction?"
+  },
+  "scamQuestionnaireQ3Yes": {
+    "message": "Yes, someone is walking me through the steps right now"
+  },
+  "scamQuestionnaireSelectAnswer": {
+    "message": "Select an answer"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Contact support"
+  },
+  "scamQuestionnaireWarningProceedAnyway": {
+    "message": "Ignore risks and continue anyway"
+  },
+  "scamQuestionnaireWarningProceedAnywayCountdown": {
+    "message": "Continue anyway in $1s",
+    "description": "$1 is the number of seconds remaining before the user can continue"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleDetail": {
+    "message": "Once you send, your funds can't be recovered."
+  },
+  "scamQuestionnaireWarningReasonIrreversibleEmphasis": {
+    "message": "Crypto transactions are irreversible."
+  },
+  "scamQuestionnaireWarningReasonKnownScam": {
+    "message": "Based on your answers and this recipient's history, this transaction might be a scam."
+  },
+  "scamQuestionnaireWarningStopPayment": {
+    "message": "Stop this payment"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "You might be getting scammed right now"
+  },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
   },
@@ -10711,9 +10830,6 @@
   },
   "tokenDecimal": {
     "message": "Token decimal"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "Token decimal required. Find it on: $1"
   },
   "tokenDetails": {
     "message": "Token details"
