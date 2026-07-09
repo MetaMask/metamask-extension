@@ -30,6 +30,21 @@ import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/u
 import * as useSubmitBridgeTransactionModule from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { BridgeCTAButton } from './bridge-cta-button';
 
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
   trackHardwareWalletRecoveryConnectCtaClicked,
 );
@@ -69,6 +84,7 @@ setBackgroundConnection({
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
@@ -418,7 +434,6 @@ describe('BridgeCTAButton', () => {
           isSubmitting: false,
         }));
 
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const connectionState = {
         status: ConnectionStatus.Disconnected as const,
       };
@@ -455,7 +470,7 @@ describe('BridgeCTAButton', () => {
         },
       });
       const store = configureStore(mockStore);
-      const Wrapper = createProviderWrapper(store, '/', () => mockTrackEvent);
+      const Wrapper = createProviderWrapper(store, '/');
 
       const { getByRole } = render(
         <HardwareWalletProvider>
@@ -479,7 +494,7 @@ describe('BridgeCTAButton', () => {
 
       expect(
         mockTrackHardwareWalletRecoveryConnectCtaClicked,
-      ).toHaveBeenCalledWith(mockTrackEvent, {
+      ).toHaveBeenCalledWith(expect.any(Function), {
         location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
         walletType: HardwareWalletType.Ledger,
         connectionState,

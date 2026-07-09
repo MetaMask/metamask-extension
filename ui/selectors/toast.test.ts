@@ -2,8 +2,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { MetaMaskReduxState as SelectorState } from '../store/store';
 import {
-  selectTransactionIds,
   selectBridgeApprovalTxIds,
   selectCrossChainBridgeSourceTxIds,
   selectEvmTransactionsForToast,
@@ -12,28 +12,7 @@ import {
   selectSmartTransactions,
 } from './toast';
 
-type SelectorState = Parameters<typeof selectTransactionIds>[0];
-
 describe('toast selectors', () => {
-  describe('selectTransactionIds', () => {
-    it('returns a Set of all transaction ids', () => {
-      const state = {
-        metamask: {
-          transactions: [{ id: 'a' }, { id: 'b' }, { id: 'c' }],
-        },
-      } as unknown as SelectorState;
-      const result = selectTransactionIds(state);
-      expect(result).toStrictEqual(new Set(['a', 'b', 'c']));
-    });
-
-    it('returns an empty Set when there are no transactions', () => {
-      const result = selectTransactionIds({
-        metamask: {},
-      } as unknown as SelectorState);
-      expect(result).toStrictEqual(new Set());
-    });
-  });
-
   describe('selectBridgeApprovalTxIds', () => {
     it('returns a Set of bridge approval tx ids (lowercased)', () => {
       const state = {

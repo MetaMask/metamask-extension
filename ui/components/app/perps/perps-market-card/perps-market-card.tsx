@@ -43,7 +43,7 @@ export const PerpsMarketCard = ({
   onClick,
   'data-testid': testId,
 }: PerpsMarketCardProps) => {
-  const displaySymbol = name || getDisplayName(symbol);
+  const displaySymbol = getDisplayName(name || symbol);
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);
   const changeColor = getChangeColor(displayChange24hPercent);
 

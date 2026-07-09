@@ -7,7 +7,7 @@ import {
   type MessengerEvents,
   type MockAnyNamespace,
 } from '@metamask/messenger';
-import type { WalletInitMessenger } from './initialization';
+import type { WalletInitMessenger } from './types';
 
 /**
  * Build a root messenger for tests. `MOCK_ANY_NAMESPACE` disables namespace
