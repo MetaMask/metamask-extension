@@ -27,6 +27,8 @@ import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { useAssetActivation } from '../hooks/useAssetActivation';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
   token,
@@ -126,7 +128,18 @@ const TokenButtons = ({
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 
+  const {
+    deactivateAsset,
+    canDeactivate,
+    dismissErrorMessage,
+    isDeactivating,
+    errorMessage,
+  } = useAssetActivation({
+    asset: token,
+  });
+
   return (
+    <>
     <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
       <IconButton
         className="token-overview__button"
@@ -179,7 +192,29 @@ const TokenButtons = ({
         label={t('swap')}
         disabled={!isExternalServicesEnabled || isMarketClosed}
       />
+
+{canDeactivate ? (
+          <IconButton
+            className="token-overview__button"
+            Icon={
+              <Icon
+                name={IconName.Trash}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            onClick={deactivateAsset}
+            data-testid="token-overview-deactivate-asset"
+            label={t('assetDeactivate') as string}
+            disabled={isDeactivating}
+          />
+        ) : null}
     </Box>
+     <AssetActivationErrorToast
+     message={errorMessage}
+     onClose={dismissErrorMessage}
+   />
+   </>
   );
 };
 
