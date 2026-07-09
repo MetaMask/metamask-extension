@@ -80,9 +80,13 @@ const EMPTY_NETWORK_CONFIGURATIONS: NetworkConfigurationsMap = {};
 // Stable selector references for when the parent already provides the data as
 // props. Using these instead of the real selectors prevents the component from
 // subscribing to those Redux slices, eliminating redundant per-row subscriptions.
-const selectEmptyMarketData = () => EMPTY_MARKET_DATA;
-const selectEmptyCurrencyRates = () => EMPTY_CURRENCY_RATES;
-const selectEmptyNetworkConfigurations = () => EMPTY_NETWORK_CONFIGURATIONS;
+// They are typed as the same selector type so useMemo can return a single type
+// that useSelector can infer without unsafe casts.
+const selectEmptyMarketData: typeof getMarketData = () => EMPTY_MARKET_DATA;
+const selectEmptyCurrencyRates: typeof getCurrencyRates =
+  () => EMPTY_CURRENCY_RATES;
+const selectEmptyNetworkConfigurations: typeof getNetworkConfigurationsByChainId =
+  () => EMPTY_NETWORK_CONFIGURATIONS;
 
 type TokenListItemProps = {
   className?: string;
@@ -156,10 +160,16 @@ export const TokenListItemComponent = ({
 
   // When the parent passes these props it has already read the selectors once
   // for the whole list. Switch to a no-op selector so this row does not create
-  // an independent Redux subscription for shared global data. Extract boolean
-  // flags so the useMemo only recomputes when the prop flips between defined
-  // and undefined (not on every new object reference), while still satisfying
-  // the react-hooks/exhaustive-deps rule.
+  // an independent Redux subscription for shared global data.
+  //
+  // Why boolean flags instead of listing the props as useMemo deps directly:
+  // The props are object references that change on every render of the parent,
+  // so including them in the dep array would defeat the purpose. We only want
+  // to recompute when the prop transitions between defined and undefined.
+  // A boolean flag captures exactly that signal without referencing the prop
+  // object, satisfying react-hooks/exhaustive-deps without needing an eslint-
+  // disable comment (which would prevent React Compiler from optimising this
+  // component).
   const isMarketDataPropProvided = marketDataProp !== undefined;
   const isCurrencyRatesPropProvided = currencyRatesProp !== undefined;
   const isNetworkConfigurationsPropProvided = networkConfigurationsProp !== undefined;
@@ -181,13 +191,11 @@ export const TokenListItemComponent = ({
     [isNetworkConfigurationsPropProvided],
   );
 
-  const marketDataFromStore = useSelector(marketDataSelector) as MarketDataMap;
-  const currencyRatesFromStore = useSelector(
-    currencyRatesSelector,
-  ) as CurrencyRatesMap;
+  const marketDataFromStore = useSelector(marketDataSelector);
+  const currencyRatesFromStore = useSelector(currencyRatesSelector);
   const networkConfigurationsFromStore = useSelector(
     networkConfigurationsSelector,
-  ) as NetworkConfigurationsMap;
+  );
 
   // Prefer lifted props; fall back to store values for callers that have not
   // been updated to pass these props.
