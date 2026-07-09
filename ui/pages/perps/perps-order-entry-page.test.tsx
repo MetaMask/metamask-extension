@@ -1805,6 +1805,11 @@ describe('PerpsOrderEntryPage', () => {
             symbol: 'ETH',
             takeProfitPrice: '3300',
             stopLossPrice: '2800',
+            trackingData: expect.objectContaining({
+              direction: 'long',
+              source: 'trade_screen',
+              isEditingExistingPosition: false,
+            }),
           }),
         ],
       );

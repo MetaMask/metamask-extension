@@ -1271,6 +1271,13 @@ const PerpsOrderEntryPage = () => {
                 symbol: orderFormState.asset,
                 takeProfitPrice: cleanTp,
                 stopLossPrice: cleanSl,
+                trackingData: buildTpslTrackingData({
+                  direction: orderFormState.direction,
+                  source: PERPS_EVENT_VALUE.SOURCE.TRADE_SCREEN,
+                  positionSize: Math.abs(Number.parseFloat(orderParams.size)) || 0,
+                  // New/flip market attach — not editing an existing TP/SL set.
+                  isEditingExistingPosition: false,
+                }),
               },
             ],
           );
