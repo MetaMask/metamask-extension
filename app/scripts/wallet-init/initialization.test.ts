@@ -38,20 +38,20 @@ const connectivityAdapter = {} as unknown as ConnectivityAdapter;
 describe('initializeWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    MockWallet.prototype.init.mockResolvedValue([]);
   });
 
   it('constructs a Wallet, wiring each builder output to its instanceOptions slot', () => {
     const messenger = createMockMessenger();
     const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
 
-    const wallet = initializeWallet({
+    initializeWallet({
       messenger,
       state,
       connectivityAdapter,
       infuraProjectId: 'fake-infura-project-id',
     });
 
-    expect(wallet).toBeDefined();
     expect(MockWallet).toHaveBeenCalledWith({
       messenger,
       state,
@@ -119,6 +119,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    MockWallet.prototype.init.mockResolvedValue([]);
   });
 
   it('wires the enable/disable toggle over the messenger with a default-preserving baseline', () => {

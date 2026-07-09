@@ -1,8 +1,5 @@
 import { Wallet } from '@metamask/wallet';
-import type {
-  DefaultActions,
-  DefaultEvents,
-} from '@metamask/wallet';
+import type { DefaultActions, DefaultEvents } from '@metamask/wallet';
 import { Json } from '@metamask/utils';
 import { Encryptor } from '@metamask/keyring-controller';
 import { ShowApprovalRequest } from '@metamask/approval-controller';
@@ -105,6 +102,8 @@ export function initializeWallet({
   });
 
   setupRpcEndpointMetrics(infuraProjectId, messenger);
+
+  wallet.init().catch((error) => console.error(error));
 
   return wallet;
 }

@@ -31,8 +31,7 @@ export const RampsControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const messengerClient = new RampsController({
     messenger: controllerMessenger,
-    state:
-      persistedState.RampsController ?? getDefaultRampsControllerState(),
+    state: persistedState.RampsController ?? getDefaultRampsControllerState(),
   });
 
   startRampsControllerLifecycle(messengerClient);

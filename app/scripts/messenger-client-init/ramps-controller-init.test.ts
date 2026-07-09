@@ -73,4 +73,43 @@ describe('RampsControllerInit', () => {
     await Promise.resolve();
     expect(messengerClient.startOrderPolling).toHaveBeenCalled();
   });
+
+  it('does not start order polling when init rejects', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const startOrderPolling = jest.fn();
+    jest.mocked(RampsController).mockImplementationOnce(
+      () =>
+        ({
+          init: jest.fn().mockRejectedValue(new Error('init failed')),
+          startOrderPolling,
+          setUserRegion: jest.fn(),
+          setSelectedToken: jest.fn(),
+          setSelectedProvider: jest.fn(),
+          setSelectedPaymentMethod: jest.fn(),
+          getTokens: jest.fn(),
+          getProviders: jest.fn(),
+          getPaymentMethods: jest.fn(),
+          getQuotes: jest.fn(),
+          getBuyWidgetData: jest.fn(),
+          addPrecreatedOrder: jest.fn(),
+          addOrder: jest.fn(),
+          removeOrder: jest.fn(),
+          getOrder: jest.fn(),
+          getOrderFromCallback: jest.fn(),
+        }) as never,
+    );
+
+    RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(startOrderPolling).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'RampsController failed to initialize',
+      expect.any(Error),
+    );
+    consoleErrorSpy.mockRestore();
+  });
 });

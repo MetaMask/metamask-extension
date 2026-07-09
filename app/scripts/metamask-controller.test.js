@@ -4398,9 +4398,16 @@ describe('MetaMaskController', () => {
 
         expect(controller.rampsController).toBeDefined();
         expect(
-          Object.keys(controller.messengerClientApi).filter((key) =>
-            key.startsWith('getRamps') || key.startsWith('setRamps') || key.startsWith('addRamps') || key.startsWith('removeRamps') || key.startsWith('refreshRamps'),
-          ).sort(),
+          Object.keys(controller.messengerClientApi)
+            .filter(
+              (key) =>
+                key.startsWith('getRamps') ||
+                key.startsWith('setRamps') ||
+                key.startsWith('addRamps') ||
+                key.startsWith('removeRamps') ||
+                key.startsWith('refreshRamps'),
+            )
+            .sort(),
         ).toMatchSnapshot();
       });
     });
