@@ -347,6 +347,8 @@ import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-a
 import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
 import { ComplianceServiceInit } from './messenger-client-init/compliance-service-init';
 import { ComplianceControllerInit } from './messenger-client-init/compliance-controller-init';
+import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
+import { RampsControllerInit } from './messenger-client-init/ramps-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
@@ -453,7 +455,6 @@ import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-b
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
-import { getRampsControllerApi } from './wallet-init/ramps-controller-api';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -548,7 +549,7 @@ export default class MetamaskController extends EventEmitter {
 
     const connectivityAdapter = new ExtensionConnectivityAdapter();
     this.connectivityAdapter = connectivityAdapter;
-    const { wallet, walletInitPromise } = initializeWallet({
+    this.wallet = initializeWallet({
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
@@ -556,8 +557,6 @@ export default class MetamaskController extends EventEmitter {
       showApprovalRequest: this.opts.showUserConfirmation,
       connectivityAdapter,
     });
-    this.wallet = wallet;
-    this.walletInitPromise = walletInitPromise;
 
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
@@ -665,6 +664,8 @@ export default class MetamaskController extends EventEmitter {
       GeolocationController: GeolocationControllerInit,
       ComplianceService: ComplianceServiceInit,
       ComplianceController: ComplianceControllerInit,
+      RampsService: RampsServiceInit,
+      RampsController: RampsControllerInit,
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
@@ -755,15 +756,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerPersistedState = controllerPersistedState;
     this.messengerClientsByName = messengerClientsByName;
 
-    this.rampsController = this.wallet.getInstance('RampsController');
-    this.rampsControllerApi = getRampsControllerApi(this.rampsController);
-    this.walletInitPromise
-      .then(() => {
-        this.rampsController.startOrderPolling();
-      })
-      .catch((error) => {
-        console.error('RampsController failed to start order polling', error);
-      });
+    this.rampsController = messengerClientsByName.RampsController;
 
     // Backwards compatibility for existing references
     this.approvalController = this.wallet.getInstance('ApprovalController');
@@ -1465,7 +1458,6 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
-      RampsController: this.rampsController,
       DeFiPositionsController: this.deFiPositionsController,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
@@ -1533,7 +1525,6 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
-        RampsController: this.rampsController,
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
@@ -3291,9 +3282,6 @@ export default class MetamaskController extends EventEmitter {
       getGeolocation: this.geolocationController.getGeolocation.bind(
         this.geolocationController,
       ),
-
-      // RampsController
-      ...this.rampsControllerApi,
 
       // SeedlessOnboardingController
       preloadToprfNodeDetails:

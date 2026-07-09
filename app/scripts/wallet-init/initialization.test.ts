@@ -8,7 +8,6 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
-import { rampsController, rampsService } from './ramps';
 import { createMockMessenger } from './test-utils';
 
 jest.mock('@metamask/wallet');
@@ -32,9 +31,6 @@ jest.mock('./instance-options/remote-feature-flag-controller', () => ({
 jest.mock('./instance-options/storage-service', () => ({
   getStorageServiceInstanceOptions: jest.fn(() => 'storage-options'),
 }));
-jest.mock('./instance-options/ramps-environment', () => ({
-  getRampsEnvironment: jest.fn(() => 'staging'),
-}));
 
 const MockWallet = jest.mocked(Wallet);
 const connectivityAdapter = {} as unknown as ConnectivityAdapter;
@@ -42,14 +38,13 @@ const connectivityAdapter = {} as unknown as ConnectivityAdapter;
 describe('initializeWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    MockWallet.prototype.init.mockResolvedValue([]);
   });
 
   it('constructs a Wallet, wiring each builder output to its instanceOptions slot', () => {
     const messenger = createMockMessenger();
     const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
 
-    const { wallet } = initializeWallet({
+    const wallet = initializeWallet({
       messenger,
       state,
       connectivityAdapter,
@@ -60,7 +55,6 @@ describe('initializeWallet', () => {
     expect(MockWallet).toHaveBeenCalledWith({
       messenger,
       state,
-      initializationConfigurations: [rampsService, rampsController],
       instanceOptions: {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
@@ -83,12 +77,6 @@ describe('initializeWallet', () => {
         },
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
-        rampsController: {},
-        rampsService: {
-          context: 'extension',
-          environment: 'staging',
-          fetch: expect.any(Function),
-        },
       },
     });
   });
@@ -131,7 +119,6 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    MockWallet.prototype.init.mockResolvedValue([]);
   });
 
   it('wires the enable/disable toggle over the messenger with a default-preserving baseline', () => {

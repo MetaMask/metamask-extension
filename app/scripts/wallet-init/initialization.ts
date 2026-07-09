@@ -2,7 +2,6 @@ import { Wallet } from '@metamask/wallet';
 import type {
   DefaultActions,
   DefaultEvents,
-  WalletOptions,
 } from '@metamask/wallet';
 import { Json } from '@metamask/utils';
 import { Encryptor } from '@metamask/keyring-controller';
@@ -22,18 +21,6 @@ import {
   getNetworkControllerInstanceOptions,
   setupRpcEndpointMetrics,
 } from './instance-options/network-controller';
-import { rampsController, rampsService } from './ramps';
-import { getRampsEnvironment } from './instance-options/ramps-environment';
-
-// TODO: Remove this workaround once @metamask/wallet types are updated to include ramps instance options.
-type WalletInstanceOptions = WalletOptions['instanceOptions'] & {
-  rampsService?: {
-    environment?: ReturnType<typeof getRampsEnvironment>;
-    context: string;
-    fetch: typeof fetch;
-  };
-  rampsController?: Record<string, never>;
-};
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -63,7 +50,7 @@ export type WalletInitMessenger = RootMessenger<
  * @param options.connectivityAdapter - Adapter that observes the device's
  * network connectivity.
  * @param options.infuraProjectId - The Infura project ID.
- * @returns The constructed `Wallet` and its initialization promise.
+ * @returns The constructed `Wallet`.
  */
 export function initializeWallet({
   messenger,
@@ -83,7 +70,6 @@ export function initializeWallet({
   const wallet = new Wallet({
     messenger,
     state,
-    initializationConfigurations: [rampsService, rampsController],
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
@@ -99,13 +85,7 @@ export function initializeWallet({
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),
-      rampsService: {
-        environment: getRampsEnvironment(),
-        context: 'extension',
-        fetch: global.fetch.bind(global),
-      },
-      rampsController: {},
-    } as WalletInstanceOptions,
+    },
   });
 
   // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
@@ -126,9 +106,5 @@ export function initializeWallet({
 
   setupRpcEndpointMetrics(infuraProjectId, messenger);
 
-  const walletInitPromise = wallet.init().catch((error) => {
-    console.error(error);
-  });
-
-  return { wallet, walletInitPromise };
+  return wallet;
 }
