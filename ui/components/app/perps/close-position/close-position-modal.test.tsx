@@ -157,6 +157,12 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
   usePerpsOrderFees: () => mockUsePerpsOrderFees(),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+  }),
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',

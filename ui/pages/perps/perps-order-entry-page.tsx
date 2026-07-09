@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import type { Json } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   Navigate,
@@ -82,6 +81,7 @@ import {
   usePerpsEventTracking,
   usePerpsMaxSlippage,
 } from '../../hooks/perps';
+import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
@@ -97,14 +97,12 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplayName,
-  deriveTpslType,
   getChangeColor,
   getPositionPnlRatio,
   normalizeTpslPrices,
   safeDecodeURIComponent,
   formatSignedChangePercent,
   willFlipPosition,
-  buildPerpsVipTrackingData,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -266,6 +264,8 @@ const PerpsOrderEntryPage = () => {
   const { gate } = useSelectedAccountComplianceGate();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { buildTrackingData, buildTpslTrackingData, setFlowAttribution } =
+    usePerpsAttribution();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
@@ -309,6 +309,12 @@ const PerpsOrderEntryPage = () => {
     },
     resetKey: decodedSymbol,
   });
+
+  useEffect(() => {
+    setFlowAttribution({
+      entryPoint: PERPS_EVENT_VALUE.SOURCE.TRADE_SCREEN,
+    });
+  }, [setFlowAttribution]);
 
   // Same candle stream as market detail (default 5m) so header price matches chart line.
   const { candleData } = usePerpsLiveCandles({
@@ -1073,52 +1079,6 @@ const PerpsOrderEntryPage = () => {
       });
     }
 
-    const deriveTradeAction = (): string => {
-      if (!position) {
-        return PERPS_EVENT_VALUE.TRADE_ACTION.CREATE_POSITION;
-      }
-      const posSize = Number.parseFloat(position.size) || 0;
-      const posIsLong = posSize >= 0;
-      const orderIsLong = orderDirection === 'long';
-      if (posIsLong !== orderIsLong) {
-        return posIsLong
-          ? PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_LONG_TO_SHORT
-          : PERPS_EVENT_VALUE.TRADE_ACTION.FLIP_SHORT_TO_LONG;
-      }
-      return PERPS_EVENT_VALUE.TRADE_ACTION.INCREASE_POSITION;
-    };
-
-    let specificFailureTracked = false;
-    const reportTransactionFailure = (
-      event:
-        | typeof MetaMetricsEventName.PerpsTradeTransaction
-        | typeof MetaMetricsEventName.PerpsPositionCloseTransaction
-        | typeof MetaMetricsEventName.PerpsRiskManagement,
-      errorMessage: string,
-      extraProperties?: Record<string, Json>,
-    ) => {
-      specificFailureTracked = true;
-      track(event, {
-        [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-        ...(event === MetaMetricsEventName.PerpsTradeTransaction && {
-          [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
-          [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
-            orderCalculations?.estimatedFees ?? null,
-        }),
-        ...(event === MetaMetricsEventName.PerpsRiskManagement && {
-          [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
-          [PERPS_EVENT_PROPERTY.SIZE]: position?.size ?? null,
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
-            orderCalculations?.estimatedFees ?? null,
-        }),
-        ...extraProperties,
-      });
-    };
-
     try {
       if (orderMode === 'close' && position) {
         const closePercentage = closePercent;
@@ -1134,40 +1094,24 @@ const PerpsOrderEntryPage = () => {
           position.size,
           marketInfo?.szDecimals,
         );
-        closeParams.trackingData = buildPerpsVipTrackingData({
+        closeParams.trackingData = buildTrackingData({
           totalFee: closeEstimatedFees,
           marketPrice: currentPrice,
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
+          hlFeeRate: closeFeeRate,
         });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
           [closeParams],
         );
         if (!result.success) {
-          const message = result.error || 'Failed to close position';
-          reportTransactionFailure(
-            MetaMetricsEventName.PerpsPositionCloseTransaction,
-            message,
-            {
-              [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercentage,
-              [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-              [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(closeEstimatedFees),
-            },
-          );
           throw new Error(result.error ?? 'Failed to close position');
         }
         // Navigate only on success. Staying on the form on failure lets the
         // catch block surface the inline error (setSubmitError for partial
         // close) and the failure toast renders on the current page.
         handleBackClick();
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercentage,
-          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(closeEstimatedFees),
-        });
         replacePerpsToastByKey({
           key: isPartialClose
             ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_SUCCESS
@@ -1187,7 +1131,7 @@ const PerpsOrderEntryPage = () => {
             position?.size,
             isSlippageConfigEnabled ? maxSlippageBps : undefined,
           );
-          orderParams.trackingData = buildPerpsVipTrackingData({
+          orderParams.trackingData = buildTrackingData({
             totalFee: orderCalculations?.estimatedFees ?? 0,
             marketPrice: currentPrice,
             vipTier,
@@ -1205,27 +1149,11 @@ const PerpsOrderEntryPage = () => {
             error?: string;
           }>('perpsPlaceOrder', [orderParams]);
           if (!result.success) {
-            const message = result.error || 'Failed to add to position';
-            reportTransactionFailure(
-              MetaMetricsEventName.PerpsTradeTransaction,
-              message,
-            );
             throw new Error(result.error ?? 'Failed to add to position');
           }
           // Navigate only on success. On failure, stay on the form so the
           // catch block's failure toast renders on the current page.
           handleBackClick();
-
-          track(MetaMetricsEventName.PerpsTradeTransaction, {
-            [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
-            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: orderFormState.type,
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-            [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
-            [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
-            [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
-              orderCalculations?.estimatedFees ?? null,
-            ...(isSlippageConfigEnabled ? slippageTradeProperties : {}),
-          });
 
           submitRequestToBackground('perpsSaveTradeConfiguration', [
             orderFormState.asset,
@@ -1250,36 +1178,29 @@ const PerpsOrderEntryPage = () => {
         });
         // Emit the update-in-progress toast here (not via route state).
         replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS });
+        const positionSize = Math.abs(Number.parseFloat(position.size)) || 0;
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsUpdatePositionTPSL',
-          [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
+          [
+            {
+              symbol: orderFormState.asset,
+              takeProfitPrice,
+              stopLossPrice,
+              trackingData: buildTpslTrackingData({
+                direction:
+                  Number.parseFloat(position.size) >= 0 ? 'long' : 'short',
+                source: PERPS_EVENT_VALUE.SOURCE.TRADE_SCREEN,
+                positionSize,
+                isEditingExistingPosition: Boolean(
+                  position.takeProfitPrice || position.stopLossPrice,
+                ),
+              }),
+            },
+          ],
         );
-        const derivedTpslType = deriveTpslType({
-          takeProfitPrice,
-          stopLossPrice,
-          hasExistingTpsl: Boolean(
-            position?.takeProfitPrice || position?.stopLossPrice,
-          ),
-        });
-
         if (!result.success) {
-          const message = result.error || 'Failed to update TP/SL';
-          reportTransactionFailure(
-            MetaMetricsEventName.PerpsRiskManagement,
-            message,
-            { [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType },
-          );
           throw new Error(result.error ?? 'Failed to update TP/SL');
         }
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
-          [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
-          [PERPS_EVENT_PROPERTY.SIZE]: position.size,
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
-            orderCalculations?.estimatedFees ?? null,
-        });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
         });
@@ -1294,7 +1215,7 @@ const PerpsOrderEntryPage = () => {
         position?.size,
         isSlippageConfigEnabled ? maxSlippageBps : undefined,
       );
-      orderParams.trackingData = buildPerpsVipTrackingData({
+      orderParams.trackingData = buildTrackingData({
         totalFee: orderCalculations?.estimatedFees ?? 0,
         marketPrice: currentPrice,
         vipTier,
@@ -1332,11 +1253,6 @@ const PerpsOrderEntryPage = () => {
         [placeOrderParams],
       );
       if (!result.success) {
-        const message = result.error || 'Failed to place order';
-        reportTransactionFailure(
-          MetaMetricsEventName.PerpsTradeTransaction,
-          message,
-        );
         throw new Error(result.error ?? 'Failed to place order');
       }
       if (shouldHandleTpslSeparately) {
@@ -1364,10 +1280,6 @@ const PerpsOrderEntryPage = () => {
           // order form (which would open a duplicate position).
           const tpslMessage =
             tpslResult.error || 'Failed to attach TP/SL to position';
-          reportTransactionFailure(
-            MetaMetricsEventName.PerpsRiskManagement,
-            tpslMessage,
-          );
           const translatedTpslError = translatePerpsError(
             new Error(tpslMessage),
             t as (key: string) => string,
@@ -1392,17 +1304,6 @@ const PerpsOrderEntryPage = () => {
             }
           : undefined,
       );
-
-      track(MetaMetricsEventName.PerpsTradeTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
-        [PERPS_EVENT_PROPERTY.ORDER_TYPE]: orderFormState.type,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
-        [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
-        [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
-          orderCalculations?.estimatedFees ?? null,
-        ...(isSlippageConfigEnabled ? slippageTradeProperties : {}),
-      });
 
       submitRequestToBackground('perpsSaveTradeConfiguration', [
         orderFormState.asset,
@@ -1449,15 +1350,6 @@ const PerpsOrderEntryPage = () => {
           description: failedToastDescription,
         });
       }
-      if (!specificFailureTracked) {
-        const errMsg =
-          error instanceof Error ? error.message : 'An unknown error occurred';
-        track(MetaMetricsEventName.PerpsError, {
-          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMsg,
-        });
-      }
     } finally {
       setIsSubmitting(false);
     }
@@ -1465,7 +1357,6 @@ const PerpsOrderEntryPage = () => {
     isEligible,
     orderFormState,
     orderMode,
-    orderDirection,
     orderCalculations,
     position,
     selectedAddress,
@@ -1489,7 +1380,8 @@ const PerpsOrderEntryPage = () => {
     maxSlippageBps,
     maxSlippageSource,
     isSlippageConfigEnabled,
-    slippageTradeProperties,
+    buildTrackingData,
+    buildTpslTrackingData,
     isMarketOrderWithAmount,
     isMaxSlippageLoading,
     isEstimatedSlippageReady,

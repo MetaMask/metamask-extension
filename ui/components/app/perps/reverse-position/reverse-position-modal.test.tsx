@@ -38,6 +38,12 @@ jest.mock('../../../../hooks/perps', () => ({
   usePerpsEventTracking: () => ({ track: jest.fn() }),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+  }),
+}));
+
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
     formatCurrencyWithMinThreshold: (value: number, _currency: string) =>

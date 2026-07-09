@@ -36,7 +36,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { getPositionDirection, buildPerpsVipTrackingData } from '../utils';
+import { getPositionDirection } from '../utils';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
@@ -75,6 +76,7 @@ export const ReversePositionModal = ({
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { buildTrackingData } = usePerpsAttribution();
   const { gate } = useSelectedAccountComplianceGate();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -89,7 +91,7 @@ export const ReversePositionModal = ({
     conditions: isOpen,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-        PERPS_EVENT_VALUE.SCREEN_TYPE.FLIP_POSITION,
+        PERPS_EVENT_VALUE.SCREEN_TYPE.INCREASE_EXPOSURE,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
@@ -160,7 +162,7 @@ export const ReversePositionModal = ({
           {
             symbol: position.symbol,
             position: positionForFlip,
-            trackingData: buildPerpsVipTrackingData({
+            trackingData: buildTrackingData({
               totalFee: estimatedFees ?? 0,
               marketPrice: currentPrice,
               vipTier,
@@ -211,6 +213,7 @@ export const ReversePositionModal = ({
     currentPrice,
     vipTier,
     metamaskFeeRateDiscountPercentage,
+    buildTrackingData,
   ]);
 
   return (

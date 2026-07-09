@@ -190,7 +190,11 @@ type PerpsActionName =
   | 'perpsToggleWatchlistMarket'
   | 'perpsIsWatchlistMarket'
   | 'perpsReconnect'
-  | 'perpsGetConnectionState';
+  | 'perpsGetConnectionState'
+  | 'perpsSetAttributionContext'
+  | 'perpsGetAttributionContext'
+  | 'perpsClearAttributionContext'
+  | 'perpsMergeAttributionContext';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -511,5 +515,15 @@ function getApi(
     perpsReconnect: messengerClient.reconnect.bind(messengerClient),
     perpsGetConnectionState: () =>
       messengerClient.getWebSocketConnectionState(),
+
+    // -- Analytics attribution (TAT-3463) --
+    perpsSetAttributionContext:
+      messengerClient.setAttributionContext.bind(messengerClient),
+    perpsGetAttributionContext:
+      messengerClient.getAttributionContext.bind(messengerClient),
+    perpsClearAttributionContext:
+      messengerClient.clearAttributionContext.bind(messengerClient),
+    perpsMergeAttributionContext: (properties?: Record<string, unknown>) =>
+      messengerClient.mergeAttributionContext(properties),
   };
 }

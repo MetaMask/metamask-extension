@@ -43,6 +43,7 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -53,7 +54,6 @@ import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, PerpsBackgroundResult } from '../types';
 import {
   normalizeTpslPrices,
-  deriveTpslType,
   formatRoePercent,
   getPnlDisplayColor,
   getPrivacyAwareColor,
@@ -115,6 +115,7 @@ export const UpdateTPSLModalContent = ({
 }: UpdateTPSLModalContentProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
+  const { buildTpslTrackingData } = usePerpsAttribution();
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
@@ -478,44 +479,27 @@ export const UpdateTPSLModalContent = ({
               symbol: position.symbol,
               takeProfitPrice: cleanTpPrice,
               stopLossPrice: cleanSlPrice,
+              trackingData: buildTpslTrackingData({
+                direction:
+                  Number.parseFloat(position.size) >= 0 ? 'long' : 'short',
+                source: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+                positionSize: Math.abs(Number.parseFloat(position.size)) || 0,
+                isEditingExistingPosition: Boolean(
+                  position.takeProfitPrice || position.stopLossPrice,
+                ),
+              }),
             },
           ],
         );
-        const derivedTpslType = deriveTpslType({
-          takeProfitPrice: cleanTpPrice,
-          stopLossPrice: cleanSlPrice,
-          hasExistingTpsl: Boolean(
-            position.takeProfitPrice || position.stopLossPrice,
-          ),
-        });
 
         if (!result.success) {
           const failMessage = result.error || 'Failed to update TP/SL';
-          track(MetaMetricsEventName.PerpsRiskManagement, {
-            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
-            [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
-            [PERPS_EVENT_PROPERTY.SIZE]: position.size,
-          });
-          track(MetaMetricsEventName.PerpsError, {
-            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
-          });
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.UPDATE_FAILED,
             description: failMessage,
           });
           return;
         }
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
-          [PERPS_EVENT_PROPERTY.SIZE]: position.size,
-        });
         const streamManager = getPerpsStreamManager();
         streamManager.setOptimisticTPSL(
           position.symbol,
@@ -576,6 +560,7 @@ export const UpdateTPSLModalContent = ({
     position,
     replacePerpsToastByKey,
     track,
+    buildTpslTrackingData,
   ]);
 
   const isSubmitDisabled = isSaving || hasInvalidTPSL;

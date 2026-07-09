@@ -74,6 +74,14 @@ jest.mock('../../components/app/compliance', () => ({
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
+jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+    buildTpslTrackingData: (input: Record<string, unknown>) => input,
+    setFlowAttribution: jest.fn(),
+  }),
+}));
+
 const enterAmount = (value: string) => {
   const amountContainer = screen.getByTestId('amount-input-field');
   const amountInput = amountContainer.querySelector(

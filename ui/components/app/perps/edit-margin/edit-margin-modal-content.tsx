@@ -33,16 +33,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-} from '../../../../hooks/perps';
+import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../../shared/constants/perps-events';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { useSelectedAccountComplianceGate } from '../../compliance';
@@ -109,7 +101,6 @@ export const EditMarginModalContent = ({
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
-  const { track } = usePerpsEventTracking();
   const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -307,17 +298,6 @@ export const EditMarginModalContent = ({
           throw new Error(result.error || 'Failed to update margin');
         }
 
-        const riskType =
-          marginMode === 'add'
-            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-        });
-
         const streamManager = getPerpsStreamManager();
         const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
           'perpsGetPositions',
@@ -339,24 +319,6 @@ export const EditMarginModalContent = ({
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'An unknown error occurred';
-
-        const riskType =
-          marginMode === 'add'
-            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-        });
-        track(MetaMetricsEventName.PerpsError, {
-          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-        });
 
         const normalizedErrorMessage = errorMessage.trim();
         const shouldUseFallbackDescription =
@@ -386,7 +348,6 @@ export const EditMarginModalContent = ({
     onClose,
     onSavingChange,
     replacePerpsToastByKey,
-    track,
     t,
   ]);
 

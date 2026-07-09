@@ -20,6 +20,11 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const mockUsePerpsLiveMarketListData = jest.fn();
+jest.mock('../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    setFlowAttribution: jest.fn(),
+  }),
+}));
 jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
   usePerpsLiveAccount: () => ({ account: null }),

@@ -28,8 +28,13 @@ jest.mock('../controllers/analytics', () => {
   };
 });
 
-jest.mock('@metamask/perps-controller', () => ({
-  getDefaultPerpsControllerState: jest.fn().mockReturnValue({
+jest.mock('@metamask/perps-controller', () => {
+  const perpsControllerStub = jest.requireActual(
+    '../../../test/mocks/metamask-perps-controller.js',
+  );
+  return {
+    ...perpsControllerStub,
+    getDefaultPerpsControllerState: jest.fn().mockReturnValue({
     activeProvider: 'hyperliquid',
     isTestnet: false,
     initializationState: 'uninitialized',
@@ -130,8 +135,15 @@ jest.mock('@metamask/perps-controller', () => ({
     isWatchlistMarket: jest.fn(),
     reconnect: jest.fn().mockResolvedValue(undefined),
     getWebSocketConnectionState: jest.fn().mockReturnValue('connected'),
+    setAttributionContext: jest.fn(),
+    getAttributionContext: jest.fn().mockReturnValue({}),
+    clearAttributionContext: jest.fn(),
+    mergeAttributionContext: jest
+      .fn()
+      .mockImplementation((props) => props ?? {}),
   })),
-}));
+  };
+});
 
 jest.mock('../controllers/perps/infrastructure', () => ({
   createPerpsInfrastructure: jest.fn().mockReturnValue({}),
@@ -990,6 +1002,55 @@ describe('PerpsControllerInit', () => {
           expect(result).toBe('tx-retry');
         });
       });
+    });
+  });
+
+  describe('attribution APIs', () => {
+    it('exposes perpsSetAttributionContext on the background API', () => {
+      const { api, messengerClient } = initWithApi();
+      const context = { utmSource: 'newsletter' };
+
+      api.perpsSetAttributionContext(context);
+
+      expect(messengerClient.setAttributionContext).toHaveBeenCalledWith(
+        context,
+      );
+    });
+
+    it('exposes perpsGetAttributionContext on the background API', () => {
+      const { api, messengerClient } = initWithApi();
+      (messengerClient.getAttributionContext as jest.Mock).mockReturnValue({
+        utmCampaign: 'spring',
+      });
+
+      expect(api.perpsGetAttributionContext()).toEqual({
+        utmCampaign: 'spring',
+      });
+    });
+
+    it('exposes perpsClearAttributionContext on the background API', () => {
+      const { api, messengerClient } = initWithApi();
+
+      api.perpsClearAttributionContext();
+
+      expect(messengerClient.clearAttributionContext).toHaveBeenCalled();
+    });
+
+    it('exposes perpsMergeAttributionContext on the background API', () => {
+      const { api, messengerClient } = initWithApi();
+      const properties = { asset: 'BTC' };
+      (messengerClient.mergeAttributionContext as jest.Mock).mockReturnValue({
+        asset: 'BTC',
+        [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'email',
+      });
+
+      expect(api.perpsMergeAttributionContext(properties)).toEqual({
+        asset: 'BTC',
+        [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'email',
+      });
+      expect(messengerClient.mergeAttributionContext).toHaveBeenCalledWith(
+        properties,
+      );
     });
   });
 });

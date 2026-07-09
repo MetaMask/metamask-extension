@@ -16,6 +16,7 @@ import {
 } from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
+import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
 
@@ -170,10 +171,12 @@ export default function PerpsLayout() {
   }, []);
 
   return (
-    <AccessRestrictedProvider>
-      <PerpsToastProvider>
-        <Outlet />
-      </PerpsToastProvider>
-    </AccessRestrictedProvider>
+    <PerpsAttributionProvider locationSearch={search}>
+      <AccessRestrictedProvider>
+        <PerpsToastProvider>
+          <Outlet />
+        </PerpsToastProvider>
+      </AccessRestrictedProvider>
+    </PerpsAttributionProvider>
   );
 }

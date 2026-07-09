@@ -20,18 +20,24 @@ jest.mock('../analytics', () => {
   };
 });
 
-jest.mock('@metamask/perps-controller', () => ({
-  formatPerpsFiat: jest.fn((value: number) =>
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value),
-  ),
-  formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
-  PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
-}));
+jest.mock('@metamask/perps-controller', () => {
+  const stub = jest.requireActual(
+    '../../../../test/mocks/metamask-perps-controller.js',
+  );
+  return {
+    ...stub,
+    formatPerpsFiat: jest.fn((value: number) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value),
+    ),
+    formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
+    PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
+  };
+});
 
 const mockCaptureException = jest.fn();
 jest.mock('../../../../shared/lib/sentry', () => ({

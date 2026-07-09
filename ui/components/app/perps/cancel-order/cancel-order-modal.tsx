@@ -34,15 +34,7 @@ import {
   formatPerpsFiatUniversal,
 } from '../utils/formatPerpsDisplayPrice';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../../shared/constants/perps-events';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-} from '../../../../hooks/perps';
+import { usePerpsEligibility } from '../../../../hooks/perps';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, formatOrderType } from '../utils';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
@@ -72,7 +64,6 @@ export const CancelOrderModal = ({
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();
   const { isEligible } = usePerpsEligibility();
-  const { track } = usePerpsEventTracking();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -137,26 +128,12 @@ export const CancelOrderModal = ({
       if (!result?.success) {
         throw new Error(result?.error ?? t('somethingWentWrong'));
       }
-      track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.ORDER_TYPE]: order.orderType,
-      });
       replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CANCEL_ORDER_SUCCESS });
       setIsSubmitting(false);
       onClose();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : t('somethingWentWrong');
-      track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
       setError(errorMessage);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
@@ -168,10 +145,8 @@ export const CancelOrderModal = ({
     isEligible,
     order.orderId,
     order.symbol,
-    order.orderType,
     onClose,
     replacePerpsToastByKey,
-    track,
     t,
   ]);
 

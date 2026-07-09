@@ -42,11 +42,11 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import {
   getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
-  buildPerpsVipTrackingData,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
@@ -254,7 +254,7 @@ export const ClosePositionModal = ({
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
-  const { track } = usePerpsEventTracking();
+  const { buildTrackingData } = usePerpsAttribution();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -408,11 +408,12 @@ export const ClosePositionModal = ({
           closeSize,
           position,
         });
-        closeRequestParams.trackingData = buildPerpsVipTrackingData({
+        closeRequestParams.trackingData = buildTrackingData({
           totalFee: estimatedFees,
           marketPrice: currentPrice,
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
+          hlFeeRate: feeRate,
         });
         const result = await submitRequestToBackground<{
           success: boolean;
@@ -420,19 +421,6 @@ export const ClosePositionModal = ({
         }>('perpsClosePosition', [closeRequestParams]);
         if (!result.success) {
           const message = result.error || 'Failed to close position';
-          track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
-            [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-            [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-          });
-          track(MetaMetricsEventName.PerpsError, {
-            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
-          });
           const { errorMessage, toast } = getCloseFailureToastConfig({
             error: new Error(message),
             isPartialClose,
@@ -443,13 +431,6 @@ export const ClosePositionModal = ({
           replacePerpsToastByKey(toast);
           return;
         }
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
-          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-        });
         replacePerpsToastByKey(
           getCloseSuccessToastConfig({
             isPartialClose,
@@ -459,22 +440,6 @@ export const ClosePositionModal = ({
           }),
         );
       } catch (err) {
-        const errMessage =
-          err instanceof Error ? err.message : 'An unknown error occurred';
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-        });
-        track(MetaMetricsEventName.PerpsError, {
-          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-        });
-
         const { errorMessage, toast } = getCloseFailureToastConfig({
           error: err,
           isPartialClose,
@@ -499,10 +464,9 @@ export const ClosePositionModal = ({
     t,
     formatNumber,
     currentPrice,
-    closeNotionalUsd,
     estimatedFees,
-    track,
-    closePercent,
+    feeRate,
+    buildTrackingData,
     onClose,
     formatPercentWithMinThreshold,
     formatFiat,
