@@ -432,6 +432,7 @@ export function getSmartTransactionCommonParams(
   // Ideally all backend logic would instead rely on messenger event / state subscriptions.
   const uiState = getUIState(flatState);
   const effectiveChainId = chainId ?? getCurrentChainId(uiState);
+  // @ts-expect-error Smart transaction selector types does not match controller state
   const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
 
   const featureFlags = getSmartTransactionsFeatureFlagsForChain(
