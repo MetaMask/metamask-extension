@@ -42,6 +42,7 @@ describe('LegacyBackgroundApiServiceInit', () => {
       infuraProjectId: undefined,
       offscreenPromise: expect.any(Promise),
       seedlessOperationMutex: undefined,
+      createVaultMutex: undefined,
       sendUpdate: undefined,
     });
   });

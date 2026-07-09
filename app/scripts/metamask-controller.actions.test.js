@@ -299,6 +299,21 @@ describe('MetaMaskController', function () {
     });
   });
 
+  describe('#unlockAndGetSeedPhrase', function () {
+    it('unlocks the vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      await metamaskController.createNewVaultAndKeychain(password);
+      await metamaskController.keyringController.setLocked();
+
+      const encodedSeedPhrase =
+        await metamaskController.unlockAndGetSeedPhrase(password);
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
+    });
+  });
+
   describe('#addToken', function () {
     const address = '0x514910771af9ca656af840dff83e8264ecf986ca';
     const symbol = 'LINK';

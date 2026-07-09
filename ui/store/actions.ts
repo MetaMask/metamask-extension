@@ -50,7 +50,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
@@ -393,21 +393,30 @@ export function resetOAuthLoginState() {
 export function createNewVaultAndSyncWithSocial(
   password: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     try {
-      const primaryKeyring = await createNewVault(password);
-      if (!primaryKeyring) {
+      const encodedSeedPhrase = await submitRequestToBackground<string>(
+        'createNewVaultAndGetSeedPhrase',
+        [password],
+      );
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      await forceUpdateMetamaskState(dispatch);
+
+      const primaryKeyring = getState().metamask.keyrings?.[0];
+      if (!primaryKeyring?.metadata?.id) {
         throw new Error('No keyring found');
       }
 
-      const seedPhrase = await getSeedPhrase(password);
       await createSeedPhraseBackup(
         password,
         seedPhrase,
         primaryKeyring.metadata.id,
       );
 
-      // force update the state after creating the vault
       await forceUpdateMetamaskState(dispatch);
 
       return seedPhrase;
@@ -1146,8 +1155,11 @@ export function unlockAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitPassword(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const encodedSeedPhrase = await submitRequestToBackground<string>(
+        'unlockAndGetSeedPhrase',
+        [password],
+      );
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
       await forceUpdateMetamaskState(dispatch);
       return seedPhrase;
     } catch (error) {
@@ -1289,12 +1301,6 @@ export async function createSeedPhraseBackup(
     password,
     encodedSeedPhrase,
     keyringId,
-  ]);
-}
-
-function createNewVault(password: string): Promise<KeyringObject> {
-  return submitRequestToBackground<KeyringObject>('createNewVaultAndKeychain', [
-    password,
   ]);
 }
 

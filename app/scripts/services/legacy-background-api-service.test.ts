@@ -3399,6 +3399,7 @@ async function withService<ReturnValue>(
     getOpenMetamaskTabsIds: () => ({}),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
+    createVaultMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

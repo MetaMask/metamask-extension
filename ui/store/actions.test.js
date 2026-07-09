@@ -177,23 +177,20 @@ describe('Actions', () => {
     });
 
     it('should create KeyChain, vault and Backup in the background', async () => {
-      const store = mockStore();
-      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
       const mockSeedPhrase = 'mock seed phrase';
       const mockEncodedSeedPhrase = Array.from(
         Buffer.from(mockSeedPhrase).values(),
       );
+      const store = mockStore();
 
       const createSeedPhraseBackupStub = sinon.stub().resolves();
-      const createNewVaultAndKeychainStub = sinon
+      const createNewVaultAndGetSeedPhraseStub = sinon
         .stub()
-        .resolves(mockKeyrings[0]);
-      const getSeedPhraseStub = sinon.stub().resolves(mockEncodedSeedPhrase);
+        .resolves(mockEncodedSeedPhrase);
 
       background.getApi.returns({
         createSeedPhraseBackup: createSeedPhraseBackupStub,
-        createNewVaultAndKeychain: createNewVaultAndKeychainStub,
-        getSeedPhrase: getSeedPhraseStub,
+        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -201,13 +198,12 @@ describe('Actions', () => {
 
       await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
-      expect(getSeedPhraseStub.callCount).toStrictEqual(1);
-      expect(createNewVaultAndKeychainStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
       expect(
         createSeedPhraseBackupStub.calledOnceWith(
           'password',
           mockEncodedSeedPhrase,
-          mockKeyrings[0].metadata.id,
+          mockUlid,
         ),
       ).toStrictEqual(true);
     });
@@ -854,6 +850,39 @@ describe('Actions', () => {
       expect(createNewVaultAndGetSeedPhraseStub.calledWith('password')).toBe(
         true,
       );
+      expect(seedPhrase).toStrictEqual(mockSeedPhrase);
+    });
+  });
+
+  describe('#unlockAndGetSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls unlockAndGetSeedPhrase in a single background request', async () => {
+      const store = mockStore();
+      const mockSeedPhrase = 'test seed phrase';
+      const mockEncodedSeedPhrase = Array.from(
+        Buffer.from(mockSeedPhrase).values(),
+      );
+
+      const unlockAndGetSeedPhraseStub = sinon
+        .stub()
+        .resolves(mockEncodedSeedPhrase);
+
+      background.getApi.returns({
+        unlockAndGetSeedPhrase: unlockAndGetSeedPhraseStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const seedPhrase = await store.dispatch(
+        actions.unlockAndGetSeedPhrase('password'),
+      );
+
+      expect(unlockAndGetSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(unlockAndGetSeedPhraseStub.calledWith('password')).toBe(true);
       expect(seedPhrase).toStrictEqual(mockSeedPhrase);
     });
   });

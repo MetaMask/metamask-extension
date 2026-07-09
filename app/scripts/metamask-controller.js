@@ -3328,6 +3328,7 @@ export default class MetamaskController extends EventEmitter {
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndGetSeedPhrase:
         this.createNewVaultAndGetSeedPhrase.bind(this),
+      unlockAndGetSeedPhrase: this.unlockAndGetSeedPhrase.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.controllerMessenger.call.bind(
@@ -4739,6 +4740,29 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       await this._createNewVaultAndKeychainUnderLock(password);
+      return await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:getSeedPhrase',
+        password,
+      );
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Unlocks the vault and returns the seed phrase in a single atomic operation.
+   * Holding the vault mutex through seed export avoids races where concurrent
+   * keyring mutations leave no HD keyring available for export.
+   *
+   * @param {string} password
+   * @returns {Promise<Buffer>} The seed phrase encoded as UTF-8 bytes.
+   */
+  async unlockAndGetSeedPhrase(password) {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      await this.legacyBackgroundApiService.submitPasswordOrEncryptionKey({
+        password,
+      });
       return await this.controllerMessenger.call(
         'LegacyBackgroundApiService:getSeedPhrase',
         password,
@@ -9156,6 +9180,7 @@ export default class MetamaskController extends EventEmitter {
       // migrate the seedless onboarding functionality to the LegacyBackgroundApiService.
       // TODO: Remove this once the migration is complete.
       seedlessOperationMutex: this.seedlessOperationMutex,
+      createVaultMutex: this.createVaultMutex,
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:
