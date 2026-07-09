@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useRampsPaymentMethods matches snapshot 1`] = `
+exports[`useRampsPaymentMethods matches snapshot when idle 1`] = `
 {
   "error": null,
   "isFetching": false,

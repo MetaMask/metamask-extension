@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rampsPaymentMethodsKeys includes fiat and assetId in the detail key 1`] = `
+[
+  "ramps",
+  "paymentMethods",
+  "us",
+  "usd",
+  "eip155:1/slip44:60",
+  "transak",
+]
+`;

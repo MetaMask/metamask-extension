@@ -5,7 +5,7 @@ import type {
 } from '@metamask/ramps-controller';
 import { getRampsPaymentMethods } from '../../../store/controller-actions/ramps-controller';
 
-interface PaymentMethodsQueryParams {
+type PaymentMethodsQueryParams = {
   regionCode: string;
   fiat: string;
   assetId: string;
@@ -16,11 +16,15 @@ export const rampsPaymentMethodsKeys = {
   all: () => ['ramps', 'paymentMethods'] as const,
   detail: ({
     regionCode,
+    fiat,
+    assetId,
     providerId,
-  }: Pick<PaymentMethodsQueryParams, 'regionCode' | 'providerId'>) =>
+  }: PaymentMethodsQueryParams) =>
     [
       ...rampsPaymentMethodsKeys.all(),
       regionCode.trim().toLowerCase(),
+      fiat.trim().toLowerCase(),
+      assetId,
       providerId,
     ] as const,
 };

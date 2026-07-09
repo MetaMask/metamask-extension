@@ -29,6 +29,9 @@ export const rampsQuotesKeys = {
       params.walletAddress,
       (params.paymentMethods ?? []).join(','),
       (params.providers ?? []).join(','),
+      params.redirectUrl ?? '',
+      Boolean(params.forceRefresh),
+      params.ttl ?? null,
     ] as const,
 };
 
