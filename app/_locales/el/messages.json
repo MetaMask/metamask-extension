@@ -4195,7 +4195,8 @@
     "message": "Συνεχίστε"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Επανασύνδεση"
+    "message": "Επανασύνδεση",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Βεβαιωθείτε ότι το πορτοφόλι υλικού σας είναι σωστά συνδεδεμένο μέσω USB"

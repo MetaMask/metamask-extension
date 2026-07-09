@@ -15,7 +15,7 @@ type InitFunctions = Parameters<
 >[0]['initFunctions'];
 
 const CONTROLLER_NAME_MOCK = 'PPOMController';
-const CONTROLLER_NAME_2_MOCK = 'TransactionController';
+const CONTROLLER_NAME_2_MOCK = 'TransactionPayController';
 
 function buildControllerMock(name?: string) {
   return { name: name ?? CONTROLLER_NAME_MOCK } as unknown as PPOMController;

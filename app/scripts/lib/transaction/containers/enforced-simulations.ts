@@ -12,7 +12,7 @@ import {
   createNativeBalanceChangeTerms,
   BalanceChangeType,
 } from '@metamask/delegation-core';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
 import {
   getDeleGatorEnvironment,
