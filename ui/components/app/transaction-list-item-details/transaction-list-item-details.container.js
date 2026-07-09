@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isProtectedByEnforcedSimulations } from '../../../pages/confirmations/utils/confirm';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getAccountName,
   getAddressBook,
@@ -63,12 +63,22 @@ const ConnectedTransactionListItemDetails = connect(
 
 export default function TransactionListItemDetailsContainer(props) {
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+
+  const trackLegacyEvent = (payload) => {
+    trackEvent(
+      createEventBuilder(payload.event)
+        .addCategory(payload.category)
+        .addProperties(payload.properties ?? {})
+        .build(),
+    );
+  };
+
   return (
     <ConnectedTransactionListItemDetails
       {...props}
       navigate={navigate}
-      trackEvent={trackEvent}
+      trackEvent={trackLegacyEvent}
     />
   );
 }

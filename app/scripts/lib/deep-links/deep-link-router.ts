@@ -18,6 +18,7 @@ import {
   VALID,
 } from '../../../../shared/lib/deep-links/verify';
 import { BaseUrl } from '../../../../shared/constants/urls';
+import { isDeepLinkRouteAllowedToBypassInterstitial } from '../../../../shared/lib/deep-links/routes/interstitial-bypass';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -182,13 +183,21 @@ export class DeepLinkRouter extends EventEmitter<{
       if (parsed) {
         this.emit('navigate', { url, parsed });
 
-        if ('redirectTo' in parsed.destination) {
-          link = parsed.destination.redirectTo.toString();
-        } else if (this.canSkipInterstitial(parsed.signature, requestOrigin)) {
-          link = this.getExtensionURL(
-            parsed.destination.path,
-            parsed.destination.query.toString(),
-          );
+        if (
+          this.canSkipInterstitial(
+            parsed.signature,
+            requestOrigin,
+            parsed.route,
+          )
+        ) {
+          if ('redirectTo' in parsed.destination) {
+            link = parsed.destination.redirectTo.toString();
+          } else {
+            link = this.getExtensionURL(
+              parsed.destination.path,
+              parsed.destination.query.toString(),
+            );
+          }
         } else {
           // unsigned links or signed links that don't skip the interstitial
           const search = new URLSearchParams({
@@ -258,17 +267,25 @@ export class DeepLinkRouter extends EventEmitter<{
    *
    * Deep links originating from a trusted MetaMask domain (e.g.
    * metamask.io, app.metamask.io) always skip the interstitial regardless of
-   * signature status — the website is treated as a trusted origin. For links
-   * from other origins, the interstitial is skipped only when the link is
-   * signed and the user has opted in via their preferences.
+   * signature status — the website is treated as a trusted origin. Deep links
+   * matching Extension's mobile-aligned bypass route list also skip the
+   * interstitial regardless of signature status. For links from other origins,
+   * the interstitial is skipped only when the link is signed and the user has
+   * opted in via their preferences.
    *
    * @param signatureStatus - The signature status of the deep link.
    * @param requestOrigin - The origin of the page that initiated the navigation.
+   * @param route - The parsed deep-link route.
    */
   canSkipInterstitial(
     signatureStatus: SignatureStatus,
     requestOrigin?: string,
+    route?: ParsedDeepLink['route'],
   ): boolean {
+    if (isDeepLinkRouteAllowedToBypassInterstitial(route)) {
+      return true;
+    }
+
     if (requestOrigin && TRUSTED_ORIGINS.has(requestOrigin)) {
       return true;
     }
