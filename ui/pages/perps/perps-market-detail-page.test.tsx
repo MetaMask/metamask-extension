@@ -266,6 +266,19 @@ jest.mock('../../hooks/perps', () => ({
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
   usePerpsMarketInfo: jest.fn(),
 }));
+// Cancel/close/reverse/TP-SL modals call usePerpsAttribution; keep them
+// renderable without mounting PerpsAttributionProvider in this page suite.
+jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => ({
+      ...input,
+      entryPoint: 'homescreen_tab',
+      discoverySource: 'market_list',
+    }),
+    buildTpslTrackingData: (input: Record<string, unknown>) => input,
+    setFlowAttribution: jest.fn(),
+  }),
+}));
 jest.mock(
   '../../components/app/perps/hooks/usePerpsDepositConfirmation',
   () => ({
@@ -1845,7 +1858,16 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsCancelOrder',
-          [{ orderId: 'order-001', symbol: 'ETH' }],
+          [
+            expect.objectContaining({
+              orderId: 'order-001',
+              symbol: 'ETH',
+              trackingData: expect.objectContaining({
+                entryPoint: 'homescreen_tab',
+                discoverySource: 'market_list',
+              }),
+            }),
+          ],
         );
       });
     });
