@@ -9062,7 +9062,6 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-
   #createEnsureOnboardingCompleteCallback() {
     return createEnsureOnboardingCompleteCallback(this.controllerMessenger);
   }
