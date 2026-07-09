@@ -15,9 +15,9 @@ elif (( DESIRED < 1 || DESIRED > 100 )); then
 fi
 
 if ! [[ "${CURRENT}" =~ ^[0-9]+$ ]]; then
-  violations+=("current_percentage from CWS must be an integer between 1 and 100")
-elif (( CURRENT < 1 || CURRENT > 100 )); then
-  violations+=("current_percentage from CWS must be between 1 and 100")
+  violations+=("current_percentage from CWS must be an integer between 0 and 100")
+elif (( CURRENT < 0 || CURRENT > 100 )); then
+  violations+=("current_percentage from CWS must be between 0 and 100")
 fi
 
 if [[ "${CURRENT}" =~ ^[0-9]+$ && "${DESIRED}" =~ ^[0-9]+$ ]]; then
