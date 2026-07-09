@@ -12,7 +12,9 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatPerpsFiatUniversal } from '../utils/formatPerpsDisplayPrice';
 import { getDisplayName } from '../utils';
@@ -47,8 +49,12 @@ export const OrderCard = ({
 }: OrderCardProps) => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  // Title uses the full asset name; the size line keeps the ticker as its unit.
-  const displayName = getDisplayName(assetName || order.symbol);
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
+  // Title uses the full asset name when enabled; the size line keeps the ticker
+  // as its unit. When the flag is off, fall back to the ticker.
+  const displayName = getDisplayName(
+    showFullAssetNames ? assetName || order.symbol : order.symbol,
+  );
   const displaySymbol = getDisplayName(order.symbol);
   const isTriggerBasedOrder =
     order.isTrigger === true || order.isPositionTpsl === true;
