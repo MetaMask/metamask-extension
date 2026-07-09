@@ -148,7 +148,7 @@ fi
 printf '%s\n' "Creating GitHub Release for ${tag}..."
 
 if [[ ! -f SHA256SUMS ]]; then
-    echo "::error::SHA256SUMS file not found — attestation step may have failed"
+    echo "::error::SHA256SUMS file not found — Generate SHA256SUMS workflow step may have failed"
     exit 1
 fi
 
