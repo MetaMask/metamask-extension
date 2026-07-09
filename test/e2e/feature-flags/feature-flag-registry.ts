@@ -2295,6 +2295,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  perpsShowFullAssetNames: {
+    name: 'perpsShowFullAssetNames',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    // Dark-launched: default OFF in production until rollout.
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.40.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   vipProgramEnabled: {
     name: 'vipProgramEnabled',
     type: FeatureFlagType.Remote,

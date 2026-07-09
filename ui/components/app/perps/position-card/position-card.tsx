@@ -14,6 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import type { Position } from '@metamask/perps-controller';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
 import { formatPnl } from '../../../../../shared/lib/perps-formatters';
 import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
@@ -44,12 +45,16 @@ export const PositionCard = ({
 }: PositionCardProps) => {
   const navigate = useNavigate();
   const { formatPercentWithMinThreshold } = useFormatters();
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
-  // Title uses the full asset name; the size line keeps the ticker as its unit.
-  const displayName = getDisplayName(assetName || position.symbol);
+  // Title uses the full asset name when enabled; the size line keeps the ticker
+  // as its unit. When the flag is off, fall back to the ticker.
+  const displayName = getDisplayName(
+    showFullAssetNames ? assetName || position.symbol : position.symbol,
+  );
   const displaySymbol = getDisplayName(position.symbol);
   const formattedPnl = formatPnl(pnlNum);
   const roeNum = Number.parseFloat(position.returnOnEquity);
