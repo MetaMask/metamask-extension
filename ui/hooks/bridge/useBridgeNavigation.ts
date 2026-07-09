@@ -94,8 +94,8 @@ export const useBridgeNavigation = () => {
    * bridge submission) so users cannot return to flow pages via back navigation.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }, stayOnHomePage = false, replace = false) => {
-      navigate(to, {
+    (to?: To, stayOnHomePage = false, replace = false) => {
+      navigate(to ?? { pathname }, {
         state: {
           ...state,
           bridgeState: null,

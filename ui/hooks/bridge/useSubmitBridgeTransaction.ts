@@ -55,6 +55,172 @@ export const isApprovalTxError = (error: unknown): boolean => {
   return errorMessage.includes(APPROVAL_TX_ERROR);
 };
 
+type PreSubmitValidationParams = {
+  isHardwareWalletAccount: boolean;
+  ensureDeviceReady: () => Promise<boolean>;
+  fromAccount: ReturnType<typeof getFromAccount>;
+  quoteResponse: QuoteResponse & QuoteMetadata;
+  enableMissingNetwork: ReturnType<typeof useEnableMissingNetwork>;
+};
+
+async function validatePreSubmit({
+  isHardwareWalletAccount,
+  ensureDeviceReady,
+  fromAccount,
+  quoteResponse,
+  enableMissingNetwork,
+}: PreSubmitValidationParams): Promise<void> {
+  if (isHardwareWalletAccount) {
+    const isDeviceReady = await ensureDeviceReady();
+    if (!isDeviceReady) {
+      throw new Error('Hardware wallet device is not ready');
+    }
+  }
+
+  if (!fromAccount) {
+    throw new Error(
+      'Failed to submit bridge transaction: No selected account',
+    );
+  }
+
+  if (
+    isCrossChain(
+      quoteResponse.quote.srcChainId,
+      quoteResponse.quote.destChainId,
+    )
+  ) {
+    enableMissingNetwork(formatChainIdToCaip(quoteResponse.quote.destChainId));
+  }
+}
+
+type DispatchBridgeQuoteParams = {
+  quoteResponse: QuoteResponse & QuoteMetadata;
+  fromAccount: NonNullable<ReturnType<typeof getFromAccount>>;
+  dispatch: MetaMaskReduxDispatch;
+  toToken: ReturnType<typeof getToToken>;
+  smartTransactionsEnabled: boolean;
+  warnings: ReturnType<typeof getWarningLabels>;
+  recommendedQuote: ReturnType<typeof getBridgeQuotes>['recommendedQuote'];
+  fromTokenBalanceInUsd: ReturnType<typeof getFromTokenBalanceInUsd>;
+  getHasSufficientGasForQuote: ReturnType<
+    typeof useHasSufficientGasForQuoteForMetrics
+  >;
+};
+
+async function dispatchBridgeQuote({
+  quoteResponse,
+  fromAccount,
+  dispatch,
+  toToken,
+  smartTransactionsEnabled,
+  warnings,
+  recommendedQuote,
+  fromTokenBalanceInUsd,
+  getHasSufficientGasForQuote,
+}: DispatchBridgeQuoteParams): Promise<void> {
+  const location = await getBridgeLocation();
+  const intentData = quoteResponse.quote.intent;
+
+  if (intentData) {
+    await dispatch(
+      submitBridgeIntent({
+        quoteResponse,
+        accountAddress: fromAccount.address,
+        location,
+        tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
+      }),
+    );
+    return;
+  }
+
+  await dispatch(
+    submitBridgeTx(
+      fromAccount.address,
+      quoteResponse,
+      smartTransactionsEnabled,
+      getQuotesReceivedProperties(
+        quoteResponse,
+        warnings,
+        true,
+        recommendedQuote,
+        fromTokenBalanceInUsd,
+        getHasSufficientGasForQuote(quoteResponse),
+      ),
+      location,
+      toToken?.securityData?.type ?? null,
+    ),
+  );
+}
+
+type HandleBridgeSubmitErrorParams = {
+  error: unknown;
+  hardwareWalletUsed: boolean;
+  isQrHardwareWallet: boolean;
+  dispatch: MetaMaskReduxDispatch;
+  navigateToBridgePage: () => void;
+};
+
+function handleBridgeSubmitError({
+  error,
+  hardwareWalletUsed,
+  isQrHardwareWallet,
+  dispatch,
+  navigateToBridgePage,
+}: HandleBridgeSubmitErrorParams): boolean {
+  captureException(error);
+
+  if (hardwareWalletUsed && isHardwareWalletUserRejection(error)) {
+    dispatch(setWasTxDeclined(true));
+    // QR rejections also update lastQrScanCompletedSuccessfully; the global
+    // useNavigateOnQrScanComplete hook navigates back to the prepare page.
+    if (!isQrHardwareWallet) {
+      navigateToBridgePage();
+    }
+    return true;
+  }
+
+  if (isQrHardwareWallet) {
+    navigateToBridgePage();
+    return true;
+  }
+
+  return false;
+}
+
+type NavigateAfterBridgeSubmitParams = {
+  isQrHardwareWallet: boolean;
+  sawQrSignRequestDuringSubmit: boolean;
+  toastEnabled: boolean;
+  navigateToDefaultRoute: () => Promise<void>;
+  navigateToActivityPage: () => void;
+};
+
+function navigateAfterBridgeSubmit({
+  isQrHardwareWallet,
+  sawQrSignRequestDuringSubmit,
+  toastEnabled,
+  navigateToDefaultRoute,
+  navigateToActivityPage,
+}: NavigateAfterBridgeSubmitParams): void {
+  // QR hardware wallets rely on the globally-mounted
+  // useNavigateOnQrScanComplete hook to navigate after the QR SIGN scan
+  // lifecycle completes. Intent-based quotes can finish without triggering
+  // that SIGN lifecycle, so navigate here whenever no SIGN scan was observed
+  // during this submit (otherwise the global hook handles it).
+  if (isQrHardwareWallet && sawQrSignRequestDuringSubmit) {
+    return;
+  }
+
+  if (toastEnabled) {
+    // Match the QR completion path: dispatch resetBridgeController and
+    // clear bridge navigation state so a later bridge entry starts clean.
+    navigateToDefaultRoute().catch(() => undefined);
+    return;
+  }
+
+  navigateToActivityPage();
+}
+
 export default function useSubmitBridgeTransaction() {
   const {
     navigateToBridgePage,
@@ -101,105 +267,60 @@ export default function useSubmitBridgeTransaction() {
     sawQrSignRequestDuringSubmitRef.current = false;
 
     try {
-      if (isHardwareWalletAccount) {
-        const isDeviceReady = await ensureDeviceReady();
-        if (!isDeviceReady) {
-          throw new Error('Hardware wallet device is not ready');
-        }
-      }
-
-      if (!fromAccount) {
-        throw new Error(
-          'Failed to submit bridge transaction: No selected account',
-        );
-      }
-
-      if (
-        isCrossChain(
-          quoteResponse.quote.srcChainId,
-          quoteResponse.quote.destChainId,
-        )
-      ) {
-        enableMissingNetwork(
-          formatChainIdToCaip(quoteResponse.quote.destChainId),
-        );
-      }
+      await validatePreSubmit({
+        isHardwareWalletAccount,
+        ensureDeviceReady,
+        fromAccount,
+        quoteResponse,
+        enableMissingNetwork,
+      });
     } catch {
       setIsSubmitting(false);
       return;
     }
-
-    const intentData = quoteResponse.quote.intent;
 
     if (hardwareWalletUsed) {
       navigateToHwSigningPage();
       setIsSubmitting(false);
     }
 
-    try {
-      const location = await getBridgeLocation();
+    let shouldNavigateAfterSubmit = true;
 
-      if (intentData) {
-        await dispatch(
-          submitBridgeIntent({
-            quoteResponse,
-            accountAddress: fromAccount.address,
-            location,
-            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
-          }),
-        );
-      } else {
-        await dispatch(
-          submitBridgeTx(
-            fromAccount.address,
-            quoteResponse,
-            smartTransactionsEnabled,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-              getHasSufficientGasForQuote(quoteResponse),
-            ),
-            location,
-            toToken?.securityData?.type ?? null,
-          ),
-        );
-      }
-    } catch (e) {
-      captureException(e);
-      if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
-        dispatch(setWasTxDeclined(true));
-        // QR rejections also update lastQrScanCompletedSuccessfully; the global
-        // useNavigateOnQrScanComplete hook navigates back to the prepare page.
-        if (!isQrHardwareWallet) {
-          navigateToBridgePage();
-        }
-        return;
-      }
-      if (isQrHardwareWallet) {
-        navigateToBridgePage();
-        return;
-      }
+    try {
+      await dispatchBridgeQuote({
+        quoteResponse,
+        fromAccount,
+        dispatch,
+        toToken,
+        smartTransactionsEnabled,
+        warnings,
+        recommendedQuote,
+        fromTokenBalanceInUsd,
+        getHasSufficientGasForQuote,
+      });
+    } catch (error) {
+      shouldNavigateAfterSubmit = !handleBridgeSubmitError({
+        error,
+        hardwareWalletUsed,
+        isQrHardwareWallet,
+        dispatch,
+        navigateToBridgePage,
+      });
     } finally {
       setIsSubmitting(false);
     }
 
-    // QR hardware wallets rely on the globally-mounted
-    // useNavigateOnQrScanComplete hook to navigate after the QR SIGN scan
-    // lifecycle completes. Intent-based quotes can finish without triggering
-    // that SIGN lifecycle, so navigate here whenever no SIGN scan was observed
-    // during this submit (otherwise the global hook handles it).
-    if (!isQrHardwareWallet || !sawQrSignRequestDuringSubmitRef.current) {
-      if (toastEnabled) {
-        // Match the QR completion path: dispatch resetBridgeController and
-        // clear bridge navigation state so a later bridge entry starts clean.
-        navigateToDefaultRoute().catch(() => undefined);
-      } else {
-        navigateToActivityPage();
-      }
+    if (!shouldNavigateAfterSubmit) {
+      return;
     }
+
+    navigateAfterBridgeSubmit({
+      isQrHardwareWallet,
+      sawQrSignRequestDuringSubmit: sawQrSignRequestDuringSubmitRef.current,
+      toastEnabled,
+      navigateToDefaultRoute,
+      navigateToActivityPage,
+    });
   };
 
   return {
