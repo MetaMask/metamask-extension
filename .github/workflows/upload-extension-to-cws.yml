@@ -241,7 +241,8 @@ jobs:
           echo "=== Verifying build provenance attestation ==="
           gh attestation verify "${ZIP_NAME}" \
             --repo "${{ github.repository }}" \
-            --signer-workflow "${{ github.repository }}/.github/workflows/publish-release-from-release-head.yml"
+            --signer-workflow "${{ github.repository }}/.github/workflows/publish-release-from-release-head.yml" \
+            --source-ref "refs/heads/release/${VERSION}"
           echo "Attestation verified for ${ZIP_NAME}"
 
       - name: Verify SHA256SUMS
@@ -259,7 +260,10 @@ jobs:
           cat SHA256SUMS
           echo ""
           echo "=== Verifying ${ZIP_NAME} digest ==="
-          grep -F "${ZIP_NAME}" SHA256SUMS | sha256sum -c -
+          if ! awk -v zip="${ZIP_NAME}" '$2 == zip {print; found=1; exit} END {exit !found}' SHA256SUMS | sha256sum -c -; then
+            echo "::error::SHA256SUMS verification failed for ${ZIP_NAME}"
+            exit 1
+          fi
           echo "SHA256SUMS check: PASSED"
 
       # Dev listing rejects manifest.key tied to production extension ID (POC lesson).
