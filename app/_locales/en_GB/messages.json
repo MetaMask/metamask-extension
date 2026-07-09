@@ -7167,6 +7167,18 @@
   "perpsFees": {
     "message": "Fees"
   },
+  "perpsFeesTooltipHyperliquidFee": {
+    "message": "Hyperliquid fee",
+    "description": "Label for the Hyperliquid protocol fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipMetamaskFee": {
+    "message": "MetaMask fee",
+    "description": "Label for the MetaMask fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipProviderFee": {
+    "message": "Provider fee",
+    "description": "Fallback label for the protocol fee rate in the Perps order summary fees tooltip"
+  },
   "perpsFilterAll": {
     "message": "All"
   },
@@ -7261,6 +7273,10 @@
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
+  "perpsLiquidationPriceTooltip": {
+    "message": "If the price hits this point, you'll be liquidated and lose your margin. Higher leverage makes this more likely.",
+    "description": "Tooltip content for the liquidation price row on the Perps order summary"
+  },
   "perpsLong": {
     "message": "Long"
   },
@@ -7269,6 +7285,10 @@
   },
   "perpsMarginRiskWarning": {
     "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
+  },
+  "perpsMarginTooltip": {
+    "message": "Margin is the money you put in to open a trade. It acts as collateral, and it's the most you can lose on that trade.",
+    "description": "Tooltip content for the margin row on the Perps order summary"
   },
   "perpsMarket": {
     "message": "Market"
