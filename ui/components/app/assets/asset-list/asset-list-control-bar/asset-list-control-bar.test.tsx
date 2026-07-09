@@ -3,6 +3,8 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import type { NetworkConfiguration } from '@metamask/network-controller';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../../app/_locales/en/messages.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
@@ -225,37 +227,12 @@ describe('NFTs options', () => {
 
     const manageTokensButton = await findByTestId('manageTokens__button');
 
-    expect(manageTokensButton).toHaveTextContent('Manage tokens');
+    expect(manageTokensButton).toHaveTextContent(messages.manageTokens.message);
     expect(queryByTestId('importTokens__button')).not.toBeInTheDocument();
 
     fireEvent.click(manageTokensButton);
 
     expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE);
-  });
-
-  it('shows Import tokens when the token management feature flag is disabled', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const state = createMockState();
-    state.metamask.remoteFeatureFlags = {
-      ...state.metamask.remoteFeatureFlags,
-      extensionUxTokenManagementFilter: false,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
-      store,
-    );
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    expect(await findByTestId('importTokens__button')).toHaveTextContent(
-      'Import tokens',
-    );
-    expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
   });
 
   it('navigates to the dedicated networks page from manage networks in the home modal', async () => {
@@ -268,9 +245,70 @@ describe('NFTs options', () => {
     fireEvent.click(await findByTestId('sort-by-networks'));
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${NETWORKS_ROUTE}?drawerOpen=true`,
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
+  });
+
+  it('labels selected default networks as All networks when there are no custom or test networks visible', async () => {
+    const state = createMockState();
+    state.metamask.preferences.showTestNetworks = false;
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+        '0x89': true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    const networkFilterButton = await findByTestId('sort-by-networks');
+    expect(networkFilterButton).toHaveTextContent(messages.allNetworks.message);
+
+    fireEvent.click(networkFilterButton);
+    expect(
+      await findByTestId('home-network-filter-all-default'),
+    ).toHaveTextContent(messages.allNetworks.message);
+  });
+
+  it('labels selected default networks as All default networks when custom networks exist', async () => {
+    const state = createMockState();
+    state.metamask.preferences.showTestNetworks = false;
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+        '0x89': true,
+      },
+    };
+    state.metamask.networkConfigurationsByChainId = {
+      ...state.metamask.networkConfigurationsByChainId,
+      '0x123': {
+        chainId: '0x123',
+        name: 'Custom Network',
+        nativeCurrency: 'TST',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            networkClientId: 'customNetworkClientId',
+            type: 'custom',
+            url: 'https://custom-network.example',
+          },
+        ],
+        blockExplorerUrls: [],
+      } as unknown as NetworkConfiguration,
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    const networkFilterButton = await findByTestId('sort-by-networks');
+    expect(networkFilterButton).toHaveTextContent(
+      messages.allDefaultNetworks.message,
     );
+
+    fireEvent.click(networkFilterButton);
+    expect(
+      await findByTestId('home-network-filter-all-default'),
+    ).toHaveTextContent(messages.allDefaultNetworks.message);
   });
 
   it('calls onNetworkSelect with CAIP IDs when one network is enabled', async () => {
@@ -297,18 +335,13 @@ describe('NFTs options', () => {
     const state = createMockState();
     const store = configureMockStore([thunk])(state);
 
-    const { findByTestId, findByText } = renderWithProvider(
-      <AssetListControlBar />,
-      store,
-    );
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
     fireEvent.click(await findByTestId('sort-by-networks'));
 
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${NETWORKS_ROUTE}?drawerOpen=true`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
   it('opens the legacy Network Manager modal when network management feature flag is disabled', async () => {

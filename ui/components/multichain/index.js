@@ -13,7 +13,6 @@ export { AccountDetails } from './account-details';
 export { ImportAccount } from './import-account';
 export { ImportNftsModal } from './import-nfts-modal';
 export { AccountDetailsMenuItem, ViewExplorerMenuItem } from './menu-items';
-export { ImportTokensModal } from './import-tokens-modal';
 export { AvatarGroup } from './avatar-group';
 export { ConnectedStatus } from './connected-status';
 export { NotificationListItem } from './notification-list-item';

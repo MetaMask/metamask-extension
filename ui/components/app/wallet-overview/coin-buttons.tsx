@@ -8,7 +8,10 @@ import {
   isCaipAssetType,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import {
+  BridgeAsset,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -26,6 +29,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useAppSelector } from '../../../store/store';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
 
@@ -76,7 +80,25 @@ import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useOnClickOutside } from '../perps/hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
+import {
+  ARC_ERC20_USDC_BRIDGE_ASSET,
+  ARC_HEX_CHAIN_ID,
+} from '../assets/enablement/arc';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
+
+/**
+ * Allows to manually set the default Swap token when clicking on the Swap CTA from
+ * native token page. If unset, `getNativeAssetForChainId` of bridge-controller is used.
+ */
+const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
+  // On Arc, we want to Bridge/Swap the ERC20 flavor of USDC, not the native one.
+  [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
+};
+
+function getSwapNativeTokenWithOverridesForChain(chainId: string): BridgeAsset {
+  const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[chainId];
+  return override ?? getNativeAssetForChainId(chainId);
+}
 
 type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
   classPrefix?: string;
@@ -198,7 +220,6 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
-  isBuyableChain: boolean;
   classPrefix?: string;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
@@ -210,7 +231,6 @@ const CoinButtons = ({
   trackingLocation,
   isSwapsChain,
   isSigningEnabled,
-  isBuyableChain,
   classPrefix = 'coin',
   disableSendForNonEvm = false,
 }: CoinButtonsProps) => {
@@ -230,7 +250,7 @@ const CoinButtons = ({
   const currentChainId = useSelector(getCurrentChainId);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
-  const defaultSwapsToken = useSelector((state) =>
+  const defaultSwapsToken = useAppSelector((state) =>
     getSwapsDefaultToken(state, chainId.toString()),
   );
 
@@ -266,7 +286,6 @@ const CoinButtons = ({
   const isEvmAsset = isEvmChainId(normalizedChainId);
 
   const buttonTooltips = {
-    buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
       {
@@ -432,7 +451,7 @@ const CoinButtons = ({
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
         chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-          ? getNativeAssetForChainId(chainIdToUse)
+          ? getSwapNativeTokenWithOverridesForChain(chainIdToUse)
           : undefined,
       ),
     );
@@ -505,14 +524,10 @@ const CoinButtons = ({
             size={IconSizeLegacy.Md}
           />
         }
-        disabled={!isBuyableChain}
         data-testid={`${classPrefix}-overview-buy`}
         label={t('buy')}
         onClick={handleBuyAndSellOnClick}
         width={BlockSize.Full}
-        tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('buyButton', contents)
-        }
       />
       <IconButton
         className={`${classPrefix}-overview__button`}

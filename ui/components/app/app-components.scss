@@ -5,7 +5,6 @@
 @import 'alerts/alerts';
 @import 'alert-system/alert-modal/index';
 @import 'alert-system/inline-alert/index';
-@import 'import-token/index';
 @import 'assets/nfts/nft-details/index';
 @import 'assets/nfts/nft-default-image/index';
 @import 'assets/nfts/nft-options/index';
@@ -48,6 +47,7 @@
 @import 'recovery-phrase-reminder/index';
 @import 'reveal-srp-list/index';
 @import 'rewards/onboarding/onboarding-modal';
+@import 'rewards/RewardsVipReferralTag/rewards-vip-referral-tag';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
 @import 'multichain-bridge-transaction-details-modal/index';

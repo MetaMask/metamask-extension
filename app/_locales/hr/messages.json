@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Trebate odabrati račun!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodajte tokene koje ste kupili uslugom MetaMask"
-  },
   "addAlias": {
     "message": "Dodaj pseudonim"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Napredno"
-  },
-  "customToken": {
-    "message": "Prilagođeni token"
   },
   "decimal": {
     "message": "Precizni decimalni brojevi"
@@ -345,9 +339,6 @@
   "metamaskVersion": {
     "message": "Inačica usluge MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Mora se odabrati barem jedan token."
-  },
   "needImportFile": {
     "message": "Morate odabrati datoteku za uvoz.",
     "description": "User is important an account and needs to add a file to continue"
@@ -379,9 +370,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Mrežna kamera nije pronađena"
-  },
-  "notEnoughGas": {
-    "message": "Nema dovoljno goriva"
   },
   "ofTextNofM": {
     "message": "od"

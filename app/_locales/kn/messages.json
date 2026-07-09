@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "ನೀವು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡುವ ಅಗತ್ಯವಿದೆ!"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
-  },
   "addAlias": {
     "message": "ಅಲಿಯಾಸ್ ಸೇರಿಸಿ"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "ಸುಧಾರಿತ"
-  },
-  "customToken": {
-    "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
   },
   "decimal": {
     "message": "ನಿಖರತೆಯ ದಶಮಾಂಶಗಳು"
@@ -348,9 +342,6 @@
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
   },
-  "mustSelectOne": {
-    "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
-  },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
     "description": "User is important an account and needs to add a file to continue"
@@ -382,9 +373,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "ವೆಬ್‌ಕ್ಯಾಮ್ ಕಂಡುಬಂದಿಲ್ಲ"
-  },
-  "notEnoughGas": {
-    "message": "ಸಾಕಷ್ಟು ಗ್ಯಾಸ್ ಇಲ್ಲ"
   },
   "ofTextNofM": {
     "message": "ರಲ್ಲಿ"

@@ -7,7 +7,10 @@ import AccountAddressModal from '../pages/multichain/account-address-modal';
 import AddressListModal from '../pages/multichain/address-list-modal';
 import CriticalErrorPage from '../pages/critical-error-page';
 import VaultRecoveryPage from '../pages/vault-recovery-page';
-import { completeCreateNewWalletOnboardingFlow } from './onboarding.flow';
+import {
+  completeCreateNewWalletOnboardingFlow,
+  type OnboardingMetricsFlowOptions,
+} from './onboarding.flow';
 import { lockAndWaitForLoginPage } from './login.flow';
 
 /**
@@ -139,17 +142,13 @@ export async function waitForBackupVault(
  * @param driver - The WebDriver instance.
  * @param script - The script to run (e.g. corruption script, or simpleReloadScript).
  * @param options - Additional options.
- * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.optedIn - Whether the user has opted in to MetaMetrics. Defaults to false.
  * @returns The initial first account's address (before the script ran).
  */
 export async function onboardThenExecuteScript(
   driver: Driver,
   script: string,
-  {
-    participateInMetaMetrics = false,
-  }: {
-    participateInMetaMetrics?: boolean;
-  } = {},
+  { optedIn = false }: OnboardingMetricsFlowOptions = {},
 ): Promise<string> {
   const initialWindow = await driver.driver.getWindowHandle();
 
@@ -161,7 +160,7 @@ export async function onboardThenExecuteScript(
   await completeCreateNewWalletOnboardingFlow({
     driver,
     password: WALLET_PASSWORD,
-    participateInMetaMetrics,
+    optedIn,
     skipSRPBackup: true,
   });
 
@@ -203,21 +202,15 @@ export async function onboardThenExecuteScript(
  * @param driver - The WebDriver instance.
  * @param script - The script to break the DB (or simpleReloadScript when manifest flags handle it).
  * @param options - Additional options.
- * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.optedIn - Whether the user has opted in to MetaMetrics. Defaults to false.
  * @returns The initial first account's address (before corruption).
  */
 export async function onboardThenTriggerCorruptionFlow(
   driver: Driver,
   script: string,
-  {
-    participateInMetaMetrics = false,
-  }: {
-    participateInMetaMetrics?: boolean;
-  } = {},
+  options: OnboardingMetricsFlowOptions = {},
 ): Promise<string> {
-  const firstAddress = await onboardThenExecuteScript(driver, script, {
-    participateInMetaMetrics,
-  });
+  const firstAddress = await onboardThenExecuteScript(driver, script, options);
 
   // wait for the background page to reload
   // Since reloading the background restarts the extension the UI isn't

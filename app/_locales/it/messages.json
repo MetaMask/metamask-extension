@@ -1,10 +1,4 @@
 {
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Errore"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Dati incongruenti. Controlla i dati della transazione."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Non ci sono altri account. Se desideri accedere a un altro account non elencato di seguito, ricollega il tuo portafoglio hardware e selezionalo."
   },
@@ -72,9 +66,6 @@
   },
   "addANickname": {
     "message": "Aggiungo un nickname"
-  },
-  "addAcquiredTokens": {
-    "message": "Aggiungi i token che hai acquistato usando MetaMask"
   },
   "addAlias": {
     "message": "Aggiungi alias"
@@ -384,9 +375,6 @@
   "customGasSettingToolTipMessage": {
     "message": "Usa $1 per personalizzare il prezzo del gas. Questo può creare confusione se non hai familiarità. Interagisci a tuo rischio.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
-  },
-  "customToken": {
-    "message": "Token Personalizzato"
   },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Prima di importare manualmente un token, assicurati sia attendibile. Ulteriori informazioni su $1"
@@ -721,9 +709,6 @@
   "metamaskVersion": {
     "message": "versione di MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Devi selezionare almeno un token."
-  },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
     "description": "User is important an account and needs to add a file to continue"
@@ -764,9 +749,6 @@
   },
   "notCurrentAccount": {
     "message": "È questo l'account corretto? È diverso dall'account selezionato nel tuo portafoglio"
-  },
-  "notEnoughGas": {
-    "message": "Gas Non Sufficiente"
   },
   "ofTextNofM": {
     "message": "di"

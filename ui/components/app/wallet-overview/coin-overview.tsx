@@ -28,8 +28,9 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
@@ -65,7 +66,6 @@ export type CoinOverviewProps = {
   classPrefix?: string;
   chainId: CaipChainId | Hex;
   isBridgeChain: boolean;
-  isBuyableChain: boolean;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
 };
@@ -179,7 +179,6 @@ export const CoinOverview = ({
   classPrefix = 'coin',
   chainId,
   isBridgeChain,
-  isBuyableChain,
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
@@ -187,8 +186,12 @@ export const CoinOverview = ({
 
   const { trackEvent } = useContext(MetaMetricsContext);
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const dispatch = useDispatch();
@@ -223,7 +226,7 @@ export const CoinOverview = ({
     const url = getPortfolioUrl(
       'explore/tokens',
       'ext_portfolio_button',
-      metaMetricsId,
+      analyticsId,
       isMetaMetricsEnabled === true,
       isMarketingEnabled === true,
     );
@@ -236,7 +239,7 @@ export const CoinOverview = ({
         text: 'Portfolio',
       },
     });
-  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+  }, [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -338,7 +341,6 @@ export const CoinOverview = ({
             isSwapsChain,
             isSigningEnabled,
             isBridgeChain,
-            isBuyableChain,
             classPrefix,
           }}
         />

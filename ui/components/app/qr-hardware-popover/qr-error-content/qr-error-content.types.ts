@@ -4,11 +4,13 @@
  * - `NonUrQrCode` - scanned data does not start with `ur:`.
  * - `WrongUrType` - valid UR whose type does not match the current flow.
  * - `UrDecodeError` - the UR decoder failed to reassemble frames.
+ * - `MismatchedTransaction` - the signature QR belongs to a different transaction.
  */
 export const QrErrorType = {
   NonUrQrCode: 'nonUrQrCode',
   WrongUrType: 'wrongUrType',
   UrDecodeError: 'urDecodeError',
+  MismatchedTransaction: 'mismatchedTransaction',
 } as const;
 
 export type QrErrorType = (typeof QrErrorType)[keyof typeof QrErrorType];

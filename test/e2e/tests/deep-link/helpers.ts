@@ -312,10 +312,7 @@ export const mockRewardsApi = async (server: Mockttp): Promise<void> => {
 export const REDIRECT_ROUTES = [
   { route: '/buy', expectedUrl: `${BaseUrl.Portfolio}/buy` },
   { route: '/card-onboarding', expectedUrl: `${BaseUrl.MetaMask}/card` },
-  {
-    route: '/predict',
-    expectedUrl: `${BaseUrl.MetaMask}/prediction-markets`,
-  },
+  { route: '/money', expectedUrl: `${BaseUrl.MetaMask}/money` },
 ] as const;
 
 export function getHashParams(url: URL) {

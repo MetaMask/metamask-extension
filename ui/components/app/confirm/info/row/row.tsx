@@ -1,4 +1,5 @@
-import React, { createContext } from 'react';
+import React, { createContext, useMemo } from 'react';
+import { Skeleton } from '@metamask/design-system-react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
@@ -9,7 +10,6 @@ import {
   IconSize,
   Text,
 } from '../../../../component-library';
-import { Skeleton } from '../../../../component-library/skeleton';
 import {
   AlignItems,
   BackgroundColor,
@@ -129,8 +129,10 @@ export const ConfirmInfoRow = ({
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
 
+  const contextValue = useMemo(() => ({ variant }), [variant]);
+
   return (
-    <ConfirmInfoRowContext.Provider value={{ variant }}>
+    <ConfirmInfoRowContext.Provider value={contextValue}>
       <Box
         data-testid={dataTestId}
         className="confirm-info-row"

@@ -54,7 +54,6 @@ type AppState = {
     result: 'success' | 'failure' | 'none';
   };
   showKeyringRemovalSnapModal: boolean;
-  importTokensModalOpen: boolean;
   deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     privateKey?: string;
@@ -62,7 +61,6 @@ type AppState = {
   isLoading: boolean;
   isNftStillFetchingIndication: boolean;
   loadingMessage: string | null;
-  warning: string | null | undefined;
 
   defaultHdPaths: {
     trezor: string;
@@ -119,6 +117,11 @@ type AppState = {
      */
     hasUserInteractedWithModal?: boolean;
   };
+  homeDeepLinkQrCode: {
+    deeplinkUrl: string;
+    descriptionKey: string;
+    titleKey: string;
+  } | null;
 };
 
 export type AppSliceState = {
@@ -157,7 +160,6 @@ const initialState: AppState = {
     result: 'none',
   },
   showKeyringRemovalSnapModal: false,
-  importTokensModalOpen: false,
   deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
@@ -167,8 +169,6 @@ const initialState: AppState = {
   // Used to show a spinner at the bottom of the page when we are still fetching nfts
   isNftStillFetchingIndication: false,
   loadingMessage: null,
-  // Used to display error text
-  warning: null,
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     oneKey: `m/44'/60'/0'/0`,
@@ -204,6 +204,7 @@ const initialState: AppState = {
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
+  homeDeepLinkQrCode: null,
 };
 
 export default function reduceApp(
@@ -336,18 +337,6 @@ export default function reduceApp(
         showPermittedNetworkToastOpen: false,
       };
 
-    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
-      return {
-        ...appState,
-        importTokensModalOpen: true,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
-      return {
-        ...appState,
-        importTokensModalOpen: false,
-      };
-
     case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
       return {
         ...appState,
@@ -430,17 +419,6 @@ export default function reduceApp(
           privateKey: '',
         },
       };
-    case actionConstants.SHOW_SEND_TOKEN_PAGE:
-      return {
-        ...appState,
-        warning: null,
-      };
-
-    case actionConstants.LOCK_METAMASK:
-      return {
-        ...appState,
-        warning: null,
-      };
 
     // accounts
     case actionConstants.GO_HOME:
@@ -449,41 +427,25 @@ export default function reduceApp(
         accountDetail: {
           privateKey: '',
         },
-        warning: null,
       };
 
     case actionConstants.SHOW_ACCOUNTS_PAGE:
       return {
         ...appState,
         isLoading: false,
-        warning: null,
       };
 
     case actionConstants.SHOW_CONF_TX_PAGE:
       return {
         ...appState,
         txId: action.id,
-        warning: null,
         isLoading: false,
       };
 
     case actionConstants.COMPLETED_TX:
       return {
         ...appState,
-        warning: null,
         txId: null,
-      };
-
-    case actionConstants.UNLOCK_FAILED:
-      return {
-        ...appState,
-        warning: action.value || 'Incorrect password. Try again.',
-      };
-
-    case actionConstants.UNLOCK_SUCCEEDED:
-      return {
-        ...appState,
-        warning: '',
       };
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
@@ -523,19 +485,6 @@ export default function reduceApp(
       return {
         ...appState,
         isNftStillFetchingIndication: false,
-      };
-
-    case actionConstants.DISPLAY_WARNING:
-      return {
-        ...appState,
-        warning: action.payload,
-        isLoading: false,
-      };
-
-    case actionConstants.HIDE_WARNING:
-      return {
-        ...appState,
-        warning: undefined,
       };
 
     case actionConstants.SHOW_PRIVATE_KEY:
@@ -713,6 +662,18 @@ export default function reduceApp(
         },
       };
 
+    case actionConstants.SET_HOME_DEEP_LINK_QR_CODE:
+      return {
+        ...appState,
+        homeDeepLinkQrCode: action.payload,
+      };
+
+    case actionConstants.CLEAR_HOME_DEEP_LINK_QR_CODE:
+      return {
+        ...appState,
+        homeDeepLinkQrCode: null,
+      };
+
     default:
       return appState;
   }
@@ -789,11 +750,11 @@ export function setCustomTokenAmount(payload: string): PayloadAction<string> {
 
 /**
  * An action creator for display a error to the user in various places in the
- * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * UI. It will not be cleared until a new error replaces it or `hideErrorInSettings`
  * is called.
  *
- * @param payload - The warning to show.
- * @returns The action to display the warning.
+ * @param payload - The error to show.
+ * @returns The action to display the error.
  */
 export function displayErrorInSettings(payload: string): PayloadAction<string> {
   return {
@@ -855,5 +816,22 @@ export function openDataDeletionErrorModal(): Action {
 export function hideDataDeletionErrorModal(): Action {
   return {
     type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+  };
+}
+
+export function setHomeDeepLinkQrCode(payload: {
+  deeplinkUrl: string;
+  descriptionKey: string;
+  titleKey: string;
+}): PayloadAction<typeof payload> {
+  return {
+    type: actionConstants.SET_HOME_DEEP_LINK_QR_CODE,
+    payload,
+  };
+}
+
+export function clearHomeDeepLinkQrCode(): Action {
+  return {
+    type: actionConstants.CLEAR_HOME_DEEP_LINK_QR_CODE,
   };
 }

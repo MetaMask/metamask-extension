@@ -22,7 +22,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
@@ -97,7 +96,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -128,7 +126,7 @@ describe('Bridge tests', function (this: Suite) {
         // check if the Linea network is selected
         await networkManager.openNetworkManager();
         await driver.delay(veryLargeDelayMs);
-
+        await networkManager.selectTab('Popular');
         await networkManager.checkAllPopularNetworksIsSelected();
       },
     );
@@ -139,7 +137,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -183,7 +180,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -215,7 +211,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -250,7 +245,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -288,7 +282,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
