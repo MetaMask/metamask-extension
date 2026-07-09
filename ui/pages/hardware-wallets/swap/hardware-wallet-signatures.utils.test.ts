@@ -1,6 +1,7 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { TextColor } from '@metamask/design-system-react';
 import { providerErrors } from '@metamask/rpc-errors';
+import { it } from '@jest/globals';
 import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
 import { SignatureStepStatus } from './types';
 import {
