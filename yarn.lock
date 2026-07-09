@@ -6987,6 +6987,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/messenger@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/messenger@npm:2.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.11.0"
+  peerDependencies:
+    typescript: ">=5.0.0"
+  checksum: 10/c387511edd89db73b774f631fb4bb382c9254af2dd7f80f9bd45f776e618cf90f653cc0e9744b1bf491f71f99c8318b16e8230a847f619a4fca655ea3f6a08e1
+  languageName: node
+  linkType: hard
+
 "@metamask/metamask-eth-abis@npm:^3.1.1":
   version: 3.1.1
   resolution: "@metamask/metamask-eth-abis@npm:3.1.1"
