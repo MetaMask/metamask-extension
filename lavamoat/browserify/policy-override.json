@@ -158,11 +158,6 @@
         "importScripts": false
       }
     },
-    "wait-on>axios": {
-      "globals": {
-        "importScripts": false
-      }
-    },
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "document": false,

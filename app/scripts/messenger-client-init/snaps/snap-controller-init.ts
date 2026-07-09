@@ -125,7 +125,6 @@ export const SnapControllerInit: MessengerClientInitFunction<
     getFeatureFlags,
 
     ensureOnboardingComplete,
-    fetchFunction: globalThis.fetch.bind(globalThis),
   });
 
   initMessenger.subscribe('KeyringController:lock', () => {

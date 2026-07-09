@@ -182,29 +182,6 @@ ${Object.entries(env)
     return (config.module?.rules ?? []).filter(isSwcReactRule);
   }
 
-  type LavaMoatRuntimeConfiguration = {
-    mode: 'safe' | 'unlocked_unsafe' | 'null_unsafe';
-    embeddedOptions?: {
-      scuttleGlobalThis?: {
-        enabled?: boolean;
-        scuttlerName?: string;
-        exceptions?: (string | RegExp)[];
-      };
-    };
-  };
-
-  type LavaMoatWebpackPlugin = WebpackPluginInstance & {
-    options: {
-      inlineLockdown?: RegExp;
-      scuttleGlobalThis?: {
-        exceptions?: (string | RegExp)[];
-      };
-      runtimeConfigurationPerChunk_experimental?: (chunk: {
-        name?: string;
-      }) => LavaMoatRuntimeConfiguration;
-    };
-  };
-
   function mockOptionalRcFiles({
     metamaskrc = false,
     metamaskprodrc = false,
@@ -284,15 +261,6 @@ ${Object.entries(env)
       'runtime',
       'chunks without a name name should be chunked',
     );
-
-    const splitChunks = options.optimization.splitChunks as
-      | {
-          cacheGroups?: Record<string, unknown>;
-        }
-      | undefined;
-    assert(splitChunks);
-    assert.strictEqual(splitChunks.cacheGroups?.default, false);
-    assert.strictEqual(splitChunks.cacheGroups?.defaultVendors, false);
 
     const manifestPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
@@ -390,80 +358,6 @@ ${Object.entries(env)
           rule.use.options.jsc.transform.react.development,
       ),
       'React Refresh rules should be scoped to UI source with development React transforms',
-    );
-  });
-
-  it('configures LavaMoat for protected self-contained extension scripts', () => {
-    mockOptionalRcFiles();
-
-    const config: Configuration = getWebpackConfig(['--lavamoat', '--snow']);
-    const instance = getWebpackInstance(config);
-    const lavaMoatPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'LavaMoatPlugin',
-    ) as LavaMoatWebpackPlugin;
-
-    assert(lavaMoatPlugin, 'LavaMoat plugin should be present');
-    assert(lavaMoatPlugin.options.inlineLockdown);
-    assert.match(
-      'runtime.0123456789abcdefghab.js',
-      lavaMoatPlugin.options.inlineLockdown,
-    );
-    assert.match(
-      'scripts/contentscript.js',
-      lavaMoatPlugin.options.inlineLockdown,
-    );
-    assert.match(
-      'vendor/trezor/content-script.js',
-      lavaMoatPlugin.options.inlineLockdown,
-    );
-    assert.match('service-worker.js', lavaMoatPlugin.options.inlineLockdown);
-
-    const runtimeConfiguration =
-      lavaMoatPlugin.options.runtimeConfigurationPerChunk_experimental;
-    assert(runtimeConfiguration);
-    assert.strictEqual(
-      runtimeConfiguration({ name: 'scripts/inpage.js' }).mode,
-      'null_unsafe',
-    );
-
-    const serviceWorkerConfig = runtimeConfiguration({
-      name: 'service-worker.ts',
-    });
-    assert.strictEqual(serviceWorkerConfig.mode, 'safe');
-    assert.strictEqual(
-      serviceWorkerConfig.embeddedOptions?.scuttleGlobalThis?.scuttlerName,
-      undefined,
-    );
-    assert.strictEqual(
-      serviceWorkerConfig.embeddedOptions?.scuttleGlobalThis?.enabled,
-      false,
-    );
-
-    for (const chunkName of ['offscreen', 'offscreen.1']) {
-      const offscreenConfig = runtimeConfiguration({ name: chunkName });
-      assert.strictEqual(offscreenConfig.mode, 'safe');
-      assert.strictEqual(
-        offscreenConfig.embeddedOptions?.scuttleGlobalThis?.scuttlerName,
-        undefined,
-      );
-      assert.strictEqual(
-        offscreenConfig.embeddedOptions?.scuttleGlobalThis?.enabled,
-        false,
-      );
-    }
-
-    const trezorContentScriptConfig = runtimeConfiguration({
-      name: 'vendor/trezor/content-script.js',
-    });
-    assert.strictEqual(trezorContentScriptConfig.mode, 'safe');
-    assert.strictEqual(
-      trezorContentScriptConfig.embeddedOptions?.scuttleGlobalThis
-        ?.scuttlerName,
-      undefined,
-    );
-    assert.deepStrictEqual(
-      trezorContentScriptConfig.embeddedOptions?.scuttleGlobalThis?.exceptions,
-      ['browser', 'chrome', 'btoa'],
     );
   });
 

@@ -1,8 +1,26 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import Home from './home.component';
+
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: () => ({ page: { title: 'Home' } }),
+}));
 
 jest.mock('../../components/multichain', () => ({
   AccountOverview: () => null,
@@ -80,32 +98,18 @@ const t = ((key: string) =>
   ? V
   : never;
 
-const mockMetaMetricsContext = {
-  trackEvent: jest.fn().mockResolvedValue(undefined),
-  bufferedTrace: jest.fn().mockResolvedValue(undefined),
-  bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-  onboardingParentContext: { current: null },
-} as unknown as React.ContextType<typeof MetaMetricsContext>;
-
 function buildDefaultProps(overrides: Record<string, unknown> = {}) {
   return {
     navigate: jest.fn(),
     notificationClosing: false,
     attemptCloseNotificationPopup: jest.fn(),
-    fetchBuyableChains: jest.fn(),
     lookupSelectedNetworks: jest.fn(),
     ...overrides,
   };
 }
 
 function wrapWithContext(element: React.ReactElement) {
-  return (
-    <I18nContext.Provider value={t}>
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        {element}
-      </MetaMetricsContext.Provider>
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={t}>{element}</I18nContext.Provider>;
 }
 
 function renderHome(overrides: Record<string, unknown> = {}) {

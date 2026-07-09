@@ -1,15 +1,4 @@
-import { Messenger } from '@metamask/messenger';
-import { NetworkController } from '@metamask/network-controller';
-import type {
-  NetworkControllerMessenger,
-  NetworkControllerOptions,
-} from '@metamask/network-controller';
-import type {
-  DefaultActions,
-  DefaultEvents,
-  RootMessenger as WalletRootMessenger,
-  WalletOptions,
-} from '@metamask/wallet';
+import { WalletOptions } from '@metamask/wallet';
 import {
   CHAIN_IDS,
   getFailoverUrlsForInfuraNetwork,
@@ -24,38 +13,11 @@ import {
   RootMessengerEvents,
 } from '../../lib/messenger';
 
-type ExtensionNetworkControllerInstanceOptions =
-  WalletOptions['instanceOptions']['networkController'] &
-    Pick<NetworkControllerOptions, 'getRpcServiceOptions'>;
-
-export type NetworkControllerInitializationConfiguration = {
-  name: 'NetworkController';
-  init({
-    state,
-    messenger,
-    options,
-  }: {
-    state: NetworkControllerOptions['state'];
-    messenger: NetworkControllerMessenger;
-    options: ExtensionNetworkControllerInstanceOptions;
-  }): NetworkController;
-  getMessenger(
-    parent: WalletRootMessenger<DefaultActions, DefaultEvents>,
-  ): NetworkControllerMessenger;
-};
-
 export function getNetworkControllerInstanceOptions(
   infuraProjectId: string,
-): ExtensionNetworkControllerInstanceOptions {
-  const fetchFunction = globalThis.fetch.bind(globalThis);
-  const btoaFunction = globalThis.btoa.bind(globalThis);
-
+): WalletOptions['instanceOptions']['networkController'] {
   return {
     infuraProjectId,
-    getRpcServiceOptions: () => ({
-      fetch: fetchFunction,
-      btoa: btoaFunction,
-    }),
     failoverUrls: {
       [CHAIN_IDS.MAINNET]: getFailoverUrlsForInfuraNetwork('ethereum-mainnet'),
       [CHAIN_IDS.LINEA_MAINNET]:
@@ -70,46 +32,6 @@ export function getNetworkControllerInstanceOptions(
       [CHAIN_IDS.MONAD]: getFailoverUrlsForInfuraNetwork('monad-mainnet'),
       [CHAIN_IDS.HYPE]: getFailoverUrlsForInfuraNetwork('hyperevm-mainnet'),
       [CHAIN_IDS.ARC]: getFailoverUrlsForInfuraNetwork('arc-mainnet'),
-    },
-  };
-}
-
-export function getNetworkControllerInitializationConfiguration(): NetworkControllerInitializationConfiguration {
-  return {
-    name: 'NetworkController',
-    init: ({ state, messenger, options }) =>
-      new NetworkController({
-        state,
-        messenger,
-        ...options,
-      }),
-    getMessenger: (
-      parent: WalletRootMessenger<DefaultActions, DefaultEvents>,
-    ) => {
-      const networkControllerMessenger = new Messenger({
-        namespace: 'NetworkController',
-        parent,
-      });
-
-      // Mirrors the wallet package's default NetworkController messenger wiring.
-      (
-        parent as unknown as {
-          delegate(args: {
-            messenger: NetworkControllerMessenger;
-            actions: string[];
-            events: string[];
-          }): void;
-        }
-      ).delegate({
-        messenger: networkControllerMessenger,
-        actions: [
-          'ConnectivityController:getState',
-          'RemoteFeatureFlagController:getState',
-        ],
-        events: ['RemoteFeatureFlagController:stateChange'],
-      });
-
-      return networkControllerMessenger;
     },
   };
 }

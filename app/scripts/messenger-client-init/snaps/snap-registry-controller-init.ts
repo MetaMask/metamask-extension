@@ -28,7 +28,6 @@ export const SnapRegistryControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     refetchOnAllowlistMiss: requireAllowlist,
     clientConfig: getClientConfig(),
-    fetchFunction: globalThis.fetch.bind(globalThis),
   });
 
   return {
