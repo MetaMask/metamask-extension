@@ -49,7 +49,6 @@ export class PatchStore {
 
   destroy() {
     this.observableStore.removeListener('stateChange', this.listener);
-    this.pendingPatches = [];
     log('Destroyed', this.id);
   }
 
