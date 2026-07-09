@@ -1,150 +1,82 @@
-import { NetworkController } from '@metamask/network-controller';
-// Mocha type definitions are conflicting with Jest
 import { it as jestIt } from '@jest/globals';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
-  ActionConstraint,
-  Messenger,
-  MockAnyNamespace,
-  MOCK_ANY_NAMESPACE,
-} from '@metamask/messenger';
-import {
   TransactionMeta,
   TransactionType,
-  TransactionController,
-  TransactionControllerMessenger,
-  TransactionControllerOptions,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import type { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
-import type { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
-import {
-  getTransactionControllerInitMessenger,
-  getTransactionControllerMessenger,
-  TransactionControllerInitMessenger,
-} from '../messengers/transaction-controller-messenger';
-import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
-import { TransactionControllerInit } from './transaction-controller-init';
+import { createMockMessenger } from '../test-utils';
+import { getTransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
+import { getTransactionControllerInstanceOptions } from './transaction-controller';
 
-jest.mock('@metamask/transaction-controller');
-jest.mock('@metamask/transaction-pay-controller');
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
-jest.mock('../../lib/transaction/hooks/delegation-7702-publish');
 jest.mock('../../../../shared/lib/selectors');
-jest.mock('../../lib/transaction/hooks');
+jest.mock('../../lib/transaction/hooks', () => ({
+  getTransactionControllerHooks: jest.fn(() => ({ beforeSign: jest.fn() })),
+}));
 
-/**
- * Build a mock NetworkController.
- *
- * @param partialMock - A partial mock object for the NetworkController, merged
- * with the default mock.
- * @returns A mock NetworkController.
- */
-function buildControllerMock(
-  partialMock?: Partial<NetworkController>,
-): NetworkController {
-  const defaultNetworkControllerMock = {
-    getNetworkClientRegistry: jest.fn().mockReturnValue({}),
-  };
+const CHAIN_ID_MOCK = '0x1';
 
-  // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.
-  return {
-    ...defaultNetworkControllerMock,
-    ...partialMock,
-  };
-}
-
-function buildInitRequestMock() {
-  const baseControllerMessenger = new Messenger<
-    MockAnyNamespace,
-    AppStateControllerSetDefaultHomeActiveTabNameAction | ActionConstraint,
-    never
-  >({
-    namespace: MOCK_ANY_NAMESPACE,
-  });
-
-  baseControllerMessenger.registerActionHandler(
-    'AppStateController:setDefaultHomeActiveTabName',
-    (_defaultHomeActiveTabName: AccountOverviewTabKey | null) => undefined,
+describe('TransactionController wallet instance options', () => {
+  const getIsSmartTransactionMock = jest.mocked(
+    selectorsModule.getIsSmartTransaction,
   );
 
-  baseControllerMessenger.registerActionHandler(
-    'PreferencesController:getState',
-    () =>
-      ({
-        advancedGasFee: {},
-        securityAlertsEnabled: false,
-        useTransactionSimulations: false,
-      }) as never,
+  const isSendBundleSupportedMock = jest.mocked(
+    sentinelApiModule.isSendBundleSupported,
   );
 
-  const requestMock = {
-    ...buildControllerInitRequestMock(),
-    controllerMessenger: getTransactionControllerMessenger(
-      baseControllerMessenger as never,
-    ),
-    initMessenger: getTransactionControllerInitMessenger(
-      baseControllerMessenger as never,
-    ),
-  };
+  function buildOptions({
+    preferencesState = {
+      advancedGasFee: {},
+      securityAlertsEnabled: false,
+      useTransactionSimulations: false,
+    },
+  }: {
+    preferencesState?: Record<string, unknown>;
+  } = {}) {
+    const rootMessenger = createMockMessenger();
 
-  requestMock.getMessengerClient.mockReturnValue(buildControllerMock());
+    rootMessenger.registerActionHandler(
+      'PreferencesController:getState',
+      () => preferencesState as never,
+    );
 
-  return { ...requestMock, baseControllerMessenger };
-}
+    const messenger = getTransactionControllerInitMessenger(rootMessenger);
 
-describe('Transaction Controller Init', () => {
-  const transactionControllerClassMock = jest.mocked(TransactionController);
+    return getTransactionControllerInstanceOptions({
+      initMessenger: messenger,
+      getFlatState: jest.fn(() => ({}) as never),
+      getPermittedAccounts: jest.fn(() => []),
+      getTransactionMetricsRequest: jest.fn(() => ({}) as never),
+    });
+  }
 
   /**
-   * Extract a constructor option passed to the controller.
+   * Extract an option passed to the controller.
    *
    * @param option - The option to extract.
    * @param overrides - Optional overrides for the PreferencesController state.
    * @param overrides.preferencesState
    * @returns The extracted option.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  function testConstructorOption<T extends keyof TransactionControllerOptions>(
-    option: T,
+  function testConstructorOption<
+    Option extends keyof ReturnType<typeof buildOptions>,
+  >(
+    option: Option,
     overrides: {
       preferencesState?: Record<string, unknown>;
     } = {},
-  ): TransactionControllerOptions[T] {
-    const { baseControllerMessenger, ...requestMock } = buildInitRequestMock();
-
-    if (overrides.preferencesState) {
-      baseControllerMessenger.unregisterActionHandler(
-        'PreferencesController:getState',
-      );
-      baseControllerMessenger.registerActionHandler(
-        'PreferencesController:getState',
-        () => overrides.preferencesState as never,
-      );
-    }
-
-    TransactionControllerInit(requestMock);
-
-    return transactionControllerClassMock.mock.calls[0][0][option];
+  ): ReturnType<typeof buildOptions>[Option] {
+    return buildOptions(overrides)[option];
   }
 
   beforeEach(() => {
     jest.resetAllMocks();
-
-    jest
-      .mocked(sentinelApiModule.isSendBundleSupported)
-      .mockResolvedValue(false);
-  });
-
-  it('returns controller instance', () => {
-    const requestMock = buildInitRequestMock();
-    expect(
-      TransactionControllerInit(requestMock).messengerClient,
-    ).toBeInstanceOf(TransactionController);
+    isSendBundleSupportedMock.mockResolvedValue(false);
   });
 
   it('retrieves saved gas fees from preferences', () => {
@@ -165,7 +97,7 @@ describe('Transaction Controller Init', () => {
     });
   });
 
-  it('determines if first time interaction enabled using preference', () => {
+  it('determines if first time interaction is enabled using preferences', () => {
     const isFirstTimeInteractionEnabled = testConstructorOption(
       'isFirstTimeInteractionEnabled',
       {
@@ -178,7 +110,7 @@ describe('Transaction Controller Init', () => {
     expect(isFirstTimeInteractionEnabled?.()).toBe(true);
   });
 
-  it('determines if simulation enabled using preference', () => {
+  it('determines if simulation is enabled using preferences', () => {
     const isSimulationEnabled = testConstructorOption('isSimulationEnabled', {
       preferencesState: {
         useTransactionSimulations: true,
@@ -272,19 +204,11 @@ describe('Transaction Controller Init', () => {
   });
 
   describe('isEIP7702GasFeeTokensEnabled', () => {
-    const getIsSmartTransactionMock = jest.mocked(
-      selectorsModule.getIsSmartTransaction,
-    );
-
-    const isSendBundleSupportedMock = jest.mocked(
-      sentinelApiModule.isSendBundleSupported,
-    );
-
     const mockTransactionMeta = {
       id: '1',
+      networkClientId: 'test-network',
       status: TransactionStatus.unapproved,
       chainId: CHAIN_ID_MOCK,
-      networkClientId: 'test-network',
       time: Date.now(),
       txParams: {
         from: '0x0000000000000000000000000000000000000000',
@@ -323,7 +247,6 @@ describe('Transaction Controller Init', () => {
       isSendBundleSupportedMock.mockResolvedValue(false);
 
       const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
-
       expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
 
@@ -332,7 +255,6 @@ describe('Transaction Controller Init', () => {
       isSendBundleSupportedMock.mockResolvedValue(true);
 
       const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
-
       expect(
         await optionFn?.({
           ...mockTransactionMeta,

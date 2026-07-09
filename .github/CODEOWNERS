@@ -85,8 +85,8 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/bridge/**                                          @MetaMask/swaps-engineers
 **/bridge-status/**                                   @MetaMask/swaps-engineers
 
-# Ramps team to own code for the ramps folder
-**/ramps/**                                           @MetaMask/ramp
+# Money Movement team (formerly Ramps) to own code for the ramps folder
+**/ramps/**                                           @MetaMask/money-movement
 
 # Product Safety Team
 **/product-safety/**                     @MetaMask/product-safety
