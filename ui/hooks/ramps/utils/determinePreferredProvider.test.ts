@@ -1,4 +1,4 @@
-import { RampsOrderStatus } from '@metamask/ramps-controller';
+import { RampsOrderStatus, type Provider, type RampsOrder } from '@metamask/ramps-controller';
 import {
   completedOrdersFromRampsOrders,
   determinePreferredProvider,
@@ -7,12 +7,12 @@ import {
 const transakProvider = {
   id: 'transak',
   name: 'Transak',
-};
+} as Provider;
 
 const moonpayProvider = {
   id: 'moonpay',
   name: 'MoonPay',
-};
+} as Provider;
 
 describe('determinePreferredProvider', () => {
   it('auto-selects Transak when there is no completed order history', () => {
@@ -65,7 +65,7 @@ describe('completedOrdersFromRampsOrders', () => {
         createdAt: 3000,
         provider: undefined,
       },
-    ]);
+    ] as RampsOrder[]);
 
     expect(orders).toEqual([{ providerId: 'moonpay', completedAt: 1000 }]);
   });

@@ -54,7 +54,10 @@ describe('rampsPaymentMethodsOptions', () => {
       providerId: 'transak',
     };
 
-    const result = await rampsPaymentMethodsOptions(params).queryFn();
+    const options = rampsPaymentMethodsOptions(params);
+    const result = await (
+      options.queryFn as () => ReturnType<NonNullable<typeof options.queryFn>>
+    )();
 
     expect(result).toMatchSnapshot();
     expect(getRampsPaymentMethods).toHaveBeenCalledWith('US', {

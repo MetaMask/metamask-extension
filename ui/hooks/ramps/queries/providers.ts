@@ -6,6 +6,10 @@ type ProvidersQueryParams = {
   regionCode: string;
 };
 
+type ProvidersResponse = {
+  providers: Provider[];
+};
+
 export const rampsProvidersKeys = {
   all: () => ['ramps', 'providers'] as const,
   detail: ({ regionCode }: ProvidersQueryParams) =>
@@ -16,7 +20,9 @@ export const rampsProvidersOptions = (params: ProvidersQueryParams) =>
   queryOptions({
     queryKey: rampsProvidersKeys.detail(params),
     queryFn: async (): Promise<Provider[]> => {
-      const response = await getRampsProviders(params.regionCode);
+      const response = (await getRampsProviders(
+        params.regionCode,
+      )) as ProvidersResponse;
       return response.providers;
     },
     staleTime: 15 * 60 * 1000,

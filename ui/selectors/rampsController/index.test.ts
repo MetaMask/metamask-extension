@@ -1,3 +1,4 @@
+import type { AccountsState } from '../../../shared/lib/selectors/accounts';
 import {
   selectCountries,
   selectPaymentMethods,
@@ -8,6 +9,7 @@ import {
   selectRampsOrdersForSelectedAccount,
   selectTokens,
   selectUserRegion,
+  type RampsState,
 } from '.';
 
 const populatedState = {
@@ -68,7 +70,7 @@ const populatedState = {
       },
     },
   },
-};
+} as unknown as RampsState & AccountsState;
 
 describe('rampsController selectors', () => {
   it('matches snapshot for populated state', () => {
@@ -87,7 +89,7 @@ describe('rampsController selectors', () => {
   });
 
   it('matches snapshot for default state', () => {
-    const emptyMetamask = { metamask: {} };
+    const emptyMetamask = { metamask: {} } as unknown as RampsState;
     const emptyAccountState = {
       metamask: {
         internalAccounts: {
@@ -95,7 +97,7 @@ describe('rampsController selectors', () => {
           accounts: {},
         },
       },
-    };
+    } as unknown as RampsState & AccountsState;
 
     expect({
       selectUserRegion: selectUserRegion(emptyMetamask),

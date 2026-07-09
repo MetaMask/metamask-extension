@@ -1,3 +1,4 @@
+import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -53,27 +54,30 @@ describe('useRampsProviders', () => {
   });
 
   it('clears selected provider and payment method when region changes', () => {
-    let store = createRampsMockStore({
-      userRegion: {
-        regionCode: 'us-ca',
-        country: { currency: 'USD', isoCode: 'US', name: 'United States' },
-      },
-      providers: {
-        data: [],
-        selected: transakProvider,
-        isLoading: false,
-        error: null,
-      },
-    });
+    const storeRef = {
+      current: createRampsMockStore({
+        userRegion: {
+          regionCode: 'us-ca',
+          country: { currency: 'USD', isoCode: 'US', name: 'United States' },
+        },
+        providers: {
+          data: [],
+          selected: transakProvider,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    };
 
     const { rerender } = renderHook(
       () => useRampsProviders({ enableSideEffects: true }),
       {
-        wrapper: ({ children }) => createRampsTestWrapper(store)({ children }),
+        wrapper: ({ children }: { children: React.ReactNode }) =>
+          createRampsTestWrapper(storeRef.current)({ children }),
       },
     );
 
-    store = createRampsMockStore({
+    storeRef.current = createRampsMockStore({
       userRegion: {
         regionCode: 'gb',
         country: {
