@@ -54,6 +54,17 @@ export type LegacyBackgroundApiServiceIsPublicEndpointUrlAction = {
 };
 
 /**
+ * Determines whether the sendBundle feature is supported for the given chain.
+ *
+ * @param chainId - The chain ID to check.
+ * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceIsSendBundleSupportedAction = {
+  type: `LegacyBackgroundApiService:isSendBundleSupported`;
+  handler: LegacyBackgroundApiService['isSendBundleSupported'];
+};
+
+/**
  * Gets the record of request account tab IDs.
  *
  * @returns A record of request account tab IDs.
@@ -439,6 +450,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
   | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
+  | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
   | LegacyBackgroundApiServiceGetPhishingResultAction

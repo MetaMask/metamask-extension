@@ -387,7 +387,6 @@ import {
 } from './messenger-client-init/seedless-onboarding';
 import {
   getSendBundleSupportedChains,
-  isSendBundleSupported,
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './messenger-client-init/shield/shield-controller-init';
@@ -3913,7 +3912,10 @@ export default class MetamaskController extends EventEmitter {
 
       // Other
       isRelaySupported,
-      isSendBundleSupported,
+      isSendBundleSupported: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:isSendBundleSupported',
+      ),
       openUpdateTabAndReload: () =>
         openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
