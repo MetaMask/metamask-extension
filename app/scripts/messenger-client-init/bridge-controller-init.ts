@@ -9,6 +9,8 @@ import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { TransactionController } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { mergeAssetViewedProperties } from '../../../shared/lib/analytics/trade-transaction-funnel/assetViewedAnalytics';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
@@ -144,6 +146,20 @@ export const BridgeControllerInit: MessengerClientInitFunction<
           actionId,
         },
       });
+
+      if (event === UnifiedSwapBridgeEventName.PageViewed) {
+        initMessenger.call('MetaMetricsController:trackEvent', {
+          category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
+          event: MetaMetricsEventName.AssetViewed,
+          environmentType:
+            propertiesObj.environment_type ?? getEnvironmentType(),
+          properties: mergeAssetViewedProperties('Swaps', {
+            ...propertiesObj,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
+          }),
+        });
+      }
     },
 
     // @ts-expect-error: `trace` function type does not match the expected type.
