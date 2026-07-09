@@ -156,24 +156,29 @@ export const TokenListItemComponent = ({
 
   // When the parent passes these props it has already read the selectors once
   // for the whole list. Switch to a no-op selector so this row does not create
-  // an independent Redux subscription for shared global data. Memoize the
-  // selector references so they remain stable across renders as long as the
-  // prop presence (defined vs. undefined) does not change.
+  // an independent Redux subscription for shared global data. Extract boolean
+  // flags so the useMemo only recomputes when the prop flips between defined
+  // and undefined (not on every new object reference), while still satisfying
+  // the react-hooks/exhaustive-deps rule.
+  const isMarketDataPropProvided = marketDataProp !== undefined;
+  const isCurrencyRatesPropProvided = currencyRatesProp !== undefined;
+  const isNetworkConfigurationsPropProvided = networkConfigurationsProp !== undefined;
+
   const marketDataSelector = useMemo(
-    () => (marketDataProp === undefined ? getMarketData : selectEmptyMarketData),
-    [marketDataProp],
+    () => (isMarketDataPropProvided ? selectEmptyMarketData : getMarketData),
+    [isMarketDataPropProvided],
   );
   const currencyRatesSelector = useMemo(
     () =>
-      currencyRatesProp === undefined ? getCurrencyRates : selectEmptyCurrencyRates,
-    [currencyRatesProp],
+      isCurrencyRatesPropProvided ? selectEmptyCurrencyRates : getCurrencyRates,
+    [isCurrencyRatesPropProvided],
   );
   const networkConfigurationsSelector = useMemo(
     () =>
-      networkConfigurationsProp === undefined
-        ? getNetworkConfigurationsByChainId
-        : selectEmptyNetworkConfigurations,
-    [networkConfigurationsProp],
+      isNetworkConfigurationsPropProvided
+        ? selectEmptyNetworkConfigurations
+        : getNetworkConfigurationsByChainId,
+    [isNetworkConfigurationsPropProvided],
   );
 
   const marketDataFromStore = useSelector(marketDataSelector) as MarketDataMap;
