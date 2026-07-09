@@ -228,10 +228,9 @@ describe('HomeDeepLinkActions', () => {
     });
   });
 
-  it('notifies Home to show the trending QR code for a trending deeplink URL', async () => {
+  it('dispatches setHomeDeepLinkQrCode for a valid trending deeplink URL', async () => {
     const deeplinkUrl = 'https://link.metamask.io/trending?tab=crypto';
-    const onQrCodeDeepLink = jest.fn();
-    const { Wrapper } = createWrapper({
+    const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.TrendingDeeplinkUrl]: deeplinkUrl,
@@ -239,12 +238,13 @@ describe('HomeDeepLinkActions', () => {
       isNetworkMenuOpen: false,
     });
 
-    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
-      wrapper: Wrapper,
-    });
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
 
     await waitFor(() => {
-      expect(onQrCodeDeepLink).toHaveBeenCalledWith({
+      const qrCode = (
+        store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+      ).appState.homeDeepLinkQrCode;
+      expect(qrCode).toEqual({
         deeplinkUrl,
         descriptionKey: 'deepLinkQrTrendingDescription',
         titleKey: 'deepLinkQrTrendingTitle',
@@ -289,8 +289,7 @@ describe('HomeDeepLinkActions', () => {
   });
 
   it('ignores trending QR deeplink params that do not point to /trending', () => {
-    const onQrCodeDeepLink = jest.fn();
-    const { Wrapper } = createWrapper({
+    const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
         [HomeQueryParams.TrendingDeeplinkUrl]:
@@ -299,10 +298,11 @@ describe('HomeDeepLinkActions', () => {
       isNetworkMenuOpen: false,
     });
 
-    render(<HomeDeepLinkActions onQrCodeDeepLink={onQrCodeDeepLink} />, {
-      wrapper: Wrapper,
-    });
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
 
-    expect(onQrCodeDeepLink).not.toHaveBeenCalled();
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
   });
 });

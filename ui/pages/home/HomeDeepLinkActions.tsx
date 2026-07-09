@@ -76,13 +76,15 @@ export const useHomeDeepLinkEffects = () => {
 
   const openTrendingQrCodeModal = useCallback(
     (deeplinkUrl: string) => {
-      onQrCodeDeepLink?.({
-        deeplinkUrl,
-        descriptionKey: 'deepLinkQrTrendingDescription',
-        titleKey: 'deepLinkQrTrendingTitle',
-      });
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrTrendingDescription',
+          titleKey: 'deepLinkQrTrendingTitle',
+        }),
+      );
     },
-    [onQrCodeDeepLink],
+    [dispatch],
   );
 
   const deepLinkHandlers: Record<
