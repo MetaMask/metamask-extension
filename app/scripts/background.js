@@ -160,7 +160,14 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * `null` in production builds so we do not keep loose mutable test globals.
  */
 const inTestState = inTest
-  ? { restoreInProgress: false, hasVaultAtStartup: null }
+  ? {
+      restoreInProgress: false,
+      hasVaultAtStartup: null,
+      portStreamChunkingTestEventStats: {
+        count: 0,
+        lastChunkSize: null,
+      },
+    }
   : null;
 
 const { safePersist, requestSafeReload, evacuate } =
@@ -1553,7 +1560,14 @@ export function setupController(
   });
 
   if (inTest) {
-    global.stateHooks.emitPortStreamChunkingTestPayload = (byteLength) => {
+    global.stateHooks.getPortStreamChunkingTestEventStats = () => ({
+      ...inTestState.portStreamChunkingTestEventStats,
+    });
+
+    global.stateHooks.emitPortStreamChunkingTestPayload = (
+      byteLength,
+      sampleId,
+    ) => {
       const normalizedByteLength = Number(byteLength);
 
       if (
@@ -1569,7 +1583,9 @@ export function setupController(
       controller.appStateController.setDappSwapComparisonData(
         'port-stream-chunking',
         {
-          commands: 'port-stream-chunking-test',
+          commands: sampleId
+            ? `port-stream-chunking-test:${sampleId}`
+            : 'port-stream-chunking-test',
           quotes: payload,
         },
       );
@@ -1767,6 +1783,11 @@ export function setupController(
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
+        if (inTestState) {
+          inTestState.portStreamChunkingTestEventStats.count += 1;
+          inTestState.portStreamChunkingTestEventStats.lastChunkSize = chunkSize;
+        }
+
         trackEvent(
           createEventBuilder(MetaMetricsEventName.PortStreamChunked)
             .addCategory(MetaMetricsEventCategory.PortStream)

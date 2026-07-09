@@ -1,31 +1,24 @@
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import { getEventPayloads, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
+import { WALLET_PASSWORD } from '../../constants';
 import { type Driver, PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import { getServerMochaToBackground } from '../../background-socket/server-mocha-to-background';
+import { type PortStreamChunkingTestEventStats } from '../../background-socket/types';
 
-const PORT_STREAM_CHUNKED_EVENT = 'Port Stream Chunked';
+const PORT_STREAM_CHUNKING_TEST_ID = 'port-stream-chunking';
+const PORT_STREAM_CHUNKING_COMMAND_PREFIX = 'port-stream-chunking-test';
 const STRUCTURED_CLONE_MESSAGE_SERIALIZATION = 'structured_clone';
 const STRUCTURED_CLONE_CHROME_VERSION = '148';
 const CHROMIUM_MESSAGE_SIZE_LIMIT = 67108864; // 64 MB
 const STRUCTURED_CLONE_TEST_PAYLOAD_BYTES = 8 * 1024 * 1024;
-const NO_CHUNK_EVENT_SETTLE_TIMEOUT = 15000;
+const PORT_STREAM_PAYLOAD_WAIT_TIMEOUT = 10000;
 const UNLOCK_PASSWORD_INPUT = { testId: 'unlock-password' };
 const UNLOCK_SUBMIT_BUTTON = { testId: 'unlock-submit' };
-
-type SegmentEvent = {
-  event: string;
-  properties: {
-    category?: string;
-    chunkSize?: number;
-  };
-};
 
 type PortStreamChunkingTestOptions = {
   expectChromeChunkedEvent: boolean;
@@ -34,20 +27,7 @@ type PortStreamChunkingTestOptions = {
   title?: string;
 };
 
-async function mockSegment(mockServer: Mockttp) {
-  return [
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: PORT_STREAM_CHUNKED_EVENT }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-  ];
-}
+let sampleIdCounter = 0;
 
 function getBuiltManifest() {
   const browser = process.env.SELENIUM_BROWSER ?? Browser.CHROME;
@@ -72,26 +52,25 @@ function assertChromeMessageSerialization(expected?: string) {
 }
 
 function assertChunkedEvent(
-  events: SegmentEvent[],
+  beforeStats: PortStreamChunkingTestEventStats,
+  afterStats: PortStreamChunkingTestEventStats,
   expectChunkedEvent: boolean,
 ) {
-  const chunkEvent = events.find(
-    (event) => event.event === PORT_STREAM_CHUNKED_EVENT,
-  );
-
   if (!expectChunkedEvent) {
     assert.strictEqual(
-      chunkEvent,
-      undefined,
-      `${PORT_STREAM_CHUNKED_EVENT} event should not be present`,
+      afterStats.count,
+      beforeStats.count,
+      'message-too-large event count should not change',
     );
     return;
   }
 
-  assert.ok(chunkEvent, `${PORT_STREAM_CHUNKED_EVENT} event should be present`);
-  assert.strictEqual(chunkEvent.properties.category, 'Port Stream');
+  assert.ok(
+    afterStats.count > beforeStats.count,
+    'message-too-large event count should increase',
+  );
   assert.strictEqual(
-    chunkEvent.properties.chunkSize,
+    afterStats.lastChunkSize,
     CHROMIUM_MESSAGE_SIZE_LIMIT,
   );
 }
@@ -122,6 +101,42 @@ async function loginToHomepageWithoutSendKeys(driver: Driver) {
   await driver.clickElement(UNLOCK_SUBMIT_BUTTON);
 }
 
+function getSampleId() {
+  sampleIdCounter += 1;
+  return `${Date.now()}-${sampleIdCounter}`;
+}
+
+async function getPortStreamPayloadCommand(driver: Driver) {
+  return await driver.driver.executeScript(
+    `
+      const getCleanAppState = window.stateHooks?.getCleanAppState;
+      if (!getCleanAppState) {
+        return null;
+      }
+
+      return getCleanAppState().then((state) => {
+        return state?.metamask?.dappSwapComparisonData?.[arguments[0]]?.commands ?? null;
+      });
+    `,
+    PORT_STREAM_CHUNKING_TEST_ID,
+  );
+}
+
+async function waitForPortStreamPayloadInUi(
+  driver: Driver,
+  expectedCommand: string,
+) {
+  await driver.waitUntil(
+    async () => {
+      return (await getPortStreamPayloadCommand(driver)) === expectedCommand;
+    },
+    {
+      interval: 250,
+      timeout: PORT_STREAM_PAYLOAD_WAIT_TIMEOUT,
+    },
+  );
+}
+
 async function loadWalletAndEmitPortStreamPayload({
   expectChromeChunkedEvent,
   expectedChromeMessageSerialization,
@@ -130,21 +145,15 @@ async function loadWalletAndEmitPortStreamPayload({
 }: PortStreamChunkingTestOptions) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilderV2()
-        .withMetaMetricsController({
-          analyticsId: MOCK_ANALYTICS_ID,
-          completedMetaMetricsOnboarding: true,
-          optedIn: true,
-        })
-        .build(),
+      fixtures: new FixtureBuilderV2().build(),
       driverOptions: {
         chromeBrowserVersion: STRUCTURED_CLONE_CHROME_VERSION,
       },
+      localNodeOptions: [{ type: 'none' as const }],
       manifestTransform,
       title,
-      testSpecificMock: mockSegment,
     },
-    async ({ driver, mockedEndpoint }) => {
+    async ({ driver }) => {
       assertChromeMessageSerialization(expectedChromeMessageSerialization);
 
       await driver.navigate(PAGES.HOME);
@@ -154,25 +163,23 @@ async function loadWalletAndEmitPortStreamPayload({
       await loginToHomepageWithoutSendKeys(driver);
 
       const homepage = new HomePage(driver);
-      // Just check that the balance is displayed (wallet is usable).
-      await homepage.checkExpectedBalanceIsDisplayed();
+      await homepage.checkPageIsLoaded();
+
+      const sampleId = getSampleId();
+      const expectedCommand = `${PORT_STREAM_CHUNKING_COMMAND_PREFIX}:${sampleId}`;
+      const beforeStats =
+        await getServerMochaToBackground().getPortStreamChunkingTestEventStats();
 
       await getServerMochaToBackground().emitPortStreamChunkingTestPayload(
         STRUCTURED_CLONE_TEST_PAYLOAD_BYTES,
+        sampleId,
       );
 
-      if (!expectChromeChunkedEvent) {
-        // Give structured clone enough time to emit the metrics event if it
-        // unexpectedly falls back to chunked messaging.
-        await driver.delay(NO_CHUNK_EVENT_SETTLE_TIMEOUT);
-      }
+      await waitForPortStreamPayloadInUi(driver, expectedCommand);
 
-      const events = await getEventPayloads(
-        driver,
-        mockedEndpoint,
-        expectChromeChunkedEvent,
-      );
-      assertChunkedEvent(events as SegmentEvent[], expectChromeChunkedEvent);
+      const afterStats =
+        await getServerMochaToBackground().getPortStreamChunkingTestEventStats();
+      assertChunkedEvent(beforeStats, afterStats, expectChromeChunkedEvent);
     },
   );
 }
