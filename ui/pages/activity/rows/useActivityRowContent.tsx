@@ -144,7 +144,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       // Token in title. API bridge rows may only include the source leg.
       case 'bridge': {
         const { sourceToken, destinationToken } = activity.data;
-        const symbol = destinationToken?.symbol ?? sourceToken?.symbol ?? '';
+        const symbol = sourceToken?.symbol ?? destinationToken?.symbol ?? '';
 
         return {
           avatarTokens: destinationToken
@@ -187,21 +187,37 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
+      case 'perpsAddFunds':
       case 'perpsWithdraw': {
         const { fiat, token } = activity.data;
-        const fiatAmount = fiat ? -Number(fiat.amount) : undefined;
+        const fiatAmount = fiat ? Number(fiat.amount) : undefined;
+        const signedFiatAmount =
+          activity.type === 'perpsWithdraw' && fiatAmount !== undefined
+            ? -fiatAmount
+            : fiatAmount;
 
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t('perpsBalance'),
           primaryAmount:
-            fiatAmount !== undefined && Number.isFinite(fiatAmount)
-              ? formatCurrencyWithMinThreshold(fiatAmount, PERPS_CURRENCY)
+            signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
+              ? formatCurrencyWithMinThreshold(signedFiatAmount, PERPS_CURRENCY)
               : undefined,
         };
       }
       case 'nftBuy':
+      case 'nftSell': {
+        const { token, paymentToken } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
+          primaryAmount: formatTokenAmount(paymentToken),
+          primaryDirection: paymentToken?.direction,
+          secondaryAmount: formatAsFiat(paymentToken),
+        };
+      }
       case 'nftMint': {
         const { token } = activity.data;
 
@@ -270,6 +286,16 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),
+        };
+      }
+      case 'assetDeactivation':
+      case 'assetActivation': {
+        const { token } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? '']),
+          subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
         };
       }
       default:

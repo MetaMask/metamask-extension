@@ -56,6 +56,13 @@ const PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG = {
   },
 };
 
+// TransactionPayController resolves the Perps withdraw required token (Arbitrum
+// USDC) from the seeded legacy Tokens/TokenRates/Currency controllers. The
+// production-default `assetsUnifyState` rollout instead routes those reads
+// through the unified AssetsController (unseeded here), leaving the required
+// token unresolved and the confirmation stuck on its loading skeleton.
+const ASSETS_UNIFY_STATE_DISABLED_FLAG = { enabled: false };
+
 const ARBITRUM_USDC_MARKET_DATA = {
   tokenAddress: ARBITRUM_USDC_ADDRESS,
   currency: 'ETH',
@@ -92,6 +99,13 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_DISABLED_FLAG,
   perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
   perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
+  // Disable the configurable max-slippage controls in the generic Perps E2E
+  // fixture. When enabled, market-order submit is gated on a live order-book
+  // slippage estimate (usePerpsEstimatedSlippage) that the lifecycle WS mock
+  // does not feed, leaving submit-order-button permanently disabled. The flag
+  // is on in production (registry value), so it stays registered; tests that
+  // need the slippage UI can opt in explicitly. Covered by unit tests + recipe.
+  perpsSlippageConfig2: { enabled: false, minimumVersion: '0.0.0' },
 };
 
 /**
@@ -115,6 +129,7 @@ export const PERPS_WITHDRAW_CONFIRMATION_FLAG = {
     ...PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
+    assetsUnifyState: ASSETS_UNIFY_STATE_DISABLED_FLAG,
   },
 };
 
@@ -249,8 +264,13 @@ function getProductionRemoteFlagApiResponseWithOverrides(
  * all need the same flag mock alongside their own additional mocks.
  *
  * @param server - The Mockttp server instance to register the mock on.
+ * @param overrides - Extra remote feature flag overrides merged into the
+ * mocked /v1/flags response (e.g. enabling the withdraw confirmation flow).
  */
-async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
+async function mockEligibleFeatureFlags(
+  server: Mockttp,
+  overrides: Record<string, Json> = {},
+): Promise<void> {
   const eligibleFlags = getProductionRemoteFlagApiResponseWithOverrides({
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote:
@@ -258,6 +278,14 @@ async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay: { name: 'empty' },
     perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
+    // Mirror the seeded controller state: the background
+    // RemoteFeatureFlagController refetches /v1/flags on load and would
+    // otherwise overwrite the seeded `enabled: false` with the production
+    // default (`enabled: true`), re-enabling slippage gating and leaving
+    // market submit disabled without order-book estimates.
+    perpsSlippageConfig2:
+      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
+    ...overrides,
   });
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
@@ -565,7 +593,11 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
     title,
     manifestFlags: PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG,
     testSpecificMock: async (server: Mockttp) => {
-      await mockEligibleFeatureFlags(server);
+      await mockEligibleFeatureFlags(server, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
+        assetsUnifyState: ASSETS_UNIFY_STATE_DISABLED_FLAG,
+      });
       await mockArbitrumUsdcPriceData(server);
       await mockRelayWithdrawData(server);
     },

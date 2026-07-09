@@ -121,18 +121,25 @@ describe('Gas timing', () => {
   });
 
   it('renders "<1 sec" when the chain is fast and estimate time is low', async () => {
+    const gasFeeEstimates = {
+      ...mockState.metamask.gasFeeEstimates,
+      high: {
+        ...mockState.metamask.gasFeeEstimates.high,
+        minWaitTimeEstimate: 250,
+      },
+    };
     const fastChainState = {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        gasFeeEstimates: {
-          ...mockState.metamask.gasFeeEstimates,
-          high: {
-            ...mockState.metamask.gasFeeEstimates.high,
-            minWaitTimeEstimate: 250,
+        gasFeeEstimates,
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        gasFeeEstimatesByChainId: {
+          [CHAIN_IDS.MEGAETH_MAINNET]: {
+            gasFeeEstimates,
+            gasEstimateType: GasEstimateTypes.feeMarket,
           },
         },
-        gasEstimateType: GasEstimateTypes.feeMarket,
       },
     };
 
@@ -179,18 +186,25 @@ describe('Gas timing', () => {
   });
 
   it('renders "<1 sec" for Ethereum mainnet', async () => {
+    const gasFeeEstimates = {
+      ...mockState.metamask.gasFeeEstimates,
+      high: {
+        ...mockState.metamask.gasFeeEstimates.high,
+        minWaitTimeEstimate: 250,
+      },
+    };
     const ethereumState = {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        gasFeeEstimates: {
-          ...mockState.metamask.gasFeeEstimates,
-          high: {
-            ...mockState.metamask.gasFeeEstimates.high,
-            minWaitTimeEstimate: 250,
+        gasFeeEstimates,
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        gasFeeEstimatesByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            gasFeeEstimates,
+            gasEstimateType: GasEstimateTypes.feeMarket,
           },
         },
-        gasEstimateType: GasEstimateTypes.feeMarket,
       },
     };
 

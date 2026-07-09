@@ -9,7 +9,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
@@ -42,7 +42,7 @@ describe('Send ERC20 - Contract Warning', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -51,15 +51,15 @@ describe('Send ERC20 - Contract Warning', function () {
           await contractRegistry.getContractAddress(smartContract);
         await login(driver, { localNode: localNodes[0] });
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.importCustomTokenByChain(
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         );
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.clickOnAsset('TST');
+        await tokensTab.clickOnAsset('TST');
 
         // Send TST
         const tokenOverviewPage = new TokenOverviewPage(driver);
@@ -67,7 +67,10 @@ describe('Send ERC20 - Contract Warning', function () {
         await tokenOverviewPage.clickSend();
 
         const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient(contractAddress);
+        await sendPage.fillRecipient({
+          recipientAddress: contractAddress,
+          validAddress: false,
+        });
 
         // Verify warning
         const warningText =

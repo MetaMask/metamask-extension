@@ -2,7 +2,6 @@ const {
   selectFragmentBySuccessEvent,
   selectFragmentById,
   selectMatchingFragment,
-  getLatestMetricsEventTimestamp,
 } = require('.');
 
 describe('selectFragmentBySuccessEvent', () => {
@@ -68,16 +67,5 @@ describe('selectMatchingFragment', () => {
       existingId: 'randomid',
     });
     expect(selected).toHaveProperty('id', 'randomid');
-  });
-  describe('getLatestMetricsEventTimestamp', () => {
-    it('should find matching fragment in state by id', () => {
-      const state = {
-        metamask: {
-          latestNonAnonymousEventTimestamp: 12345,
-        },
-      };
-      const timestamp = getLatestMetricsEventTimestamp(state);
-      expect(timestamp).toBe(12345);
-    });
   });
 });

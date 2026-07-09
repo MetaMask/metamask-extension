@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -11,8 +11,9 @@ import {
 import {
   getLastViewedUserSurvey,
   getUseExternalServices,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
@@ -32,20 +33,24 @@ type Survey = {
 export function SurveyToast() {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
   const basicFunctionality = useSelector(getUseExternalServices);
   const internalAccount = useSelector(getSelectedInternalAccount);
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
 
   const surveyUrl = useMemo(
-    () => `${ACCOUNTS_API_BASE_URL}/v1/users/${metaMetricsId}/surveys`,
-    [metaMetricsId],
+    () => `${ACCOUNTS_API_BASE_URL}/v1/users/${analyticsId}/surveys`,
+    [analyticsId],
   );
 
   useEffect(() => {
-    if (!basicFunctionality || !metaMetricsId || !participateInMetaMetrics) {
+    if (!basicFunctionality || !analyticsId || !isMetaMetricsEnabled) {
       return undefined;
     }
 
@@ -79,7 +84,7 @@ export function SurveyToast() {
         setSurvey(_survey);
       } catch (error: unknown) {
         if (error instanceof Error && error.name !== 'AbortError') {
-          console.error('Failed to fetch survey:', metaMetricsId, error);
+          console.error('Failed to fetch survey:', analyticsId, error);
         }
       }
     };
@@ -93,7 +98,8 @@ export function SurveyToast() {
     internalAccount?.address,
     lastViewedUserSurvey,
     basicFunctionality,
-    metaMetricsId,
+    analyticsId,
+    isMetaMetricsEnabled,
     dispatch,
   ]);
 
@@ -117,18 +123,19 @@ export function SurveyToast() {
   }
 
   function trackAction(response: 'accept' | 'deny') {
-    if (!participateInMetaMetrics || !survey) {
+    if (!isMetaMetricsEnabled || !survey) {
       return;
     }
 
-    trackEvent({
-      event: MetaMetricsEventName.SurveyToast,
-      category: MetaMetricsEventCategory.Feedback,
-      properties: {
-        response,
-        survey: survey.id,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SurveyToast)
+        .addCategory(MetaMetricsEventCategory.Feedback)
+        .addProperties({
+          response,
+          survey: survey.id,
+        })
+        .build(),
+    );
   }
 
   if (!survey || survey.id <= lastViewedUserSurvey) {

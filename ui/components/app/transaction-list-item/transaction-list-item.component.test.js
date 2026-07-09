@@ -47,6 +47,19 @@ jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
   useShouldShowSpeedUp: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
@@ -229,8 +242,7 @@ describe('TransactionListItem', () => {
           activity_type: 'send',
         },
       });
-      const popoverClose = queryByTestId('popover-close');
-      fireEvent.click(popoverClose);
+      fireEvent.click(activityListItem);
       expect(mockTrackEvent).toHaveBeenCalledWith({
         event: MetaMetricsEventName.ActivityDetailsClosed,
         category: MetaMetricsEventCategory.Navigation,
@@ -241,8 +253,8 @@ describe('TransactionListItem', () => {
     });
   });
 
-  describe('when account has insufficient balance to cover gas', () => {
-    it(`should indicate account has insufficient funds to cover gas price for cancellation of pending transaction`, () => {
+  describe('cancel button', () => {
+    it('renders the cancel button enabled even when the account balance cannot cover the cancel gas fee', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '0x3',
@@ -251,10 +263,11 @@ describe('TransactionListItem', () => {
       const { queryByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
-      expect(queryByTestId('not-enough-gas__tooltip')).toBeInTheDocument();
+      expect(queryByTestId('not-enough-gas__tooltip')).not.toBeInTheDocument();
+      expect(queryByTestId('cancel-button')).not.toBeDisabled();
     });
 
-    it('should not disable "cancel" button when user has sufficient funds', () => {
+    it('renders the cancel button enabled when the account has sufficient balance', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
@@ -263,10 +276,10 @@ describe('TransactionListItem', () => {
       const { queryByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
-      expect(queryByTestId('not-enough-gas__tooltip')).not.toBeInTheDocument();
+      expect(queryByTestId('cancel-button')).not.toBeDisabled();
     });
 
-    it(`should open the cancel/speedup modal when cancel is clicked`, async () => {
+    it('opens the cancel/speedup modal when cancel is clicked', async () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
@@ -356,7 +369,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to UNISigningCancel',
+      'Swap USDC to UNISigningCancel',
     );
     expect(getByText(messages.signing.message)).toBeInTheDocument();
   });
@@ -368,7 +381,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to UNIConfirmed-2 USDC',
+      'Swap USDC to UNIConfirmed-2 USDC',
     );
   });
 
@@ -387,7 +400,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to UNIFailed-2 USDC',
+      'Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText(messages.failed.message)).toBeInTheDocument();
   });

@@ -51,8 +51,9 @@
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "outdatedBrowserWarningLastShown": "object",
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "string",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -67,11 +68,21 @@
     },
     "AssetsController": "object",
     "AuthenticationController": {},
-    "BridgeStatusController": { "txHistory": "object" },
+    "BridgeController": { "inputPrimaryDenomination": "string" },
+    "BridgeStatusController": {
+      "quoteUpdateStatusStore": "object",
+      "txHistory": "object"
+    },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,
       "walletComplianceStatusMap": "object"
+    },
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -138,6 +149,7 @@
         "bip122": "object",
         "eip155": "object",
         "solana": "object",
+        "stellar": "object",
         "tron": "object"
       },
       "nativeAssetIdentifiers": "object"
@@ -195,7 +207,9 @@
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
+        "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
@@ -254,7 +268,7 @@
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "ShieldController": "object",
-    "SnapController": {},
+    "SnapController": { "unencryptedSnapStates": "object" },
     "SnapInterfaceController": { "interfaces": "object" },
     "SubjectMetadataController": {},
     "SubscriptionController": "object",

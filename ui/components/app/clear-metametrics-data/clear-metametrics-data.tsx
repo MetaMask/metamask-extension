@@ -38,7 +38,11 @@ import {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ClearMetaMetricsData() {
+export default function ClearMetaMetricsData({
+  onDeletionSuccess,
+}: {
+  onDeletionSuccess?: () => void;
+}) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -59,6 +63,7 @@ export default function ClearMetaMetricsData() {
           excludeMetaMetricsId: true,
         },
       );
+      onDeletionSuccess?.();
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
       trackEvent(

@@ -51,11 +51,7 @@ import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
-import {
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-} from '../../../../shared/constants/app';
-import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
@@ -254,9 +250,6 @@ export default function ConfirmationPage({
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
-  const skipSmartTransactionStatusPage = useSelector(
-    getExtensionSkipTransactionStatusPage,
-  );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
   const { id } = useParams();
@@ -315,10 +308,6 @@ export default function ConfirmationPage({
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
-
-  const isSmartTransactionStatus =
-    pendingConfirmation?.type ===
-    SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage;
 
   const hasHeaderMaybe = isSnapDialog;
   const hasHeader =
@@ -482,10 +471,6 @@ export default function ConfirmationPage({
       return <Loading loadingMessage={approvalFlowLoadingText} />;
     }
 
-    return null;
-  }
-
-  if (isSmartTransactionStatus && skipSmartTransactionStatusPage) {
     return null;
   }
 

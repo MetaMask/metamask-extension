@@ -5,9 +5,9 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
-import { mockSpotPrices } from './utils/mocks';
+import { mockSpotPrices, mockTokenMetadataApis } from './utils/mocks';
 
 describe('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;
@@ -23,21 +23,39 @@ describe('Token List Sorting', function () {
     localNodeOptions: {
       chainId: parseInt(mainnetChainId, 16),
     },
+    unifiedEvmAccountsApiBalances: {
+      mainnetAdditionalBalances: [
+        {
+          assetId: customTokenAssetId,
+          balance: '1',
+        },
+      ],
+    },
   };
 
   async function mockCustomTokenImport(mockServer: MockttpServer) {
-    await mockSpotPrices(mockServer, {
-      'eip155:1/slip44:60': {
-        price: 1700,
-        marketCap: 382623505141,
-        pricePercentChange1d: 0,
-      },
-      [customTokenAssetId]: {
-        price: 0,
-        marketCap: 0,
-        pricePercentChange1d: 0,
-      },
-    });
+    return [
+      ...(await mockTokenMetadataApis(mockServer, [
+        {
+          address: customTokenAddress,
+          symbol: customTokenSymbol,
+          name: customTokenSymbol,
+          decimals: 18,
+        },
+      ])),
+      await mockSpotPrices(mockServer, {
+        'eip155:1/slip44:60': {
+          price: 1700,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+        [customTokenAssetId]: {
+          price: 0,
+          marketCap: 0,
+          pricePercentChange1d: 0,
+        },
+      }),
+    ];
   }
 
   it('should sort tokens alphabetically and by decreasing balance', async function () {
@@ -47,7 +65,7 @@ describe('Token List Sorting', function () {
         title: (this as Context).test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
         testSpecificMock: mockCustomTokenImport,
@@ -56,25 +74,26 @@ describe('Token List Sorting', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           mainnetChainId,
           customTokenAddress,
           customTokenSymbol,
+          '18',
         );
-        await assetListPage.dismissTokenImportedMessage();
+        await tokensTab.dismissTokenImportedMessage();
 
-        await assetListPage.checkTokenExistsInList('Ethereum');
-        await assetListPage.sortTokenList('alphabetically');
-        await assetListPage.checkTokenPositionInList({
+        await tokensTab.checkTokenExistsInList(customTokenSymbol);
+        await tokensTab.sortTokenList('alphabetically');
+        await tokensTab.checkTokenPositionInList({
           position: 1,
           tokenName: customTokenSymbol,
         });
 
-        await assetListPage.sortTokenList('decliningBalance');
-        await assetListPage.checkTokenPositionInList({
+        await tokensTab.sortTokenList('decliningBalance');
+        await tokensTab.checkTokenPositionInList({
           position: 1,
           tokenName: 'Ethereum',
         });
