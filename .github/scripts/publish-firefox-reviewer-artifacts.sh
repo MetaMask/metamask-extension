@@ -20,7 +20,7 @@ set -euo pipefail
 
 # Pin firefox-bundle-script tooling (prepare_release.sh + scripts). Bump via PR
 # when tooling changes; merge MetaMask/firefox-bundle-script before release use.
-# INFRA-3753: includes BUNDLE_SH_GIT_REF / per-version tag support.
+# INFRA-3753: includes FIREFOX_BUNDLE_SH_GIT_REF / per-version tag support.
 FIREFOX_BUNDLE_SCRIPT_REF="fb08f4c4515cf21846bceea83830f63e285c34fd"
 
 MODE="${1:-}"
@@ -44,7 +44,7 @@ AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-us-east-2}"
 PACKAGE_ROOT="${AMO_REVIEWER_PACKAGE_ROOT:-${RUNNER_TEMP:-/tmp}/amo-reviewer-artifacts}"
 PACKAGE_DIR="${PACKAGE_ROOT}/${raw_version}"
 S3_PREFIX="reviewer-source/${raw_version}"
-BUNDLE_SH_GIT_REF="v${raw_version}"
+FIREFOX_BUNDLE_SH_GIT_REF="v${raw_version}"
 
 ensure_mtree() {
   if command -v mtree >/dev/null 2>&1; then
@@ -109,13 +109,13 @@ package_release_variant() {
 
   mkdir -p "${PACKAGE_DIR}"
 
-  # prepare_release.sh fetches bundle.sh at BUNDLE_SH_GIT_REF (v{version} tag),
+  # prepare_release.sh fetches bundle.sh at FIREFOX_BUNDLE_SH_GIT_REF (v{version} tag),
   # runs compare_builds.sh + create_submission_package.sh, and writes packages
   # under output/. Exits non-zero when reproduced build differs from published.
   echo "Packaging ${variant} reviewer artifacts via prepare_release.sh..."
   (
     cd "${clone_dir}"
-    export BUNDLE_SH_GIT_REF
+    export FIREFOX_BUNDLE_SH_GIT_REF
     bash ./prepare_release.sh "${prepare_args[@]}" "${raw_version}" "${last_listed}"
   )
 
