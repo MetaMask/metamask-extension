@@ -736,7 +736,7 @@
         "@metamask/assets-controllers>single-call-balance-checker-abi": true
       }
     },
-    "@metamask/notification-services-controller>@metamask/authenticated-user-storage": {
+    "@metamask/authenticated-user-storage": {
       "packages": {
         "@metamask/superstruct": true
       }
@@ -1293,7 +1293,7 @@
       },
       "packages": {
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
-        "@metamask/notification-services-controller>@metamask/authenticated-user-storage": true,
+        "@metamask/authenticated-user-storage": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
