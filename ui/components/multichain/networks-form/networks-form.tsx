@@ -5,7 +5,7 @@ import {
   Button as DSButton,
   ButtonSize as DSButtonSize,
   ButtonVariant as DSButtonVariant,
-  IconName as DSIconName,
+  IconName,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -471,7 +471,7 @@ export const NetworksForm = ({
           <DSButton
             variant={DSButtonVariant.Secondary}
             size={DSButtonSize.Lg}
-            startIconName={DSIconName.Flash}
+            startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
             className="mb-4 rounded-xl"
