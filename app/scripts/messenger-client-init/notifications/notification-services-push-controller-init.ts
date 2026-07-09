@@ -47,13 +47,16 @@ export const getNormalisedLocale = (locale: string): string =>
  * it is in a backend-safe numeric format. Returns undefined otherwise (or if
  * the version lookup fails) so the field is omitted from the registration.
  *
+ * @param getVersion - Returns the extension version to validate.
  * @returns The backend-safe app version, or undefined.
  */
-export const getAppVersionForRegistration = (): string | undefined => {
+export const getAppVersionForRegistration = (
+  getVersion: () => string = () => new ExtensionPlatform().getVersion(),
+): string | undefined => {
   let appVersion: string;
 
   try {
-    appVersion = new ExtensionPlatform().getVersion();
+    appVersion = getVersion();
   } catch {
     return undefined;
   }
@@ -70,8 +73,9 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
   initMessenger,
   persistedState,
   getMessengerClient,
+  platform,
 }) => {
-  const appVersion = getAppVersionForRegistration();
+  const appVersion = getAppVersionForRegistration(() => platform.getVersion());
 
   const messengerClient = new NotificationServicesPushController({
     messenger: controllerMessenger,

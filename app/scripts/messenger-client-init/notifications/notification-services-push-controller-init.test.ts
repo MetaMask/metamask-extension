@@ -13,8 +13,8 @@ import {
   type NotificationServicesPushControllerMessenger,
 } from '../messengers/notifications';
 import { getRootMessenger } from '../../lib/messenger';
-import ExtensionPlatform from '../../platforms/extension';
 import {
+  getAppVersionForRegistration,
   getNormalisedLocale,
   NotificationServicesPushControllerInit,
 } from './notification-services-push-controller-init';
@@ -41,12 +41,15 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('NotificationServicesPushControllerInit', () => {
-  const arrange = () => {
+  const arrange = (platformVersion = '7.80.0') => {
     const NotificationServicesPushControllerClassMock = jest.mocked(
       NotificationServicesPushController,
     );
 
     const requestMock = buildInitRequestMock();
+    jest
+      .spyOn(requestMock.platform, 'getVersion')
+      .mockReturnValue(platformVersion);
 
     return {
       NotificationServicesPushControllerClassMock,
@@ -54,15 +57,8 @@ describe('NotificationServicesPushControllerInit', () => {
     };
   };
 
-  const getControllerConfig = (
-    mock: jest.MockedObjectDeep<typeof NotificationServicesPushController>,
-  ) => mock.mock.calls[0][0].config;
-
   beforeEach(() => {
     jest.resetAllMocks();
-    jest
-      .spyOn(ExtensionPlatform.prototype, 'getVersion')
-      .mockReturnValue('7.80.0');
   });
 
   it('returns controller instance', () => {
@@ -82,7 +78,7 @@ describe('NotificationServicesPushControllerInit', () => {
       messenger: requestMock.controllerMessenger,
       state: {
         ...defaultState,
-        ...requestMock.persistedState.NotificationServicesController,
+        ...requestMock.persistedState.NotificationServicesPushController,
       },
       env: {
         apiKey: '',
@@ -108,56 +104,43 @@ describe('NotificationServicesPushControllerInit', () => {
     });
   });
 
+  it('omits app version when platform version is not backend-safe', () => {
+    const { requestMock, NotificationServicesPushControllerClassMock } =
+      arrange('7.80.0-flask.1');
+
+    NotificationServicesPushControllerInit(requestMock);
+
+    expect(NotificationServicesPushControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        config: expect.not.objectContaining({
+          appVersion: expect.any(String),
+        }),
+      }),
+    );
+  });
+});
+
+describe('getAppVersionForRegistration', () => {
   it.each(['7.80', '7.80.0', '12.18.3.0'])(
-    'includes backend-safe app version %s in the push registration config',
+    'returns backend-safe app version %s',
     (version) => {
-      const { requestMock, NotificationServicesPushControllerClassMock } =
-        arrange();
-      jest
-        .spyOn(ExtensionPlatform.prototype, 'getVersion')
-        .mockReturnValue(version);
-
-      NotificationServicesPushControllerInit(requestMock);
-
-      expect(
-        getControllerConfig(NotificationServicesPushControllerClassMock),
-      ).toEqual(expect.objectContaining({ appVersion: version }));
+      expect(getAppVersionForRegistration(() => version)).toBe(version);
     },
   );
 
   it.each(['7', '7.80.0.1.2', '7.80.0-flask.1', '7.80.0+build.1', 'v7.80.0'])(
-    'omits app version when %s is not backend-safe',
+    'returns undefined when %s is not backend-safe',
     (version) => {
-      const { requestMock, NotificationServicesPushControllerClassMock } =
-        arrange();
-      jest
-        .spyOn(ExtensionPlatform.prototype, 'getVersion')
-        .mockReturnValue(version);
-
-      NotificationServicesPushControllerInit(requestMock);
-
-      expect(
-        getControllerConfig(NotificationServicesPushControllerClassMock),
-      ).toEqual(
-        expect.not.objectContaining({ appVersion: expect.any(String) }),
-      );
+      expect(getAppVersionForRegistration(() => version)).toBeUndefined();
     },
   );
 
-  it('omits app version when the version lookup fails', () => {
-    const { requestMock, NotificationServicesPushControllerClassMock } =
-      arrange();
-    jest
-      .spyOn(ExtensionPlatform.prototype, 'getVersion')
-      .mockImplementation(() => {
-        throw new Error('Version lookup failed');
-      });
-
-    NotificationServicesPushControllerInit(requestMock);
-
+  it('returns undefined when the version lookup fails', () => {
     expect(
-      getControllerConfig(NotificationServicesPushControllerClassMock),
-    ).toEqual(expect.not.objectContaining({ appVersion: expect.any(String) }));
+      getAppVersionForRegistration(() => {
+        throw new Error('Version lookup failed');
+      }),
+    ).toBeUndefined();
   });
 });
 
