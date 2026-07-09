@@ -2,10 +2,23 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useTokenInsightsData } from '../../../hooks/useTokenInsightsData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import * as tokenInsightsUtils from '../../../helpers/utils/token-insights';
 import { TokenInsightsModal } from './token-insights-modal';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../hooks/useTokenInsightsData');
 jest.mock('../../../hooks/useI18nContext');
@@ -38,13 +51,6 @@ jest.mock('../../../helpers/utils/token-insights', () => ({
   }),
 }));
 
-const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 const mockT = (key: string) => key;
 
 const defaultToken = {
@@ -91,11 +97,7 @@ describe('TokenInsightsModal', () => {
       ...props,
     };
 
-    return render(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <TokenInsightsModal {...defaultProps} />
-      </MetaMetricsContext.Provider>,
-    );
+    return render(<TokenInsightsModal {...defaultProps} />);
   };
 
   describe('Rendering', () => {
@@ -166,16 +168,18 @@ describe('TokenInsightsModal', () => {
       const copyButton = screen.getByTestId('address-copy-button-text');
       fireEvent.click(copyButton);
 
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: 'Token Contract Address Copied',
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: 'TEST',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_address: '0x1234567890123456789012345678901234567890',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Token Contract Address Copied',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: 'TEST',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_address: '0x1234567890123456789012345678901234567890',
+            category: MetaMetricsEventCategory.Swaps,
+          },
+        }),
+      );
     });
   });
 
