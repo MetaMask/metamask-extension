@@ -3040,7 +3040,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'extensionUxTransactionEventToast',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: false,
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '13.36.0',
+    },
     status: FeatureFlagStatus.Active,
   },
 
