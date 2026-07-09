@@ -3409,6 +3409,10 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.setSeedPhraseBackedUp.bind(onboardingController),
       completeOnboarding:
         onboardingController.completeOnboarding.bind(onboardingController),
+      setHasSeenOnboardingCompletionPage:
+        onboardingController.setHasSeenOnboardingCompletionPage.bind(
+          onboardingController,
+        ),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
 

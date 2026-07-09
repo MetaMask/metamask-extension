@@ -255,6 +255,7 @@
   "OnboardingController": {
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
+    "hasSeenOnboardingCompletionPage": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },

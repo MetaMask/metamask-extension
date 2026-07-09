@@ -359,6 +359,7 @@ describe('MetaMask onboarding', function () {
             completedOnboarding: false,
             firstTimeFlowType: FirstTimeFlowType.restore,
             seedPhraseBackedUp: null,
+            hasSeenOnboardingCompletionPage: false,
           })
           .withMetaMetricsController({
             completedMetaMetricsOnboarding: false,
