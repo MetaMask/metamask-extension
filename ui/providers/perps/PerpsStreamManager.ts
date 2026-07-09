@@ -100,6 +100,14 @@ class PerpsStreamManager {
 
   orderBook: PerpsDataChannel<OrderBookData | null>;
 
+  /**
+   * Server-aggregated order book, fed by a second, independent subscription
+   * that uses `nSigFigs`/`mantissa`. Kept separate from `orderBook` so the raw,
+   * full-precision channel (top-of-book mid, slippage) is never coarsened by
+   * the order-book panel's grouping.
+   */
+  orderBookAggregated: PerpsDataChannel<OrderBookData | null>;
+
   // Candle stream channel (multiplexed by symbol+interval)
   candles: CandleStreamChannel;
 
@@ -273,6 +281,12 @@ class PerpsStreamManager {
       connectFn: placeholderConnectFn,
       initialValue: null,
       name: 'orderBook',
+    });
+
+    this.orderBookAggregated = new PerpsDataChannel<OrderBookData | null>({
+      connectFn: placeholderConnectFn,
+      initialValue: null,
+      name: 'orderBookAggregated',
     });
 
     this.fills = new PerpsDataChannel<OrderFill[]>({
@@ -463,6 +477,7 @@ class PerpsStreamManager {
       this.markets.reset();
       this.prices.reset();
       this.orderBook.reset();
+      this.orderBookAggregated.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
       this._lastStreamUpdateAt = 0;
@@ -581,6 +596,9 @@ class PerpsStreamManager {
       case 'orderBook':
         this.orderBook.pushData(data as OrderBookData);
         break;
+      case 'orderBookAggregated':
+        this.orderBookAggregated.pushData(data as OrderBookData);
+        break;
       case 'candles': {
         const { symbol, interval } = payload;
         if (symbol && interval) {
@@ -674,6 +692,7 @@ class PerpsStreamManager {
     this.markets.clearCache();
     this.prices.clearCache();
     this.orderBook.clearCache();
+    this.orderBookAggregated.clearCache();
     this.candles.clearAll();
     this._lastStreamUpdateAt = 0;
     clearPerpsMarketInfoModuleCache();
@@ -695,6 +714,7 @@ class PerpsStreamManager {
     this.markets.reset();
     this.prices.reset();
     this.orderBook.reset();
+    this.orderBookAggregated.reset();
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;

@@ -4,6 +4,7 @@ import {
   ORDER_BOOK_MAX_WIDTH_PCT,
   ORDER_BOOK_MIN_WIDTH_PCT,
   aggregateOrderBookLevels,
+  calculateAggregationParams,
   calculateGroupingOptions,
   clampOrderBookWidthPct,
   computeOrderBookWidthPct,
@@ -45,6 +46,58 @@ describe('order-book.utils', () => {
       expect(calculateGroupingOptions(Number.NaN)).toStrictEqual([
         0.01, 0.1, 1,
       ]);
+    });
+  });
+
+  describe('calculateAggregationParams', () => {
+    it('maps a coarse grouping to a lower nSigFigs (ETH at ~$1,752, group $10)', () => {
+      // The bug case: $10 grouping on ETH. Server-side nSigFigs=3 keeps ~$10
+      // steps while returning many levels across the book.
+      expect(calculateAggregationParams(10, 1752.8)).toStrictEqual({
+        nSigFigs: 3,
+      });
+    });
+
+    it('uses full precision (nSigFigs 5) for the finest grouping', () => {
+      // ETH's finest ladder increment is $0.1 → full 5 sig figs of ~$1,752.
+      expect(calculateAggregationParams(0.1, 1752.8)).toStrictEqual({
+        nSigFigs: 5,
+      });
+      // A $1 grouping keeps 4 sig figs (~$1 steps).
+      expect(calculateAggregationParams(1, 1752.8)).toStrictEqual({
+        nSigFigs: 4,
+      });
+    });
+
+    it('adds a mantissa for 2x / 5x steps at full precision', () => {
+      // BTC at ~$87k: $2 step → mantissa 2, $5 step → mantissa 5.
+      expect(calculateAggregationParams(2, 87000)).toStrictEqual({
+        nSigFigs: 5,
+        mantissa: 2,
+      });
+      expect(calculateAggregationParams(5, 87000)).toStrictEqual({
+        nSigFigs: 5,
+        mantissa: 5,
+      });
+      expect(calculateAggregationParams(1, 87000)).toStrictEqual({
+        nSigFigs: 5,
+      });
+    });
+
+    it('clamps nSigFigs to the API-supported 2-5 range', () => {
+      const { nSigFigs } = calculateAggregationParams(1000, 87000);
+      expect(nSigFigs).toBeGreaterThanOrEqual(2);
+      expect(nSigFigs).toBeLessThanOrEqual(5);
+    });
+
+    it('falls back to nSigFigs 5 for invalid inputs', () => {
+      expect(calculateAggregationParams(10, 0)).toStrictEqual({ nSigFigs: 5 });
+      expect(calculateAggregationParams(0, 1752)).toStrictEqual({
+        nSigFigs: 5,
+      });
+      expect(calculateAggregationParams(Number.NaN, 1752)).toStrictEqual({
+        nSigFigs: 5,
+      });
     });
   });
 

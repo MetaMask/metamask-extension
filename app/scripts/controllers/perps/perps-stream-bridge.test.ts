@@ -773,6 +773,79 @@ describe('PerpsStreamBridge', () => {
     });
   });
 
+  describe('perpsActivateOrderBookAggregatedStream / perpsDeactivateOrderBookAggregatedStream', () => {
+    it('subscribes to order book and emits on orderBookAggregated channel', async () => {
+      const controller = createMockController();
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          levels?: number;
+          nSigFigs?: 2 | 3 | 4 | 5;
+          mantissa?: 2 | 5;
+        }) => Promise<void>
+      )({
+        symbol: 'ETH',
+        levels: 20,
+        nSigFigs: 3,
+      });
+
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        levels: 20,
+        nSigFigs: 3,
+        mantissa: undefined,
+        callback: expect.any(Function),
+      });
+      const callback = controller.subscribeToOrderBook.mock.calls[0][0]
+        .callback as (data: unknown) => void;
+      callback({ bids: [], asks: [] });
+      expect(emit).toHaveBeenCalledWith('orderBookAggregated', {
+        bids: [],
+        asks: [],
+      });
+    });
+
+    it('runs independently of the raw order book stream', async () => {
+      const controller = createMockController();
+      const rawUnsub = jest.fn();
+      const aggregatedUnsub = jest.fn();
+      controller.subscribeToOrderBook
+        .mockReturnValueOnce(rawUnsub)
+        .mockReturnValueOnce(aggregatedUnsub);
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<void>
+      )({ symbol: 'ETH' });
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+        }) => Promise<void>
+      )({ symbol: 'ETH', nSigFigs: 3 });
+
+      // Two independent subscriptions coexist for the same symbol.
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledTimes(2);
+      expect(rawUnsub).not.toHaveBeenCalled();
+      expect(aggregatedUnsub).not.toHaveBeenCalled();
+
+      // Tearing down the aggregated stream leaves the raw stream intact.
+      (api.perpsDeactivateOrderBookAggregatedStream as () => void)();
+      expect(aggregatedUnsub).toHaveBeenCalledTimes(1);
+      expect(rawUnsub).not.toHaveBeenCalled();
+    });
+  });
+
   describe('perpsActivateCandleStream / perpsDeactivateCandleStream', () => {
     it('subscribes to candles and emits with metadata', async () => {
       const controller = createMockController();

@@ -22,6 +22,66 @@ export const ORDER_BOOK_DISPLAY_LEVELS =
   PERFORMANCE_CONFIG.SlippageEstimateBookLevels;
 
 /**
+ * Levels requested from (and rendered for) the server-aggregated order-book
+ * stream. Hyperliquid returns at most ~20 levels per side when aggregating with
+ * `nSigFigs`, so we request and display that depth to fill the panel.
+ */
+export const ORDER_BOOK_AGGREGATED_LEVELS = 20;
+
+/** Server-side aggregation parameters for the Hyperliquid L2Book stream. */
+export type OrderBookAggregationParams = {
+  nSigFigs: 2 | 3 | 4 | 5;
+  mantissa?: 2 | 5;
+};
+
+/**
+ * Map a display grouping increment + current price to Hyperliquid's server-side
+ * L2Book aggregation parameters (`nSigFigs`/`mantissa`), mirroring the mobile
+ * order book. Server aggregation lets a coarse grouping (e.g. $10) span the full
+ * book depth instead of collapsing the handful of raw levels into one bucket.
+ *
+ * `nSigFigs` controls how many significant figures of the price are kept
+ * (2-5); `mantissa` (only meaningful at 5 sig figs) refines the step to 2x/5x.
+ *
+ * @param grouping - Selected display grouping increment.
+ * @param price - Current mid price of the asset.
+ * @returns Aggregation params to pass to the order-book stream.
+ */
+export function calculateAggregationParams(
+  grouping: number,
+  price: number,
+): OrderBookAggregationParams {
+  // Guard against inputs that would make Math.log10 return -Infinity / NaN.
+  if (
+    !Number.isFinite(price) ||
+    !Number.isFinite(grouping) ||
+    price <= 0 ||
+    grouping <= 0
+  ) {
+    return { nSigFigs: 5 };
+  }
+
+  const priceMagnitude = Math.floor(Math.log10(price));
+  const groupingMagnitude = Math.floor(Math.log10(grouping));
+  const baseNSigFigs = priceMagnitude - groupingMagnitude + 1;
+
+  if (baseNSigFigs >= 5) {
+    const firstDigit = Math.floor(grouping / 10 ** groupingMagnitude);
+    if (firstDigit <= 1) {
+      return { nSigFigs: 5 };
+    }
+    return { nSigFigs: 5, mantissa: firstDigit <= 2 ? 2 : 5 };
+  }
+
+  const clampedNSigFigs = Math.max(2, Math.min(5, baseNSigFigs)) as
+    | 2
+    | 3
+    | 4
+    | 5;
+  return { nSigFigs: clampedNSigFigs };
+}
+
+/**
  * Grouping-ladder shape (a "1-2-5 per decade" scale anchored to the price
  * magnitude, mirroring the mobile order book). The decade offset shifts the
  * ladder down so the finest increment sits a few decades below the price.
@@ -218,12 +278,15 @@ export function aggregateOrderBookLevels(
  * a recomputed `maxTotal` used to scale the depth bars.
  *
  * @param orderBook - Raw order book data.
- * @param grouping - Selected price grouping increment (null = no aggregation).
+ * @param grouping - Selected price grouping increment (null = no aggregation,
+ * e.g. when the stream is already server-aggregated).
+ * @param maxLevels - Max rows to render per side (defaults to the raw display depth).
  * @returns Grouped bids/asks (already limited to the display depth) and maxTotal.
  */
 export function groupOrderBook(
   orderBook: OrderBookData,
   grouping: number | null,
+  maxLevels: number = ORDER_BOOK_DISPLAY_LEVELS,
 ): { bids: OrderBookLevel[]; asks: OrderBookLevel[]; maxTotal: number } {
   const bids = grouping
     ? aggregateOrderBookLevels(orderBook.bids, grouping, 'bid')
@@ -232,8 +295,8 @@ export function groupOrderBook(
     ? aggregateOrderBookLevels(orderBook.asks, grouping, 'ask')
     : orderBook.asks;
 
-  const trimmedBids = bids.slice(0, ORDER_BOOK_DISPLAY_LEVELS);
-  const trimmedAsks = asks.slice(0, ORDER_BOOK_DISPLAY_LEVELS);
+  const trimmedBids = bids.slice(0, maxLevels);
+  const trimmedAsks = asks.slice(0, maxLevels);
 
   const maxTotal = [...trimmedBids, ...trimmedAsks].reduce((max, level) => {
     const total = Number.parseFloat(level.total);

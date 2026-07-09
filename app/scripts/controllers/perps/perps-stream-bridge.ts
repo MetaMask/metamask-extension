@@ -254,6 +254,30 @@ export class PerpsStreamBridge {
       perpsDeactivateOrderBookStream: () => {
         this.#tearDownChannel('orderBook');
       },
+      perpsActivateOrderBookAggregatedStream: async ({
+        symbol,
+        levels,
+        nSigFigs,
+        mantissa,
+      }: {
+        symbol: string;
+        levels?: number;
+        nSigFigs?: 2 | 3 | 4 | 5;
+        mantissa?: 2 | 5;
+      }) => {
+        await this.#initAndActivate();
+        if (this.#isConnectionAlive()) {
+          this.#activateOrderBookAggregatedStream({
+            symbol,
+            levels,
+            nSigFigs,
+            mantissa,
+          });
+        }
+      },
+      perpsDeactivateOrderBookAggregatedStream: () => {
+        this.#tearDownChannel('orderBookAggregated');
+      },
       perpsActivateCandleStream: async ({
         symbol,
         interval,
@@ -723,6 +747,37 @@ export class PerpsStreamBridge {
     }
   }
 
+  /**
+   * Activate a second, independent order-book subscription that uses
+   * server-side aggregation (`nSigFigs`/`mantissa`). This is kept separate from
+   * the raw `orderBook` channel so surfaces that need full-precision depth
+   * (top-of-book mid, slippage estimation) are never disturbed by the order
+   * book panel's coarser grouping.
+   *
+   * @param params - Subscription parameters.
+   * @param params.symbol - Market symbol.
+   * @param params.levels - Number of levels per side to request.
+   * @param params.nSigFigs - Server-side aggregation significant figures.
+   * @param params.mantissa - Mantissa refinement when nSigFigs is 5.
+   */
+  #activateOrderBookAggregatedStream(params: {
+    symbol: string;
+    levels?: number;
+    nSigFigs?: 2 | 3 | 4 | 5;
+    mantissa?: 2 | 5;
+  }): void {
+    const { symbol } = params;
+    this.#tearDownChannel('orderBookAggregated');
+    if (symbol) {
+      this.#addDynamicSubscription('orderBookAggregated', () =>
+        this.#controller.subscribeToOrderBook({
+          ...params,
+          callback: (data: unknown) => this.#emit('orderBookAggregated', data),
+        }),
+      );
+    }
+  }
+
   #activateCandleStream(params: {
     symbol: string;
     interval: CandlePeriod;
@@ -782,7 +837,9 @@ export class PerpsStreamBridge {
     }
   }
 
-  #tearDownChannel(channel: 'prices' | 'orderBook'): void {
+  #tearDownChannel(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+  ): void {
     const unsub = this.#dynamicUnsubs[channel];
     if (unsub) {
       this.#callAndClearUnsub(unsub);

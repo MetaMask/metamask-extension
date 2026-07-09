@@ -23,6 +23,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
 import { getDisplayName } from '../utils';
 import {
+  calculateAggregationParams,
   calculateGroupingOptions,
   formatColumnValue,
   formatGroupingLabel,
@@ -30,6 +31,7 @@ import {
   getDepthRatio,
   getDepthWidth,
   groupOrderBook,
+  ORDER_BOOK_AGGREGATED_LEVELS,
   selectDefaultGrouping,
 } from './order-book.utils';
 import { PerpsOrderBookConfigModal } from './order-book-config-modal';
@@ -160,9 +162,10 @@ export const PerpsOrderBook = ({
   const [selectedGrouping, setSelectedGrouping] = useState<number | null>(null);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
 
-  // The order entry page already activates/deactivates the background
-  // order-book stream, so we only read from the shared channel here.
-  const { orderBook, isInitialLoading } = usePerpsLiveOrderBook({
+  // Raw, full-precision book (shared with the page's top-of-book and slippage).
+  // The order entry page owns its lifecycle, so we only read here. Used for the
+  // precise mid price, spread readout and grouping-option calculation.
+  const { orderBook: rawOrderBook } = usePerpsLiveOrderBook({
     symbol,
     manageStream: false,
     enabled: isOpen,
@@ -173,13 +176,13 @@ export const PerpsOrderBook = ({
   const metricLabel =
     metric === 'total' ? t('perpsOrderBookTotal') : t('perpsOrderBookSize');
 
-  // Single source of truth for the mid price: prefer the order book's own mid
-  // (so the displayed mid and the grouping ladder never drift), falling back to
-  // the page's market price before the first order-book update arrives. Null
-  // when neither is available, so the UI shows the unavailable-price fallback
-  // instead of a misleading "$0".
+  // Single source of truth for the mid price: prefer the raw book's own mid (so
+  // the displayed mid and grouping options never drift), falling back to the
+  // page's market price before the first order-book update arrives. Null when
+  // neither is available, so the UI shows the unavailable-price fallback instead
+  // of a misleading "$0".
   const midPriceValue = useMemo<number | null>(() => {
-    const orderBookMid = Number.parseFloat(orderBook?.midPrice ?? '');
+    const orderBookMid = Number.parseFloat(rawOrderBook?.midPrice ?? '');
     if (Number.isFinite(orderBookMid) && orderBookMid > 0) {
       return orderBookMid;
     }
@@ -187,7 +190,7 @@ export const PerpsOrderBook = ({
       return marketPrice;
     }
     return null;
-  }, [orderBook?.midPrice, marketPrice]);
+  }, [rawOrderBook?.midPrice, marketPrice]);
 
   const groupingOptions = useMemo(
     () => calculateGroupingOptions(midPriceValue ?? 0),
@@ -206,9 +209,41 @@ export const PerpsOrderBook = ({
       : null;
   }, [selectedGrouping, groupingOptions]);
 
+  // Map the selected grouping to Hyperliquid's server-side aggregation params so
+  // a coarse grouping spans the full book depth instead of collapsing the few
+  // raw levels into a single bucket (the reason the client-side approach showed
+  // only a couple of rows). Mirrors the mobile order book.
+  const aggregationParams = useMemo(() => {
+    if (!currentGrouping || !midPriceValue) {
+      return { nSigFigs: 5 as const };
+    }
+    return calculateAggregationParams(currentGrouping, midPriceValue);
+  }, [currentGrouping, midPriceValue]);
+
+  // Server-aggregated book on its own dedicated channel/subscription (does not
+  // disturb the raw channel). This drives the bid/ask ladder rows.
+  const { orderBook: aggregatedOrderBook, isInitialLoading } =
+    usePerpsLiveOrderBook({
+      symbol,
+      channel: 'orderBookAggregated',
+      enabled: isOpen,
+      levels: ORDER_BOOK_AGGREGATED_LEVELS,
+      nSigFigs: aggregationParams.nSigFigs,
+      mantissa: aggregationParams.mantissa,
+    });
+
+  // The stream already aggregated server-side, so pass grouping=null (no
+  // client-side re-bucketing); just trim to the display depth and rescale bars.
   const grouped = useMemo(
-    () => (orderBook ? groupOrderBook(orderBook, currentGrouping) : null),
-    [orderBook, currentGrouping],
+    () =>
+      aggregatedOrderBook
+        ? groupOrderBook(
+            aggregatedOrderBook,
+            null,
+            ORDER_BOOK_AGGREGATED_LEVELS,
+          )
+        : null,
+    [aggregatedOrderBook],
   );
 
   // Asks come lowest-price-first; render highest at the top so the best ask
@@ -224,18 +259,18 @@ export const PerpsOrderBook = ({
   );
 
   const spreadDisplay = useMemo(() => {
-    if (!orderBook) {
+    if (!rawOrderBook) {
       return null;
     }
-    const spread = Number.parseFloat(orderBook.spread);
-    const spreadPercent = Number.parseFloat(orderBook.spreadPercentage);
+    const spread = Number.parseFloat(rawOrderBook.spread);
+    const spreadPercent = Number.parseFloat(rawOrderBook.spreadPercentage);
     if (!Number.isFinite(spread) || !Number.isFinite(spreadPercent)) {
       return null;
     }
     return `${formatPerpsFiat(spread, {
       ranges: PRICE_RANGES_UNIVERSAL,
     })} (${formatSpreadBps(spreadPercent)} bps)`;
-  }, [orderBook]);
+  }, [rawOrderBook]);
 
   const handleApplyConfig = useCallback(
     (next: {
@@ -312,7 +347,7 @@ export const PerpsOrderBook = ({
       </Box>
 
       {/* Ladder */}
-      {isInitialLoading || !orderBook || !grouped || !hasLadder ? (
+      {isInitialLoading || !aggregatedOrderBook || !grouped || !hasLadder ? (
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}

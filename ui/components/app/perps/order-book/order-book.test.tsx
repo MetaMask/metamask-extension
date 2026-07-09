@@ -127,14 +127,14 @@ describe('PerpsOrderBook', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders grouped bid/ask prices with the default USD total metric', () => {
+    it('renders the server-aggregated bid/ask prices with the default USD total metric', () => {
       renderOrderBook({ marketPrice: 73776 });
 
-      // Grouping defaults to 10 for a ~73.7k asset, so raw prices are bucketed
-      // (73775 -> 73770 for bids, 73777 -> 73780 for asks) and formatted. The
-      // highest ask (73788 -> 73790) renders at the top of the ladder (row 0).
+      // The stream is aggregated server-side, so rows render the book's own
+      // prices verbatim (no client-side bucketing). The highest ask (73788)
+      // renders at the top of the ladder (row 0).
       const topAsk = screen.getByTestId('perps-order-book-ask-row-0');
-      expect(topAsk).toHaveTextContent('73,790');
+      expect(topAsk).toHaveTextContent('73,788');
       // Value column shows the cumulative USD notional (43,393 + 9,321 =
       // 52,714) in compact form.
       expect(
@@ -142,9 +142,9 @@ describe('PerpsOrderBook', () => {
       ).toHaveTextContent('$53K');
 
       const topBid = screen.getByTestId('perps-order-book-bid-row-0');
-      expect(topBid).toHaveTextContent('73,770');
-      // Best bid bucket cumulative notional is 2,967 (below the compact
-      // threshold) so it renders as a full fiat amount.
+      expect(topBid).toHaveTextContent('73,775');
+      // Best bid cumulative notional is 2,967 (below the compact threshold) so
+      // it renders as a full fiat amount.
       expect(
         screen.getByTestId('perps-order-book-bid-row-0-value'),
       ).toHaveTextContent('$2,967');
@@ -246,20 +246,20 @@ describe('PerpsOrderBook', () => {
       const onSelectPrice = jest.fn();
       renderOrderBook({ marketPrice: 73776, onSelectPrice });
 
-      // Top ask row is the highest bucketed ask (73788 -> 73790).
+      // Top ask row is the highest ask (73788).
       fireEvent.click(screen.getByTestId('perps-order-book-ask-row-0'));
 
-      expect(onSelectPrice).toHaveBeenCalledWith('73790');
+      expect(onSelectPrice).toHaveBeenCalledWith('73788');
     });
 
     it('calls onSelectPrice with the bid row price when clicked', () => {
       const onSelectPrice = jest.fn();
       renderOrderBook({ marketPrice: 73776, onSelectPrice });
 
-      // Best bid row is the highest bucketed bid (73775 -> 73770).
+      // Best bid row is the highest bid (73775).
       fireEvent.click(screen.getByTestId('perps-order-book-bid-row-0'));
 
-      expect(onSelectPrice).toHaveBeenCalledWith('73770');
+      expect(onSelectPrice).toHaveBeenCalledWith('73775');
     });
 
     it('selects a price via keyboard (Enter)', () => {
@@ -270,7 +270,7 @@ describe('PerpsOrderBook', () => {
       expect(row).toHaveAttribute('role', 'button');
       fireEvent.keyDown(row, { key: 'Enter' });
 
-      expect(onSelectPrice).toHaveBeenCalledWith('73790');
+      expect(onSelectPrice).toHaveBeenCalledWith('73788');
     });
 
     it('renders non-interactive rows when onSelectPrice is not provided', () => {
@@ -283,14 +283,50 @@ describe('PerpsOrderBook', () => {
   });
 
   describe('stream lifecycle', () => {
-    it('reads from the shared channel without managing the stream', () => {
+    it('reads the raw shared channel without managing the stream', () => {
       renderOrderBook({ isOpen: true });
 
+      // The raw channel (for precise mid/spread) is read-only here.
       expect(mockUsePerpsLiveOrderBook).toHaveBeenCalledWith(
         expect.objectContaining({
           symbol: 'BTC',
           manageStream: false,
           enabled: true,
+        }),
+      );
+    });
+
+    it('owns a dedicated server-aggregated stream with grouping-derived params', () => {
+      // BTC ~$73,776 with default grouping (10) → nSigFigs 4 (~$10 steps).
+      renderOrderBook({ isOpen: true, marketPrice: 73776 });
+
+      expect(mockUsePerpsLiveOrderBook).toHaveBeenCalledWith(
+        expect.objectContaining({
+          symbol: 'BTC',
+          channel: 'orderBookAggregated',
+          enabled: true,
+          levels: 20,
+          nSigFigs: 4,
+        }),
+      );
+    });
+
+    it('re-derives aggregation params when the grouping changes', () => {
+      renderOrderBook({ isOpen: true, marketPrice: 73776 });
+
+      // Switch to the finest grouping (1) → full precision nSigFigs 5.
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-grouping-1'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-apply'),
+      );
+
+      expect(mockUsePerpsLiveOrderBook).toHaveBeenCalledWith(
+        expect.objectContaining({
+          channel: 'orderBookAggregated',
+          nSigFigs: 5,
         }),
       );
     });

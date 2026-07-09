@@ -24,6 +24,14 @@ export type UsePerpsLiveOrderBookOptions = {
    * order-book stream lifecycle (e.g. order entry page top-of-book).
    */
   manageStream?: boolean;
+  /**
+   * Which order-book channel to read/activate (default: 'orderBook').
+   * 'orderBook' is the raw, full-precision book shared with top-of-book mid and
+   * slippage estimation. 'orderBookAggregated' is a second, independent
+   * subscription that uses server-side `nSigFigs`/`mantissa` aggregation for the
+   * order-book panel, so the raw channel is never coarsened.
+   */
+  channel?: 'orderBook' | 'orderBookAggregated';
 };
 
 /**
@@ -37,6 +45,8 @@ export type UsePerpsLiveOrderBookReturn = {
 };
 
 const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
+const getOrderBookAggregatedChannel = (sm: PerpsStreamManager) =>
+  sm.orderBookAggregated;
 
 /**
  * Hook for real-time order book data via background stream notifications.
@@ -58,32 +68,48 @@ export function usePerpsLiveOrderBook(
     mantissa,
     enabled = true,
     manageStream = true,
+    channel = 'orderBook',
   } = options;
   const activeSymbol = enabled ? symbol : undefined;
+  const isAggregated = channel === 'orderBookAggregated';
+
+  // For the aggregated channel, changing the server-side aggregation params
+  // yields a structurally different book, so fold them into the reset key to
+  // drop the prior grouping's rows the instant the grouping changes.
+  let resetKey: string | undefined;
+  if (activeSymbol) {
+    resetKey = isAggregated
+      ? `${activeSymbol}:${nSigFigs ?? ''}:${mantissa ?? ''}`
+      : activeSymbol;
+  }
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
-    getOrderBookChannel,
+    isAggregated ? getOrderBookAggregatedChannel : getOrderBookChannel,
     null,
-    activeSymbol || undefined,
+    resetKey,
   );
 
   useEffect(() => {
     if (!manageStream || !enabled || !symbol) {
       return undefined;
     }
-    submitRequestToBackground('perpsActivateOrderBookStream', [
+    const activateAction = isAggregated
+      ? 'perpsActivateOrderBookAggregatedStream'
+      : 'perpsActivateOrderBookStream';
+    const deactivateAction = isAggregated
+      ? 'perpsDeactivateOrderBookAggregatedStream'
+      : 'perpsDeactivateOrderBookStream';
+    submitRequestToBackground(activateAction, [
       { symbol, levels, nSigFigs, mantissa },
     ]).catch(() => {
       // Controller not ready yet — stream will activate on retry when symbol changes.
     });
     return () => {
-      submitRequestToBackground('perpsDeactivateOrderBookStream', []).catch(
-        () => {
-          // Best-effort teardown.
-        },
-      );
+      submitRequestToBackground(deactivateAction, []).catch(() => {
+        // Best-effort teardown.
+      });
     };
-  }, [manageStream, enabled, symbol, levels, nSigFigs, mantissa]);
+  }, [manageStream, enabled, symbol, levels, nSigFigs, mantissa, isAggregated]);
 
   return {
     orderBook,
