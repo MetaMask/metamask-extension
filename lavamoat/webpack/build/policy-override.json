@@ -1,269 +1,48 @@
 {
   "resources": {
-    "chokidar": {
-      "packages": {
-        "tsx>fsevents": true
-      }
-    },
-    "tsx>fsevents": {
-      "globals": {
-        "console.assert": true,
-        "process.platform": true
-      },
-      "native": true
-    },
-    "copy-webpack-plugin": {
-      "packages": {
-        "copy-webpack-plugin>serialize-javascript": true
-      }
-    },
-    "copy-webpack-plugin>serialize-javascript": {
-      "globals": {
-        "URL": true,
-        "crypto.getRandomValues": true
-      }
-    },
-    "@swc/core": {
-      "packages": {
-        "@swc/core>@swc/core-darwin-x64": true,
-        "@swc/core>@swc/core-win32-x64-msvc": true,
-        "@swc/core>@swc/core-linux-x64-gnu": true,
-        "@swc/core>@swc/core-linux-x64-musl": true,
-        "@swc/core>@swc/core-win32-ia32-msvc": true,
-        "@swc/core>@swc/core-linux-arm-gnueabihf": true,
-        "@swc/core>@swc/core-darwin-arm64": true,
-        "@swc/core>@swc/core-linux-arm64-gnu": true,
-        "@swc/core>@swc/core-linux-arm64-musl": true,
-        "@swc/core>@swc/core-win32-arm64-msvc": true
-      }
-    },
-    "@swc/core>@swc/core-darwin-x64": {
-      "native": true
-    },
-    "@swc/core>@swc/core-win32-x64-msvc": {
-      "native": true
-    },
-    "@swc/core>@swc/core-linux-x64-gnu": {
-      "native": true
-    },
-    "@swc/core>@swc/core-linux-x64-musl": {
-      "native": true
-    },
-    "@swc/core>@swc/core-win32-ia32-msvc": {
-      "native": true
-    },
-    "@swc/core>@swc/core-linux-arm-gnueabihf": {
-      "native": true
-    },
-    "@swc/core>@swc/core-darwin-arm64": {
-      "native": true
-    },
-    "@swc/core>@swc/core-linux-arm64-gnu": {
-      "native": true
-    },
-    "@swc/core>@swc/core-linux-arm64-musl": {
-      "native": true
-    },
-    "@swc/core>@swc/core-win32-arm64-msvc": {
-      "native": true
-    },
-    "@lydell/node-pty": {
-      "packages": {
-        "@lydell/node-pty>@lydell/node-pty-darwin-x64": true,
-        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true,
-        "@lydell/node-pty>@lydell/node-pty-linux-x64": true,
-        "@lydell/node-pty>@lydell/node-pty-linux-arm64": true,
-        "@lydell/node-pty>@lydell/node-pty-win32-x64": true,
-        "@lydell/node-pty>@lydell/node-pty-win32-arm64": true
-      }
-    },
-    "@lydell/node-pty>@lydell/node-pty-darwin-x64": {
-      "native": true
-    },
-    "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
-      "native": true
-    },
-    "@lydell/node-pty>@lydell/node-pty-linux-x64": {
-      "native": true
-    },
-    "@lydell/node-pty>@lydell/node-pty-linux-arm64": {
-      "native": true
-    },
-    "@lydell/node-pty>@lydell/node-pty-win32-x64": {
-      "native": true
-    },
-    "@lydell/node-pty>@lydell/node-pty-win32-arm64": {
-      "native": true
-    },
-    "webpack": {
-      "packages": {
-        "$root$": true,
-        "html-bundler-webpack-plugin": true,
-        "css-loader": true,
-        "postcss-loader": true,
-        "sass-loader": true,
-        "@lavamoat/webpack": true,
-        "react-compiler-webpack": true,
-        "thread-loader": true
-      }
-    },
-    "webpack>loader-runner": {
-      "packages": {
-        "$root$": true,
-        "html-bundler-webpack-plugin": true,
-        "css-loader": true,
-        "postcss-loader": true,
-        "sass-loader": true,
-        "@lavamoat/webpack": true,
-        "react-compiler-webpack": true,
-        "thread-loader": true
-      }
-    },
-    "thread-loader": {
+    "@babel/core": {
       "builtin": {
-        "os": true,
-        "child_process": true,
+        "fs": true,
         "path": true
       },
       "globals": {
-        "process": true,
-        "setTimeout": true,
-        "clearTimeout": true,
-        "setInterval": true,
-        "clearInterval": true
+        "process.env": true,
+        "process.versions": true
       },
       "packages": {
-        "thread-loader>neo-async": true,
-        "webpack": true,
-        "webpack>loader-runner": true,
-        "thread-loader>json-parse-better-errors": true,
-        "thread-loader>schema-utils": true
+        "@babel/core>@babel/generator": true,
+        "@babel/core>@babel/helper-compilation-targets": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/template": true,
+        "depcheck>@babel/traverse": true,
+        "@babel/core>@babel/types": true,
+        "nock>debug": true,
+        "@babel/core>gensync": true,
+        "@babel/core>semver": true
       }
     },
-    "html-bundler-webpack-plugin": {
-      "packages": {
-        "eta": true,
-        "css-loader": true
-      }
-    },
-    "eta": {
-      "builtin": {
-        "node:fs": true,
-        "node:path": true
-      },
+    "@babel/core>@babel/helper-compilation-targets": {
       "globals": {
-        "define": true
-      }
-    },
-    "css-loader": {
-      "builtin": {
-        "url": true,
-        "path": true
+        "process.env": true,
+        "process.versions": true
       },
       "packages": {
-        "postcss": true,
-        "semver": true,
-        "stylelint>postcss-value-parser": true,
-        "css-loader>postcss-modules-values": true,
-        "css-loader>postcss-modules-local-by-default": true,
-        "css-loader>postcss-modules-extract-imports": true,
-        "css-loader>postcss-modules-scope": true,
-        "css-loader>icss-utils": true
+        "@babel/preset-env>@babel/compat-data": true,
+        "@babel/preset-env>@babel/helper-validator-option": true,
+        "browserslist": true,
+        "@babel/core>@babel/helper-compilation-targets>lru-cache": true,
+        "@babel/core>@babel/helper-compilation-targets>semver": true
       }
     },
-    "css-loader>postcss-modules-values": {
+    "depcheck>@babel/traverse": {
       "packages": {
-        "css-loader>icss-utils": true
-      }
-    },
-    "css-loader>postcss-modules-local-by-default": {
-      "packages": {
-        "stylelint>postcss-selector-parser": true,
-        "stylelint>postcss-value-parser": true,
-        "css-loader>icss-utils": true
-      }
-    },
-    "css-loader>postcss-modules-scope": {
-      "packages": {
-        "stylelint>postcss-selector-parser": true
-      }
-    },
-    "postcss-loader": {
-      "builtin": {
-        "path": true,
-        "url": true,
-        "module": true
-      },
-      "packages": {
-        "postcss": true,
-        "postcss-loader>cosmiconfig": true,
-        "tailwindcss>jiti": true
-      }
-    },
-    "postcss-loader>cosmiconfig": {
-      "builtin": {
-        "fs": true,
-        "fs/promises": true,
-        "path": true,
-        "url": true,
-        "os": true
-      },
-      "packages": {
-        "postcss-loader>cosmiconfig>env-paths": true
-      },
-      "globals": {
-        "process.cwd": true
-      }
-    },
-    "postcss-loader>cosmiconfig>env-paths": {
-      "builtin": {
-        "path": true,
-        "os": true
-      },
-      "globals": {
-        "process.env": true
-      }
-    },
-    "sass-loader": {
-      "builtin": {
-        "url": true,
-        "path": true,
-        "util": true
-      },
-      "packages": {
-        "sass-embedded": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env": true
-      }
-    },
-    "sass-embedded": {
-      "builtin": {
-        "path": true,
-        "url": true,
-        "util": true,
-        "child_process": true,
-        "assert": true,
-        "fs": true,
-        "stream": true,
-        "worker_threads": true,
-        "events": true
-      },
-      "packages": {
-        "sass-embedded>immutable": true,
-        "sass-embedded>@bufbuild/protobuf": true,
-        "wait-on>rxjs": true,
-        "mocha>supports-color": true,
-        "sass-embedded>varint": true,
-        "sass-embedded>buffer-builder": true
-      },
-      "globals": {
-        "process.platform": true,
-        "process.arch": true,
-        "process.cwd": true,
-        "URL": true,
-        "Buffer": true
+        "@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "depcheck>@babel/traverse>@babel/helper-globals": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/template": true,
+        "@babel/core>@babel/types": true,
+        "nock>debug": true
       }
     },
     "sass-embedded>@bufbuild/protobuf": {
@@ -272,106 +51,33 @@
         "TextEncoder": true
       }
     },
-    "sass-embedded>buffer-builder": {
-      "globals": {
-        "Buffer": true
-      }
-    },
-    "wait-on>rxjs": {
-      "globals": {
-        "setTimeout": true
-      }
-    },
-    "depcheck>cosmiconfig>parse-json>error-ex": {
-      "builtin": {
-        "util": true
-      },
+    "@lydell/node-pty": {
       "packages": {
-        "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
+        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true,
+        "@lydell/node-pty>@lydell/node-pty-darwin-x64": true,
+        "@lydell/node-pty>@lydell/node-pty-linux-arm64": true,
+        "@lydell/node-pty>@lydell/node-pty-linux-x64": true,
+        "@lydell/node-pty>@lydell/node-pty-win32-arm64": true,
+        "@lydell/node-pty>@lydell/node-pty-win32-x64": true
       }
     },
-    "terser-webpack-plugin>jest-worker": {
-      "packages": {
-        "terser-webpack-plugin": true
-      }
+    "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
+      "native": true
     },
-    "@babel/core": {
-      "builtin": {
-        "fs": true,
-        "path": true
-      },
-      "packages": {
-        "@babel/core>@babel/types": true,
-        "@babel/core>gensync": true,
-        "nock>debug": true,
-        "@babel/core>semver": true,
-        "@babel/core>@babel/helper-compilation-targets": true,
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/parser": true,
-        "depcheck>@babel/traverse": true,
-        "@babel/core>@babel/generator": true
-      },
-      "globals": {
-        "process.versions": true,
-        "process.env": true
-      }
+    "@lydell/node-pty>@lydell/node-pty-darwin-x64": {
+      "native": true
     },
-    "react-compiler-webpack": {
-      "packages": {
-        "@babel/core": true,
-        "babel-plugin-react-compiler": true
-      }
+    "@lydell/node-pty>@lydell/node-pty-linux-arm64": {
+      "native": true
     },
-    "babel-plugin-react-compiler": {
-      "builtin": {
-        "path": true,
-        "tty": true,
-        "util": true,
-        "crypto": true
-      },
-      "packages": {
-        "@babel/core>@babel/types": true
-      },
-      "globals": {
-        "console": true,
-        "process": true
-      }
+    "@lydell/node-pty>@lydell/node-pty-linux-x64": {
+      "native": true
     },
-    "@babel/core>@babel/helper-compilation-targets": {
-      "packages": {
-        "browserslist": true,
-        "@babel/preset-env>@babel/helper-validator-option": true,
-        "@babel/preset-env>@babel/compat-data": true,
-        "@babel/core>@babel/helper-compilation-targets>lru-cache": true,
-        "@babel/core>@babel/helper-compilation-targets>semver": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.versions": true
-      }
+    "@lydell/node-pty>@lydell/node-pty-win32-arm64": {
+      "native": true
     },
-    "@babel/core>@babel/helper-compilation-targets>lru-cache": {
-      "packages": {
-        "@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": true
-      }
-    },
-    "depcheck>@babel/traverse": {
-      "packages": {
-        "nock>debug": true,
-        "@babel/core>@babel/types": true,
-        "depcheck>@babel/traverse>@babel/helper-globals": true,
-        "@babel/core>@babel/generator": true,
-        "@babel/code-frame": true,
-        "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/template": true
-      }
-    },
-    "@metamask/core-backend>@tanstack/query-core": {
-      "globals": {
-        "document": false,
-        "document.visibilityState": true,
-        "addEventListener": false
-      }
+    "@lydell/node-pty>@lydell/node-pty-win32-x64": {
+      "native": true
     },
     "@metamask/build-utils>@metamask/utils": {
       "globals": {
@@ -386,6 +92,290 @@
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
+      }
+    },
+    "@swc/core": {
+      "packages": {
+        "@swc/core>@swc/core-darwin-x64": true,
+        "@swc/core>@swc/core-linux-arm-gnueabihf": true,
+        "@swc/core>@swc/core-linux-arm64-gnu": true,
+        "@swc/core>@swc/core-linux-arm64-musl": true,
+        "@swc/core>@swc/core-linux-x64-gnu": true,
+        "@swc/core>@swc/core-linux-x64-musl": true,
+        "@swc/core>@swc/core-win32-arm64-msvc": true,
+        "@swc/core>@swc/core-win32-ia32-msvc": true,
+        "@swc/core>@swc/core-win32-x64-msvc": true
+      }
+    },
+    "@swc/core>@swc/core-darwin-arm64": {
+      "native": true
+    },
+    "@swc/core>@swc/core-darwin-x64": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-arm-gnueabihf": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-arm64-gnu": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-arm64-musl": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-x64-gnu": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-x64-musl": {
+      "native": true
+    },
+    "@swc/core>@swc/core-win32-arm64-msvc": {
+      "native": true
+    },
+    "@swc/core>@swc/core-win32-ia32-msvc": {
+      "native": true
+    },
+    "@swc/core>@swc/core-win32-x64-msvc": {
+      "native": true
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false,
+        "document.visibilityState": true
+      }
+    },
+    "babel-plugin-react-compiler": {
+      "builtin": {
+        "crypto": true,
+        "path": true,
+        "tty": true,
+        "util": true
+      },
+      "globals": {
+        "console": true,
+        "process": true
+      },
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "sass-embedded>buffer-builder": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "copy-webpack-plugin": {
+      "packages": {
+        "copy-webpack-plugin>serialize-javascript": true
+      }
+    },
+    "postcss-loader>cosmiconfig": {
+      "builtin": {
+        "fs": true,
+        "fs/promises": true,
+        "os": true,
+        "path": true,
+        "url": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "postcss-loader>cosmiconfig>env-paths": true
+      }
+    },
+    "css-loader": {
+      "builtin": {
+        "path": true,
+        "url": true
+      },
+      "packages": {
+        "css-loader>icss-utils": true,
+        "postcss": true,
+        "css-loader>postcss-modules-extract-imports": true,
+        "css-loader>postcss-modules-local-by-default": true,
+        "css-loader>postcss-modules-scope": true,
+        "css-loader>postcss-modules-values": true,
+        "stylelint>postcss-value-parser": true,
+        "semver": true
+      }
+    },
+    "postcss-loader>cosmiconfig>env-paths": {
+      "builtin": {
+        "os": true,
+        "path": true
+      },
+      "globals": {
+        "process.env": true
+      }
+    },
+    "depcheck>cosmiconfig>parse-json>error-ex": {
+      "builtin": {
+        "util": true
+      },
+      "packages": {
+        "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
+      }
+    },
+    "eta": {
+      "builtin": {
+        "node:fs": true,
+        "node:path": true
+      },
+      "globals": {
+        "define": true
+      }
+    },
+    "tsx>fsevents": {
+      "native": true
+    },
+    "html-bundler-webpack-plugin": {
+      "packages": {
+        "css-loader": true,
+        "eta": true
+      }
+    },
+    "terser-webpack-plugin>jest-worker": {
+      "packages": {
+        "terser-webpack-plugin": true
+      }
+    },
+    "webpack>loader-runner": {
+      "packages": {
+        "$root$": true,
+        "@lavamoat/webpack": true,
+        "css-loader": true,
+        "html-bundler-webpack-plugin": true,
+        "postcss-loader": true,
+        "react-compiler-webpack": true,
+        "sass-loader": true,
+        "thread-loader": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets>lru-cache": {
+      "packages": {
+        "@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": true
+      }
+    },
+    "postcss-loader": {
+      "builtin": {
+        "module": true,
+        "path": true,
+        "url": true
+      },
+      "packages": {
+        "postcss-loader>cosmiconfig": true,
+        "tailwindcss>jiti": true,
+        "postcss": true
+      }
+    },
+    "css-loader>postcss-modules-local-by-default": {
+      "packages": {
+        "css-loader>icss-utils": true,
+        "stylelint>postcss-selector-parser": true,
+        "stylelint>postcss-value-parser": true
+      }
+    },
+    "css-loader>postcss-modules-scope": {
+      "packages": {
+        "stylelint>postcss-selector-parser": true
+      }
+    },
+    "css-loader>postcss-modules-values": {
+      "packages": {
+        "css-loader>icss-utils": true
+      }
+    },
+    "react-compiler-webpack": {
+      "packages": {
+        "@babel/core": true,
+        "babel-plugin-react-compiler": true
+      }
+    },
+    "wait-on>rxjs": {
+      "globals": {
+        "setTimeout": true
+      }
+    },
+    "sass-embedded": {
+      "builtin": {
+        "assert": true,
+        "child_process": true,
+        "events": true,
+        "fs": true,
+        "path": true,
+        "stream": true,
+        "url": true,
+        "util": true,
+        "worker_threads": true
+      },
+      "globals": {
+        "Buffer": true,
+        "URL": true,
+        "process.arch": true,
+        "process.cwd": true,
+        "process.platform": true
+      },
+      "packages": {
+        "sass-embedded>@bufbuild/protobuf": true,
+        "sass-embedded>buffer-builder": true,
+        "sass-embedded>immutable": true,
+        "wait-on>rxjs": true,
+        "mocha>supports-color": true,
+        "sass-embedded>varint": true
+      }
+    },
+    "sass-loader": {
+      "builtin": {
+        "path": true,
+        "url": true,
+        "util": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.env": true
+      },
+      "packages": {
+        "sass-embedded": true
+      }
+    },
+    "copy-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true,
+        "crypto.getRandomValues": true
+      }
+    },
+    "thread-loader": {
+      "builtin": {
+        "child_process": true,
+        "os": true,
+        "path": true
+      },
+      "globals": {
+        "clearInterval": true,
+        "clearTimeout": true,
+        "process": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "thread-loader>json-parse-better-errors": true,
+        "webpack>loader-runner": true,
+        "thread-loader>neo-async": true,
+        "thread-loader>schema-utils": true,
+        "webpack": true
+      }
+    },
+    "webpack": {
+      "packages": {
+        "$root$": true,
+        "@lavamoat/webpack": true,
+        "css-loader": true,
+        "html-bundler-webpack-plugin": true,
+        "postcss-loader": true,
+        "react-compiler-webpack": true,
+        "sass-loader": true,
+        "thread-loader": true
       }
     }
   }
