@@ -59,12 +59,17 @@ const mockStore = configureStore({
   },
 });
 
-function renderOrderBook(props?: { isOpen?: boolean; marketPrice?: number }) {
+function renderOrderBook(props?: {
+  isOpen?: boolean;
+  marketPrice?: number;
+  onSelectPrice?: (price: string) => void;
+}) {
   return renderWithProvider(
     <PerpsOrderBook
       symbol="BTC"
       isOpen={props?.isOpen ?? true}
       marketPrice={props?.marketPrice ?? 73776}
+      onSelectPrice={props?.onSelectPrice}
     />,
     mockStore,
   );
@@ -233,6 +238,47 @@ describe('PerpsOrderBook', () => {
       expect(
         screen.getByTestId('perps-order-book-grouping-trigger'),
       ).toHaveTextContent('1');
+    });
+  });
+
+  describe('price selection', () => {
+    it('calls onSelectPrice with the ask row price when clicked', () => {
+      const onSelectPrice = jest.fn();
+      renderOrderBook({ marketPrice: 73776, onSelectPrice });
+
+      // Top ask row is the highest bucketed ask (73788 -> 73790).
+      fireEvent.click(screen.getByTestId('perps-order-book-ask-row-0'));
+
+      expect(onSelectPrice).toHaveBeenCalledWith('73790');
+    });
+
+    it('calls onSelectPrice with the bid row price when clicked', () => {
+      const onSelectPrice = jest.fn();
+      renderOrderBook({ marketPrice: 73776, onSelectPrice });
+
+      // Best bid row is the highest bucketed bid (73775 -> 73770).
+      fireEvent.click(screen.getByTestId('perps-order-book-bid-row-0'));
+
+      expect(onSelectPrice).toHaveBeenCalledWith('73770');
+    });
+
+    it('selects a price via keyboard (Enter)', () => {
+      const onSelectPrice = jest.fn();
+      renderOrderBook({ marketPrice: 73776, onSelectPrice });
+
+      const row = screen.getByTestId('perps-order-book-ask-row-0');
+      expect(row).toHaveAttribute('role', 'button');
+      fireEvent.keyDown(row, { key: 'Enter' });
+
+      expect(onSelectPrice).toHaveBeenCalledWith('73790');
+    });
+
+    it('renders non-interactive rows when onSelectPrice is not provided', () => {
+      renderOrderBook({ marketPrice: 73776 });
+
+      const row = screen.getByTestId('perps-order-book-ask-row-0');
+      expect(row).not.toHaveAttribute('role', 'button');
+      expect(row).not.toHaveAttribute('tabindex');
     });
   });
 

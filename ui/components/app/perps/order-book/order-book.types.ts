@@ -22,6 +22,12 @@ export type PerpsOrderBookProps = {
    * to format base-denominated amounts consistently with the rest of the UI.
    */
   szDecimals?: number;
+  /**
+   * Called with a level's raw price string when the user taps a bid/ask row.
+   * Used to switch the order form to a limit order prefilled with that price.
+   * When omitted, rows are not interactive.
+   */
+  onSelectPrice?: (price: string) => void;
   /** Test id for the container. */
   'data-testid'?: string;
 };

@@ -134,6 +134,13 @@ export type UsePerpsOrderFormOptions = {
    * fee estimates will show $0.00 until a real rate arrives (mobile parity).
    */
   feeRate?: number;
+  /**
+   * One-shot limit-price prefill (e.g. from tapping a price in the order book).
+   * Applied whenever a new object reference is provided, so re-selecting the
+   * same price after a manual edit still re-applies it. Wrap the value in a
+   * fresh object per selection; a stable reference is ignored on re-render.
+   */
+  limitPricePrefill?: { price: string };
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -194,6 +201,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.szDecimals - HyperLiquid size decimals (used for position-size rounding in margin calc)
  * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
  * @param options.feeRate - Dynamic fee rate from usePerpsOrderFees (falls back to static constant)
+ * @param options.limitPricePrefill - One-shot limit-price prefill (fresh object per selection)
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -212,6 +220,7 @@ export function usePerpsOrderForm({
   maxLeverage = 50,
   markPrice,
   feeRate,
+  limitPricePrefill,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const displayAssetSymbol = getDisplaySymbol(asset);
   const isTestnet = useSelector(selectPerpsIsTestnet);
@@ -391,6 +400,19 @@ export function usePerpsOrderForm({
       });
     }
   }, [mode, asset, initialDirection, existingPosition, initialLeverage]);
+
+  // Apply an external one-shot limit-price prefill (e.g. an order-book price
+  // tap). Declared after the reset effect so a mount-time prefill wins over the
+  // form reset. Keyed on the object reference so each selection re-applies,
+  // while manual edits between selections are preserved.
+  useEffect(() => {
+    if (limitPricePrefill && limitPricePrefill.price) {
+      setFormState((prev) => ({
+        ...prev,
+        limitPrice: limitPricePrefill.price,
+      }));
+    }
+  }, [limitPricePrefill]);
 
   useEffect(() => {
     if (mode !== 'new' || hasUserEditedAmount.current) {

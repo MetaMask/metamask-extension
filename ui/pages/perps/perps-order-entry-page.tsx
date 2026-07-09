@@ -347,6 +347,11 @@ const PerpsOrderEntryPage = () => {
   const [orderType, setOrderType] = useState<OrderType>(
     (orderTypeParam === 'limit' ? 'limit' : 'market') as OrderType,
   );
+  // One-shot limit-price prefill from tapping an order-book price row. A fresh
+  // object per tap lets the form re-apply the same price after a manual edit.
+  const [limitPricePrefill, setLimitPricePrefill] = useState<{
+    price: string;
+  } | null>(null);
   const [orderMode] = useState<OrderMode>(
     (modeParam === 'modify' || modeParam === 'close'
       ? modeParam
@@ -1093,6 +1098,13 @@ const PerpsOrderEntryPage = () => {
       });
     }
   }, [isOrderBookOpen, track, decodedSymbol]);
+
+  // Tapping an order-book price turns the order into a limit order prefilled
+  // with that price. Switching the type is a no-op when already on limit.
+  const handleOrderBookPriceSelect = useCallback((price: string) => {
+    setOrderType('limit');
+    setLimitPricePrefill({ price });
+  }, []);
 
   const handleOrderSubmit = useCallback(async () => {
     if (!isEligible) {
@@ -1871,6 +1883,7 @@ const PerpsOrderEntryPage = () => {
               autoFocusUsd={orderMode !== 'close'}
               autoFocusLimitPrice={orderMode !== 'close'}
               sizeDecimals={marketInfo?.szDecimals}
+              limitPricePrefill={limitPricePrefill ?? undefined}
             />
           </Box>
 
@@ -1983,6 +1996,7 @@ const PerpsOrderEntryPage = () => {
                 isOpen={isOrderBookOpen}
                 marketPrice={currentPrice}
                 szDecimals={marketInfo?.szDecimals}
+                onSelectPrice={handleOrderBookPriceSelect}
               />
             )}
           </Box>

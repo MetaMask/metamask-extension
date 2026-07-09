@@ -64,6 +64,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.autoFocusUsd
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
+ * @param props.limitPricePrefill
  */
 export const OrderEntry = ({
   asset,
@@ -88,6 +89,7 @@ export const OrderEntry = ({
   autoFocusUsd = false,
   autoFocusLimitPrice = false,
   usdPlaceholder,
+  limitPricePrefill,
 }: OrderEntryProps) => {
   const t = useI18nContext();
 
@@ -132,6 +134,7 @@ export const OrderEntry = ({
     szDecimals: marketInfo?.szDecimals,
     markPrice,
     feeRate,
+    limitPricePrefill,
   });
 
   const isLong = formState.direction === 'long';

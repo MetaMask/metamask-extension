@@ -7265,6 +7265,10 @@
   "perpsOrderBookTotal": {
     "message": "Total"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Use $1 as limit price",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Value type"
   },

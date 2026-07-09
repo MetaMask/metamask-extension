@@ -48,6 +48,8 @@ type OrderBookRowProps = {
   metric: OrderBookListMetric;
   maxTotal: number;
   szDecimals?: number;
+  onSelectPrice?: (price: string) => void;
+  selectPriceLabel?: string;
   testId: string;
 };
 
@@ -58,10 +60,21 @@ const OrderBookRow = ({
   metric,
   maxTotal,
   szDecimals,
+  onSelectPrice,
+  selectPriceLabel,
   testId,
 }: OrderBookRowProps) => {
   const depthWidth = getDepthWidth(level, maxTotal);
   const isBid = side === 'bid';
+  const isInteractive = Boolean(onSelectPrice);
+
+  const handleSelect = () => onSelectPrice?.(level.price);
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onSelectPrice?.(level.price);
+    }
+  };
 
   return (
     <Box
@@ -70,8 +83,19 @@ const OrderBookRow = ({
       justifyContent={BoxJustifyContent.Between}
       paddingLeft={3}
       paddingRight={3}
-      className="relative py-1"
+      className={
+        isInteractive
+          ? 'relative py-1 cursor-pointer hover:bg-muted'
+          : 'relative py-1'
+      }
       data-testid={testId}
+      {...(isInteractive && {
+        role: 'button',
+        tabIndex: 0,
+        'aria-label': selectPriceLabel,
+        onClick: handleSelect,
+        onKeyDown: handleKeyDown,
+      })}
     >
       <Box
         aria-hidden="true"
@@ -118,6 +142,7 @@ const OrderBookRow = ({
  * @param options0.isOpen - Whether the panel is visible.
  * @param options0.marketPrice - Current market price for grouping options.
  * @param options0.szDecimals - Asset base-size decimal precision.
+ * @param options0.onSelectPrice - Called with a level's raw price when a row is tapped.
  * @param options0.'data-testid' - Container test id.
  */
 export const PerpsOrderBook = ({
@@ -125,6 +150,7 @@ export const PerpsOrderBook = ({
   isOpen,
   marketPrice,
   szDecimals,
+  onSelectPrice,
   'data-testid': dataTestId = 'perps-order-book',
 }: PerpsOrderBookProps) => {
   const t = useI18nContext();
@@ -313,6 +339,16 @@ export const PerpsOrderBook = ({
                 metric={metric}
                 maxTotal={grouped.maxTotal}
                 szDecimals={szDecimals}
+                onSelectPrice={onSelectPrice}
+                selectPriceLabel={
+                  onSelectPrice
+                    ? t('perpsOrderBookUsePrice', [
+                        formatPerpsFiat(level.price, {
+                          ranges: PRICE_RANGES_UNIVERSAL,
+                        }),
+                      ])
+                    : undefined
+                }
                 testId={`${dataTestId}-ask-row-${index}`}
               />
             ))}
@@ -362,6 +398,16 @@ export const PerpsOrderBook = ({
                 metric={metric}
                 maxTotal={grouped.maxTotal}
                 szDecimals={szDecimals}
+                onSelectPrice={onSelectPrice}
+                selectPriceLabel={
+                  onSelectPrice
+                    ? t('perpsOrderBookUsePrice', [
+                        formatPerpsFiat(level.price, {
+                          ranges: PRICE_RANGES_UNIVERSAL,
+                        }),
+                      ])
+                    : undefined
+                }
                 testId={`${dataTestId}-bid-row-${index}`}
               />
             ))}
