@@ -396,8 +396,7 @@
     },
     "ui/components/multichain/network-list-menu/network-list-menu.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3,
-      "React: componentWill* lifecycle deprecations": 1,
-      "error: Warning: Connect(Droppable): Support for defaultProps": 1
+      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/components/multichain/network-manager/network-manager.test.tsx": {
       "error: Unexpected key \"internalAccounts\" found in": 1
