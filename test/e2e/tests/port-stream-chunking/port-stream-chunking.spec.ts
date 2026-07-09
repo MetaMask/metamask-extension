@@ -4,7 +4,6 @@ import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { WALLET_PASSWORD } from '../../constants';
 import { type Driver, PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import { getServerMochaToBackground } from '../../background-socket/server-mocha-to-background';
@@ -13,12 +12,10 @@ import { type PortStreamChunkingTestEventStats } from '../../background-socket/t
 const PORT_STREAM_CHUNKING_TEST_ID = 'port-stream-chunking';
 const PORT_STREAM_CHUNKING_COMMAND_PREFIX = 'port-stream-chunking-test';
 const STRUCTURED_CLONE_MESSAGE_SERIALIZATION = 'structured_clone';
-const STRUCTURED_CLONE_CHROME_VERSION = '148';
+const STRUCTURED_CLONE_CHROME_VERSION = '151';
 const CHROMIUM_MESSAGE_SIZE_LIMIT = 67108864; // 64 MB
 const STRUCTURED_CLONE_TEST_PAYLOAD_BYTES = 8 * 1024 * 1024;
 const PORT_STREAM_PAYLOAD_WAIT_TIMEOUT = 10000;
-const UNLOCK_PASSWORD_INPUT = { testId: 'unlock-password' };
-const UNLOCK_SUBMIT_BUTTON = { testId: 'unlock-submit' };
 
 type PortStreamChunkingTestOptions = {
   expectChromeChunkedEvent: boolean;
@@ -73,32 +70,6 @@ function assertChunkedEvent(
     afterStats.lastChunkSize,
     CHROMIUM_MESSAGE_SIZE_LIMIT,
   );
-}
-
-async function loginToHomepageWithoutSendKeys(driver: Driver) {
-  const passwordInput = await driver.findElement(UNLOCK_PASSWORD_INPUT);
-
-  await driver.driver.executeScript(
-    `
-      const [input, password] = arguments;
-      const inputWindow = input.ownerDocument.defaultView;
-      const valueSetter = Object.getOwnPropertyDescriptor(
-        Object.getPrototypeOf(input),
-        'value',
-      )?.set;
-      if (valueSetter) {
-        valueSetter.call(input, password);
-      } else {
-        input.value = password;
-      }
-      input.dispatchEvent(new inputWindow.Event('input', { bubbles: true }));
-      input.dispatchEvent(new inputWindow.Event('change', { bubbles: true }));
-    `,
-    passwordInput,
-    WALLET_PASSWORD,
-  );
-
-  await driver.clickElement(UNLOCK_SUBMIT_BUTTON);
 }
 
 function getSampleId() {
@@ -160,7 +131,7 @@ async function loadWalletAndEmitPortStreamPayload({
 
       const loginPage = new LoginPage(driver);
       await loginPage.checkPageIsLoaded();
-      await loginToHomepageWithoutSendKeys(driver);
+      await loginPage.loginToHomepage();
 
       const homepage = new HomePage(driver);
       await homepage.checkPageIsLoaded();
