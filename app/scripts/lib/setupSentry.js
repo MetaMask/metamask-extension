@@ -42,8 +42,6 @@ const SENTRY_DISTRIBUTED_TRACING_ENABLED =
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
 const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
 
-let browserNavigationSessionTrackingInstalled = false;
-
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
   COINGECKO: 'coingecko.com',
@@ -273,92 +271,13 @@ function setSentryClient() {
   });
 
   Sentry.registerSpanErrorInstrumentation();
-  const client = initializeSentryClient(clientOptions);
+  Sentry.init(clientOptions);
 
   setCITags();
 
   addDebugListeners();
 
-  return client;
-}
-
-// Sentry.init performs shared-environment checks inside the Sentry package
-// compartment. In MV3 webpack LavaMoat service workers, that compartment cannot
-// observe the app-level `globalThis.nw` bypass above, so construct and bind the
-// BrowserClient directly.
-function initializeSentryClient(clientOptions) {
-  const client = new Sentry.BrowserClient({
-    ...clientOptions,
-    stackParser: clientOptions.stackParser ?? Sentry.defaultStackParser,
-    integrations: [
-      ...Sentry.getDefaultIntegrations(clientOptions),
-      ...clientOptions.integrations,
-    ],
-    transport: clientOptions.transport ?? Sentry.makeFetchTransport,
-  });
-
-  Sentry.setCurrentClient(client);
-  client.init();
-  startInitialBrowserSession(clientOptions);
-
-  return client;
-}
-
-function startInitialBrowserSession(clientOptions) {
-  if (
-    clientOptions.autoSessionTracking === false ||
-    typeof globalThis.document === 'undefined'
-  ) {
-    return;
-  }
-
-  // Sentry.init starts browser session tracking after binding the client.
-  // Manual client initialization must preserve the initial page-view session.
-  Sentry.startSession({ ignoreDuration: true });
-  Sentry.captureSession();
-  trackBrowserNavigationSessions();
-}
-
-function trackBrowserNavigationSessions() {
-  if (
-    browserNavigationSessionTrackingInstalled ||
-    !globalThis.history ||
-    !globalThis.location
-  ) {
-    return;
-  }
-
-  browserNavigationSessionTrackingInstalled = true;
-
-  let lastHref = globalThis.location.href;
-  const handleNavigation = () => {
-    const currentHref = globalThis.location.href;
-    if (lastHref === currentHref) {
-      return;
-    }
-
-    lastHref = currentHref;
-    Sentry.startSession({ ignoreDuration: true });
-    Sentry.captureSession();
-  };
-
-  wrapHistoryMethod('pushState', handleNavigation);
-  wrapHistoryMethod('replaceState', handleNavigation);
-  globalThis.addEventListener?.('hashchange', handleNavigation);
-  globalThis.addEventListener?.('popstate', handleNavigation);
-}
-
-function wrapHistoryMethod(method, afterNavigation) {
-  const original = globalThis.history?.[method];
-  if (typeof original !== 'function') {
-    return;
-  }
-
-  globalThis.history[method] = function (...args) {
-    const result = original.apply(this, args);
-    afterNavigation();
-    return result;
-  };
+  return true;
 }
 
 /**
