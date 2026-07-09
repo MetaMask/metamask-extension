@@ -77,8 +77,8 @@ export const MarketRow = ({
 }: MarketRowProps) => {
   const { formatNumber } = useFormatters();
   const displaySymbol = useMemo(
-    () => getDisplaySymbol(market.symbol),
-    [market.symbol],
+    () => market.name || getDisplaySymbol(market.symbol),
+    [market.name, market.symbol],
   );
   const metricValue = useMemo(
     () => getMetricValue(market, displayMetric, formatNumber),
@@ -123,11 +123,14 @@ export const MarketRow = ({
         gap={1}
       >
         <Box
+          className="min-w-0 max-w-full"
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text fontWeight={FontWeight.Medium}>{displaySymbol}</Text>
+          <Text fontWeight={FontWeight.Medium} className="min-w-0 truncate">
+            {displaySymbol}
+          </Text>
           <span className="shrink-0 rounded-md bg-background-muted px-1.5">
             <Text
               variant={TextVariant.BodyXs}

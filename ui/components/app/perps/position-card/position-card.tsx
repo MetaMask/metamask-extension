@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   Box,
@@ -14,6 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import type { Position } from '@metamask/perps-controller';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
 import { formatPnl } from '../../../../../shared/lib/perps-formatters';
 import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
@@ -23,6 +25,8 @@ import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes'
 export type PositionCardProps = {
   position: Position;
   onClick?: (position: Position) => void;
+  /** Full asset name (e.g. 'Bitcoin'); falls back to the ticker when omitted */
+  assetName?: string;
 };
 
 /**
@@ -33,15 +37,26 @@ export type PositionCardProps = {
  * @param options0 - Component props
  * @param options0.position - The position data to display
  * @param options0.onClick
+ * @param options0.assetName - Full asset name; falls back to the ticker when omitted
  */
-export const PositionCard = ({ position, onClick }: PositionCardProps) => {
+export const PositionCard = ({
+  position,
+  onClick,
+  assetName,
+}: PositionCardProps) => {
   const navigate = useNavigate();
   const { formatPercentWithMinThreshold } = useFormatters();
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
-  const displayName = getDisplayName(position.symbol);
+  // Title uses the full asset name when enabled; the size line keeps the ticker
+  // as its unit. When the flag is off, fall back to the ticker.
+  const displayName = getDisplayName(
+    showFullAssetNames ? assetName || position.symbol : position.symbol,
+  );
+  const displaySymbol = getDisplayName(position.symbol);
   const formattedPnl = formatPnl(pnlNum);
   const roeNum = Number.parseFloat(position.returnOnEquity);
   const formattedRoe = Number.isNaN(roeNum)
@@ -104,7 +119,7 @@ export const PositionCard = ({ position, onClick }: PositionCardProps) => {
           </Text>
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {absSize} {displayName}
+          {absSize} {displaySymbol}
         </Text>
       </Box>
 

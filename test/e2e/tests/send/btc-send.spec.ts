@@ -72,7 +72,10 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
         await sendPage.selectToken(bitcoinChainId, 'BTC');
 
-        await sendPage.fillRecipient('invalidBTCAddress');
+        await sendPage.fillRecipient({
+          recipientAddress: 'invalidBTCAddress',
+          validAddress: false,
+        });
         await sendPage.checkInvalidAddressError();
       },
     );
@@ -101,7 +104,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
         await sendPage.selectToken(bitcoinChainId, 'BTC');
 
-        await sendPage.fillRecipient(recipientAddress);
+        await sendPage.fillRecipient({ recipientAddress });
 
         await sendPage.fillAmount('5');
         await sendPage.checkInsufficientFundsError();
@@ -138,7 +141,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
 
         await sendPage.selectToken(bitcoinChainId, 'BTC');
-        await sendPage.fillRecipient(recipientAddress);
+        await sendPage.fillRecipient({ recipientAddress });
         await sendPage.fillAmount(sendAmount);
         await sendPage.isContinueButtonEnabled();
         await sendPage.pressContinueButton();

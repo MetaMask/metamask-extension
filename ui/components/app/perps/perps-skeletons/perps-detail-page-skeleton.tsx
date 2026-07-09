@@ -23,49 +23,68 @@ export const PerpsDetailPageSkeleton = () => {
     >
       {/* Header */}
       <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
+        flexDirection={BoxFlexDirection.Column}
         paddingTop={4}
         paddingBottom={4}
         gap={2}
       >
-        {/* Back Button Placeholder */}
-        <Box className="p-2 -ml-2">
-          <Icon
-            name={IconName.ArrowLeft}
-            size={IconSize.Md}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
+        {/* Top row: back chevron, logo, market identity, favorite star */}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          paddingLeft={4}
+          paddingRight={4}
+          gap={2}
+        >
+          {/* Back Button Placeholder */}
+          <Box className="p-2 -ml-2">
+            <Icon
+              name={IconName.ArrowLeft}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
 
-        {/* Token Logo Skeleton */}
-        <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
+          {/* Token Logo Skeleton */}
+          <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
 
-        {/* Header Content Skeleton */}
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          <Skeleton className="h-4 w-20" />
+          {/* Market Identity Skeleton */}
           <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={2}
+            flexDirection={BoxFlexDirection.Column}
+            className="min-w-0 flex-1"
+            gap={1}
           >
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-3 w-16" />
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-10" />
+            </Box>
+            <Skeleton className="h-3 w-20" />
+          </Box>
+
+          {/* Favorite Star Placeholder */}
+          <Box className="p-2">
+            <Icon
+              name={IconName.Star}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
           </Box>
         </Box>
 
-        {/* Spacer */}
-        <Box className="flex-1" />
-
-        {/* Favorite Star Placeholder */}
-        <Box className="p-2">
-          <Icon
-            name={IconName.Star}
-            size={IconSize.Md}
-            color={IconColor.IconAlternative}
-          />
+        {/* Price + 24h change Skeleton */}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          paddingLeft={4}
+          paddingRight={4}
+          gap={2}
+        >
+          <Skeleton className="h-7 w-32" />
+          <Skeleton className="h-4 w-16" />
         </Box>
       </Box>
 

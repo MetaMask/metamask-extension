@@ -46,6 +46,7 @@ type PerpsStreamBridgeOptions = {
   perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
+  isTerminalBackendEnabled: () => boolean;
   emit: EmitFn;
 };
 
@@ -96,6 +97,8 @@ export class PerpsStreamBridge {
 
   readonly #isConnectionAlive: () => boolean;
 
+  readonly #isTerminalBackendEnabled: () => boolean;
+
   readonly #emit: EmitFn;
 
   readonly #staticUnsubs: (() => void)[] = [];
@@ -138,6 +141,20 @@ export class PerpsStreamBridge {
 
   #lastMarketCacheKey: string | null = null;
 
+  /**
+   * Serializes the Terminal-mode market refetch triggered by preload-cache
+   * bumps so a burst of state changes cannot fan out into concurrent Terminal
+   * REST hits (the exact rate-limit pressure this stack is trying to avoid).
+   */
+  #terminalMarketRefetchInFlight = false;
+
+  /**
+   * Set when a preload-cache bump arrives while a Terminal market refetch is
+   * already in flight. The in-flight fetch re-runs once on settle so the newest
+   * market set (e.g. post-HIP-3) still reaches the UI instead of being dropped.
+   */
+  #terminalMarketRefetchPending = false;
+
   #wasDeviceOffline = false;
 
   constructor(options: PerpsStreamBridgeOptions) {
@@ -148,6 +165,7 @@ export class PerpsStreamBridge {
     this.#perpsDisconnect = options.perpsDisconnect;
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
     this.#isConnectionAlive = options.isConnectionAlive;
+    this.#isTerminalBackendEnabled = options.isTerminalBackendEnabled;
     this.#emit = options.emit;
   }
 
@@ -354,6 +372,8 @@ export class PerpsStreamBridge {
     this.#hydrationSeq += 1;
     this.#isHydrating = false;
     this.#lastMarketCacheKey = null;
+    this.#terminalMarketRefetchInFlight = false;
+    this.#terminalMarketRefetchPending = false;
     this.#wasDeviceOffline = false;
   }
 
@@ -485,7 +505,94 @@ export class PerpsStreamBridge {
       return;
     }
     this.#lastMarketCacheKey = snapshotKey;
+
+    // The controller's background preload (startMarketDataPreload) always
+    // fetches via getMarketDataWithPrices({ standalone: true }) without the
+    // Terminal API, so cachedMarketDataByProvider only ever holds
+    // direct-provider data (no display names / keywords / tags / categories).
+    // When the Terminal backend is enabled we must not warm the UI 'markets'
+    // channel with that un-enriched snapshot. But the preload timestamp bump
+    // still signals that the market set changed (e.g. a HIP-3 config arrived or
+    // the 5-minute refresh ran), so re-fetch the enriched Terminal data and
+    // emit that instead. Otherwise the channel would hold whatever the last
+    // REST/reconnect hydration produced and silently go stale.
+    if (this.#isTerminalBackendEnabled()) {
+      this.#refetchTerminalMarketData();
+      return;
+    }
+
     this.#emit('markets', entry.data);
+  }
+
+  /**
+   * Re-fetches enriched market data via the Terminal API and emits it on the
+   * 'markets' channel. Used to keep Terminal-mode UI in sync when the
+   * direct-provider preload cache updates (the raw snapshot is unfit to emit).
+   *
+   * Serialized via #terminalMarketRefetchInFlight; a bump that lands mid-fetch
+   * flips #terminalMarketRefetchPending so exactly one follow-up fetch runs.
+   * getMarketDataWithPrices with the Terminal API does not write
+   * cachedMarketDataByProvider, so this cannot re-trigger the state listener.
+   */
+  #refetchTerminalMarketData(): void {
+    // Re-check the flag on every entry (including the queued follow-up rerun):
+    // the Terminal backend may have been disabled since the preload bump that
+    // scheduled this refetch, and we must not issue/emit Terminal data once it
+    // is off.
+    if (!this.#isConnectionAlive() || !this.#isTerminalBackendEnabled()) {
+      return;
+    }
+    if (this.#terminalMarketRefetchInFlight) {
+      this.#terminalMarketRefetchPending = true;
+      return;
+    }
+    this.#terminalMarketRefetchInFlight = true;
+    const generationAtStart = this.#destroyGeneration;
+    this.#controller
+      .getMarketDataWithPrices({ useTerminalApi: true })
+      .then((markets) => {
+        // destroy() may have fired during the await; never emit onto a torn-down
+        // stream. A generation bump (rather than a latched flag) lets later init
+        // cycles resume refetching without an explicit reset. Also re-check the
+        // flag: if the Terminal backend was disabled mid-flight, this enriched
+        // payload no longer matches the active mode and must not be emitted.
+        // Guard the empty case symmetrically with the direct-provider branch
+        // in #handleMarketDataPreload: emitting an empty array would blank the
+        // UI list and flip the channel's hasCachedData() to true, suppressing
+        // the WS-grace REST fallback that would otherwise recover.
+        if (
+          this.#destroyGeneration === generationAtStart &&
+          this.#isTerminalBackendEnabled() &&
+          Array.isArray(markets) &&
+          markets.length > 0
+        ) {
+          this.#emit('markets', markets);
+        }
+      })
+      .catch((error) => {
+        console.debug(
+          '[PerpsStreamBridge] terminal market data refetch failed',
+          error,
+        );
+      })
+      .finally(() => {
+        // destroy() (and possibly a fresh init + refetch) may have fired during
+        // the await. If so, this settled fetch belongs to a prior bridge
+        // generation and must not touch the current generation's coordination
+        // state: clearing #terminalMarketRefetchInFlight here could let an extra
+        // concurrent Terminal REST call slip past the serializer, and clearing
+        // #terminalMarketRefetchPending could drop a queued follow-up, delaying
+        // the newest enriched market update until the next preload bump.
+        if (this.#destroyGeneration !== generationAtStart) {
+          return;
+        }
+        this.#terminalMarketRefetchInFlight = false;
+        const shouldRerun = this.#terminalMarketRefetchPending;
+        this.#terminalMarketRefetchPending = false;
+        if (shouldRerun) {
+          this.#refetchTerminalMarketData();
+        }
+      });
   }
 
   /**
@@ -504,7 +611,9 @@ export class PerpsStreamBridge {
 
     try {
       const marketsResult = await this.#controller
-        .getMarketDataWithPrices()
+        .getMarketDataWithPrices({
+          useTerminalApi: this.#isTerminalBackendEnabled(),
+        })
         .catch(() => null);
 
       if (marketsResult) {
