@@ -53,7 +53,7 @@ const TooltipBody = ({ children, testId }: TooltipBodyProps) => (
     data-testid={testId}
     flexDirection={BoxFlexDirection.Column}
     gap={2}
-    className="w-64 max-w-[calc(100vw-32px)]"
+    className="w-full max-w-full"
   >
     {children}
   </Box>
@@ -65,13 +65,9 @@ type FeeTooltipRowProps = {
 };
 
 const FeeTooltipRow = ({ label, value }: FeeTooltipRowProps) => (
-  <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6">
-    <Text variant={TextVariant.BodySm} className="leading-5">
-      {label}
-    </Text>
-    <Text variant={TextVariant.BodySm} className="text-right leading-5">
-      {value}
-    </Text>
+  <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-4">
+    <span className="leading-5">{label}</span>
+    <span className="text-right leading-5">{value}</span>
   </div>
 );
 
@@ -124,9 +120,9 @@ export const OrderSummary = ({
           testId="perps-order-summary-liquidation-price-tooltip-label"
           tooltip={
             <TooltipBody testId="perps-order-summary-liquidation-price-tooltip">
-              <Text variant={TextVariant.BodySm}>
+              <span className="leading-5">
                 {t('perpsLiquidationPriceTooltip')}
-              </Text>
+              </span>
             </TooltipBody>
           }
         />
@@ -202,9 +198,7 @@ export const OrderSummary = ({
           testId="perps-order-summary-margin-tooltip-label"
           tooltip={
             <TooltipBody testId="perps-order-summary-margin-tooltip">
-              <Text variant={TextVariant.BodySm}>
-                {t('perpsMarginTooltip')}
-              </Text>
+              <span className="leading-5">{t('perpsMarginTooltip')}</span>
             </TooltipBody>
           }
         />

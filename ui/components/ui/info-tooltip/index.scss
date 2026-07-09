@@ -11,10 +11,39 @@
   }
 }
 
-.tippy-tooltip {
-  &#{&}-info-theme {
+.tippy-popper {
+  .tippy-tooltip.tippy-tooltip--mm-custom-theme.tippy-tooltip-info-theme {
+    --info-tooltip-background: light-dark(var(--brand-colors-grey-grey900), var(--brand-colors-grey-grey000));
+    --info-tooltip-foreground: light-dark(var(--brand-colors-grey-grey000), var(--brand-colors-grey-grey900));
+
+    background: var(--info-tooltip-background);
+    color: var(--info-tooltip-foreground);
     max-width: 200px;
     padding: 16px;
     padding-bottom: 16px;
+
+    .tippy-tooltip-content {
+      color: var(--info-tooltip-foreground);
+
+      * {
+        color: inherit;
+      }
+    }
+  }
+
+  &[x-placement^='top'] .tippy-tooltip.tippy-tooltip--mm-custom-theme.tippy-tooltip-info-theme [x-arrow] {
+    border-top-color: var(--info-tooltip-background);
+  }
+
+  &[x-placement^='right'] .tippy-tooltip.tippy-tooltip--mm-custom-theme.tippy-tooltip-info-theme [x-arrow] {
+    border-right-color: var(--info-tooltip-background);
+  }
+
+  &[x-placement^='left'] .tippy-tooltip.tippy-tooltip--mm-custom-theme.tippy-tooltip-info-theme [x-arrow] {
+    border-left-color: var(--info-tooltip-background);
+  }
+
+  &[x-placement^='bottom'] .tippy-tooltip.tippy-tooltip--mm-custom-theme.tippy-tooltip-info-theme [x-arrow] {
+    border-bottom-color: var(--info-tooltip-background);
   }
 }

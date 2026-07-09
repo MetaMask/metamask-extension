@@ -21,12 +21,28 @@ exports[`FeeCard renders the component with initial props 2`] = `
       tabindex="0"
     >
       <svg
-        viewBox="0 0 10 10"
+        fill="none"
+        viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
       >
+        <circle
+          cx="8"
+          cy="8"
+          r="6.5"
+          stroke="var(--color-icon-alternative)"
+          stroke-width="1.5"
+        />
         <path
-          d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+          d="M8 7.25V11"
+          stroke="var(--color-icon-alternative)"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <circle
+          cx="8"
+          cy="5"
           fill="var(--color-icon-alternative)"
+          r="0.75"
         />
       </svg>
     </div>
