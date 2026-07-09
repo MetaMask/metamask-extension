@@ -39,3 +39,23 @@ export function findKeyringIdByAddress(
 ): string {
   return findKeyringId(keyrings, { address });
 }
+
+/**
+ * Encodes a seed phrase as an array of UTF-8 byte values for JSON-RPC
+ * serialization to the background.
+ * @param seedPhrase
+ */
+export function encodeSeedPhraseForBackground(seedPhrase: string): number[] {
+  return Array.from(Buffer.from(seedPhrase, 'utf8').values());
+}
+
+/**
+ * Decodes a seed phrase from a background response (Buffer serialized as a
+ * string or byte array) into a UTF-8 string.
+ * @param encodedSeedPhrase
+ */
+export function decodeSeedPhraseFromBackground(
+  encodedSeedPhrase: string | number[] | Uint8Array,
+): string {
+  return Buffer.from(encodedSeedPhrase).toString('utf8');
+}

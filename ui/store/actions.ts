@@ -181,6 +181,10 @@ import {
   logErrorWithMessage,
   createSentryError,
 } from '../../shared/lib/error';
+import {
+  decodeSeedPhraseFromBackground,
+  encodeSeedPhraseForBackground,
+} from '../../shared/lib/keyring';
 import type { DefaultAddressScope } from '../../shared/constants/default-address';
 import { ThemeType } from '../../shared/constants/preferences';
 import {
@@ -402,7 +406,7 @@ export function createNewVaultAndSyncWithSocial(
         'createNewVaultAndGetSeedPhrase',
         [password],
       );
-      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+      const seedPhrase = decodeSeedPhraseFromBackground(encodedSeedPhrase);
 
       await forceUpdateMetamaskState(dispatch);
 
@@ -1081,11 +1085,7 @@ export function createNewVaultAndRestore(
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
 
-    // Encode the secret recovery phrase as an array of integers so that it is
-    // serialized as JSON properly.
-    const encodedSeedPhrase = Array.from(
-      Buffer.from(seedPhrase, 'utf8').values(),
-    );
+    const encodedSeedPhrase = encodeSeedPhraseForBackground(seedPhrase);
 
     return submitRequestToBackground('createNewVaultAndRestore', [
       password,
@@ -1132,7 +1132,7 @@ export function createNewVaultAndGetSeedPhrase(
         'createNewVaultAndGetSeedPhrase',
         [password],
       );
-      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+      const seedPhrase = decodeSeedPhraseFromBackground(encodedSeedPhrase);
 
       // force update the state after creating the vault
       await forceUpdateMetamaskState(dispatch);
@@ -1159,7 +1159,7 @@ export function unlockAndGetSeedPhrase(
         'unlockAndGetSeedPhrase',
         [password],
       );
-      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+      const seedPhrase = decodeSeedPhraseFromBackground(encodedSeedPhrase);
       await forceUpdateMetamaskState(dispatch);
       return seedPhrase;
     } catch (error) {
@@ -1294,9 +1294,7 @@ export async function createSeedPhraseBackup(
   seedPhrase: string,
   keyringId: string,
 ): Promise<void> {
-  const encodedSeedPhrase = Array.from(
-    Buffer.from(seedPhrase, 'utf8').values(),
-  );
+  const encodedSeedPhrase = encodeSeedPhraseForBackground(seedPhrase);
   await submitRequestToBackground('createSeedPhraseBackup', [
     password,
     encodedSeedPhrase,
@@ -1315,7 +1313,7 @@ export async function getSeedPhrase(password: string, keyringId?: string) {
     'getSeedPhrase',
     [password, keyringId],
   );
-  return Buffer.from(encodedSeedPhrase).toString('utf8');
+  return decodeSeedPhraseFromBackground(encodedSeedPhrase);
 }
 
 export function requestRevealSeedWords(
@@ -1357,7 +1355,7 @@ export function getSeedPhraseWithPasskey(
         'exportSeedPhraseWithPasskey',
         [authenticationResponse, keyringId],
       );
-      return Buffer.from(encodedSeedPhrase).toString('utf8');
+      return decodeSeedPhraseFromBackground(encodedSeedPhrase);
     } finally {
       dispatch(hideLoadingIndication());
     }
