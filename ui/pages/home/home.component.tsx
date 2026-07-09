@@ -56,7 +56,6 @@ export type HomeProps = {
   attemptCloseNotificationPopup: () => void;
   useExternalServices?: boolean;
   setBasicFunctionalityModalOpen?: () => void;
-  fetchBuyableChains: () => void;
   redirectAfterDefaultPage?: RedirectAfterDefaultPage;
   setRedirectAfterDefaultPage?: (redirect: { path: string }) => void;
   clearRedirectAfterDefaultPage?: () => void;
@@ -76,7 +75,6 @@ export default function Home({
   attemptCloseNotificationPopup,
   useExternalServices,
   setBasicFunctionalityModalOpen,
-  fetchBuyableChains,
   redirectAfterDefaultPage,
   setRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
@@ -115,11 +113,9 @@ export default function Home({
     clearLastVisitedPerpsRoute,
   });
 
-  // fetch buyable chains and refresh selected networks on mount.
   useEffect(() => {
-    fetchBuyableChains();
     lookupSelectedNetworks();
-  }, [fetchBuyableChains, lookupSelectedNetworks]);
+  }, [lookupSelectedNetworks]);
 
   const onSupportLinkClick = useCallback(() => {
     if (isMain()) {

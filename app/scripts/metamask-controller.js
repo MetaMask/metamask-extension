@@ -235,6 +235,8 @@ import {
   DefiReferralPartner,
   getPartnerByOrigin,
 } from '../../shared/constants/defi-referrals';
+import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -6737,6 +6739,22 @@ export default class MetamaskController extends EventEmitter {
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          isTerminalBackendEnabled: () => {
+            const { remoteFeatureFlags } = this.controllerMessenger.call(
+              'RemoteFeatureFlagController:getState',
+            );
+            // Resolve through the same manifest-merged path as the UI selector
+            // (`getIsPerpsTerminalBackendEnabled`). Reading raw controller state
+            // here would ignore `.manifest-overrides.json`, so a manifest
+            // override could enable the Terminal backend in the UI while the
+            // bridge kept emitting un-enriched direct-provider market data.
+            const mergedFlags = getRemoteFeatureFlags({
+              metamask: { remoteFeatureFlags },
+            });
+            return isPerpsRemoteConfigSatisfied(
+              mergedFlags.perpsTerminalBackendEnabled,
+            );
+          },
           emit: (channel, data, extra) => {
             if (!perpsStream.isActive || !isStreamWritable(outStream)) {
               return;

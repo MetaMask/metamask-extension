@@ -865,7 +865,8 @@
     },
     "@metamask/design-system-shared": {
       "packages": {
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "react": true
       }
     },
     "@metamask/eth-token-tracker>@metamask/eth-block-tracker": {

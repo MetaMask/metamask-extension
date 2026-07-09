@@ -60,11 +60,11 @@ export const AdvancedGasPriceModal = ({
   });
   const hasError = Boolean(errors.gas || errors.gasPrice);
 
-  const handleSaveClick = useCallback(() => {
+  const handleSaveClick = useCallback(async () => {
     if (!transactionMeta?.id) {
       return;
     }
-    dispatch(
+    await dispatch(
       updateTransactionGasFees(transactionMeta.id, {
         userFeeLevel: UserFeeLevel.CUSTOM,
         ...pickBy(gasParams, Boolean),
