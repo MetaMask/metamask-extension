@@ -1,6 +1,5 @@
 import React from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -100,7 +99,6 @@ const MOCK_PRIMARY_REQUIRED_TOKEN = {
 
 function render(
   options: {
-    hasMax?: boolean;
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
     hidePayTokenAmount?: boolean;
@@ -115,7 +113,6 @@ function render(
   } = {},
 ) {
   const {
-    hasMax = false,
     disableAutomaticToken,
     disablePay = false,
     hidePayTokenAmount = false,
@@ -190,7 +187,6 @@ function render(
 
   return renderWithConfirmContextProvider(
     <CustomAmountInfo
-      hasMax={hasMax}
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
       hidePayTokenAmount={hidePayTokenAmount}
@@ -261,6 +257,38 @@ describe('CustomAmountInfo', () => {
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
+  describe('pay with placement', () => {
+    it('renders the bottom pay with row in the empty state', () => {
+      const { getByTestId } = render({
+        disablePay: false,
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          hasInput: false,
+        },
+      });
+
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
+    });
+
+    it('keeps the bottom pay with row once an amount is entered', () => {
+      const { getByTestId } = render({
+        disablePay: false,
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          hasInput: true,
+        },
+      });
+
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
+    });
+
+    it('does not render the pay with row when disablePay is true', () => {
+      const { queryByTestId } = render({ disablePay: true });
+
+      expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
+    });
+  });
+
   describe('input disabled state', () => {
     it('disables the input when no tokens are available', () => {
       const { getByTestId } = render({ availableTokens: [] });
@@ -307,55 +335,23 @@ describe('CustomAmountInfo', () => {
     });
   });
 
-  it('renders pay with row when tokens available and disablePay is false', () => {
+  it('renders the pay with selector when tokens available and disablePay is false', () => {
     const { getByTestId } = render({ disablePay: false });
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
-  it('does not render pay with row when no tokens available', () => {
+  it('does not render any pay with selector when no tokens available', () => {
     const { queryByTestId } = render({ availableTokens: [] });
     expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
   });
 
   describe('percentage buttons', () => {
-    it('renders percentage buttons when hasMax is true and tokens available', () => {
-      const { getByTestId } = render({ hasMax: true });
+    it('does not render percentage buttons', () => {
+      const { queryByTestId } = render();
 
-      expect(getByTestId('percentage-button-25')).toBeInTheDocument();
-      expect(getByTestId('percentage-button-50')).toBeInTheDocument();
-      expect(getByTestId('percentage-button-75')).toBeInTheDocument();
-      expect(getByTestId('percentage-button-100')).toBeInTheDocument();
-    });
-
-    it('does not render percentage buttons when hasMax is false', () => {
-      const { queryByTestId } = render({ hasMax: false });
-
+      expect(queryByTestId('percentage-buttons')).not.toBeInTheDocument();
       expect(queryByTestId('percentage-button-25')).not.toBeInTheDocument();
-      expect(queryByTestId('percentage-button-50')).not.toBeInTheDocument();
-      expect(queryByTestId('percentage-button-75')).not.toBeInTheDocument();
       expect(queryByTestId('percentage-button-100')).not.toBeInTheDocument();
-    });
-
-    it('does not render percentage buttons when no tokens available', () => {
-      const { queryByTestId } = render({ hasMax: true, availableTokens: [] });
-
-      expect(queryByTestId('percentage-button-25')).not.toBeInTheDocument();
-    });
-
-    it('calls updatePendingAmountPercentage when percentage button clicked', () => {
-      const updatePendingAmountPercentage = jest.fn();
-
-      const { getByTestId } = render({
-        hasMax: true,
-        customAmountHookReturn: {
-          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
-          updatePendingAmountPercentage,
-        },
-      });
-
-      fireEvent.click(getByTestId('percentage-button-50'));
-
-      expect(updatePendingAmountPercentage).toHaveBeenCalledWith(50);
     });
   });
 
@@ -488,6 +484,5 @@ describe('CustomAmountInfoSkeleton', () => {
     expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
     expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
     expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
-    expect(getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
   });
 });

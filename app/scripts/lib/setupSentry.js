@@ -10,6 +10,10 @@ import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
+  BACKEND_TRACE_PROPAGATION_TARGETS,
+  consensysTracePropagationIntegration,
+} from './sentry-trace-propagation';
+import {
   getAnalyticsState,
   getAnalyticsStateFromAppState,
   getState,
@@ -31,6 +35,8 @@ const RELEASE = getSentryRelease(
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
+const SENTRY_DISTRIBUTED_TRACING_ENABLED =
+  !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -95,8 +101,11 @@ function getClientOptions() {
     // which would otherwise make the next error look like a different stack (background timers
     // usually run after beforeSend finished; rapid UI captures often dedupe first).
     beforeSend: (report) => rewriteReport(safeCloneReport(report)),
-    beforeSendTransaction: (report) =>
-      rewriteTransactionReport(safeCloneReport(report)),
+    beforeSendTransaction: (report) => {
+      const transaction = rewriteTransactionReport(safeCloneReport(report));
+      dropLowValueMarkSpans(transaction);
+      return transaction;
+    },
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -114,8 +123,21 @@ function getClientOptions() {
         getAnalyticsState,
         log,
       }),
+      // Must register after `browserTracingIntegration`.
+      ...(SENTRY_DISTRIBUTED_TRACING_ENABLED
+        ? [consensysTracePropagationIntegration({ log })]
+        : []),
     ],
     release: RELEASE,
+    // Must be a top-level init option.
+    ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
+      tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
+      // TODO(sentry-v10, #42867): Once the v10 upgrade ships, enable
+      // `propagateTraceparent: true` here so the SDK attaches `traceparent` to
+      // these targets natively. Then remove the manual traceparent injection
+      // from `consensysTracePropagationIntegration` (keep the RAPID baggage and
+      // the `consensys-request-id` correlation).
+    }),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
     // Our test infra sometimes reports these errors as unexpected failures,
@@ -381,6 +403,28 @@ export function sanitizeBreadcrumbsInReport(report) {
   for (let i = 0; i < report.breadcrumbs.length; i++) {
     removeUrlsFromBreadCrumb(report.breadcrumbs[i]);
   }
+}
+
+// `op: 'mark'` span names with no Sentry-side consumer, dropped from transactions.
+const LOW_VALUE_TRACE_MARKS = new Set([
+  'sentry-tracing-init',
+  'mm-hero-painted',
+]);
+
+/**
+ * Removes the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'` child spans from a
+ * transaction event in place. Measures and all other spans are kept.
+ *
+ * @param {object} report - A Sentry transaction event object.
+ */
+export function dropLowValueMarkSpans(report) {
+  if (!Array.isArray(report.spans)) {
+    return;
+  }
+  report.spans = report.spans.filter((span) => {
+    const markName = span?.description ?? span?.name;
+    return !(span?.op === 'mark' && LOW_VALUE_TRACE_MARKS.has(markName));
+  });
 }
 
 /**

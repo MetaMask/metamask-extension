@@ -33,13 +33,14 @@ import {
 } from '@metamask/utils';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
+import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
 import { ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
@@ -62,8 +63,9 @@ import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsSwapsChain,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
@@ -95,6 +97,7 @@ import {
 } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
+import { processAssetParams } from '../util';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -114,6 +117,7 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
@@ -164,9 +168,13 @@ const AssetPage = ({
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
 
   let address =
     (() => {
@@ -191,6 +199,7 @@ const AssetPage = ({
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
       item.assetId.toLowerCase() === address.toLowerCase() ||
+      isArcUsdcForBridge(chainId, address, item) ||
       // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
       (!address && !isEvm && item.isNative),
   );
@@ -208,7 +217,7 @@ const AssetPage = ({
       getPortfolioUrl(
         '',
         'asset_page',
-        metaMetricsId,
+        analyticsId,
         isMetaMetricsEnabled === true,
         isMarketingEnabled === true,
         selectedAccount.address,
@@ -218,14 +227,16 @@ const AssetPage = ({
       selectedAccount.address,
       isMarketingEnabled,
       isMetaMetricsEnabled,
-      metaMetricsId,
+      analyticsId,
     ],
   );
 
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const caipAssetId = toAssetId(address, caipChainId);
+  const caipAssetId = isEvm
+    ? toAssetId(address, caipChainId)
+    : (decodedAsset as CaipAssetType);
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 

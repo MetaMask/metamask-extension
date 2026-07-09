@@ -5,6 +5,7 @@ import {
   selectIsEnforcedSimulationsEnabled,
   selectIsMetaMaskPayDappsEnabled,
   selectIsPayAmountPrefillEnabled,
+  selectIsPayHardwareEnabled,
   selectPayQuoteConfig,
   selectPreferredPayToken,
 } from './feature-flags';
@@ -57,6 +58,10 @@ type PayExtendedFlag = {
   };
 };
 
+type HardwareWalletFlag = {
+  enabled?: boolean;
+};
+
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
@@ -65,6 +70,7 @@ type MockState = {
       confirmations_pay_post_quote?: PayPostQuoteFlag;
       confirmations_pay_tokens?: PayTokensFlag;
       confirmations_pay_extended?: PayExtendedFlag;
+      confirmations_pay_hardware?: HardwareWalletFlag;
     };
   };
 };
@@ -356,6 +362,45 @@ describe('Confirmations Pay Feature Flags', () => {
       expect(selectIsPayAmountPrefillEnabled(state, 'musdConversion')).toBe(
         false,
       );
+    });
+  });
+
+  describe('selectIsPayHardwareEnabled', () => {
+    const getMockPayHardwareState = (
+      confirmations_pay_hardware?: HardwareWalletFlag,
+    ): MockState => ({
+      metamask: {
+        remoteFeatureFlags: {
+          ...(confirmations_pay_hardware !== undefined && {
+            confirmations_pay_hardware,
+          }),
+        },
+      },
+    });
+
+    it('returns true when enabled is true', () => {
+      const state = getMockPayHardwareState({ enabled: true });
+      expect(selectIsPayHardwareEnabled(state)).toBe(true);
+    });
+
+    it('returns false when enabled is false', () => {
+      const state = getMockPayHardwareState({ enabled: false });
+      expect(selectIsPayHardwareEnabled(state)).toBe(false);
+    });
+
+    it('defaults to false when confirmations_pay_hardware is not set', () => {
+      const state = getMockPayHardwareState();
+      expect(selectIsPayHardwareEnabled(state)).toBe(false);
+    });
+
+    it('defaults to false when confirmations_pay_hardware is an empty object', () => {
+      const state = getMockPayHardwareState({});
+      expect(selectIsPayHardwareEnabled(state)).toBe(false);
+    });
+
+    it('defaults to false when remoteFeatureFlags is empty', () => {
+      const state: MockState = { metamask: { remoteFeatureFlags: {} } };
+      expect(selectIsPayHardwareEnabled(state)).toBe(false);
     });
   });
 });

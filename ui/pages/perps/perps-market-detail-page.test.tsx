@@ -14,7 +14,10 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+} from '../../helpers/constants/routes';
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -588,10 +591,15 @@ describe('PerpsMarketDetailPage', () => {
     it('displays market symbol and price', async () => {
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-price')).toBeInTheDocument();
-      expect(getByText('ETH-USD')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Ethereum',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'ETH-USDC perp',
+      );
     });
 
     it('displays the market max leverage pill in the header', async () => {
@@ -625,10 +633,25 @@ describe('PerpsMarketDetailPage', () => {
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
-      expect(getByText('BTC-USD')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Bitcoin',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'BTC-USDC perp',
+      );
+    });
+
+    it('navigates to the market list when the header chevron is clicked', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      getByTestId('perps-market-detail-market-list-button').click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_MARKET_LIST_ROUTE);
     });
 
     it('displays back button', async () => {
@@ -641,7 +664,13 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates to wallet Perps tab when back button is clicked', async () => {
+    it('navigates back in history when back button is clicked', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 2,
+        configurable: true,
+      });
+
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -649,9 +678,36 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith({
-        pathname: '/',
-        search: 'tab=perps',
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
+      });
+    });
+
+    it('falls back to Perps tab when history is empty', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 1,
+        configurable: true,
+      });
+
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const backButton = getByTestId('perps-market-detail-back-button');
+      backButton.click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        { pathname: '/', search: 'tab=perps' },
+        { replace: true },
+      );
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
       });
     });
 
@@ -787,11 +843,16 @@ describe('PerpsMarketDetailPage', () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:TSLA' });
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
-      // Should display "TSLA-USD" with the stripped display name
-      expect(getByText('TSLA-USD')).toBeInTheDocument();
+      // Should display the full name and the ticker-collateral pair (stripped display name)
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Tesla',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'TSLA-USDC perp',
+      );
     });
 
     it('displays position section when user has a position', async () => {

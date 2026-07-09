@@ -48,6 +48,10 @@ class TokensTab extends HomePage {
 
   private readonly importTokensButton = '[data-testid="importTokens"]';
 
+  private readonly importTokensLoading = {
+    testId: 'import-tokens-loading',
+  };
+
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
@@ -74,6 +78,12 @@ class TokensTab extends HomePage {
     '[data-testid="sort-by-popover-toggle"]';
 
   private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
+
+  private readonly coinOverviewSendButton =
+    '[data-testid="coin-overview-send"]';
+
+  private readonly coinOverviewSwapButton =
+    '[data-testid="coin-overview-swap"]';
 
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
@@ -111,7 +121,7 @@ class TokensTab extends HomePage {
     '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenImportedMessageCloseButton =
-    '.actionable-message__message button[aria-label="Close"]';
+    '.home__new-tokens-imported-notification button[aria-label="Close"]';
 
   private readonly tokenSearchResults = '.token-list__token_component';
 
@@ -202,7 +212,7 @@ class TokensTab extends HomePage {
     console.log(`Clicking on the token name `);
     await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
-      css: this.tokenName,
+      css: this.tokenListItem,
       text: assetName,
     });
   }
@@ -251,6 +261,59 @@ class TokensTab extends HomePage {
     return text;
   }
 
+  async waitForNetworksFilter(): Promise<void> {
+    console.log(`Waiting for the network filter`);
+    await this.driver.waitForSelector(this.networksToggle);
+  }
+
+  /**
+   * Asserts the given asset is not listed in the token list.
+   *
+   * @param assetName - The asset name to verify is absent.
+   */
+  async checkAssetIsAbsent(assetName: string): Promise<void> {
+    console.log(`Verifying asset "${assetName}" is not present in token list`);
+    await this.driver.assertElementNotPresent({
+      css: this.tokenName,
+      text: assetName,
+    });
+  }
+
+  /**
+   * Asserts the visible token list contains exactly the given asset names
+   * (order-independent).
+   *
+   * @param expectedAssets - The full set of asset names expected to be visible.
+   */
+  async checkOnlyAssetsArePresent(expectedAssets: string[]): Promise<void> {
+    console.log(
+      `Verifying token list contains exactly: ${expectedAssets.join(', ')}`,
+    );
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const elements = await this.driver.findElements(this.tokenName);
+          if (elements.length !== expectedAssets.length) {
+            return false;
+          }
+          const names = await Promise.all(elements.map((e) => e.getText()));
+          const got = new Set(names.map((n) => n.trim()));
+          return expectedAssets.every((name) => got.has(name));
+        } catch (error) {
+          const err = error as { name?: string };
+          if (
+            err.name === 'NoSuchElementError' ||
+            err.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
+  }
+
   async getNumberOfAssets(): Promise<number> {
     console.log(`Returning the total number of asset items in the token list`);
     const assets = await this.driver.findElements(this.tokenListItem);
@@ -264,6 +327,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.sortByPopoverToggle);
     if (sortBy === 'alphabetically') {
       await this.driver.clickElement(this.sortByAlphabetically);
+      await this.driver.assertElementNotPresent(this.lowValueAssetsToggle);
     } else if (sortBy === 'decliningBalance') {
       await this.driver.clickElement(this.sortByDecliningBalance);
     }
@@ -367,6 +431,12 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.waitForSelector(this.selectedNetwork(networkName));
+    await this.driver.assertElementNotPresent(this.importTokensLoading, {
+      findElementGuard: this.importTokenModalTitle,
+    });
+    await this.driver.waitForSelector(this.tokenSearchInput);
+    // Keep paste to avoid flakiness because fill each word separately will cause the search to be triggered multiple times,
+    // and the list will be re-rendered multiple times, leading to flakiness.
     await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
@@ -451,6 +521,21 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
+  /**
+   * Verifies the coin overview Send and Swap action buttons are both rendered
+   * and enabled (the action buttons are not gated on the account balance, so
+   * they remain present and actionable even for a zero-balance account).
+   */
+  async checkSendAndSwapButtonsArePresentAndEnabled(): Promise<void> {
+    console.log(`Verify the Send and Swap buttons are present and enabled`);
+    await this.driver.waitForSelector(this.coinOverviewSendButton, {
+      state: 'enabled',
+    });
+    await this.driver.waitForSelector(this.coinOverviewSwapButton, {
+      state: 'enabled',
+    });
+  }
+
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {
     console.log(`Verify the multichain-token-list-button is displayed`);
     await this.driver.waitForSelector(this.tokenListItem);
@@ -464,89 +549,6 @@ class TokensTab extends HomePage {
       css: this.networksToggle,
       text: expectedText,
     });
-  }
-
-  /**
-   * Gets the network icon details from the sort-by-networks button
-   *
-   * @returns Object containing icon src, alt text, and visibility status, or null if no icon found
-   */
-  async getNetworkIcon(): Promise<{
-    src: string;
-    alt: string;
-    isVisible: boolean;
-  } | null> {
-    console.log('Getting network icon details from sort-by-networks button');
-    const iconDetails = await this.driver.executeScript(`
-      const button = document.querySelector('[data-testid="sort-by-networks"]');
-      const avatarNetwork = button?.querySelector('.mm-avatar-network img');
-      return avatarNetwork ? {
-        src: avatarNetwork.src,
-        alt: avatarNetwork.alt,
-        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
-      } : null;
-    `);
-    return iconDetails as {
-      src: string;
-      alt: string;
-      isVisible: boolean;
-    } | null;
-  }
-
-  /**
-   * Checks if the network icon is visible in the sort-by-networks button
-   *
-   * @returns true if icon is present and visible, false otherwise
-   */
-  async isNetworkIconVisible(): Promise<boolean> {
-    console.log('Checking if network icon is visible');
-    const iconElement = await this.driver.executeScript(`
-      const button = document.querySelector('[data-testid="sort-by-networks"]');
-      const avatarNetwork = button?.querySelector('.mm-avatar-network');
-      return avatarNetwork ? {
-        isPresent: true,
-        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
-      } : { isPresent: false, isVisible: false };
-    `);
-
-    const result = iconElement as { isPresent: boolean; isVisible: boolean };
-    return result.isPresent && result.isVisible;
-  }
-
-  /**
-   * Verifies that the network icon matches expected characteristics
-   *
-   * @param expectedIndicators - Array of strings that should be present in the icon URL
-   * @throws Error if icon is not found or doesn't match expected characteristics
-   */
-  async checkNetworkIconContains(expectedIndicators: string[]): Promise<void> {
-    console.log(
-      `Checking network icon contains one of: ${expectedIndicators.join(', ')}`,
-    );
-
-    const iconDetails = await this.getNetworkIcon();
-
-    if (!iconDetails) {
-      throw new Error('Network icon not found in sort-by-networks button');
-    }
-
-    if (!iconDetails.isVisible) {
-      throw new Error('Network icon is not visible');
-    }
-
-    const hasValidIcon = expectedIndicators.some((indicator) =>
-      iconDetails.src.toLowerCase().includes(indicator.toLowerCase()),
-    );
-
-    if (!hasValidIcon) {
-      throw new Error(
-        `Expected icon to contain one of ${expectedIndicators.join(', ')}, but got: ${iconDetails.src}`,
-      );
-    }
-
-    console.log(
-      `✅ Network icon verification passed - Icon src: ${iconDetails.src}`,
-    );
   }
 
   async checkPriceChartIsShown(): Promise<void> {

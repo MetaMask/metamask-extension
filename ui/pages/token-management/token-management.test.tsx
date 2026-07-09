@@ -65,6 +65,7 @@ jest.mock('../../store/actions', () => {
     addImportedTokens: jest.fn(() => () => Promise.resolve()),
     hideAsset: jest.fn(() => () => Promise.resolve()),
     ignoreTokens: jest.fn(() => () => Promise.resolve()),
+    importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
     multichainAddAssets: jest.fn(() => () => Promise.resolve()),
     multichainIgnoreAssets: jest.fn(() => () => Promise.resolve()),
   };
@@ -75,6 +76,7 @@ type MockedTokenManagementActions = {
   addImportedTokens: jest.Mock;
   hideAsset: jest.Mock;
   ignoreTokens: jest.Mock;
+  importCustomAssetsBatch: jest.Mock;
   multichainAddAssets: jest.Mock;
   multichainIgnoreAssets: jest.Mock;
 };
@@ -83,7 +85,7 @@ const getMockedActions = () =>
   jest.requireMock('../../store/actions') as MockedTokenManagementActions;
 
 type MockSearchResult = {
-  assetId: string;
+  assetId?: string | null;
   symbol: string;
   decimals: number;
   name: string;
@@ -163,6 +165,53 @@ const resetTokenSearchState = (): void => {
     fetchNextPage: jest.fn(),
   });
   mockTokenSearch.spy.mockClear();
+};
+
+const expectEvmApiResultImport = async ({
+  accountId,
+  actions,
+  address,
+  assetId,
+  decimals,
+  name,
+  symbol,
+}: {
+  accountId: string;
+  actions: MockedTokenManagementActions;
+  address: string;
+  assetId: string;
+  decimals: number;
+  name: string;
+  symbol: string;
+}) => {
+  await waitFor(() =>
+    expect(actions.addImportedTokens).toHaveBeenCalledWith(
+      [
+        expect.objectContaining({
+          address,
+          symbol,
+          decimals,
+          isERC721: false,
+          name,
+        }),
+      ],
+      'mainnet',
+    ),
+  );
+  await waitFor(() =>
+    expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+      accountId,
+      [{ assetId, isHidden: false }],
+      {
+        [assetId]: {
+          address,
+          symbol,
+          name,
+          decimals,
+        },
+      },
+    ),
+  );
 };
 
 describe('TokenManagementPage', () => {
@@ -258,6 +307,7 @@ describe('TokenManagementPage', () => {
     actions.addImportedTokens.mockClear();
     actions.hideAsset.mockClear();
     actions.ignoreTokens.mockClear();
+    actions.importCustomAssetsBatch.mockClear();
     actions.multichainAddAssets.mockClear();
     actions.multichainIgnoreAssets.mockClear();
     const originalWarn = console.warn;
@@ -283,16 +333,18 @@ describe('TokenManagementPage', () => {
       '0x1': [mainnetToken, nativeToken],
       '0x5': [goerliToken],
     },
+    selectedMultichainNetworkChainId = 'eip155:1',
   }: {
     enabledNetworks?: Record<string, boolean>;
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
     networkManagementEnabled?: boolean;
     accountGroupAssets?: Record<string, unknown[]>;
+    selectedMultichainNetworkChainId?: string;
   } = {}) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      selectedMultichainNetworkChainId: 'eip155:1',
+      selectedMultichainNetworkChainId,
       useExternalServices: true,
       preferences: {
         ...mockState.metamask.preferences,
@@ -493,11 +545,7 @@ describe('TokenManagementPage', () => {
       await screen.findByTestId('home-network-filter-manage-networks'),
     );
 
-    await waitFor(() =>
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${NETWORKS_ROUTE}?drawerOpen=true`,
-      ),
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
   it('shows tokens from all enabled networks when the home page filter is all networks', () => {
@@ -518,6 +566,31 @@ describe('TokenManagementPage', () => {
     expect(
       screen.getByText(messages.allDefaultNetworks.message),
     ).toBeInTheDocument();
+  });
+
+  it('shows all default networks in the filter label when Solana is active but multiple namespaces are enabled', () => {
+    renderPage(
+      createState({
+        selectedMultichainNetworkChainId: solanaChainId,
+        enabledNetworkMap: {
+          eip155: { '0x1': true, '0x5': true },
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          '0x1': [mainnetToken],
+          '0x5': [goerliToken],
+          [solanaChainId]: [solanaToken],
+        },
+      }),
+    );
+
+    expect(
+      screen.getByText(messages.allDefaultNetworks.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(messages.networkNameSolana.message)).toBeNull();
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(screen.getByText('Beta Token')).toBeInTheDocument();
+    expect(screen.getByText('Solana Token')).toBeInTheDocument();
   });
 
   it('hides the Arc USDC ERC20 from the token list while keeping the native token', () => {
@@ -733,6 +806,44 @@ describe('TokenManagementPage', () => {
     expect(screen.getByText('USD Coin')).toBeInTheDocument();
   });
 
+  it('ignores API-backed results with missing asset IDs', () => {
+    const badTokenName = 'Bad Token';
+    const missingAssetIdTokenName = 'Missing Asset ID Token';
+    const validTokenName = 'USD Coin';
+
+    setTokenSearchState({
+      results: [
+        {
+          assetId: null,
+          symbol: 'BAD',
+          decimals: 18,
+          name: badTokenName,
+        },
+        {
+          symbol: 'MISSING',
+          decimals: 18,
+          name: missingAssetIdTokenName,
+        },
+        {
+          assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          symbol: 'USDC',
+          decimals: 6,
+          name: validTokenName,
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usd' },
+    });
+
+    expect(screen.queryByText(badTokenName)).not.toBeInTheDocument();
+    expect(screen.queryByText(missingAssetIdTokenName)).not.toBeInTheDocument();
+    expect(screen.getByText(validTokenName)).toBeInTheDocument();
+  });
+
   it('renders imported tokens first and non-imported API browse results below as OFF', () => {
     const apiTokenAssetId =
       'eip155:1/erc20:0x0000000000000000000000000000000000000abc';
@@ -896,7 +1007,7 @@ describe('TokenManagementPage', () => {
     expect(fetchNextPage).toHaveBeenCalledTimes(1);
   });
 
-  it('toggling ON a not-yet-imported search result imports the token and adds it to AssetsController', async () => {
+  it('toggling ON a not-yet-imported search result imports the token and seeds unified assets', async () => {
     const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
     const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
     setTokenSearchState({
@@ -918,30 +1029,56 @@ describe('TokenManagementPage', () => {
       target: { value: 'usdc' },
     });
 
-    const toggle = screen.getByTestId(
-      `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+      ),
     );
-    fireEvent.click(toggle);
 
-    await waitFor(() =>
-      expect(actions.addImportedTokens).toHaveBeenCalledWith(
-        [
-          expect.objectContaining({
-            address: usdcAddress,
-            symbol: 'USDC',
-            decimals: 6,
-            isERC721: false,
-          }),
-        ],
-        'mainnet',
+    await expectEvmApiResultImport({
+      accountId: mainnetToken.accountId,
+      actions,
+      address: usdcAddress,
+      assetId: usdcAssetId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
+  });
+
+  it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+
+    renderPage();
+
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
       ),
     );
-    await waitFor(() =>
-      expect(actions.addCustomAsset).toHaveBeenCalledWith(
-        mainnetToken.accountId,
-        usdcAssetId,
-      ),
-    );
+
+    await expectEvmApiResultImport({
+      accountId: mainnetToken.accountId,
+      actions,
+      address: usdcAddress,
+      assetId: usdcAssetId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
   });
 
   it('toggling OFF an EVM token defers the hide and keeps the row visible until unmount', async () => {
