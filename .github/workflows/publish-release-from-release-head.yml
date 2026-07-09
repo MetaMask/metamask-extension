@@ -350,7 +350,7 @@ jobs:
             build-dist-mv2-webpack/builds/metamask-firefox-*.zip \
             build-flask-webpack/builds/metamask-chrome-*.zip \
             build-flask-mv2-webpack/builds/metamask-firefox-*.zip; do
-            ( cd "$(dirname "${zip}")" && sha256sum "$(basename "${zip}")" ) >> "${SHA256SUMS}"
+            ( cd "$(dirname "${zip}")" && sha256sum --text "$(basename "${zip}")" ) >> "${SHA256SUMS}"
           done
           echo "=== SHA256SUMS ==="
           cat "${SHA256SUMS}"
