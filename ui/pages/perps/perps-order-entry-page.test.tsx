@@ -179,6 +179,11 @@ const mockStreamManagerBase = {
     getCachedData: () => null,
     clearCache: jest.fn(),
   },
+  orderBookAggregated: {
+    subscribe: jest.fn(() => jest.fn()),
+    getCachedData: () => null,
+    clearCache: jest.fn(),
+  },
   setOptimisticTPSL: jest.fn(),
   clearOptimisticTPSL: jest.fn(),
   pushPositionsWithOverrides: jest.fn(),
@@ -610,6 +615,41 @@ describe('PerpsOrderEntryPage', () => {
       }
     });
 
+    it('caps the order book width on a narrow body so it cannot overflow off-screen', () => {
+      // Regression: dragging the divider far left on a narrow popup previously
+      // let the order book reach 60%, which (with the form's 224px pixel floor)
+      // pushed the panel past the viewport. The width is now capped so the form
+      // keeps its floor: (400 - 224 form - 4 divider) / 400 = 43%.
+      const rectSpy = jest
+        .spyOn(Element.prototype, 'getBoundingClientRect')
+        .mockReturnValue({
+          right: 400,
+          width: 400,
+          left: 0,
+          top: 0,
+          bottom: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        } as DOMRect);
+
+      try {
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+        const divider = screen.getByTestId('perps-order-book-resize-handle');
+
+        fireEvent.mouseDown(divider);
+        // Drag all the way to the left edge (would be 100% without the cap).
+        fireEvent.mouseMove(window, { clientX: 0 });
+        expect(divider).toHaveAttribute('aria-valuenow', '43');
+      } finally {
+        rectSpy.mockRestore();
+      }
+    });
+
     it('clears the shared order book cache when the market symbol changes', () => {
       mockStreamManagerBase.orderBook.clearCache.mockClear();
 
@@ -629,6 +669,28 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockStreamManagerBase.orderBook.clearCache).toHaveBeenCalledTimes(
         2,
       );
+    });
+
+    it('clears the aggregated order book cache when the market symbol changes', () => {
+      // Regression: the panel unmounts while closed, so on reopen its aggregated
+      // hook remounts fresh and (without this clear) would render the previous
+      // market's cached aggregated ladder until the new symbol streams in.
+      mockStreamManagerBase.orderBookAggregated.clearCache.mockClear();
+
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState());
+      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(
+        mockStreamManagerBase.orderBookAggregated.clearCache,
+      ).toHaveBeenCalledTimes(1);
+
+      mockUseParams.mockReturnValue({ symbol: 'ETH' });
+      rerender(<PerpsOrderEntryPage />);
+
+      expect(
+        mockStreamManagerBase.orderBookAggregated.clearCache,
+      ).toHaveBeenCalledTimes(2);
     });
   });
 

@@ -323,6 +323,23 @@ describe('order-book.utils', () => {
         ORDER_BOOK_DEFAULT_WIDTH_PCT,
       );
     });
+
+    it('caps the width so the form keeps its pixel floor on a narrow body', () => {
+      // Body 400px: order book may take at most (400 - 224 form - 4 divider) =
+      // 172px => 43%. A request for the 60% max is capped to 43% so the panel
+      // does not overflow off-screen.
+      expect(clampOrderBookWidthPct(60, 400)).toBeCloseTo(43, 5);
+    });
+
+    it('does not cap below the percentage floor on a very narrow body', () => {
+      // Body 280px: the pixel-derived ceiling (~18.5%) is below the 22% floor,
+      // so the floor wins and the overflow-x fallback handles the rest.
+      expect(clampOrderBookWidthPct(60, 280)).toBe(ORDER_BOOK_MIN_WIDTH_PCT);
+    });
+
+    it('leaves the percentage max intact on a wide body', () => {
+      expect(clampOrderBookWidthPct(80, 2000)).toBe(ORDER_BOOK_MAX_WIDTH_PCT);
+    });
   });
 
   describe('computeOrderBookWidthPct', () => {
@@ -337,6 +354,12 @@ describe('order-book.utils', () => {
       expect(computeOrderBookWidthPct(1000, 0, 700)).toBe(
         ORDER_BOOK_DEFAULT_WIDTH_PCT,
       );
+    });
+
+    it('caps the width to the form pixel floor when dragged far on a narrow body', () => {
+      // Body 400px wide (right edge at 400). Dragging the pointer to x=0 would
+      // request 100%, but the form's pixel floor caps it at 43%.
+      expect(computeOrderBookWidthPct(400, 400, 0)).toBeCloseTo(43, 5);
     });
   });
 });

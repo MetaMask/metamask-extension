@@ -120,6 +120,8 @@ export const ORDER_BOOK_MAX_WIDTH_PCT = 60;
 export const ORDER_BOOK_MIN_WIDTH_PX = 208;
 /** Minimum usable width for the order-entry form beside the book. */
 export const ORDER_BOOK_FORM_MIN_WIDTH_PX = 224;
+/** Width of the draggable divider (Tailwind `w-1` = 4px). */
+export const ORDER_BOOK_DIVIDER_WIDTH_PX = 4;
 
 /**
  * Calculate dynamic price-grouping options based on the asset's mid price.
@@ -435,17 +437,37 @@ export function getDepthRatio(
  * Clamp an order-book panel width (as a percentage of the body) to the allowed
  * range so neither the form nor the order book collapses.
  *
+ * When `containerWidth` is provided, the upper bound is additionally capped so
+ * the form keeps at least its pixel floor (`ORDER_BOOK_FORM_MIN_WIDTH_PX`, plus
+ * the divider). Without this cap a wide order book on a narrow body pushes the
+ * form past its minimum and the panel spills off-screen via the body's
+ * horizontal-scroll fallback.
+ *
  * @param pct - Requested width percentage.
+ * @param containerWidth - Optional body width (px) used to derive a pixel-aware
+ * maximum.
  * @returns Clamped width percentage.
  */
-export function clampOrderBookWidthPct(pct: number): number {
+export function clampOrderBookWidthPct(
+  pct: number,
+  containerWidth?: number,
+): number {
   if (!Number.isFinite(pct)) {
     return ORDER_BOOK_DEFAULT_WIDTH_PCT;
   }
-  return Math.min(
-    ORDER_BOOK_MAX_WIDTH_PCT,
-    Math.max(ORDER_BOOK_MIN_WIDTH_PCT, pct),
-  );
+  let maxPct = ORDER_BOOK_MAX_WIDTH_PCT;
+  if (Number.isFinite(containerWidth) && (containerWidth as number) > 0) {
+    const width = containerWidth as number;
+    const pixelMaxPct =
+      ((width - ORDER_BOOK_FORM_MIN_WIDTH_PX - ORDER_BOOK_DIVIDER_WIDTH_PX) /
+        width) *
+      100;
+    // Never let the pixel-derived ceiling drop below the percentage floor; on a
+    // very narrow body the pixel floors cannot both fit and the body's
+    // overflow-x fallback handles it (documented narrow-popup behavior).
+    maxPct = Math.max(ORDER_BOOK_MIN_WIDTH_PCT, Math.min(maxPct, pixelMaxPct));
+  }
+  return Math.min(maxPct, Math.max(ORDER_BOOK_MIN_WIDTH_PCT, pct));
 }
 
 /**
@@ -467,5 +489,5 @@ export function computeOrderBookWidthPct(
     return ORDER_BOOK_DEFAULT_WIDTH_PCT;
   }
   const pct = ((containerRight - pointerX) / containerWidth) * 100;
-  return clampOrderBookWidthPct(pct);
+  return clampOrderBookWidthPct(pct, containerWidth);
 }

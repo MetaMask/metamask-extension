@@ -507,8 +507,13 @@ const PerpsOrderEntryPage = () => {
     // Drop any previous symbol's cached order book so late-mounting consumers
     // (e.g. the order-book panel) and the immediate subscribe replay below never
     // render the prior market's book before this symbol's first update arrives.
+    // The aggregated channel must be cleared too: the panel unmounts while
+    // closed, so on reopen its hook remounts fresh and would otherwise read the
+    // previous market's cached aggregated ladder (its reset key does not clear
+    // on first mount).
     const streamManager = getPerpsStreamManager();
     streamManager.orderBook.clearCache();
+    streamManager.orderBookAggregated.clearCache();
 
     // Subscribe to order book updates from the stream manager
     const unsubscribe = streamManager.orderBook.subscribe((orderBook) => {
@@ -1051,26 +1056,51 @@ const PerpsOrderEntryPage = () => {
     };
   }, [isResizingOrderBook]);
 
+  // Re-clamp the stored width when the body resizes (popup resize / expand to
+  // fullscreen). Without this, a width set on a wide body would exceed the
+  // pixel-aware maximum on a narrower body and spill the panel off-screen.
+  useEffect(() => {
+    const container = bodyRef.current;
+    if (!container || typeof ResizeObserver === 'undefined') {
+      return undefined;
+    }
+    const observer = new ResizeObserver(() => {
+      const { width } = container.getBoundingClientRect();
+      setOrderBookWidthPct((pct) => clampOrderBookWidthPct(pct, width));
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
   // Keyboard resizing for the divider: arrows nudge the split, Home/End jump to
   // the bounds. The order book is right-aligned, so ArrowLeft widens it.
   const handleOrderBookResizeKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
+      const containerWidth = bodyRef.current?.getBoundingClientRect().width;
       switch (event.key) {
         case 'ArrowLeft':
           event.preventDefault();
           setOrderBookWidthPct((width) =>
-            clampOrderBookWidthPct(width + ORDER_BOOK_RESIZE_STEP_PCT),
+            clampOrderBookWidthPct(
+              width + ORDER_BOOK_RESIZE_STEP_PCT,
+              containerWidth,
+            ),
           );
           break;
         case 'ArrowRight':
           event.preventDefault();
           setOrderBookWidthPct((width) =>
-            clampOrderBookWidthPct(width - ORDER_BOOK_RESIZE_STEP_PCT),
+            clampOrderBookWidthPct(
+              width - ORDER_BOOK_RESIZE_STEP_PCT,
+              containerWidth,
+            ),
           );
           break;
         case 'Home':
           event.preventDefault();
-          setOrderBookWidthPct(ORDER_BOOK_MAX_WIDTH_PCT);
+          setOrderBookWidthPct(
+            clampOrderBookWidthPct(ORDER_BOOK_MAX_WIDTH_PCT, containerWidth),
+          );
           break;
         case 'End':
           event.preventDefault();
