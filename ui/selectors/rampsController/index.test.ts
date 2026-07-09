@@ -1,4 +1,4 @@
-import { selectUserRegion, selectTokens } from './index';
+import { selectUserRegion, selectTokens } from '.';
 
 describe('rampsController selectors', () => {
   it('matches snapshot for selectUserRegion and selectTokens', () => {
