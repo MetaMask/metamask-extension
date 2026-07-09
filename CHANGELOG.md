@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Changed
 
 - Bumped `@metamask/notification-services-controller` to support the v4 notifications API. (#44146)
+
 ## [13.39.0]
 
 ### Added
