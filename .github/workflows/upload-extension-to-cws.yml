@@ -260,7 +260,10 @@ jobs:
           cat SHA256SUMS
           echo ""
           echo "=== Verifying ${ZIP_NAME} digest ==="
-          if ! awk -v zip="${ZIP_NAME}" '$2 == zip {print; found=1; exit} END {exit !found}' SHA256SUMS | sha256sum -c -; then
+          if ! awk -v zip="${ZIP_NAME}" '{
+            f = $2; sub(/^\*/, "", f);
+            if (f == zip) { print; found = 1; exit }
+          } END { exit !found }' SHA256SUMS | sha256sum -c -; then
             echo "::error::SHA256SUMS verification failed for ${ZIP_NAME}"
             exit 1
           fi
