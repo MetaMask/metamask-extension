@@ -108,7 +108,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBe('RAMPS_SERVICE_DISRUPTION');
   });
 
-  it('region unsupported → shows RAMP_UNSUPPORTED', () => {
+  it('region unsupported → shows RAMPS_UNSUPPORTED', () => {
     const unsupported: UserRegion = {
       ...region,
       country: { isoCode: 'FR', supported: { buy: false } } as Country,
@@ -120,10 +120,10 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     result.current.goToBuy('0x1');
-    expect(getModalName()).toBe('RAMP_UNSUPPORTED');
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
   });
 
-  it('providers fetched but empty → shows RAMP_UNSUPPORTED', () => {
+  it('providers fetched but empty → shows RAMPS_UNSUPPORTED', () => {
     const { result, getModalName } = run(
       buildState({
         providers: { data: [], selected: null, isLoading: false, error: null },
@@ -136,7 +136,7 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     result.current.goToBuy('0x1');
-    expect(getModalName()).toBe('RAMP_UNSUPPORTED');
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
   });
 
   it('supported + providers → proceeds (opens Portfolio for now)', () => {

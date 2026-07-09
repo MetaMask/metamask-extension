@@ -115,9 +115,9 @@ const MODALS: Record<string, ModalConfig> = {
     },
   },
 
-  RAMP_UNSUPPORTED: {
+  RAMPS_UNSUPPORTED: {
     contents: <RampUnsupportedModal />,
-    testId: 'ramp-unsupported-modal',
+    testId: 'ramps-unsupported-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

@@ -57,7 +57,7 @@ export default function useRampsNavigation() {
       }
       // 3. Region definitively unsupported.
       if (isRegionUnsupported) {
-        dispatch(showModal({ name: 'RAMP_UNSUPPORTED' }));
+        dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return;
       }
       // 4. Providers/tokens fetched but empty. `tokens.data === null` means
@@ -71,7 +71,7 @@ export default function useRampsNavigation() {
           (tokens.data.topTokens?.length ?? 0) === 0 &&
           (tokens.data.allTokens?.length ?? 0) === 0;
         if (providersEmpty || tokensEmpty) {
-          dispatch(showModal({ name: 'RAMP_UNSUPPORTED' }));
+          dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
           return;
         }
       }
