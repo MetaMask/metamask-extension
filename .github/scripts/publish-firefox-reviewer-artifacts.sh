@@ -21,7 +21,7 @@ set -euo pipefail
 # Pin firefox-bundle-script tooling (prepare_release.sh + scripts). Bump via PR
 # when tooling changes; merge MetaMask/firefox-bundle-script before release use.
 # INFRA-3753: includes BUNDLE_SH_GIT_REF / per-version tag support.
-FIREFOX_BUNDLE_SCRIPT_REF="81121d4221e23a654a784ee8abc27d2daab3989d"
+FIREFOX_BUNDLE_SCRIPT_REF="fb08f4c4515cf21846bceea83830f63e285c34fd"
 
 MODE="${1:-}"
 if [[ "${MODE}" != "package" && "${MODE}" != "upload" ]]; then
@@ -155,9 +155,6 @@ run_package() {
 
   echo "Cloning firefox-bundle-script at ref ${script_ref}..."
   clone_firefox_bundle_script "${script_ref}" "${clone_dir}"
-
-  echo "Fetching bundle.sh tag ${BUNDLE_SH_GIT_REF}..."
-  git -C "${clone_dir}" fetch origin "+refs/tags/${BUNDLE_SH_GIT_REF}:refs/tags/${BUNDLE_SH_GIT_REF}" --depth 1
 
   last_listed="$(resolve_last_listed_version)"
   echo "Using last listed version: ${last_listed}"
