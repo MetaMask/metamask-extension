@@ -318,6 +318,17 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.backButton);
   };
 
+  /**
+   * Navigates away from the bridge page via the bottom nav bar home tab.
+   * Use this instead of `goBack` when the user is in the bottom nav AB test
+   * treatment, where the back button is removed on the swap/bridge page.
+   */
+  goBackViaBottomNavHome = async () => {
+    const homeTab = '[data-testid="bottom-nav-home"]';
+    await this.driver.waitForSelector(homeTab);
+    await this.driver.clickElement(homeTab);
+  };
+
   async searchAssetAndVerifyCount(
     searchInput: string,
     count: number,
