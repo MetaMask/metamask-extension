@@ -8,6 +8,9 @@ import {
 } from '@metamask/messenger';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { AccountImportStrategy } from '@metamask/keyring-controller';
+import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
+import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import { QrKeyring } from '@metamask/eth-qr-keyring';
 import {
   TransactionContainerType,
   TransactionMeta,
@@ -31,6 +34,7 @@ import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
+import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
@@ -408,6 +412,579 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).resolves.toStrictEqual('0x123');
+      });
+    });
+  });
+
+  describe('hardware wallets', () => {
+    /**
+     * Registers a `KeyringController:withKeyringV2` handler that invokes its
+     * callback with the given mocked keyring, so tests can exercise the
+     * hardware methods that route through `#withKeyringForDevice`.
+     *
+     * @param rootMessenger - The root messenger to register the handler on.
+     * @param keyring - The mocked keyring to pass to the callback.
+     */
+    function registerWithKeyringV2(
+      rootMessenger: RootMessenger,
+      keyring: Record<string, unknown>,
+    ): void {
+      rootMessenger.registerActionHandler(
+        'KeyringController:withKeyringV2',
+        jest
+          .fn()
+          .mockImplementation((_selector, callback) => callback({ keyring })),
+      );
+    }
+
+    describe('connectHardware', () => {
+      it('throws if it receives an unknown device name', async () => {
+        await withService(async ({ rootMessenger }) => {
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'Some random device name',
+              0,
+              `m/44/0'/0'`,
+            ),
+          ).rejects.toThrow(
+            'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+          );
+        });
+      });
+
+      it('adds the Ledger keyring if missing and returns the first page of accounts', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getFirstPage = jest
+            .fn()
+            .mockResolvedValue([{ address: '0x1', balance: null, index: 0 }]);
+          const bridge = { updateTransportMethod: jest.fn() };
+          const addNewKeyring = jest.fn();
+
+          const withController = jest
+            .fn()
+            .mockImplementation(async (callback) =>
+              callback({ keyrings: [], addNewKeyring }),
+            );
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            withController,
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            bridge,
+            getFirstPage,
+            getPreviousPage: jest.fn(),
+            getNextPage: jest.fn(),
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:connectHardware',
+            'ledger',
+            0,
+          );
+
+          expect(withController).toHaveBeenCalled();
+          // The keyring does not exist yet, so it is created.
+          expect(addNewKeyring).toHaveBeenCalledWith(LedgerKeyring.type);
+          expect(getFirstPage).toHaveBeenCalled();
+          expect(result).toStrictEqual([
+            { address: '0x1', balance: null, index: 0 },
+          ]);
+        });
+      });
+
+      it('adds the Trezor keyring if missing and returns the first page of accounts', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getFirstPage = jest
+            .fn()
+            .mockResolvedValue([{ address: '0x2', balance: null, index: 0 }]);
+          const addNewKeyring = jest.fn();
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring }),
+              ),
+          );
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            getModel: jest.fn().mockReturnValue('model-t'),
+            getFirstPage,
+            getPreviousPage: jest.fn(),
+            getNextPage: jest.fn(),
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:connectHardware',
+            'trezor',
+            0,
+          );
+
+          expect(addNewKeyring).toHaveBeenCalledWith(TrezorKeyring.type);
+          expect(result).toStrictEqual([
+            { address: '0x2', balance: null, index: 0 },
+          ]);
+        });
+      });
+
+      it('returns the next / previous page based on the page argument', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getNextPage = jest.fn().mockResolvedValue([{ index: 1 }]);
+          const getPreviousPage = jest.fn().mockResolvedValue([{ index: -1 }]);
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring: jest.fn() }),
+              ),
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            getFirstPage: jest.fn(),
+            getNextPage,
+            getPreviousPage,
+          });
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'ledger',
+              1,
+            ),
+          ).resolves.toStrictEqual([{ index: 1 }]);
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'ledger',
+              -1,
+            ),
+          ).resolves.toStrictEqual([{ index: -1 }]);
+        });
+      });
+    });
+
+    describe('#setLedgerTransportPreference (via connectHardware)', () => {
+      /**
+       * Runs a ledger `connectHardware` with the given bridge, which routes
+       * through `#setLedgerTransportPreference`.
+       *
+       * @param rootMessenger - The root messenger to register handlers on.
+       * @param bridge - The mocked keyring bridge.
+       */
+      async function connectLedgerWithBridge(
+        rootMessenger: RootMessenger,
+        bridge: Record<string, unknown>,
+      ): Promise<void> {
+        rootMessenger.registerActionHandler(
+          'KeyringController:withController',
+          jest
+            .fn()
+            .mockImplementation(async (callback) =>
+              callback({ keyrings: [], addNewKeyring: jest.fn() }),
+            ),
+        );
+        registerWithKeyringV2(rootMessenger, {
+          bridge,
+          getFirstPage: jest.fn().mockResolvedValue([]),
+          getNextPage: jest.fn(),
+          getPreviousPage: jest.fn(),
+        });
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:connectHardware',
+          'ledger',
+          0,
+        );
+      }
+
+      it('calls the bridge transport update when available', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const updateTransportMethod = jest.fn().mockResolvedValue(true);
+
+          await connectLedgerWithBridge(rootMessenger, {
+            updateTransportMethod,
+          });
+
+          expect(updateTransportMethod).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      it('does nothing when the bridge does not expose transport updates', async () => {
+        await withService(async ({ rootMessenger }) => {
+          // A bridge without `updateTransportMethod`; connectHardware should
+          // still resolve.
+          await expect(
+            connectLedgerWithBridge(rootMessenger, {}),
+          ).resolves.toBeUndefined();
+        });
+      });
+
+      it('rethrows errors from the bridge transport update', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const error = new Error('transport failed');
+
+          await expect(
+            connectLedgerWithBridge(rootMessenger, {
+              updateTransportMethod: jest.fn().mockRejectedValue(error),
+            }),
+          ).rejects.toThrow(error);
+        });
+      });
+    });
+
+    describe('checkHardwareStatus', () => {
+      it('throws if it receives an unknown device name', async () => {
+        await withService(async ({ rootMessenger }) => {
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:checkHardwareStatus',
+              'Some random device name',
+              `m/44/0'/0'`,
+            ),
+          ).rejects.toThrow(
+            'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+          );
+        });
+      });
+
+      it('returns the unlocked status of the device', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const setHdPath = jest.fn();
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            isUnlocked: jest.fn().mockReturnValue(true),
+            setHdPath,
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:checkHardwareStatus',
+            'ledger',
+            "m/44'/60'/0'/0",
+          );
+
+          expect(result).toStrictEqual(true);
+          expect(setHdPath).toHaveBeenCalledWith("m/44'/60'/0'/0");
+        });
+      });
+
+      it('creates the QR keyring before probing reconnect status', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const addNewKeyring = jest.fn().mockResolvedValue(undefined);
+          const isUnlocked = jest.fn().mockReturnValue(true);
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring }),
+              ),
+          );
+
+          registerWithKeyringV2(rootMessenger, { isUnlocked });
+
+          const status = await rootMessenger.call(
+            'LegacyBackgroundApiService:checkHardwareStatus',
+            HardwareDeviceNames.qr,
+            `m/44'/60'/0'/0`,
+          );
+
+          expect(status).toStrictEqual(true);
+          expect(addNewKeyring).toHaveBeenCalledWith(QrKeyring.type);
+          expect(isUnlocked).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+
+    describe('getLedgerAppConfiguration', () => {
+      it('returns the app configuration from the Ledger bridge', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const mockConfiguration = {
+            arbitraryDataEnabled: 1,
+            erc20ProvisioningNecessary: 0,
+            starkEnabled: 0,
+            starkv2Supported: 0,
+            version: '1.0.0',
+          };
+
+          const updateTransportMethod = jest.fn().mockResolvedValue(true);
+          const getAppConfiguration = jest
+            .fn()
+            .mockResolvedValue(mockConfiguration);
+
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod, getAppConfiguration },
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:getLedgerAppConfiguration',
+          );
+
+          expect(updateTransportMethod).toHaveBeenCalledTimes(1);
+          expect(getAppConfiguration).toHaveBeenCalledTimes(1);
+          expect(result).toStrictEqual(mockConfiguration);
+        });
+      });
+    });
+
+    describe('forgetDevice', () => {
+      it('throws if it receives an unknown device name', async () => {
+        await withService(async ({ rootMessenger }) => {
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:forgetDevice',
+              'Some random device name',
+            ),
+          ).rejects.toThrow(
+            'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+          );
+        });
+      });
+
+      it('removes each account then forgets the device', async () => {
+        await withService(async ({ rootMessenger, serviceMessenger }) => {
+          const forgetDevice = jest.fn().mockResolvedValue(undefined);
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            getAccounts: jest
+              .fn()
+              .mockResolvedValue([{ address: '0xabc' }, { address: '0xdef' }]),
+            forgetDevice,
+          });
+
+          const updatePermissionsByCaveat = jest.fn();
+          rootMessenger.registerActionHandler(
+            'PermissionController:updatePermissionsByCaveat',
+            updatePermissionsByCaveat,
+          );
+
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:forgetDevice',
+            'ledger',
+          );
+
+          expect(result).toStrictEqual(true);
+          expect(forgetDevice).toHaveBeenCalled();
+          // `onAccountRemoved` is invoked for each account, which delegates to
+          // the permission controller. Two accounts -> two removals.
+          expect(callSpy).toHaveBeenCalledWith(
+            'PermissionController:updatePermissionsByCaveat',
+            Caip25CaveatType,
+            expect.any(Function),
+          );
+          expect(updatePermissionsByCaveat).toHaveBeenCalledTimes(2);
+        });
+      });
+    });
+
+    describe('getTrezorFeatures', () => {
+      it('throws when the bridge does not support getFeatures', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: {},
+            getModel: jest.fn().mockReturnValue('model-t'),
+          });
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:getTrezorFeatures',
+            ),
+          ).rejects.toThrow('Trezor bridge does not support getFeatures');
+        });
+      });
+
+      it('returns the features from the bridge', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { getFeatures: jest.fn().mockResolvedValue({ major: 2 }) },
+            getModel: jest.fn().mockReturnValue('model-t'),
+          });
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:getTrezorFeatures',
+          );
+
+          expect(result).toStrictEqual({ major: 2 });
+        });
+      });
+    });
+
+    describe('unlockHardwareWalletAccount', () => {
+      it('creates the account and selects it', async () => {
+        await withService(async ({ rootMessenger, serviceMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            createAccounts: jest
+              .fn()
+              .mockResolvedValue([{ address: '0xABC' }]),
+          });
+
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([{ id: 'account-1', address: '0xabc' }]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue({ id: 'account-1', address: '0xabc' }),
+          );
+          const setSelectedAccount = jest.fn();
+          rootMessenger.registerActionHandler(
+            'AccountsController:setSelectedAccount',
+            setSelectedAccount,
+          );
+
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+            0,
+            'ledger',
+            "m/44'/60'/0'/0",
+          );
+
+          expect(result.unlockedAccount).toStrictEqual('0xabc');
+          expect(result.accounts).toStrictEqual([
+            { id: 'account-1', address: '0xabc' },
+          ]);
+          expect(callSpy).toHaveBeenCalledWith(
+            'AccountsController:setSelectedAccount',
+            'account-1',
+          );
+        });
+      });
+
+      it('creates and selects the account for a Trezor device', async () => {
+        await withService(async ({ rootMessenger, serviceMessenger }) => {
+          const createAccounts = jest
+            .fn()
+            .mockResolvedValue([{ address: '0xDEF' }]);
+          registerWithKeyringV2(rootMessenger, {
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            getModel: jest.fn().mockReturnValue('model-t'),
+            createAccounts,
+          });
+
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([{ id: 'account-2', address: '0xdef' }]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue({ id: 'account-2', address: '0xdef' }),
+          );
+          const setSelectedAccount = jest.fn();
+          rootMessenger.registerActionHandler(
+            'AccountsController:setSelectedAccount',
+            setSelectedAccount,
+          );
+
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+            0,
+            'trezor',
+          );
+
+          expect(createAccounts).toHaveBeenCalled();
+          expect(result.unlockedAccount).toStrictEqual('0xdef');
+          expect(callSpy).toHaveBeenCalledWith(
+            'AccountsController:setSelectedAccount',
+            'account-2',
+          );
+        });
+      });
+
+      it('throws if it receives an unknown device name', async () => {
+        await withService(async ({ rootMessenger }) => {
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'Some random device name',
+            ),
+          ).rejects.toThrow(
+            'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+          );
+        });
+      });
+
+      it('throws if the keyring does not create an account', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            createAccounts: jest.fn().mockResolvedValue([]),
+          });
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'ledger',
+            ),
+          ).rejects.toThrow('No account created for device: ledger');
+        });
+      });
+
+      it('throws when the unlocked account cannot be found', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            createAccounts: jest
+              .fn()
+              .mockResolvedValue([{ address: '0xABC' }]),
+          });
+
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue(undefined),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'ledger',
+              "m/44'/60'/0'/0",
+            ),
+          ).rejects.toThrow('No account found for address: 0xabc');
+        });
       });
     });
   });
@@ -3305,10 +3882,12 @@ function getMessenger(
       'NetworkController:resetConnection',
       'KeyringController:importAccountWithStrategy',
       'OnboardingController:getIsSocialLoginFlow',
+      'KeyringController:withController',
       'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
       'AccountsController:getAccount',
       'AccountsController:getAccountByAddress',
+      'AccountsController:listAccounts',
       'AccountsController:setAccountName',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
@@ -3346,6 +3925,7 @@ function getMessenger(
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
+      'AppStateController:setTrezorModel',
       'MetaMetricsController:trackEvent',
       'MetaMetricsController:getEventFragmentById',
       'MetaMetricsController:updateEventFragment',
