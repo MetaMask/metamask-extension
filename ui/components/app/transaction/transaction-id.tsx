@@ -47,9 +47,7 @@ export function TransactionId({ value }: TransactionIdProps) {
         fontWeight={FontWeight.Regular}
         color={copied ? TextColor.SuccessDefault : TextColor.TextDefault}
       >
-        {copied
-          ? getCopiedLabel(t('copiedExclamation'))
-          : shortenTransactionId(value)}
+        {copied ? t('transactionIdCopied') : shortenTransactionId(value)}
       </Text>
       <Icon
         name={copied ? IconName.CopySuccess : IconName.Copy}

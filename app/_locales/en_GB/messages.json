@@ -10921,6 +10921,9 @@
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
   },
+  "transactionIdCopied": {
+    "message": "Transaction ID copied"
+  },
   "transactionIdLabel": {
     "message": "Transaction ID",
     "description": "Label for the source transaction ID field."
