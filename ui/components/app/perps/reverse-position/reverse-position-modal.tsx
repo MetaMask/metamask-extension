@@ -91,7 +91,7 @@ export const ReversePositionModal = ({
     conditions: isOpen,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-        PERPS_EVENT_VALUE.SCREEN_TYPE.INCREASE_EXPOSURE,
+        PERPS_EVENT_VALUE.SCREEN_TYPE.FLIP_POSITION,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },

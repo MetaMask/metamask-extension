@@ -80,6 +80,7 @@ const mockPerpsEventValueLiterals = {
     REMOVE_MARGIN: 'remove_margin',
     INCREASE_EXPOSURE: 'increase_exposure',
     COMPLIANCE_BLOCK_NOTIF: 'compliance_block_notif',
+    FLIP_POSITION: 'flip_position',
   },
   SCREEN_NAME: {
     PERPS_HOME: 'perps_home',

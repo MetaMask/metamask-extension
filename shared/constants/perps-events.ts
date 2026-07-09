@@ -54,6 +54,12 @@ export const PERPS_EVENT_VALUE = {
     CREATE_TP_SL: CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE.CREATE_TPSL,
     /** @deprecated Use EDIT_TPSL */
     UPDATE_TP_SL: CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE.EDIT_TPSL,
+    /**
+     * Extension-only: controller dropped FLIP_POSITION; keep historical
+     * `flip_position` so flip screen views are not misclassified as
+     * increase_exposure.
+     */
+    FLIP_POSITION: 'flip_position',
   },
   BUTTON_LOCATION: {
     ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_LOCATION,

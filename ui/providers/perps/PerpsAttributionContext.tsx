@@ -102,10 +102,11 @@ export function PerpsAttributionProvider({
   const syncUtmAttributionFromSearch = useCallback((search: string) => {
     const utmContext = parseUtmAttribution(search);
     if (utmContext) {
+      // fire-and-forget — analytics must not block navigation
       submitRequestToBackground('perpsSetAttributionContext', [
         utmContext,
       ]).catch(() => {
-        // fire-and-forget — analytics must not block navigation
+        // intentionally empty
       });
     }
 
