@@ -120,7 +120,7 @@ export const AggregatedPercentageOverviewCrossChains = ({
       },
       0,
     ); // Initial total1dAgo is 0
-  }, [tokenFiatBalancesCrossChains, crossChainMarketData, getPerChainTotalFiat1dAgo]);
+  }, [tokenFiatBalancesCrossChains, crossChainMarketData]);
 
   const { amountChangeCrossChains, formattedPercentChangeCrossChains, formattedAmountChangeCrossChains, color } =
     useMemo(() => {
