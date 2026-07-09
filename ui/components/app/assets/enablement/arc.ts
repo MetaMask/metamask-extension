@@ -1,5 +1,6 @@
 import { BridgeAsset } from '@metamask/bridge-controller';
 import { hexToNumber, CaipAssetType } from '@metamask/utils';
+import { AssetsControllerState } from '@metamask/assets-controller';
 import {
   ARC_USDC_TOKEN_ADDRESS,
   CHAIN_IDS,
@@ -18,8 +19,10 @@ import {
  */
 export const ARC_HEX_CHAIN_ID = '0x13b2';
 export const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
-const ARC_NATIVE_ASSET_ID =
+export const ARC_NATIVE_ASSET_ID =
   'eip155:5042/erc20:0x0000000000000000000000000000000000000000';
+export const ARC_ERC20_USDC_ASSET_ID =
+  'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
 const ARC_NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const ARC_ERC20_USDC_BRIDGE_ASSET: BridgeAsset = {
@@ -101,4 +104,26 @@ export function filterOutArcNativeAsset<
  */
 export function isArcTokenUSDC(assetId: CaipAssetType): boolean {
   return assetId === ARC_ERC20_USDC_BRIDGE_ASSET.assetId;
+}
+
+/**
+ * Augments the Asset Controller state for Arc-related concerns.
+ * Precisely for Arc: Removing ERC20 USDC balances to avoid double counting in balance total.
+ * @param assetsControllerState
+ * @returns altered (copy) version of assetsControllerState with no ERC20 USDC balance
+ */
+export function augmentAssetControllersState(
+  assetsControllerState: AssetsControllerState,
+): AssetsControllerState {
+  return {
+    ...assetsControllerState,
+    assetsBalance: Object.fromEntries(
+      Object.entries(assetsControllerState.assetsBalance).map(
+        ([accountId, assets]) => {
+          const { [ARC_ERC20_USDC_ASSET_ID]: _omit, ...rest } = assets;
+          return [accountId, rest];
+        },
+      ),
+    ),
+  };
 }

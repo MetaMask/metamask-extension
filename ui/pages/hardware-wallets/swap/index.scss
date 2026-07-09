@@ -57,18 +57,7 @@
 }
 
 .qr-hardware-signing-page {
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
   &__viewport {
-    width: 100%;
-    min-height: 293px;
-    border-radius: 8px;
-    overflow: hidden;
-
     .qr-scanner {
       width: 100%;
     }
@@ -78,13 +67,5 @@
       padding-left: 0;
       padding-right: 0;
     }
-  }
-
-  &__title {
-    width: 100%;
-  }
-
-  &__footer {
-    flex-direction: column;
   }
 }

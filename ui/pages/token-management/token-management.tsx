@@ -58,6 +58,7 @@ import {
   addImportedTokens,
   hideAsset,
   ignoreTokens as ignoreTokensAction,
+  importCustomAssetsBatch,
   multichainAddAssets,
   multichainIgnoreAssets,
   showModal,
@@ -186,6 +187,11 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   return assetReference || assetId;
 };
 
+const hasValidAssetId = (
+  result: TokenSearchResult,
+): result is TokenSearchResult & { assetId: CaipAssetType } =>
+  typeof result.assetId === 'string';
+
 const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
   const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
   const address =
@@ -210,6 +216,23 @@ const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
 
   return properties;
 };
+
+const importEvmSearchResultToUnifiedAssets = (
+  accountId: string,
+  payload: SearchResultImportPayload,
+) =>
+  importCustomAssetsBatch(
+    accountId,
+    [{ assetId: payload.assetId, isHidden: false }],
+    {
+      [payload.assetId]: {
+        address: payload.assetReference,
+        symbol: payload.symbol,
+        name: payload.name,
+        decimals: payload.decimals,
+      },
+    },
+  );
 
 const normalizeToHexChainId = (chainId: string): string => {
   if (!chainId.startsWith('eip155:')) {
@@ -642,7 +665,9 @@ export const TokenManagementPage = () => {
       return EMPTY_TOKEN_SEARCH_RESULTS;
     }
 
-    const results = searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS;
+    const results = (searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS).filter(
+      hasValidAssetId,
+    );
 
     // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
     // display duplicate. Drop it from search/browse results too.
@@ -1029,7 +1054,14 @@ export const TokenManagementPage = () => {
               ),
             ),
             ...(isAssetsUnifiedStateInBuild
-              ? [dispatch(addCustomAsset(evmAccount.id, payload.assetId))]
+              ? [
+                  dispatch(
+                    importEvmSearchResultToUnifiedAssets(
+                      evmAccount.id,
+                      payload,
+                    ),
+                  ),
+                ]
               : []),
           ]);
 

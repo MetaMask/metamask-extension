@@ -1,9 +1,7 @@
 import React from 'react';
 import {
   Box,
-  BoxAlignItems,
   BoxBackgroundColor,
-  BoxJustifyContent,
   Icon,
   IconColor,
   IconName,

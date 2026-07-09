@@ -1112,8 +1112,7 @@
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "@typescript-eslint/eslint-plugin": {
@@ -1269,7 +1268,7 @@
     "del>p-map>aggregate-error": {
       "packages": {
         "del>p-map>aggregate-error>clean-stack": true,
-        "prettier-eslint>indent-string": true
+        "@testing-library/jest-dom>redent>indent-string": true
       }
     },
     "eslint>ajv": {

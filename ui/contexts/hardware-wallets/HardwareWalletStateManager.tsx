@@ -195,6 +195,7 @@ export const useHardwareWalletStateManager = () => {
         ensureDeviceReadyPromiseRef.current.clear();
         currentConnectionIdRef.current = null;
         isConnectingRef.current = false;
+        isSigningInProgressRef.current = false;
       },
       /**
        * Resets auto-connect state, allowing auto-connect to run again

@@ -134,6 +134,9 @@ describe('useBridging', () => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const setBridgeLocationSpy = jest
+          .spyOn(bridgeActions, 'setBridgeLocation')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
           .spyOn(bridgeActions, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -183,7 +186,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token);
 
-        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
@@ -211,6 +214,7 @@ describe('useBridging', () => {
           ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+        expect(setBridgeLocationSpy).toHaveBeenCalledWith(location);
 
         expect(mockUseNavigate).toHaveBeenCalledWith(
           { pathname: expectedUrl, search: '' },
@@ -476,6 +480,9 @@ describe('useBridging', () => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const setBridgeLocationSpy = jest
+          .spyOn(bridgeActions, 'setBridgeLocation')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
           .spyOn(bridgeActions, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -530,7 +537,7 @@ describe('useBridging', () => {
         result.current.openBridgeExperience(location, token);
 
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
-        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
@@ -557,6 +564,7 @@ describe('useBridging', () => {
           ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+        expect(setBridgeLocationSpy).toHaveBeenCalledWith(location);
 
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           replace: false,

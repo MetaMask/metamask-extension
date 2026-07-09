@@ -60,12 +60,12 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
    * statuses to the corresponding signature-state-machine action.
    *
    * @param transactionMeta - The updated transaction.
-   * @param classifySignedEvent
+   * @param classifySignedTransactionType
    * @returns The resulting action, or `{ action: null }` to emit nothing.
    */
   processStatusUpdated(
     transactionMeta: TransactionMeta,
-    classifySignedEvent: SignedEventClassifier = defaultEventClassifier,
+    classifySignedTransactionType: SignedEventClassifier = defaultEventClassifier,
   ): EventResult {
     const { status, type } = transactionMeta;
 
@@ -79,7 +79,7 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
       if (!type) {
         return NO_ACTION;
       }
-      const action = classifySignedEvent(transactionMeta);
+      const action = classifySignedTransactionType(transactionMeta);
       return action ? { action } : NO_ACTION;
     }
 
