@@ -95,7 +95,6 @@ const meta: Meta<typeof Home> = {
     clearEditedNetwork: () => {},
     setActiveNetwork: () => {},
     setBasicFunctionalityModalOpen: () => {},
-    fetchBuyableChains: () => {},
     clearRedirectAfterDefaultPage: () => {},
     lookupSelectedNetworks: () => {},
   },

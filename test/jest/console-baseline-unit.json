@@ -568,6 +568,9 @@
       "React: DOM nesting violations": 2,
       "Reselect: Identity function warnings": 1
     },
+    "ui/pages/asset/hooks/useHistoricalPrices.test.ts": {
+      "React: State updates on unmounted components": 1
+    },
     "ui/pages/bridge/index.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Identity function warnings": 1,

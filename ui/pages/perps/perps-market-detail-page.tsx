@@ -19,6 +19,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
@@ -46,7 +47,10 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
-import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+import {
+  getIsPerpsExperienceAvailable,
+  getIsPerpsShowFullAssetNamesEnabled,
+} from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -91,6 +95,7 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
+  getPrivacyAwareColor,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -275,6 +280,7 @@ const PerpsMarketDetailPage = () => {
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { gate } = useSelectedAccountComplianceGate();
@@ -515,9 +521,24 @@ const PerpsMarketDetailPage = () => {
 
   // Candle period: persisted in PreferencesController across sessions/markets.
   // Local override gives instant UI feedback; background save persists for next visit.
-  const { perpsSelectedCandlePeriod: persistedCandlePeriod } = useSelector(
-    getPreferences,
-  ) as { perpsSelectedCandlePeriod?: string };
+  const { perpsSelectedCandlePeriod: persistedCandlePeriod, privacyMode } =
+    useSelector(getPreferences) as {
+      perpsSelectedCandlePeriod?: string;
+      privacyMode?: boolean;
+    };
+
+  const positionPnlColor = getPrivacyAwareColor(
+    position && parseFloat(position.unrealizedPnl) < 0
+      ? TextColor.ErrorDefault
+      : TextColor.SuccessDefault,
+    privacyMode,
+  );
+  const positionReturnColor = getPrivacyAwareColor(
+    position && parseFloat(position.returnOnEquity) < 0
+      ? TextColor.ErrorDefault
+      : TextColor.SuccessDefault,
+    privacyMode,
+  );
   const resolvedPersistedPeriod =
     persistedCandlePeriod &&
     Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
@@ -1036,8 +1057,11 @@ const PerpsMarketDetailPage = () => {
   }
 
   const displayName = getDisplayName(market.symbol);
-  // Full market name (e.g. "Bitcoin"), falling back to the ticker when unavailable.
-  const fullName = market.name || displayName;
+  // Full market name (e.g. "Bitcoin"), gated behind the feature flag and falling
+  // back to the ticker when disabled or unavailable.
+  const fullName = showFullAssetNames
+    ? market.name || displayName
+    : displayName;
 
   // Render the chart area: skeleton during initial load, error state on failure,
   // or the live chart once data is available.
@@ -1315,17 +1339,15 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsPnl')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
-                    color={
-                      parseFloat(position.unrealizedPnl) >= 0
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
+                    color={positionPnlColor}
+                    isHidden={privacyMode}
+                    data-testid="perps-position-pnl-value"
                   >
                     {formatPnl(position.unrealizedPnl)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Return Card */}
@@ -1338,20 +1360,18 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsReturn')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
-                    color={
-                      parseFloat(position.returnOnEquity) >= 0
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
+                    color={positionReturnColor}
+                    isHidden={privacyMode}
+                    data-testid="perps-position-return-value"
                   >
                     {/* Controller/mobile ROE is a ratio (e.g. 0.1579), same as what the formatter expects. */}
                     {formatPercentWithMinThreshold(
                       Number.parseFloat(position.returnOnEquity),
                     )}
-                  </Text>
+                  </SensitiveText>
                 </Box>
               </Box>
 
@@ -1373,9 +1393,10 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsSize')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-size-value"
                   >
                     {showSizeInFiat && Boolean(position.entryPrice)
@@ -1387,7 +1408,7 @@ const PerpsMarketDetailPage = () => {
                           Math.abs(parseFloat(position.size)),
                           marketInfo?.szDecimals,
                         )} ${getDisplayName(position.symbol)}`}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Margin Card - click to open Add/Remove margin popover */}
@@ -1406,13 +1427,14 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsMargin')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-margin-value"
                   >
                     {formatPerpsFiatMinimal(position.marginUsed)}
-                  </Text>
+                  </SensitiveText>
                   <Popover
                     referenceElement={marginMenuRef.current}
                     isOpen={isMarginMenuOpen}
@@ -1478,28 +1500,32 @@ const PerpsMarketDetailPage = () => {
                     >
                       TP{' '}
                     </Text>
-                    <Text
+                    <SensitiveText
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
+                      isHidden={privacyMode}
+                      data-testid="perps-auto-close-tp-value"
                     >
                       {effectiveTakeProfitPrice
                         ? formatPerpsFiatUniversal(effectiveTakeProfitPrice)
                         : '-'}
-                    </Text>
+                    </SensitiveText>
                     <Text
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
                       , SL{' '}
                     </Text>
-                    <Text
+                    <SensitiveText
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
+                      isHidden={privacyMode}
+                      data-testid="perps-auto-close-sl-value"
                     >
                       {effectiveStopLossPrice
                         ? formatPerpsFiatUniversal(effectiveStopLossPrice)
                         : '-'}
-                    </Text>
+                    </SensitiveText>
                   </Box>
                 </Box>
                 <Icon
@@ -1562,13 +1588,14 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsEntryPrice')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-entry-value"
                   >
                     {formatPerpsFiatUniversal(position.entryPrice)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Liquidation Price Row */}
@@ -1584,13 +1611,14 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsLiquidationPrice')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-liquidation-value"
                   >
                     {formatPerpsLiquidationPrice(position.liquidationPrice)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Funding Payments Row */}
@@ -1606,9 +1634,10 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsFundingPayments')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-funding-value"
                   >
                     {(() => {
@@ -1626,7 +1655,7 @@ const PerpsMarketDetailPage = () => {
                         { ranges: PRICE_RANGES_MINIMAL_VIEW },
                       )}`;
                     })()}
-                  </Text>
+                  </SensitiveText>
                 </Box>
               </Box>
             </Box>

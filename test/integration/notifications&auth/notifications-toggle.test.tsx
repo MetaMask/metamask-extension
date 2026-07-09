@@ -91,65 +91,63 @@ describe('Notifications Toggle', () => {
 
   it('disabling notifications from settings', async () => {
     const mockedState = getMockedNotificationsState();
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedState,
-          analyticsId: 'test-metametrics-id',
-          completedMetaMetricsOnboarding: true,
-          optedIn: true,
-          dataCollectionForMarketing: false,
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
+    await integrationTestRender({
+      preloadedState: {
+        ...mockedState,
+        analyticsId: 'test-metametrics-id',
+        completedMetaMetricsOnboarding: true,
+        optedIn: true,
+        dataCollectionForMarketing: false,
+      },
+      backgroundConnection: backgroundConnectionMocked,
+    });
 
-      await clickElement(selectors.accountOptionsMenuButton);
-      await waitForElement(selectors.notificationsMenuItem);
-      await clickElement(selectors.notificationsMenuItem);
-      await waitForElement(selectors.notificationsSettingsButton);
-      await clickElement(selectors.notificationsSettingsButton);
-      await waitForElement(selectors.notificationsSettingsAllowToggleInput);
-      await clickElement(selectors.notificationsSettingsAllowToggleInput);
+    await clickElement(selectors.accountOptionsMenuButton);
+    await waitForElement(selectors.notificationsMenuItem);
+    await clickElement(selectors.notificationsMenuItem);
+    await waitForElement(selectors.notificationsSettingsButton);
+    await clickElement(selectors.notificationsSettingsButton);
+    await waitForElement(selectors.notificationsSettingsAllowToggleInput);
+    await clickElement(selectors.notificationsSettingsAllowToggleInput);
 
-      await waitFor(() => {
-        const disableNotificationsCall =
-          mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'disableMetamaskNotifications',
-          );
-
-        const fetchAndUpdateMetamaskNotificationsCall =
-          mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
-          );
-
-        expect(disableNotificationsCall?.[0]).toBe(
-          'disableMetamaskNotifications',
+    await waitFor(() => {
+      const disableNotificationsCall =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'disableMetamaskNotifications',
         );
 
-        expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
-          'fetchAndUpdateMetamaskNotifications',
+      const fetchAndUpdateMetamaskNotificationsCall =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
-      });
 
-      await verifyMetametricsEvent(
-        MetaMetricsEventName.NotificationsSettingsUpdated,
-        MetaMetricsEventCategory.NotificationSettings,
-        {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'notifications',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          was_profile_syncing_on: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: false,
-        },
+      expect(disableNotificationsCall?.[0]).toBe(
+        'disableMetamaskNotifications',
+      );
+
+      expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
+        'fetchAndUpdateMetamaskNotifications',
       );
     });
+
+    await verifyMetametricsEvent(
+      MetaMetricsEventName.NotificationsSettingsUpdated,
+      MetaMetricsEventCategory.NotificationSettings,
+      {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        settings_type: 'notifications',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        was_profile_syncing_on: true,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        old_value: true,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        new_value: false,
+      },
+    );
   });
 
   it('enables marketing in-app notifications from settings', async () => {
@@ -163,73 +161,71 @@ describe('Notifications Toggle', () => {
       }),
     });
 
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedState,
-          isBackupAndSyncEnabled: false,
-          isNotificationServicesEnabled: true,
-          isFeatureAnnouncementsEnabled: false,
-          isMetamaskNotificationsFeatureSeen: true,
-          dataCollectionForMarketing: false,
-          completedMetaMetricsOnboarding: true,
-          optedIn: true,
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
+    await integrationTestRender({
+      preloadedState: {
+        ...mockedState,
+        isBackupAndSyncEnabled: false,
+        isNotificationServicesEnabled: true,
+        isFeatureAnnouncementsEnabled: false,
+        isMetamaskNotificationsFeatureSeen: true,
+        dataCollectionForMarketing: false,
+        completedMetaMetricsOnboarding: true,
+        optedIn: true,
+      },
+      backgroundConnection: backgroundConnectionMocked,
+    });
 
-      await clickElement(selectors.accountOptionsMenuButton);
-      await waitForElement(selectors.notificationsMenuItem);
-      await clickElement(selectors.notificationsMenuItem);
-      await waitForElement(selectors.notificationsSettingsButton);
-      await clickElement(selectors.notificationsSettingsButton);
-      await waitForElement(selectors.marketingSection);
-      await clickElement(selectors.marketingSection);
-      await waitForElement(selectors.marketingInAppToggleInput);
-      await clickElement(selectors.marketingInAppToggleInput);
+    await clickElement(selectors.accountOptionsMenuButton);
+    await waitForElement(selectors.notificationsMenuItem);
+    await clickElement(selectors.notificationsMenuItem);
+    await waitForElement(selectors.notificationsSettingsButton);
+    await clickElement(selectors.notificationsSettingsButton);
+    await waitForElement(selectors.marketingSection);
+    await clickElement(selectors.marketingSection);
+    await waitForElement(selectors.marketingInAppToggleInput);
+    await clickElement(selectors.marketingInAppToggleInput);
 
-      await waitFor(() => {
-        const putNotificationPreferencesCall =
-          mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'putNotificationPreferences',
-          );
-
-        const fetchAndUpdateMetamaskNotificationsCall =
-          mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
-          );
-
-        expect(putNotificationPreferencesCall?.[0]).toBe(
-          'putNotificationPreferences',
+    await waitFor(() => {
+      const putNotificationPreferencesCall =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'putNotificationPreferences',
         );
-        expect(putNotificationPreferencesCall?.[1]?.[0]).toMatchObject({
-          marketing: {
-            pushNotificationsEnabled: false,
-            inAppNotificationsEnabled: true,
-          },
-        });
-        expect(putNotificationPreferencesCall?.[1]?.[1]).toBe('extension');
 
-        expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
-          'fetchAndUpdateMetamaskNotifications',
+      const fetchAndUpdateMetamaskNotificationsCall =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
-      });
 
-      await verifyMetametricsEvent(
-        MetaMetricsEventName.NotificationsSettingsUpdated,
-        MetaMetricsEventCategory.NotificationSettings,
-        {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'marketing_inAppNotificationsEnabled',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: true,
+      expect(putNotificationPreferencesCall?.[0]).toBe(
+        'putNotificationPreferences',
+      );
+      expect(putNotificationPreferencesCall?.[1]?.[0]).toMatchObject({
+        marketing: {
+          pushNotificationsEnabled: false,
+          inAppNotificationsEnabled: true,
         },
+      });
+      expect(putNotificationPreferencesCall?.[1]?.[1]).toBe('extension');
+
+      expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
+        'fetchAndUpdateMetamaskNotifications',
       );
     });
+
+    await verifyMetametricsEvent(
+      MetaMetricsEventName.NotificationsSettingsUpdated,
+      MetaMetricsEventCategory.NotificationSettings,
+      {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        settings_type: 'marketing_inAppNotificationsEnabled',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        old_value: false,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        new_value: true,
+      },
+    );
   });
 });

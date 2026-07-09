@@ -18,10 +18,6 @@ type TransactionIdProps = {
   value?: string;
 };
 
-function getCopiedLabel(copiedMessage: string) {
-  return copiedMessage.replace(/\.$/u, '').toLowerCase();
-}
-
 export function TransactionId({ value }: TransactionIdProps) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -47,9 +43,7 @@ export function TransactionId({ value }: TransactionIdProps) {
         fontWeight={FontWeight.Regular}
         color={copied ? TextColor.SuccessDefault : TextColor.TextDefault}
       >
-        {copied
-          ? getCopiedLabel(t('copiedExclamation'))
-          : shortenTransactionId(value)}
+        {copied ? t('transactionIdCopied') : shortenTransactionId(value)}
       </Text>
       <Icon
         name={copied ? IconName.CopySuccess : IconName.Copy}

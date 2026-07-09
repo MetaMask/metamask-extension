@@ -81,7 +81,7 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
         if (selector === getSelectedAccountCachedBalance) {
           return mockGetSelectedAccountCachedBalance() as TSelected;
         }
-        if (selector === getSelectedInternalAccount) {
+        if (selector === (getSelectedInternalAccount as MockSelector)) {
           return mockGetSelectedInternalAccount() as TSelected;
         }
         if (selector === getUseExternalServices) {

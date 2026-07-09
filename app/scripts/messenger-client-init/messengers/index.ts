@@ -23,10 +23,6 @@ import {
   getWebSocketServiceMessenger,
 } from './snaps';
 import {
-  getTransactionControllerMessenger,
-  getTransactionControllerInitMessenger,
-} from './transaction-controller-messenger';
-import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
@@ -648,10 +644,6 @@ export const MESSENGER_FACTORIES = {
   TokensController: {
     getMessenger: getTokensControllerMessenger,
     getInitMessenger: getTokensControllerInitMessenger,
-  },
-  TransactionController: {
-    getMessenger: getTransactionControllerMessenger,
-    getInitMessenger: getTransactionControllerInitMessenger,
   },
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,
