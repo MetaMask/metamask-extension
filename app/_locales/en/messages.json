@@ -2534,7 +2534,7 @@
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
   },
   "chainlistNetworkDataSourceBanner": {
-    "message": "Network data comes from ChainList.org. Always verify before adding. $1",
+    "message": "Network data comes from ChainList. Always verify before adding. $1",
     "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
   },
   "chainlistNetworkDetails": {
