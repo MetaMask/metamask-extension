@@ -187,7 +187,10 @@ class ServerMochaToBackground {
       }
 
       eventEmitter.once('error', onError);
-      eventEmitter.once('portStreamChunkingTestPayloadEmitted', onPayloadEmitted);
+      eventEmitter.once(
+        'portStreamChunkingTestPayloadEmitted',
+        onPayloadEmitted,
+      );
     });
   }
 

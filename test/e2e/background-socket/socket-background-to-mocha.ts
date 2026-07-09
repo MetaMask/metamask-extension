@@ -145,7 +145,9 @@ class SocketBackgroundToMocha {
         const getEventStats = testHooks?.getPortStreamChunkingTestEventStats;
 
         if (!getEventStats) {
-          throw new Error('Port stream chunking test stats hook is unavailable');
+          throw new Error(
+            'Port stream chunking test stats hook is unavailable',
+          );
         }
 
         this.send({

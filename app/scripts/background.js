@@ -1785,7 +1785,8 @@ export function setupController(
       const handleMessageTooLarge = function ({ chunkSize }) {
         if (inTestState) {
           inTestState.portStreamChunkingTestEventStats.count += 1;
-          inTestState.portStreamChunkingTestEventStats.lastChunkSize = chunkSize;
+          inTestState.portStreamChunkingTestEventStats.lastChunkSize =
+            chunkSize;
         }
 
         trackEvent(

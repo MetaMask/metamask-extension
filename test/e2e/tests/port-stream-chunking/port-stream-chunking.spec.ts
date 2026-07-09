@@ -66,10 +66,7 @@ function assertChunkedEvent(
     afterStats.count > beforeStats.count,
     'message-too-large event count should increase',
   );
-  assert.strictEqual(
-    afterStats.lastChunkSize,
-    CHROMIUM_MESSAGE_SIZE_LIMIT,
-  );
+  assert.strictEqual(afterStats.lastChunkSize, CHROMIUM_MESSAGE_SIZE_LIMIT);
 }
 
 function getSampleId() {
