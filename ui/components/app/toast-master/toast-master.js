@@ -437,7 +437,7 @@ function StorageErrorToast() {
       );
       setHasTrackedView(true);
     }
-  }, [shouldShow, hasTrackedView, trackEvent]);
+  }, [shouldShow, hasTrackedView, trackEvent, createEventBuilder]);
 
   const handleRevealSrpClick = () => {
     trackEvent(
