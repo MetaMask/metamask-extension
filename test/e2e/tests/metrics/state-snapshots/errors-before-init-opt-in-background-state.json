@@ -247,15 +247,15 @@
     },
     "ProfileMetricsController": "object",
     "RampsController": {
-      "userRegion": null,
       "countries": "object",
-      "providers": "object",
-      "tokens": "object",
-      "paymentMethods": "object",
-      "requests": "object",
       "nativeProviders": "object",
       "orders": "object",
-      "providerAutoSelected": "boolean"
+      "paymentMethods": "object",
+      "providerAutoSelected": "boolean",
+      "providers": "object",
+      "requests": "object",
+      "tokens": "object",
+      "userRegion": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
