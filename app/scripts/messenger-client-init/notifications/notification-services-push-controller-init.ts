@@ -8,6 +8,7 @@ import {
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
 import { hasProperty } from '@metamask/utils';
+import { isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
 import { MessengerClientInitFunction } from '../types';
 import type {
   NotificationServicesPushControllerMessenger,
@@ -108,8 +109,7 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
       const otherNotificationProperties = () => {
         if (
           'notification_type' in notification &&
-          notification.notification_type === 'on-chain' &&
-          notification.payload?.chain_id
+          isOnChainNotification(notification)
         ) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention

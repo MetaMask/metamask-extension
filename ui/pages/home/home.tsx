@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -33,7 +33,8 @@ import { RewardsModalContainer } from '../../components/app/rewards/onboarding/r
 import { Pna25ModalContainer } from '../../components/app/modals/pna25-modal/pna25-modal-container';
 import { AppHeader } from '../../components/multichain/app-header';
 import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
   getRedirectAfterDefaultPage,
@@ -140,7 +141,8 @@ function useHomeActions() {
 export default function Home() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const {
     envType,
     forgottenPassword,
@@ -192,15 +194,16 @@ export default function Home() {
   const onSupportLinkClick = useCallback(() => {
     if (isMain()) {
       trackEvent(
-        {
-          category: MetaMetricsEventCategory.Home,
-          event: MetaMetricsEventName.SupportLinkClicked,
-          properties: { url: SUPPORT_LINK },
-        },
-        { contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle] },
+        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+          .addCategory(MetaMetricsEventCategory.Home)
+          .addProperties({
+            url: SUPPORT_LINK,
+            [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
+          })
+          .build(),
       );
     }
-  }, [trackEvent]);
+  }, [createEventBuilder, segmentContext.page?.title, trackEvent]);
 
   const handleBasicFunctionalityModalOpen = useCallback(() => {
     setBasicFunctionalityModalOpen();

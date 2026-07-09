@@ -1,14 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AvatarNetwork,
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   FontWeight,
   Text,
+  TextButton,
   TextFieldSearch,
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   type SafeChain,
   useSafeChains,
@@ -92,6 +96,10 @@ export const ChainlistNetworkPicker = ({
     setVisibleNetworkCount(CHAINLIST_PAGE_SIZE);
   }, [searchValue]);
 
+  const handleLearnHowToStaySafe = useCallback(() => {
+    global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });
+  }, []);
+
   const handleChainlistScroll = useCallback(
     (event: React.UIEvent<HTMLDivElement>) => {
       const { scrollHeight, scrollTop, clientHeight } = event.currentTarget;
@@ -121,6 +129,19 @@ export const ChainlistNetworkPicker = ({
           size={TextFieldSize.Lg}
           value={searchValue}
         />
+        <BannerAlert
+          className="mt-4"
+          severity={BannerAlertSeverity.Info}
+          data-testid="networks-page-chainlist-source-banner"
+          description={t('chainlistNetworkDataSourceBanner', [
+            <TextButton
+              key="chainlist-learn-how-to-stay-safe"
+              onClick={handleLearnHowToStaySafe}
+            >
+              {t('chainlistLearnHowToStaySafe')}
+            </TextButton>,
+          ])}
+        />
       </Box>
       <Box
         className="min-h-0 flex-1 overflow-y-auto"
@@ -146,11 +167,10 @@ export const ChainlistNetworkPicker = ({
 
           return (
             <button
-              className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-hover active:bg-pressed"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
               data-testid="networks-page-chainlist-network"
               key={`${network.chainId}-${network.name}`}
               onClick={() => onSelect(network, searchValue.trim() || undefined)}
-              type="button"
             >
               {networkImageUrl ? (
                 <AvatarNetwork

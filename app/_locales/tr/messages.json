@@ -4199,7 +4199,8 @@
     "message": "Devam Et"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Tekrar Bağla"
+    "message": "Tekrar Bağla",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Donanım cüzdanınızın USB ile düzgün bir şekilde bağlandığından emin olun"

@@ -1322,7 +1322,7 @@ async function setupMocking(
   // .always() ensures every fetch returns [] (not just the first one).
   // Notification-specific tests re-register this endpoint via testSpecificMock.
   await server
-    .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
     .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 

@@ -4195,7 +4195,8 @@
     "message": "जारी रखें"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "रीकनेक्ट"
+    "message": "रीकनेक्ट",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "पक्का करें कि आपका हार्डवेयर वॉलेट USB से ठीक से कनेक्ट हो"
