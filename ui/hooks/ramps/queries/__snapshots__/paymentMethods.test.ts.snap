@@ -10,3 +10,12 @@ exports[`rampsPaymentMethodsKeys includes fiat and assetId in the detail key 1`]
   "transak",
 ]
 `;
+
+exports[`rampsPaymentMethodsOptions loads payment methods from the controller action 1`] = `
+[
+  {
+    "id": "credit_debit_card",
+    "name": "Card",
+  },
+]
+`;

@@ -121,4 +121,42 @@ describe('useRampsProviders', () => {
 
     expect(setRampsSelectedProvider).toHaveBeenCalledWith(null, undefined);
   });
+
+  it('auto-selects a provider when none is selected', () => {
+    mockedUseQuery.mockReturnValue({
+      data: [transakProvider],
+      isLoading: false,
+    } as never);
+
+    renderHook(() => useRampsProviders({ enableSideEffects: true }), {
+      wrapper: createRampsTestWrapper(),
+    });
+
+    expect(setRampsSelectedProvider).toHaveBeenCalledWith('transak', {
+      autoSelected: true,
+    });
+  });
+
+  it('returns a providers state error when the query is unavailable', () => {
+    mockedUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      error: null,
+    } as never);
+
+    const { result } = renderHook(() => useRampsProviders(), {
+      wrapper: createRampsTestWrapper(
+        createRampsMockStore({
+          providers: {
+            data: [],
+            selected: null,
+            isLoading: false,
+            error: 'Failed to load providers',
+          },
+        }),
+      ),
+    });
+
+    expect(result.current.error).toBe('Failed to load providers');
+  });
 });
