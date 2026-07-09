@@ -18,10 +18,6 @@ type TransactionIdProps = {
   value?: string;
 };
 
-function getCopiedLabel(copiedMessage: string) {
-  return copiedMessage.replace(/\.$/u, '').toLowerCase();
-}
-
 export function TransactionId({ value }: TransactionIdProps) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
