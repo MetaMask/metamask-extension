@@ -23,6 +23,7 @@ import {
   completeImportSRPOnboardingWithPasskey,
   completeImportSRPOnboardingFlow,
   completeOnboardingWithPasskey,
+  goToOnboardingWelcomeLoginPage,
   handleSidepanelPostOnboarding,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
@@ -120,10 +121,9 @@ describe('MetaMask onboarding', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.checkLoginPageIsLoaded();
+        const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+          driver,
+        });
         await startOnboardingPage.clickCreateWalletButton();
         await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible();
         await startOnboardingPage.clickTermsOfUseLinkAndVerifyExpectedUrlOpens();

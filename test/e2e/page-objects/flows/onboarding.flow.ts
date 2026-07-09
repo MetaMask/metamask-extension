@@ -62,7 +62,7 @@ export const handleSidepanelPostOnboarding = async (
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
  */
-const goToOnboardingWelcomeLoginPage = async ({
+export const goToOnboardingWelcomeLoginPage = async ({
   driver,
   optedIn = false,
   needNavigateToNewPage = true,
