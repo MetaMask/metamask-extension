@@ -160,6 +160,7 @@ import {
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
+import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
@@ -207,6 +208,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
+  'isSendBundleSupported',
   'markPasswordForgotten',
   'onAccountRemoved',
   'rejectAllPendingApprovals',
@@ -485,6 +487,16 @@ export class LegacyBackgroundApiService {
    */
   isPublicEndpointUrl(endpointUrl: string): boolean {
     return isPublicEndpointUrl(endpointUrl, this.#infuraProjectId);
+  }
+
+  /**
+   * Determines whether the sendBundle feature is supported for the given chain.
+   *
+   * @param chainId - The chain ID to check.
+   * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
+   */
+  async isSendBundleSupported(chainId: Hex): Promise<boolean> {
+    return await isSendBundleSupported(chainId);
   }
 
   /**
