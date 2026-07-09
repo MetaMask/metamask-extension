@@ -1042,7 +1042,9 @@ const PerpsMarketDetailPage = () => {
   const displayName = getDisplayName(market.symbol);
   // Full market name (e.g. "Bitcoin"), gated behind the feature flag and falling
   // back to the ticker when disabled or unavailable.
-  const fullName = showFullAssetNames ? market.name || displayName : displayName;
+  const fullName = showFullAssetNames
+    ? market.name || displayName
+    : displayName;
 
   // Render the chart area: skeleton during initial load, error state on failure,
   // or the live chart once data is available.

@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PerpsMarketCard } from './perps-market-card';
 
 const mockStore = configureStore({
@@ -24,7 +25,7 @@ const mockStoreWithFullNames = configureStore({
 
 const defaultProps = {
   symbol: 'BTC',
-  name: 'Bitcoin',
+  name: messages.networkNameBitcoin.message,
   price: '$45,250.00',
   change24hPercent: '2.5',
   volume: '$1.2B',
@@ -45,7 +46,9 @@ describe('PerpsMarketCard', () => {
       mockStoreWithFullNames,
     );
 
-    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameBitcoin.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText('BTC')).not.toBeInTheDocument();
   });
 
@@ -53,7 +56,9 @@ describe('PerpsMarketCard', () => {
     renderWithProvider(<PerpsMarketCard {...defaultProps} />, mockStore);
 
     expect(screen.getByText('BTC')).toBeInTheDocument();
-    expect(screen.queryByText('Bitcoin')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.networkNameBitcoin.message),
+    ).not.toBeInTheDocument();
   });
 
   it('calls onClick with the symbol when clicked', () => {
