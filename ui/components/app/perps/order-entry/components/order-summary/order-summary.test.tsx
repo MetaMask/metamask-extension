@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
@@ -19,9 +19,12 @@ const mockStore = configureStore({
   },
 });
 
-function showTooltip(labelTestId: string, event: 'hover' | 'focus' = 'hover') {
-  const label = screen.getByTestId(labelTestId);
-  const tooltipTrigger = label.closest('[data-tooltipped]');
+function showTooltip(
+  triggerContainerTestId: string,
+  event: 'hover' | 'focus' = 'hover',
+) {
+  const triggerContainer = screen.getByTestId(triggerContainerTestId);
+  const tooltipTrigger = triggerContainer.querySelector('[data-tooltipped]');
 
   expect(tooltipTrigger).not.toBeNull();
 
@@ -53,7 +56,7 @@ describe('OrderSummary', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders dotted underline tooltip labels without showing tooltips at rest', () => {
+    it('renders info icon tooltip triggers without showing tooltips at rest', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired={null}
@@ -64,16 +67,22 @@ describe('OrderSummary', () => {
       );
 
       expect(
-        screen.getByTestId('perps-order-summary-margin-tooltip-label'),
-      ).toHaveClass('border-dotted');
+        within(
+          screen.getByTestId('perps-order-summary-margin-tooltip-label'),
+        ).getByTestId('info-tooltip'),
+      ).toBeInTheDocument();
       expect(
-        screen.getByTestId(
-          'perps-order-summary-liquidation-price-tooltip-label',
-        ),
-      ).toHaveClass('border-dotted');
+        within(
+          screen.getByTestId(
+            'perps-order-summary-liquidation-price-tooltip-label',
+          ),
+        ).getByTestId('info-tooltip'),
+      ).toBeInTheDocument();
       expect(
-        screen.getByTestId('perps-order-summary-fees-tooltip-label'),
-      ).toHaveClass('border-dotted');
+        within(
+          screen.getByTestId('perps-order-summary-fees-tooltip-label'),
+        ).getByTestId('info-tooltip'),
+      ).toBeInTheDocument();
       expect(
         screen.queryByTestId('perps-order-summary-margin-tooltip'),
       ).not.toBeInTheDocument();

@@ -17,7 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import Tooltip from '../../../../../ui/tooltip/tooltip';
+import InfoTooltip from '../../../../../ui/info-tooltip';
 import { formatPerpsFeeRate } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';
@@ -29,22 +29,17 @@ type TooltipLabelProps = {
 };
 
 const TooltipLabel = ({ label, tooltip, testId }: TooltipLabelProps) => (
-  <Tooltip
-    position="top"
-    size="regular"
-    html={tooltip}
-    tag="span"
-    wrapperClassName="inline-flex"
+  <Box
+    flexDirection={BoxFlexDirection.Row}
+    alignItems={BoxAlignItems.Center}
+    gap={1}
+    data-testid={testId}
   >
-    <Text
-      variant={TextVariant.BodySm}
-      color={TextColor.TextAlternative}
-      data-testid={testId}
-      className="cursor-help border-0 border-b border-dotted border-current p-0"
-    >
+    <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
       {label}
     </Text>
-  </Tooltip>
+    <InfoTooltip position="top" contentText={tooltip} />
+  </Box>
 );
 
 type TooltipBodyProps = {
