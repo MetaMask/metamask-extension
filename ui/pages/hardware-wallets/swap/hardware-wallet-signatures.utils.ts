@@ -367,10 +367,10 @@ export const getFinalStepDescription = ({
  * branching on flow.
  *
  * sendBundle (two confirmations — gas-token payment): first step = the SEND
- * tx (signed first on the device), final step = the GAS-PAYMENT tx (signed
- * second).
+ * tx (signed first on the device; Send / Sending / Sent by status), final
+ * step = the GAS-PAYMENT tx (signed second).
  * sendBundle (single confirmation — no gas token): only the final step is
- * rendered, and it IS the SEND tx, so it uses the send label.
+ * rendered, and it IS the SEND tx, so it uses the status-aware send label.
  * bridge/swap: first step = approval (or "approved" once complete), final
  * step = trade (delegated to {@link getFinalStepLabel}).
  *
@@ -424,11 +424,27 @@ export const getStepLabels = ({
   finalStepLabel: string;
 } => {
   if (isSendBundleFlow) {
-    // Two-step sendBundle: step 1 is the SEND ("Sending {amount} {symbol}"),
-    // step 2 is the gas-token payment.
+    // Send tense mirrors getFinalStepLabel: Sent (complete), Sending (active),
+    // Send (pending / interrupted).
+    const getSendAmountLabel = (stepStatus: SignatureStepStatus) => {
+      if (
+        status === HardwareWalletSignatureStatus.Submitted ||
+        stepStatus === SignatureStepStatus.Complete
+      ) {
+        return t('hardwareSentAmount', [sendAmount, sendSymbol]);
+      }
+
+      if (stepStatus === SignatureStepStatus.Active) {
+        return t('hardwareSendingAmount', [sendAmount, sendSymbol]);
+      }
+
+      return t('hardwareSendAmount', [sendAmount, sendSymbol]);
+    };
+
+    // Two-step sendBundle: step 1 is the SEND, step 2 is the gas-token payment.
     if (needsTwoConfirmations) {
       return {
-        firstStepLabel: t('bridgeHwSendingAmount', [sendAmount, sendSymbol]),
+        firstStepLabel: getSendAmountLabel(firstStepStatus),
         finalStepLabel: t('sendBundleHwGasPayment', [gasSymbol]),
       };
     }
@@ -436,17 +452,18 @@ export const getStepLabels = ({
     // Single-step sendBundle: only the final step is rendered (see
     // signature-step-list.tsx), and that step IS the SEND tx, so it uses the
     // send label. `firstStepLabel` is not rendered but kept valid.
+    const sendLabel = getSendAmountLabel(finalStepStatus);
     return {
-      firstStepLabel: t('bridgeHwSendingAmount', [sendAmount, sendSymbol]),
-      finalStepLabel: t('bridgeHwSendingAmount', [sendAmount, sendSymbol]),
+      firstStepLabel: sendLabel,
+      finalStepLabel: sendLabel,
     };
   }
 
   const firstStepLabel =
     status === HardwareWalletSignatureStatus.Submitted ||
     firstStepStatus === SignatureStepStatus.Complete
-      ? t('bridgeHwApprovedAmount', [fromAmount, fromTokenSymbol])
-      : t('bridgeHwApproveAmount', [fromAmount, fromTokenSymbol]);
+      ? t('hardwareApprovedAmount', [fromAmount, fromTokenSymbol])
+      : t('hardwareApproveAmount', [fromAmount, fromTokenSymbol]);
 
   return {
     firstStepLabel,

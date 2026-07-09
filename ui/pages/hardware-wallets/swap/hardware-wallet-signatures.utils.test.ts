@@ -8,6 +8,7 @@ import {
   hasApprovalTxForRequestId,
   getTitle,
   getFinalStepLabel,
+  getStepLabels,
   getFirstStepDescription,
   getFinalStepDescription,
   isQrHardwareSignRequest,
@@ -319,6 +320,165 @@ describe('hardware-wallet-signatures utils', () => {
           t,
         }),
       ).toBe('hardwareSendAmount[1.5,ETH]');
+    });
+  });
+
+  describe('getStepLabels', () => {
+    const sendBundleBase = {
+      isSendBundleFlow: true,
+      sendAmount: '1.5',
+      sendSymbol: 'USDC',
+      gasSymbol: 'ETH',
+      fromAmount: undefined,
+      fromTokenSymbol: undefined,
+      t,
+    };
+
+    describe('sendBundle two-confirmation flow', () => {
+      it('uses Sending for the active send step and gas payment for the final step', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            firstStepStatus: SignatureStepStatus.Active,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSendingAmount[1.5,USDC]',
+          finalStepLabel: 'sendBundleHwGasPayment[ETH]',
+        });
+      });
+
+      it('uses Sent for a completed send step', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSentAmount[1.5,USDC]',
+          finalStepLabel: 'sendBundleHwGasPayment[ETH]',
+        });
+      });
+
+      it('uses Send for a pending send step', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            firstStepStatus: SignatureStepStatus.Pending,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSendAmount[1.5,USDC]',
+          finalStepLabel: 'sendBundleHwGasPayment[ETH]',
+        });
+      });
+
+      it('uses Sent when the flow is submitted', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.Submitted,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSentAmount[1.5,USDC]',
+          finalStepLabel: 'sendBundleHwGasPayment[ETH]',
+        });
+      });
+    });
+
+    describe('sendBundle single-confirmation flow', () => {
+      it('uses Sending when the send step is active', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: false,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Pending,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSendingAmount[1.5,USDC]',
+          finalStepLabel: 'hardwareSendingAmount[1.5,USDC]',
+        });
+      });
+
+      it('uses Sent when the send step is complete', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: false,
+            status: HardwareWalletSignatureStatus.Submitted,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSentAmount[1.5,USDC]',
+          finalStepLabel: 'hardwareSentAmount[1.5,USDC]',
+        });
+      });
+
+      it('uses Send when the send step is pending', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: false,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Pending,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSendAmount[1.5,USDC]',
+          finalStepLabel: 'hardwareSendAmount[1.5,USDC]',
+        });
+      });
+    });
+
+    describe('bridge/swap flow', () => {
+      it('uses Approved and Sent when submitted', () => {
+        expect(
+          getStepLabels({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.Submitted,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Complete,
+            fromAmount: '1.5',
+            fromTokenSymbol: 'ETH',
+            t,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[1.5,ETH]',
+          finalStepLabel: 'hardwareSentAmount[1.5,ETH]',
+        });
+      });
+
+      it('uses Approve and Sending when the final step is active', () => {
+        expect(
+          getStepLabels({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+            fromAmount: '1.5',
+            fromTokenSymbol: 'ETH',
+            t,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[1.5,ETH]',
+          finalStepLabel: 'hardwareSendingAmount[1.5,ETH]',
+        });
+      });
     });
   });
 
