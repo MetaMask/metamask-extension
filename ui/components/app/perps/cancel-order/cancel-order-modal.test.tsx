@@ -487,7 +487,7 @@ describe('CancelOrderModal', () => {
       ).toBe(false);
     });
 
-    it('does not emit duplicate cancel transaction analytics on failure', async () => {
+    it('emits PerpsError but not cancel transaction analytics on failure', async () => {
       const user = userEvent.setup();
       mockSubmitRequestToBackground.mockRejectedValue(
         new Error('Network error'),
@@ -510,8 +510,13 @@ describe('CancelOrderModal', () => {
         ),
       ).toBe(false);
       expect(
-        mockTrack.mock.calls.some(([event]) => event === 'Perp Error'),
-      ).toBe(false);
+        mockTrack.mock.calls.some(
+          ([event, properties]) =>
+            event === 'Perp Error' &&
+            properties?.[PERPS_EVENT_PROPERTY.ERROR_MESSAGE] ===
+              'Network error',
+        ),
+      ).toBe(true);
 
       await waitFor(() => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();

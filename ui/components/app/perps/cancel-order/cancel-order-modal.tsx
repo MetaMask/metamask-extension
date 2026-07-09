@@ -34,7 +34,15 @@ import {
   formatPerpsFiatUniversal,
 } from '../utils/formatPerpsDisplayPrice';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { usePerpsEligibility } from '../../../../hooks/perps';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, formatOrderType } from '../utils';
@@ -65,6 +73,7 @@ export const CancelOrderModal = ({
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();
   const { isEligible } = usePerpsEligibility();
+  const { track } = usePerpsEventTracking();
   const { buildTrackingData } = usePerpsAttribution();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -147,6 +156,14 @@ export const CancelOrderModal = ({
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : t('somethingWentWrong');
+      // Transport/background throws never reach the controller cancel
+      // submitted/terminal pipeline — keep client PerpsError for that gap.
+      // Do not re-emit client cancel transaction events (controller owns those).
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
       setError(errorMessage);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
@@ -162,6 +179,7 @@ export const CancelOrderModal = ({
     buildTrackingData,
     onClose,
     replacePerpsToastByKey,
+    track,
     t,
   ]);
 
