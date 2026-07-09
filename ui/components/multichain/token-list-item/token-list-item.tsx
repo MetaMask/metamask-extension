@@ -71,6 +71,19 @@ type MarketDataMap = ReturnType<typeof getMarketData>;
 type CurrencyRatesMap = ReturnType<typeof getCurrencyRates>;
 type NetworkConfigurationsMap = ReturnType<typeof getNetworkConfigurationsByChainId>;
 
+// Stable empty fallback objects returned by the "no-op" selectors below so
+// that useSelector never triggers a re-render when the value has not changed.
+const EMPTY_MARKET_DATA: MarketDataMap = {};
+const EMPTY_CURRENCY_RATES: CurrencyRatesMap = {};
+const EMPTY_NETWORK_CONFIGURATIONS: NetworkConfigurationsMap = {};
+
+// Stable selector references for when the parent already provides the data as
+// props. Using these instead of the real selectors prevents the component from
+// subscribing to those Redux slices, eliminating redundant per-row subscriptions.
+const selectEmptyMarketData = () => EMPTY_MARKET_DATA;
+const selectEmptyCurrencyRates = () => EMPTY_CURRENCY_RATES;
+const selectEmptyNetworkConfigurations = () => EMPTY_NETWORK_CONFIGURATIONS;
+
 type TokenListItemProps = {
   className?: string;
   onClick?: (arg?: string) => void;
@@ -139,18 +152,28 @@ export const TokenListItemComponent = ({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const currencyRatesFromStore = useSelector(getCurrencyRates);
   const noFeeAssets = useSelector((state) => selectNoFeeAssets(state, chainId));
 
-  // Use lifted props when provided by the parent; fall back to the Redux store
-  // value so the component remains backwards-compatible with callers that have
-  // not yet been updated to pass these props.
-  const multiChainMarketDataFromStore = useSelector(getMarketData);
-  const allNetworksFromStore = useSelector(getNetworkConfigurationsByChainId);
+  // When the parent passes these props it has already read the selectors once
+  // for the whole list. Switch to a no-op selector so this row does not create
+  // an independent Redux subscription for shared global data.
+  const marketDataFromStore = useSelector(
+    marketDataProp === undefined ? getMarketData : selectEmptyMarketData,
+  ) as MarketDataMap;
+  const currencyRatesFromStore = useSelector(
+    currencyRatesProp === undefined ? getCurrencyRates : selectEmptyCurrencyRates,
+  ) as CurrencyRatesMap;
+  const networkConfigurationsFromStore = useSelector(
+    networkConfigurationsProp === undefined
+      ? getNetworkConfigurationsByChainId
+      : selectEmptyNetworkConfigurations,
+  ) as NetworkConfigurationsMap;
 
-  const multiChainMarketData = marketDataProp ?? multiChainMarketDataFromStore;
+  // Prefer lifted props; fall back to store values for callers that have not
+  // been updated to pass these props.
+  const multiChainMarketData = marketDataProp ?? marketDataFromStore;
   const currencyRates = currencyRatesProp ?? currencyRatesFromStore;
-  const allNetworks = networkConfigurationsProp ?? allNetworksFromStore;
+  const allNetworks = networkConfigurationsProp ?? networkConfigurationsFromStore;
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
