@@ -383,9 +383,9 @@ describe('NetworksPage', () => {
       'Multi RPC',
     );
 
-    const multiRpcButton = (await screen.findByText('Multi RPC Network')).closest(
-      'button',
-    );
+    const multiRpcButton = (
+      await screen.findByText('Multi RPC Network')
+    ).closest('button');
     expect(multiRpcButton).toBeInTheDocument();
 
     fireEvent.click(multiRpcButton as HTMLButtonElement);
@@ -394,8 +394,12 @@ describe('NetworksPage', () => {
       await screen.findByText(messages.addNetwork.message),
     ).toBeInTheDocument();
     expect(screen.getByText('rpc-primary.example.com')).toBeInTheDocument();
-    expect(screen.queryByText('rpc-secondary.example.com')).not.toBeInTheDocument();
-    expect(screen.queryByText('rpc-tertiary.example.com')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('rpc-secondary.example.com'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('rpc-tertiary.example.com'),
+    ).not.toBeInTheDocument();
   });
 
   it('prefills Chainlist network name from the canonical network name when available', async () => {
