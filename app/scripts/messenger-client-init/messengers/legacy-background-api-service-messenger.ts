@@ -102,6 +102,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',
+      'PhishingController:maybeUpdateState',
+      'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
       'TokenDetectionController:enable',

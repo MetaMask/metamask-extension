@@ -414,6 +414,35 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('getPhishingResult', () => {
+    it('updates the phishing state and returns the test result for the website', async () => {
+      const website = 'https://example.com';
+      const phishingResult = { result: false, type: 'all' };
+      const mockMaybeUpdateState = jest.fn();
+      const mockTestOrigin = jest.fn().mockReturnValue(phishingResult);
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PhishingController:maybeUpdateState',
+          mockMaybeUpdateState,
+        );
+        rootMessenger.registerActionHandler(
+          'PhishingController:testOrigin',
+          mockTestOrigin,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getPhishingResult',
+          website,
+        );
+
+        expect(mockMaybeUpdateState).toHaveBeenCalled();
+        expect(mockTestOrigin).toHaveBeenCalledWith(website);
+        expect(result).toBe(phishingResult);
+      });
+    });
+  });
+
   describe('markPasswordForgotten', () => {
     it('sets the preference and triggers an update', async () => {
       const mockSendUpdate = jest.fn();
@@ -3469,6 +3498,8 @@ function getMessenger(
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',
+      'PhishingController:maybeUpdateState',
+      'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
       'TokenDetectionController:enable',
