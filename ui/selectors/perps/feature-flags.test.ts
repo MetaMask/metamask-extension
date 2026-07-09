@@ -1,9 +1,11 @@
 import semver from 'semver';
 import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsShowFullAssetNamesEnabled,
+  getIsPerpsTerminalBackendEnabled,
   getIsVipProgramEnabled,
 } from './feature-flags';
 
@@ -17,8 +19,15 @@ jest.mock('../../../shared/lib/environment', () => ({
   ),
   getIsPerpsIncludedInBuild: jest.fn(),
 }));
+jest.mock('../../../shared/lib/manifestFlags', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/manifestFlags')>(
+    '../../../shared/lib/manifestFlags',
+  ),
+  getManifestFlags: jest.fn(() => ({})),
+}));
 
 const getIsPerpsIncludedInBuildMock = jest.mocked(getIsPerpsIncludedInBuild);
+const getManifestFlagsMock = jest.mocked(getManifestFlags);
 
 type MockState = {
   metamask: {
@@ -42,6 +51,7 @@ describe('Perps Feature Flags', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getIsPerpsIncludedInBuildMock.mockReturnValue(true);
+    getManifestFlagsMock.mockReturnValue({});
   });
 
   describe('getIsPerpsExperienceAvailable', () => {
@@ -226,6 +236,92 @@ describe('Perps Feature Flags', () => {
         },
       };
       expect(getIsPerpsShowFullAssetNamesEnabled(state)).toBe(false);
+    });
+  });
+
+  describe('getIsPerpsTerminalBackendEnabled', () => {
+    it('returns true when flag is enabled and version satisfies', () => {
+      semverGteMock.mockReturnValue(true);
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsTerminalBackendEnabled: {
+              enabled: true,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(true);
+    });
+
+    it('returns false when flag is disabled', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsTerminalBackendEnabled: {
+              enabled: false,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(false);
+    });
+
+    it('returns false when flag is not present', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(false);
+    });
+
+    it('returns false when version does not satisfy', () => {
+      semverGteMock.mockReturnValue(false);
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsTerminalBackendEnabled: {
+              enabled: true,
+              minimumVersion: '99.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(false);
+    });
+
+    it('is enabled via a manifest override even when the controller state omits the flag', () => {
+      getManifestFlagsMock.mockReturnValue({
+        remoteFeatureFlags: { perpsTerminalBackendEnabled: true },
+      });
+
+      const state = { metamask: { remoteFeatureFlags: {} } };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(true);
+    });
+
+    it('lets a manifest override take precedence over the controller remote flag', () => {
+      getManifestFlagsMock.mockReturnValue({
+        remoteFeatureFlags: { perpsTerminalBackendEnabled: true },
+      });
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsTerminalBackendEnabled: {
+              enabled: false,
+              minimumVersion: '0.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsTerminalBackendEnabled(state)).toBe(true);
     });
   });
 
