@@ -1840,7 +1840,9 @@ const PerpsOrderEntryPage = () => {
         <Box
           flexDirection={BoxFlexDirection.Column}
           style={{
-            minWidth: isOrderBookOpen ? ORDER_BOOK_FORM_MIN_WIDTH_PX : undefined,
+            minWidth: isOrderBookOpen
+              ? ORDER_BOOK_FORM_MIN_WIDTH_PX
+              : undefined,
           }}
           className="flex-1 min-w-0 h-full overflow-hidden"
         >

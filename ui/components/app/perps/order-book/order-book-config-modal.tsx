@@ -40,7 +40,8 @@ import type {
 const PILL_BASE_CLASS =
   'flex items-center justify-center rounded-full py-3 px-4 cursor-pointer transition-colors duration-150 border';
 const PILL_SELECTED_CLASS = 'bg-transparent border-muted';
-const PILL_UNSELECTED_CLASS = 'bg-muted border-transparent hover:bg-muted-hover';
+const PILL_UNSELECTED_CLASS =
+  'bg-muted border-transparent hover:bg-muted-hover';
 
 type PillProps = {
   label: string;
@@ -50,7 +51,13 @@ type PillProps = {
   testId?: string;
 };
 
-const Pill = ({ label, isSelected, onSelect, className, testId }: PillProps) => (
+const Pill = ({
+  label,
+  isSelected,
+  onSelect,
+  className,
+  testId,
+}: PillProps) => (
   <Box
     role="radio"
     tabIndex={0}

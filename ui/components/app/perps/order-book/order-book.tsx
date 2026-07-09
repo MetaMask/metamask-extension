@@ -195,10 +195,15 @@ export const PerpsOrderBook = ({
   );
 
   const currentGrouping = useMemo(() => {
-    if (selectedGrouping !== null && groupingOptions.includes(selectedGrouping)) {
+    if (
+      selectedGrouping !== null &&
+      groupingOptions.includes(selectedGrouping)
+    ) {
       return selectedGrouping;
     }
-    return groupingOptions.length ? selectDefaultGrouping(groupingOptions) : null;
+    return groupingOptions.length
+      ? selectDefaultGrouping(groupingOptions)
+      : null;
   }, [selectedGrouping, groupingOptions]);
 
   const grouped = useMemo(
@@ -474,10 +479,7 @@ export const PerpsOrderBook = ({
                 backgroundColor: 'var(--color-error-muted)',
               }}
             >
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.ErrorDefault}
-              >
+              <Text variant={TextVariant.BodyXs} color={TextColor.ErrorDefault}>
                 {`${depthRatio.sellPercent}%`}
               </Text>
               <Text

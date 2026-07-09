@@ -75,7 +75,11 @@ describe('order-book.utils', () => {
   describe('aggregateOrderBookLevels', () => {
     it('floors bid prices into buckets and accumulates size/notional', () => {
       const result = aggregateOrderBookLevels(
-        [level('105', '1', '105'), level('104', '2', '208'), level('96', '3', '288')],
+        [
+          level('105', '1', '105'),
+          level('104', '2', '208'),
+          level('96', '3', '288'),
+        ],
         10,
         'bid',
       );
@@ -100,7 +104,11 @@ describe('order-book.utils', () => {
 
     it('ceils ask prices into buckets sorted ascending', () => {
       const result = aggregateOrderBookLevels(
-        [level('101', '1', '101'), level('109', '1', '109'), level('111', '2', '222')],
+        [
+          level('101', '1', '101'),
+          level('109', '1', '109'),
+          level('111', '2', '222'),
+        ],
         10,
         'ask',
       );
@@ -143,10 +151,22 @@ describe('order-book.utils', () => {
   describe('groupOrderBook', () => {
     it('trims to the display depth and reports the deepest cumulative total', () => {
       const bids = Array.from({ length: 15 }, (_, index) =>
-        level(`${100 - index}`, '1', '10', `${index + 1}`, `${(index + 1) * 10}`),
+        level(
+          `${100 - index}`,
+          '1',
+          '10',
+          `${index + 1}`,
+          `${(index + 1) * 10}`,
+        ),
       );
       const asks = Array.from({ length: 15 }, (_, index) =>
-        level(`${101 + index}`, '1', '10', `${index + 1}`, `${(index + 1) * 10}`),
+        level(
+          `${101 + index}`,
+          '1',
+          '10',
+          `${index + 1}`,
+          `${(index + 1) * 10}`,
+        ),
       );
 
       const grouped = groupOrderBook(
