@@ -1065,8 +1065,12 @@
     },
     "@metamask/connectivity-controller": {
       "packages": {
-        "@metamask/base-controller": true,
         "reselect": true
+      }
+    },
+    "@metamask/wallet>@metamask/connectivity-controller": {
+      "packages": {
+        "@metamask/base-controller": true
       }
     },
     "@metamask/controller-utils": {
@@ -1909,7 +1913,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/connectivity-controller": true,
+        "@metamask/network-controller>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
@@ -2638,7 +2642,7 @@
         "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
-        "@metamask/connectivity-controller": true,
+        "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
