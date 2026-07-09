@@ -1013,7 +1013,6 @@ describe('MetaMaskController', () => {
           keyringController: expect.any(Object),
           transactionOptions,
           transactionParams,
-          userOperationController: expect.any(Object),
           chainId: '0x1',
           ppomController: expect.any(Object),
           securityAlertsEnabled: expect.any(Boolean),

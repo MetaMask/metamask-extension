@@ -2567,9 +2567,6 @@
   "confirmFieldNeverExpires": {
     "message": "Nunca expira"
   },
-  "confirmFieldPaymaster": {
-    "message": "Taxa paga por"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Quinzenal"
   },
@@ -2594,9 +2591,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Justificativa para a solicitação fornecida pelo site"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "A taxa dessa transação será paga pelo contrato inteligente do tesoureiro."
   },
   "confirmFieldTotalExposure": {
     "message": "Exposição total"

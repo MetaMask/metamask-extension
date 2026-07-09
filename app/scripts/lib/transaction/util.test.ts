@@ -5,7 +5,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep, omit } from 'lodash';
 import { Hex } from '@metamask/utils';
 import {
@@ -171,19 +170,11 @@ function createTransactionControllerMock() {
   } as unknown as jest.Mocked<TransactionController>;
 }
 
-function createUserOperationControllerMock() {
-  return {
-    addUserOperationFromTransaction: jest.fn(),
-    startPollingByNetworkClientId: jest.fn(),
-  } as unknown as jest.Mocked<UserOperationController>;
-}
-
 describe('Transaction Utils', () => {
   let request: AddTransactionRequest;
   let dappRequest: AddDappTransactionRequest;
   let tempoDappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
-  let userOperationController: jest.Mocked<UserOperationController>;
   let getAddressSecurityAlertResponseMock: jest.Mock;
   let addAddressSecurityAlertResponseMock: jest.Mock;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
@@ -200,7 +191,6 @@ describe('Transaction Utils', () => {
     );
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
-    userOperationController = createUserOperationControllerMock();
     getAddressSecurityAlertResponseMock = jest.fn();
     addAddressSecurityAlertResponseMock = jest.fn();
 
@@ -230,16 +220,9 @@ describe('Transaction Utils', () => {
 
     transactionController.state.transactions.push(TRANSACTION_META_MOCK);
 
-    userOperationController.addUserOperationFromTransaction.mockResolvedValue({
-      id: TRANSACTION_META_MOCK.id,
-      hash: jest.fn().mockResolvedValue({}),
-      transactionHash: jest.fn().mockResolvedValue(TRANSACTION_META_MOCK.hash),
-    });
-
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
 
     request.transactionController = transactionController;
-    request.userOperationController = userOperationController;
     request.updateSecurityAlertResponse = jest.fn();
     request.getSecurityAlertResponse = getAddressSecurityAlertResponseMock;
     request.addSecurityAlertResponse = addAddressSecurityAlertResponseMock;
@@ -343,168 +326,6 @@ describe('Transaction Utils', () => {
         await flushPromises();
 
         expect(completed).toBe(true);
-      });
-    });
-
-    describe('if selected account is smart contract', () => {
-      beforeEach(() => {
-        request.selectedAccount.type = 'eip155:erc4337';
-      });
-
-      it('adds user operation', async () => {
-        await addTransaction(request);
-
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
-          origin: TRANSACTION_OPTIONS_MOCK.origin,
-          requireApproval: TRANSACTION_OPTIONS_MOCK.requireApproval,
-          swaps: undefined,
-          type: TRANSACTION_OPTIONS_MOCK.type,
-        });
-      });
-
-      it('starts polling', async () => {
-        await addTransaction(request);
-
-        expect(
-          userOperationController.startPollingByNetworkClientId,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          userOperationController.startPollingByNetworkClientId,
-        ).toHaveBeenCalledWith(TRANSACTION_REQUEST_MOCK.networkClientId);
-      });
-
-      it('returns transaction meta', async () => {
-        const transactionMeta = await addTransaction(request);
-        expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
-      });
-
-      it('does not wait for transaction hash promise if waitForSubmit is false', async () => {
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: undefined as never,
-            transactionHash: () =>
-              new Promise(() => {
-                /* Intentionally not resolved */
-              }),
-          },
-        );
-
-        await expect(addTransaction(request)).resolves.toBeTruthy();
-      });
-
-      it('waits for transaction hash promise if waitForSubmit is true', async () => {
-        request.waitForSubmit = true;
-
-        let transactionHashResolve;
-        let completed = false;
-
-        const transactionHashPromise = new Promise<string>((resolve) => {
-          transactionHashResolve = resolve;
-        });
-
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: () => Promise.resolve(TRANSACTION_META_MOCK.hash),
-            transactionHash: () => transactionHashPromise,
-          },
-        );
-
-        addTransaction(request).then(() => {
-          completed = true;
-        });
-
-        await flushPromises();
-
-        expect(completed).toBe(false);
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        transactionHashResolve!(TRANSACTION_META_MOCK.hash);
-
-        await flushPromises();
-
-        expect(completed).toBe(true);
-      });
-
-      it('does not throw if transaction hash promise fails and waitForSubmit is false', async () => {
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: jest.fn().mockRejectedValue(new Error('Test Error')),
-            transactionHash: jest.fn().mockResolvedValue({}),
-          },
-        );
-
-        await expect(addTransaction(request)).resolves.toBeTruthy();
-      });
-
-      it('throws if transaction hash promise fails and waitForSubmit is true', async () => {
-        request.waitForSubmit = true;
-
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: undefined as never,
-            transactionHash: jest
-              .fn()
-              .mockRejectedValue(new Error('Test Error')),
-          },
-        );
-
-        await expect(addTransaction(request)).rejects.toThrow('Test Error');
-      });
-
-      it('removes type from swaps metadata', async () => {
-        request.transactionOptions.swaps = {
-          meta: {
-            sourceTokenSymbol: 'ETH',
-            type: TransactionType.simpleSend,
-          },
-        };
-
-        await addTransaction(request);
-
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          expect.objectContaining({
-            swaps: {
-              sourceTokenSymbol: 'ETH',
-            },
-          }),
-        );
-      });
-
-      it('normalises gas fees', async () => {
-        request.transactionParams.maxFeePerGas = 'a';
-        request.transactionParams.maxPriorityFeePerGas = 'b';
-
-        await addTransaction(request);
-
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledWith(
-          {
-            ...TRANSACTION_PARAMS_MOCK,
-            maxFeePerGas: '0xa',
-            maxPriorityFeePerGas: '0xb',
-          },
-          expect.anything(),
-        );
       });
     });
 
@@ -773,61 +594,6 @@ describe('Transaction Utils', () => {
           result: Promise.reject(new Error('Test Error')),
           transactionMeta: TRANSACTION_META_MOCK,
         });
-
-        await expect(addDappTransaction(dappRequest)).rejects.toThrow(
-          'Test Error',
-        );
-      });
-    });
-
-    describe('if selected account is smart contract', () => {
-      beforeEach(() => {
-        request.selectedAccount.type = 'eip155:erc4337';
-      });
-
-      it('adds user operation', async () => {
-        await addDappTransaction(dappRequest);
-
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
-          origin: TRANSACTION_OPTIONS_MOCK.origin,
-          requireApproval: true,
-          swaps: undefined,
-          type: undefined,
-        });
-      });
-
-      it('starts polling', async () => {
-        await addDappTransaction(dappRequest);
-
-        expect(
-          userOperationController.startPollingByNetworkClientId,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          userOperationController.startPollingByNetworkClientId,
-        ).toHaveBeenCalledWith(TRANSACTION_REQUEST_MOCK.networkClientId);
-      });
-
-      it('returns transaction hash', async () => {
-        const transactionHash = await addDappTransaction(dappRequest);
-        expect(transactionHash).toStrictEqual(TRANSACTION_META_MOCK.hash);
-      });
-
-      it('throws if transaction hash promise fails', async () => {
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: jest.fn().mockResolvedValue({}),
-            transactionHash: jest
-              .fn()
-              .mockRejectedValue(new Error('Test Error')),
-          },
-        );
 
         await expect(addDappTransaction(dappRequest)).rejects.toThrow(
           'Test Error',

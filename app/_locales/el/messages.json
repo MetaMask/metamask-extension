@@ -2567,9 +2567,6 @@
   "confirmFieldNeverExpires": {
     "message": "Δεν λήγει ποτέ"
   },
-  "confirmFieldPaymaster": {
-    "message": "Τα τέλη καταβλήθηκαν από"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Δύο φορές την εβδομάδα"
   },
@@ -2594,9 +2591,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Αιτιολόγηση του αιτήματος που παρέχεται από τον ιστότοπο"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Τα τέλη για αυτή τη συναλλαγή θα καταβληθούν από τον υπεύθυνο πληρωμών του έξυπνου συμβολαίου."
   },
   "confirmFieldTotalExposure": {
     "message": "Συνολική έκθεση"

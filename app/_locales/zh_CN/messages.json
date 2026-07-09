@@ -2567,9 +2567,6 @@
   "confirmFieldNeverExpires": {
     "message": "永不过期"
   },
-  "confirmFieldPaymaster": {
-    "message": "费用支付方"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "每两周"
   },
@@ -2594,9 +2591,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "网站提供的请求依据"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "此交易的费用将由 paymaster 智能合约支付。"
   },
   "confirmFieldTotalExposure": {
     "message": "总风险敞口"

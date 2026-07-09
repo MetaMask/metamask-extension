@@ -2567,9 +2567,6 @@
   "confirmFieldNeverExpires": {
     "message": "कभी एक्सपायर नहीं होता"
   },
-  "confirmFieldPaymaster": {
-    "message": "के द्वारा शुल्क का भुगतान किया गया"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "पाक्षिक"
   },
@@ -2594,9 +2591,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "वेबसाइट द्वारा दिए गए अनुरोध का औचित्य"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "इस ट्रांसेक्शन के लिए शुल्क का भुगतान पेमास्टर स्मार्ट कॉन्ट्रैक्ट द्वारा किया जाएगा।"
   },
   "confirmFieldTotalExposure": {
     "message": "कुल एक्सपोज़र"

@@ -44,9 +44,7 @@ export const TransactionActivityEmptyState = ({
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const [isFundingModalOpen, setIsFundingModalOpen] = useState(false);
 
-  const isSigningEnabled =
-    account.methods.includes(EthMethod.SignTransaction) ||
-    account.methods.includes(EthMethod.SignUserOperation);
+  const isSigningEnabled = account.methods.includes(EthMethod.SignTransaction);
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));

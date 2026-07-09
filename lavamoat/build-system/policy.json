@@ -960,7 +960,7 @@
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
-    "lavamoat>@lavamoat/aa": {
+    "lavamoat-browserify>@lavamoat/aa": {
       "builtin": {
         "node:fs.lstatSync": true,
         "node:fs.readFileSync": true,
@@ -972,7 +972,7 @@
         "node:path.sep": true
       },
       "packages": {
-        "lavamoat>@lavamoat/aa>resolve": true
+        "lavamoat-browserify>@lavamoat/aa>resolve": true
       }
     },
     "@lavamoat/lavapack": {
@@ -3804,7 +3804,7 @@
         "setTimeout": true
       },
       "packages": {
-        "lavamoat>@lavamoat/aa": true,
+        "lavamoat-browserify>@lavamoat/aa": true,
         "@lavamoat/lavapack": true,
         "browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
@@ -5518,7 +5518,7 @@
         "gulp>vinyl-fs>value-or-function": true
       }
     },
-    "lavamoat>@lavamoat/aa>resolve": {
+    "lavamoat-browserify>@lavamoat/aa>resolve": {
       "builtin": {
         "fs.readFileSync": true,
         "fs.realpathSync": true,

@@ -433,7 +433,6 @@ import { DecryptMessageControllerInit } from './messenger-client-init/confirmati
 import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
 import { EncryptionPublicKeyManagerInit } from './messenger-client-init/confirmations/encryption-public-key-message-manager-init';
 import { SignatureControllerInit } from './messenger-client-init/confirmations/signature-controller-init';
-import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
@@ -645,7 +644,6 @@ export default class MetamaskController extends EventEmitter {
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       GasFeeController: GasFeeControllerInit,
-      UserOperationController: UserOperationControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
@@ -788,8 +786,6 @@ export default class MetamaskController extends EventEmitter {
       'RemoteFeatureFlagController',
     );
     this.gasFeeController = messengerClientsByName.GasFeeController;
-    this.userOperationController =
-      messengerClientsByName.UserOperationController;
     this.cronjobController = messengerClientsByName.CronjobController;
     this.rateLimitController = messengerClientsByName.RateLimitController;
     this.selectedNetworkController =
@@ -1444,7 +1440,6 @@ export default class MetamaskController extends EventEmitter {
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
       NameController: this.nameController,
-      UserOperationController: this.userOperationController,
       // Notification Controllers
       AuthenticationController: this.authenticationController,
       UserStorageController: this.userStorageController,
@@ -1510,7 +1505,6 @@ export default class MetamaskController extends EventEmitter {
         SnapInterfaceController: this.snapInterfaceController,
         SnapInsightsController: this.snapInsightsController,
         NameController: this.nameController,
-        UserOperationController: this.userOperationController,
         // Notification Controllers
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
@@ -6194,7 +6188,6 @@ export default class MetamaskController extends EventEmitter {
       keyringController: this.keyringController,
       transactionOptions,
       transactionParams,
-      userOperationController: this.userOperationController,
       chainId,
       ppomController: this.ppomController,
       securityAlertsEnabled:

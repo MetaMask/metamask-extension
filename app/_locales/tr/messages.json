@@ -2567,9 +2567,6 @@
   "confirmFieldNeverExpires": {
     "message": "Asla süresi dolmaz"
   },
-  "confirmFieldPaymaster": {
-    "message": "Ücreti ödeyen taraf"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "İki Haftada Bir"
   },
@@ -2594,9 +2591,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Web sitesi tarafından taleple ilgili sağlanan gerekçe"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Bu işlemin ücreti paymaster akıllı sözleşmesi tarafından ödenecektir."
   },
   "confirmFieldTotalExposure": {
     "message": "Toplam risk"

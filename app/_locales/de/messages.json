@@ -2567,9 +2567,6 @@
   "confirmFieldNeverExpires": {
     "message": "Keine Gültigkeitsdauer"
   },
-  "confirmFieldPaymaster": {
-    "message": "Gebühr bezahlt von"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "Zweiwöchentlich"
   },
@@ -2594,9 +2591,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "Begründung für die Anfrage auf der Website"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "Die Gebühr für diese Transaktion wird durch den Paymaster Smart Contract bezahlt."
   },
   "confirmFieldTotalExposure": {
     "message": "Exposure insgesamt"

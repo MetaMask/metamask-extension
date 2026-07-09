@@ -431,7 +431,6 @@
     "useSafeChainsListValidation": true,
     "useTokenDetection": true,
     "useTransactionSimulations": true,
-    "userOperations": "object",
     "version": null,
     "walletComplianceStatusMap": "object",
     "watchEthereumAccountEnabled": "boolean",

@@ -2567,9 +2567,6 @@
   "confirmFieldNeverExpires": {
     "message": "有効期限なし"
   },
-  "confirmFieldPaymaster": {
-    "message": "手数料の支払元"
-  },
   "confirmFieldPeriodDurationBiWeekly": {
     "message": "隔週"
   },
@@ -2594,9 +2591,6 @@
   },
   "confirmFieldTooltipJustification": {
     "message": "このウェブサイトが提供するリクエストの正当性"
-  },
-  "confirmFieldTooltipPaymaster": {
-    "message": "このトランザクションの手数料は、ペイマスターのスマートコントラクトにより支払われます。"
   },
   "confirmFieldTotalExposure": {
     "message": "合計エクスポージャー"
