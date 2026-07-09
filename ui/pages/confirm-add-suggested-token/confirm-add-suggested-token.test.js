@@ -15,6 +15,20 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import ConfirmAddSuggestedToken from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => ({
