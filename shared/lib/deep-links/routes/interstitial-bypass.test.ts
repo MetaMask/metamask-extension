@@ -9,8 +9,10 @@ describe('deep link interstitial bypass routes', () => {
     expect([...DEEP_LINK_INTERSTITIAL_BYPASS_ROUTE_PATHS].sort()).toStrictEqual(
       [
         '/buy',
+        '/batch-sell',
         '/card-onboarding',
         '/earn-musd',
+        '/money',
         '/perps',
         '/perps-asset',
         '/perps-markets',

@@ -3,8 +3,10 @@ import type { Route } from './route';
 const deepLinkInterstitialBypassRoutePathList = [
   '/buy',
   '/sell',
+  '/batch-sell',
   '/card-onboarding',
   '/swap',
+  '/money',
   '/earn-musd',
   '/perps',
   '/perps-markets',
