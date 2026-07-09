@@ -97,6 +97,7 @@
   "oidc.dev-api.cx.metamask.io",
   "on-ramp.api.cx.metamask.io",
   "on-ramp.dev-api.cx.metamask.io",
+  "on-ramp-cache.uat-api.cx.metamask.io",
   "on-ramp-content.api.cx.metamask.io",
   "on-ramp-content.uat-api.cx.metamask.io",
   "optimism-mainnet.infura.io",

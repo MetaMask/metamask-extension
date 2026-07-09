@@ -2,19 +2,19 @@
 
 exports[`MetaMaskController MetaMaskController Behaviour RampsController wiring always assigns rampsController and background API 1`] = `
 [
-  "setRampsUserRegion",
-  "setRampsSelectedToken",
-  "setRampsSelectedProvider",
-  "setRampsSelectedPaymentMethod",
-  "getRampsTokens",
-  "getRampsProviders",
-  "getRampsPaymentMethods",
-  "getRampsQuotes",
-  "getRampsBuyWidgetData",
-  "addRampsPrecreatedOrder",
   "addRampsOrder",
-  "removeRampsOrder",
-  "refreshRampsOrder",
+  "addRampsPrecreatedOrder",
+  "getRampsBuyWidgetData",
   "getRampsOrderFromCallback",
+  "getRampsPaymentMethods",
+  "getRampsProviders",
+  "getRampsQuotes",
+  "getRampsTokens",
+  "refreshRampsOrder",
+  "removeRampsOrder",
+  "setRampsSelectedPaymentMethod",
+  "setRampsSelectedProvider",
+  "setRampsSelectedToken",
+  "setRampsUserRegion",
 ]
 `;
