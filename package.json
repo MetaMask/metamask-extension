@@ -165,7 +165,6 @@
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/messenger": "^2.0.0",
-    "@metamask/messenger@npm:^0.3.0": "^2.0.0",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
