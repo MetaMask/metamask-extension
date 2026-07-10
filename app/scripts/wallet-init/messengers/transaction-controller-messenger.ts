@@ -20,18 +20,12 @@ import {
   KeyringControllerSignTransactionAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
-import {
-  Messenger,
-  MessengerActions,
-  MessengerEvents,
-} from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetNetworkClientRegistryAction,
-  NetworkControllerGetStateAction,
-  NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
@@ -48,7 +42,6 @@ import {
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
-  TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerStateChangeEvent,
   TransactionControllerTransactionApprovedEvent,
@@ -77,46 +70,11 @@ import {
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
-export function getTransactionControllerMessenger(
-  messenger: RootMessenger<
-    MessengerActions<TransactionControllerMessenger>,
-    MessengerEvents<TransactionControllerMessenger>
-  >,
-) {
-  const controllerMessenger: TransactionControllerMessenger = new Messenger({
-    namespace: 'TransactionController',
-    parent: messenger,
-  });
-  messenger.delegate({
-    messenger: controllerMessenger,
-    actions: [
-      'AccountsController:getSelectedAccount',
-      'AccountsController:getState',
-      `ApprovalController:addRequest`,
-      'GasFeeController:fetchGasFeeEstimates',
-      'KeyringController:getState',
-      'KeyringController:signEip7702Authorization',
-      'KeyringController:signTransaction',
-      'NetworkController:findNetworkClientIdByChainId',
-      'NetworkController:getEIP1559Compatibility',
-      'NetworkController:getNetworkClientById',
-      'NetworkController:getNetworkClientRegistry',
-      'NetworkController:getState',
-      'RemoteFeatureFlagController:getState',
-    ],
-    events: [
-      'AccountActivityService:transactionUpdated',
-      'NetworkController:stateChange',
-    ],
-  });
-  return controllerMessenger;
-}
-
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
 >;
 
-type InitMessengerActions =
+export type TransactionControllerInitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
   | AccountTrackerControllerGetStateAction
@@ -139,7 +97,6 @@ type InitMessengerActions =
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetNetworkClientRegistryAction
-  | NetworkControllerGetStateAction
   | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | SmartTransactionsControllerGetFeesAction
@@ -157,9 +114,8 @@ type InitMessengerActions =
   | TransactionPayControllerGetStateAction
   | TransactionPayControllerGetStrategyAction;
 
-type InitMessengerEvents =
+export type TransactionControllerInitMessengerEvents =
   | BridgeStatusControllerStateChangeEvent
-  | NetworkControllerStateChangeEvent
   | SmartTransactionsControllerSmartTransactionEvent
   | TransactionControllerPostTransactionBalanceUpdatedEvent
   | TransactionControllerStateChangeEvent
@@ -174,17 +130,21 @@ type InitMessengerEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent;
 
 export function getTransactionControllerInitMessenger(
-  messenger: RootMessenger<InitMessengerActions, InitMessengerEvents>,
+  messenger: RootMessenger<
+    TransactionControllerInitMessengerActions,
+    TransactionControllerInitMessengerEvents
+  >,
 ) {
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
-    InitMessengerActions,
-    InitMessengerEvents,
+    TransactionControllerInitMessengerActions,
+    TransactionControllerInitMessengerEvents,
     typeof messenger
   >({
     namespace: 'TransactionControllerInit',
     parent: messenger,
   });
+
   messenger.delegate({
     messenger: controllerInitMessenger,
     events: [
@@ -244,5 +204,6 @@ export function getTransactionControllerInitMessenger(
       'TransactionPayController:getStrategy',
     ],
   });
+
   return controllerInitMessenger;
 }

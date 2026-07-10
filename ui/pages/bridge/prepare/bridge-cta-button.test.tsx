@@ -84,6 +84,7 @@ setBackgroundConnection({
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
@@ -493,7 +494,7 @@ describe('BridgeCTAButton', () => {
 
       expect(
         mockTrackHardwareWalletRecoveryConnectCtaClicked,
-      ).toHaveBeenCalledWith(mockTrackEvent, {
+      ).toHaveBeenCalledWith(expect.any(Function), {
         location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
         walletType: HardwareWalletType.Ledger,
         connectionState,

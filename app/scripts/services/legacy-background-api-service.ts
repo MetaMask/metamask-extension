@@ -48,9 +48,20 @@ import {
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
 } from '@metamask/assets-controllers';
-import { AssetsControllerSetSelectedCurrencyAction } from '@metamask/assets-controller';
+import {
+  AccountId,
+  Asset,
+  AssetsControllerGetAssetsAction,
+  AssetsControllerSetSelectedCurrencyAction,
+  Caip19AssetId,
+} from '@metamask/assets-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import {
+  PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerTestOriginAction,
+} from '@metamask/phishing-controller';
 import {
   ApprovalControllerAcceptRequestAction,
   ApprovalControllerGetStateAction,
@@ -149,8 +160,9 @@ import {
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
+import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
-import { TransactionControllerInitMessenger } from '../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
   PreferencesControllerSetPasswordForgottenAction,
   PreferencesControllerToggleExternalServicesAction,
@@ -166,6 +178,10 @@ import {
 } from '../controllers/metametrics-controller-method-action-types';
 import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
 import { createSentryError } from '../../../shared/lib/error';
+import {
+  encodeDisabledDelegationsCheck,
+  decodeDisabledDelegationsResult,
+} from '../../../shared/lib/delegation/delegation';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { AppStateControllerSetPasskeyAutoUnlockSuppressedAction } from '../controllers/app-state-controller-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
@@ -181,19 +197,23 @@ const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
   'applyTransactionContainersExisting',
   'changePassword',
+  'checkDelegationDisabled',
   'checkIsSeedlessPasswordOutdated',
   'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
+  'getAssets',
   'getCode',
   'getGlobalChainId',
   'getNextNonce',
   'getOpenMetamaskTabsIds',
+  'getPhishingResult',
   'getRequestAccountTabIds',
   'getSeedPhrase',
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
+  'isSendBundleSupported',
   'markPasswordForgotten',
   'onAccountRemoved',
   'rejectAllPendingApprovals',
@@ -209,6 +229,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
+  'throwTestError',
   'toggleExternalServices',
   'unMarkPasswordForgotten',
   'upsertTransactionUIMetricsFragment',
@@ -233,6 +254,7 @@ type AllowedActions =
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AssetsControllerGetAssetsAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
@@ -275,6 +297,8 @@ type AllowedActions =
   | PermissionControllerRejectPermissionsRequestAction
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
+  | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerTestOriginAction
   | PreferencesControllerSetPasswordForgottenAction
   | PreferencesControllerToggleExternalServicesAction
   | RemoteFeatureFlagControllerGetStateAction
@@ -435,6 +459,32 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Refreshes and returns the assets for the given accounts via the
+   * AssetsController (force-updating from remote sources).
+   *
+   * No-ops when the assets unify state feature is not enabled, since the
+   * AssetsController is not registered in that case.
+   *
+   * @param accounts - The accounts to fetch assets for.
+   * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
+   * @returns The assets for the given accounts, or `undefined` when the feature
+   * is not enabled.
+   */
+  async getAssets(
+    accounts: InternalAccount[],
+    options?: Parameters<AssetsControllerGetAssetsAction['handler']>[1],
+  ): Promise<Record<AccountId, Record<Caip19AssetId, Asset>> | undefined> {
+    if (!this.isAssetsUnifyStateEnabled()) {
+      return undefined;
+    }
+
+    return await this.#messenger.call('AssetsController:getAssets', accounts, {
+      ...options,
+      forceUpdate: true,
+    });
+  }
+
+  /**
    * Determines if the given endpoint URL is a public endpoint URL.
    *
    * @param endpointUrl - The endpoint URL to check.
@@ -442,6 +492,16 @@ export class LegacyBackgroundApiService {
    */
   isPublicEndpointUrl(endpointUrl: string): boolean {
     return isPublicEndpointUrl(endpointUrl, this.#infuraProjectId);
+  }
+
+  /**
+   * Determines whether the sendBundle feature is supported for the given chain.
+   *
+   * @param chainId - The chain ID to check.
+   * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
+   */
+  async isSendBundleSupported(chainId: Hex): Promise<boolean> {
+    return await isSendBundleSupported(chainId);
   }
 
   /**
@@ -460,6 +520,21 @@ export class LegacyBackgroundApiService {
    */
   getOpenMetamaskTabsIds(): Record<string, number> {
     return this.#getOpenMetamaskTabsIds();
+  }
+
+  /**
+   * Updates the phishing lists if necessary and then checks whether the given
+   * website is a known phishing site.
+   *
+   * @param website - The website origin to check.
+   * @returns The phishing detection result.
+   */
+  async getPhishingResult(
+    website: string,
+  ): Promise<ReturnType<PhishingControllerTestOriginAction['handler']>> {
+    await this.#messenger.call('PhishingController:maybeUpdateState');
+
+    return this.#messenger.call('PhishingController:testOrigin', website);
   }
 
   /**
@@ -495,6 +570,44 @@ export class LegacyBackgroundApiService {
       method: 'eth_getCode',
       params: [address],
     });
+  }
+
+  /**
+   * Checks whether a delegation has been disabled on-chain by performing an
+   * `eth_call` against the delegation manager contract.
+   *
+   * @param delegationManagerAddress - The delegation manager contract address.
+   * @param delegationHash - The hash of the delegation to check.
+   * @param networkClientId - The ID of the network client to use for the request.
+   * @returns `true` if the delegation is disabled, `false` otherwise.
+   */
+  async checkDelegationDisabled(
+    delegationManagerAddress: Hex,
+    delegationHash: Hex,
+    networkClientId: string,
+  ): Promise<boolean> {
+    // Encode the call to disabledDelegations(bytes32)
+    const callData = encodeDisabledDelegationsCheck({ delegationHash });
+
+    // Make eth_call request through the network controller
+    const { provider } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
+
+    const result = (await provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: delegationManagerAddress,
+          data: callData,
+        },
+        'latest',
+      ],
+    })) as Hex;
+
+    // Decode the result
+    return decodeDisabledDelegationsResult(result);
   }
 
   /**
@@ -1597,5 +1710,20 @@ export class LegacyBackgroundApiService {
         throw error;
       }
     }
+  }
+
+  /**
+   * Throw an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * use this for handling errors.
+   */
+  throwTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      throw error;
+    });
   }
 }

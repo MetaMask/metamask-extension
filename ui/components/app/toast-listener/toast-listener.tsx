@@ -2,22 +2,17 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
+<<<<<<< HEAD
 import { selectToastImplementation } from '../../../selectors/toast';
 import {
   useMusdConversionConfirmTrace,
   useMusdConversionToastStatus,
 } from '../../../hooks/musd';
+=======
+>>>>>>> origin/main
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
-import { useSmartTransactionToasts } from './useSmartTransactionToasts';
 import { usePerpsWithdrawTransactionToasts } from './usePerpsWithdrawTransactionToasts';
 import { TransactionEventToastListener } from './transaction-event-toast-listener';
-
-/** @deprecated Will be replaced by TransactionEventToastListener */
-const SmartTransactionToastListener = () => {
-  useSmartTransactionToasts();
-
-  return null;
-};
 
 const PerpsWithdrawTransactionToastListener = () => {
   usePerpsWithdrawTransactionToasts();
@@ -33,7 +28,6 @@ const MusdConversionTelemetry = () => {
 };
 
 export function ToastListener() {
-  const toastImplementation = useSelector(selectToastImplementation);
   const isUnlocked = useSelector(getIsUnlocked);
   const isInteractive = isInteractiveUI();
 
@@ -45,10 +39,14 @@ export function ToastListener() {
     <>
       {isUnlocked ? <PerpsDepositToast /> : null}
       <PerpsWithdrawTransactionToastListener />
+<<<<<<< HEAD
       <MusdConversionTelemetry />
 
       {toastImplementation === 'messenger' && <TransactionEventToastListener />}
       {toastImplementation === 'redux' && <SmartTransactionToastListener />}
+=======
+      <TransactionEventToastListener />
+>>>>>>> origin/main
     </>
   );
 }
