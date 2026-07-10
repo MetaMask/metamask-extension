@@ -22,6 +22,7 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { transitionBack } from '../../../components/ui/transition';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
@@ -133,7 +134,9 @@ export default function PasskeyRegisterSubPage() {
 
   const goToSettings = useCallback(() => {
     setWalletPassword('');
-    navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+    transitionBack(() =>
+      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+    );
   }, [navigate]);
 
   const beginPasskeyCeremonyFlow = useCallback(async () => {
@@ -284,6 +287,7 @@ export default function PasskeyRegisterSubPage() {
       setVerifyStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
     }
   }, [
+    createEventBuilder,
     dispatch,
     goToSettings,
     isPasskeyRegistered,

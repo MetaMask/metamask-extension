@@ -85,8 +85,8 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/bridge/**                                          @MetaMask/swaps-engineers
 **/bridge-status/**                                   @MetaMask/swaps-engineers
 
-# Ramps team to own code for the ramps folder
-**/ramps/**                                           @MetaMask/ramp
+# Money Movement team (formerly Ramps) to own code for the ramps folder
+**/ramps/**                                           @MetaMask/money-movement
 
 # Product Safety Team
 **/product-safety/**                     @MetaMask/product-safety
@@ -284,15 +284,15 @@ app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
 shared/lib/gator-permissions                         @MetaMask/delegation
 
 # Wallet Library initialization
-app/scripts/wallet-init/initialization* @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/keyrings* @MetaMask/accounts-engineers @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/remote-feature-flags* @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/instance-options/approval-controller* @MetaMask/confirmations
-app/scripts/wallet-init/instance-options/connectivity-controller* @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/instance-options/keyring-controller* @MetaMask/accounts-engineers @MetaMask/core-platform
-app/scripts/wallet-init/instance-options/network-controller* @MetaMask/core-platform
+app/scripts/wallet-init/initialization*                                  @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/keyrings*                                        @MetaMask/accounts-engineers @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/remote-feature-flags*                            @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/approval-controller*            @MetaMask/confirmations
+app/scripts/wallet-init/instance-options/connectivity-controller*        @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/keyring-controller*             @MetaMask/accounts-engineers @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/network-controller*             @MetaMask/core-platform
 app/scripts/wallet-init/instance-options/remote-feature-flag-controller* @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/instance-options/storage-service* @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/storage-service*                @MetaMask/extension-platform @MetaMask/core-platform
 
 # Snapshots – no code owners assigned
 # This allows anyone with write access to approve changes to any *.snap files.

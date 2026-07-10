@@ -39,6 +39,7 @@ const MOCK_STATE: OnboardingState = {
     seedPhraseBackedUp: true,
     firstTimeFlowType: FirstTimeFlowType.import,
     completedOnboarding: true,
+    hasSeenOnboardingCompletionPage: true,
     onboardingTabs: {
       welcome: 'welcome',
       createPassword: 'createPassword',
