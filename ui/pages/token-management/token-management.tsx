@@ -1076,7 +1076,11 @@ export const TokenManagementPage = () => {
         await Promise.all([
           dispatch(multichainAddAssets([payload.assetId], account.id)),
           ...(isAssetsUnifiedStateInBuild
-            ? [dispatch(addCustomAsset(account.id, payload.assetId))]
+            ? [
+                dispatch(
+                  importEvmSearchResultToUnifiedAssets(account.id, payload),
+                ),
+              ]
             : []),
         ]);
       } finally {
