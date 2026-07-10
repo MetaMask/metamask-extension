@@ -97,6 +97,7 @@ export function useRampsProviders(options?: {
       !providers.some((provider) => provider.id === selectedProvider.id)
     ) {
       setSelectedProvider(null);
+      setRampsSelectedPaymentMethod(null);
       return;
     }
 

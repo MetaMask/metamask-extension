@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import type { RampsOrder } from '@metamask/ramps-controller';
+import {
+  getInternalOrderCode,
+  type RampsOrder,
+} from '@metamask/ramps-controller';
 import { selectRampsOrdersForSelectedAccount } from '../../selectors/rampsController';
 import {
   addRampsOrder,
@@ -35,18 +38,15 @@ export type UseRampsOrdersResult = {
   ) => Promise<RampsOrder>;
 };
 
-function extractOrderCode(providerOrderId: string): string {
-  const parts = providerOrderId.split('/');
-  return parts[parts.length - 1] ?? providerOrderId;
-}
-
 export function useRampsOrders(): UseRampsOrdersResult {
   const orders = useSelector(selectRampsOrdersForSelectedAccount);
 
   const getOrderById = useCallback(
     (providerOrderId: string) => {
-      const orderCode = extractOrderCode(providerOrderId);
-      return orders.find((order) => order.providerOrderId === orderCode);
+      const orderCode = getInternalOrderCode(providerOrderId);
+      return orders.find(
+        (order) => getInternalOrderCode(order) === orderCode,
+      );
     },
     [orders],
   );
@@ -59,7 +59,8 @@ export function useRampsOrders(): UseRampsOrdersResult {
   );
 
   const removeOrder = useCallback(
-    (providerOrderId: string) => removeRampsOrder(providerOrderId),
+    (providerOrderId: string) =>
+      removeRampsOrder(getInternalOrderCode(providerOrderId)),
     [],
   );
 

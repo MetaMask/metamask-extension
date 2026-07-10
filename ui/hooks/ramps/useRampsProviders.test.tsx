@@ -124,6 +124,7 @@ describe('useRampsProviders', () => {
     });
 
     expect(setRampsSelectedProvider).toHaveBeenCalledWith(null, undefined);
+    expect(setRampsSelectedPaymentMethod).toHaveBeenCalledWith(null);
   });
 
   it('auto-selects a provider when none is selected', () => {

@@ -71,7 +71,7 @@ export function useRampsQuotes(
     getQuotes,
     getBuyWidgetData,
     data: quotesQuery.data ?? null,
-    loading: quotesQuery.isLoading,
+    loading: queryEnabled && quotesQuery.isLoading,
     status,
     isSuccess: status === 'success',
     error: quotesQuery.error ?? null,

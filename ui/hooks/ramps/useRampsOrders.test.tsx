@@ -47,7 +47,10 @@ describe('useRampsOrders', () => {
       wrapper: createRampsTestWrapper(store),
     });
 
-    expect(result.current.getOrderById('transak/order-1')).toEqual(order);
+    expect(
+      result.current.getOrderById('/providers/transak/orders/order-1'),
+    ).toEqual(order);
+    expect(result.current.getOrderById('order-1')).toEqual(order);
 
     await act(async () => {
       await result.current.addOrder(order);
@@ -56,7 +59,7 @@ describe('useRampsOrders', () => {
         providerCode: 'transak',
         walletAddress: '0xabc123',
       });
-      await result.current.removeOrder('order-1');
+      await result.current.removeOrder('/providers/transak/orders/order-1');
       await result.current.refreshOrder('transak', 'order-1', '0xabc123');
       await result.current.getOrderFromCallback(
         'transak',

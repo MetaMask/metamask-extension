@@ -49,6 +49,22 @@ describe('useRampsQuotes', () => {
     expect(result.current).toMatchSnapshot();
   });
 
+  it('returns idle loading state when the query is disabled', () => {
+    mockedUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as never);
+
+    const { result } = renderHook(() => useRampsQuotes(), {
+      wrapper: createRampsTestWrapper(),
+    });
+
+    expect(result.current.status).toBe('idle');
+    expect(result.current.loading).toBe(false);
+  });
+
   it('returns loading status while quotes are fetching', () => {
     mockedUseQuery.mockReturnValue({
       data: undefined,

@@ -99,6 +99,22 @@ describe('useRampsPaymentMethods', () => {
     expect(setRampsSelectedPaymentMethod).toHaveBeenCalledWith(paymentMethod);
   });
 
+  it('clears selected payment method when the query returns no methods', () => {
+    mockedUseQuery.mockReturnValue({
+      data: [],
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      error: null,
+    } as never);
+
+    renderHook(() => useRampsPaymentMethods(), {
+      wrapper: createRampsTestWrapper(enabledStore),
+    });
+
+    expect(setRampsSelectedPaymentMethod).toHaveBeenCalledWith(null);
+  });
+
   it('returns error status when the query fails', () => {
     mockedUseQuery.mockReturnValue({
       data: undefined,
