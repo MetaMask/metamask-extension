@@ -1,18 +1,6 @@
 import log from 'loglevel';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import {
-  MessageType,
-  PortStreamChunkingTestEventStats,
-  WindowProperties,
-} from './types';
-
-type PortStreamChunkingTestHooks = {
-  getPortStreamChunkingTestEventStats?: () => PortStreamChunkingTestEventStats;
-  emitPortStreamChunkingTestPayload?: (
-    byteLength?: number,
-    sampleId?: string,
-  ) => Promise<void> | void;
-};
+import { MessageType, WindowProperties } from './types';
 
 /**
  * This singleton class runs on the Extension background script (service worker in MV3).
@@ -137,51 +125,6 @@ class SocketBackgroundToMocha {
       const tabs = await this.queryTabs({ title: message.title });
       log.debug('SocketBackgroundToMocha sending tabs:', tabs);
       this.send({ command: 'openTabs', tabs: this.cleanTabs(tabs) });
-    } else if (message.command === 'getPortStreamChunkingTestEventStats') {
-      try {
-        const testHooks = globalThis.stateHooks as
-          | PortStreamChunkingTestHooks
-          | undefined;
-        const getEventStats = testHooks?.getPortStreamChunkingTestEventStats;
-
-        if (!getEventStats) {
-          throw new Error(
-            'Port stream chunking test stats hook is unavailable',
-          );
-        }
-
-        this.send({
-          command: 'portStreamChunkingTestEventStats',
-          eventStats: getEventStats(),
-        });
-      } catch (error) {
-        this.send({
-          command: 'backgroundError',
-          error: error instanceof Error ? error.message : String(error),
-        });
-      }
-    } else if (message.command === 'emitPortStreamChunkingTestPayload') {
-      try {
-        const testHooks = globalThis.stateHooks as
-          | PortStreamChunkingTestHooks
-          | undefined;
-        const emitPayload = testHooks?.emitPortStreamChunkingTestPayload;
-
-        if (!emitPayload) {
-          throw new Error(
-            'Port stream chunking test payload hook is unavailable',
-          );
-        }
-
-        await emitPayload(message.byteLength, message.sampleId);
-
-        this.send({ command: 'portStreamChunkingTestPayloadEmitted' });
-      } catch (error) {
-        this.send({
-          command: 'backgroundError',
-          error: error instanceof Error ? error.message : String(error),
-        });
-      }
     } else if (
       message.command === 'waitUntilWindowWithProperty' &&
       message.property &&

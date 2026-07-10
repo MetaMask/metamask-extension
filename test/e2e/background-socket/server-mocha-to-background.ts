@@ -2,7 +2,6 @@ import events from 'events';
 import { WebSocketServer } from 'ws';
 import {
   MessageType,
-  PortStreamChunkingTestEventStats,
   ServerMochaEventEmitterType,
   WindowProperties,
 } from './types';
@@ -83,23 +82,6 @@ class ServerMochaToBackground {
   private receivedMessage(message: MessageType) {
     if (message.command === 'openTabs' && message.tabs) {
       this.eventEmitter.emit('openTabs', message.tabs);
-    } else if (message.command === 'portStreamChunkingTestPayloadEmitted') {
-      this.eventEmitter.emit('portStreamChunkingTestPayloadEmitted');
-    } else if (
-      message.command === 'portStreamChunkingTestEventStats' &&
-      message.eventStats
-    ) {
-      this.eventEmitter.emit(
-        'portStreamChunkingTestEventStats',
-        message.eventStats,
-      );
-    } else if (message.command === 'backgroundError') {
-      const error = new Error(message.error ?? 'Unknown background error');
-      if (this.eventEmitter.listenerCount('error') > 0) {
-        this.eventEmitter.emit('error', error);
-      } else {
-        throw error;
-      }
     } else if (message.command === 'notFound') {
       const error = new Error(
         `No window found by background script with ${message.property}: ${message.value}`,
@@ -129,30 +111,6 @@ class ServerMochaToBackground {
     return tabs;
   }
 
-  async getPortStreamChunkingTestEventStats() {
-    const eventStatsPromise = this.waitForPortStreamChunkingTestEventStats();
-
-    this.send({ command: 'getPortStreamChunkingTestEventStats' });
-
-    return await eventStatsPromise;
-  }
-
-  async emitPortStreamChunkingTestPayload(
-    byteLength: number,
-    sampleId?: string,
-  ) {
-    const payloadEmittedPromise =
-      this.waitForPortStreamChunkingTestPayloadEmitted();
-
-    this.send({
-      command: 'emitPortStreamChunkingTestPayload',
-      byteLength,
-      sampleId,
-    });
-
-    await payloadEmittedPromise;
-  }
-
   // This is a way to wait for an event async, without timeouts or polling
   async waitForResponse() {
     return new Promise((resolve, reject) => {
@@ -164,57 +122,6 @@ class ServerMochaToBackground {
         this.eventEmitter.removeListener('error', reject);
         resolve(result);
       });
-    });
-  }
-
-  async waitForPortStreamChunkingTestPayloadEmitted() {
-    return new Promise<void>((resolve, reject) => {
-      const { eventEmitter } = this;
-      function onError(error: Error) {
-        cleanup();
-        reject(error);
-      }
-      function onPayloadEmitted() {
-        cleanup();
-        resolve();
-      }
-      function cleanup() {
-        eventEmitter.removeListener('error', onError);
-        eventEmitter.removeListener(
-          'portStreamChunkingTestPayloadEmitted',
-          onPayloadEmitted,
-        );
-      }
-
-      eventEmitter.once('error', onError);
-      eventEmitter.once(
-        'portStreamChunkingTestPayloadEmitted',
-        onPayloadEmitted,
-      );
-    });
-  }
-
-  async waitForPortStreamChunkingTestEventStats() {
-    return new Promise<PortStreamChunkingTestEventStats>((resolve, reject) => {
-      const { eventEmitter } = this;
-      function onError(error: Error) {
-        cleanup();
-        reject(error);
-      }
-      function onEventStats(eventStats: PortStreamChunkingTestEventStats) {
-        cleanup();
-        resolve(eventStats);
-      }
-      function cleanup() {
-        eventEmitter.removeListener('error', onError);
-        eventEmitter.removeListener(
-          'portStreamChunkingTestEventStats',
-          onEventStats,
-        );
-      }
-
-      eventEmitter.once('error', onError);
-      eventEmitter.once('portStreamChunkingTestEventStats', onEventStats);
     });
   }
 }

@@ -160,14 +160,7 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * `null` in production builds so we do not keep loose mutable test globals.
  */
 const inTestState = inTest
-  ? {
-      restoreInProgress: false,
-      hasVaultAtStartup: null,
-      portStreamChunkingTestEventStats: {
-        count: 0,
-        lastChunkSize: null,
-      },
-    }
+  ? { restoreInProgress: false, hasVaultAtStartup: null }
   : null;
 
 const { safePersist, requestSafeReload, evacuate } =
@@ -1559,39 +1552,6 @@ export function setupController(
     cronjobControllerStorageManager,
   });
 
-  if (inTest) {
-    global.stateHooks.getPortStreamChunkingTestEventStats = () => ({
-      ...inTestState.portStreamChunkingTestEventStats,
-    });
-
-    global.stateHooks.emitPortStreamChunkingTestPayload = (
-      byteLength,
-      sampleId,
-    ) => {
-      const normalizedByteLength = Number(byteLength);
-
-      if (
-        !Number.isSafeInteger(normalizedByteLength) ||
-        normalizedByteLength <= 0
-      ) {
-        throw new Error(`Invalid port stream test payload size: ${byteLength}`);
-      }
-
-      const payload = new Uint8Array(normalizedByteLength);
-      payload.fill(1);
-
-      controller.appStateController.setDappSwapComparisonData(
-        'port-stream-chunking',
-        {
-          commands: sampleId
-            ? `port-stream-chunking-test:${sampleId}`
-            : 'port-stream-chunking-test',
-          quotes: payload,
-        },
-      );
-    };
-  }
-
   // Wire up the callback to notify the UI when set operations fail
   persistenceManager.setOnSetFailed((errorType) => {
     controller.appStateController.setStorageWriteErrorType(errorType);
@@ -1783,12 +1743,6 @@ export function setupController(
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
-        if (inTestState) {
-          inTestState.portStreamChunkingTestEventStats.count += 1;
-          inTestState.portStreamChunkingTestEventStats.lastChunkSize =
-            chunkSize;
-        }
-
         trackEvent(
           createEventBuilder(MetaMetricsEventName.PortStreamChunked)
             .addCategory(MetaMetricsEventCategory.PortStream)
