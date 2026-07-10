@@ -42,8 +42,10 @@ import {
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   getCompletedOnboarding,
+  getHasSeenOnboardingCompletionPage,
   getIsPrimarySeedPhraseBackedUp,
   getOpenedWithSidepanel,
+  getShouldUnlockBeforeOnboardingCompletion,
 } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
@@ -92,6 +94,7 @@ import ImportSRP from './import-srp/import-srp';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
 import { useOnboardingSearchParams } from './hooks/useOnboardingSearchParams';
+import { useOnboardingCompletion } from './hooks/useOnboardingCompletion';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
@@ -123,8 +126,15 @@ export default function OnboardingFlow() {
   const theme = useTheme();
   const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
+  const hasSeenOnboardingCompletionPage = useSelector(
+    getHasSeenOnboardingCompletionPage,
+  );
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
+  const { completeOnboarding } = useOnboardingCompletion();
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
+  const shouldUnlockBeforeOnboardingCompletion = useSelector(
+    getShouldUnlockBeforeOnboardingCompletion,
+  );
   const { isFromReminder, isFromSettingsSecurity } =
     useOnboardingSearchParams();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -223,6 +233,14 @@ export default function OnboardingFlow() {
         },
       );
     }
+
+    if (
+      pathname === ONBOARDING_COMPLETION_ROUTE &&
+      !isFromReminder &&
+      shouldUnlockBeforeOnboardingCompletion
+    ) {
+      navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
+    }
   }, [
     isUnlocked,
     completedOnboarding,
@@ -231,6 +249,8 @@ export default function OnboardingFlow() {
     navigate,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
+    isFromReminder,
+    shouldUnlockBeforeOnboardingCompletion,
   ]);
 
   useEffect(() => {
@@ -330,6 +350,14 @@ export default function OnboardingFlow() {
           }
           navigate(redirectTo, { replace: true });
         }
+      } else if (
+        hasSeenOnboardingCompletionPage &&
+        !completedOnboarding &&
+        !isFromReminder
+      ) {
+        // User saw wallet-ready but closed without tapping Done. After unlock,
+        // finish onboarding the same way as the Done button (no completion UI).
+        await completeOnboarding(true);
       } else {
         navigate(nextRoute, { replace: true });
       }

@@ -10,7 +10,7 @@ import { Box, Skeleton } from '@metamask/design-system-react';
 import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -66,7 +66,6 @@ export type CoinOverviewProps = {
   classPrefix?: string;
   chainId: CaipChainId | Hex;
   isBridgeChain: boolean;
-  isBuyableChain: boolean;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
 };
@@ -180,13 +179,12 @@ export const CoinOverview = ({
   classPrefix = 'coin',
   chainId,
   isBridgeChain,
-  isBuyableChain,
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const analyticsId = useSelector(getAnalyticsId);
   const completedMetaMetricsOnboarding = useSelector(
@@ -233,29 +231,31 @@ export const CoinOverview = ({
       isMarketingEnabled === true,
     );
     global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: 'Home',
-        text: 'Portfolio',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'Home',
+          text: 'Portfolio',
+        })
+        .build(),
+    );
   }, [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
-    trackEvent({
-      event: MetaMetricsEventName.NavReceiveButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        text: 'Receive',
-        location: 'balance_empty_state',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavReceiveButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          text: 'Receive',
+          location: 'balance_empty_state',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+        })
+        .build(),
+    );
 
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
@@ -343,7 +343,6 @@ export const CoinOverview = ({
             isSwapsChain,
             isSigningEnabled,
             isBridgeChain,
-            isBuyableChain,
             classPrefix,
           }}
         />

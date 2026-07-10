@@ -242,7 +242,8 @@ export const AccountOverviewTabs = ({
         activeTab={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
-          className: 'px-4',
+          className:
+            'mx-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade',
         }}
       >
         {showTokens && (

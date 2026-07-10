@@ -19,7 +19,6 @@ import {
   setLastVisitedPerpsRoute,
 } from '../../store/actions';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
-import { fetchBuyableChains } from '../../ducks/ramps';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   getRedirectAfterDefaultPage,
@@ -113,7 +112,6 @@ function useHomeActions() {
       attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
       setBasicFunctionalityModalOpen: () =>
         dispatch(openBasicFunctionalityModal()),
-      fetchBuyableChains: () => dispatch(fetchBuyableChains()),
       setRedirectAfterDefaultPage: (redirect: object) =>
         dispatch(setRedirectAfterDefaultPage(redirect)),
       clearRedirectAfterDefaultPage: () =>
