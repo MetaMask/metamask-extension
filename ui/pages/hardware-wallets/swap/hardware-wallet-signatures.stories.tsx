@@ -18,18 +18,6 @@ import {
   type HwSwapStoryArgs,
 } from '../../../__mocks__/hardware-wallet-swap/story-state';
 
-/**
- * Stories for the real `HardwareWalletSignatures` component.
- *
- * The component reads its state from hooks that touch Redux, the hardware
- * wallet contexts, and the background. Those I/O hooks are intercepted via the
- * scoped webpack aliases defined in `.storybook/main.js` (pointing at
- * `ui/__mocks__/hardware-wallet-swap/hooks.ts`), which neutralize side effects
- * and drive the component's REAL internal state machine to the status selected
- * in the controls. Everything rendered here — the state machine, the step
- * derivation, the JSX — is the genuine component output.
- */
-
 const CHAIN_ID_MOCK = '0x1';
 
 type Args = HwSwapStoryArgs;
