@@ -2117,7 +2117,6 @@
       "countries": {
         "data": [],
         "error": null,
-        "errorKey": null,
         "isLoading": false,
         "selected": null
       },
