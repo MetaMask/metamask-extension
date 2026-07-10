@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { formatAmount } from '../../../../shared/lib/format-amount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 
@@ -191,19 +192,21 @@ export const readMmFee = (quote: QuoteResponse) => {
   const quoteBpsFee = quote.quote.feeData?.metabridge?.quoteBpsFee;
   // @ts-expect-error: controller types are not up to date yet
   const baseBpsFee = quote.quote.feeData?.metabridge?.baseBpsFee;
+  const discountType = quote.quote.feeData?.metabridge?.discountType;
   const quoteFeePercentage = bpsToPercentage(quoteBpsFee);
   const baseFeePercentage = bpsToPercentage(baseBpsFee);
 
   const isDiscounted = Boolean(
-    quoteFeePercentage &&
+    discountType &&
+      quoteFeePercentage &&
       baseFeePercentage &&
-      baseFeePercentage !== quoteFeePercentage &&
-      Boolean(quoteBpsFee),
+      Number(baseBpsFee) > Number(quoteBpsFee),
   );
 
   return {
     isDiscounted,
     baseFeePercentage,
     quoteFeePercentage,
+    discountType,
   };
 };

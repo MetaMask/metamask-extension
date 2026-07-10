@@ -10,8 +10,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
-import { isErrorStepStatus, getStepLabelColor } from '../hardware-wallet-signatures.utils';
-import { SignatureStepStatus, type QrHardwareSignRequest } from '../types';
+import { getStepLabelColor } from '../hardware-wallet-signatures.utils';
+import type { QrHardwareSignRequest } from '../types';
 import SignatureStatusIcon from '../signature-status-icon';
 import QrSignatureCode from '../qr-signature-code';
 import type { SignatureStepListProps } from './signature-step-list.types';
@@ -57,7 +57,7 @@ const InlineQrSignatureCode = ({
  * @param props.activeQrStep
  * @param props.qrSignRequest
  */
-export default function SignatureStepList({
+const SignatureStepList = ({
   hasSigningRequest,
   needsTwoConfirmations,
   firstStepStatus,
@@ -69,7 +69,7 @@ export default function SignatureStepList({
   showInlineQrCode,
   activeQrStep,
   qrSignRequest,
-}: SignatureStepListProps) {
+}: Readonly<SignatureStepListProps>) => {
   if (!hasSigningRequest) {
     return null;
   }
@@ -95,7 +95,10 @@ export default function SignatureStepList({
               {firstStepLabel}
             </Text>
             {firstStepDescription && (
-              <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
+              <Text
+                color={TextColor.TextAlternative}
+                variant={TextVariant.BodyMd}
+              >
                 {firstStepDescription}
               </Text>
             )}
@@ -126,7 +129,10 @@ export default function SignatureStepList({
             {finalStepLabel}
           </Text>
           {finalStepDescription && (
-            <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
+            <Text
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodyMd}
+            >
               {finalStepDescription}
             </Text>
           )}
@@ -140,4 +146,6 @@ export default function SignatureStepList({
       </li>
     </ul>
   );
-}
+};
+
+export default React.memo(SignatureStepList);

@@ -7,14 +7,16 @@ import {
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
-import { getExtensionSkipTransactionStatusPage } from '../../../shared/lib/selectors/smart-transactions';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
   submitBridgeTx,
 } from '../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../ducks/bridge/actions';
+import {
+  getBridgeLocation,
+  setWasTxDeclined,
+} from '../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
   getFromAccount,
@@ -28,13 +30,12 @@ import {
   ConnectionStatus,
   useHardwareWalletActions,
   useHardwareWalletConfig,
-  useHardwareWalletState,
-} from '../../contexts/hardware-wallets';
+} from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
-import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useBridgeNavigation } from './useBridgeNavigation';
+import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 type UseSubmitBridgeTransactionOptions = {
@@ -55,7 +56,6 @@ export default function useSubmitBridgeTransaction({
     useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
-  const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
@@ -133,11 +133,14 @@ export default function useSubmitBridgeTransaction({
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     try {
+      const location = await getBridgeLocation();
+
       if (intentData) {
         await dispatch(
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
@@ -155,6 +158,7 @@ export default function useSubmitBridgeTransaction({
               fromTokenBalanceInUsd,
               getHasSufficientGasForQuote(quoteResponse),
             ),
+            location,
             toToken?.securityData?.type ?? null,
           ),
         );
@@ -194,20 +198,7 @@ export default function useSubmitBridgeTransaction({
       setIsSubmitting(false);
     }
 
-    const to =
-      submitOnHardwareWalletSigningPage || toastEnabled
-        ? DEFAULT_ROUTE
-        : `${DEFAULT_ROUTE}?tab=activity`;
-
-    if (submissionSucceeded && hardwareWalletUsed) {
-      onHardwareWalletSubmitted?.();
-
-      if (submitOnHardwareWalletSigningPage) {
-        return;
-      }
-    }
-
-    navigate(to, {
+    navigate(DEFAULT_ROUTE, {
       state: { stayOnHomePage: true },
       replace: true,
     });

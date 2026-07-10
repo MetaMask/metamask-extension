@@ -457,6 +457,7 @@ describe('preferences controller', () => {
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
+        isBasicFunctionalityConsolidatedEnabled: false,
         skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -469,6 +470,7 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        gasSponsorshipOptOutByChainId: {},
       });
     });
 
@@ -488,6 +490,7 @@ describe('preferences controller', () => {
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
+        isBasicFunctionalityConsolidatedEnabled: false,
         skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
@@ -501,6 +504,7 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        gasSponsorshipOptOutByChainId: {},
       });
     });
 
@@ -683,7 +687,9 @@ describe('preferences controller', () => {
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -752,7 +758,9 @@ describe('preferences controller', () => {
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -834,7 +842,9 @@ describe('preferences controller', () => {
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -917,7 +927,9 @@ describe('preferences controller', () => {
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -1241,6 +1253,7 @@ describe('preferences controller', () => {
             showDefaultAddress: true,
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
+            isBasicFunctionalityConsolidatedEnabled: true,
             skipDeepLinkInterstitial: false,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,
@@ -1253,6 +1266,7 @@ describe('preferences controller', () => {
               sortCallback: 'stringNumeric',
             },
             tokenNetworkFilter: {},
+            gasSponsorshipOptOutByChainId: {},
           },
         },
       });

@@ -1,8 +1,9 @@
 name: Upload extension to Chrome Web Store
 
 # INFRA-3646 — workflow_dispatch upload to CWS via GCP WIF (no refresh tokens in GitHub Secrets).
-# Beta: cws-beta environment + *_BETA repo variables (INFRA-3645).
-# Production: cws-production environment + prod variables (INFRA-3644).
+# dev: cws-dev environment + *_DEV repo variables (UAT smoke lane; distinct from build-type beta).
+# production: cws-production environment + prod variables (INFRA-3644).
+# flask: cws-flask environment + prod WIF vars + EXTENSION_ID_FLASK (INFRA-3734).
 # CWS API v2 upload (v1.1 sunsets 2026-10-15): chromewebstore.googleapis.com/upload/v2/...
 # INFRA-3649 — Runway sender verification (defense-in-depth; primary gate is WIF CEL on actor_id).
 
@@ -14,13 +15,14 @@ on:
         required: true
         type: string
       target:
-        description: 'CWS target'
+        description: 'CWS target — dev (UAT), production (PRD main), flask (PRD Flask build)'
         required: true
         type: choice
-        default: beta
+        default: dev
         options:
-          - beta
+          - dev
           - production
+          - flask
       dry-run:
         description: 'Verify sender identity and WIF auth without uploading (skips download and CWS upload)'
         required: false
@@ -30,6 +32,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  attestations: read # Required for gh attestation verify (INFRA-3661)
 
 jobs:
   upload:
@@ -39,27 +42,39 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.target }}
       cancel-in-progress: false
-    environment: ${{ inputs.target == 'production' && 'cws-production' || inputs.target == 'beta' && 'cws-beta' || null }}
+    environment: ${{ inputs.target == 'production' && 'cws-production' || inputs.target == 'flask' && 'cws-flask' || inputs.target == 'dev' && 'cws-dev' || null }}
     env:
       VERSION: ${{ inputs.version }}
       RELEASE_TAG: v${{ inputs.version }}
-      ZIP_NAME: metamask-chrome-${{ inputs.version }}.zip
     steps:
       - name: Validate inputs and configuration
         env:
           TARGET: ${{ inputs.target }}
-          WIF_PROVIDER_BETA: ${{ vars.WIF_PROVIDER_BETA }}
-          WIF_SERVICE_ACCOUNT_BETA: ${{ vars.WIF_SERVICE_ACCOUNT_BETA }}
-          EXTENSION_ID_BETA: ${{ vars.EXTENSION_ID_BETA }}
-          PUBLISHER_ID_BETA: ${{ vars.PUBLISHER_ID_BETA }}
-          PUBLISHER_EMAIL_BETA: ${{ vars.PUBLISHER_EMAIL_BETA }}
+          WIF_PROVIDER_DEV: ${{ vars.WIF_PROVIDER_DEV }}
+          WIF_SERVICE_ACCOUNT_DEV: ${{ vars.WIF_SERVICE_ACCOUNT_DEV }}
+          EXTENSION_ID_DEV: ${{ vars.EXTENSION_ID_DEV }}
+          PUBLISHER_ID_DEV: ${{ vars.PUBLISHER_ID_DEV }}
+          PUBLISHER_EMAIL_DEV: ${{ vars.PUBLISHER_EMAIL_DEV }}
           WIF_PROVIDER_PROD: ${{ vars.WIF_PROVIDER }}
           WIF_SERVICE_ACCOUNT_PROD: ${{ vars.WIF_SERVICE_ACCOUNT }}
           EXTENSION_ID_PROD: ${{ vars.EXTENSION_ID }}
+          EXTENSION_ID_FLASK: ${{ vars.EXTENSION_ID_FLASK }}
           PUBLISHER_ID_PROD: ${{ vars.PUBLISHER_ID }}
           PUBLISHER_EMAIL_PROD: ${{ vars.PUBLISHER_EMAIL }}
         run: |
           set -euo pipefail
+          GITHUB_REF="${{ github.ref }}"
+          if [[ "${TARGET}" == "dev" ]]; then
+            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+              echo "::error::Dev (cws-dev) uploads must run from refs/heads/main (current: ${GITHUB_REF})"
+              exit 1
+            fi
+          elif [[ "${TARGET}" == "production" || "${TARGET}" == "flask" ]]; then
+            if [[ "${GITHUB_REF}" != "refs/heads/main" && ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
+              echo "::error::Production and Flask uploads must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+              exit 1
+            fi
+          fi
           if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+){0,3}$ ]]; then
             echo "::error::Invalid version format (Chrome manifest): ${VERSION} — use 1–4 dot-separated integers (e.g. 13.0.0), not semver pre-release/build metadata"
             exit 1
@@ -75,28 +90,42 @@ jobs:
               exit 1
             fi
           done
-          if [[ "${TARGET}" == "production" && "${{ github.ref }}" != "refs/heads/main" ]]; then
-            echo "::error::Production uploads must run from the main branch (current: ${{ github.ref }})"
-            exit 1
-          fi
-          if [[ "${TARGET}" == "beta" ]]; then
-            WIF_PROVIDER="${WIF_PROVIDER_BETA}"
-            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_BETA}"
-            EXTENSION_ID="${EXTENSION_ID_BETA}"
-            PUBLISHER_ID="${PUBLISHER_ID_BETA}"
-            PUBLISHER_EMAIL="${PUBLISHER_EMAIL_BETA}"
+          if [[ "${TARGET}" == "dev" ]]; then
+            WIF_PROVIDER="${WIF_PROVIDER_DEV}"
+            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
+            EXTENSION_ID="${EXTENSION_ID_DEV}"
+            PUBLISHER_ID="${PUBLISHER_ID_DEV}"
+            PUBLISHER_EMAIL="${PUBLISHER_EMAIL_DEV}"
+            ZIP_NAME="metamask-chrome-${VERSION}.zip"
           elif [[ "${TARGET}" == "production" ]]; then
             WIF_PROVIDER="${WIF_PROVIDER_PROD}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
             EXTENSION_ID="${EXTENSION_ID_PROD}"
             PUBLISHER_ID="${PUBLISHER_ID_PROD}"
             PUBLISHER_EMAIL="${PUBLISHER_EMAIL_PROD}"
+            ZIP_NAME="metamask-chrome-${VERSION}.zip"
+          elif [[ "${TARGET}" == "flask" ]]; then
+            WIF_PROVIDER="${WIF_PROVIDER_PROD}"
+            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
+            EXTENSION_ID="${EXTENSION_ID_FLASK}"
+            PUBLISHER_ID="${PUBLISHER_ID_PROD}"
+            PUBLISHER_EMAIL="${PUBLISHER_EMAIL_PROD}"
+            ZIP_NAME="metamask-chrome-${VERSION}-flask.0.zip"
           else
             echo "::error::Invalid target: ${TARGET}"
             exit 1
           fi
+          if [[ -z "${EXTENSION_ID:-}" ]]; then
+            case "${TARGET}" in
+              dev) EXTENSION_ID_VAR="EXTENSION_ID_DEV" ;;
+              production) EXTENSION_ID_VAR="EXTENSION_ID" ;;
+              flask) EXTENSION_ID_VAR="EXTENSION_ID_FLASK" ;;
+            esac
+            echo "::error::Missing ${EXTENSION_ID_VAR} repository variable for target '${TARGET}'"
+            exit 1
+          fi
           missing=""
-          for name in WIF_PROVIDER WIF_SERVICE_ACCOUNT EXTENSION_ID PUBLISHER_ID PUBLISHER_EMAIL; do
+          for name in WIF_PROVIDER WIF_SERVICE_ACCOUNT PUBLISHER_ID PUBLISHER_EMAIL; do
             if [[ -z "${!name:-}" ]]; then
               missing="${missing} ${name}"
             fi
@@ -105,12 +134,38 @@ jobs:
             echo "::error::Missing repository variables for target '${TARGET}':${missing}"
             exit 1
           fi
+          if [[ "${TARGET}" == "flask" ]]; then
+            if [[ ! "${ZIP_NAME}" =~ ^metamask-chrome-([0-9]+(\.[0-9]+){0,3})-flask\.0\.zip$ ]]; then
+              echo "::error::Flask target requires asset metamask-chrome-{version}-flask.0.zip (got: ${ZIP_NAME})"
+              exit 1
+            fi
+            ASSET_VERSION="${BASH_REMATCH[1]}"
+            if [[ "${ASSET_VERSION}" != "${VERSION}" ]]; then
+              echo "::error::Flask asset version '${ASSET_VERSION}' does not match input version '${VERSION}'"
+              exit 1
+            fi
+          elif [[ "${TARGET}" == "production" || "${TARGET}" == "dev" ]]; then
+            if [[ ! "${ZIP_NAME}" =~ ^metamask-chrome-([0-9]+(\.[0-9]+){0,3})\.zip$ ]]; then
+              echo "::error::Main target requires asset metamask-chrome-{version}.zip (got: ${ZIP_NAME})"
+              exit 1
+            fi
+            ASSET_VERSION="${BASH_REMATCH[1]}"
+            if [[ "${ASSET_VERSION}" != "${VERSION}" ]]; then
+              echo "::error::Asset version '${ASSET_VERSION}' does not match input version '${VERSION}'"
+              exit 1
+            fi
+            if [[ "${ZIP_NAME}" == *"-flask"* || "${ZIP_NAME}" == *"-beta"* ]]; then
+              echo "::error::Non-main artifact not allowed for target '${TARGET}'"
+              exit 1
+            fi
+          fi
           {
             echo "WIF_PROVIDER=${WIF_PROVIDER}"
             echo "WIF_SERVICE_ACCOUNT=${WIF_SERVICE_ACCOUNT}"
             echo "EXTENSION_ID=${EXTENSION_ID}"
             echo "PUBLISHER_ID=${PUBLISHER_ID}"
             echo "PUBLISHER_EMAIL=${PUBLISHER_EMAIL}"
+            echo "ZIP_NAME=${ZIP_NAME}"
           } >> "${GITHUB_ENV}"
           {
             echo "## CWS upload"
@@ -124,13 +179,14 @@ jobs:
             echo "| Extension ID | \`${EXTENSION_ID}\` |"
             echo "| Publisher ID | \`${PUBLISHER_ID}\` |"
             echo "| Service account | \`${WIF_SERVICE_ACCOUNT}\` |"
+            echo "| Branch | \`${GITHUB_REF}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      # Defense-in-depth: fail fast if a non-Runway actor dispatches a production run.
-      # The authoritative gate is WIF CEL (INFRA-3644) which rejects non-Runway OIDC
+      # Defense-in-depth: fail fast if a non-Runway actor dispatches a production or flask run.
+      # The authoritative gate is WIF CEL (INFRA-3644 / INFRA-3734) which rejects non-Runway OIDC
       # tokens at GCP token exchange; this step provides an earlier, human-readable error.
-      - name: Verify Runway sender (production only)
-        if: inputs.target == 'production'
+      - name: Verify Runway sender (production and flask)
+        if: inputs.target == 'production' || inputs.target == 'flask'
         env:
           SENDER_ID: ${{ github.event.sender.id }}
           SENDER_LOGIN: ${{ github.event.sender.login }}
@@ -141,7 +197,7 @@ jobs:
           echo "Sender: ${SENDER_LOGIN} (id=${SENDER_ID})"
           echo "Expected: ${RUNWAY_ACTOR_LOGIN} (id=${RUNWAY_ACTOR_ID})"
           if [[ "${SENDER_ID}" != "${RUNWAY_ACTOR_ID}" ]]; then
-            echo "::error::Production uploads must be dispatched by Runway (expected sender_id=${RUNWAY_ACTOR_ID} / ${RUNWAY_ACTOR_LOGIN}, got ${SENDER_ID} / ${SENDER_LOGIN}). WIF CEL would also reject this request at GCP token exchange."
+            echo "::error::Production and Flask uploads must be dispatched by Runway (expected sender_id=${RUNWAY_ACTOR_ID} / ${RUNWAY_ACTOR_LOGIN}, got ${SENDER_ID} / ${SENDER_LOGIN}). WIF CEL would also reject this request at GCP token exchange."
             exit 1
           fi
           echo "Sender verified: ${SENDER_LOGIN} (id=${SENDER_ID})"
@@ -174,9 +230,48 @@ jobs:
             --pattern "${ZIP_NAME}"
           ls -lh "${ZIP_NAME}"
 
-      # Beta/dev listing rejects manifest.key tied to production extension ID (POC lesson).
-      - name: Strip manifest key from zip (beta only)
-        if: inputs.target == 'beta' && !inputs.dry-run
+      - name: Verify artifact attestation
+        if: ${{ !inputs.dry-run }}
+        id: verify-attestation
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZIP_NAME: ${{ env.ZIP_NAME }}
+        run: |
+          set -euo pipefail
+          echo "=== Verifying build provenance attestation ==="
+          gh attestation verify "${ZIP_NAME}" \
+            --repo "${{ github.repository }}" \
+            --signer-workflow "${{ github.repository }}/.github/workflows/publish-release-from-release-head.yml" \
+            --source-ref "refs/heads/release/${VERSION}"
+          echo "Attestation verified for ${ZIP_NAME}"
+
+      - name: Verify SHA256SUMS
+        if: ${{ !inputs.dry-run }}
+        id: verify-sha256sums
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZIP_NAME: ${{ env.ZIP_NAME }}
+        run: |
+          set -euo pipefail
+          echo "=== Downloading SHA256SUMS from release ==="
+          gh release download "${RELEASE_TAG}" \
+            --repo "${{ github.repository }}" \
+            --pattern "SHA256SUMS"
+          cat SHA256SUMS
+          echo ""
+          echo "=== Verifying ${ZIP_NAME} digest ==="
+          if ! awk -v zip="${ZIP_NAME}" '{
+            f = $2; sub(/^\*/, "", f);
+            if (f == zip) { print; found = 1; exit }
+          } END { exit !found }' SHA256SUMS | sha256sum -c -; then
+            echo "::error::SHA256SUMS verification failed for ${ZIP_NAME}"
+            exit 1
+          fi
+          echo "SHA256SUMS check: PASSED"
+
+      # Dev listing rejects manifest.key tied to production extension ID (POC lesson).
+      - name: Strip manifest key from zip (dev only)
+        if: inputs.target == 'dev' && !inputs.dry-run
         run: |
           set -euo pipefail
           mkdir -p /tmp/extension
@@ -285,6 +380,8 @@ jobs:
             echo "|-------|-------|"
             echo "| HTTP status | \`${{ steps.cws-upload.outputs.http_code || 'n/a' }}\` |"
             echo "| CWS uploadState | \`${{ steps.cws-upload.outputs.upload_state || 'n/a' }}\` |"
+            echo "| Attestation verified | ${{ steps.verify-attestation.outcome == 'success' && '✅' || '❌' }} |"
+            echo "| SHA256SUMS verified | ${{ steps.verify-sha256sums.outcome == 'success' && '✅' || '❌' }} |"
             echo "| Published to users | no (upload only) |"
             echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
           } >> "${GITHUB_STEP_SUMMARY}"

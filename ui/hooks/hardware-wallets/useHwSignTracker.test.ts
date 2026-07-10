@@ -351,6 +351,72 @@ describe.each<string, boolean>([
     });
   });
 
+  it('does not classify a contract-creation tx (no `to`) as the gas step when expected.to is set', async () => {
+    const { dispatchEvent, fire } = await setupTracker({
+      expectedTransactionParams: [
+        {
+          to: '0xabc0000000000000000000000000000000000000',
+          value: '0x0',
+        },
+      ],
+      expectedTxIds: ['tx-main'],
+      includeSendBundleTransactions: true,
+      useBatchTracking,
+    });
+
+    // Root SEND tx signs first → FirstSignatureSubmitted.
+    await fire(STATUS_UPDATED, {
+      id: 'tx-main',
+      type: TransactionType.simpleSend,
+    });
+
+    // An unrelated contract-creation tx has no `to` but happens to share the
+    // gas step's `value`. It must NOT be misclassified as the bundle gas step
+    // (TransactionSubmitted), or the real gas-tx signature would be dropped
+    // when the state machine advances to terminal.
+    await fire(STATUS_UPDATED, {
+      data: '0xdeploy',
+      id: 'tx-unrelated-contract-creation',
+      type: TransactionType.contractInteraction,
+      value: '0x0',
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledTimes(1);
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+    });
+  });
+
+  it('does not match transactions when an expected param entry is empty', async () => {
+    const { dispatchEvent, fire } = await setupTracker({
+      expectedTransactionParams: [{}],
+      expectedTxIds: ['tx-main'],
+      includeSendBundleTransactions: true,
+      useBatchTracking,
+    });
+
+    // The root SEND tx still advances via expectedTxIds, but the generated
+    // batch member must NOT be classified as TransactionSubmitted by an empty
+    // param entry (which would otherwise match every transaction and drop the
+    // gas-tx signature).
+    await fire(STATUS_UPDATED, {
+      id: 'tx-main',
+      type: TransactionType.simpleSend,
+    });
+    await fire(STATUS_UPDATED, {
+      data: '0x123',
+      id: 'tx-generated-gas-payment',
+      to: '0xabc0000000000000000000000000000000000000',
+      type: TransactionType.contractInteraction,
+      value: '0x0',
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledTimes(1);
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+    });
+  });
+
   it('ignores signed events from other addresses', async () => {
     const { dispatchEvent, fire } = await setupTracker({ useBatchTracking });
     await fire(STATUS_UPDATED, {

@@ -10,7 +10,7 @@ import {
   BUNDLE_SEND_TRANSACTION_TYPES,
   BUNDLE_TRANSACTION_TYPES,
 } from './constants';
-import { matchesTx, classifySignedEvent } from './shared-filters';
+import { matchesTx, classifySignedTransactionType } from './shared-filters';
 
 describe('matchesTx', () => {
   it('returns false when targetFrom is undefined', () => {
@@ -73,38 +73,64 @@ describe('matchesTx', () => {
   });
 });
 
-describe('classifySignedEvent', () => {
+describe('classifySignedTransactionType', () => {
   it('returns FirstSignatureSubmitted for bridge approval', () => {
-    expect(classifySignedEvent(TransactionType.bridgeApproval)).toEqual({
+    expect(
+      classifySignedTransactionType(TransactionType.bridgeApproval),
+    ).toEqual({
       type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
     });
   });
 
   it('returns FirstSignatureSubmitted for swap approval', () => {
-    expect(classifySignedEvent(TransactionType.swapApproval)).toEqual({
-      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
-    });
+    expect(classifySignedTransactionType(TransactionType.swapApproval)).toEqual(
+      {
+        type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+      },
+    );
   });
 
   it('returns TransactionSubmitted for bridge trade', () => {
-    expect(classifySignedEvent(TransactionType.bridge)).toEqual({
+    expect(classifySignedTransactionType(TransactionType.bridge)).toEqual({
       type: HardwareWalletSignatureEvent.TransactionSubmitted,
     });
   });
 
   it('returns TransactionSubmitted for swap trade', () => {
-    expect(classifySignedEvent(TransactionType.swap)).toEqual({
+    expect(classifySignedTransactionType(TransactionType.swap)).toEqual({
       type: HardwareWalletSignatureEvent.TransactionSubmitted,
     });
   });
 
   it('returns null for untracked type', () => {
-    expect(classifySignedEvent(TransactionType.contractInteraction)).toBeNull();
+    expect(
+      classifySignedTransactionType(TransactionType.contractInteraction),
+    ).toBeNull();
   });
 
   it('does not classify bundle transaction types by default', () => {
-    expect(classifySignedEvent(TransactionType.gasPayment)).toBeNull();
-    expect(classifySignedEvent(TransactionType.simpleSend)).toBeNull();
+    expect(
+      classifySignedTransactionType(TransactionType.gasPayment),
+    ).toBeNull();
+    expect(
+      classifySignedTransactionType(TransactionType.simpleSend),
+    ).toBeNull();
+  });
+});
+
+describe('bundle transaction type constants', () => {
+  it('includes known fee and send transaction types', () => {
+    expect(BUNDLE_FEE_TRANSACTION_TYPES.has(TransactionType.gasPayment)).toBe(
+      true,
+    );
+    expect(BUNDLE_SEND_TRANSACTION_TYPES.has(TransactionType.simpleSend)).toBe(
+      true,
+    );
+    expect(
+      BUNDLE_SEND_TRANSACTION_TYPES.has(TransactionType.tokenMethodTransfer),
+    ).toBe(true);
+    expect(BUNDLE_TRANSACTION_TYPES.has(TransactionType.gasPayment)).toBe(true);
+    expect(BUNDLE_TRANSACTION_TYPES.has(TransactionType.simpleSend)).toBe(true);
   });
 });
 

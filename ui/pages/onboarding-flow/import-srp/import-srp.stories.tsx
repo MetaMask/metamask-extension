@@ -1,13 +1,12 @@
-import React, { ComponentType } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import type { Meta, StoryObj } from '@storybook/react';
 import ImportSRP from './import-srp';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { UITrackEventMethod } from '../../../contexts/metametrics';
 
 const mockStore = configureStore({
   reducer: {
+    confirmTransaction: (state = { txData: {} }) => state,
     metamask: (
       state = {
         internalAccounts: {
@@ -35,17 +34,8 @@ const mockStore = configureStore({
   },
 });
 
-const mockTrackEvent: UITrackEventMethod = (event, properties) => {
-  console.log('Mock track event:', { event, properties });
-  return Promise.resolve();
-};
-
-const Wrapper = ({ children }) => (
-  <Provider store={mockStore}>
-    <MetaMetricsContext.Provider value={mockTrackEvent}>
-      {children}
-    </MetaMetricsContext.Provider>
-  </Provider>
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <Provider store={mockStore}>{children}</Provider>
 );
 
 const meta: Meta<typeof ImportSRP> = {

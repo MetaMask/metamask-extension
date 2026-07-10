@@ -14,7 +14,10 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+} from '../../helpers/constants/routes';
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -399,6 +402,7 @@ describe('PerpsMarketDetailPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
@@ -451,6 +455,102 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
+    });
+
+    it('masks position P&L, return, size, and margin when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-return-value'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-position-size-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-margin-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('uses the default text color instead of green/red for P&L and return when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      const pnl = screen.getByTestId('perps-position-pnl-value');
+      const returnValue = screen.getByTestId('perps-position-return-value');
+      expect(pnl).toHaveClass('text-default');
+      expect(pnl).not.toHaveClass('text-success-default');
+      expect(pnl).not.toHaveClass('text-error-default');
+      expect(returnValue).toHaveClass('text-default');
+      expect(returnValue).not.toHaveClass('text-success-default');
+      expect(returnValue).not.toHaveClass('text-error-default');
+    });
+
+    it('uses the success color for a profitable P&L outside of privacy mode', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveClass(
+        'text-success-default',
+      );
+    });
+
+    it('masks entry price, liquidation price, funding payments, and auto close TP/SL when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(
+        screen.getByTestId('perps-position-entry-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-liquidation-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-funding-value'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-auto-close-tp-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(screen.getByTestId('perps-auto-close-sl-value')).toHaveTextContent(
+        '••••••',
+      );
     });
 
     it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
@@ -588,10 +688,15 @@ describe('PerpsMarketDetailPage', () => {
     it('displays market symbol and price', async () => {
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-price')).toBeInTheDocument();
-      expect(getByText('ETH-USD')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Ethereum',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'ETH-USDC perp',
+      );
     });
 
     it('displays the market max leverage pill in the header', async () => {
@@ -625,10 +730,42 @@ describe('PerpsMarketDetailPage', () => {
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
-      expect(getByText('BTC-USD')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Bitcoin',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'BTC-USDC perp',
+      );
+    });
+
+    it('shows the ticker instead of the full name in the header when the full asset names flag is disabled', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const state = createMockState(true);
+      state.metamask.remoteFeatureFlags.perpsShowFullAssetNames = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      const store = mockStore(state);
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent('BTC');
+      expect(getByTestId('perps-market-detail-name')).not.toHaveTextContent(
+        'Bitcoin',
+      );
+    });
+
+    it('navigates to the market list when the header chevron is clicked', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      getByTestId('perps-market-detail-market-list-button').click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_MARKET_LIST_ROUTE);
     });
 
     it('displays back button', async () => {
@@ -820,11 +957,16 @@ describe('PerpsMarketDetailPage', () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:TSLA' });
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
-      // Should display "TSLA-USD" with the stripped display name
-      expect(getByText('TSLA-USD')).toBeInTheDocument();
+      // Should display the full name and the ticker-collateral pair (stripped display name)
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Tesla',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'TSLA-USDC perp',
+      );
     });
 
     it('displays position section when user has a position', async () => {

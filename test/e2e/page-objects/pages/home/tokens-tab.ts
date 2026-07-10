@@ -1,6 +1,15 @@
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
-import { veryLargeDelayMs } from '../../../helpers';
+import NetworkManager from '../network-manager';
 import HomePage from './homepage';
+
+const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
+  BAT: 'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+  CHAI: 'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215',
+  CHAIN: 'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+  CHANGE: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
+  DAI: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+  'MUSICAL TOKEN': 'eip155:1/erc20:0x0994206dfe8de6ec6920ff4d779b0d950605fb53',
+  MUSD: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+};
 
 class TokensTab extends HomePage {
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
@@ -11,28 +20,28 @@ class TokensTab extends HomePage {
   private readonly assetMarketCapInDetailsModal =
     '[data-testid="asset-market-cap"]';
 
-  private readonly confirmImportTokenButton =
-    '[data-testid="import-tokens-modal-import-button"]';
-
-  private readonly confirmImportTokenMessage = {
-    text: 'Would you like to import this token?',
-    tag: 'p',
-  };
-
   private readonly currentNetworkOption =
     '[data-testid="network-filter-current__button"]';
 
-  private readonly customNetworkSelectedOption = (networkName: string) => {
-    return {
-      css: '.dropdown-editor__item-dropdown',
-      text: networkName,
-    };
-  };
-
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
-  private readonly customTokenModalOption =
-    '[data-testid="import-tokens-modal-custom-token-tab"]';
+  private readonly customTokenImportAddressInput =
+    '[data-testid="custom-token-import-address-input"]';
+
+  private readonly customTokenImportDecimalInput =
+    '[data-testid="custom-token-import-decimal-input"]';
+
+  private readonly customTokenImportNetworkSelector =
+    '[data-testid="network-selector"]';
+
+  private readonly customTokenImportPage =
+    '[data-testid="custom-token-import-page"]';
+
+  private readonly customTokenImportSubmitButton =
+    '[data-testid="custom-token-import-submit-button"]';
+
+  private readonly customTokenImportSymbolInput =
+    '[data-testid="custom-token-import-symbol-input"]';
 
   private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
 
@@ -44,16 +53,7 @@ class TokensTab extends HomePage {
     css: '.hide-token-confirmation__title',
   };
 
-  private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
-
-  private readonly importTokensButton = '[data-testid="importTokens"]';
-
-  private readonly importTokensLoading = {
-    testId: 'import-tokens-loading',
-  };
-
-  private readonly importTokensNextButton =
-    '[data-testid="import-tokens-button-next"]';
+  private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
@@ -79,18 +79,14 @@ class TokensTab extends HomePage {
 
   private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
 
+  private readonly coinOverviewSendButton =
+    '[data-testid="coin-overview-send"]';
+
+  private readonly coinOverviewSwapButton =
+    '[data-testid="coin-overview-swap"]';
+
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
-
-  private readonly selectedNetwork = (networkName: string) => {
-    return {
-      testId: 'test-import-tokens-drop-down-custom-import',
-      text: networkName,
-    };
-  };
-
-  private readonly tokenAddressInput =
-    '[data-testid="import-tokens-modal-custom-address"]';
 
   private readonly tokenAmountValue =
     '[data-testid="multichain-token-list-item-value"]';
@@ -103,21 +99,11 @@ class TokensTab extends HomePage {
   private readonly tokenAddressInDetails =
     '[data-testid="address-copy-button-text"]';
 
-  private readonly tokenConfirmListItem =
-    '.import-tokens-modal__confirm-token-list-item-wrapper';
-
-  private readonly tokenDecimalsTitle = {
-    css: '.mm-label',
-    text: 'Token decimal',
-  };
-
   private readonly tokenNameInDetails =
     '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenImportedMessageCloseButton =
-    '.actionable-message__message button[aria-label="Close"]';
-
-  private readonly tokenSearchResults = '.token-list__token_component';
+    '.home__new-tokens-imported-notification button[aria-label="Close"]';
 
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
@@ -125,34 +111,36 @@ class TokensTab extends HomePage {
   private readonly tokenOptionsButton =
     '[data-testid="asset-list-control-bar-action-button"]';
 
-  private readonly tokenSearchSelected =
-    '.token-list__tokens-container .mm-checkbox__input--checked';
-
-  private readonly tokenSymbolTitle = {
-    css: '.mm-label',
-    text: 'Token symbol',
-  };
-
-  private tokenImportSelectNetwork(chainId: string): string {
-    return `[data-testid="select-network-item-${chainId}"]`;
-  }
-
   private tokenPercentage(address: string): string {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
 
-  private readonly tokenChainDropdown =
-    '[data-testid="test-import-tokens-drop-down-custom-import"]';
+  private tokenManagementSearchToggleControl(tokenName: string): string {
+    const assetId = SEARCH_TOKEN_ASSET_IDS[tokenName.toUpperCase()];
 
-  private readonly tokenSearchInput = 'input[placeholder="Search tokens"]';
+    if (!assetId) {
+      throw new Error(
+        `No e2e token-management search asset ID for ${tokenName}`,
+      );
+    }
 
-  private readonly tokenSymbolInput =
-    '[data-testid="import-tokens-modal-custom-symbol"]';
+    return `[data-testid="token-management-cell-search-${assetId.toLowerCase()}-toggle-control"]`;
+  }
 
-  private readonly tokenDecimalsInput =
-    '[data-testid="import-tokens-modal-custom-decimals"]';
+  private readonly tokenManagementAddCustomTokenButton =
+    '[data-testid="token-management-add-custom-token-button"]';
 
-  private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
+  private readonly tokenManagementBackButton =
+    '[data-testid="token-management-header-back-button"]';
+
+  private readonly tokenManagementCustomTokenSuccessToast =
+    '[data-testid="token-management-custom-token-success-toast"]';
+
+  private readonly tokenManagementPage =
+    '[data-testid="token-management-page"]';
+
+  private readonly tokenManagementSearchInput =
+    '[data-testid="token-management-search-input"]';
 
   private readonly tokenName =
     '[data-testid="multichain-token-list-item-token-name"]';
@@ -206,7 +194,7 @@ class TokensTab extends HomePage {
     console.log(`Clicking on the token name `);
     await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
-      css: this.tokenName,
+      css: this.tokenListItem,
       text: assetName,
     });
   }
@@ -221,8 +209,13 @@ class TokensTab extends HomePage {
    */
   async dismissTokenImportedMessage(): Promise<void> {
     console.log('Dismissing token imported success message');
-    await this.driver.clickElement(this.tokenImportedMessageCloseButton);
+    await this.driver.clickElementSafe(this.tokenImportedMessageCloseButton);
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
+  }
+
+  private async returnFromTokenManagementToHome(): Promise<void> {
+    await this.driver.clickElement(this.tokenManagementBackButton);
+    await this.driver.waitForSelector(this.multichainTokenListButton);
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
@@ -237,6 +230,15 @@ class TokensTab extends HomePage {
     }
 
     await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+  }
+
+  private async clickTokenManagementToggle(toggleControlSelector: string) {
+    await this.driver.clickElementSafe(
+      `${toggleControlSelector} .toggle-button--off`,
+    );
+    await this.driver.waitForSelector(
+      `${toggleControlSelector} .toggle-button--on`,
+    );
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
@@ -255,6 +257,59 @@ class TokensTab extends HomePage {
     return text;
   }
 
+  async waitForNetworksFilter(): Promise<void> {
+    console.log(`Waiting for the network filter`);
+    await this.driver.waitForSelector(this.networksToggle);
+  }
+
+  /**
+   * Asserts the given asset is not listed in the token list.
+   *
+   * @param assetName - The asset name to verify is absent.
+   */
+  async checkAssetIsAbsent(assetName: string): Promise<void> {
+    console.log(`Verifying asset "${assetName}" is not present in token list`);
+    await this.driver.assertElementNotPresent({
+      css: this.tokenName,
+      text: assetName,
+    });
+  }
+
+  /**
+   * Asserts the visible token list contains exactly the given asset names
+   * (order-independent).
+   *
+   * @param expectedAssets - The full set of asset names expected to be visible.
+   */
+  async checkOnlyAssetsArePresent(expectedAssets: string[]): Promise<void> {
+    console.log(
+      `Verifying token list contains exactly: ${expectedAssets.join(', ')}`,
+    );
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const elements = await this.driver.findElements(this.tokenName);
+          if (elements.length !== expectedAssets.length) {
+            return false;
+          }
+          const names = await Promise.all(elements.map((e) => e.getText()));
+          const got = new Set(names.map((n) => n.trim()));
+          return expectedAssets.every((name) => got.has(name));
+        } catch (error) {
+          const err = error as { name?: string };
+          if (
+            err.name === 'NoSuchElementError' ||
+            err.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
+  }
+
   async getNumberOfAssets(): Promise<number> {
     console.log(`Returning the total number of asset items in the token list`);
     const assets = await this.driver.findElements(this.tokenListItem);
@@ -268,6 +323,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.sortByPopoverToggle);
     if (sortBy === 'alphabetically') {
       await this.driver.clickElement(this.sortByAlphabetically);
+      await this.driver.assertElementNotPresent(this.lowValueAssetsToggle);
     } else if (sortBy === 'decliningBalance') {
       await this.driver.clickElement(this.sortByDecliningBalance);
     }
@@ -300,67 +356,54 @@ class TokensTab extends HomePage {
       waitAtLeastGuard: 1000,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
-    await this.driver.clickElement(this.importTokensButton);
-    await this.driver.waitForSelector(this.importTokenModalTitle);
-    await this.driver.clickElement(this.tokenChainDropdown);
+    await this.driver.clickElement(this.manageTokensButton);
+    await this.driver.waitForSelector(this.tokenManagementPage);
+    await this.driver.clickElement(this.tokenManagementAddCustomTokenButton);
+    await this.driver.waitForSelector(this.customTokenImportPage);
+    await this.driver.clickElement(this.customTokenImportNetworkSelector);
     await this.driver.clickElementAndWaitToDisappear(
-      this.tokenImportSelectNetwork(chainId),
+      `[data-testid="network-list-item-${chainId}"]`,
     );
-    const networkName =
-      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
 
-    if (!networkName) {
-      throw new Error(`Network name not found for chain ID ${chainId}`);
-    }
+    await this.driver.waitForSelector(this.customTokenImportAddressInput);
 
-    await this.driver.waitForSelector(
-      this.customNetworkSelectedOption(networkName),
-    );
-    // on chrome the test is going to fast so this can fail without a wait
-    await this.driver.delay(1000);
-    await this.driver.waitForSelector(this.customTokenModalOption);
-    await this.driver.clickElement(this.customTokenModalOption);
-    await this.driver.waitForSelector(this.modalWarningBanner);
-    // Wait for the input to be present and stable after modal content re-renders
-    await this.driver.waitForSelector(this.tokenAddressInput);
-
-    await this.driver.fill(this.tokenAddressInput, tokenAddress);
-    await this.driver.waitForSelector(this.tokenSymbolTitle);
+    await this.driver.fill(this.customTokenImportAddressInput, tokenAddress);
+    await this.driver.waitForSelector(this.customTokenImportSymbolInput);
 
     if (symbol) {
-      // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
-      await this.driver.waitForSelector(this.importTokensNextButton, {
+      // Do not fill until the button is disabled because metadata lookup can
+      // re-render and clear the field in Chromium e2e.
+      await this.driver.waitForSelector(this.customTokenImportSubmitButton, {
         state: 'disabled',
         waitAtLeastGuard: 1000,
       });
-      await this.driver.fill(this.tokenSymbolInput, symbol);
+      await this.driver.fill(this.customTokenImportSymbolInput, symbol);
     }
 
     if (decimals) {
-      await this.driver.waitForSelector(this.importTokensNextButton, {
+      await this.driver.waitForSelector(this.customTokenImportSubmitButton, {
         state: 'disabled',
         waitAtLeastGuard: 1000,
       });
-      await this.driver.fill(this.tokenDecimalsInput, decimals);
+      await this.driver.fill(this.customTokenImportDecimalInput, decimals);
     }
 
-    await this.driver.waitForSelector(this.tokenDecimalsTitle);
-    await this.driver.clickElement(this.importTokensNextButton);
-    await this.driver.waitForSelector(this.tokenConfirmListItem);
-    // Same readiness condition as `importTokenBySearch`: confirm copy means
-    // `pendingTokens` is populated and the confirm step finished rendering before Import.
-    await this.driver.waitForSelector(this.confirmImportTokenMessage);
+    await this.driver.waitForSelector(this.customTokenImportSubmitButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElementAndWaitToDisappear(
-      this.confirmImportTokenButton,
+      this.customTokenImportSubmitButton,
       20000,
     );
 
-    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
+    await this.driver.waitForSelector(
+      this.tokenManagementCustomTokenSuccessToast,
+    );
+    await this.returnFromTokenManagementToHome();
   }
 
   async importTokenBySearch({
     tokenName,
-    networkName,
   }: {
     tokenName: string;
     networkName: string;
@@ -368,26 +411,18 @@ class TokensTab extends HomePage {
     console.log(`Import token ${tokenName} on homepage by search`);
     await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
-    await this.driver.clickElement(this.importTokensButton);
-    await this.driver.waitForSelector(this.importTokenModalTitle);
-    await this.driver.waitForSelector(this.selectedNetwork(networkName));
-    await this.driver.assertElementNotPresent(this.importTokensLoading, {
-      findElementGuard: this.importTokenModalTitle,
-    });
-    await this.driver.waitForSelector(this.tokenSearchInput);
+    await this.driver.clickElement(this.manageTokensButton);
+    await this.driver.waitForSelector(this.tokenManagementPage);
+    await this.driver.waitForSelector(this.tokenManagementSearchInput);
     // Keep paste to avoid flakiness because fill each word separately will cause the search to be triggered multiple times,
     // and the list will be re-rendered multiple times, leading to flakiness.
-    await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
-    // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
-    await this.waitUntilTokenSearchMatch(1);
-    await this.driver.waitForElementToStopMoving({ text: tokenName, tag: 'p' });
-    await this.driver.clickElement({ text: tokenName, tag: 'p' });
-    await this.driver.waitForSelector(this.tokenSearchSelected);
-    await this.driver.clickElement(this.importTokensNextButton);
-    await this.driver.waitForSelector(this.confirmImportTokenMessage);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmImportTokenButton,
+    await this.driver.pasteIntoField(
+      this.tokenManagementSearchInput,
+      tokenName,
     );
+    const toggleControl = this.tokenManagementSearchToggleControl(tokenName);
+    await this.clickTokenManagementToggle(toggleControl);
+    await this.returnFromTokenManagementToHome();
   }
 
   async importMultipleTokensBySearch(tokenNames: string[]) {
@@ -396,24 +431,17 @@ class TokensTab extends HomePage {
     );
     await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
-    await this.driver.clickElement(this.importTokensButton);
-    await this.driver.waitForSelector(this.importTokenModalTitle, {
+    await this.driver.clickElement(this.manageTokensButton);
+    await this.driver.waitForSelector(this.tokenManagementPage, {
       waitAtLeastGuard: 2000,
     });
 
     for (const name of tokenNames) {
-      await this.driver.pasteIntoField(this.tokenSearchInput, name);
-      // Wait for the async search results to fully settle before interacting,
-      // mirroring the guard in importTokenBySearch.
-      await this.waitUntilTokenSearchMatch(1);
-      await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
-      await this.driver.clickElement({ text: name, tag: 'p' });
-      await this.driver.waitForSelector(this.tokenSearchSelected);
+      await this.driver.pasteIntoField(this.tokenManagementSearchInput, name);
+      const toggleControl = this.tokenManagementSearchToggleControl(name);
+      await this.clickTokenManagementToggle(toggleControl);
     }
-    await this.driver.clickElement(this.importTokensNextButton);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmImportTokenButton,
-    );
+    await this.returnFromTokenManagementToHome();
   }
 
   async openNetworksFilter(): Promise<void> {
@@ -461,6 +489,21 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
+  /**
+   * Verifies the coin overview Send and Swap action buttons are both rendered
+   * and enabled (the action buttons are not gated on the account balance, so
+   * they remain present and actionable even for a zero-balance account).
+   */
+  async checkSendAndSwapButtonsArePresentAndEnabled(): Promise<void> {
+    console.log(`Verify the Send and Swap buttons are present and enabled`);
+    await this.driver.waitForSelector(this.coinOverviewSendButton, {
+      state: 'enabled',
+    });
+    await this.driver.waitForSelector(this.coinOverviewSwapButton, {
+      state: 'enabled',
+    });
+  }
+
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {
     console.log(`Verify the multichain-token-list-button is displayed`);
     await this.driver.waitForSelector(this.tokenListItem);
@@ -474,89 +517,6 @@ class TokensTab extends HomePage {
       css: this.networksToggle,
       text: expectedText,
     });
-  }
-
-  /**
-   * Gets the network icon details from the sort-by-networks button
-   *
-   * @returns Object containing icon src, alt text, and visibility status, or null if no icon found
-   */
-  async getNetworkIcon(): Promise<{
-    src: string;
-    alt: string;
-    isVisible: boolean;
-  } | null> {
-    console.log('Getting network icon details from sort-by-networks button');
-    const iconDetails = await this.driver.executeScript(`
-      const button = document.querySelector('[data-testid="sort-by-networks"]');
-      const avatarNetwork = button?.querySelector('.mm-avatar-network img');
-      return avatarNetwork ? {
-        src: avatarNetwork.src,
-        alt: avatarNetwork.alt,
-        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
-      } : null;
-    `);
-    return iconDetails as {
-      src: string;
-      alt: string;
-      isVisible: boolean;
-    } | null;
-  }
-
-  /**
-   * Checks if the network icon is visible in the sort-by-networks button
-   *
-   * @returns true if icon is present and visible, false otherwise
-   */
-  async isNetworkIconVisible(): Promise<boolean> {
-    console.log('Checking if network icon is visible');
-    const iconElement = await this.driver.executeScript(`
-      const button = document.querySelector('[data-testid="sort-by-networks"]');
-      const avatarNetwork = button?.querySelector('.mm-avatar-network');
-      return avatarNetwork ? {
-        isPresent: true,
-        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
-      } : { isPresent: false, isVisible: false };
-    `);
-
-    const result = iconElement as { isPresent: boolean; isVisible: boolean };
-    return result.isPresent && result.isVisible;
-  }
-
-  /**
-   * Verifies that the network icon matches expected characteristics
-   *
-   * @param expectedIndicators - Array of strings that should be present in the icon URL
-   * @throws Error if icon is not found or doesn't match expected characteristics
-   */
-  async checkNetworkIconContains(expectedIndicators: string[]): Promise<void> {
-    console.log(
-      `Checking network icon contains one of: ${expectedIndicators.join(', ')}`,
-    );
-
-    const iconDetails = await this.getNetworkIcon();
-
-    if (!iconDetails) {
-      throw new Error('Network icon not found in sort-by-networks button');
-    }
-
-    if (!iconDetails.isVisible) {
-      throw new Error('Network icon is not visible');
-    }
-
-    const hasValidIcon = expectedIndicators.some((indicator) =>
-      iconDetails.src.toLowerCase().includes(indicator.toLowerCase()),
-    );
-
-    if (!hasValidIcon) {
-      throw new Error(
-        `Expected icon to contain one of ${expectedIndicators.join(', ')}, but got: ${iconDetails.src}`,
-      );
-    }
-
-    console.log(
-      `✅ Network icon verification passed - Icon src: ${iconDetails.src}`,
-    );
   }
 
   async checkPriceChartIsShown(): Promise<void> {
@@ -921,18 +881,25 @@ class TokensTab extends HomePage {
     });
   }
 
-  async waitUntilTokenSearchMatch(numberOfMatches: number) {
-    await this.driver.waitUntil(
-      async () => {
-        const matches = await this.driver.findElements(this.tokenSearchResults);
-        return matches.length === numberOfMatches;
-      },
-      {
-        timeout: this.driver.timeout,
-        interval: 200,
-        stableFor: veryLargeDelayMs,
-      },
+  async selectOnlyNetworkInFilter(
+    networkName: string,
+    tab: string = 'Popular',
+  ): Promise<void> {
+    console.log(
+      `Selecting only ${networkName} in the asset list network filter`,
     );
+    await this.openNetworksFilter();
+    const networkManager = new NetworkManager(this.driver);
+    await networkManager.selectTab(tab);
+    await networkManager.selectNetworkByNameWithWait(networkName);
+  }
+
+  async selectAllNetworksInFilter(tab: string = 'Popular'): Promise<void> {
+    console.log('Selecting all networks in the asset list network filter');
+    await this.openNetworksFilter();
+    const networkManager = new NetworkManager(this.driver);
+    await networkManager.selectTab(tab);
+    await networkManager.selectAllNetworks();
   }
 }
 

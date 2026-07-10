@@ -48,7 +48,7 @@ describe('SignatureStatusIcon', () => {
     expect(container.querySelector('svg')).not.toBeNull();
   });
 
-  it('renders loading spinner when status is Active', () => {
+  it('renders spinning loading icon when status is Active', () => {
     const { container } = render(
       <SignatureStatusIcon
         status={SignatureStepStatus.Active}
@@ -56,7 +56,7 @@ describe('SignatureStatusIcon', () => {
       />,
     );
 
-    expect(container.querySelector('svg')).not.toBeNull();
+    expect(container.querySelector('svg.animate-spin')).not.toBeNull();
   });
 
   it('renders step number when status is Pending', () => {

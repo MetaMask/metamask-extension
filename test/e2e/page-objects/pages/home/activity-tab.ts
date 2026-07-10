@@ -123,12 +123,23 @@ class ActivityTab extends HomePage {
    * This function checks if the specified number of confirmed transactions are displayed in the activity list on homepage.
    * It waits up to 10 seconds for the expected number of confirmed transactions to be visible.
    *
-   * @param expectedNumber - The number of confirmed transactions expected to be displayed in activity list. Defaults to 1.
+   * @param expectedNumber - The number of confirmed transactions expected to be displayed in activity list. Defaults to 1. Pass 0 to assert none are shown.
    * @returns A promise that resolves if the expected number of confirmed transactions is displayed within the timeout period.
    */
   async checkConfirmedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
+    if (expectedNumber === 0) {
+      console.log(
+        'Verify no confirmed transactions are displayed in activity list',
+      );
+      await this.driver.assertElementNotPresent(this.confirmedTransactions);
+      console.log(
+        'No confirmed transactions found in activity list on homepage',
+      );
+      return;
+    }
+
     console.log(
       `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
     );
@@ -497,6 +508,24 @@ class ActivityTab extends HomePage {
     await this.driver.waitForSelector({
       css: this.transactionBreakdownRowValue(rowIndex).css,
       text: expectedText,
+    });
+  }
+
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity with text is absent: ${txnText}`);
+    await this.driver.assertElementNotPresent({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
+  async checkTransactionAmountNotPresent(amount: string): Promise<void> {
+    console.log(`Check transaction amount is absent: ${amount}`);
+    await this.driver.assertElementNotPresent({
+      css: this.transactionAmountsInActivity,
+      text: amount,
     });
   }
 

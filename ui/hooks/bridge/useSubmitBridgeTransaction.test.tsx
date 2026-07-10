@@ -15,7 +15,6 @@ import {
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
-  HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
@@ -205,6 +204,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       setBackgroundConnection({
         submitTx: submitTxSpy,
         submitIntent: submitIntentSpy,
+        getLocation: jest.fn().mockResolvedValue('Main View'),
         getStatePatches: jest.fn(),
         setEnabledAllPopularNetworks: jest.fn(),
         resetState: () => mockResetState(),
@@ -229,7 +229,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -282,7 +282,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -329,6 +329,13 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           [
             "/cross-chain/swaps/hardware-wallet-signatures",
             {
+              "state": {},
+            },
+          ],
+          [
+            "/",
+            {
+              "replace": true,
               "state": {
                 "sendBundle": null,
               },
@@ -493,18 +500,16 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(submitIntentSpy).toHaveBeenCalledWith({
         quoteResponse: quoteWithIntent,
         accountAddress: expect.any(String),
+        location: 'Main View',
         tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
@@ -537,15 +542,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
       expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
@@ -581,12 +583,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
         expect.anything(),
       );
-      expect(submitIntentSpy).not.toHaveBeenCalled();
-      expect(captureExceptionSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: 'Hardware wallets cannot submit bridge intent quotes',
-        }),
-      );
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(2, DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
+        },
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });

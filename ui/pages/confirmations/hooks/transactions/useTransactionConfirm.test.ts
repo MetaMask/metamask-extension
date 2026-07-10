@@ -28,6 +28,7 @@ import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import * as DappSwapContext from '../../context/dapp-swap';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
+import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
 import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
@@ -80,22 +81,7 @@ jest.mock('../gas/useIsGaslessSupported');
 
 jest.mock('../gas/useGaslessSupportedSmartTransactions');
 
-const mockNavigateToHwSigningPage = jest.fn();
-jest.mock('../../../../hooks/bridge/useBridgeNavigation', () => ({
-  useBridgeNavigation: () => ({
-    navigateToHwSigningPage: mockNavigateToHwSigningPage,
-  }),
-}));
-
-// Mock the sendBundle amount/symbol derivation so the confirm orchestrator
-// unit tests don't pull in the heavier confirm-info derivation hooks
-// (useTokenValues/useAssetDetails) and so the sendBundle navigation payload
-// is deterministic.
-const mockUseSendBundleAmountSymbol = jest.fn();
-jest.mock('../../../../hooks/hardware-wallets/useSendBundleAmountSymbol', () => ({
-  useSendBundleAmountSymbol: (...args: unknown[]) =>
-    mockUseSendBundleAmountSymbol(...args),
-}));
+jest.mock('../gas/useGasSponsorshipPreference');
 
 const CUSTOM_NONCE_VALUE = '1234';
 const originalConsoleWarn = console.warn;
@@ -106,11 +92,15 @@ const TRANSACTION_META_MOCK =
 function runHook({
   customNonceValue,
   gasFeeTokens,
+  isGasFeeSponsored,
+  isExternalSign,
   selectedGasFeeToken,
   type,
 }: {
   customNonceValue?: string;
   gasFeeTokens?: GasFeeToken[];
+  isGasFeeSponsored?: boolean;
+  isExternalSign?: boolean;
   selectedGasFeeToken?: Hex;
   type?: TransactionType;
 } = {}) {
@@ -124,9 +114,18 @@ function runHook({
 
   const { result } = renderHookWithConfirmContextProvider(
     useTransactionConfirm,
-    getMockConfirmStateForTransaction(confirmation, {
-      appState: {
-        customNonceValue,
+    getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({
+        gasFeeTokens,
+        isGasFeeSponsored,
+        isExternalSign,
+        selectedGasFeeToken,
+      }),
+      {
+        appState: {
+          customNonceValue,
+        },
+        metamask: {},
       },
       metamask: {},
     }),
@@ -146,7 +145,9 @@ describe('useTransactionConfirm', () => {
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
   );
-  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
+  const useGasSponsorshipPreferenceMock = jest.mocked(
+    useGasSponsorshipPreference,
+  );
   beforeEach(() => {
     jest.resetAllMocks();
     consoleWarnSpy = jest
@@ -180,6 +181,11 @@ describe('useTransactionConfirm', () => {
       isSupported: false,
       isSmartTransaction: false,
       pending: false,
+    });
+
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
     });
 
     updateAndApproveTxMock.mockReturnValue(() => Promise.resolve(null));
@@ -668,6 +674,123 @@ describe('useTransactionConfirm', () => {
     expect(actual.isGasFeeSponsored).toBe(
       TRANSACTION_META_MOCK.isGasFeeSponsored,
     );
+  });
+
+  it('sets isGasFeeSponsored to false when user opted out via 7702 flow', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      isGasFeeSponsored: true,
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('sets isGasFeeSponsored to false when user opted out via smart transaction flow', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      isGasFeeSponsored: true,
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('sets isGasFeeSponsored to false when user opted out without a selected gas fee token', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('clears isExternalSign when gasless is unsupported (e.g. hardware wallet on a sponsored chain)', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+      isExternalSign: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).toBe(false);
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('keeps isExternalSign when gasless is supported and user has not opted out', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+      isExternalSign: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).toBe(true);
   });
 
   it('returns true after successful transaction in popup environment', async () => {

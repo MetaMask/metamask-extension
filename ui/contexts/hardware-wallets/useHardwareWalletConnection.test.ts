@@ -351,6 +351,26 @@ describe('useHardwareWalletConnection', () => {
       expect(mockRefs.adapterRef.current).toBeNull();
     });
 
+    it('clears signing progress when disconnecting', async () => {
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockRefs.adapterRef.current = mockAdapter;
+      mockRefs.isSigningInProgressRef.current = true;
+
+      const { result } = setupHook();
+
+      await act(async () => {
+        await result.current.disconnect();
+      });
+
+      expect(mockRefs.isSigningInProgressRef.current).toBe(false);
+    });
+
     it('does not update state when new connection started during disconnect', async () => {
       const oldAdapter = new MockHardwareWalletAdapter({
         onDisconnect: mockHandleDisconnect,

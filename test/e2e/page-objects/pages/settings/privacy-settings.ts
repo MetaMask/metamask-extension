@@ -391,7 +391,7 @@ class PrivacySettings {
     await this.driver.clickElement(this.privacyTabButton);
     await this.checkPageIsLoaded();
     await this.driver.clickElement(this.thirdPartyApisSubpageLink);
-    await this.driver.waitForSelector(this.ipfsGatewayToggle);
+    await this.driver.waitForSelector(this.networkDetailsCheckToggle);
   }
 
   async toggleNetworkDetailsCheck(): Promise<void> {
