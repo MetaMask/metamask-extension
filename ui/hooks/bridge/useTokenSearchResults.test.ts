@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { type CaipChainId } from '@metamask/utils';
 import { act, waitFor } from '@testing-library/react';
 import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
 import { useTokenSearchResults } from './useTokenSearchResults';
@@ -100,8 +101,8 @@ function renderHook<Result>(callback: () => Result) {
 }
 
 describe('useTokenSearchResults', () => {
-  const mainnetChainIds = new Set(['eip155:1']);
-  const polygonChainIds = new Set(['eip155:137']);
+  const mainnetChainIds = new Set<CaipChainId>(['eip155:1']);
+  const polygonChainIds = new Set<CaipChainId>(['eip155:137']);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -144,7 +145,7 @@ describe('useTokenSearchResults', () => {
   });
 
   it('refetches search results when chainIds change with the same search query', async () => {
-    let chainIds = mainnetChainIds;
+    let chainIds: Set<CaipChainId> = mainnetChainIds;
 
     const { rerender, unmount } = renderHook(() =>
       useTokenSearchResults({

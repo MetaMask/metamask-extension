@@ -423,7 +423,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       const store = makeMockStore();
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
-        .mockImplementationOnce(() => jest.fn());
+        .mockImplementation(() => undefined);
       submitIntentSpy.mockImplementationOnce((async () => {
         throw new Error('submit failed');
       }) as never);
@@ -467,6 +467,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
                 ],
               ]
           `);
+      consoleErrorSpy.mockRestore();
     });
 
     it('routes hardware-wallet intent quotes to default route after submit', async () => {
