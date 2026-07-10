@@ -16,7 +16,6 @@ import {
   getUnapprovedTransaction,
   selectPendingApprovalsForNavigation,
 } from '../../../../../selectors';
-import { selectSmartTransactions } from '../../../../../selectors/toast';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 import { useContractCode } from './useContractCode';
 
@@ -113,8 +112,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [confirmation];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -146,8 +143,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithNoData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -183,8 +178,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -228,8 +221,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transaction];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -269,8 +260,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector(transactionState)?.id === transactionWithData.id) {
         return selector(transactionState);
       } else if (selector === getUnapprovedTransaction) {
@@ -323,8 +312,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
@@ -363,8 +350,6 @@ describe('useNonContractAddressAlerts', () => {
         };
       } else if (selector === selectPendingApprovalsForNavigation) {
         return [transactionWithData];
-      } else if (selector === selectSmartTransactions) {
-        return [];
       } else if (selector === getUnapprovedTransaction) {
         return mockGetUnapprovedTransaction();
       } else if (selector.name === 'getAccountHardwareInfo') {
