@@ -116,9 +116,6 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
           notification_type: notification.notification_type,
           notification_subtype: notification.notification_subtype,
           deeplink: `#notifications/${notification.notification_id}`,
-          ...(notification.profile_id && {
-            profile_id: notification.profile_id,
-          }),
           ...(notification.chain_id && { chain_id: notification.chain_id }),
           /* eslint-enable @typescript-eslint/naming-convention */
         },

@@ -3,7 +3,6 @@ import type { FC } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { getNotificationSubtype } from '@metamask/notification-services-controller/notification-services';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useNotificationAnalyticsProperties } from '../../../pages/notifications/notification-hooks/use-notification-analytics-properties';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -58,7 +57,6 @@ export const NotificationDetailCopyButton: FC<
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { profile_id: profileId } = useNotificationAnalyticsProperties();
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
   const tooltipTitle = tooltipText;
@@ -88,7 +86,6 @@ export const NotificationDetailCopyButton: FC<
           notification_id: notification.id,
           notification_type: notification.type,
           notification_subtype: getNotificationSubtype(notification),
-          ...(profileId && { profile_id: profileId }),
           ...otherNotificationProperties(),
           clicked_item: 'tx_id',
           /* eslint-enable @typescript-eslint/naming-convention */

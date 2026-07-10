@@ -31,7 +31,6 @@ import {
   NotificationsSettingsBox,
   NotificationsSettingsType,
 } from '../../components/multichain';
-import { selectSessionData } from '../../selectors/identity/authentication';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -49,8 +48,6 @@ export function NotificationsSettingsAllowNotifications({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile.profileId;
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -94,7 +91,6 @@ export function NotificationsSettingsAllowNotifications({
           settings_type: 'master',
           notification_channel: 'all',
           enabled: false,
-          ...(profileId && { profile_id: profileId }),
           /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
@@ -109,7 +105,6 @@ export function NotificationsSettingsAllowNotifications({
           settings_type: 'master',
           notification_channel: 'all',
           enabled: true,
-          ...(profileId && { profile_id: profileId }),
           /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
@@ -124,7 +119,6 @@ export function NotificationsSettingsAllowNotifications({
     disableNotifications,
     enableNotifications,
     toggleValue,
-    profileId,
     trackEvent,
   ]);
 

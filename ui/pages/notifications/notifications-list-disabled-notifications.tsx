@@ -25,13 +25,11 @@ import { useMetamaskNotificationsContext } from '../../contexts/metamask-notific
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { getIsUpdatingMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
-import { useNotificationAnalyticsProperties } from './notification-hooks/use-notification-analytics-properties';
 
 export const NotificationsListDisabledNotifications = () => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
-  const { profile_id: profileId } = useNotificationAnalyticsProperties();
   const { enableNotifications, error: errorEnableNotifications } =
     useEnableNotifications();
   const isUpdatingMetamaskNotifications = useSelector(
@@ -52,7 +50,6 @@ export const NotificationsListDisabledNotifications = () => {
         settings_type: 'master',
         notification_channel: 'all',
         enabled: true,
-        ...(profileId && { profile_id: profileId }),
         /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
@@ -63,7 +60,7 @@ export const NotificationsListDisabledNotifications = () => {
     } finally {
       setLoading(false);
     }
-  }, [enableNotifications, listNotifications, profileId, trackEvent]);
+  }, [enableNotifications, listNotifications, trackEvent]);
 
   return (
     <Box

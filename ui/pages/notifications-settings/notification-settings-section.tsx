@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -28,7 +27,6 @@ import type {
 } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { selectSessionData } from '../../selectors/identity/authentication';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 import type { NotificationWalletGroup } from './notifications-settings-helpers';
 import type { NotificationsSettingsSectionConfig } from './notifications-settings-types';
@@ -91,8 +89,6 @@ const WalletActivitySectionContent = ({
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
   const { trackEvent } = React.useContext(MetaMetricsContext);
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile.profileId;
   const { onChange: switchAccountNotifications, error: accountToggleError } =
     useSwitchAccountNotificationsChange();
   const [updatingAllAccounts, setUpdatingAllAccounts] = useSafeState(false);
@@ -141,12 +137,11 @@ const WalletActivitySectionContent = ({
           settings_type: 'wallet_activity',
           notification_channel: 'all',
           enabled,
-          ...(profileId && { profile_id: profileId }),
           /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
     },
-    [profileId, trackEvent],
+    [trackEvent],
   );
 
   const handleAccountActivityToggle = useCallback(
@@ -322,8 +317,6 @@ export function NotificationSettingsSection({
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
   const { trackEvent } = React.useContext(MetaMetricsContext);
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile.profileId;
   const [preferenceError, setPreferenceError] = useSafeState<string | null>(
     null,
   );
@@ -345,7 +338,6 @@ export function NotificationSettingsSection({
           notification_channel:
             key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
           enabled: newValue,
-          ...(profileId && { profile_id: profileId }),
           /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
@@ -362,7 +354,6 @@ export function NotificationSettingsSection({
     },
     [
       listNotifications,
-      profileId,
       section.type,
       sectionPreferences,
       setPreferenceError,

@@ -15,7 +15,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getNetworkDetailsFromNotifPayload } from '../../../helpers/utils/notification.util';
-import { useNotificationAnalyticsProperties } from '../../../pages/notifications/notification-hooks/use-notification-analytics-properties';
 
 type NotificationDetailBlockExplorerButtonProps = {
   notification: OnChainRawNotification;
@@ -30,7 +29,6 @@ export const NotificationDetailBlockExplorerButton = ({
 }: NotificationDetailBlockExplorerButtonProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { profile_id: profileId } = useNotificationAnalyticsProperties();
 
   const chainIdHex = toHex(chainId);
   const { network } = notification.payload;
@@ -68,13 +66,12 @@ export const NotificationDetailBlockExplorerButton = ({
         notification_id: notification.id,
         notification_type: notification.type,
         notification_subtype: getNotificationSubtype(notification),
-        ...(profileId && { profile_id: profileId }),
         chain_id: chainId,
         clicked_item: 'block_explorer',
         /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
-  }, [chainId, notification, profileId, trackEvent]);
+  }, [chainId, notification, trackEvent]);
 
   if (!blockExplorerUrl) {
     return null;

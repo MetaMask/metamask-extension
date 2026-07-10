@@ -9,12 +9,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { useNotificationAnalyticsProperties } from '../../notification-hooks/use-notification-analytics-properties';
 import { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { profile_id: profileId } = useNotificationAnalyticsProperties();
   const { handleSnapNavigate } = useSnapNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const data = props.notification.data as DetailedViewData;
@@ -35,7 +33,6 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
           notification_id: props.notification.id,
           notification_type: props.notification.type,
           notification_subtype: getNotificationSubtype(props.notification),
-          ...(profileId && { profile_id: profileId }),
           clicked_item: isExternal ? 'external_link' : 'internal_link',
           /* eslint-enable @typescript-eslint/naming-convention */
         },
@@ -50,7 +47,6 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
     },
     [
       handleSnapNavigate,
-      profileId,
       props.notification,
       trackEvent,
     ],

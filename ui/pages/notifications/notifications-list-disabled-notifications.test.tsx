@@ -30,13 +30,6 @@ jest.mock('../../hooks/metamask-notifications/useNotifications', () => ({
   }),
 }));
 
-jest.mock('./notification-hooks/use-notification-analytics-properties', () => ({
-  useNotificationAnalyticsProperties: () => ({
-    /* eslint-disable-next-line @typescript-eslint/naming-convention */
-    profile_id: 'test-profile-id',
-  }),
-}));
-
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 const store = mockStore({
@@ -92,7 +85,6 @@ describe('NotificationsListDisabledNotifications', () => {
           settings_type: 'master',
           notification_channel: 'all',
           enabled: true,
-          profile_id: 'test-profile-id',
           /* eslint-enable @typescript-eslint/naming-convention */
         },
       });

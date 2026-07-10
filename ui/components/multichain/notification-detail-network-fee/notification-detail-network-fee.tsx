@@ -39,7 +39,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 import { useBoolean } from '../../../hooks/useBoolean';
-import { useNotificationAnalyticsProperties } from '../../../pages/notifications/notification-hooks/use-notification-analytics-properties';
 
 type NetworkFees = {
   transactionFee: {
@@ -94,7 +93,6 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { profile_id: profileId } = useNotificationAnalyticsProperties();
   const { value: isOpen, toggle } = useBoolean();
   const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
@@ -139,7 +137,6 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
           notification_id: notification.id,
           notification_type: notification.type,
           notification_subtype: getNotificationSubtype(notification),
-          ...(profileId && { profile_id: profileId }),
           chain_id: notification.payload.chain_id,
           clicked_item: 'fee_details',
           /* eslint-enable @typescript-eslint/naming-convention */

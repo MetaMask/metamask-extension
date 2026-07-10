@@ -6,7 +6,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { useNotificationAnalyticsProperties } from '../../notification-hooks/use-notification-analytics-properties';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
 import {
@@ -20,7 +19,6 @@ const useAnalyticEventCallback = (props: {
   clickType: 'cta_button';
 }) => {
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { profile_id: profileId } = useNotificationAnalyticsProperties();
   const { notification, clickType } = props;
 
   const analyticsEvent = useCallback(() => {
@@ -32,12 +30,11 @@ const useAnalyticEventCallback = (props: {
         notification_id: notification.id,
         notification_type: notification.type,
         notification_subtype: getNotificationSubtype(notification),
-        ...(profileId && { profile_id: profileId }),
         clicked_item: clickType,
         /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
-  }, [clickType, notification, profileId, trackEvent]);
+  }, [clickType, notification, trackEvent]);
 
   return analyticsEvent;
 };
