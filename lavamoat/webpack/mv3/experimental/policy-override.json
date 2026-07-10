@@ -165,6 +165,35 @@
         "fetch.bind": false
       }
     },
+    "@metamask/mobile-wallet-protocol-dapp-client>@metamask/utils": {
+      "packages": {
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true
+      }
+    },
+    "@solana/addresses>@solana/assertions": {
+      "globals": {
+        "crypto": true,
+        "isSecureContext": true
+      },
+      "packages": {
+        "@solana/addresses>@solana/errors": true
+      }
+    },
+    "prop-types": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "prop-types>react-is": true,
+        "react>object-assign": true
+      }
+    },
+    "prop-types>react-is": {
+      "globals": {
+        "console": true
+      }
+    },
     "@open-rpc/test-coverage>isomorphic-fetch": {
       "globals": {
         "fetch": true,

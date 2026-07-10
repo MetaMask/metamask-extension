@@ -308,6 +308,19 @@ ${Object.entries(env)
     assert(progressPlugin, 'Progress plugin should present');
   });
 
+  it('uses production module graph optimizations for LavaMoat development builds', () => {
+    mockOptionalRcFiles();
+
+    const { options } = webpack(getWebpackConfig(['--lavamoat']));
+
+    assert.strictEqual(options.mode, 'development');
+    assert.strictEqual(options.optimization.minimize, false);
+    assert.strictEqual(options.optimization.sideEffects, true);
+    assert.strictEqual(options.optimization.providedExports, true);
+    assert.strictEqual(options.optimization.removeAvailableModules, true);
+    assert.strictEqual(options.optimization.usedExports, true);
+  });
+
   it('includes existing optional rc files in cache dependencies', () => {
     mockOptionalRcFiles({ metamaskrc: true });
 
