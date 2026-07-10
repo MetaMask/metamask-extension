@@ -22,7 +22,10 @@ beforeEach(() => {
 describe('onPushNotificationClicked', () => {
   const makeEvent = (notificationId = 'event-id'): NotificationEvent =>
     ({
-      notification: { close: jest.fn(), data: { notification_id: notificationId } },
+      notification: {
+        close: jest.fn(),
+        data: { notification_id: notificationId },
+      },
       waitUntil: jest.fn(),
     }) as unknown as NotificationEvent;
 

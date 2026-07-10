@@ -580,7 +580,9 @@ describe('NotificationSectionSubPage', () => {
       mockSwitchAccountNotifications.mockResolvedValue(undefined);
     });
 
-    const renderAggPage = (accounts: { address: `0x${string}`; enabled: boolean }[]) => {
+    const renderAggPage = (
+      accounts: { address: `0x${string}`; enabled: boolean }[],
+    ) => {
       jest.mocked(useNotificationPreferences).mockReturnValue({
         preferences: createMockNotificationPreferences({
           walletActivity: {
