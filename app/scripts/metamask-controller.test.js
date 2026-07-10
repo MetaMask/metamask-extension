@@ -1357,6 +1357,13 @@ describe('MetaMaskController', () => {
           .mockResolvedValue();
 
         jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorageAtLeastOnce',
+          )
+          .mockResolvedValue(undefined);
+
+        jest
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
 

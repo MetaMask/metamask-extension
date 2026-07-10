@@ -36,6 +36,7 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.HYPE,
   CHAIN_IDS.MEGAETH_MAINNET,
   CHAIN_IDS.ARC,
+  CHAIN_IDS.ROBINHOOD_CHAIN,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -118,6 +119,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)]: 'MegaETH',
   [CHAIN_IDS.ARC]: 'Arc',
   [toEvmCaipChainId(CHAIN_IDS.ARC)]: 'Arc',
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: 'Robinhood',
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: 'Robinhood',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
@@ -268,6 +271,14 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     decimals: 6,
     name: 'EURC',
     assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: {
+    // ETH -> USDe on Robinhood
+    address: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
+    symbol: 'USDe',
+    decimals: 18,
+    name: 'USDe',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34')}`,
   },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana
