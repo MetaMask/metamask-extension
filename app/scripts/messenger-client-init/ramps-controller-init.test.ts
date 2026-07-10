@@ -308,6 +308,70 @@ describe('RampsControllerInit', () => {
     expect(mockStopOrderPolling).toHaveBeenCalled();
   });
 
+  it('does not restart polling when init completes after stopRampsLifecycle', async () => {
+    let resolveInit: () => void = () => undefined;
+    mockInit.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveInit = resolve;
+        }),
+    );
+
+    const { initMessenger } = createInitMessenger({
+      completedOnboarding: true,
+      useExternalServices: true,
+    });
+    let useExternalServices = true;
+    jest.spyOn(initMessenger, 'call').mockImplementation((action: string) => {
+      if (action === 'OnboardingController:getState') {
+        return {
+          completedOnboarding: true,
+          seedPhraseBackedUp: null,
+          firstTimeFlowType: null,
+        };
+      }
+      if (action === 'PreferencesController:getState') {
+        return { useExternalServices };
+      }
+      throw new Error(`Unexpected action: ${action}`);
+    });
+
+    const preferenceListeners: ((state: {
+      useExternalServices: boolean;
+    }) => void)[] = [];
+    jest
+      .spyOn(initMessenger, 'subscribe')
+      .mockImplementation((event, listener) => {
+        if (event === 'PreferencesController:stateChange') {
+          preferenceListeners.push(
+            listener as (state: { useExternalServices: boolean }) => void,
+          );
+        }
+        return undefined as never;
+      });
+
+    const baseMessenger = getRootMessenger<never, never>();
+    RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+
+    await Promise.resolve();
+    expect(mockInit).toHaveBeenCalled();
+    expect(mockStartOrderPolling).not.toHaveBeenCalled();
+
+    useExternalServices = false;
+    preferenceListeners[0]?.({ useExternalServices: false });
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+
+    resolveInit();
+    await Promise.resolve();
+
+    expect(mockStartOrderPolling).not.toHaveBeenCalled();
+  });
+
   it('does not start order polling when init rejects', async () => {
     const consoleErrorSpy = jest
       .spyOn(console, 'error')

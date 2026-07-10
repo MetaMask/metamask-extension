@@ -23,27 +23,39 @@ function isRampsNetworkAllowed(
   return completedOnboarding && Boolean(useExternalServices);
 }
 
-function createRampsLifecycleManager(messengerClient: RampsController) {
+function createRampsLifecycleManager(
+  messengerClient: RampsController,
+  isPollingAllowed: () => boolean,
+) {
   let lifecycleStarted = false;
+  let lifecycleRunId = 0;
 
   const startRampsLifecycle = (): void => {
     if (lifecycleStarted) {
       return;
     }
     lifecycleStarted = true;
+    const runId = lifecycleRunId;
 
     messengerClient
       .init()
       .then(() => {
+        if (runId !== lifecycleRunId || !isPollingAllowed()) {
+          return;
+        }
         messengerClient.startOrderPolling();
       })
       .catch((error) => {
+        if (runId !== lifecycleRunId) {
+          return;
+        }
         lifecycleStarted = false;
         console.error('RampsController failed to initialize', error);
       });
   };
 
   const stopRampsLifecycle = (): void => {
+    lifecycleRunId += 1;
     messengerClient.stopOrderPolling();
     lifecycleStarted = false;
   };
@@ -106,7 +118,7 @@ export const RampsControllerInit: MessengerClientInitFunction<
   applyRampsNetworkGate(messengerClient, isNetworkAllowed);
 
   const { startRampsLifecycle, stopRampsLifecycle } =
-    createRampsLifecycleManager(messengerClient);
+    createRampsLifecycleManager(messengerClient, isNetworkAllowed);
 
   const tryStartRampsLifecycle = (): void => {
     if (isNetworkAllowed()) {
