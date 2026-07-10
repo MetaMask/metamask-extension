@@ -25,9 +25,7 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal from './fade-modal';
-import RampUnsupportedModal from './ramps/ramp-unsupported-modal';
-import EligibilityFailedModal from './ramps/eligibility-failed-modal';
-import RampsServiceDisruptionModal from './ramps/ramps-service-disruption-modal';
+import RampsInfoModal from './ramps/ramps-info-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -116,7 +114,13 @@ const MODALS: Record<string, ModalConfig> = {
   },
 
   RAMPS_UNSUPPORTED: {
-    contents: <RampUnsupportedModal />,
+    contents: (
+      <RampsInfoModal
+        testId="ramps-unsupported-modal"
+        title="Buying isn’t available here"
+        body="Buying crypto isn’t supported in your region yet."
+      />
+    ),
     testId: 'ramps-unsupported-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
@@ -130,7 +134,13 @@ const MODALS: Record<string, ModalConfig> = {
   },
 
   RAMPS_ELIGIBILITY_FAILED: {
-    contents: <EligibilityFailedModal />,
+    contents: (
+      <RampsInfoModal
+        testId="ramp-eligibility-failed-modal"
+        title="We couldn’t verify your region"
+        body="Please try again, or contact support if this keeps happening."
+      />
+    ),
     testId: 'ramp-eligibility-failed-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
@@ -144,7 +154,13 @@ const MODALS: Record<string, ModalConfig> = {
   },
 
   RAMPS_SERVICE_DISRUPTION: {
-    contents: <RampsServiceDisruptionModal />,
+    contents: (
+      <RampsInfoModal
+        testId="ramps-service-disruption-modal"
+        title="Buying is temporarily unavailable"
+        body="We’re experiencing a service disruption. Please try again later."
+      />
+    ),
     testId: 'ramps-service-disruption-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
