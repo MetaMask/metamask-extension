@@ -100,6 +100,7 @@ import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
+import Home from '../home/home.tsx';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -213,7 +214,6 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.ts'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>

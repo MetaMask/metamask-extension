@@ -122,50 +122,54 @@ export const AggregatedPercentageOverviewCrossChains = ({
     ); // Initial total1dAgo is 0
   }, [tokenFiatBalancesCrossChains, crossChainMarketData]);
 
-  const { amountChangeCrossChains, formattedPercentChangeCrossChains, formattedAmountChangeCrossChains, color } =
-    useMemo(() => {
-      const totalCrossChainBalance: number = Number(totalFiatCrossChains);
-      const crossChainTotalBalance1dAgo = totalFiat1dAgoCrossChains;
-      const change = totalCrossChainBalance - crossChainTotalBalance1dAgo;
-      const pctChange =
-        crossChainTotalBalance1dAgo === 0
-          ? 0
-          : (change / crossChainTotalBalance1dAgo) * 100;
+  const {
+    amountChangeCrossChains,
+    formattedPercentChangeCrossChains,
+    formattedAmountChangeCrossChains,
+    color,
+  } = useMemo(() => {
+    const totalCrossChainBalance: number = Number(totalFiatCrossChains);
+    const crossChainTotalBalance1dAgo = totalFiat1dAgoCrossChains;
+    const change = totalCrossChainBalance - crossChainTotalBalance1dAgo;
+    const pctChange =
+      crossChainTotalBalance1dAgo === 0
+        ? 0
+        : (change / crossChainTotalBalance1dAgo) * 100;
 
-      const fmtPctChange = formatValue(change === 0 ? 0 : pctChange, true);
+    const fmtPctChange = formatValue(change === 0 ? 0 : pctChange, true);
 
-      let fmtAmountChange = '';
-      if (isValidAmount(change)) {
-        fmtAmountChange = (change as number) >= 0 ? '+' : '';
-        fmtAmountChange += formatCurrencyCompact(change, fiatCurrency);
-      }
+    let fmtAmountChange = '';
+    if (isValidAmount(change)) {
+      fmtAmountChange = (change as number) >= 0 ? '+' : '';
+      fmtAmountChange += formatCurrencyCompact(change, fiatCurrency);
+    }
 
-      let derivedColor = TextColor.textDefault;
-      if (!privacyMode && isValidAmount(change)) {
-        if ((change as number) === 0) {
-          derivedColor = TextColor.textDefault;
-        } else if ((change as number) > 0) {
-          derivedColor = TextColor.successDefault;
-        } else {
-          derivedColor = TextColor.errorDefault;
-        }
+    let derivedColor = TextColor.textDefault;
+    if (!privacyMode && isValidAmount(change)) {
+      if ((change as number) === 0) {
+        derivedColor = TextColor.textDefault;
+      } else if ((change as number) > 0) {
+        derivedColor = TextColor.successDefault;
       } else {
-        derivedColor = TextColor.textAlternative;
+        derivedColor = TextColor.errorDefault;
       }
+    } else {
+      derivedColor = TextColor.textAlternative;
+    }
 
-      return {
-        amountChangeCrossChains: change,
-        formattedPercentChangeCrossChains: fmtPctChange,
-        formattedAmountChangeCrossChains: fmtAmountChange,
-        color: derivedColor,
-      };
-    }, [
-      totalFiatCrossChains,
-      totalFiat1dAgoCrossChains,
-      formatCurrencyCompact,
-      fiatCurrency,
-      privacyMode,
-    ]);
+    return {
+      amountChangeCrossChains: change,
+      formattedPercentChangeCrossChains: fmtPctChange,
+      formattedAmountChangeCrossChains: fmtAmountChange,
+      color: derivedColor,
+    };
+  }, [
+    totalFiatCrossChains,
+    totalFiat1dAgoCrossChains,
+    formatCurrencyCompact,
+    fiatCurrency,
+    privacyMode,
+  ]);
 
   return (
     <Skeleton

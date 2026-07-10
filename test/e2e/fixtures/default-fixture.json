@@ -994,6 +994,7 @@
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1141,6 +1142,18 @@
           }
         ]
       }
+    },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "errorKey": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
