@@ -204,6 +204,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
               ? formatCurrencyWithMinThreshold(signedFiatAmount, PERPS_CURRENCY)
               : undefined,
+          primaryDirection:
+            activity.type === 'perpsAddFunds' ? 'in' : undefined,
         };
       }
       case 'nftBuy':
