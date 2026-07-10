@@ -24,7 +24,9 @@ function parseAssetId(
     return null;
   }
   try {
-    const chainId = convertCaipToHexChainId(caipChainId);
+    const chainId = convertCaipToHexChainId(
+      caipChainId as `${string}:${string}`,
+    );
     return { address, chainId: chainId as Hex };
   } catch {
     return null;
