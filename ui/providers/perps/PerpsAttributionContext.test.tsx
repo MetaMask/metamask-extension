@@ -16,10 +16,10 @@ const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
 function createWrapper(locationSearch?: string) {
   return function wrapper({ children }: { children: React.ReactNode }) {
-    return React.createElement(
-      PerpsAttributionProvider,
-      { locationSearch },
-      children,
+    return (
+      <PerpsAttributionProvider locationSearch={locationSearch}>
+        {children}
+      </PerpsAttributionProvider>
     );
   };
 }
