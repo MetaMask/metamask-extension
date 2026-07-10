@@ -433,7 +433,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken]);
+  }, [chainId, defaultSwapsToken, goToBuy]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
