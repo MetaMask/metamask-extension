@@ -32,6 +32,5 @@ export const NetworkConnectionBannerControllerInit: MessengerClientInitFunction<
 
   return {
     messengerClient,
-    persistedStateKey: null,
   };
 };
