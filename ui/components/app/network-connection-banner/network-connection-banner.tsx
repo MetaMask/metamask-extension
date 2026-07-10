@@ -176,7 +176,11 @@ const getBannerContent = (
   }
 
   const primaryMessage = (
-    <PrimaryMessage t={t} primaryMessageKey="unableToConnectTo" network={network} />
+    <PrimaryMessage
+      t={t}
+      primaryMessageKey="unableToConnectTo"
+      network={network}
+    />
   );
 
   let secondaryMessageContent: React.ReactNode;
