@@ -1,13 +1,21 @@
+import type {
+  QrSyncSimulatorAction,
+  SimulatorParams,
+} from '../../../app/scripts/controllers/qr-sync/e2e/types';
+
 export type MessageType = {
   command:
     | 'openTabs'
     | 'notFound'
     | 'queryTabs'
-    | 'waitUntilWindowWithProperty';
+    | 'waitUntilWindowWithProperty'
+    | 'qrSyncSimulate';
   tabs?: chrome.tabs.Tab[];
   title?: string;
   property?: WindowProperties;
   value?: string;
+  action?: QrSyncSimulatorAction;
+  params?: SimulatorParams;
 };
 
 export type Handle = {

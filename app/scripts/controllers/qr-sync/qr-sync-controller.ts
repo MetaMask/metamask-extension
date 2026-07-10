@@ -2,9 +2,6 @@ import { BaseController } from '@metamask/base-controller';
 import {
   type IKVStore,
   type SessionRequest,
-  type ISessionStore,
-  SessionStore,
-  WebSocketTransport,
 } from '@metamask/mobile-wallet-protocol-core';
 import {
   DappClient,
@@ -54,6 +51,7 @@ import {
   MESSENGER_EXPOSED_METHODS,
 } from './metadata';
 import { InMemoryKvStore } from './kv-store';
+import { mwpStackFactory } from './mwp-stack-factory';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -66,11 +64,7 @@ export class QrSyncController extends BaseController<
 
   readonly #relayUrl: string;
 
-  #transport: WebSocketTransport | null = null;
-
   #mwpDappClient: DappClient | null = null;
-
-  #sessionStore: ISessionStore | null = null;
 
   #otpSubmitCallback: ((otp: string) => Promise<void>) | null = null;
 
@@ -214,7 +208,7 @@ export class QrSyncController extends BaseController<
   }
 
   async #initialize(): Promise<void> {
-    if (this.#mwpDappClient && this.#transport && this.#sessionStore) {
+    if (this.#mwpDappClient) {
       return;
     }
 
@@ -226,19 +220,13 @@ export class QrSyncController extends BaseController<
     });
 
     try {
-      this.#transport = await WebSocketTransport.create({
-        kvstore: this.#kvStore,
-        url: this.#relayUrl,
-        websocket: typeof WebSocket === 'undefined' ? undefined : WebSocket,
+      const stack = await mwpStackFactory({
+        kvStore: this.#kvStore,
+        relayUrl: this.#relayUrl,
+        keyManager: this.#keyManager,
       });
 
-      this.#sessionStore = await SessionStore.create(this.#kvStore);
-
-      this.#mwpDappClient = new DappClient({
-        transport: this.#transport,
-        sessionstore: this.#sessionStore,
-        keymanager: this.#keyManager,
-      });
+      this.#mwpDappClient = stack.dappClient;
 
       this.#registerClientEventHandlers(this.#mwpDappClient);
       this.#transitionPhase(this.state.qrSyncPhase, 'connected');
@@ -707,9 +695,7 @@ export class QrSyncController extends BaseController<
 
     this.#otpSubmitCallback = null;
     this.#otpCancelCallback = null;
-    this.#transport = null;
     this.#mwpDappClient = null;
-    this.#sessionStore = null;
 
     if (this.#kvStore instanceof InMemoryKvStore) {
       this.#kvStore.clear();

@@ -1,5 +1,6 @@
 import log from 'loglevel';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
+import { handleQrSyncSimulateMessage } from '../../../app/scripts/controllers/qr-sync/e2e/qr-sync-e2e-bridge';
 import { MessageType, WindowProperties } from './types';
 
 /**
@@ -131,6 +132,8 @@ class SocketBackgroundToMocha {
       message.value
     ) {
       this.waitUntilWindowWithProperty(message.property, message.value);
+    } else if (message.command === 'qrSyncSimulate') {
+      handleQrSyncSimulateMessage(message);
     }
   }
 }
