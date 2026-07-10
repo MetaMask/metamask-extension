@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.39.1]
+
+### Added
+
+- Added Robinhood Chain as a featured network (#44346)
+
 ## [13.39.0]
 
 ### Added
@@ -2683,7 +2689,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...HEAD
+[13.39.1]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...v13.39.1
 [13.39.0]: https://github.com/MetaMask/metamask-extension/compare/v13.38.2...v13.39.0
 [13.38.2]: https://github.com/MetaMask/metamask-extension/compare/v13.38.1...v13.38.2
 [13.38.1]: https://github.com/MetaMask/metamask-extension/compare/v13.38.0...v13.38.1
