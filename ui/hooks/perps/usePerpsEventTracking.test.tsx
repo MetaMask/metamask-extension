@@ -320,6 +320,34 @@ describe('usePerpsEventTracking', () => {
       expect(properties[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN]).toBe('q3_launch');
     });
 
+    it('stamps utm from the hash on the declarative fire with no provider', () => {
+      // Robustness: even when the emitting call site is NOT wrapped by the
+      // attribution provider (or the provider store is stale/empty), the
+      // fire-once declarative screen view must still carry utm — read straight
+      // from window.location.hash at emit time.
+      window.location.hash =
+        '#/perps/market/BTC?source=deeplink&utm_source=cdp_test' +
+        '&utm_medium=push&utm_campaign=q3_launch';
+
+      renderHook(() =>
+        usePerpsEventTracking({
+          eventName: MetaMetricsEventName.PerpsScreenViewed,
+          conditions: true,
+          properties: {
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'asset_details',
+            [PERPS_EVENT_PROPERTY.SOURCE]: 'market_list',
+          },
+        }),
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      const { properties } = mockTrackEvent.mock.calls[0][0];
+      expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('deeplink');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_MEDIUM]).toBe('push');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN]).toBe('q3_launch');
+    });
+
     // Regression (real navigation race): the provider mounts, THEN the
     // utm-bearing search applies on the same commit the fire-once screen view
     // becomes eligible (markets warm from cache -> conditions immediately true).

@@ -59,16 +59,19 @@ export function usePerpsEventTracking(
       // sites (always safe to add), and a deeplink entry is the authoritative
       // `source`, overriding the screen's default source value.
       // `readScreenViewedHashAttribution` reads the CURRENT hash query at emit
-      // time and wins over the provider store: react-router applies the
-      // destination `search` one render after the hash is already correct, so
-      // the fire-once entry emit reads it from the hash (deterministic, no
-      // re-fire) while the store still covers later in-app navigations.
+      // time and wins over the provider store. This is the authoritative UTM
+      // source: react-router applies the destination `search` one render after
+      // `window.location.hash` is already correct, and the declarative fire-once
+      // guard blocks any enriched re-fire — so the entry emit must read the hash
+      // directly (deterministic, no re-fire). Done for every PERPS_SCREEN_VIEWED
+      // regardless of whether a provider wraps the call site, since a stale or
+      // absent provider store must not drop UTM. The store still supplies the
+      // sticky source and later in-app navigations whose hash lost the UTM.
       const attributedProperties =
-        eventName === MetaMetricsEventName.PerpsScreenViewed &&
-        screenViewedAttribution
+        eventName === MetaMetricsEventName.PerpsScreenViewed
           ? {
               ...properties,
-              ...screenViewedAttribution,
+              ...(screenViewedAttribution ?? {}),
               ...readScreenViewedHashAttribution(),
             }
           : properties;
