@@ -1014,6 +1014,18 @@ describe('PerpsControllerInit', () => {
     });
   });
 
+  describe('connection health APIs', () => {
+    it('exposes perpsGetConnectionState on the background API', () => {
+      const { api, messengerClient } = initWithApi();
+      (
+        messengerClient.getWebSocketConnectionState as jest.Mock
+      ).mockReturnValue('connected');
+
+      expect(api.perpsGetConnectionState()).toBe('connected');
+      expect(messengerClient.getWebSocketConnectionState).toHaveBeenCalled();
+    });
+  });
+
   describe('attribution APIs', () => {
     it('exposes perpsSetAttributionContext on the background API', () => {
       const { api, messengerClient } = initWithApi();

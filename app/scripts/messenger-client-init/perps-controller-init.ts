@@ -1,5 +1,6 @@
 import {
   PerpsController,
+  type PerpsAnalyticsProperties,
   type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
   type UserHistoryItem,
@@ -531,7 +532,7 @@ function getApi(
       messengerClient.getAttributionContext.bind(messengerClient),
     perpsClearAttributionContext:
       messengerClient.clearAttributionContext.bind(messengerClient),
-    perpsMergeAttributionContext: (properties?: Record<string, unknown>) =>
+    perpsMergeAttributionContext: (properties?: PerpsAnalyticsProperties) =>
       messengerClient.mergeAttributionContext(properties),
   };
 }
