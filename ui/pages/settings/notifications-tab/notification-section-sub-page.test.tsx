@@ -511,6 +511,7 @@ describe('NotificationSectionSubPage', () => {
     ).toBeInTheDocument();
   });
 
+  /* eslint-disable @typescript-eslint/naming-convention */
   describe('wallet-activity aggregate toggle analytics', () => {
     const address1 =
       '0x1111111111111111111111111111111111111111' as `0x${string}`;
@@ -653,6 +654,7 @@ describe('NotificationSectionSubPage', () => {
       });
     });
   });
+  /* eslint-enable @typescript-eslint/naming-convention */
 
   describe('section notification toggle wiring', () => {
     const buildStore = () =>

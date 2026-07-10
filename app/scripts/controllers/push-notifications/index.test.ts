@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import type { PushAnalyticsPayload } from '@metamask/notification-services-controller/push-services';
-import { onPushNotificationClicked } from './index';
+import { onPushNotificationClicked } from '.';
 
 jest.mock('../../platforms/extension', () =>
   jest.fn().mockImplementation(() => ({

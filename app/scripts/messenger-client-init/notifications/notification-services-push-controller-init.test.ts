@@ -174,6 +174,7 @@ describe('NotificationServicesPushControllerInit - getNormalisedLocale', () => {
   });
 });
 
+/* eslint-disable @typescript-eslint/naming-convention */
 describe('NotificationServicesPushControllerInit - pushNotificationClicked subscription', () => {
   const arrange = () => {
     const requestMock = buildInitRequestMock();
