@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -283,6 +284,7 @@ jest.mock('../../hooks/perps', () => ({
 }));
 // Cancel/close/reverse/TP-SL modals call usePerpsAttribution; keep them
 // renderable without mounting PerpsAttributionProvider in this page suite.
+const mockSetFlowAttribution = jest.fn();
 jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
   usePerpsAttribution: () => ({
     buildTrackingData: (input: Record<string, unknown>) => ({
@@ -291,7 +293,7 @@ jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
       discoverySource: 'market_list',
     }),
     buildTpslTrackingData: (input: Record<string, unknown>) => input,
-    setFlowAttribution: jest.fn(),
+    setFlowAttribution: mockSetFlowAttribution,
   }),
 }));
 jest.mock(
@@ -477,6 +479,35 @@ describe('PerpsMarketDetailPage', () => {
       expect(assetDetailView).toBeDefined();
       expect(assetDetailView?.properties).toHaveProperty('watchlisted');
       expect(typeof assetDetailView?.properties?.watchlisted).toBe('boolean');
+    });
+
+    it('emits the error screen view when the market is not found', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as
+        | { conditions?: boolean; properties?: Record<string, unknown> }
+        | undefined;
+
+      expect(errorView).toBeDefined();
+      expect(errorView?.conditions).toBe(true);
+      expect(errorView?.properties).toMatchObject({
+        error_type: 'market_not_found',
+        screen_name: 'perps_market_details',
+      });
+    });
+
+    it('re-asserts the asset_details entry point on mount', async () => {
+      await renderPage(mockStore(createMockState(true)));
+
+      expect(mockSetFlowAttribution).toHaveBeenCalledWith({
+        entryPoint: 'asset_detail_screen',
+      });
     });
 
     it('renders market detail page for ETH', async () => {

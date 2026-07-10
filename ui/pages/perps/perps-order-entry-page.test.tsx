@@ -1578,6 +1578,27 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('emits the error screen view when the market is not found', () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      const errorCall = mockAnalyticsTrackEvent.mock.calls.find(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsScreenViewed &&
+          arg?.properties?.screen_type === 'error',
+      );
+      expect(errorCall).toBeDefined();
+      expect(errorCall?.[0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'market_not_found',
+          [PERPS_EVENT_PROPERTY.SCREEN_NAME]: 'perps_order',
+        }),
+      );
+    });
+
     it('tracks has_perp_balance as true when unified funds are tradeable but not withdrawable', () => {
       mockLiveAccount.mockReturnValue({
         account: {

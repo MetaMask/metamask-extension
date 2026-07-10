@@ -72,6 +72,7 @@ import {
   usePerpsEventTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
+import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
@@ -287,6 +288,17 @@ const PerpsMarketDetailPage = () => {
   const { gate } = useSelectedAccountComplianceGate();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { setFlowAttribution } = usePerpsAttribution();
+
+  // Re-assert this screen's entry point on mount so `trackingData` for actions
+  // taken here (close / cancel / TP-SL / margin) reflects asset_details even
+  // after returning from the order-entry screen, which sets trade_screen on the
+  // shared provider.
+  useEffect(() => {
+    setFlowAttribution({
+      entryPoint: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    });
+  }, [setFlowAttribution]);
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
@@ -458,6 +470,19 @@ const PerpsMarketDetailPage = () => {
   }, [decodedSymbol, allMarkets]);
 
   const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
+
+  // Market-not-found renders a displayed error state (see the `!market` branch
+  // below); emit the error screen view for that funnel state.
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !marketsLoading && Boolean(decodedSymbol) && !market,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+      [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'market_not_found',
+      [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+    },
+  });
 
   // Find position for this market (if exists)
   const position = useMemo(() => {

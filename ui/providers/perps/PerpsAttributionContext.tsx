@@ -159,25 +159,23 @@ export function readScreenViewedHashAttribution(): Record<string, Json> {
   return merged;
 }
 
-// Session-scoped UTM/deeplink attribution shared across PerpsAttributionProvider
-// instances. A deeplink to the wallet perps tab mounts one provider; navigating
-// deeper into /perps/* ("See all") mounts a FRESH provider on a bare in-app URL,
-// which would otherwise lose the entry UTM on its client PERPS_SCREEN_VIEWED.
-// Mirroring the controller's session-global attribution, the first utm-bearing
-// entry seeds this module store so later provider instances inherit it. Lifetime
-// = the extension UI session (page load), matching the controller context; the
-// emit-time hash read still wins when a fresh deeplink is present.
+// Session-scoped UTM attribution shared across PerpsAttributionProvider
+// instances (last-touch). A deeplink to the wallet perps tab mounts one
+// provider; navigating deeper into /perps/* ("See all") mounts a FRESH provider
+// on a bare in-app URL, which would otherwise lose the entry UTM on its client
+// PERPS_SCREEN_VIEWED. Mirroring the controller's session-global attribution,
+// the first utm-bearing entry seeds this store so later provider instances
+// inherit the campaign UTM. Lifetime = the extension UI session (page load).
+//
+// NOTE: only UTM is session-sticky. `source=deeplink` is deliberately PER-ENTRY
+// (derived from each provider instance's own location), so a later NON-deeplink
+// perps entry reports its actual source while still carrying the last-touch UTM.
 let sessionUtmAttribution: ControllerAttributionContext = {};
-let sessionIsDeeplinkEntry = false;
 
-// Module-level writers so the store update is not a variable reassignment inside
-// the component/hook body (react-compiler purity rule) — they run from effects.
+// Module-level writer so the store update is not a variable reassignment inside
+// the component/hook body (react-compiler purity rule) — it runs from effects.
 function rememberSessionUtm(utm: ControllerAttributionContext): void {
   sessionUtmAttribution = { ...sessionUtmAttribution, ...utm };
-}
-
-function rememberSessionDeeplinkEntry(): void {
-  sessionIsDeeplinkEntry = true;
 }
 
 /**
@@ -186,7 +184,6 @@ function rememberSessionDeeplinkEntry(): void {
  */
 export function resetPerpsSessionAttribution(): void {
   sessionUtmAttribution = {};
-  sessionIsDeeplinkEntry = false;
 }
 
 /**
@@ -238,13 +235,13 @@ export function PerpsAttributionProvider({
       ...sessionUtmAttribution,
       ...(parseUtmAttribution(locationSearch ?? '') ?? {}),
     }));
-  // Whether this perps session was entered via a deeplink. Session-scoped and
-  // sticky — kept SEPARATE from the mutable `flowAttribution.entryPoint` (which
-  // normal in-app navigation overwrites), so every screen view for the rest of
-  // the deeplink-entered session still carries source='deeplink'. Seeded from
-  // the session store so a later provider instance inherits the deeplink flag.
-  const [isDeeplinkEntry, setIsDeeplinkEntry] = useState(
-    () => sessionIsDeeplinkEntry || isDeeplinkSearch(locationSearch),
+  // Whether THIS provider instance was entered via a deeplink. Per-entry: seeded
+  // from this instance's own location (not inherited across mounts), and sticky
+  // only within this instance's lifetime so in-app navigation after a deeplink
+  // entry keeps source='deeplink' — while a later fresh mount on a non-deeplink
+  // URL reports its actual (non-deeplink) source.
+  const [isDeeplinkEntry, setIsDeeplinkEntry] = useState(() =>
+    isDeeplinkSearch(locationSearch),
   );
 
   const setFlowAttribution = useCallback(
@@ -275,10 +272,10 @@ export function PerpsAttributionProvider({
     }
 
     const source = new URLSearchParams(search).get('source');
-    // Sticky: a deeplink entry stays flagged for the whole session even after
-    // in-app navigation stops carrying source=deeplink.
+    // Sticky within THIS instance: a deeplink entry stays flagged for the life
+    // of this provider even after in-app navigation stops carrying
+    // source=deeplink. Not persisted to the session store — source is per-entry.
     if (source === 'deeplink') {
-      rememberSessionDeeplinkEntry();
       setIsDeeplinkEntry(true);
     }
     const discoverySource = mapSourceParamToDiscovery(source);

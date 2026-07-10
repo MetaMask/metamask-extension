@@ -466,6 +466,19 @@ const PerpsOrderEntryPage = () => {
   }, [decodedSymbol, allMarkets]);
   const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
 
+  // Market-not-found renders a displayed error state (see the `!market` branch
+  // below); emit the error screen view for that funnel state.
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !marketsLoading && Boolean(decodedSymbol) && !market,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+      [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'market_not_found',
+      [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ORDER,
+    },
+  });
+
   useEffect(() => {
     if (!orderTypeInteractionSkippedRef.current) {
       orderTypeInteractionSkippedRef.current = true;

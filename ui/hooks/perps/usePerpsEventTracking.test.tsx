@@ -478,10 +478,10 @@ describe('usePerpsEventTracking', () => {
 
   // Cross-provider session attribution: a deeplink to the wallet perps tab
   // mounts one provider (utm in its search); navigating deeper into /perps/*
-  // mounts a FRESH provider on a bare URL. The second instance must inherit the
-  // session's utm so its client screen view still carries it (the hash no longer
-  // has utm on the in-app route).
-  describe('cross-provider session utm inheritance', () => {
+  // mounts a FRESH provider on a bare URL. UTM is session-sticky (last-touch) so
+  // the second instance inherits it — but `source=deeplink` is PER-ENTRY, so the
+  // second instance reports its own (non-deeplink) source.
+  describe('cross-provider session attribution', () => {
     function Emitter() {
       usePerpsEventTracking({
         eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -494,7 +494,7 @@ describe('usePerpsEventTracking', () => {
       return null;
     }
 
-    it('a fresh provider on a bare URL inherits the entry-session utm', () => {
+    it('inherits utm but not deeplink source on a fresh non-deeplink entry', () => {
       // Provider A — deeplink entry with utm (e.g. wallet perps tab).
       const entry = render(
         <PerpsAttributionProvider locationSearch="?source=deeplink&utm_source=cdp_test&utm_medium=push&utm_campaign=q3_launch">
@@ -504,8 +504,8 @@ describe('usePerpsEventTracking', () => {
       // User navigates deeper — the entry provider unmounts.
       entry.unmount();
 
-      // Provider B — a new instance on a bare in-app URL (no utm in the search
-      // or the hash) emits a screen view.
+      // Provider B — a new instance on a bare in-app URL (no deeplink markers in
+      // the search or the hash) emits a screen view.
       render(
         <PerpsAttributionProvider locationSearch="">
           <Emitter />
@@ -514,7 +514,9 @@ describe('usePerpsEventTracking', () => {
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       const { properties } = mockTrackEvent.mock.calls[0][0];
-      expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('deeplink');
+      // Per-entry: this non-deeplink entry keeps its own call-site source.
+      expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('market_list');
+      // Last-touch: the campaign utm still carries over.
       expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');
       expect(properties[PERPS_EVENT_PROPERTY.UTM_MEDIUM]).toBe('push');
       expect(properties[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN]).toBe('q3_launch');

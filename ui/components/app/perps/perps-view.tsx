@@ -32,6 +32,7 @@ import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -227,10 +228,13 @@ export const PerpsView = () => {
           [],
         );
         applyPositionsSnapshot(fresh ?? []);
-      } catch {
-        // Refresh failure is non-critical; positions were already closed.
+      } catch (refreshError) {
+        // Refresh failure is non-critical — the positions were already closed
+        // and the stream reconciles them; capture for visibility, don't swallow.
+        captureException(refreshError);
       }
-    } catch {
+    } catch (error) {
+      captureException(error);
       setBatchActionError(t('somethingWentWrong'));
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
@@ -273,7 +277,8 @@ export const PerpsView = () => {
         [],
       );
       applyOrdersSnapshot(fresh ?? []);
-    } catch {
+    } catch (error) {
+      captureException(error);
       setBatchActionError(t('somethingWentWrong'));
     } finally {
       setIsCancelAllPending(false);
