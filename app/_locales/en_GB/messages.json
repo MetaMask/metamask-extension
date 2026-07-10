@@ -3260,6 +3260,12 @@
   "deepLinkQrPredictTitle": {
     "message": "Open Prediction Markets on mobile"
   },
+  "deepLinkQrTrendingDescription": {
+    "message": "Explore is available on MetaMask mobile. Scan this code with your mobile device to use it."
+  },
+  "deepLinkQrTrendingTitle": {
+    "message": "Open Explore on mobile"
+  },
   "deepLink_Caution": {
     "message": "Proceed with caution"
   },
@@ -3356,6 +3362,9 @@
   },
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
+  },
+  "deepLink_theTrendingPage": {
+    "message": "the Explore page"
   },
   "default": {
     "message": "Default"
