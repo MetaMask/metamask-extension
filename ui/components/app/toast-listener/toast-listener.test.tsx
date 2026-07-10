@@ -62,22 +62,6 @@ describe('ToastListener', () => {
   it('mounts toast hooks in interactive UI', () => {
     renderToastListener({ isInteractive: true });
 
-<<<<<<< HEAD
-    expect(mockUseSmartTransactionToasts).toHaveBeenCalledTimes(1);
-    expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
-    expect(mockUseMusdConversionToastStatus).toHaveBeenCalledTimes(1);
-    expect(mockUseMusdConversionConfirmTrace).toHaveBeenCalledWith('');
-  });
-
-  it('mounts only the perps withdraw toast hook when the smart transaction toast flag is disabled', () => {
-    renderToastListener({
-      transactionToastEnabled: false,
-      isInteractive: true,
-    });
-
-    expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
-=======
->>>>>>> origin/main
     expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
     expect(mockUseMusdConversionToastStatus).toHaveBeenCalledTimes(1);
     expect(mockUseMusdConversionConfirmTrace).toHaveBeenCalledWith('');
