@@ -255,6 +255,7 @@ export const ClosePositionModal = ({
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
   const { buildTrackingData } = usePerpsAttribution();
+  const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -440,6 +441,15 @@ export const ClosePositionModal = ({
           }),
         );
       } catch (err) {
+        // Transport/background throws never reach the controller close
+        // submitted/terminal pipeline — keep client PerpsError for that gap.
+        const raw =
+          err instanceof Error ? err.message : t('somethingWentWrong');
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
+        });
         const { errorMessage, toast } = getCloseFailureToastConfig({
           error: err,
           isPartialClose,
@@ -472,6 +482,7 @@ export const ClosePositionModal = ({
     formatFiat,
     vipTier,
     metamaskFeeRateDiscountPercentage,
+    track,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {

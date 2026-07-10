@@ -1335,6 +1335,14 @@ const PerpsOrderEntryPage = () => {
       if (inProgressToastKey) {
         hidePerpsToast();
       }
+      // Transport/background throws never reach the controller trade/close
+      // submitted/terminal pipeline — keep client PerpsError for that gap.
+      const rawErrorMessage =
+        error instanceof Error ? error.message : t('somethingWentWrong');
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: rawErrorMessage,
+      });
       const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
       const translatedError = translatePerpsError(
         error,

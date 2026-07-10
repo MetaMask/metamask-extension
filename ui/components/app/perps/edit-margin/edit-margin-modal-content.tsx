@@ -33,8 +33,16 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { usePerpsEligibility } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { useSelectedAccountComplianceGate } from '../../compliance';
@@ -100,6 +108,7 @@ export const EditMarginModalContent = ({
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
+  const { track } = usePerpsEventTracking();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
@@ -320,6 +329,15 @@ export const EditMarginModalContent = ({
         const errorMessage =
           error instanceof Error ? error.message : 'An unknown error occurred';
 
+        // Transport/background throws never reach the controller margin
+        // pipeline — keep client PerpsError for that gap. Do not re-emit
+        // client PerpsRiskManagement (controller owns risk margin events).
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+        });
+
         const normalizedErrorMessage = errorMessage.trim();
         const shouldUseFallbackDescription =
           normalizedErrorMessage.length === 0 ||
@@ -347,6 +365,7 @@ export const EditMarginModalContent = ({
     position.symbol,
     onClose,
     onSavingChange,
+    track,
     replacePerpsToastByKey,
     t,
   ]);
