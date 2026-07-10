@@ -148,7 +148,16 @@ export const CancelOrderModal = ({
         },
       ]);
       if (!result?.success) {
-        throw new Error(result?.error ?? t('somethingWentWrong'));
+        // Controller already emitted cancel submitted/terminal analytics —
+        // surface UI only; do not throw into catch (would duplicate PerpsError).
+        const errorMessage = result?.error ?? t('somethingWentWrong');
+        setError(errorMessage);
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
+          description: errorMessage,
+        });
+        setIsSubmitting(false);
+        return;
       }
       replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CANCEL_ORDER_SUCCESS });
       setIsSubmitting(false);
@@ -160,8 +169,7 @@ export const CancelOrderModal = ({
       // submitted/terminal pipeline — keep client PerpsError for that gap.
       // Do not re-emit client cancel transaction events (controller owns those).
       track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
       });
       setError(errorMessage);

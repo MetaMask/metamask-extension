@@ -304,7 +304,23 @@ export const EditMarginModalContent = ({
         );
 
         if (!result.success) {
-          throw new Error(result.error || 'Failed to update margin');
+          // Controller already emitted margin risk analytics — surface UI
+          // only; do not throw into catch (would duplicate PerpsError).
+          const errorMessage = result.error || 'Failed to update margin';
+          const normalizedErrorMessage = errorMessage.trim();
+          const shouldUseFallbackDescription =
+            normalizedErrorMessage.length === 0 ||
+            MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+              pattern.test(normalizedErrorMessage),
+            );
+
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+            description: shouldUseFallbackDescription
+              ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
+              : normalizedErrorMessage,
+          });
+          return;
         }
 
         const streamManager = getPerpsStreamManager();

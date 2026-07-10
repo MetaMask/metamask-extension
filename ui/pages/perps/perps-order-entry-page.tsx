@@ -1079,6 +1079,37 @@ const PerpsOrderEntryPage = () => {
       });
     }
 
+    // Controller `{ success: false }` already ran submitted/terminal analytics —
+    // surface UI only. Transport throws still use catch + client PerpsError.
+    const surfaceControllerFailure = (error: unknown) => {
+      if (inProgressToastKey) {
+        hidePerpsToast();
+      }
+      const translatedError = translatePerpsError(
+        error,
+        t as (key: string) => string,
+      );
+      if (orderMode === 'close') {
+        if (isPartialClose) {
+          setSubmitError(translatedError ?? t('somethingWentWrong'));
+        }
+        replacePerpsToastByKey(
+          getCloseFailureToastConfig(translatedError ?? undefined),
+        );
+        return;
+      }
+      const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
+      const failedToastDescription =
+        translatedError ??
+        (failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED
+          ? t('perpsToastOrderFailedDescriptionFallback')
+          : t('somethingWentWrong'));
+      replacePerpsToastByKey({
+        key: failedToastKey,
+        description: failedToastDescription,
+      });
+    };
+
     try {
       if (orderMode === 'close' && position) {
         const closePercentage = closePercent;
@@ -1106,7 +1137,10 @@ const PerpsOrderEntryPage = () => {
           [closeParams],
         );
         if (!result.success) {
-          throw new Error(result.error ?? 'Failed to close position');
+          surfaceControllerFailure(
+            new Error(result.error ?? 'Failed to close position'),
+          );
+          return;
         }
         // Navigate only on success. Staying on the form on failure lets the
         // catch block surface the inline error (setSubmitError for partial
@@ -1150,7 +1184,10 @@ const PerpsOrderEntryPage = () => {
             error?: string;
           }>('perpsPlaceOrder', [orderParams]);
           if (!result.success) {
-            throw new Error(result.error ?? 'Failed to add to position');
+            surfaceControllerFailure(
+              new Error(result.error ?? 'Failed to add to position'),
+            );
+            return;
           }
           // Navigate only on success. On failure, stay on the form so the
           // catch block's failure toast renders on the current page.
@@ -1200,7 +1237,10 @@ const PerpsOrderEntryPage = () => {
           ],
         );
         if (!result.success) {
-          throw new Error(result.error ?? 'Failed to update TP/SL');
+          surfaceControllerFailure(
+            new Error(result.error ?? 'Failed to update TP/SL'),
+          );
+          return;
         }
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
@@ -1255,7 +1295,10 @@ const PerpsOrderEntryPage = () => {
         [placeOrderParams],
       );
       if (!result.success) {
-        throw new Error(result.error ?? 'Failed to place order');
+        surfaceControllerFailure(
+          new Error(result.error ?? 'Failed to place order'),
+        );
+        return;
       }
       if (shouldHandleTpslSeparately) {
         const { takeProfitPrice: cleanTp, stopLossPrice: cleanSl } =
@@ -1274,7 +1317,8 @@ const PerpsOrderEntryPage = () => {
                 trackingData: buildTpslTrackingData({
                   direction: orderFormState.direction,
                   source: PERPS_EVENT_VALUE.SOURCE.TRADE_SCREEN,
-                  positionSize: Math.abs(Number.parseFloat(orderParams.size)) || 0,
+                  positionSize:
+                    Math.abs(Number.parseFloat(orderParams.size)) || 0,
                   // New/flip market attach — not editing an existing TP/SL set.
                   isEditingExistingPosition: false,
                 }),
@@ -1332,41 +1376,16 @@ const PerpsOrderEntryPage = () => {
         });
       }
     } catch (error) {
-      if (inProgressToastKey) {
-        hidePerpsToast();
-      }
       // Transport/background throws never reach the controller trade/close
       // submitted/terminal pipeline — keep client PerpsError for that gap.
+      // Controller `{ success: false }` is handled above via surfaceControllerFailure.
       const rawErrorMessage =
         error instanceof Error ? error.message : t('somethingWentWrong');
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: rawErrorMessage,
       });
-      const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
-      const translatedError = translatePerpsError(
-        error,
-        t as (key: string) => string,
-      );
-      if (orderMode === 'close') {
-        if (isPartialClose) {
-          setSubmitError(translatedError ?? t('somethingWentWrong'));
-        }
-        replacePerpsToastByKey(
-          getCloseFailureToastConfig(translatedError ?? undefined),
-        );
-      } else {
-        const failedToastDescription =
-          translatedError ??
-          (failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED
-            ? t('perpsToastOrderFailedDescriptionFallback')
-            : t('somethingWentWrong'));
-
-        replacePerpsToastByKey({
-          key: failedToastKey,
-          description: failedToastDescription,
-        });
-      }
+      surfaceControllerFailure(error);
     } finally {
       setIsSubmitting(false);
     }
