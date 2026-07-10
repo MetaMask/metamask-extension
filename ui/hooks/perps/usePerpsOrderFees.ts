@@ -40,6 +40,8 @@ type UsePerpsOrderFeesReturn = {
   protocolFeeRate?: number;
   /** MetaMask builder fee rate, if available */
   metamaskFeeRate?: number;
+  /** MetaMask builder fee rate before any VIP discount, if available */
+  originalMetamaskFeeRate?: number;
   /**
    * Fee discount in whole percentage points .
    * `undefined` when no discount is in effect or when the lookup hasn't completed yet,
@@ -60,6 +62,19 @@ type UsePerpsOrderFeesReturn = {
  */
 export const ORIGINAL_METAMASK_FEE_BIPS =
   PERPS_FALLBACK_FEE_RATES.metamaskFeeRate * BASIS_POINTS_DIVISOR;
+
+/**
+ * Format a decimal fee rate as a percentage, matching Mobile's perps tooltip.
+ *
+ * @param rate - Decimal fee rate, e.g. 0.00045 for 0.045%.
+ * @returns Formatted percentage or "N/A" when no valid rate is available.
+ */
+export function formatPerpsFeeRate(rate: number | undefined | null): string {
+  if (rate === undefined || rate === null || Number.isNaN(rate)) {
+    return 'N/A';
+  }
+  return `${(rate * 100).toFixed(3)}%`;
+}
 
 function createFallbackFeeResult(amount?: string): FeeCalculationResult {
   const parsedAmount = Number.parseFloat(amount ?? '');
@@ -206,6 +221,7 @@ export function usePerpsOrderFees({
     undiscountedFeeRate: feeResult?.feeRate,
     protocolFeeRate: discountedFeeResult?.protocolFeeRate,
     metamaskFeeRate: discountedFeeResult?.metamaskFeeRate,
+    originalMetamaskFeeRate: feeResult?.metamaskFeeRate,
     metamaskFeeRateDiscountPercentage,
     feeResult: discountedFeeResult,
     isLoading,
