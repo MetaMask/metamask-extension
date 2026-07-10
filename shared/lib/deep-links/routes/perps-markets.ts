@@ -13,6 +13,10 @@ import { DEFAULT_ROUTE, Route } from './route';
 export const perpsMarkets = new Route({
   pathname: '/perps-markets',
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
+  // Read original params so campaign `utm_*` (appended unsigned, absent from
+  // the canonical/signed set) survive to `withDeeplinkAttribution`. Perps
+  // deeplinks only open read-only screens, so unsigned routing params are safe.
+  handlerSearchParams: 'original',
   handler: function handler(params: URLSearchParams) {
     const query = new URLSearchParams();
     query.set('tab', 'perps');

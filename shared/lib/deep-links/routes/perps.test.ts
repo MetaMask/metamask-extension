@@ -5,6 +5,7 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   type Destination,
 } from './route';
+import { parse } from '../parse';
 
 function assertPathDestination(
   result: Destination,
@@ -200,6 +201,34 @@ describe('perpsRoute', () => {
       expect(result.query.get('tab')).toBe('perps');
       expect(result.query.get('source')).toBe('deeplink');
       expect(result.query.get('utm_source')).toBe('ads');
+    });
+  });
+
+  // Regression: a signed deeplink lists only its routing params in `sig_params`,
+  // so `parse` canonicalizes the URL down to those params before the handler
+  // runs. Campaign `utm_*` are appended unsigned and were stripped by that step,
+  // so `withDeeplinkAttribution` forwarded `source=deeplink` but never the utm.
+  // `handlerSearchParams: 'original'` on the perps route restores them.
+  describe('utm passthrough on a signed link (parse integration)', () => {
+    it('forwards utm_* even when they are absent from sig_params', async () => {
+      const url = new URL(
+        'https://link.metamask.io/perps?screen=asset&symbol=ETH' +
+          '&sig=deadbeef&sig_params=screen,symbol' +
+          '&utm_source=cdp_test&utm_medium=push&utm_campaign=q3_launch',
+      );
+
+      const parsed = await parse(url, { verify: false });
+      if (!parsed) {
+        throw new Error('expected the perps route to parse the deeplink');
+      }
+      const { destination } = parsed;
+      assertPathDestination(destination);
+
+      expect(destination.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/ETH`);
+      expect(destination.query.get('source')).toBe('deeplink');
+      expect(destination.query.get('utm_source')).toBe('cdp_test');
+      expect(destination.query.get('utm_medium')).toBe('push');
+      expect(destination.query.get('utm_campaign')).toBe('q3_launch');
     });
   });
 });
