@@ -6,12 +6,14 @@ import process from 'node:process';
 import { join, resolve } from 'node:path';
 import {
   type Configuration,
+  type Chunk,
   type FileCacheOptions,
   webpack,
   Compiler,
   WebpackPluginInstance,
   RuleSetRule,
 } from 'webpack';
+import { LavaMoatPlugin } from '@lavamoat/webpack';
 import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
@@ -319,6 +321,34 @@ ${Object.entries(env)
     assert.strictEqual(options.optimization.providedExports, true);
     assert.strictEqual(options.optimization.removeAvailableModules, true);
     assert.strictEqual(options.optimization.usedExports, true);
+  });
+
+  it('scuttles service worker globals except importScripts', () => {
+    mockOptionalRcFiles();
+
+    const { options } = webpack(getWebpackConfig(['--lavamoat']));
+    const plugin = options.plugins.find(
+      (candidate): candidate is LavaMoatPlugin =>
+        candidate instanceof LavaMoatPlugin,
+    );
+    assert(plugin, 'LavaMoat plugin should be present');
+
+    const configureRuntime =
+      plugin.options.runtimeConfigurationPerChunk_experimental;
+    assert(configureRuntime, 'Per-chunk runtime configuration should be set');
+
+    assert.deepStrictEqual(
+      configureRuntime({ name: 'service-worker.ts' } as Chunk),
+      {
+        mode: 'safe',
+        embeddedOptions: {
+          scuttleGlobalThis: {
+            enabled: true,
+            exceptions: ['importScripts'],
+          },
+        },
+      },
+    );
   });
 
   it('includes existing optional rc files in cache dependencies', () => {
