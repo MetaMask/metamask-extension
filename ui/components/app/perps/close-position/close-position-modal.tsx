@@ -49,6 +49,7 @@ import {
   getPositionPnlRatio,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { PerpsFeesDisplay } from '../perps-fees-display';
@@ -242,6 +243,13 @@ export type ClosePositionModalProps = {
   position: Position;
   currentPrice: number;
   sizeDecimals?: number;
+  /**
+   * The CTA that opened this modal (close vs reduce_exposure) and where it was
+   * clicked, surfaced on the position_close PERPS_SCREEN_VIEWED event.
+   * Defaults to the plain close CTA on the asset detail screen.
+   */
+  buttonClicked?: string;
+  buttonLocation?: string;
 };
 
 export const ClosePositionModal = ({
@@ -250,6 +258,8 @@ export const ClosePositionModal = ({
   position,
   currentPrice,
   sizeDecimals,
+  buttonClicked = PERPS_EVENT_VALUE.BUTTON_CLICKED.CLOSE,
+  buttonLocation = PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
 }: ClosePositionModalProps) => {
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
@@ -265,6 +275,9 @@ export const ClosePositionModal = ({
         PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+      // Which CTA opened this modal — close vs reduce_exposure.
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]: buttonClicked,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
     },
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
@@ -429,6 +442,12 @@ export const ClosePositionModal = ({
             formatFiat,
           });
           setError(errorMessage);
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
           replacePerpsToastByKey(toast);
           return;
         }
@@ -450,6 +469,11 @@ export const ClosePositionModal = ({
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
         const { errorMessage, toast } = getCloseFailureToastConfig({
           error: err,
           isPartialClose,

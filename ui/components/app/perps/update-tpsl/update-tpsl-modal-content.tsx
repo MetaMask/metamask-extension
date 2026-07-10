@@ -67,6 +67,7 @@ import {
   getStopLossErrorDirection,
   getStopLossLiquidationErrorDirection,
 } from '../utils/tpslValidation';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import {
   applyDefaultStopLossSign,
   isSignedDecimalInput,
@@ -498,6 +499,12 @@ export const UpdateTPSLModalContent = ({
             key: PERPS_TOAST_KEYS.UPDATE_FAILED,
             description: failMessage,
           });
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
           return;
         }
         const streamManager = getPerpsStreamManager();
@@ -541,6 +548,11 @@ export const UpdateTPSLModalContent = ({
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
           description: errorMessage,

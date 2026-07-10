@@ -39,6 +39,7 @@ import type {
 import {
   ORDER_SLIPPAGE_CONFIG,
   PERFORMANCE_CONFIG,
+  type InputMethod,
 } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
@@ -87,6 +88,7 @@ import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
+import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
 import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-config';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
@@ -270,6 +272,14 @@ const PerpsOrderEntryPage = () => {
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
   trackRef.current = track;
+  // Last size input method the user used (keypad/percentage/max), attributed on
+  // PERPS_TRANSACTION_CONSIDERED. Defaults to 'default' until the
+  // user interacts with a size control.
+  const lastInputMethodRef = useRef<InputMethod>('default');
+  // True once the user has driven a size control (keypad/percentage/max). Used
+  // to gate PERPS_TRANSACTION_CONSIDERED so the seeded/default amount and any
+  // pre-edit recomputation never count as a user "consideration".
+  const hasUserEditedSizeRef = useRef(false);
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
@@ -298,6 +308,43 @@ const PerpsOrderEntryPage = () => {
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
 
+  const DEFAULT_LEVERAGE = 3;
+
+  // Saved trade-configuration defaults surfaced on the trading screen view.
+  // `default_payment_token` is intentionally omitted — the Extension
+  // trade flow has no pay-with-token selector.
+  const tradingScreenDefaults = useMemo(() => {
+    const env = isTestnet ? 'testnet' : 'mainnet';
+    const config = decodedSymbol
+      ? tradeConfigurations[env]?.[decodedSymbol]
+      : undefined;
+    const pending = config?.pendingConfig;
+    // Report the leverage the UI actually seeds, which is clamped to the
+    // market max (mirrors `initialLeverage`) — not the raw saved config.
+    const marketForSymbol = decodedSymbol
+      ? allMarkets.find(
+          (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
+        )
+      : undefined;
+    const marketMaxLeverage = marketForSymbol
+      ? parseInt(marketForSymbol.maxLeverage.replace('x', ''), 10)
+      : 50;
+    const savedLeverage = config?.leverage ?? DEFAULT_LEVERAGE;
+    return {
+      [PERPS_EVENT_PROPERTY.SAVED_ORDER]: Boolean(pending),
+      [PERPS_EVENT_PROPERTY.DEFAULT_LEVERAGE]: Math.min(
+        savedLeverage,
+        marketMaxLeverage,
+      ),
+      ...(pending?.amount
+        ? { [PERPS_EVENT_PROPERTY.DEFAULT_SIZE_AMOUNT]: pending.amount }
+        : {}),
+      [PERPS_EVENT_PROPERTY.DEFAULT_AUTO_CLOSE]: Boolean(
+        pending?.takeProfitPrice || pending?.stopLossPrice,
+      ),
+    };
+  }, [tradeConfigurations, isTestnet, decodedSymbol, allMarkets]);
+
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: !marketsLoading && Boolean(decodedSymbol) && account !== null,
@@ -306,6 +353,7 @@ const PerpsOrderEntryPage = () => {
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      ...tradingScreenDefaults,
     },
     resetKey: decodedSymbol,
   });
@@ -438,6 +486,83 @@ const PerpsOrderEntryPage = () => {
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allPositions]);
+  // Stable primitive for the considered-event effect: only whether a position
+  // exists matters for `action`, so gating on the live `position` object would
+  // let position-stream churn reset the debounce even when the form is unchanged.
+  const hasPosition = position !== undefined;
+
+  // Reset the considered-event gating refs when the market or order context
+  // changes, so a prior edit doesn't make the next market's seeded default fire
+  // as a user consideration (the page is reused across symbols).
+  useEffect(() => {
+    hasUserEditedSizeRef.current = false;
+    lastInputMethodRef.current = 'default';
+  }, [decodedSymbol, orderMode]);
+
+  // Emit PERPS_TRANSACTION_CONSIDERED once the user has a meaningful
+  // fill on the open-order screen. Debounced 1s and re-armed on EVERY form
+  // change (once the user has edited the size) so it fires once, 1s after the
+  // LATEST change, with the latest payload — a non-size change (leverage / TP /
+  // SL / order type) reschedules the pending event rather than cancelling it.
+  //
+  // Gated to avoid over-firing: only the open-order flow (`new`, not modify or
+  // close), and only after the user has driven a size control — the `new` form
+  // seeds a positive default amount, so `hasUserEditedSizeRef` (set only by
+  // AmountInput's user handlers) excludes the seeded default and any pre-edit
+  // recomputation. `action` is derived from trade context (an existing position
+  // means the user is increasing exposure, otherwise creating one).
+  //
+  // Feasible input props ARE included: `input_method` (keypad/slider/
+  // percentage/max), reported from AmountInput's per-control handlers (attributed
+  // there rather than in usePerpsOrderForm because typing an amount also fires
+  // the shared balance-percent sync, which would clobber the method).
+  // `limit_price_input_type` / `limit_price_input_preset` are omitted — they
+  // require the limit-price control to surface a manual-vs-preset signal it does
+  // not expose today (limit-order only). `trade_with_token` is always false: the
+  // extension has no
+  // pay-with-token selector, so `from_token`/`from_chain` are N/A.
+  // PERPS_TRADE_QUOTE_RECEIVED + `quote_latency_ms` are not emitted: the
+  // extension has no async pay-with-token relay quote to time (its fee/margin
+  // quote is synchronous), and `order_execution_latency_ms` on submitted tx
+  // events is controller-owned (deferred to controller 9.2.2).
+  useEffect(() => {
+    if (orderMode !== 'new' || !orderFormState || !hasUserEditedSizeRef.current) {
+      return undefined;
+    }
+    const orderSize = Number.parseFloat(
+      orderFormState.amount.replace(/,/gu, ''),
+    );
+    if (!(orderSize > 0)) {
+      return undefined;
+    }
+    const action = hasPosition
+      ? PERPS_EVENT_VALUE.ACTION.INCREASE_EXPOSURE
+      : PERPS_EVENT_VALUE.ACTION.CREATE_POSITION;
+    const timeoutId = setTimeout(() => {
+      trackRef.current(MetaMetricsEventName.PerpsTransactionConsidered, {
+        [PERPS_EVENT_PROPERTY.ORDER_CONTEXT]: 'trade',
+        [PERPS_EVENT_PROPERTY.ACTION]: action,
+        [PERPS_EVENT_PROPERTY.ORDER_SIZE]: orderSize,
+        [PERPS_EVENT_PROPERTY.ORDER_SIZE_PERCENT]: orderFormState.balancePercent,
+        [PERPS_EVENT_PROPERTY.INPUT_METHOD]: lastInputMethodRef.current,
+        [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
+        [PERPS_EVENT_PROPERTY.DIRECTION]:
+          orderFormState.direction === 'long'
+            ? PERPS_EVENT_VALUE.DIRECTION.LONG
+            : PERPS_EVENT_VALUE.DIRECTION.SHORT,
+        [PERPS_EVENT_PROPERTY.ORDER_TYPE]: orderFormState.type,
+        [PERPS_EVENT_PROPERTY.ORDER_HAS_TP]: Boolean(
+          orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice,
+        ),
+        [PERPS_EVENT_PROPERTY.ORDER_HAS_SL]: Boolean(
+          orderFormState.autoCloseEnabled && orderFormState.stopLossPrice,
+        ),
+        [PERPS_EVENT_PROPERTY.LEVERAGE]: orderFormState.leverage,
+        [PERPS_EVENT_PROPERTY.TRADE_WITH_TOKEN]: false,
+      });
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [orderMode, orderFormState, hasPosition]);
 
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
@@ -781,7 +906,6 @@ const PerpsOrderEntryPage = () => {
     return parseInt(market.maxLeverage.replace('x', ''), 10);
   }, [market]);
 
-  const DEFAULT_LEVERAGE = 3;
   const initialLeverage = useMemo(() => {
     if (!decodedSymbol || orderMode !== 'new') {
       return undefined;
@@ -980,6 +1104,13 @@ const PerpsOrderEntryPage = () => {
     setOrderFormState(formState);
   }, []);
 
+  // Records the size input method and that the user has edited the size, used to
+  // gate + attribute PERPS_TRANSACTION_CONSIDERED.
+  const handleInputMethodChange = useCallback((inputMethod: InputMethod) => {
+    lastInputMethodRef.current = inputMethod;
+    hasUserEditedSizeRef.current = true;
+  }, []);
+
   const handleCalculationsChange = useCallback(
     (calculations: OrderCalculations) => {
       setOrderCalculations(calculations);
@@ -1026,6 +1157,12 @@ const PerpsOrderEntryPage = () => {
         maxPct.toFixed(2),
       ]);
       setSubmitError(message);
+      // Slippage limit blocks the order and shows an inline error.
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.VALIDATION,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ORDER,
+      );
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_LIMIT_BLOCKED_ORDER,
@@ -1085,6 +1222,13 @@ const PerpsOrderEntryPage = () => {
       if (inProgressToastKey) {
         hidePerpsToast();
       }
+      // Every controller-failure / transport-throw path surfaces an error here,
+      // so emit the error screen view for all of them.
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ORDER,
+      );
       const translatedError = translatePerpsError(
         error,
         t as (key: string) => string,
@@ -1341,6 +1485,12 @@ const PerpsOrderEntryPage = () => {
             key: PERPS_TOAST_KEYS.UPDATE_FAILED,
             description: translatedTpslError ?? tpslMessage,
           });
+          // TP/SL attach failed after the order filled — surfaced via toast.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ORDER,
+          );
           handleBackClick();
           return;
         }
@@ -1642,6 +1792,7 @@ const PerpsOrderEntryPage = () => {
           showSubmitButton={false}
           showOrderSummary={false}
           onFormStateChange={handleFormStateChange}
+          onInputMethodChange={handleInputMethodChange}
           onCalculationsChange={handleCalculationsChange}
           mode={orderMode}
           orderType={orderType}

@@ -99,7 +99,7 @@ export type InfrastructureDeps = {
   ) => Promise<number | null>;
   /**
    * Merges controller-stored UTM attribution into event properties before
-   * MetaMetrics emission (TAT-3463). Optional so unit tests can omit it;
+   * MetaMetrics emission. Optional so unit tests can omit it;
    * production wiring supplies PerpsController.mergeAttributionContext.
    */
   mergeAttributionContext?: (
@@ -193,6 +193,17 @@ function createMetrics(
       const attributedProperties = mergeAttributionContext
         ? mergeAttributionContext(properties)
         : properties;
+      // NOTE: controller-emitted events (transaction events) are
+      // fired from the background PerpsController singleton, which has no
+      // knowledge of which UI surface (sidepanel/popup/fullscreen) initiated
+      // them. Stamping the real environment_type here is intentionally NOT
+      // done: it cannot be scoped per-request without controller support
+      // (TradingService forwards only entry/discovery/perpDiscovery/hlFeeRate
+      // from trackingData, and a shared background mutable would misattribute
+      // concurrent surfaces). It is deferred to the controller (9.2.2). Note
+      // client-emitted perps events (ScreenViewed, UiInteraction, PerpsError,
+      // TransactionConsidered) already carry the correct environment_type via
+      // useAnalytics, so only background transaction events are affected.
       trackEvent(
         createEventBuilder(event)
           .addCategory(MetaMetricsEventCategory.Perps)

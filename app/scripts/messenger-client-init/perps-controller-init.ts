@@ -525,7 +525,7 @@ function getApi(
     perpsGetConnectionState: () =>
       messengerClient.getWebSocketConnectionState(),
 
-    // -- Analytics attribution (TAT-3463) --
+    // -- Analytics attribution --
     perpsSetAttributionContext:
       messengerClient.setAttributionContext.bind(messengerClient),
     perpsGetAttributionContext:

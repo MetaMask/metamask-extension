@@ -3,6 +3,7 @@ import React from 'react';
 
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   PerpsAttributionProvider,
   usePerpsAttributionContext,
@@ -12,7 +13,12 @@ jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('../../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+}));
+
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+const mockCaptureException = jest.mocked(captureException);
 
 function createWrapper(locationSearch?: string) {
   return function wrapper({ children }: { children: React.ReactNode }) {
@@ -138,7 +144,49 @@ describe('PerpsAttributionContext', () => {
     }
   });
 
-  it('skips controller sync when search has no UTM params', async () => {
+  it('seeds screenViewedAttribution synchronously from locationSearch on first render', () => {
+    const { result } = renderHook(() => usePerpsAttributionContext(), {
+      wrapper: createWrapper('?utm_source=ads&utm_medium=cpc&source=deeplink'),
+    });
+
+    // Available on the first render (from useState initializers), not after an
+    // effect — so a screen view emitted on mount already carries attribution.
+    expect(result.current.screenViewedAttribution).toStrictEqual({
+      utm_source: 'ads',
+      utm_medium: 'cpc',
+      source: PERPS_EVENT_VALUE.SOURCE.DEEPLINK,
+    });
+  });
+
+  it('keeps source=deeplink on screen views after flow-attribution churn from navigation', () => {
+    const { result } = renderHook(() => usePerpsAttributionContext(), {
+      wrapper: createWrapper('?source=deeplink&utm_source=ads'),
+    });
+
+    expect(result.current.screenViewedAttribution).toStrictEqual({
+      utm_source: 'ads',
+      source: PERPS_EVENT_VALUE.SOURCE.DEEPLINK,
+    });
+
+    // Normal in-app navigation overwrites the mutable flow entry point (e.g.
+    // market list -> order entry). The deeplink screen-view attribution is
+    // session-scoped and must survive that churn.
+    act(() => {
+      result.current.setFlowAttribution({
+        entryPoint: PERPS_EVENT_VALUE.SOURCE.TRADE_SCREEN,
+      });
+    });
+    act(() => {
+      result.current.syncUtmAttributionFromSearch('?source=market_list');
+    });
+
+    expect(result.current.screenViewedAttribution).toStrictEqual({
+      utm_source: 'ads',
+      source: PERPS_EVENT_VALUE.SOURCE.DEEPLINK,
+    });
+  });
+
+  it('skips controller UTM sync when search has no UTM params', async () => {
     const { result } = renderHook(() => usePerpsAttributionContext(), {
       wrapper: createWrapper(),
     });
@@ -147,7 +195,10 @@ describe('PerpsAttributionContext', () => {
       result.current.syncUtmAttributionFromSearch('?source=market_list');
     });
 
-    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+      'perpsSetAttributionContext',
+      expect.anything(),
+    );
     expect(result.current.flowAttribution.discoverySource).toBe(
       PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
     );
@@ -168,8 +219,8 @@ describe('PerpsAttributionContext', () => {
     );
   });
 
-  it('swallows controller sync failures', async () => {
-    mockSubmitRequestToBackground.mockRejectedValueOnce(new Error('offline'));
+  it('surfaces controller sync failures to Sentry without breaking the flow', async () => {
+    mockSubmitRequestToBackground.mockRejectedValue(new Error('offline'));
 
     const { result } = renderHook(() => usePerpsAttributionContext(), {
       wrapper: createWrapper(),
@@ -178,8 +229,11 @@ describe('PerpsAttributionContext', () => {
     await act(async () => {
       result.current.syncUtmAttributionFromSearch('?utm_source=ads');
     });
+    await act(async () => {
+      await Promise.resolve();
+    });
 
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+    expect(mockCaptureException).toHaveBeenCalled();
     expect(result.current.flowAttribution).toStrictEqual({});
   });
 });

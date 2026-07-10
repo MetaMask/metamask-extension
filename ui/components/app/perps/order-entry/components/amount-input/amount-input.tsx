@@ -69,6 +69,7 @@ const handleNumericFocusSelectAll = (
 export const AmountInput = ({
   amount,
   onAmountChange,
+  onInputMethodChange,
   balancePercent,
   onBalancePercentChange,
   availableBalance,
@@ -171,6 +172,7 @@ export const AmountInput = ({
         return;
       }
 
+      onInputMethodChange?.('keypad');
       onAmountChange(value);
 
       const maxSize = availableBalance * leverage;
@@ -189,7 +191,13 @@ export const AmountInput = ({
         setPercentInputValue('0');
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance, leverage],
+    [
+      onAmountChange,
+      onInputMethodChange,
+      onBalancePercentChange,
+      availableBalance,
+      leverage,
+    ],
   );
 
   const handleAmountBlur = useCallback(() => {
@@ -214,6 +222,7 @@ export const AmountInput = ({
         return;
       }
 
+      onInputMethodChange?.('keypad');
       // Always update the local draft so partial inputs like "0", "0.", "0.0"
       // are preserved in the field while the user is still typing.
       setTokenInputValue(value);
@@ -248,6 +257,7 @@ export const AmountInput = ({
       leverage,
       availableBalance,
       onAmountChange,
+      onInputMethodChange,
       onBalancePercentChange,
       formatAmount,
     ],
@@ -282,6 +292,7 @@ export const AmountInput = ({
   const handleSliderChange = useCallback(
     (_event: Event, value: number | number[]) => {
       const percent = Array.isArray(value) ? value[0] : value;
+      onInputMethodChange?.(percent >= 100 ? 'max' : 'slider');
       onBalancePercentChange(percent);
       setPercentInputValue(String(percent));
       if (percent === 0) {
@@ -294,6 +305,7 @@ export const AmountInput = ({
     },
     [
       onAmountChange,
+      onInputMethodChange,
       onBalancePercentChange,
       availableBalance,
       leverage,
@@ -308,6 +320,7 @@ export const AmountInput = ({
         setPercentInputValue(value);
         const num = parseInt(value, 10);
         if (!isNaN(num) && num >= 0 && num <= 100) {
+          onInputMethodChange?.(num >= 100 ? 'max' : 'percentage');
           onBalancePercentChange(num);
           if (num === 0) {
             onAmountChange('');
@@ -321,6 +334,7 @@ export const AmountInput = ({
     },
     [
       onAmountChange,
+      onInputMethodChange,
       onBalancePercentChange,
       availableBalance,
       leverage,

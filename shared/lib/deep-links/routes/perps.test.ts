@@ -69,7 +69,9 @@ describe('perpsRoute', () => {
 
       assertPathDestination(result);
       expect(result.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/ETH`);
-      expect(result.query.toString()).toBe('');
+      // Every deeplink entry is marked source=deeplink for attribution.
+      expect(result.query.get('source')).toBe('deeplink');
+      expect(result.query.get('utm_source')).toBeNull();
     });
 
     it('navigates to the market detail route for a HIP-3 symbol', () => {
@@ -150,6 +152,54 @@ describe('perpsRoute', () => {
       assertPathDestination(result);
       expect(result.path).toBe(PERPS_MARKET_LIST_ROUTE);
       expect(result.query.get('filter')).toBeNull();
+    });
+  });
+
+  describe('deeplink attribution passthrough', () => {
+    it('marks source=deeplink and forwards utm_* on the asset destination', () => {
+      const result = perps.handler(
+        new URLSearchParams({
+          screen: 'asset',
+          symbol: 'ETH',
+          utm_source: 'ads',
+          utm_medium: 'cpc',
+          utm_campaign: 'summer',
+          utm_content: 'banner',
+          utm_term: 'perps',
+        }),
+      );
+
+      assertPathDestination(result);
+      expect(result.query.get('source')).toBe('deeplink');
+      expect(result.query.get('utm_source')).toBe('ads');
+      expect(result.query.get('utm_medium')).toBe('cpc');
+      expect(result.query.get('utm_campaign')).toBe('summer');
+      expect(result.query.get('utm_content')).toBe('banner');
+      expect(result.query.get('utm_term')).toBe('perps');
+    });
+
+    it('marks source=deeplink and keeps the filter on the market-list destination', () => {
+      const result = perps.handler(
+        new URLSearchParams({
+          screen: 'market-list',
+          tab: 'crypto',
+          utm_source: 'ads',
+        }),
+      );
+
+      assertPathDestination(result);
+      expect(result.query.get('filter')).toBe('crypto');
+      expect(result.query.get('source')).toBe('deeplink');
+      expect(result.query.get('utm_source')).toBe('ads');
+    });
+
+    it('marks source=deeplink and keeps tab=perps on the home destination', () => {
+      const result = perps.handler(new URLSearchParams({ utm_source: 'ads' }));
+
+      assertPathDestination(result);
+      expect(result.query.get('tab')).toBe('perps');
+      expect(result.query.get('source')).toBe('deeplink');
+      expect(result.query.get('utm_source')).toBe('ads');
     });
   });
 });

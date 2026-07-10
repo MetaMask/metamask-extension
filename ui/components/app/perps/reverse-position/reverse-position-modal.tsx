@@ -39,6 +39,7 @@ import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { handlePerpsError } from '../utils/translate-perps-error';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsFeesDisplay } from '../perps-fees-display';
@@ -177,6 +178,12 @@ export const ReversePositionModal = ({
           const err = new Error(flipResult?.error || 'Failed to flip position');
           const message = handlePerpsError(err, t as (key: string) => string);
           setError(message);
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.REVERSE_FAILED,
             description: message,
@@ -202,6 +209,11 @@ export const ReversePositionModal = ({
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
         const message = handlePerpsError(err, t as (key: string) => string);
         setError(message);
         replacePerpsToastByKey({

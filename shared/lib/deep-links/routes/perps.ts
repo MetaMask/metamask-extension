@@ -1,4 +1,5 @@
 import { normalizeMarketFilter } from '../../../constants/perps';
+import { withDeeplinkAttribution } from './perps-attribution';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -57,7 +58,7 @@ export const perps = new Route({
         }
         return {
           path: `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(symbol)}`,
-          query: new URLSearchParams(),
+          query: withDeeplinkAttribution(params),
         };
       }
       case 'market-list': {
@@ -66,12 +67,12 @@ export const perps = new Route({
         if (normalizedFilter) {
           query.set('filter', normalizedFilter);
         }
-        return { path: PERPS_MARKET_LIST_ROUTE, query };
+        return { path: PERPS_MARKET_LIST_ROUTE, query: withDeeplinkAttribution(params, query) };
       }
       default: {
         const query = new URLSearchParams();
         query.set('tab', 'perps');
-        return { path: DEFAULT_ROUTE, query };
+        return { path: DEFAULT_ROUTE, query: withDeeplinkAttribution(params, query) };
       }
     }
   },

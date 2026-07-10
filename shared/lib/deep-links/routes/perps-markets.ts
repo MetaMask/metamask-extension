@@ -1,3 +1,4 @@
+import { withDeeplinkAttribution } from './perps-attribution';
 import { DEFAULT_ROUTE, Route } from './route';
 
 /**
@@ -12,9 +13,9 @@ import { DEFAULT_ROUTE, Route } from './route';
 export const perpsMarkets = new Route({
   pathname: '/perps-markets',
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
-  handler: function handler(_params: URLSearchParams) {
+  handler: function handler(params: URLSearchParams) {
     const query = new URLSearchParams();
     query.set('tab', 'perps');
-    return { path: DEFAULT_ROUTE, query };
+    return { path: DEFAULT_ROUTE, query: withDeeplinkAttribution(params, query) };
   },
 });

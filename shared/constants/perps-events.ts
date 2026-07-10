@@ -1,5 +1,5 @@
 /**
- * Canonical perps analytics contract from `@metamask/perps-controller` (TAT-3463).
+ * Canonical perps analytics contract from `@metamask/perps-controller`.
  *
  * Values come from the controller package (Jest-mapped via
  * `test/mocks/metamask-perps-controller.js`). A thin Extension compatibility

@@ -54,6 +54,7 @@ import {
   isPerpsLiquidationPriceValid,
   PERPS_LIQUIDATION_PRICE_FALLBACK,
 } from '../utils/formatPerpsDisplayPrice';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -320,6 +321,12 @@ export const EditMarginModalContent = ({
               ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
               : normalizedErrorMessage,
           });
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
           return;
         }
 
@@ -353,6 +360,11 @@ export const EditMarginModalContent = ({
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
 
         const normalizedErrorMessage = errorMessage.trim();
         const shouldUseFallbackDescription =

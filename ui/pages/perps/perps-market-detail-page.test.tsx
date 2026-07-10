@@ -256,9 +256,24 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+// Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
+// properties the page constructs.
+const mockPerpsScreenViewedOptions: {
+  eventName?: unknown;
+  properties?: Record<string, unknown>;
+}[] = [];
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: jest.fn() }),
+  usePerpsEventTracking: (options?: {
+    eventName?: unknown;
+    properties?: Record<string, unknown>;
+  }) => {
+    if (options) {
+      mockPerpsScreenViewedOptions.push(options);
+      return undefined;
+    }
+    return { track: jest.fn() };
+  },
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
@@ -422,6 +437,7 @@ describe('PerpsMarketDetailPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockPerpsScreenViewedOptions.length = 0;
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
     mockTriggerDeposit.mockClear();
@@ -451,6 +467,18 @@ describe('PerpsMarketDetailPage', () => {
   });
 
   describe('when perps feature is enabled', () => {
+    it('includes watchlisted on the asset_detail screen view', async () => {
+      await renderPage(mockStore(createMockState(true)));
+
+      const assetDetailView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'asset_details',
+      );
+
+      expect(assetDetailView).toBeDefined();
+      expect(assetDetailView?.properties).toHaveProperty('watchlisted');
+      expect(typeof assetDetailView?.properties?.watchlisted).toBe('boolean');
+    });
+
     it('renders market detail page for ETH', async () => {
       const store = mockStore(createMockState(true));
 
@@ -1950,7 +1978,7 @@ describe('PerpsMarketDetailPage', () => {
     });
   });
 
-  describe('orders section spacing (TAT-3264)', () => {
+  describe('orders section spacing', () => {
     it('renders the orders section header with the same top spacing token as the stats section header', () => {
       const store = mockStore(createMockState(true));
       renderWithProvider(<PerpsMarketDetailPage />, store);

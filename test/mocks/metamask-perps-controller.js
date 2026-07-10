@@ -64,6 +64,39 @@ const mockPerpsEventPropertyKeys = {
   TYPE: 'type',
   MARKET_CATEGORY_FILTER: 'market_category_filter',
   NUMBER_POSITIONS_CLOSED: 'number_positions_closed',
+  // UTM attribution.
+  UTM_MEDIUM: 'utm_medium',
+  UTM_CAMPAIGN: 'utm_campaign',
+  UTM_CONTENT: 'utm_content',
+  UTM_TERM: 'utm_term',
+  // Watchlist membership at event time.
+  WATCHLISTED: 'watchlisted',
+  // Sort / filter.
+  SORT_FIELD: 'sort_field',
+  SORT_DIRECTION: 'sort_direction',
+  FILTER_CATEGORY: 'filter_category',
+  // Client environment.
+  ENVIRONMENT_TYPE: 'environment_type',
+  // Order funnel + defaults.
+  ORDER_CONTEXT: 'order_context',
+  ORDER_SIZE: 'order_size',
+  ORDER_SIZE_PERCENT: 'order_size_percent',
+  INPUT_METHOD: 'input_method',
+  ORDER_HAS_TP: 'order_has_tp',
+  ORDER_HAS_SL: 'order_has_sl',
+  TRADE_WITH_TOKEN: 'trade_with_token',
+  SAVED_ORDER: 'saved_order',
+  DEFAULT_PAYMENT_TOKEN: 'default_payment_token',
+  DEFAULT_SIZE_AMOUNT: 'default_size_amount',
+  DEFAULT_LEVERAGE: 'default_leverage',
+  DEFAULT_AUTO_CLOSE: 'default_auto_close',
+  QUOTE_LATENCY_MS: 'quote_latency_ms',
+  ORDER_EXECUTION_LATENCY_MS: 'order_execution_latency_ms',
+  ERROR_REASON: 'error_reason',
+  FROM_TOKEN: 'from_token',
+  FROM_CHAIN: 'from_chain',
+  TO_TOKEN: 'to_token',
+  TO_CHAIN: 'to_chain',
 };
 
 /** @type {Record<string, Record<string, string>>} Minimal mock enum-like values for tests (subset of the real package). */
@@ -81,11 +114,13 @@ const mockPerpsEventValueLiterals = {
     INCREASE_EXPOSURE: 'increase_exposure',
     COMPLIANCE_BLOCK_NOTIF: 'compliance_block_notif',
     FLIP_POSITION: 'flip_position',
+    ERROR: 'error',
   },
   SCREEN_NAME: {
     PERPS_HOME: 'perps_home',
     PERPS_MARKET_DETAILS: 'perps_market_details',
     PERPS_ACTIVITY_HISTORY: 'perps_activity_history',
+    PERPS_ORDER: 'perps_order',
   },
   INTERACTION_TYPE: {
     ORDER_TYPE_SELECTED: 'order_type_selected',
@@ -104,12 +139,16 @@ const mockPerpsEventValueLiterals = {
     SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
     SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
     SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
+    SORT_APPLIED: 'sort_applied',
+    FILTER_APPLIED: 'filter_applied',
+    PAYMENT_TOKEN_SELECTOR_DISMISSED: 'payment_token_selector_dismissed',
   },
   BUTTON_CLICKED: {
     DEPOSIT: 'deposit',
     WITHDRAW: 'withdraw',
     TRADE: 'place_order',
     PLACE_ORDER: 'place_order',
+    CLOSE: 'close',
     ADD_MARGIN: 'add_margin',
     REMOVE_MARGIN: 'remove_margin',
     MARGIN: 'margin',
@@ -145,6 +184,9 @@ const mockPerpsEventValueLiterals = {
   },
   ERROR_TYPE: {
     BACKEND: 'backend',
+    VALIDATION: 'validation',
+    WARNING: 'warning',
+    NETWORK: 'network',
   },
   SOURCE: {
     HOMESCREEN_TAB: 'homescreen_tab',

@@ -33,6 +33,7 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../utils/formatPerpsDisplayPrice';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
@@ -152,6 +153,13 @@ export const CancelOrderModal = ({
         // surface UI only; do not throw into catch (would duplicate PerpsError).
         const errorMessage = result?.error ?? t('somethingWentWrong');
         setError(errorMessage);
+        // The error is DISPLAYED here, so emit the error screen view even though
+        // we intentionally skip the client PerpsError.
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
           description: errorMessage,
@@ -172,6 +180,11 @@ export const CancelOrderModal = ({
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
       });
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+      );
       setError(errorMessage);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,

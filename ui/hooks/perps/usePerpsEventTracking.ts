@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { Json } from '@metamask/utils';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { PerpsAttributionReactContext } from '../../providers/perps/PerpsAttributionContext';
 import { useAnalytics } from '../useAnalytics';
 
 export type UsePerpsEventTrackingDeclarativeOptions = {
@@ -41,16 +42,33 @@ export function usePerpsEventTracking(
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hasFiredDeclarativeRef = useRef(false);
 
+  // Read attribution without throwing: some PERPS_SCREEN_VIEWED call sites
+  // (e.g. the compliance banner) are not wrapped by PerpsAttributionProvider.
+  const attributionContext = useContext(PerpsAttributionReactContext);
+  const screenViewedAttribution = attributionContext?.screenViewedAttribution;
+
   const buildPerpsEvent = useCallback(
-    (eventName: MetaMetricsEventName, properties?: Record<string, Json>) =>
-      createEventBuilder(eventName)
+    (eventName: MetaMetricsEventName, properties?: Record<string, Json>) => {
+      // Merge stored UTM/deeplink attribution into PERPS_SCREEN_VIEWED at emit
+      // time — that event is emitted from the client, so it never passes
+      // through the controller's attribution merge.
+      // Attribution wins over the call-site: UTM keys are never set by call
+      // sites (always safe to add), and a deeplink entry is the authoritative
+      // `source`, overriding the screen's default source value.
+      const attributedProperties =
+        eventName === MetaMetricsEventName.PerpsScreenViewed &&
+        screenViewedAttribution
+          ? { ...properties, ...screenViewedAttribution }
+          : properties;
+      return createEventBuilder(eventName)
         .addCategory(MetaMetricsEventCategory.Perps)
         .addProperties({
-          ...properties,
+          ...attributedProperties,
           [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
         })
-        .build(),
-    [createEventBuilder],
+        .build();
+    },
+    [createEventBuilder, screenViewedAttribution],
   );
 
   const track = useCallback<PerpsTrackEventFn>(

@@ -7,6 +7,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
 import { usePerpsEventTracking } from './usePerpsEventTracking';
 
 const mockTrackEvent = jest.fn();
@@ -23,6 +24,15 @@ jest.mock('../useAnalytics', () => {
     }),
   };
 });
+
+// PerpsAttributionProvider fires fire-and-forget background writes on mount.
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('../../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+}));
 
 describe('usePerpsEventTracking', () => {
   beforeEach(() => {
@@ -162,6 +172,108 @@ describe('usePerpsEventTracking', () => {
       });
 
       expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('attribution merge', () => {
+    function wrapperWith(locationSearch: string) {
+      return function wrapper({ children }: { children: React.ReactNode }) {
+        return (
+          <PerpsAttributionProvider locationSearch={locationSearch}>
+            {children}
+          </PerpsAttributionProvider>
+        );
+      };
+    }
+
+    it('merges stored UTM context into PERPS_SCREEN_VIEWED events', () => {
+      const { result } = renderHook(() => usePerpsEventTracking(), {
+        wrapper: wrapperWith('?utm_source=ads&utm_medium=cpc&utm_campaign=summer'),
+      });
+
+      act(() => {
+        result.current.track(MetaMetricsEventName.PerpsScreenViewed, {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'asset_details',
+        });
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'ads',
+            [PERPS_EVENT_PROPERTY.UTM_MEDIUM]: 'cpc',
+            [PERPS_EVENT_PROPERTY.UTM_CAMPAIGN]: 'summer',
+          }),
+        }),
+      );
+    });
+
+    it('does not merge UTM into non-ScreenViewed events', () => {
+      const { result } = renderHook(() => usePerpsEventTracking(), {
+        wrapper: wrapperWith('?utm_source=ads'),
+      });
+
+      act(() => {
+        result.current.track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]: 'sort_applied',
+        });
+      });
+
+      const [builtEvent] = mockTrackEvent.mock.calls[0];
+      expect(builtEvent.properties).not.toHaveProperty(
+        PERPS_EVENT_PROPERTY.UTM_SOURCE,
+      );
+    });
+
+    it('includes UTM/deeplink on a screen view emitted on the first render', () => {
+      // Regression: attribution must be ready synchronously, because the
+      // declarative screen-view effect runs (child-first) before the provider's
+      // locationSearch effect — an effect-seeded attribution would miss the
+      // entry screen's first emit.
+      renderHook(
+        () =>
+          usePerpsEventTracking({
+            eventName: MetaMetricsEventName.PerpsScreenViewed,
+            conditions: true,
+            properties: {
+              [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'asset_details',
+              [PERPS_EVENT_PROPERTY.SOURCE]: 'market_list',
+            },
+          }),
+        { wrapper: wrapperWith('?utm_source=ads&source=deeplink') },
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'ads',
+            [PERPS_EVENT_PROPERTY.SOURCE]: 'deeplink',
+          }),
+        }),
+      );
+    });
+
+    it('overrides the call-site source with deeplink when entered via deeplink', () => {
+      const { result } = renderHook(() => usePerpsEventTracking(), {
+        wrapper: wrapperWith('?source=deeplink'),
+      });
+
+      act(() => {
+        result.current.track(MetaMetricsEventName.PerpsScreenViewed, {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'asset_details',
+          [PERPS_EVENT_PROPERTY.SOURCE]: 'market_list',
+        });
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SOURCE]: 'deeplink',
+          }),
+        }),
+      );
     });
   });
 });
