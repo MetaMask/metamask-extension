@@ -317,10 +317,16 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
     try {
       await dispatch(updateAndApproveTx(sendBundleTxMeta, true, ''));
+      if (isRetryingRef.current) {
+        return;
+      }
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
+      if (isRetryingRef.current) {
+        return;
+      }
       if (isUserRejectedHardwareWalletError(error)) {
         dispatchSignatureEvent({
           type: HardwareWalletSignatureEvent.TransactionRejected,
@@ -517,7 +523,12 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     stepTrackingResetKey: `${activeSigningRequestId}:${retryGenerationRef.current}`,
   });
 
-  useHwSwapNavigation({ signatureState });
+  useHwSwapNavigation({
+    signatureState,
+    returnRoute: isSendBundleFlow
+      ? (sendBundleState?.returnRoute ?? DEFAULT_ROUTE)
+      : undefined,
+  });
 
   const { cancelCurrentBatch } = useHwSignTracker(
     fromAddress,

@@ -12,6 +12,13 @@ jest.mock('../bridge/useBridgeNavigation', () => ({
   useBridgeNavigation: jest.fn(),
 }));
 
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
 const mockShowSuccessToast = jest.requireMock(
   '../../components/app/toast-listener/shared',
 ).showSuccessToast;
@@ -51,6 +58,30 @@ describe('useHwSwapNavigation', () => {
 
     expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('navigates to returnRoute when provided', async () => {
+    renderHookWithProvider(
+      () =>
+        useHwSwapNavigation({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.Submitted,
+          ),
+          returnRoute: '/send/confirm',
+        }),
+      {},
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith('/send/confirm', {
+      replace: true,
+    });
   });
 
   it('does not navigate when status is not Submitted', () => {
