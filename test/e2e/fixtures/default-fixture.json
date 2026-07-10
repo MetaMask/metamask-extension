@@ -1143,6 +1143,18 @@
         ]
       }
     },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "errorKey": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
       "localOverrides": {},
