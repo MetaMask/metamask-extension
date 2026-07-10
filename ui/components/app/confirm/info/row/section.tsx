@@ -1,5 +1,6 @@
 import React, { CSSProperties } from 'react';
 import { Box } from '../../../../component-library';
+import type { SizeNumber } from '../../../../component-library/box/box.types';
 import {
   BackgroundColor,
   BorderRadius,
@@ -7,6 +8,7 @@ import {
 
 export type ConfirmInfoSectionProps = {
   children: React.ReactNode | string;
+  marginBottom?: SizeNumber;
   noPadding?: boolean;
   style?: CSSProperties;
   'data-testid'?: string;
@@ -14,6 +16,7 @@ export type ConfirmInfoSectionProps = {
 
 export const ConfirmInfoSection = ({
   children,
+  marginBottom = 4,
   noPadding,
   style = {},
   'data-testid': dataTestId,
@@ -26,7 +29,7 @@ export const ConfirmInfoSection = ({
       paddingInline={noPadding ? 0 : 2}
       paddingTop={noPadding ? 0 : 1}
       paddingBottom={noPadding ? 0 : 1}
-      marginBottom={4}
+      marginBottom={marginBottom}
       style={style}
     >
       {children}

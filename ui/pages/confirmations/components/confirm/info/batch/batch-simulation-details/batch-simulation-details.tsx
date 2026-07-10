@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
+  TransactionContainerType,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -73,7 +74,7 @@ export function BatchSimulationDetails() {
         balanceChanges: finalBalanceChanges ?? [],
       },
     ];
-  }, [approveBalanceChanges, handleEdit]);
+  }, [approveBalanceChanges, handleEdit, t]);
 
   if (
     transactionMeta?.type === TransactionType.revokeDelegation ||
@@ -87,6 +88,9 @@ export function BatchSimulationDetails() {
     nestedTransactionIndexToEdit === undefined
       ? undefined
       : nestedTransactions?.[nestedTransactionIndexToEdit];
+  const isEnforcedSimulationsEnabled = transactionMeta.containerTypes?.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
 
   return (
     <>
@@ -107,6 +111,7 @@ export function BatchSimulationDetails() {
             transaction={transactionMeta}
             staticRows={approveRows}
             isTransactionsRedesign
+            sectionMarginBottom={isEnforcedSimulationsEnabled ? 2 : undefined}
             enableMetrics
           />
         </>
