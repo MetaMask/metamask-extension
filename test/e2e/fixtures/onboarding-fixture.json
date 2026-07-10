@@ -2113,6 +2113,17 @@
       "proofBackfillEnqueued": false,
       "syncQueue": {}
     },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
       "localOverrides": {},
