@@ -10,7 +10,10 @@ import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
 } from '../../../../../test/data/bridge/mock-bridge-store';
-import { I18nProvider, en } from '../../../../../test/lib/render-helpers-navigate';
+import {
+  I18nProvider,
+  en,
+} from '../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { ConnectionStatus } from '../../../../contexts/hardware-wallets';
 import {
@@ -109,9 +112,8 @@ const mockFindNetworkClientIdByChainId =
   findNetworkClientIdByChainId as jest.MockedFunction<
     typeof findNetworkClientIdByChainId
   >;
-const mockCleanupPendingApproval = cleanupPendingApproval as jest.MockedFunction<
-  typeof cleanupPendingApproval
->;
+const mockCleanupPendingApproval =
+  cleanupPendingApproval as jest.MockedFunction<typeof cleanupPendingApproval>;
 
 const LEDGER_ACCOUNT_GROUP =
   'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82';
@@ -305,8 +307,9 @@ describe('useHardwareWalletSignatures', () => {
     mockNavigate.mockReset();
     mockSetSigningInProgress.mockReset();
     mockCleanupPendingApproval.mockReset().mockResolvedValue(undefined);
-    mockUpdateAndApproveTx.mockReset().mockReturnValue((() =>
-      Promise.resolve(undefined)) as never);
+    mockUpdateAndApproveTx
+      .mockReset()
+      .mockReturnValue((() => Promise.resolve(undefined)) as never);
     mockFindNetworkClientIdByChainId.mockReset().mockResolvedValue('mainnet');
     mockAddTransaction.mockReset().mockResolvedValue({
       id: 'new-tx-id',
@@ -416,7 +419,10 @@ describe('useHardwareWalletSignatures', () => {
 
     it('marks the flow rejected when the device rejects the sendBundle submit', async () => {
       mockUpdateAndApproveTx.mockReturnValue((() =>
-        Promise.reject({ code: 4001, message: 'User rejected the request.' })) as never);
+        Promise.reject({
+          code: 4001,
+          message: 'User rejected the request.',
+        })) as never);
 
       const { result } = await renderUseHardwareWalletSignaturesAndFlush({
         locationState: createSendBundleLocationState(),
@@ -717,9 +723,10 @@ describe('useHardwareWalletSignatures', () => {
           message: 'User rejected the request.',
         })) as never);
 
-      const { result, rerender } = await renderUseHardwareWalletSignaturesAndFlush({
-        locationState: createSendBundleLocationState(),
-      });
+      const { result, rerender } =
+        await renderUseHardwareWalletSignaturesAndFlush({
+          locationState: createSendBundleLocationState(),
+        });
 
       await waitFor(() => {
         expect(result.current.signatureStatus).toBe(
