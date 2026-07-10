@@ -27,11 +27,11 @@ import {
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import {
-  ConnectionStatus,
   useHardwareWalletActions,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';

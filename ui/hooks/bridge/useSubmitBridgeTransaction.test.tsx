@@ -15,6 +15,7 @@ import {
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
@@ -329,13 +330,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           [
             "/cross-chain/swaps/hardware-wallet-signatures",
             {
-              "state": {},
-            },
-          ],
-          [
-            "/",
-            {
-              "replace": true,
               "state": {
                 "sendBundle": null,
               },
@@ -397,18 +391,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           },
         },
       });
-      const submitTx = jest.fn(async () => {
-        throw new Error('transport disconnected');
-      });
-      setBackgroundConnection({
-        submitTx,
-        submitIntent: submitIntentSpy,
-        getStatePatches: jest.fn(),
-        setEnabledAllPopularNetworks: jest.fn(),
-        resetState: () => mockResetState(),
-      } as never);
+      const submitError = new Error('transport disconnected');
+      submitTxSpy.mockImplementationOnce((async () => {
+        throw submitError;
+      }) as never);
       isHardwareWalletSpy.mockImplementation(() => true);
-      const { result } = renderHook(
+      const { result, unmount } = renderHook(
         () =>
           useSubmitBridgeTransaction({
             submitOnHardwareWalletSigningPage: true,
@@ -418,19 +406,23 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         },
       );
 
-      await expect(
-        act(async () => {
+      let didThrow = false;
+      await act(async () => {
+        try {
           await result.current.submitBridgeTransaction(
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
           );
-        }),
-      ).rejects.toThrow('transport disconnected');
+        } catch (error) {
+          didThrow = true;
+          expect(error).toBe(submitError);
+        }
+      });
+      unmount();
 
-      expect(captureExceptionSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ message: 'transport disconnected' }),
-      );
+      expect(didThrow).toBe(true);
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
       expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(result.current.isSubmitting).toBe(false);
     });
@@ -566,24 +558,25 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         },
       };
 
-      await act(async () => {
-        await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          quoteWithIntent as any,
-        );
-      });
+      await expect(
+        act(async () => {
+          await result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            quoteWithIntent as any,
+          );
+        }),
+      ).rejects.toThrow('Hardware wallets cannot submit bridge intent quotes');
 
       expect(mockUseNavigate).not.toHaveBeenCalledWith(
         `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
         expect.anything(),
       );
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(2, DEFAULT_ROUTE, {
-        replace: true,
-        state: {
-          stayOnHomePage: true,
-        },
-      });
+      expect(captureExceptionSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Hardware wallets cannot submit bridge intent quotes',
+        }),
+      );
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });

@@ -76,39 +76,6 @@ function createStrategy(useBatchTracking: boolean): TrackingStrategy {
     : new SequentialTrackingStrategy();
 }
 
-function normalizeAddress(address: string | undefined): string | undefined {
-  return address?.toLowerCase();
-}
-
-function matchesExpectedParams(
-  transactionMeta: TransactionMeta,
-  expectedTransactionParams: ExpectedTransactionParams[] | undefined,
-): boolean {
-  if (!expectedTransactionParams?.length) {
-    return false;
-  }
-
-  return expectedTransactionParams.some((expected) => {
-    if (
-      expected.to &&
-      normalizeAddress(transactionMeta.txParams.to) !==
-        normalizeAddress(expected.to)
-    ) {
-      return false;
-    }
-
-    if (expected.data && transactionMeta.txParams.data !== expected.data) {
-      return false;
-    }
-
-    if (expected.value && transactionMeta.txParams.value !== expected.value) {
-      return false;
-    }
-
-    return true;
-  });
-}
-
 /**
  * Checks whether a transaction matches any of the expected transaction params.
  *
