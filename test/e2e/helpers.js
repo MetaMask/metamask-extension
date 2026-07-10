@@ -415,7 +415,7 @@ async function withFixtures(options, testSuite) {
     let effectiveUnifiedEvmAccountsApiBalances =
       unifiedEvmAccountsApiBalances ?? {};
     const localChainId = localNodeOptsNormalized[0]?.options.chainId ?? 1337;
-    if (localNodes[0]) {
+    if (localNodes[0] && localNodeOptsNormalized[0]?.type === 'anvil') {
       const nodeBalance = Number(
         (await localNodes[0].getBalance()).toFixed(3),
       ).toString();
