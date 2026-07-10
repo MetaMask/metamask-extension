@@ -65,7 +65,9 @@ export const lavamoatPlugin = (args: Args) =>
               ]
             : [],
         };
-      } else if (chunk.name === 'service-worker.ts') {
+      } else if (
+        chunk.getEntryOptions()?.chunkLoading === 'import-scripts'
+      ) {
         return {
           mode: 'safe',
           embeddedOptions: {

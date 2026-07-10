@@ -599,13 +599,12 @@ const config = {
     global: true,
   },
   optimization: {
-    // only enable sideEffects, providedExports, removeAvailableModules, and
-    // usedExports for production and LavaMoat builds, as these options slow
-    // down the build. LavaMoat policies are generated from the optimized
-    // production graph, so LavaMoat development builds must use the same graph.
+    // Enable tree shaking for production and LavaMoat builds. LavaMoat
+    // policies are generated from the optimized production graph, so LavaMoat
+    // development builds must use the same graph.
     sideEffects: useOptimizedModuleGraph,
     providedExports: useOptimizedModuleGraph,
-    removeAvailableModules: useOptimizedModuleGraph,
+    removeAvailableModules: !isDevelopment,
     usedExports: useOptimizedModuleGraph,
     // 'deterministic' results in faster recompilations in cases where a child
     // chunk changes, but the parent chunk does not.
