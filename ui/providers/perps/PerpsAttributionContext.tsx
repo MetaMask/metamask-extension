@@ -101,6 +101,7 @@ function isDeeplinkSearch(search?: string): boolean {
  * location search string. Used to seed provider state synchronously on the
  * first render so the entry screen's PERPS_SCREEN_VIEWED is not emitted before
  * attribution is ready.
+ * @param search
  */
 function computeFlowAttributionFromSearch(
   search?: string,
@@ -200,27 +201,41 @@ export function PerpsAttributionProvider({
   // UTM (keyed by PERPS_EVENT_PROPERTY) plus a deeplink source override, merged
   // into every client PERPS_SCREEN_VIEWED event.
   const screenViewedAttribution = useMemo<Record<string, Json>>(() => {
+    // Derive UTM from the CURRENT locationSearch at render time and union it
+    // over the session-sticky store. The screen-view event can fire (fire-once)
+    // on the same render the utm-bearing search first applies — before the
+    // provider's `syncUtmAttributionFromSearch` effect back-fills utmAttribution
+    // state (React runs effects after render) — and the fire-once guard blocks
+    // an enriched re-fire. Reading utmAttribution state alone loses that first
+    // emit's UTM; deriving from locationSearch here makes UTM as synchronous as
+    // the deeplink source. The sticky store still covers later in-app
+    // navigations whose search no longer carries utm.
+    const utm: ControllerAttributionContext = {
+      ...utmAttribution,
+      ...(parseUtmAttribution(locationSearch ?? '') ?? {}),
+    };
     const merged: Record<string, Json> = {};
-    if (utmAttribution.utmSource !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_SOURCE] = utmAttribution.utmSource;
+    if (utm.utmSource !== undefined) {
+      merged[PERPS_EVENT_PROPERTY.UTM_SOURCE] = utm.utmSource;
     }
-    if (utmAttribution.utmMedium !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_MEDIUM] = utmAttribution.utmMedium;
+    if (utm.utmMedium !== undefined) {
+      merged[PERPS_EVENT_PROPERTY.UTM_MEDIUM] = utm.utmMedium;
     }
-    if (utmAttribution.utmCampaign !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN] = utmAttribution.utmCampaign;
+    if (utm.utmCampaign !== undefined) {
+      merged[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN] = utm.utmCampaign;
     }
-    if (utmAttribution.utmContent !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_CONTENT] = utmAttribution.utmContent;
+    if (utm.utmContent !== undefined) {
+      merged[PERPS_EVENT_PROPERTY.UTM_CONTENT] = utm.utmContent;
     }
-    if (utmAttribution.utmTerm !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_TERM] = utmAttribution.utmTerm;
+    if (utm.utmTerm !== undefined) {
+      merged[PERPS_EVENT_PROPERTY.UTM_TERM] = utm.utmTerm;
     }
-    if (isDeeplinkEntry) {
+    // Sticky flag OR the current search — same render-time synchronicity.
+    if (isDeeplinkEntry || isDeeplinkSearch(locationSearch)) {
       merged[PERPS_EVENT_PROPERTY.SOURCE] = PERPS_EVENT_VALUE.SOURCE.DEEPLINK;
     }
     return merged;
-  }, [utmAttribution, isDeeplinkEntry]);
+  }, [utmAttribution, isDeeplinkEntry, locationSearch]);
 
   const value = useMemo(
     () => ({

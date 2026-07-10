@@ -41,4 +41,3 @@ export {
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
 } from './tpslValidation';
-

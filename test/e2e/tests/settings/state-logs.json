@@ -1287,6 +1287,10 @@
         "conversionRate": "number"
       }
     },
+    "recentlyViewedMarkets": {
+      "testnet": [],
+      "mainnet": []
+    },
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {

@@ -30,15 +30,13 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import type {
-  ClosePositionParams,
-  OrderType,
-  OrderParams,
-  PriceUpdate,
-} from '@metamask/perps-controller';
 import {
   ORDER_SLIPPAGE_CONFIG,
   PERFORMANCE_CONFIG,
+  type ClosePositionParams,
+  type OrderType,
+  type OrderParams,
+  type PriceUpdate,
   type InputMethod,
 } from '@metamask/perps-controller';
 import {
@@ -527,7 +525,11 @@ const PerpsOrderEntryPage = () => {
   // quote is synchronous), and `order_execution_latency_ms` on submitted tx
   // events is controller-owned (deferred to controller 9.2.2).
   useEffect(() => {
-    if (orderMode !== 'new' || !orderFormState || !hasUserEditedSizeRef.current) {
+    if (
+      orderMode !== 'new' ||
+      !orderFormState ||
+      !hasUserEditedSizeRef.current
+    ) {
       return undefined;
     }
     const orderSize = Number.parseFloat(
@@ -544,7 +546,8 @@ const PerpsOrderEntryPage = () => {
         [PERPS_EVENT_PROPERTY.ORDER_CONTEXT]: 'trade',
         [PERPS_EVENT_PROPERTY.ACTION]: action,
         [PERPS_EVENT_PROPERTY.ORDER_SIZE]: orderSize,
-        [PERPS_EVENT_PROPERTY.ORDER_SIZE_PERCENT]: orderFormState.balancePercent,
+        [PERPS_EVENT_PROPERTY.ORDER_SIZE_PERCENT]:
+          orderFormState.balancePercent,
         [PERPS_EVENT_PROPERTY.INPUT_METHOD]: lastInputMethodRef.current,
         [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
         [PERPS_EVENT_PROPERTY.DIRECTION]:

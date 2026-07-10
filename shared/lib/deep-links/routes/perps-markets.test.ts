@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- deeplink URL query params use snake_case */
 import { perpsMarkets } from './perps-markets';
 import { DEFAULT_ROUTE, type Destination } from './route';
 

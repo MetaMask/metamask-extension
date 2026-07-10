@@ -20,6 +20,9 @@ export const perpsMarkets = new Route({
   handler: function handler(params: URLSearchParams) {
     const query = new URLSearchParams();
     query.set('tab', 'perps');
-    return { path: DEFAULT_ROUTE, query: withDeeplinkAttribution(params, query) };
+    return {
+      path: DEFAULT_ROUTE,
+      query: withDeeplinkAttribution(params, query),
+    };
   },
 });

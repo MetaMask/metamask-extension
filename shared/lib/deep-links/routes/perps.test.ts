@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention -- deeplink URL query params use snake_case */
+import { parse } from '../parse';
 import { perps } from './perps';
 import {
   DEFAULT_ROUTE,
@@ -5,7 +7,6 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   type Destination,
 } from './route';
-import { parse } from '../parse';
 
 function assertPathDestination(
   result: Destination,
@@ -218,10 +219,9 @@ describe('perpsRoute', () => {
       );
 
       const parsed = await parse(url, { verify: false });
-      if (!parsed) {
-        throw new Error('expected the perps route to parse the deeplink');
-      }
-      const { destination } = parsed;
+      // parse only returns false when no route matches the pathname; /perps does.
+      expect(parsed).not.toBe(false);
+      const { destination } = parsed as Exclude<typeof parsed, false>;
       assertPathDestination(destination);
 
       expect(destination.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/ETH`);

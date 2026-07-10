@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import {

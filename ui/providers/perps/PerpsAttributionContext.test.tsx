@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import { act, renderHook } from '@testing-library/react-hooks';
 import React from 'react';
 

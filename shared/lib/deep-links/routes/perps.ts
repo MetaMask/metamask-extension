@@ -71,12 +71,18 @@ export const perps = new Route({
         if (normalizedFilter) {
           query.set('filter', normalizedFilter);
         }
-        return { path: PERPS_MARKET_LIST_ROUTE, query: withDeeplinkAttribution(params, query) };
+        return {
+          path: PERPS_MARKET_LIST_ROUTE,
+          query: withDeeplinkAttribution(params, query),
+        };
       }
       default: {
         const query = new URLSearchParams();
         query.set('tab', 'perps');
-        return { path: DEFAULT_ROUTE, query: withDeeplinkAttribution(params, query) };
+        return {
+          path: DEFAULT_ROUTE,
+          query: withDeeplinkAttribution(params, query),
+        };
       }
     }
   },

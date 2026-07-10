@@ -65,6 +65,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.autoFocus
  * @param options0.usdPlaceholder
  * @param options0.usdInputRef
+ * @param options0.onInputMethodChange
  */
 export const AmountInput = ({
   amount,

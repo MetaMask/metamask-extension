@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
+import { render } from '@testing-library/react';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 
 import {
@@ -188,7 +189,9 @@ describe('usePerpsEventTracking', () => {
 
     it('merges stored UTM context into PERPS_SCREEN_VIEWED events', () => {
       const { result } = renderHook(() => usePerpsEventTracking(), {
-        wrapper: wrapperWith('?utm_source=ads&utm_medium=cpc&utm_campaign=summer'),
+        wrapper: wrapperWith(
+          '?utm_source=ads&utm_medium=cpc&utm_campaign=summer',
+        ),
       });
 
       act(() => {
@@ -274,6 +277,60 @@ describe('usePerpsEventTracking', () => {
           }),
         }),
       );
+    });
+
+    // Regression (real navigation race): the provider mounts, THEN the
+    // utm-bearing search applies on the same commit the fire-once screen view
+    // becomes eligible (markets warm from cache -> conditions immediately true).
+    // The child's declarative fire effect runs before the provider's UTM-sync
+    // effect, so utmAttribution STATE is still empty at fire time. UTM must come
+    // from render-time derivation of locationSearch, or the first (and only)
+    // emit loses it. Seeds search AFTER mount to defeat the initializer path the
+    // older tests relied on.
+    function RaceHarness({
+      search,
+      conditions,
+    }: {
+      search: string;
+      conditions: boolean;
+    }) {
+      return (
+        <PerpsAttributionProvider locationSearch={search}>
+          <RaceEmitter conditions={conditions} />
+        </PerpsAttributionProvider>
+      );
+    }
+
+    function RaceEmitter({ conditions }: { conditions: boolean }) {
+      usePerpsEventTracking({
+        eventName: MetaMetricsEventName.PerpsScreenViewed,
+        conditions,
+        properties: {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'asset_details',
+          [PERPS_EVENT_PROPERTY.SOURCE]: 'market_list',
+        },
+      });
+      return null;
+    }
+
+    it('includes UTM on the first fire when the utm search applies after mount', () => {
+      const { rerender } = render(<RaceHarness search="" conditions={false} />);
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+
+      // utm-bearing search + warm markets land on the same commit.
+      rerender(
+        <RaceHarness
+          search="?source=deeplink&utm_source=cdp_test&utm_medium=push&utm_campaign=q3_launch"
+          conditions={true}
+        />,
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      const { properties } = mockTrackEvent.mock.calls[0][0];
+      expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('deeplink');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_MEDIUM]).toBe('push');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN]).toBe('q3_launch');
     });
   });
 });

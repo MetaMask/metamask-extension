@@ -66,6 +66,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.autoFocusUsd
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
+ * @param props.onInputMethodChange
  */
 export const OrderEntry = ({
   asset,

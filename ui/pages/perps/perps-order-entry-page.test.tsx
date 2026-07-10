@@ -1246,7 +1246,8 @@ describe('PerpsOrderEntryPage', () => {
 
     const consideredCalls = () =>
       mockAnalyticsTrackEvent.mock.calls.filter(
-        ([arg]) => arg?.name === MetaMetricsEventName.PerpsTransactionConsidered,
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsTransactionConsidered,
       );
 
     it('emits PERPS_TRANSACTION_CONSIDERED after a debounced user fill', async () => {
