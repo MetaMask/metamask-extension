@@ -26,7 +26,10 @@ const loaded: ResourceState<Country[]> = {
 };
 
 type MetamaskOverrides = Partial<{
-  remoteFeatureFlags: { rampsEnabled: boolean; rampsServiceDisruption: boolean };
+  remoteFeatureFlags: {
+    rampsEnabled: boolean;
+    rampsServiceDisruption: boolean;
+  };
   userRegion: UserRegion | null;
   countries: ResourceState<Country[]>;
   providers: ResourceState<Provider[], Provider | null>;
@@ -39,7 +42,12 @@ const buildState = (over: MetamaskOverrides = {}) => ({
     remoteFeatureFlags: { rampsEnabled: true, rampsServiceDisruption: false },
     userRegion: region,
     countries: { ...loaded, data: [region.country] },
-    providers: { data: [{ id: 'p' } as Provider], selected: null, isLoading: false, error: null },
+    providers: {
+      data: [{ id: 'p' } as Provider],
+      selected: null,
+      isLoading: false,
+      error: null,
+    },
     tokens: {
       data: { topTokens: [{} as RampsToken], allTokens: [{} as RampsToken] },
       selected: null,
@@ -75,7 +83,10 @@ describe('useRampsNavigation goToBuy', () => {
   it('flag off → opens Portfolio (no modal)', () => {
     const { result, getModalName } = run(
       buildState({
-        remoteFeatureFlags: { rampsEnabled: false, rampsServiceDisruption: false },
+        remoteFeatureFlags: {
+          rampsEnabled: false,
+          rampsServiceDisruption: false,
+        },
       }),
     );
     result.current.goToBuy('0x1');
@@ -101,7 +112,10 @@ describe('useRampsNavigation goToBuy', () => {
   it('service disruption → shows RAMPS_SERVICE_DISRUPTION', () => {
     const { result, getModalName } = run(
       buildState({
-        remoteFeatureFlags: { rampsEnabled: true, rampsServiceDisruption: true },
+        remoteFeatureFlags: {
+          rampsEnabled: true,
+          rampsServiceDisruption: true,
+        },
       }),
     );
     result.current.goToBuy('0x1');

@@ -39,7 +39,10 @@ describe('isRampRegionDefinitivelyUnsupported', () => {
 
   it('falls back to the country buy flag when no state flag', () => {
     const r = region({
-      country: country({ isoCode: 'FR', supported: { buy: false, sell: false } }),
+      country: country({
+        isoCode: 'FR',
+        supported: { buy: false, sell: false },
+      }),
       regionCode: 'fr',
     });
     expect(isRampRegionDefinitivelyUnsupported(r, [r.country])).toBe(true);
@@ -47,11 +50,16 @@ describe('isRampRegionDefinitivelyUnsupported', () => {
 
   it('falls back to membership in the countries list', () => {
     const r = region({
-      country: country({ isoCode: 'ZZ', supported: {} as Country['supported'] }),
+      country: country({
+        isoCode: 'ZZ',
+        supported: {} as Country['supported'],
+      }),
       regionCode: 'zz',
     });
     // absent from list => unsupported
-    expect(isRampRegionDefinitivelyUnsupported(r, [country({ isoCode: 'US' })])).toBe(true);
+    expect(
+      isRampRegionDefinitivelyUnsupported(r, [country({ isoCode: 'US' })]),
+    ).toBe(true);
     // present in list => supported
     expect(isRampRegionDefinitivelyUnsupported(r, [r.country])).toBe(false);
   });
@@ -62,7 +70,10 @@ describe('isRampRegionDefinitivelyUnsupported', () => {
 
   it('fails open when countries list is empty and no explicit flags', () => {
     const r = region({
-      country: country({ isoCode: 'ZZ', supported: {} as Country['supported'] }),
+      country: country({
+        isoCode: 'ZZ',
+        supported: {} as Country['supported'],
+      }),
     });
     expect(isRampRegionDefinitivelyUnsupported(r, [])).toBe(false);
   });
