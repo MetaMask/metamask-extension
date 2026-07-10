@@ -31,6 +31,7 @@ jest.mock('../../store/actions', () => ({
   fetchAndUpdateMetamaskNotifications: jest.fn(() => () => Promise.resolve()),
 }));
 
+
 jest.mock('../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../shared/lib/analytics/create-event-builder',
