@@ -38,6 +38,7 @@ import {
   RewardsControllerGetSeasonStatusAction,
 } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { SubscriptionServiceMethodActions } from './subscription-service-method-action-types';
+import { SentinelApiServiceGetNetworksAction } from '@metamask/sentinel-api-service';
 
 export type {
   SubscriptionServiceUpdateSubscriptionCardPaymentMethodAction,
@@ -71,6 +72,7 @@ type AllowedActions =
   | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | AuthenticationControllerGetBearerTokenAction
+  | SentinelApiServiceGetNetworksAction
   | AppStateControllerGetStateAction
   | AppStateControllerSetPendingShieldCohortAction
   | AppStateControllerSetPendingRedirectRouteAction

@@ -51,6 +51,7 @@ export function getSubscriptionServiceMessenger(
       'SmartTransactionsController:getState',
       'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
+      'SentinelApiService:getNetworks',
       'KeyringController:getState',
       // Rewards Integration
       'RewardsController:getSeasonStatus',

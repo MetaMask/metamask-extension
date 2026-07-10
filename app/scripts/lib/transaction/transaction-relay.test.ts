@@ -3,11 +3,12 @@ import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
   RelayStatus,
   RelaySubmitRequest,
+  type SentinelRelayMessenger,
   isRelaySupported,
   submitRelayTransaction,
   waitForRelayResult,
 } from './transaction-relay';
-import { resetSentinelApiService } from './sentinel-api-service';
+import { SentinelChainNotSupportedError } from '@metamask/sentinel-api-service';
 
 jest.useFakeTimers();
 
@@ -34,109 +35,79 @@ const NETWORKS_MOCK = {
   },
 };
 
+/**
+ * Builds a mock messenger backed by a jest `call` mock.
+ *
+ * @returns The mock messenger and its `call` jest mock.
+ */
+function buildMessengerMock() {
+  const call = jest.fn();
+  const messenger = { call } as unknown as SentinelRelayMessenger;
+  return { messenger, call };
+}
+
 describe('Transaction Relay Utils', () => {
-  const fetchMock = jest.fn<Promise<Response>, [string, RequestInit?]>();
-
-  /**
-   * Builds a mock `Response` resolving to the given JSON body.
-   *
-   * @param json - The JSON body the response resolves to.
-   * @param ok - Whether the response is a 2xx response. Defaults to true.
-   * @param status - The HTTP status. Defaults to 200 / 500 based on `ok`.
-   * @returns The mock response.
-   */
-  function response(
-    json: unknown,
-    ok = true,
-    status = ok ? 200 : 500,
-  ): Response {
-    return {
-      ok,
-      status,
-      json: async () => json,
-      text: async () => JSON.stringify(json),
-    } as Response;
-  }
-
-  /**
-   * Mocks the next `fetch` call as a successful `/networks` registry response.
-   */
-  function mockNetworks() {
-    fetchMock.mockResolvedValueOnce(response(NETWORKS_MOCK));
-  }
-
-  /**
-   * Mocks the next `fetch` call as a successful JSON-RPC `result` response.
-   *
-   * @param result - The JSON-RPC `result` value.
-   */
-  function mockRpcResult(result: unknown) {
-    fetchMock.mockResolvedValueOnce(
-      response({ id: '1', jsonrpc: '2.0', result }),
-    );
-  }
-
-  /**
-   * Mocks the next `fetch` call as a relay status GET response.
-   *
-   * @param json - The status response body.
-   */
-  function mockStatus(json: unknown) {
-    fetchMock.mockResolvedValueOnce(response(json));
-  }
-
   beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllTimers();
-    resetSentinelApiService();
-    globalThis.fetch = fetchMock as unknown as typeof fetch;
   });
 
   describe('submitRelayTransaction', () => {
-    it('submits request to API with client headers', async () => {
-      mockNetworks();
-      mockRpcResult({ uuid: UUID_MOCK });
+    it('submits request via the SentinelApiService messenger action', async () => {
+      const { messenger, call } = buildMessengerMock();
+      call.mockResolvedValueOnce({ uuid: UUID_MOCK });
 
-      await submitRelayTransaction(SUBMIT_REQUEST_MOCK);
+      await submitRelayTransaction(messenger, SUBMIT_REQUEST_MOCK);
 
-      const submitCall = fetchMock.mock.calls[1];
-      expect(submitCall[1]?.method).toBe('POST');
-      expect(
-        (submitCall[1]?.headers as Record<string, string>)['X-Client-Id'],
-      ).toBe('extension');
+      expect(call).toHaveBeenCalledWith(
+        'SentinelApiService:submitRelayTransaction',
+        SUBMIT_REQUEST_MOCK,
+      );
     });
 
     it('returns uuid from response if successful', async () => {
-      mockNetworks();
-      mockRpcResult({ uuid: UUID_MOCK });
+      const { messenger, call } = buildMessengerMock();
+      call.mockResolvedValueOnce({ uuid: UUID_MOCK });
 
-      const result = await submitRelayTransaction(SUBMIT_REQUEST_MOCK);
+      const result = await submitRelayTransaction(
+        messenger,
+        SUBMIT_REQUEST_MOCK,
+      );
 
       expect(result).toStrictEqual({ uuid: UUID_MOCK });
     });
 
-    it('throws if chain not supported', async () => {
-      fetchMock.mockResolvedValueOnce(response({}));
+    it('normalizes chain not supported errors', async () => {
+      const { messenger, call } = buildMessengerMock();
+      call.mockRejectedValueOnce(new SentinelChainNotSupportedError('0x123'));
 
       await expect(
-        submitRelayTransaction({ ...SUBMIT_REQUEST_MOCK, chainId: '0x123' }),
-      ).rejects.toThrow(`Chain not supported by transaction relay - 0x123`);
+        submitRelayTransaction(messenger, {
+          ...SUBMIT_REQUEST_MOCK,
+          chainId: '0x123',
+        }),
+      ).rejects.toThrow('Chain not supported by transaction relay - 0x123');
+    });
+
+    it('rethrows other errors unchanged', async () => {
+      const { messenger, call } = buildMessengerMock();
+      call.mockRejectedValueOnce(new Error('boom'));
+
+      await expect(
+        submitRelayTransaction(messenger, SUBMIT_REQUEST_MOCK),
+      ).rejects.toThrow('boom');
     });
   });
 
   describe('waitForRelayResult', () => {
     it('returns transaction if successful', async () => {
-      mockNetworks();
-      mockStatus({
-        transactions: [
-          {
-            hash: TRANSACTION_HASH_MOCK,
-            status: RelayStatus.Success,
-          },
-        ],
+      const { messenger, call } = buildMessengerMock();
+      call.mockResolvedValueOnce({
+        status: RelayStatus.Success,
+        transactionHash: TRANSACTION_HASH_MOCK,
       });
 
-      const resultPromise = waitForRelayResult(WAIT_REQUEST_MOCK);
+      const resultPromise = waitForRelayResult(messenger, WAIT_REQUEST_MOCK);
       await flushPromises();
 
       jest.advanceTimersByTime(INTERVAL_MOCK);
@@ -150,55 +121,42 @@ describe('Transaction Relay Utils', () => {
     });
 
     it('returns status if unsuccessful', async () => {
-      mockNetworks();
-      mockStatus({
-        transactions: [
-          {
-            status: 'TEST_STATUS',
-          },
-        ],
-      });
+      const { messenger, call } = buildMessengerMock();
+      call.mockResolvedValueOnce({ status: 'TEST_STATUS' });
 
-      const resultPromise = waitForRelayResult(WAIT_REQUEST_MOCK);
+      const resultPromise = waitForRelayResult(messenger, WAIT_REQUEST_MOCK);
       await flushPromises();
 
       jest.advanceTimersByTime(INTERVAL_MOCK);
 
       const result = await resultPromise;
 
-      expect(result).toStrictEqual({
-        status: 'TEST_STATUS',
-      });
+      expect(result).toStrictEqual({ status: 'TEST_STATUS' });
     });
 
-    it('throws if polling fails', async () => {
-      mockNetworks();
-      fetchMock.mockResolvedValueOnce(response({}, false, 500));
+    it('rejects if polling fails', async () => {
+      const { messenger, call } = buildMessengerMock();
+      call.mockRejectedValueOnce(new Error('status request failed'));
 
-      const resultPromise = waitForRelayResult(WAIT_REQUEST_MOCK);
+      const resultPromise = waitForRelayResult(messenger, WAIT_REQUEST_MOCK);
       await flushPromises();
 
       jest.advanceTimersByTime(INTERVAL_MOCK);
 
-      await expect(resultPromise).rejects.toThrow(
-        `Sentinel relay status request failed with status '500'`,
-      );
+      await expect(resultPromise).rejects.toThrow('status request failed');
     });
 
     it('queries multiple times on interval until status not pending', async () => {
-      mockNetworks();
-      mockStatus({ transactions: [{ status: RelayStatus.Pending }] });
-      mockStatus({ transactions: [{ status: RelayStatus.Pending }] });
-      mockStatus({
-        transactions: [
-          {
-            hash: TRANSACTION_HASH_MOCK,
-            status: RelayStatus.Success,
-          },
-        ],
-      });
+      const { messenger, call } = buildMessengerMock();
+      call
+        .mockResolvedValueOnce({ status: RelayStatus.Pending })
+        .mockResolvedValueOnce({ status: RelayStatus.Pending })
+        .mockResolvedValueOnce({
+          status: RelayStatus.Success,
+          transactionHash: TRANSACTION_HASH_MOCK,
+        });
 
-      const resultPromise = waitForRelayResult(WAIT_REQUEST_MOCK);
+      const resultPromise = waitForRelayResult(messenger, WAIT_REQUEST_MOCK);
       await flushPromises();
 
       jest.advanceTimersByTime(INTERVAL_MOCK);
@@ -208,8 +166,7 @@ describe('Transaction Relay Utils', () => {
       jest.advanceTimersByTime(INTERVAL_MOCK);
       await flushPromises();
 
-      // 1 networks request (cached thereafter) + 3 status requests.
-      expect(fetchMock).toHaveBeenCalledTimes(4);
+      expect(call).toHaveBeenCalledTimes(3);
 
       await resultPromise;
     });
@@ -217,36 +174,40 @@ describe('Transaction Relay Utils', () => {
 
   describe('isRelaySupported', () => {
     it('returns true if networks request includes chain', async () => {
-      mockNetworks();
-      const result = await isRelaySupported(CHAIN_IDS.MAINNET);
+      const { messenger, call } = buildMessengerMock();
+      call.mockResolvedValueOnce(NETWORKS_MOCK);
+
+      const result = await isRelaySupported(messenger, CHAIN_IDS.MAINNET);
+
       expect(result).toBe(true);
     });
 
     it('returns false if networks request does not include chain', async () => {
-      fetchMock.mockResolvedValueOnce(response({}));
+      const { messenger, call } = buildMessengerMock();
+      call.mockResolvedValueOnce({});
 
-      const result = await isRelaySupported(CHAIN_IDS.MAINNET);
+      const result = await isRelaySupported(messenger, CHAIN_IDS.MAINNET);
+
       expect(result).toBe(false);
     });
 
     it('returns false if relay flag disabled', async () => {
-      fetchMock.mockResolvedValueOnce(
-        response({
-          1: {
-            relayTransactions: false,
-            network: 'test',
-          },
-        }),
-      );
+      const { messenger, call } = buildMessengerMock();
+      call.mockResolvedValueOnce({
+        1: { relayTransactions: false, network: 'test' },
+      });
 
-      const result = await isRelaySupported(CHAIN_IDS.MAINNET);
+      const result = await isRelaySupported(messenger, CHAIN_IDS.MAINNET);
+
       expect(result).toBe(false);
     });
 
     it('returns false if networks request fails', async () => {
-      fetchMock.mockRejectedValueOnce(new Error('network error'));
+      const { messenger, call } = buildMessengerMock();
+      call.mockRejectedValueOnce(new Error('network error'));
 
-      const result = await isRelaySupported(CHAIN_IDS.MAINNET);
+      const result = await isRelaySupported(messenger, CHAIN_IDS.MAINNET);
+
       expect(result).toBe(false);
     });
   });

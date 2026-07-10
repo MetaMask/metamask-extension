@@ -69,6 +69,11 @@ import {
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import type {
+  SentinelApiServiceGetNetworksAction,
+  SentinelApiServiceGetRelayStatusAction,
+  SentinelApiServiceSubmitRelayTransactionAction,
+} from '@metamask/sentinel-api-service';
 
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
@@ -99,6 +104,9 @@ export type TransactionControllerInitMessengerActions =
   | NetworkControllerGetNetworkClientRegistryAction
   | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
+  | SentinelApiServiceGetNetworksAction
+  | SentinelApiServiceGetRelayStatusAction
+  | SentinelApiServiceSubmitRelayTransactionAction
   | SmartTransactionsControllerGetFeesAction
   | SmartTransactionsControllerSubmitSignedTransactionsAction
   | SubscriptionControllerActions
@@ -188,6 +196,9 @@ export function getTransactionControllerInitMessenger(
       'NetworkController:getNetworkClientRegistry',
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'SentinelApiService:getNetworks',
+      'SentinelApiService:getRelayStatus',
+      'SentinelApiService:submitRelayTransaction',
       'SmartTransactionsController:getFees',
       'SmartTransactionsController:submitSignedTransactions',
       'SubscriptionController:getSubscriptionByProduct',

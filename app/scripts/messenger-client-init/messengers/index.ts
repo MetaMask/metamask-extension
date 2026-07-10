@@ -201,6 +201,7 @@ import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
+import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -278,6 +279,7 @@ export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
 export {
   getSignatureControllerMessenger,
@@ -559,6 +561,10 @@ export const MESSENGER_FACTORIES = {
   },
   SelectedNetworkController: {
     getMessenger: getSelectedNetworkControllerMessenger,
+    getInitMessenger: noop,
+  },
+  SentinelApiService: {
+    getMessenger: getSentinelApiServiceMessenger,
     getInitMessenger: noop,
   },
   ShieldController: {

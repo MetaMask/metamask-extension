@@ -1,13 +1,38 @@
 import { AuthorizationList } from '@metamask/transaction-controller';
 import { type SentinelMeta } from '@metamask/smart-transactions-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
-import { getSentinelApiService } from './sentinel-api-service';
 import {
   SentinelChainNotSupportedError,
+  type SentinelApiServiceGetNetworksAction,
+  type SentinelApiServiceGetRelayStatusAction,
+  type SentinelApiServiceSubmitRelayTransactionAction,
   type SentinelRelaySubmitRequest,
 } from '@metamask/sentinel-api-service';
 
 const log = createProjectLogger('transaction-relay');
+
+/**
+ * Minimal messenger able to call the SentinelApiService relay and registry
+ * actions. Declared structurally so any restricted messenger with those actions
+ * delegated (or the base controller messenger) can be threaded to these
+ * helpers.
+ */
+export type SentinelRelayMessenger = {
+  call(
+    action: SentinelApiServiceGetNetworksAction['type'],
+    ...args: Parameters<SentinelApiServiceGetNetworksAction['handler']>
+  ): ReturnType<SentinelApiServiceGetNetworksAction['handler']>;
+  call(
+    action: SentinelApiServiceSubmitRelayTransactionAction['type'],
+    ...args: Parameters<
+      SentinelApiServiceSubmitRelayTransactionAction['handler']
+    >
+  ): ReturnType<SentinelApiServiceSubmitRelayTransactionAction['handler']>;
+  call(
+    action: SentinelApiServiceGetRelayStatusAction['type'],
+    ...args: Parameters<SentinelApiServiceGetRelayStatusAction['handler']>
+  ): ReturnType<SentinelApiServiceGetRelayStatusAction['handler']>;
+};
 
 export type RelaySubmitRequest = {
   authorizationList?: AuthorizationList;
@@ -40,12 +65,14 @@ export enum RelayStatus {
 export const RELAY_RPC_METHOD = 'eth_sendRelayTransaction';
 
 export async function submitRelayTransaction(
+  messenger: SentinelRelayMessenger,
   request: RelaySubmitRequest,
 ): Promise<RelaySubmitResponse> {
   log('Request', request);
 
   try {
-    const response = await getSentinelApiService().submitRelayTransaction(
+    const response = await messenger.call(
+      'SentinelApiService:submitRelayTransaction',
       request as unknown as SentinelRelaySubmitRequest,
     );
 
@@ -58,18 +85,20 @@ export async function submitRelayTransaction(
 }
 
 export async function waitForRelayResult(
+  messenger: SentinelRelayMessenger,
   request: RelayWaitRequest,
 ): Promise<RelayWaitResponse> {
   const { chainId, interval, uuid } = request;
-
-  const service = getSentinelApiService();
 
   return new Promise<RelayWaitResponse>((resolve, reject) => {
     const intervalId = setInterval(async () => {
       try {
         log('Polling request', chainId, uuid);
 
-        const result = await service.getRelayStatus({ chainId, uuid });
+        const result = await messenger.call(
+          'SentinelApiService:getRelayStatus',
+          { chainId, uuid },
+        );
 
         log('Polling response', result);
 
@@ -85,9 +114,12 @@ export async function waitForRelayResult(
   });
 }
 
-export async function isRelaySupported(chainId: Hex): Promise<boolean> {
-  const networkData = await getSentinelApiService()
-    .getNetworks()
+export async function isRelaySupported(
+  messenger: SentinelRelayMessenger,
+  chainId: Hex,
+): Promise<boolean> {
+  const networkData = await messenger
+    .call('SentinelApiService:getNetworks')
     .catch(() => undefined);
 
   return Boolean(

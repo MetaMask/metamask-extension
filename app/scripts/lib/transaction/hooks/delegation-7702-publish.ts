@@ -17,6 +17,7 @@ import { TransactionControllerInitMessenger } from '../../../wallet-init/messeng
 import {
   RelayStatus,
   RelaySubmitRequest,
+  type SentinelRelayMessenger,
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
@@ -183,13 +184,21 @@ export class Delegation7702PublishHook {
 
     log('Relay request', relayRequest);
 
-    const { uuid } = await submitRelayTransaction(relayRequest);
+    // The restricted init messenger structurally satisfies the relay actions
+    // but its broad `call` overload union is not directly assignable to the
+    // narrower relay messenger type, so narrow it here.
+    const relayMessenger = this.#messenger as unknown as SentinelRelayMessenger;
 
-    const { transactionHash, status } = await waitForRelayResult({
-      chainId,
-      uuid,
-      interval: POLLING_INTERVAL_MS,
-    });
+    const { uuid } = await submitRelayTransaction(relayMessenger, relayRequest);
+
+    const { transactionHash, status } = await waitForRelayResult(
+      relayMessenger,
+      {
+        chainId,
+        uuid,
+        interval: POLLING_INTERVAL_MS,
+      },
+    );
 
     if (status !== RelayStatus.Success) {
       throw new Error(`Transaction relay error - ${status}`);

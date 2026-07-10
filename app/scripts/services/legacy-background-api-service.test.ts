@@ -1399,7 +1399,10 @@ describe('LegacyBackgroundApiService', () => {
           '0x1',
         );
 
-        expect(isSendBundleSupported).toHaveBeenCalledWith('0x1');
+        expect(isSendBundleSupported).toHaveBeenCalledWith(
+          expect.anything(),
+          '0x1',
+        );
         expect(result).toBe(true);
       });
     });

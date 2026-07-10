@@ -294,6 +294,7 @@ describe('Delegation 7702 Publish Hook', () => {
       parseInt(TRANSACTION_META_MOCK.chainId, 16),
     ).DelegationManager;
     expect(submitRelayTransactionMock).toHaveBeenCalledWith(
+      expect.anything(),
       expect.objectContaining({
         chainId: TRANSACTION_META_MOCK.chainId,
         to: expectedDelegationManager,
@@ -351,6 +352,7 @@ describe('Delegation 7702 Publish Hook', () => {
 
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(submitRelayTransactionMock).toHaveBeenCalledWith(
+      expect.anything(),
       expect.objectContaining({
         authorizationList: [
           {

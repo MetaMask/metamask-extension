@@ -186,6 +186,7 @@ import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { AppStateControllerSetPasskeyAutoUnlockSuppressedAction } from '../controllers/app-state-controller-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
+import { SentinelApiServiceGetNetworksAction } from '@metamask/sentinel-api-service';
 
 const serviceName = 'LegacyBackgroundApiService';
 
@@ -317,6 +318,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | ShieldControllerStartAction
   | ShieldControllerStopAction
+  | SentinelApiServiceGetNetworksAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerGetStateAction
@@ -501,7 +503,7 @@ export class LegacyBackgroundApiService {
    * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
    */
   async isSendBundleSupported(chainId: Hex): Promise<boolean> {
-    return await isSendBundleSupported(chainId);
+    return await isSendBundleSupported(this.#messenger, chainId);
   }
 
   /**
