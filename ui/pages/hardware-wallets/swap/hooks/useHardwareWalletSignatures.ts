@@ -249,49 +249,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   const [hasSignatureTimedOut, setHasSignatureTimedOut] = useState(false);
   const { connectionState } = useHardwareWalletState();
 
-  /**
-   * Called when the hardware wallet transaction submission succeeds.
-   * Dispatches TransactionSubmitted unless a retry is in flight.
-   */
-  const handleHardwareWalletSubmitted = useCallback(() => {
-    if (isRetryingRef.current) {
-      return;
-    }
-    dispatchSignatureEvent({
-      type: HardwareWalletSignatureEvent.TransactionSubmitted,
-    });
-  }, [dispatchSignatureEvent]);
-
-  /**
-   * Called when the user rejects the signature on the hardware device.
-   * Dispatches TransactionRejected unless a retry is in flight.
-   */
-  const handleHardwareWalletRejected = useCallback(() => {
-    if (isRetryingRef.current) {
-      return;
-    }
-    log.debug(
-      '[HW-Batch] handleHardwareWalletRejected, current state:',
-      signatureState.status,
-    );
-    dispatchSignatureEvent({
-      type: HardwareWalletSignatureEvent.TransactionRejected,
-    });
-  }, [dispatchSignatureEvent, signatureState.status]);
-
-  /**
-   * Called when the hardware wallet signing fails due to an error.
-   * Dispatches TransactionFailed unless a retry is in flight.
-   */
-  const handleHardwareWalletFailed = useCallback(() => {
-    if (isRetryingRef.current) {
-      return;
-    }
-    dispatchSignatureEvent({
-      type: HardwareWalletSignatureEvent.TransactionFailed,
-    });
-  }, [dispatchSignatureEvent]);
-
   const submitSendBundleTransaction = useCallback(async () => {
     if (!sendBundleTxMeta) {
       return;
@@ -347,12 +304,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     sendBundleTxMeta,
   ]);
 
-  const { submitBridgeTransaction } = useSubmitBridgeTransaction({
-    submitOnHardwareWalletSigningPage: true,
-    onHardwareWalletSubmitted: handleHardwareWalletSubmitted,
-    onHardwareWalletRejected: handleHardwareWalletRejected,
-    onHardwareWalletFailed: handleHardwareWalletFailed,
-  });
+  const { submitBridgeTransaction } = useSubmitBridgeTransaction();
 
   /**
    * Recreates the sendBundle transaction batch after a rejection or failure.
