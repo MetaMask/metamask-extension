@@ -1,3 +1,5 @@
+// Mocha's global `it` type lacks `.each`, so use Jest's typed `it`.
+import { it } from '@jest/globals';
 import {
   Controller as NotificationServicesPushController,
   defaultState,
@@ -12,6 +14,7 @@ import {
 } from '../messengers/notifications';
 import { getRootMessenger } from '../../lib/messenger';
 import {
+  getAppVersionForRegistration,
   getNormalisedLocale,
   NotificationServicesPushControllerInit,
 } from './notification-services-push-controller-init';
@@ -38,12 +41,15 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('NotificationServicesPushControllerInit', () => {
-  const arrange = () => {
+  const arrange = (platformVersion = '7.80.0') => {
     const NotificationServicesPushControllerClassMock = jest.mocked(
       NotificationServicesPushController,
     );
 
     const requestMock = buildInitRequestMock();
+    jest
+      .spyOn(requestMock.platform, 'getVersion')
+      .mockReturnValue(platformVersion);
 
     return {
       NotificationServicesPushControllerClassMock,
@@ -72,7 +78,7 @@ describe('NotificationServicesPushControllerInit', () => {
       messenger: requestMock.controllerMessenger,
       state: {
         ...defaultState,
-        ...requestMock.persistedState.NotificationServicesController,
+        ...requestMock.persistedState.NotificationServicesPushController,
       },
       env: {
         apiKey: '',
@@ -93,8 +99,48 @@ describe('NotificationServicesPushControllerInit', () => {
           subscribeToPushNotifications: expect.any(Function),
         },
         getLocale: expect.any(Function),
+        appVersion: '7.80.0',
       },
     });
+  });
+
+  it('omits app version when platform version is not backend-safe', () => {
+    const { requestMock, NotificationServicesPushControllerClassMock } =
+      arrange('7.80.0-flask.1');
+
+    NotificationServicesPushControllerInit(requestMock);
+
+    expect(NotificationServicesPushControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        config: expect.not.objectContaining({
+          appVersion: expect.any(String),
+        }),
+      }),
+    );
+  });
+});
+
+describe('getAppVersionForRegistration', () => {
+  it.each(['7.80', '7.80.0', '12.18.3.0'])(
+    'returns backend-safe app version %s',
+    (version) => {
+      expect(getAppVersionForRegistration(() => version)).toBe(version);
+    },
+  );
+
+  it.each(['7', '7.80.0.1.2', '7.80.0-flask.1', '7.80.0+build.1', 'v7.80.0'])(
+    'returns undefined when %s is not backend-safe',
+    (version) => {
+      expect(getAppVersionForRegistration(() => version)).toBeUndefined();
+    },
+  );
+
+  it('returns undefined when the version lookup fails', () => {
+    expect(
+      getAppVersionForRegistration(() => {
+        throw new Error('Version lookup failed');
+      }),
+    ).toBeUndefined();
   });
 });
 
