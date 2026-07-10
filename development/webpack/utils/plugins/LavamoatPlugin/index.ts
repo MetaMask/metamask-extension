@@ -14,18 +14,21 @@ const rootDir = join(__dirname, '../../../../../');
 const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
 
 export const lavamoatPlugin = (args: Args) => {
-  const importScriptsEntryFiles = new Set<string>();
-  const inlineLockdown =
-    /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u;
-  const matchesStaticInlineLockdownFile =
-    inlineLockdown.test.bind(inlineLockdown);
+  const inlineLockdownChunks = new Set<Chunk>();
+  const inlineLockdown = {
+    test: (filename: string) => {
+      if (!filename.endsWith('.js')) {
+        return false;
+      }
 
-  // LavaMoat freezes its options object, but calls only `test` on this RegExp.
-  // Extend that test so manifest-defined import-scripts entries can register
-  // their emitted filenames when LavaMoat processes their chunks.
-  inlineLockdown.test = (filename: string) =>
-    matchesStaticInlineLockdownFile(filename) ||
-    importScriptsEntryFiles.has(filename);
+      for (const chunk of inlineLockdownChunks) {
+        if (chunk.files.has(filename)) {
+          return true;
+        }
+      }
+      return false;
+    },
+  };
 
   return new LavaMoatPlugin({
     rootDir,
@@ -40,6 +43,7 @@ export const lavamoatPlugin = (args: Args) => {
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
     // Inline SES into protected self-contained scripts and the shared runtime.
+    // @ts-expect-error LavaMoat types this as RegExp, but only calls `test`.
     inlineLockdown,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
@@ -58,6 +62,7 @@ export const lavamoatPlugin = (args: Args) => {
         // unsafeEntries are running outside of LavaMoat
         return { mode: 'null_unsafe' };
       } else if (chunk.name === 'scripts/contentscript.js') {
+        inlineLockdownChunks.add(chunk);
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -69,6 +74,7 @@ export const lavamoatPlugin = (args: Args) => {
           },
         };
       } else if (chunk.name === 'runtime') {
+        inlineLockdownChunks.add(chunk);
         return {
           mode: 'safe',
           // If snow is enabled, it needs to run before LavaMoat
@@ -80,12 +86,7 @@ export const lavamoatPlugin = (args: Args) => {
             : [],
         };
       } else if (entryOptions?.chunkLoading === 'import-scripts') {
-        if (typeof entryOptions.filename !== 'string') {
-          throw new Error(
-            'Expected import-scripts entry to have a static output filename',
-          );
-        }
-        importScriptsEntryFiles.add(entryOptions.filename);
+        inlineLockdownChunks.add(chunk);
 
         return {
           mode: 'safe',
