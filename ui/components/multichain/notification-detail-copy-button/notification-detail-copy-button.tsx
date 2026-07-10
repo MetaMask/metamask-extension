@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import type { FC } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { getNotificationSubtype } from '@metamask/notification-services-controller/notification-services';
+import { getNotificationSubtype, isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -67,7 +67,7 @@ export const NotificationDetailCopyButton: FC<
       const otherNotificationProperties = () => {
         if (
           'notification_type' in notification &&
-          notification.notification_type === 'on-chain' &&
+          isOnChainNotification(notification) &&
           notification.payload?.chain_id
         ) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

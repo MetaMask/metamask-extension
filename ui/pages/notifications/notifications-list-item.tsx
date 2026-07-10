@@ -1,7 +1,10 @@
 import React, { useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { hasProperty } from '@metamask/utils';
-import type { INotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  type INotification,
+  isOnChainNotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -39,7 +42,7 @@ export function NotificationsListItem({
     const otherNotificationProperties = () => {
       if (
         'notification_type' in notification &&
-        notification.notification_type === 'on-chain' &&
+        isOnChainNotification(notification) &&
         notification.payload?.chain_id
       ) {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
