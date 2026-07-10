@@ -13,8 +13,21 @@ const rootDir = join(__dirname, '../../../../../');
 // Entries that need to be included in the unsafe layer to run without LavaMoat.
 const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
 
-export const lavamoatPlugin = (args: Args) =>
-  new LavaMoatPlugin({
+export const lavamoatPlugin = (args: Args) => {
+  const importScriptsEntryFiles = new Set<string>();
+  const inlineLockdown =
+    /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u;
+  const matchesStaticInlineLockdownFile =
+    inlineLockdown.test.bind(inlineLockdown);
+
+  // LavaMoat freezes its options object, but calls only `test` on this RegExp.
+  // Extend that test so manifest-defined import-scripts entries can register
+  // their emitted filenames when LavaMoat processes their chunks.
+  inlineLockdown.test = (filename: string) =>
+    matchesStaticInlineLockdownFile(filename) ||
+    importScriptsEntryFiles.has(filename);
+
+  return new LavaMoatPlugin({
     rootDir,
     policyLocation: join(
       'lavamoat',
@@ -27,8 +40,7 @@ export const lavamoatPlugin = (args: Args) =>
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
     // Inline SES into protected self-contained scripts and the shared runtime.
-    inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
+    inlineLockdown,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -40,6 +52,8 @@ export const lavamoatPlugin = (args: Args) =>
       reporting: 'none',
     },
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
+      const entryOptions = chunk.getEntryOptions();
+
       if (chunk.name && unsafeEntries.has(chunk.name)) {
         // unsafeEntries are running outside of LavaMoat
         return { mode: 'null_unsafe' };
@@ -65,9 +79,14 @@ export const lavamoatPlugin = (args: Args) =>
               ]
             : [],
         };
-      } else if (
-        chunk.getEntryOptions()?.chunkLoading === 'import-scripts'
-      ) {
+      } else if (entryOptions?.chunkLoading === 'import-scripts') {
+        if (typeof entryOptions.filename !== 'string') {
+          throw new Error(
+            'Expected import-scripts entry to have a static output filename',
+          );
+        }
+        importScriptsEntryFiles.add(entryOptions.filename);
+
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -160,6 +179,7 @@ export const lavamoatPlugin = (args: Args) =>
       ],
     },
   });
+};
 
 // Unsafe layer that runs code without LavaMoat
 export const lavamoatUnsafeLayerRule = {
