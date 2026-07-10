@@ -145,6 +145,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   BridgeStatusController: {
     txHistory: false,
+    quoteUpdateStatusStore: false,
   },
   ConnectivityController: {
     connectivityStatus: true,
@@ -235,6 +236,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
+    hasSeenOnboardingCompletionPage: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },

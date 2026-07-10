@@ -50,6 +50,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  attestations: read # Required for gh attestation verify (INFRA-3661)
 
 jobs:
   upload:
@@ -336,6 +337,45 @@ jobs:
             --pattern "${ZIP_NAME}"
           ls -lh "${ZIP_NAME}"
 
+      - name: Verify artifact attestation
+        if: ${{ !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true' }}
+        id: verify-attestation
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZIP_NAME: ${{ env.ZIP_NAME }}
+        run: |
+          set -euo pipefail
+          echo "=== Verifying build provenance attestation ==="
+          gh attestation verify "${ZIP_NAME}" \
+            --repo "${{ github.repository }}" \
+            --signer-workflow "${{ github.repository }}/.github/workflows/publish-release-from-release-head.yml" \
+            --source-ref "refs/heads/release/${VERSION}"
+          echo "Attestation verified for ${ZIP_NAME}"
+
+      - name: Verify SHA256SUMS
+        if: ${{ !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true' }}
+        id: verify-sha256sums
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZIP_NAME: ${{ env.ZIP_NAME }}
+        run: |
+          set -euo pipefail
+          echo "=== Downloading SHA256SUMS from release ==="
+          gh release download "${RELEASE_TAG}" \
+            --repo "${{ github.repository }}" \
+            --pattern "SHA256SUMS"
+          cat SHA256SUMS
+          echo ""
+          echo "=== Verifying ${ZIP_NAME} digest ==="
+          if ! awk -v zip="${ZIP_NAME}" '{
+            f = $2; sub(/^\*/, "", f);
+            if (f == zip) { print; found = 1; exit }
+          } END { exit !found }' SHA256SUMS | sha256sum -c -; then
+            echo "::error::SHA256SUMS verification failed for ${ZIP_NAME}"
+            exit 1
+          fi
+          echo "SHA256SUMS check: PASSED"
+
       # Dev listing rejects manifest.key tied to production extension ID (POC lesson).
       - name: Strip manifest key from zip (dev only)
         if: inputs.target == 'dev' && !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true'
@@ -434,13 +474,19 @@ jobs:
           DRAFT_VERSION: ${{ steps.cws-precheck.outputs.draft_version }}
           HTTP_CODE: ${{ steps.cws-upload.outputs.http_code }}
           UPLOAD_STATE: ${{ steps.cws-upload.outputs.upload_state }}
+          ATTEST_OUTCOME: ${{ steps.verify-attestation.outcome }}
+          SHA_OUTCOME: ${{ steps.verify-sha256sums.outcome }}
         run: |
           if [[ "${SKIP_UPLOAD}" == "true" ]]; then
             result_state="${PRECHECK_STATE:-SKIPPED_ALREADY_EXISTS}"
             http_display="skipped (pre-flight)"
+            attest_display="skipped (pre-flight)"
+            sha_display="skipped (pre-flight)"
           else
             result_state="${UPLOAD_STATE:-n/a}"
             http_display="${HTTP_CODE:-n/a}"
+            [[ "${ATTEST_OUTCOME}" == "success" ]] && attest_display="✅" || attest_display="❌"
+            [[ "${SHA_OUTCOME}" == "success" ]] && sha_display="✅" || sha_display="❌"
           fi
           {
             echo ""
@@ -453,6 +499,8 @@ jobs:
             if [[ "${SKIP_UPLOAD}" == "true" && -n "${DRAFT_VERSION}" ]]; then
               echo "| Draft crxVersion | \`${DRAFT_VERSION}\` |"
             fi
+            echo "| Attestation verified | ${attest_display} |"
+            echo "| SHA256SUMS verified | ${sha_display} |"
             echo "| Published to users | no (upload only) |"
             echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
           } >> "${GITHUB_STEP_SUMMARY}"

@@ -1,10 +1,10 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListFilter } from './helpers';
 
@@ -31,7 +31,7 @@ export const useActivityScreenOpened = ({
   isEmpty,
   pendingLength,
 }: UseActivityScreenOpenedProps) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
 
   // Keep the latest metric values without making them effect dependencies so
@@ -53,16 +53,17 @@ export const useActivityScreenOpened = ({
       networkFilter: networks,
     } = metricsRef.current;
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.ActivityScreenOpened,
-      properties: {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        network_filter: networks,
-        is_empty: empty,
-        pending_transactions: pending,
-        /* eslint-enable @typescript-eslint/naming-convention */
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ActivityScreenOpened)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
+          /* eslint-disable @typescript-eslint/naming-convention */
+          network_filter: networks,
+          is_empty: empty,
+          pending_transactions: pending,
+          /* eslint-enable @typescript-eslint/naming-convention */
+        })
+        .build(),
+    );
   }, [filter, isSettled, trackEvent]);
 };

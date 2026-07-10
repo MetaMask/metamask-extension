@@ -1,16 +1,36 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { TextColor } from '@metamask/design-system-react';
+import { providerErrors } from '@metamask/rpc-errors';
+import { it } from '@jest/globals';
 import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
 import { SignatureStepStatus } from './types';
 import {
+  cleanupPendingApproval,
+  getAllStepStatuses,
+  getQrHardwareSigningPageTitle,
+  getQrScanButtonLabelKey,
+  getStepDescriptions,
+  getStepLabelColor,
   getStepStatus,
   hasApprovalTxForRequestId,
   getTitle,
   getFinalStepLabel,
+  getStepLabels,
   getFirstStepDescription,
   getFinalStepDescription,
+  isErrorStepStatus,
   isQrHardwareSignRequest,
   getTransactionField,
 } from './hardware-wallet-signatures.utils';
+
+jest.mock('../../../store/actions', () => ({
+  rejectPendingApproval: jest.fn(() => 'REJECT_ACTION'),
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const mockRejectPendingApproval = jest.requireMock(
+  '../../../store/actions',
+).rejectPendingApproval;
 
 const t = (key: string, params?: (string | undefined)[]) => {
   if (params) {
@@ -20,6 +40,64 @@ const t = (key: string, params?: (string | undefined)[]) => {
 };
 
 describe('hardware-wallet-signatures utils', () => {
+  describe('isErrorStepStatus', () => {
+    it.each([
+      SignatureStepStatus.Rejected,
+      SignatureStepStatus.Failed,
+      SignatureStepStatus.Disconnected,
+    ])('returns true for %s', (status) => {
+      expect(isErrorStepStatus(status)).toBe(true);
+    });
+
+    it.each([
+      SignatureStepStatus.Pending,
+      SignatureStepStatus.Active,
+      SignatureStepStatus.Complete,
+    ])('returns false for %s', (status) => {
+      expect(isErrorStepStatus(status)).toBe(false);
+    });
+  });
+
+  describe('getStepLabelColor', () => {
+    it('returns ErrorDefault for error step statuses', () => {
+      expect(getStepLabelColor(SignatureStepStatus.Rejected)).toBe(
+        TextColor.ErrorDefault,
+      );
+      expect(getStepLabelColor(SignatureStepStatus.Failed)).toBe(
+        TextColor.ErrorDefault,
+      );
+      expect(getStepLabelColor(SignatureStepStatus.Disconnected)).toBe(
+        TextColor.ErrorDefault,
+      );
+    });
+
+    it('returns TextDefault for non-error step statuses', () => {
+      expect(getStepLabelColor(SignatureStepStatus.Pending)).toBe(
+        TextColor.TextDefault,
+      );
+      expect(getStepLabelColor(SignatureStepStatus.Active)).toBe(
+        TextColor.TextDefault,
+      );
+      expect(getStepLabelColor(SignatureStepStatus.Complete)).toBe(
+        TextColor.TextDefault,
+      );
+    });
+  });
+
+  describe('getQrScanButtonLabelKey', () => {
+    it('returns the final scan label key for the final signature', () => {
+      expect(getQrScanButtonLabelKey(true)).toBe(
+        'qrHardwareScanSignatureFinal',
+      );
+    });
+
+    it('returns the next scan label key for a non-final signature', () => {
+      expect(getQrScanButtonLabelKey(false)).toBe(
+        'qrHardwareScanSignatureNext',
+      );
+    });
+  });
+
   describe('hasApprovalTxForRequestId', () => {
     it('returns false when requestId is undefined', () => {
       expect(hasApprovalTxForRequestId({}, undefined)).toBe(false);
@@ -201,6 +279,54 @@ describe('hardware-wallet-signatures utils', () => {
     });
   });
 
+  describe('getAllStepStatuses', () => {
+    it('returns Active and Pending while awaiting the first signature', () => {
+      expect(
+        getAllStepStatuses({
+          status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        }),
+      ).toEqual({
+        first: SignatureStepStatus.Active,
+        final: SignatureStepStatus.Pending,
+      });
+    });
+
+    it('returns Complete and Active while awaiting the final signature', () => {
+      expect(
+        getAllStepStatuses({
+          status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        }),
+      ).toEqual({
+        first: SignatureStepStatus.Complete,
+        final: SignatureStepStatus.Active,
+      });
+    });
+
+    it('returns Complete for both steps when submitted', () => {
+      expect(
+        getAllStepStatuses({
+          status: HardwareWalletSignatureStatus.Submitted,
+        }),
+      ).toEqual({
+        first: SignatureStepStatus.Complete,
+        final: SignatureStepStatus.Complete,
+      });
+    });
+
+    it('marks only the interrupted step as Rejected', () => {
+      expect(
+        getAllStepStatuses({
+          status: HardwareWalletSignatureStatus.Rejected,
+          rejectedSignature:
+            HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        }),
+      ).toEqual({
+        first: SignatureStepStatus.Complete,
+        final: SignatureStepStatus.Rejected,
+      });
+    });
+  });
+
   describe('getTitle', () => {
     it('returns submitted title', () => {
       expect(
@@ -209,7 +335,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwAllSetTitle');
+      ).toBe('hardwareAllSetTitle');
     });
 
     it('returns rejected title', () => {
@@ -219,7 +345,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwTransactionRejected');
+      ).toBe('hardwareTransactionRejected');
     });
 
     it('returns failed title', () => {
@@ -239,7 +365,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: false,
           t,
         }),
-      ).toBe('bridgeHwDeviceDisconnected');
+      ).toBe('hardwareDeviceDisconnected');
     });
 
     it('returns almost there title when needs two confirmations and awaiting final', () => {
@@ -249,7 +375,7 @@ describe('hardware-wallet-signatures utils', () => {
           needsTwoConfirmations: true,
           t,
         }),
-      ).toBe('bridgeHwAlmostThereTitle');
+      ).toBe('hardwareAlmostThereTitle');
     });
 
     it('returns default confirm title', () => {
@@ -273,6 +399,88 @@ describe('hardware-wallet-signatures utils', () => {
     });
   });
 
+  describe('getQrHardwareSigningPageTitle', () => {
+    describe('two-confirmation flow', () => {
+      it('returns display step 1 of 4 for approval display', () => {
+        expect(
+          getQrHardwareSigningPageTitle({
+            activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            isDisplayPhase: true,
+            needsTwoConfirmations: true,
+            t,
+          }),
+        ).toBe('bridgeQrHardwareSignDisplayStepTitle[1,4]');
+      });
+
+      it('returns scan step 2 of 4 for approval scan', () => {
+        expect(
+          getQrHardwareSigningPageTitle({
+            activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            isDisplayPhase: false,
+            needsTwoConfirmations: true,
+            t,
+          }),
+        ).toBe('bridgeQrHardwareSignStepTitle[2,4]');
+      });
+
+      it('returns display step 3 of 4 for trade display', () => {
+        expect(
+          getQrHardwareSigningPageTitle({
+            activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            isDisplayPhase: true,
+            needsTwoConfirmations: true,
+            t,
+          }),
+        ).toBe('bridgeQrHardwareSignDisplayStepTitle[3,4]');
+      });
+
+      it('returns last-step title for trade scan', () => {
+        expect(
+          getQrHardwareSigningPageTitle({
+            activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            isDisplayPhase: false,
+            needsTwoConfirmations: true,
+            t,
+          }),
+        ).toBe('bridgeQrHardwareSignLastStepTitle');
+      });
+    });
+
+    describe('single-confirmation flow', () => {
+      it('returns display step 1 of 2', () => {
+        expect(
+          getQrHardwareSigningPageTitle({
+            activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            isDisplayPhase: true,
+            needsTwoConfirmations: false,
+            t,
+          }),
+        ).toBe('bridgeQrHardwareSignDisplayStepTitle[1,2]');
+      });
+
+      it('returns last-step title for the final scan', () => {
+        expect(
+          getQrHardwareSigningPageTitle({
+            activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            isDisplayPhase: false,
+            needsTwoConfirmations: false,
+            t,
+          }),
+        ).toBe('bridgeQrHardwareSignLastStepTitle');
+      });
+
+      it('defaults to the scan phase when isDisplayPhase is omitted', () => {
+        expect(
+          getQrHardwareSigningPageTitle({
+            activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            needsTwoConfirmations: false,
+            t,
+          }),
+        ).toBe('bridgeQrHardwareSignLastStepTitle');
+      });
+    });
+  });
+
   describe('getFinalStepLabel', () => {
     it('returns sent amount when submitted', () => {
       expect(
@@ -283,7 +491,7 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSentAmount[1.5,ETH]');
+      ).toBe('hardwareSentAmount[1.5,ETH]');
     });
 
     it('returns sending amount when active', () => {
@@ -295,7 +503,7 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSendingAmount[1.5,ETH]');
+      ).toBe('hardwareSendingAmount[1.5,ETH]');
     });
 
     it('returns send amount when pending', () => {
@@ -307,7 +515,256 @@ describe('hardware-wallet-signatures utils', () => {
           fromTokenSymbol: 'ETH',
           t,
         }),
-      ).toBe('bridgeHwSendAmount[1.5,ETH]');
+      ).toBe('hardwareSendAmount[1.5,ETH]');
+    });
+  });
+
+  describe('getStepLabels', () => {
+    const sendBundleBase = {
+      isSendBundleFlow: true,
+      sendAmount: '1.5',
+      sendSymbol: 'USDC',
+      gasSymbol: 'ETH',
+      fromAmount: undefined,
+      fromTokenSymbol: undefined,
+      t,
+    };
+
+    describe('sendBundle two-confirmation flow', () => {
+      it('uses Sending for the active send step and gas payment for the final step', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            firstStepStatus: SignatureStepStatus.Active,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSendingAmount[1.5,USDC]',
+          finalStepLabel: 'sendBundleHwGasPayment[ETH]',
+        });
+      });
+
+      it('uses Sent for a completed send step', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSentAmount[1.5,USDC]',
+          finalStepLabel: 'sendBundleHwGasPayment[ETH]',
+        });
+      });
+
+      it('uses Send for a pending send step', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            firstStepStatus: SignatureStepStatus.Pending,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSendAmount[1.5,USDC]',
+          finalStepLabel: 'sendBundleHwGasPayment[ETH]',
+        });
+      });
+
+      it('uses Sent when the flow is submitted', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.Submitted,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSentAmount[1.5,USDC]',
+          finalStepLabel: 'sendBundleHwGasPayment[ETH]',
+        });
+      });
+    });
+
+    describe('sendBundle single-confirmation flow', () => {
+      it('uses Sending when the send step is active', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: false,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Pending,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSendingAmount[1.5,USDC]',
+          finalStepLabel: 'hardwareSendingAmount[1.5,USDC]',
+        });
+      });
+
+      it('uses Sent when the send step is complete', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: false,
+            status: HardwareWalletSignatureStatus.Submitted,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSentAmount[1.5,USDC]',
+          finalStepLabel: 'hardwareSentAmount[1.5,USDC]',
+        });
+      });
+
+      it('uses Send when the send step is pending', () => {
+        expect(
+          getStepLabels({
+            ...sendBundleBase,
+            needsTwoConfirmations: false,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Pending,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareSendAmount[1.5,USDC]',
+          finalStepLabel: 'hardwareSendAmount[1.5,USDC]',
+        });
+      });
+    });
+
+    describe('bridge/swap flow', () => {
+      it('uses Approved and Sent when submitted', () => {
+        expect(
+          getStepLabels({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.Submitted,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Complete,
+            fromAmount: '1.5',
+            fromTokenSymbol: 'ETH',
+            t,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[1.5,ETH]',
+          finalStepLabel: 'hardwareSentAmount[1.5,ETH]',
+        });
+      });
+
+      it('uses Approve and Sending when the final step is active', () => {
+        expect(
+          getStepLabels({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+            fromAmount: '1.5',
+            fromTokenSymbol: 'ETH',
+            t,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[1.5,ETH]',
+          finalStepLabel: 'hardwareSendingAmount[1.5,ETH]',
+        });
+      });
+
+      it('uses Approve when the first step is still active', () => {
+        expect(
+          getStepLabels({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            firstStepStatus: SignatureStepStatus.Active,
+            finalStepStatus: SignatureStepStatus.Pending,
+            fromAmount: '1.5',
+            fromTokenSymbol: 'ETH',
+            t,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApproveAmount[1.5,ETH]',
+          finalStepLabel: 'hardwareSendAmount[1.5,ETH]',
+        });
+      });
+    });
+  });
+
+  describe('getStepDescriptions', () => {
+    const toAddress = '0x1234567890abcdef1234567890abcdef12345678';
+    const spenderAddress = '0xabcdef1234567890abcdef1234567890abcdef12';
+
+    describe('sendBundle two-confirmation flow', () => {
+      it('shows the destination on the first step and omits the final description', () => {
+        expect(
+          getStepDescriptions({
+            isSendBundleFlow: true,
+            needsTwoConfirmations: true,
+            firstStepStatus: SignatureStepStatus.Active,
+            toAddress,
+            t,
+          }),
+        ).toEqual({
+          firstStepDescription: 'hardwareToAddress[0x12345...45678]',
+          finalStepDescription: undefined,
+        });
+      });
+    });
+
+    describe('sendBundle single-confirmation flow', () => {
+      it('shows the destination on the final step only', () => {
+        expect(
+          getStepDescriptions({
+            isSendBundleFlow: true,
+            needsTwoConfirmations: false,
+            firstStepStatus: SignatureStepStatus.Pending,
+            toAddress,
+            t,
+          }),
+        ).toEqual({
+          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+        });
+      });
+    });
+
+    describe('bridge/swap flow', () => {
+      it('delegates to first- and final-step descriptions', () => {
+        expect(
+          getStepDescriptions({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            firstStepStatus: SignatureStepStatus.Active,
+            spenderAddress,
+            toAddress,
+            t,
+          }),
+        ).toEqual({
+          firstStepDescription: 'hardwareSpender[0xabcde...def12]',
+          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+        });
+      });
+
+      it('surfaces rejection on the first step', () => {
+        expect(
+          getStepDescriptions({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            firstStepStatus: SignatureStepStatus.Rejected,
+            spenderAddress,
+            toAddress,
+            t,
+          }),
+        ).toEqual({
+          firstStepDescription: 'hardwareRejected',
+          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+        });
+      });
     });
   });
 
@@ -319,7 +776,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('bridgeHwRejected');
+      ).toBe('hardwareRejected');
     });
 
     it('returns reconnect text', () => {
@@ -329,7 +786,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('bridgeHwReconnectDevice');
+      ).toBe('hardwareReconnectDevice');
     });
 
     it('returns failed text', () => {
@@ -349,7 +806,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('bridgeHwSpender[0x12345...45678]');
+      ).toBe('hardwareSpender[0x12345...45678]');
     });
 
     it('returns undefined when no spender address', () => {
@@ -370,7 +827,7 @@ describe('hardware-wallet-signatures utils', () => {
           toAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('bridgeHwToAddress[0x12345...45678]');
+      ).toBe('hardwareToAddress[0x12345...45678]');
     });
 
     it('returns undefined when no to address', () => {
@@ -493,6 +950,27 @@ describe('hardware-wallet-signatures utils', () => {
 
     it('returns undefined when field value is not a string', () => {
       expect(getTransactionField({ from: 123 }, 'from')).toBeUndefined();
+    });
+  });
+
+  describe('cleanupPendingApproval', () => {
+    const dispatch = jest.fn();
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('dispatches rejectPendingApproval with a user-rejected error', () => {
+      cleanupPendingApproval(dispatch as never, 'approval-123');
+
+      expect(mockRejectPendingApproval).toHaveBeenCalledWith(
+        'approval-123',
+        expect.objectContaining({
+          code: providerErrors.userRejectedRequest().code,
+          message: providerErrors.userRejectedRequest().message,
+        }),
+      );
+      expect(dispatch).toHaveBeenCalledWith('REJECT_ACTION');
     });
   });
 });

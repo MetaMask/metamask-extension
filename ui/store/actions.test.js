@@ -133,6 +133,11 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.setUseMultiAccountBalanceChecker = sinon.stub();
+    background.setUseTransactionSimulations = sinon.stub();
+    background.setSecurityAlertsEnabled = sinon.stub();
+    background.setUse4ByteResolution = sinon.stub();
+    background.setUseExternalNameSources = sinon.stub();
     background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
@@ -2166,7 +2171,9 @@ describe('Actions', () => {
 
       expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
       expect(
-        createNextMultichainAccountGroup.calledWith(walletIdWithoutPrefix),
+        createNextMultichainAccountGroup.calledWith({
+          entropySource: walletIdWithoutPrefix,
+        }),
       ).toStrictEqual(true);
     });
   });
@@ -4166,6 +4173,36 @@ describe('Actions', () => {
       expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
         true,
       ]);
+    });
+  });
+
+  describe('#toggleBasicFunctionality', () => {
+    it('calls toggleExternalServices and consolidated preference setters', async () => {
+      const store = mockStore();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.toggleBasicFunctionality(false));
+
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        false,
+      ]);
+      expect(
+        background.setUseMultiAccountBalanceChecker.getCall(0).args,
+      ).toStrictEqual([false]);
+      expect(
+        background.setUseTransactionSimulations.getCall(0).args,
+      ).toStrictEqual([false]);
+      expect(background.setSecurityAlertsEnabled.getCall(0).args).toStrictEqual(
+        [false],
+      );
+      expect(background.setUse4ByteResolution.getCall(0).args).toStrictEqual([
+        false,
+      ]);
+      expect(
+        background.setUseExternalNameSources.getCall(0).args,
+      ).toStrictEqual([false]);
     });
   });
 

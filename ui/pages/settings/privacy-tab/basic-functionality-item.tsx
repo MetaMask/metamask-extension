@@ -1,11 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../selectors';
-import { toggleExternalServices } from '../../../store/actions';
+import {
+  toggleBasicFunctionality,
+  toggleExternalServices,
+} from '../../../store/actions';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -16,28 +20,36 @@ import { PRIVACY_ITEMS } from '../search-config';
 export const BasicFunctionalityToggleItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const useExternalServices = useSelector(getUseExternalServices);
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
 
   const handleToggle = (value: boolean) => {
     if (value) {
       dispatch(openBasicFunctionalityModal());
     } else {
-      dispatch(toggleExternalServices(true));
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SettingsUpdated,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          settings_group: 'security_privacy',
-          settings_type: 'basic_functionality',
-          old_value: false,
-          new_value: true,
-          was_notifications_on: false,
-          was_profile_syncing_on: false,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
+      dispatch(
+        isBasicFunctionalityConsolidationEnabled
+          ? toggleBasicFunctionality(true)
+          : toggleExternalServices(true),
+      );
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'basic_functionality',
+            old_value: false,
+            new_value: true,
+            was_notifications_on: false,
+            was_profile_syncing_on: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
     }
   };
 

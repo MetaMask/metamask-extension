@@ -17,6 +17,25 @@ import {
 import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
 import ResetPasswordModal from './reset-password-modal';
 
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: () => ({ page: { title: 'Unlock' } }),
+}));
+
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -51,16 +70,12 @@ const buildStore = () => configureMockStore([thunk])({ metamask: {} });
 
 function renderModal(
   props: Partial<React.ComponentProps<typeof ResetPasswordModal>> = {},
-  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
   const store = buildStore();
 
   return renderWithProvider(
     <ResetPasswordModal onClose={jest.fn()} {...props} />,
     store,
-    '/',
-    undefined,
-    getMockTrackEvent,
   );
 }
 
@@ -107,20 +122,19 @@ describe('ResetPasswordModal', () => {
 
   describe('restore wallet action', () => {
     it('tracks the reset event, dispatches markPasswordForgotten, and navigates in fullscreen', async () => {
-      const mockTrackEvent = jest.fn();
-
-      renderModal({}, () => mockTrackEvent);
+      renderModal();
 
       fireEvent.click(screen.getByTestId('reset-password-modal-button'));
 
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.ResetWallet,
+          name: MetaMetricsEventName.ResetWallet,
           properties: {
+            category: MetaMetricsEventCategory.Accounts,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: 'metamask',
           },
+          sensitiveProperties: {},
         });
         expect(mockMarkPasswordForgotten).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith(RESTORE_VAULT_ROUTE, {
@@ -166,21 +180,21 @@ describe('ResetPasswordModal', () => {
     });
 
     it('tracks the social account type when social login is enabled', async () => {
-      const mockTrackEvent = jest.fn();
       mockGetIsSocialLoginFlow.mockReturnValue(true);
 
-      renderModal({}, () => mockTrackEvent);
+      renderModal();
 
       fireEvent.click(screen.getByTestId('reset-password-modal-button'));
 
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.ResetWallet,
+          name: MetaMetricsEventName.ResetWallet,
           properties: {
+            category: MetaMetricsEventCategory.Accounts,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: 'social',
           },
+          sensitiveProperties: {},
         });
       });
     });
@@ -265,9 +279,7 @@ describe('ResetPasswordModal', () => {
 
   describe('support link', () => {
     it('tracks the support link click', () => {
-      const mockTrackEvent = jest.fn();
-
-      renderModal({}, () => mockTrackEvent);
+      renderModal();
 
       fireEvent.click(
         screen.getByText(
@@ -275,18 +287,15 @@ describe('ResetPasswordModal', () => {
         ),
       );
 
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        {
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.SupportLinkClicked,
-          properties: {
-            url: SUPPORT_LINK,
-          },
+          url: SUPPORT_LINK,
+          [MetaMetricsContextProp.PageTitle]: 'Unlock',
         },
-        {
-          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-        },
-      );
+        sensitiveProperties: {},
+      });
     });
   });
 
