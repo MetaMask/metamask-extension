@@ -17,7 +17,6 @@ jest.mock('../../ui/survey-toast', () => ({
 
 jest.mock('../musd', () => ({
   MerklClaimToast: () => null,
-  MusdConversionToast: () => null,
 }));
 
 function createStore() {
