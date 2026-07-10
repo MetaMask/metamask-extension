@@ -147,6 +147,11 @@ fi
 
 printf '%s\n' "Creating GitHub Release for ${tag}..."
 
+if [[ ! -f SHA256SUMS ]]; then
+    echo "::error::SHA256SUMS file not found — Generate SHA256SUMS workflow step may have failed"
+    exit 1
+fi
+
 # Collect and validate webpack artifacts
 webpack_artifacts=()
 for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
@@ -185,6 +190,7 @@ release_body="$(awk -v version="[${VERSION}]" -f .github/scripts/show-changelog.
 gh release create "${tag}" \
     "${webpack_artifacts[@]}" \
     "${browserify_artifacts[@]}" \
+    SHA256SUMS \
     --title "Version ${VERSION}" \
     --notes "${release_body}" \
     --target "${RELEASE_SHA}"
