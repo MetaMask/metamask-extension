@@ -23,6 +23,7 @@ import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerStateChangeEvent } from '@metamask/remote-feature-flag-controller';
 import {
   RECURRING_INTERVALS,
   RecurringInterval,
@@ -242,7 +243,8 @@ async function withController<ReturnValue>(
 
   type TestAllowedEvents =
     | KeyringControllerUnlockEvent
-    | AccountTreeControllerSelectedAccountGroupChangeEvent;
+    | AccountTreeControllerSelectedAccountGroupChangeEvent
+    | RemoteFeatureFlagControllerStateChangeEvent;
 
   const messenger = getRootMessenger<
     RewardsControllerActions | TestAllowedActions,
@@ -284,6 +286,7 @@ async function withController<ReturnValue>(
     events: [
       'AccountTreeController:selectedAccountGroupChange',
       'KeyringController:unlock',
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
 

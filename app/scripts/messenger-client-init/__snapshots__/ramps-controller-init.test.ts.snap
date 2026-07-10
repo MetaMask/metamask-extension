@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsControllerInit exposes ramps background API methods 1`] = `
+[
+  "addRampsOrder",
+  "addRampsPrecreatedOrder",
+  "getRampsBuyWidgetData",
+  "getRampsOrderFromCallback",
+  "getRampsPaymentMethods",
+  "getRampsProviders",
+  "getRampsQuotes",
+  "getRampsTokens",
+  "refreshRampsOrder",
+  "removeRampsOrder",
+  "setRampsSelectedPaymentMethod",
+  "setRampsSelectedProvider",
+  "setRampsSelectedToken",
+  "setRampsUserRegion",
+  "startRampsLifecycle",
+  "stopRampsLifecycle",
+]
+`;
