@@ -303,3 +303,17 @@ export const isTronSpecialAsset = (
     `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
   );
 };
+
+/**
+ * Returns the chain ID from a CAIP asset ID
+ *
+ * @param assetId - The CAIP asset ID to get the chain ID from.
+ * @returns The chain ID from the CAIP asset ID.
+ */
+export function getChainIdFromAssetId(
+  assetId: CaipAssetType,
+): CaipChainId | undefined {
+  return CaipAssetTypeStruct.is(assetId)
+    ? parseCaipAssetType(assetId).chainId
+    : undefined;
+}

@@ -178,6 +178,10 @@ import {
 } from '../controllers/metametrics-controller-method-action-types';
 import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
 import { createSentryError } from '../../../shared/lib/error';
+import {
+  encodeDisabledDelegationsCheck,
+  decodeDisabledDelegationsResult,
+} from '../../../shared/lib/delegation/delegation';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { AppStateControllerSetPasskeyAutoUnlockSuppressedAction } from '../controllers/app-state-controller-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
@@ -193,6 +197,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
   'applyTransactionContainersExisting',
   'changePassword',
+  'checkDelegationDisabled',
   'checkIsSeedlessPasswordOutdated',
   'estimateGas',
   'exportAccount',
@@ -565,6 +570,44 @@ export class LegacyBackgroundApiService {
       method: 'eth_getCode',
       params: [address],
     });
+  }
+
+  /**
+   * Checks whether a delegation has been disabled on-chain by performing an
+   * `eth_call` against the delegation manager contract.
+   *
+   * @param delegationManagerAddress - The delegation manager contract address.
+   * @param delegationHash - The hash of the delegation to check.
+   * @param networkClientId - The ID of the network client to use for the request.
+   * @returns `true` if the delegation is disabled, `false` otherwise.
+   */
+  async checkDelegationDisabled(
+    delegationManagerAddress: Hex,
+    delegationHash: Hex,
+    networkClientId: string,
+  ): Promise<boolean> {
+    // Encode the call to disabledDelegations(bytes32)
+    const callData = encodeDisabledDelegationsCheck({ delegationHash });
+
+    // Make eth_call request through the network controller
+    const { provider } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
+
+    const result = (await provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: delegationManagerAddress,
+          data: callData,
+        },
+        'latest',
+      ],
+    })) as Hex;
+
+    // Decode the result
+    return decodeDisabledDelegationsResult(result);
   }
 
   /**
