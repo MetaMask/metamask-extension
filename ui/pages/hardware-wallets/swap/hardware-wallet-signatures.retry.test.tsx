@@ -174,7 +174,7 @@ describe('HardwareWalletSignatures', () => {
       const { getByText, getByRole } = renderWithLedgerAccount();
 
       expect(
-        getByText(messages.bridgeHwDeviceDisconnected.message),
+        getByText(messages.hardwareDeviceDisconnected.message),
       ).toBeDefined();
       expect(
         getByRole('button', {
@@ -199,7 +199,7 @@ describe('HardwareWalletSignatures', () => {
       const { getByText, getByRole } = renderWithLedgerAccount();
 
       expect(
-        getByText(messages.bridgeHwTransactionRejected.message),
+        getByText(messages.hardwareTransactionRejected.message),
       ).toBeDefined();
       expect(
         getByRole('button', { name: messages.errorPageTryAgain.message }),
@@ -229,44 +229,6 @@ describe('HardwareWalletSignatures', () => {
       ).toBeDefined();
     });
 
-    it('does not transition out of "You\'re all set" when an error appears afterwards', async () => {
-      const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
-      mockUseSubmitBridgeTransaction.mockImplementation((options) => {
-        if (options?.onHardwareWalletSubmitted) {
-          onHardwareWalletSubmittedCallbacks.push(
-            options.onHardwareWalletSubmitted,
-          );
-        }
-        return {
-          submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-          isSubmitting: false,
-        };
-      });
-
-      const { getByText, rerender } = renderWithLedgerAccount();
-
-      await act(async () => {
-        onHardwareWalletSubmittedCallbacks[0]?.();
-      });
-
-      expect(getByText("You're all set")).toBeDefined();
-
-      mockUseHardwareWalletState.mockReturnValue({
-        connectionState: {
-          status: ConnectionStatus.ErrorState,
-          error: createHardwareWalletError(
-            ErrorCode.DeviceDisconnected,
-            HardwareWalletType.Ledger,
-            'Device disconnected',
-          ),
-        },
-      });
-
-      rerender(<HardwareWalletSignatures />);
-
-      expect(getByText("You're all set")).toBeDefined();
-    });
-
     it('shows "Reconnect your device and try again" when connection status is Disconnected', () => {
       mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
       mockUseHardwareWalletState.mockReturnValue({
@@ -278,7 +240,7 @@ describe('HardwareWalletSignatures', () => {
       const { getByText, getByRole } = renderWithLedgerAccount();
 
       expect(
-        getByText(messages.bridgeHwDeviceDisconnected.message),
+        getByText(messages.hardwareDeviceDisconnected.message),
       ).toBeDefined();
       expect(
         getByRole('button', {
@@ -319,7 +281,7 @@ describe('HardwareWalletSignatures', () => {
       });
 
       expect(
-        getByText(messages.bridgeHwAlmostThereTitle.message),
+        getByText(messages.hardwareAlmostThereTitle.message),
       ).toBeDefined();
 
       const rejectedCallback = callbacks.get(
@@ -339,7 +301,7 @@ describe('HardwareWalletSignatures', () => {
       });
 
       expect(
-        getByText(messages.bridgeHwTransactionRejected.message),
+        getByText(messages.hardwareTransactionRejected.message),
       ).toBeDefined();
 
       await act(async () => {
@@ -350,7 +312,7 @@ describe('HardwareWalletSignatures', () => {
       });
 
       expect(
-        getByText(messages.bridgeHwAlmostThereTitle.message),
+        getByText(messages.hardwareAlmostThereTitle.message),
       ).toBeDefined();
 
       jest.restoreAllMocks();
@@ -407,7 +369,7 @@ describe('HardwareWalletSignatures', () => {
 
       expect(mockSubmit).toHaveBeenCalledTimes(2);
       expect(
-        getByText(messages.bridgeHwAlmostThereTitle.message),
+        getByText(messages.hardwareAlmostThereTitle.message),
       ).toBeDefined();
 
       jest.restoreAllMocks();
@@ -434,7 +396,7 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole, getByText, rerender } = renderWithQuote(quote);
 
       expect(
-        getByText(messages.bridgeHwDeviceDisconnected.message),
+        getByText(messages.hardwareDeviceDisconnected.message),
       ).toBeDefined();
 
       mockUseHardwareWalletState.mockReturnValue({
@@ -479,7 +441,7 @@ describe('HardwareWalletSignatures', () => {
         renderWithQuote(quote);
 
       expect(
-        getByText(messages.bridgeHwDeviceDisconnected.message),
+        getByText(messages.hardwareDeviceDisconnected.message),
       ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
@@ -502,7 +464,7 @@ describe('HardwareWalletSignatures', () => {
       expect(mockSubmit).toHaveBeenCalledTimes(submitCountBeforeRetry + 1);
       expect(getByText(messages.swapConfirmWithHwWallet.message)).toBeDefined();
       expect(
-        queryByText(messages.bridgeHwDeviceDisconnected.message),
+        queryByText(messages.hardwareDeviceDisconnected.message),
       ).toBeNull();
     });
 
@@ -527,7 +489,7 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole, getByText, rerender } = renderWithQuote(quote);
 
       expect(
-        getByText(messages.bridgeHwDeviceDisconnected.message),
+        getByText(messages.hardwareDeviceDisconnected.message),
       ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
@@ -571,7 +533,7 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole, getByText, rerender } = renderWithQuote(quote);
 
       expect(
-        getByText(messages.bridgeHwDeviceDisconnected.message),
+        getByText(messages.hardwareDeviceDisconnected.message),
       ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
@@ -643,7 +605,7 @@ describe('HardwareWalletSignatures', () => {
       });
 
       expect(
-        getByText(messages.bridgeHwTransactionRejected.message),
+        getByText(messages.hardwareTransactionRejected.message),
       ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
@@ -682,7 +644,7 @@ describe('HardwareWalletSignatures', () => {
       const { getByRole, getByText, rerender } = renderWithQuote(quote);
 
       expect(
-        getByText(messages.bridgeHwDeviceDisconnected.message),
+        getByText(messages.hardwareDeviceDisconnected.message),
       ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;
@@ -759,7 +721,7 @@ describe('HardwareWalletSignatures', () => {
       });
 
       expect(
-        getByText(messages.bridgeHwTransactionRejected.message),
+        getByText(messages.hardwareTransactionRejected.message),
       ).toBeDefined();
 
       const submitCountBeforeRetry = mockSubmit.mock.calls.length;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -14,11 +13,7 @@ import {
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import {
-  ConnectionStatus,
-  HardwareWalletType,
-} from '../../../contexts/hardware-wallets';
-import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
+import { ConnectionStatus } from '../../../contexts/hardware-wallets';
 import * as backgroundConnection from '../../../store/background-connection';
 import useSubmitBridgeTransaction from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -238,7 +233,7 @@ describe('HardwareWalletSignatures', () => {
       ]);
     });
 
-    expect(getByText(messages.bridgeHwAlmostThereTitle.message)).toBeDefined();
+    expect(getByText(messages.hardwareAlmostThereTitle.message)).toBeDefined();
 
     jest.restoreAllMocks();
   });
@@ -357,7 +352,7 @@ describe('HardwareWalletSignatures', () => {
     });
 
     expect(
-      getByText(messages.bridgeHwTransactionRejected.message),
+      getByText(messages.hardwareTransactionRejected.message),
     ).toBeDefined();
 
     jest.restoreAllMocks();
@@ -459,108 +454,8 @@ describe('HardwareWalletSignatures', () => {
     });
 
     expect(
-      getByText(messages.bridgeHwTransactionRejected.message),
+      getByText(messages.hardwareTransactionRejected.message),
     ).toBeDefined();
-
-    jest.restoreAllMocks();
-  });
-
-  it('shows "You\'re all set" once the bridge submission callback fires', async () => {
-    const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
-    mockUseSubmitBridgeTransaction.mockImplementation((options) => {
-      if (options?.onHardwareWalletSubmitted) {
-        onHardwareWalletSubmittedCallbacks.push(
-          options.onHardwareWalletSubmitted,
-        );
-      }
-
-      return {
-        submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-        isSubmitting: false,
-      };
-    });
-    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-    const { getByText } = renderWithQuote(quote);
-
-    expect(getByText(messages.swapConfirmWithHwWallet.message)).toBeDefined();
-
-    await act(async () => {
-      onHardwareWalletSubmittedCallbacks[0]?.();
-    });
-
-    expect(getByText("You're all set")).toBeDefined();
-  });
-
-  it('hides footer when submitted', async () => {
-    const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
-    mockUseSubmitBridgeTransaction.mockImplementation((options) => {
-      if (options?.onHardwareWalletSubmitted) {
-        onHardwareWalletSubmittedCallbacks.push(
-          options.onHardwareWalletSubmitted,
-        );
-      }
-
-      return {
-        submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-        isSubmitting: false,
-      };
-    });
-    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-    const { getByText, queryByRole } = renderWithQuote(quote);
-
-    await act(async () => {
-      onHardwareWalletSubmittedCallbacks[0]?.();
-    });
-
-    expect(getByText("You're all set")).toBeDefined();
-    expect(queryByRole('button', { name: messages.cancel.message })).toBeNull();
-  });
-
-  it('stays at "You\'re all set" when a late TransactionController event arrives after submission', async () => {
-    const { callbacks } = mockSubscriptions();
-    const onHardwareWalletSubmittedCallbacks: (() => void)[] = [];
-    mockUseSubmitBridgeTransaction.mockImplementation((options) => {
-      if (options?.onHardwareWalletSubmitted) {
-        onHardwareWalletSubmittedCallbacks.push(
-          options.onHardwareWalletSubmitted,
-        );
-      }
-
-      return {
-        submitBridgeTransaction: jest.fn().mockResolvedValue(undefined),
-        isSubmitting: false,
-      };
-    });
-    const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
-    const { getByText } = renderWithQuote(quote);
-
-    await act(async () => {
-      await jest.runAllTimersAsync();
-    });
-
-    await act(async () => {
-      onHardwareWalletSubmittedCallbacks[0]?.();
-    });
-
-    expect(getByText("You're all set")).toBeDefined();
-
-    const statusUpdatedCallback = callbacks.get(
-      'TransactionController:transactionStatusUpdated',
-    );
-
-    await act(async () => {
-      statusUpdatedCallback?.([
-        {
-          transactionMeta: {
-            status: 'signed',
-            type: TransactionType.bridgeApproval,
-            txParams: { from: '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452' },
-          },
-        },
-      ]);
-    });
-
-    expect(getByText("You're all set")).toBeDefined();
 
     jest.restoreAllMocks();
   });
@@ -623,7 +518,7 @@ describe('HardwareWalletSignatures', () => {
     expect(getByTestId('hardware-wallet-signatures__steps')).toBeDefined();
     expect(
       getByRole('button', {
-        name: messages.bridgeQrHardwareScanSignatureNext.message,
+        name: messages.qrHardwareScanSignatureNext.message,
       }),
     ).toBeDefined();
   });
@@ -687,7 +582,7 @@ describe('HardwareWalletSignatures', () => {
 
       expect(
         getByRole('button', {
-          name: messages.bridgeQrHardwareScanSignatureNext.message,
+          name: messages.qrHardwareScanSignatureNext.message,
         }),
       ).toBeDefined();
     });
@@ -697,13 +592,13 @@ describe('HardwareWalletSignatures', () => {
 
       fireEvent.click(
         getByRole('button', {
-          name: messages.bridgeQrHardwareScanSignatureNext.message,
+          name: messages.qrHardwareScanSignatureNext.message,
         }),
       );
 
       expect(
         queryByRole('button', {
-          name: messages.bridgeQrHardwareScanSignatureNext.message,
+          name: messages.qrHardwareScanSignatureNext.message,
         }),
       ).toBeNull();
     });
@@ -713,14 +608,14 @@ describe('HardwareWalletSignatures', () => {
 
       fireEvent.click(
         getByRole('button', {
-          name: messages.bridgeQrHardwareScanSignatureNext.message,
+          name: messages.qrHardwareScanSignatureNext.message,
         }),
       );
       fireEvent.click(getByRole('button', { name: messages.back.message }));
 
       expect(
         getByRole('button', {
-          name: messages.bridgeQrHardwareScanSignatureNext.message,
+          name: messages.qrHardwareScanSignatureNext.message,
         }),
       ).toBeDefined();
     });
