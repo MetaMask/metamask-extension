@@ -50,7 +50,11 @@ function getValidConversionRate(
     : undefined;
 }
 
-function shouldUseEthConversionRateFallback(chainId: Hex): boolean {
+function shouldUseEthConversionRateFallback(chainId?: Hex): boolean {
+  if (!chainId) {
+    return false;
+  }
+
   return ETH_CONVERSION_RATE_FALLBACK_CHAIN_IDS.some(
     (fallbackChainId) =>
       fallbackChainId.toLowerCase() === chainId.toLowerCase(),

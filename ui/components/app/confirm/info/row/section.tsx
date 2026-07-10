@@ -1,14 +1,28 @@
 import React, { CSSProperties } from 'react';
 import { Box } from '../../../../component-library';
-import type { SizeNumber } from '../../../../component-library/box/box.types';
 import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 
+export type ConfirmInfoSectionMarginBottom =
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12;
+
 export type ConfirmInfoSectionProps = {
   children: React.ReactNode | string;
-  marginBottom?: SizeNumber;
+  marginBottom?: ConfirmInfoSectionMarginBottom;
   noPadding?: boolean;
   style?: CSSProperties;
   'data-testid'?: string;

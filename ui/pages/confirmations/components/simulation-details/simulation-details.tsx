@@ -26,7 +26,7 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import type { SizeNumber } from '../../../../components/component-library/box/box.types';
+import type { ConfirmInfoSectionMarginBottom } from '../../../../components/app/confirm/info/row/section';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -58,7 +58,7 @@ export type SimulationDetailsProps = {
   readonly enableMetrics?: boolean;
   readonly isTransactionsRedesign?: boolean;
   readonly metricsOnly?: boolean;
-  readonly sectionMarginBottom?: SizeNumber;
+  readonly sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
   readonly staticRows?: StaticRow[];
   readonly transaction: TransactionMeta;
   readonly smartTransactionStatus?: string;
@@ -269,7 +269,7 @@ export const SimulationDetailsLayout = ({
   titleTooltip?: string;
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
-  sectionMarginBottom?: SizeNumber;
+  sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
   transactionId: string;
 }>) =>
   isTransactionsRedesign ? (
@@ -384,7 +384,7 @@ function SimulationDetailsSkeleton({
   transactionId,
 }: {
   isTransactionsRedesign: boolean;
-  sectionMarginBottom?: SizeNumber;
+  sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
   transactionId: string;
 }) {
   return (
