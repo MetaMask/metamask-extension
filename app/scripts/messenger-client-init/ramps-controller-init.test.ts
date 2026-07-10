@@ -52,15 +52,13 @@ type InitRequestMock = jest.Mocked<
   >
 >;
 
-function createInitMessenger(
-  {
-    completedOnboarding = true,
-    useExternalServices = true,
-  }: {
-    completedOnboarding?: boolean;
-    useExternalServices?: boolean;
-  } = {},
-): {
+function createInitMessenger({
+  completedOnboarding = true,
+  useExternalServices = true,
+}: {
+  completedOnboarding?: boolean;
+  useExternalServices?: boolean;
+} = {}): {
   initMessenger: RampsControllerInitMessenger;
   setCompletedOnboarding: (value: boolean) => void;
 } {
@@ -71,8 +69,7 @@ function createInitMessenger(
     | PreferencesControllerGetStateAction
     | ActionConstraint
     | 'OnboardingController:getState',
-    | 'OnboardingController:stateChange'
-    | 'PreferencesController:stateChange'
+    'OnboardingController:stateChange' | 'PreferencesController:stateChange'
   >({ namespace: MOCK_ANY_NAMESPACE });
 
   baseMessenger.registerActionHandler('OnboardingController:getState', () => ({
@@ -167,7 +164,9 @@ describe('RampsControllerInit', () => {
       completedOnboarding: false,
       useExternalServices: true,
     });
-    const onboardingListeners: ((state: { completedOnboarding: boolean }) => void)[] = [];
+    const onboardingListeners: ((state: {
+      completedOnboarding: boolean;
+    }) => void)[] = [];
     const subscribeSpy = jest
       .spyOn(initMessenger, 'subscribe')
       .mockImplementation((event, listener) => {
