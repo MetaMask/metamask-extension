@@ -13,85 +13,6 @@ const rootDir = join(__dirname, '../../../../../');
 // Entries that need to be included in the unsafe layer to run without LavaMoat.
 const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
 
-const offscreenEntryNamePattern = /^offscreen(?:\.\d+)?$/u;
-
-type ScuttleGlobalThisException = string | RegExp;
-
-const getScuttleGlobalThisExceptions = (
-  args: Args,
-): ScuttleGlobalThisException[] => [
-  // globals used by different mm deps outside of lm compartment
-  'window',
-  'Proxy',
-  'toString',
-  'getComputedStyle',
-  'addEventListener',
-  'removeEventListener',
-  'ShadowRoot',
-  'HTMLElement',
-  'HTMLFormElement',
-  'Element',
-  'pageXOffset',
-  'pageYOffset',
-  'visualViewport',
-  'Reflect',
-  'Set',
-  'Object',
-  'navigator',
-  'harden',
-  'console',
-  'WeakSet',
-  'Event',
-  'EventTarget',
-  // globals used by the browser to generate notifications
-  'Image',
-  'fetch',
-  'AbortController',
-  'OffscreenCanvas',
-  /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-  'name',
-  'performance',
-  'parseFloat',
-  'innerWidth',
-  'innerHeight',
-  'Symbol',
-  'Math',
-  'DOMRect',
-  'Number',
-  'Array',
-  'crypto',
-  'Function',
-  'Uint8Array',
-  'String',
-  'Promise',
-  'JSON',
-  'Date',
-  // Selenium atoms construct regexes while locating elements.
-  'RegExp',
-  // globals sentry needs to function
-  '__SENTRY__',
-  'appState',
-  'extra',
-  'stateHooks',
-  'sentryHooks',
-  'sentry',
-  'logEncryptedVault',
-  // needed by Sentry and react-router-dom v6 HashRouter
-  'history',
-  // globals used by react-dom
-  'getSelection',
-  // globals opera needs to function
-  'opr',
-  // for @popperjs/core and snap simple keyring site
-  'devicePixelRatio',
-  // for @tanstack/react-virtual
-  'ResizeObserver',
-  'setTimeout',
-  'clearTimeout',
-  // globals used by e2e
-  ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
-];
-
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
     rootDir,
@@ -107,7 +28,7 @@ export const lavamoatPlugin = (args: Args) =>
     readableResourceIds: true,
     // Inline SES into protected self-contained scripts and the shared runtime.
     inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|vendor\/trezor\/content-script\.js|service-worker\.js)$/u,
+      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -122,10 +43,7 @@ export const lavamoatPlugin = (args: Args) =>
       if (chunk.name && unsafeEntries.has(chunk.name)) {
         // unsafeEntries are running outside of LavaMoat
         return { mode: 'null_unsafe' };
-      } else if (
-        chunk.name === 'scripts/contentscript.js' ||
-        chunk.name === 'vendor/trezor/content-script.js'
-      ) {
+      } else if (chunk.name === 'scripts/contentscript.js') {
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -147,17 +65,14 @@ export const lavamoatPlugin = (args: Args) =>
               ]
             : [],
         };
-      } else if (
-        chunk.name === 'service-worker.ts' ||
-        (chunk.name && offscreenEntryNamePattern.test(chunk.name))
-      ) {
+      } else if (chunk.name === 'service-worker.ts') {
         return {
           mode: 'safe',
           embeddedOptions: {
-            // The MV3 service worker and offscreen document rely on Chrome's
-            // host global for extension APIs, webextension-polyfill setup, and
-            // offscreen iframe/postMessage bridges. Keep LavaMoat
-            // compartments/lockdown, but do not scuttle these host globals.
+            // The MV3 service worker relies on Chrome's host global for
+            // extension APIs, worker APIs, and webextension-polyfill setup.
+            // Keep LavaMoat compartments/lockdown, but do not scuttle this
+            // host global.
             scuttleGlobalThis: {
               enabled: false,
             },
@@ -170,7 +85,78 @@ export const lavamoatPlugin = (args: Args) =>
       enabled: true,
       // Scuttler depends on Snow
       scuttlerName: args.snow ? 'SCUTTLER' : undefined,
-      exceptions: getScuttleGlobalThisExceptions(args),
+      exceptions: [
+        // globals used by different mm deps outside of lm compartment
+        'window',
+        'Proxy',
+        'toString',
+        'getComputedStyle',
+        'addEventListener',
+        'removeEventListener',
+        'ShadowRoot',
+        'HTMLElement',
+        'HTMLFormElement',
+        'Element',
+        'pageXOffset',
+        'pageYOffset',
+        'visualViewport',
+        'Reflect',
+        'Set',
+        'Object',
+        'navigator',
+        'harden',
+        'console',
+        'WeakSet',
+        'Event',
+        'EventTarget',
+        // globals used by the browser to generate notifications
+        'Image',
+        'fetch',
+        'AbortController',
+        'OffscreenCanvas',
+        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+        'name',
+        'performance',
+        'parseFloat',
+        'innerWidth',
+        'innerHeight',
+        'Symbol',
+        'Math',
+        'DOMRect',
+        'Number',
+        'Array',
+        'crypto',
+        'Function',
+        'Uint8Array',
+        'String',
+        'Promise',
+        'JSON',
+        'Date',
+        // Selenium atoms construct regexes while locating elements.
+        'RegExp',
+        // globals sentry needs to function
+        '__SENTRY__',
+        'appState',
+        'extra',
+        'stateHooks',
+        'sentryHooks',
+        'sentry',
+        'logEncryptedVault',
+        // needed by Sentry and react-router-dom v6 HashRouter
+        'history',
+        // globals used by react-dom
+        'getSelection',
+        // globals opera needs to function
+        'opr',
+        // for @popperjs/core and snap simple keyring site
+        'devicePixelRatio',
+        // for @tanstack/react-virtual
+        'ResizeObserver',
+        'setTimeout',
+        'clearTimeout',
+        // globals used by e2e
+        ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
+      ],
     },
   });
 
