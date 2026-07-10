@@ -1568,6 +1568,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
   'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
   'arc-mainnet': () => process.env.QUICKNODE_ARC_URL,
+  'robinhood-mainnet': () => process.env.QUICKNODE_ROBINHOOD_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1797,8 +1798,8 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     rpcEndpoints: [
       {
-        url: 'https://rpc.mainnet.chain.robinhood.com',
-        failoverUrls: [],
+        url: `https://robinhood-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('robinhood-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
