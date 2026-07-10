@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ramps-controller actions matches snapshot for background action calls 1`] = `
+[
+  [
+    "setRampsUserRegion",
+    [
+      "us-ca",
+      {
+        "forceRefresh": true,
+      },
+    ],
+  ],
+  [
+    "setRampsSelectedToken",
+    [
+      "eip155:1/erc20:0x0",
+    ],
+  ],
+  [
+    "setRampsSelectedProvider",
+    [
+      "transak",
+      {
+        "autoSelected": true,
+      },
+    ],
+  ],
+  [
+    "setRampsSelectedPaymentMethod",
+    [
+      "credit_debit_card",
+    ],
+  ],
+  [
+    "getRampsTokens",
+    [
+      "us-ca",
+      "buy",
+    ],
+  ],
+  [
+    "getRampsTokens",
+    [
+      "us-ca",
+      "sell",
+    ],
+  ],
+  [
+    "getRampsProviders",
+    [
+      "us-ca",
+    ],
+  ],
+  [
+    "getRampsPaymentMethods",
+    [
+      "us-ca",
+      {
+        "assetId": "eip155:1/erc20:0x0",
+        "fiat": "USD",
+        "provider": "transak",
+      },
+    ],
+  ],
+  [
+    "getRampsQuotes",
+    [
+      {
+        "amount": 100,
+        "assetId": "eip155:1/erc20:0x0",
+        "walletAddress": "0xabc",
+      },
+    ],
+  ],
+  [
+    "getRampsBuyWidgetData",
+    [
+      {
+        "id": "quote-1",
+      },
+    ],
+  ],
+  [
+    "addRampsPrecreatedOrder",
+    [
+      {
+        "orderId": "order-1",
+        "providerCode": "transak",
+        "walletAddress": "0xabc",
+      },
+    ],
+  ],
+  [
+    "addRampsOrder",
+    [
+      {
+        "id": "order-1",
+        "providerOrderId": "abc",
+      },
+    ],
+  ],
+  [
+    "removeRampsOrder",
+    [
+      "order-1",
+    ],
+  ],
+  [
+    "refreshRampsOrder",
+    [
+      "transak",
+      "order-1",
+      "0xabc",
+    ],
+  ],
+  [
+    "getRampsOrderFromCallback",
+    [
+      "transak",
+      "https://callback",
+      "0xabc",
+    ],
+  ],
+]
+`;

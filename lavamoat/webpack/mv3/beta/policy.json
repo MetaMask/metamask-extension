@@ -1380,6 +1380,14 @@
         "@metamask/providers>readable-stream": true
       }
     },
+    "@metamask/ramps-controller": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true
+      }
+    },
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
