@@ -27,8 +27,8 @@ const isStrictModeEnabled =
   process.env.NODE_ENV === 'development' && !process.env.IN_TEST;
 
 /**
- * Dev-only StrictMode. Unit/integration tests use `test/jest/strict-mode.js`
- * to wrap `@testing-library/react` renders instead (avoids double StrictMode).
+ * Dev-only StrictMode in the app shell. Individual unit tests that need to
+ * exercise double-mount behavior can import `test/jest/strict-mode.js` helpers.
  */
 
 function withStrictMode(children) {

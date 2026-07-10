@@ -7,6 +7,8 @@ import {
   useRedirectAfterDefaultPage,
   usePendingRedirectRoute,
   useLastVisitedPerpsRoute,
+  type PendingRedirectRoute,
+  type LastVisitedPerpsRoute,
 } from './useHomeRedirects';
 
 // ---------------------------------------------------------------------------
@@ -224,7 +226,7 @@ describe('usePendingRedirectRoute', () => {
           setRedirectAfterDefaultPage,
           clearPendingRedirectRoute,
         }),
-      { initialProps: { pending: route } },
+      { initialProps: { pending: route as PendingRedirectRoute | null } },
     );
 
     expect(setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
@@ -451,7 +453,7 @@ describe('useLastVisitedPerpsRoute', () => {
           setRedirectAfterDefaultPage,
           clearLastVisitedPerpsRoute,
         }),
-      { initialProps: { lastVisited: route } },
+      { initialProps: { lastVisited: route as LastVisitedPerpsRoute | null } },
     );
 
     expect(setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);

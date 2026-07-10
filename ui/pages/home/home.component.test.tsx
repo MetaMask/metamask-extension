@@ -142,7 +142,15 @@ describe('Home — smoke and early-return guards', () => {
 
   it('calls lookupSelectedNetworks once per session under StrictMode', () => {
     const lookupSelectedNetworks = jest.fn();
-    renderHome({ lookupSelectedNetworks });
+    const props = buildDefaultProps({ lookupSelectedNetworks });
+    render(
+      <React.StrictMode>
+        {wrapWithContext(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          <Home {...(props as any)} />,
+        )}
+      </React.StrictMode>,
+    );
     expect(lookupSelectedNetworks).toHaveBeenCalledTimes(1);
   });
 });
