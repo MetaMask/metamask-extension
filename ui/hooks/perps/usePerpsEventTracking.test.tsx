@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import {
+  MemoryRouter,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+  Outlet,
+} from 'react-router-dom';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
 
 import {
@@ -326,6 +334,73 @@ describe('usePerpsEventTracking', () => {
       );
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      const { properties } = mockTrackEvent.mock.calls[0][0];
+      expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('deeplink');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_MEDIUM]).toBe('push');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN]).toBe('q3_launch');
+    });
+  });
+
+  // Faithful deeplink repro (same document, provider stays mounted): the
+  // provider is already mounted at a non-utm perps route when the deeplink
+  // Continue navigates to the utm-bearing market route. The provider's
+  // locationSearch updates in place (no remount), and the market screen-view
+  // fires immediately (warm markets). The mount-time useState seed captured the
+  // OLD search, so the first (fire-once) emit must get UTM from the render-time
+  // derivation of the current search — not the effect-back-filled state.
+  describe('deeplink nav race (provider mounted before utm search)', () => {
+    function LayoutProvider() {
+      const { search } = useLocation();
+      return (
+        <PerpsAttributionProvider locationSearch={search}>
+          <Outlet />
+        </PerpsAttributionProvider>
+      );
+    }
+
+    function ContinueToMarket() {
+      const navigate = useNavigate();
+      React.useEffect(() => {
+        navigate(
+          '/perps/market/BTC?source=deeplink&utm_source=cdp_test' +
+            '&utm_medium=push&utm_campaign=q3_launch',
+        );
+      }, [navigate]);
+      return null;
+    }
+
+    function MarketScreenViewer() {
+      usePerpsEventTracking({
+        eventName: MetaMetricsEventName.PerpsScreenViewed,
+        conditions: true,
+        properties: {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'asset_details',
+          [PERPS_EVENT_PROPERTY.SOURCE]: 'market_list',
+        },
+      });
+      return null;
+    }
+
+    it('carries utm on the first emit after the search updates in place', async () => {
+      render(
+        <MemoryRouter
+          initialEntries={['/perps/market-list']}
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
+          <Routes>
+            <Route element={<LayoutProvider />}>
+              <Route path="/perps/market-list" element={<ContinueToMarket />} />
+              <Route
+                path="/perps/market/:symbol"
+                element={<MarketScreenViewer />}
+              />
+            </Route>
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => expect(mockTrackEvent).toHaveBeenCalledTimes(1));
       const { properties } = mockTrackEvent.mock.calls[0][0];
       expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('deeplink');
       expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');
