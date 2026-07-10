@@ -1,4 +1,8 @@
-import { RampsOrderStatus, type Provider, type RampsOrder } from '@metamask/ramps-controller';
+import {
+  RampsOrderStatus,
+  type Provider,
+  type RampsOrder,
+} from '@metamask/ramps-controller';
 import {
   completedOrdersFromRampsOrders,
   determinePreferredProvider,
