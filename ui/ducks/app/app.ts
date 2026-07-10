@@ -54,7 +54,6 @@ type AppState = {
     result: 'success' | 'failure' | 'none';
   };
   showKeyringRemovalSnapModal: boolean;
-  importTokensModalOpen: boolean;
   deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     privateKey?: string;
@@ -118,6 +117,11 @@ type AppState = {
      */
     hasUserInteractedWithModal?: boolean;
   };
+  homeDeepLinkQrCode: {
+    deeplinkUrl: string;
+    descriptionKey: string;
+    titleKey: string;
+  } | null;
 };
 
 export type AppSliceState = {
@@ -156,7 +160,6 @@ const initialState: AppState = {
     result: 'none',
   },
   showKeyringRemovalSnapModal: false,
-  importTokensModalOpen: false,
   deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
@@ -201,6 +204,7 @@ const initialState: AppState = {
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
+  homeDeepLinkQrCode: null,
 };
 
 export default function reduceApp(
@@ -331,18 +335,6 @@ export default function reduceApp(
       return {
         ...appState,
         showPermittedNetworkToastOpen: false,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
-      return {
-        ...appState,
-        importTokensModalOpen: true,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
-      return {
-        ...appState,
-        importTokensModalOpen: false,
       };
 
     case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
@@ -670,6 +662,18 @@ export default function reduceApp(
         },
       };
 
+    case actionConstants.SET_HOME_DEEP_LINK_QR_CODE:
+      return {
+        ...appState,
+        homeDeepLinkQrCode: action.payload,
+      };
+
+    case actionConstants.CLEAR_HOME_DEEP_LINK_QR_CODE:
+      return {
+        ...appState,
+        homeDeepLinkQrCode: null,
+      };
+
     default:
       return appState;
   }
@@ -812,5 +816,22 @@ export function openDataDeletionErrorModal(): Action {
 export function hideDataDeletionErrorModal(): Action {
   return {
     type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+  };
+}
+
+export function setHomeDeepLinkQrCode(payload: {
+  deeplinkUrl: string;
+  descriptionKey: string;
+  titleKey: string;
+}): PayloadAction<typeof payload> {
+  return {
+    type: actionConstants.SET_HOME_DEEP_LINK_QR_CODE,
+    payload,
+  };
+}
+
+export function clearHomeDeepLinkQrCode(): Action {
+  return {
+    type: actionConstants.CLEAR_HOME_DEEP_LINK_QR_CODE,
   };
 }

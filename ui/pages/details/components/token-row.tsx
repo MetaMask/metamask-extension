@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
-import {
-  formatChainIdToHex,
-  isNonEvmChainId,
-} from '@metamask/bridge-controller';
 import { Text } from '@metamask/design-system-react';
+import type { CaipChainId } from '@metamask/utils';
 import {
   applyDisplaySign,
   getDisplaySignPrefix,
@@ -37,15 +34,11 @@ export function TokenRow({
           getDisplaySignPrefix(token.direction, { showPlus: true }),
         );
 
-  const hexChainId = useMemo(() => {
+  const chainId = useMemo(() => {
     if (!showNetworkBadge || !token.assetId) {
       return undefined;
     }
-    const caipChainId = token.assetId.split('/')[0];
-    if (!caipChainId || isNonEvmChainId(caipChainId)) {
-      return caipChainId;
-    }
-    return formatChainIdToHex(caipChainId);
+    return token.assetId.split('/')[0] as CaipChainId;
   }, [showNetworkBadge, token.assetId]);
 
   if (!formattedAmount) {
@@ -56,11 +49,7 @@ export function TokenRow({
 
   return (
     <div className="flex items-center gap-2">
-      {hexChainId ? (
-        <ChainBadge chainId={hexChainId}>{avatar}</ChainBadge>
-      ) : (
-        avatar
-      )}
+      <ChainBadge chainId={chainId}>{avatar}</ChainBadge>
       <Text
         variant="heading-lg"
         color={

@@ -5,7 +5,7 @@ import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accoun
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import { getIsVipProgramEnabled } from '../../selectors/perps/feature-flags';
 import { clearPerpsFeeDiscountCacheForTests } from './usePerpsMetamaskFeeDiscountBips';
-import { usePerpsOrderFees } from './usePerpsOrderFees';
+import { formatPerpsFeeRate, usePerpsOrderFees } from './usePerpsOrderFees';
 
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../store/background-connection', () => ({
@@ -97,6 +97,20 @@ describe('usePerpsOrderFees', () => {
     mockUseSelector.mockReset();
     clearPerpsFeeDiscountCacheForTests();
     setSelectors();
+  });
+
+  describe('formatPerpsFeeRate', () => {
+    it('formats decimal fee rates as percentage strings', () => {
+      expect(formatPerpsFeeRate(0.00045)).toBe('0.045%');
+      expect(formatPerpsFeeRate(0.001)).toBe('0.100%');
+      expect(formatPerpsFeeRate(0.015)).toBe('1.500%');
+    });
+
+    it('returns N/A for missing or invalid rates', () => {
+      expect(formatPerpsFeeRate(undefined)).toBe('N/A');
+      expect(formatPerpsFeeRate(null)).toBe('N/A');
+      expect(formatPerpsFeeRate(Number.NaN)).toBe('N/A');
+    });
   });
 
   it('returns undefined feeRate while loading', () => {

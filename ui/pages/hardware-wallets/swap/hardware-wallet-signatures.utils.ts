@@ -1,5 +1,5 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
-import { providerErrors } from '@metamask/rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { TextColor } from '@metamask/design-system-react';
 import { shortenAddress } from '../../../helpers/utils/util';
 import type { useI18nContext } from '../../../hooks/useI18nContext';
@@ -20,27 +20,6 @@ export {
   type BridgeTxHistory,
   type QrHardwareSignRequest,
 };
-
-/**
- * Rejects a pending approval, swallowing any error. Used for cleanup when the
- * user cancels/retries so a stale approval can't block the next flow.
- *
- * @param dispatch - The Redux dispatch function.
- * @param approvalId - The pending approval id to reject.
- * @param error - The error to throw when rejecting the approval. Defaults to a
- * serialized "user rejected request" provider error.
- */
-export async function cleanupPendingApproval(
-  dispatch: MetaMaskReduxDispatch,
-  approvalId: string,
-  error: unknown = providerErrors.userRejectedRequest().serialize(),
-): Promise<void> {
-  try {
-    await dispatch(rejectPendingApproval(approvalId, error));
-  } catch {
-    // Swallowed intentionally — best-effort cleanup.
-  }
-}
 
 /**
  * Checks whether a signature step display status represents an error
@@ -75,8 +54,8 @@ export function getStepLabelColor(stepStatus: SignatureStepStatus): TextColor {
  */
 export const getQrScanButtonLabelKey = (isFinalSignature: boolean): string =>
   isFinalSignature
-    ? 'bridgeQrHardwareScanSignatureFinal'
-    : 'bridgeQrHardwareScanSignatureNext';
+    ? 'qrHardwareScanSignatureFinal'
+    : 'qrHardwareScanSignatureNext';
 
 /**
  * Type guard that checks whether an unknown value is a valid QR hardware
@@ -106,6 +85,26 @@ export const isQrHardwareSignRequest = (
       'cbor' in request.request.payload &&
       typeof request.request.payload.cbor === 'string',
   );
+
+/**
+ * Rejects the pending approval associated with a hardware-wallet signature,
+ * using a user-rejected-request error. This clears the approval from the
+ * background's pending queue before the caller cancels the transaction itself.
+ *
+ * @param dispatch - The Redux dispatch function.
+ * @param id - The pending approval id to reject.
+ */
+export const cleanupPendingApproval = (
+  dispatch: MetaMaskReduxDispatch,
+  id: string,
+): void => {
+  dispatch(
+    rejectPendingApproval(
+      id,
+      serializeError(providerErrors.userRejectedRequest()),
+    ),
+  );
+};
 
 /**
  * Extracts a 'from' or 'to' address string from a transaction object.
@@ -176,11 +175,11 @@ export const getTitle = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (status === HardwareWalletSignatureStatus.Submitted) {
-    return t('bridgeHwAllSetTitle');
+    return t('hardwareAllSetTitle');
   }
 
   if (status === HardwareWalletSignatureStatus.Rejected) {
-    return t('bridgeHwTransactionRejected');
+    return t('hardwareTransactionRejected');
   }
 
   if (status === HardwareWalletSignatureStatus.Failed) {
@@ -188,14 +187,14 @@ export const getTitle = ({
   }
 
   if (status === HardwareWalletSignatureStatus.Disconnected) {
-    return t('bridgeHwDeviceDisconnected');
+    return t('hardwareDeviceDisconnected');
   }
 
   if (
     needsTwoConfirmations &&
     status === HardwareWalletSignatureStatus.AwaitingFinalSignature
   ) {
-    return t('bridgeHwAlmostThereTitle');
+    return t('hardwareAlmostThereTitle');
   }
 
   return t('swapConfirmWithHwWallet');
@@ -239,13 +238,14 @@ export const getQrHardwareSigningPageTitle = ({
     activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature;
   const totalSteps = needsTwoConfirmations ? 4 : 2;
 
-  // Two-confirmation flow: 4 steps (display/scan × approval/trade).
-  // approval display = 1, approval scan = 2, trade display = 3, trade scan = 4.
-  // Single-confirmation flow: 2 steps (display/scan): display = 1, scan = 2.
-  const phaseOffset = isDisplayPhase ? 1 : 2;
-  const currentStep = needsTwoConfirmations
-    ? (isFinalSignature ? 2 : 0) + phaseOffset
-    : phaseOffset;
+  // Two-confirmation: approval 1–2, trade 3–4. Single-confirmation: 1–2.
+  // Within each signature: display is the odd step, scan is the even step.
+  let currentStep: number;
+  if (needsTwoConfirmations && isFinalSignature) {
+    currentStep = isDisplayPhase ? 3 : 4;
+  } else {
+    currentStep = isDisplayPhase ? 1 : 2;
+  }
 
   const isLastStep = currentStep === totalSteps;
 
@@ -292,14 +292,14 @@ export const getFinalStepLabel = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (status === HardwareWalletSignatureStatus.Submitted) {
-    return t('bridgeHwSentAmount', [fromAmount, fromTokenSymbol]);
+    return t('hardwareSentAmount', [fromAmount, fromTokenSymbol]);
   }
 
   if (finalStepStatus === SignatureStepStatus.Active) {
-    return t('bridgeHwSendingAmount', [fromAmount, fromTokenSymbol]);
+    return t('hardwareSendingAmount', [fromAmount, fromTokenSymbol]);
   }
 
-  return t('bridgeHwSendAmount', [fromAmount, fromTokenSymbol]);
+  return t('hardwareSendAmount', [fromAmount, fromTokenSymbol]);
 };
 
 /**
@@ -322,11 +322,11 @@ export const getFirstStepDescription = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (firstStepStatus === SignatureStepStatus.Rejected) {
-    return t('bridgeHwRejected');
+    return t('hardwareRejected');
   }
 
   if (firstStepStatus === SignatureStepStatus.Disconnected) {
-    return t('bridgeHwReconnectDevice');
+    return t('hardwareReconnectDevice');
   }
 
   if (firstStepStatus === SignatureStepStatus.Failed) {
@@ -334,7 +334,7 @@ export const getFirstStepDescription = ({
   }
 
   if (spenderAddress) {
-    return t('bridgeHwSpender', [shortenAddress(spenderAddress)]);
+    return t('hardwareSpender', [shortenAddress(spenderAddress)]);
   }
 
   return undefined;
@@ -360,7 +360,189 @@ export const getFinalStepDescription = ({
     return undefined;
   }
 
-  return t('bridgeHwToAddress', [shortenAddress(toAddress)]);
+  return t('hardwareToAddress', [shortenAddress(toAddress)]);
+};
+
+/**
+ * Computes the localized labels for the first and final signature steps,
+ * branching on flow.
+ *
+ * sendBundle (two confirmations — gas-token payment): first step = the SEND
+ * tx (signed first on the device; Send / Sending / Sent by status), final
+ * step = the GAS-PAYMENT tx (signed second).
+ * sendBundle (single confirmation — no gas token): only the final step is
+ * rendered, and it IS the SEND tx, so it uses the status-aware send label.
+ * bridge/swap: first step = approval (or "approved" once complete), final
+ * step = trade (delegated to {@link getFinalStepLabel}).
+ *
+ * @param options - Configuration object.
+ * @param options.isSendBundleFlow - True when rendering the sendBundle flow.
+ * @param options.needsTwoConfirmations - Whether the flow renders two steps
+ * (true) or a single step (false). For sendBundle, two steps means a
+ * gas-token payment follows the send; one step means a plain send.
+ * @param options.status - The current signature state machine status.
+ * @param options.firstStepStatus - The display status of the first step.
+ * @param options.finalStepStatus - The display status of the final step.
+ * @param options.fromAmount - The amount being sent (bridge/swap only).
+ * @param options.fromTokenSymbol - The symbol of the token being sent
+ * (bridge/swap only).
+ * @param options.sendAmount - The amount being sent (sendBundle flow).
+ * @param options.sendSymbol - The symbol of the token being sent
+ * (sendBundle flow).
+ * @param options.gasSymbol - The symbol of the token used to pay the network
+ * fee (always the chain's native currency). Labels the gas-payment step in a
+ * two-step sendBundle flow.
+ * @param options.t - The i18n translation function.
+ * @returns An object containing the localized `firstStepLabel` and
+ * `finalStepLabel` strings.
+ */
+export const getStepLabels = ({
+  isSendBundleFlow,
+  needsTwoConfirmations,
+  status,
+  firstStepStatus,
+  finalStepStatus,
+  fromAmount,
+  fromTokenSymbol,
+  sendAmount,
+  sendSymbol,
+  gasSymbol,
+  t,
+}: {
+  isSendBundleFlow: boolean;
+  needsTwoConfirmations: boolean;
+  status: HardwareWalletSignatureStatus;
+  firstStepStatus: SignatureStepStatus;
+  finalStepStatus: SignatureStepStatus;
+  fromAmount?: string;
+  fromTokenSymbol?: string;
+  sendAmount?: string;
+  sendSymbol?: string;
+  gasSymbol?: string;
+  t: ReturnType<typeof useI18nContext>;
+}): {
+  firstStepLabel: string;
+  finalStepLabel: string;
+} => {
+  if (isSendBundleFlow) {
+    // Send tense mirrors getFinalStepLabel: Sent (complete), Sending (active),
+    // Send (pending / interrupted).
+    const getSendAmountLabel = (stepStatus: SignatureStepStatus) => {
+      if (
+        status === HardwareWalletSignatureStatus.Submitted ||
+        stepStatus === SignatureStepStatus.Complete
+      ) {
+        return t('hardwareSentAmount', [sendAmount, sendSymbol]);
+      }
+
+      if (stepStatus === SignatureStepStatus.Active) {
+        return t('hardwareSendingAmount', [sendAmount, sendSymbol]);
+      }
+
+      return t('hardwareSendAmount', [sendAmount, sendSymbol]);
+    };
+
+    // Two-step sendBundle: step 1 is the SEND, step 2 is the gas-token payment.
+    if (needsTwoConfirmations) {
+      return {
+        firstStepLabel: getSendAmountLabel(firstStepStatus),
+        finalStepLabel: t('sendBundleHwGasPayment', [gasSymbol]),
+      };
+    }
+
+    // Single-step sendBundle: only the final step is rendered (see
+    // signature-step-list.tsx), and that step IS the SEND tx, so it uses the
+    // send label. `firstStepLabel` is not rendered but kept valid.
+    const sendLabel = getSendAmountLabel(finalStepStatus);
+    return {
+      firstStepLabel: sendLabel,
+      finalStepLabel: sendLabel,
+    };
+  }
+
+  const firstStepLabel =
+    status === HardwareWalletSignatureStatus.Submitted ||
+    firstStepStatus === SignatureStepStatus.Complete
+      ? t('hardwareApprovedAmount', [fromAmount, fromTokenSymbol])
+      : t('hardwareApproveAmount', [fromAmount, fromTokenSymbol]);
+
+  return {
+    firstStepLabel,
+    finalStepLabel: getFinalStepLabel({
+      status,
+      finalStepStatus,
+      fromAmount,
+      fromTokenSymbol,
+      t,
+    }),
+  };
+};
+
+/**
+ * Computes the optional localized descriptions for the first and final
+ * signature steps, branching on flow.
+ *
+ * sendBundle (two confirmations — gas-token payment): first step (SEND) shows
+ * the destination address; final step (GAS-PAYMENT) has no description.
+ * sendBundle (single confirmation — no gas token): only the final step is
+ * rendered, and it IS the SEND, so the destination address shows on the final
+ * step.
+ * bridge/swap: delegates to {@link getFirstStepDescription} and
+ * {@link getFinalStepDescription}.
+ *
+ * @param options - Configuration object.
+ * @param options.isSendBundleFlow - True when rendering the sendBundle flow.
+ * @param options.needsTwoConfirmations - Whether the flow renders two steps
+ * (true) or a single step (false).
+ * @param options.firstStepStatus - The display status of the first step.
+ * @param options.spenderAddress - The spender contract address (bridge only).
+ * @param options.toAddress - The destination address.
+ * @param options.t - The i18n translation function.
+ * @returns An object containing optional `firstStepDescription` and
+ * `finalStepDescription` strings (either may be `undefined`).
+ */
+export const getStepDescriptions = ({
+  isSendBundleFlow,
+  needsTwoConfirmations,
+  firstStepStatus,
+  spenderAddress,
+  toAddress,
+  t,
+}: {
+  isSendBundleFlow: boolean;
+  needsTwoConfirmations: boolean;
+  firstStepStatus: SignatureStepStatus;
+  spenderAddress?: string;
+  toAddress?: string;
+  t: ReturnType<typeof useI18nContext>;
+}): {
+  firstStepDescription?: string;
+  finalStepDescription?: string;
+} => {
+  if (isSendBundleFlow) {
+    // Two-step sendBundle: destination shows on the first (SEND) step.
+    if (needsTwoConfirmations) {
+      return {
+        firstStepDescription: getFinalStepDescription({ toAddress, t }),
+        finalStepDescription: undefined,
+      };
+    }
+
+    // Single-step sendBundle: only the final step is rendered, and it IS the
+    // SEND, so the destination shows there.
+    return {
+      finalStepDescription: getFinalStepDescription({ toAddress, t }),
+    };
+  }
+
+  return {
+    firstStepDescription: getFirstStepDescription({
+      firstStepStatus,
+      spenderAddress,
+      t,
+    }),
+    finalStepDescription: getFinalStepDescription({ toAddress, t }),
+  };
 };
 
 /**

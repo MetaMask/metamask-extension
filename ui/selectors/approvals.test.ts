@@ -71,6 +71,13 @@ describe('approval selectors', () => {
 
       expect(result).toStrictEqual(mockedState.metamask.approvalFlows);
     });
+
+    it('should return same reference when state has not changed (memoization)', () => {
+      const result1 = getApprovalFlows(mockedState);
+      const result2 = getApprovalFlows(mockedState);
+
+      expect(result1).toBe(result2);
+    });
   });
 
   describe('getPendingApprovals', () => {
@@ -187,13 +194,10 @@ describe('approval selectors', () => {
   });
 
   describe('selectPendingApprovalsForNavigation', () => {
-    it('filters hidden smart transaction status approvals when skip flag is enabled', () => {
+    it('always filters out hidden smart transaction status approvals', () => {
       const state = {
         metamask: {
           ...mockedState.metamask,
-          remoteFeatureFlags: {
-            extensionSkipTransactionStatusPage: true,
-          },
           pendingApprovals: {
             stx: {
               id: 'stx',
@@ -221,45 +225,6 @@ describe('approval selectors', () => {
       };
 
       expect(selectPendingApprovalsForNavigation(state)).toStrictEqual([
-        state.metamask.pendingApprovals.tx,
-      ]);
-    });
-
-    it('keeps smart transaction status approvals when skip flag is disabled', () => {
-      const state = {
-        metamask: {
-          ...mockedState.metamask,
-          remoteFeatureFlags: {
-            extensionSkipTransactionStatusPage: false,
-          },
-          pendingApprovals: {
-            stx: {
-              id: 'stx',
-              origin: 'origin',
-              time: Date.now() - 1,
-              type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-              requestData: {},
-              requestState: {
-                txId: '0x1',
-                smartTransaction: { status: 'pending' },
-              },
-              expectsResult: false,
-            },
-            tx: {
-              id: 'tx',
-              origin: 'origin',
-              time: Date.now(),
-              type: ApprovalType.Transaction,
-              requestData: {},
-              requestState: null,
-              expectsResult: false,
-            },
-          },
-        },
-      };
-
-      expect(selectPendingApprovalsForNavigation(state)).toStrictEqual([
-        state.metamask.pendingApprovals.stx,
         state.metamask.pendingApprovals.tx,
       ]);
     });

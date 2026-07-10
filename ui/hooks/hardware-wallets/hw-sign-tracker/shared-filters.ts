@@ -4,7 +4,11 @@ import type {
 } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HwSignTrackerAction, SignedEventClassifier } from './types';
-import { APPROVAL_TYPES, BRIDGE_TRANSACTION_TYPES, TRADE_TYPES } from './constants';
+import {
+  APPROVAL_TYPES,
+  BRIDGE_TRANSACTION_TYPES,
+  TRADE_TYPES,
+} from './constants';
 
 /**
  * Checks whether a transaction matches the expected sender address and is one
@@ -12,7 +16,7 @@ import { APPROVAL_TYPES, BRIDGE_TRANSACTION_TYPES, TRADE_TYPES } from './constan
  *
  * @param transactionMeta - The transaction metadata to check.
  * @param targetFrom - The expected sender address (lowercased).
- * @param trackedTypes
+ * @param trackedTypes - The set of tracked transaction types.
  * @returns True if the transaction matches.
  */
 export function matchesTx(
@@ -39,7 +43,7 @@ export function matchesTx(
  * @param type - The transaction type.
  * @returns The action to dispatch, or null if the type is not recognized.
  */
-export function classifySignedEvent(
+export function classifySignedTransactionType(
   type: TransactionType,
 ): HwSignTrackerAction | null {
   if (APPROVAL_TYPES.has(type)) {
@@ -59,4 +63,4 @@ export function classifySignedEvent(
  * @returns The classified signature event, or null if unclassifiable.
  */
 export const defaultEventClassifier: SignedEventClassifier = (txMeta) =>
-  txMeta.type ? classifySignedEvent(txMeta.type) : null;
+  txMeta.type ? classifySignedTransactionType(txMeta.type) : null;

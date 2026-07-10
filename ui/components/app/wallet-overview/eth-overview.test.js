@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -9,16 +9,29 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import useMultiPolling from '../../../hooks/useMultiPolling';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockOpenBatchSellExperience = jest.fn();
 
@@ -64,6 +77,17 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
+}));
+
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
+  RampsMetaMaskEntry: {
+    BuySellButton: 'ext_buy_sell_button',
+  },
 }));
 
 const mockGetIntlLocale = getIntlLocale;
@@ -205,9 +229,6 @@ describe('EthOverview', () => {
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
-    },
-    ramps: {
-      buyableChains: defaultBuyableChains,
     },
   };
 
@@ -411,7 +432,7 @@ describe('EthOverview', () => {
       expect(buyButton).toBeInTheDocument();
     });
 
-    it('should have the Buy native token button disabled if chain id is not part of supported buyable chains', () => {
+    it('should keep the Buy native token button enabled on unsupported chains', () => {
       const mockedStoreWithUnbuyableChainId = {
         ...mockStore,
         metamask: {
@@ -434,36 +455,10 @@ describe('EthOverview', () => {
       );
       const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
       expect(buyButton).toBeInTheDocument();
-      expect(buyButton).toBeDisabled();
-    });
-
-    it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
-      const mockedStoreWithUnbuyableChainId = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
-          accountsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
-            },
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithUnbuyableChainId,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-      const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
-      expect(buyButton).toBeInTheDocument();
       expect(buyButton).not.toBeDisabled();
     });
 
-    it('should open the Buy native token URI when clicking on Buy button for a buyable chain ID', async () => {
+    it('should open the in-extension buy flow when clicking on Buy button', async () => {
       const mockedStoreWithBuyableChainId = {
         ...mockStore,
         metamask: {
@@ -490,34 +485,15 @@ describe('EthOverview', () => {
       expect(buyButton).not.toBeDisabled();
 
       fireEvent.click(buyButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            `/buy?metamaskEntry=ext_buy_sell_button`,
-          ),
-        }),
-      );
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
     });
   });
 
   it('sends an event when clicking the Buy button: %s', () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
+    mockTrackEvent.mockClear();
 
     const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <EthOverview />
-      </MetaMetricsContext.Provider>,
-      mockedStore,
-    );
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
 
     const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
     expect(buyButton).toBeInTheDocument();
@@ -525,49 +501,41 @@ describe('EthOverview', () => {
     fireEvent.click(buyButton);
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        account_type: mockEvmAccount1.type,
-        chain_id: CHAIN_IDS.MAINNET,
-        location: 'Home',
-        text: 'Buy',
-        // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
-        token_symbol: expect.any(Object),
-      },
-    });
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NavBuyButtonClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Navigation,
+          account_type: mockEvmAccount1.type,
+          chain_id: CHAIN_IDS.MAINNET,
+          location: 'Home',
+          text: 'Buy',
+          token_symbol: expect.any(Object),
+        }),
+      }),
+    );
   });
 
   it('sends an event when clicking the Batch Sell button', () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
+    mockTrackEvent.mockClear();
 
     const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <EthOverview />
-      </MetaMetricsContext.Provider>,
-      mockedStore,
-    );
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
 
     fireEvent.click(queryByTestId('eth-overview-more'));
     fireEvent.click(queryByTestId('eth-overview-batchSell'));
 
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.NavBatchSellButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        text: 'Batch Sell',
-        location: 'home',
-        chain_id: CHAIN_IDS.MAINNET,
-      },
-    });
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NavBatchSellButtonClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Navigation,
+          text: 'Batch Sell',
+          location: 'home',
+          chain_id: CHAIN_IDS.MAINNET,
+        }),
+      }),
+    );
   });
 
   describe('Disabled buttons when an account cannot sign transactions', () => {
@@ -625,13 +593,7 @@ describe('EthOverview', () => {
     // the right `token_symbol`.
     CHAIN_IDS.SEPOLIA,
   ])('sends an event when clicking the Send button: %s', (chainId) => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
+    mockTrackEvent.mockClear();
     const mockedStoreWithSpecificChainId = {
       ...mockStore,
       metamask: {
@@ -643,12 +605,7 @@ describe('EthOverview', () => {
     const mockedStore = configureMockStore([thunk])(
       mockedStoreWithSpecificChainId,
     );
-    const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <EthOverview />
-      </MetaMetricsContext.Provider>,
-      mockedStore,
-    );
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
 
     const sendButton = queryByTestId(ETH_OVERVIEW_SEND);
     expect(sendButton).toBeInTheDocument();
@@ -657,18 +614,17 @@ describe('EthOverview', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
-      {
-        event: MetaMetricsEventName.SendStarted,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
+      expect.objectContaining({
+        name: MetaMetricsEventName.SendStarted,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Navigation,
           account_type: mockEvmAccount1.type,
           chain_id: chainId,
           location: 'Home',
           text: 'Send',
           token_symbol: 'ETH',
-        },
-      },
-      expect.any(Object),
+        }),
+      }),
     );
   });
 });

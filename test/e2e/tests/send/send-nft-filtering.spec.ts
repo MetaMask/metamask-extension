@@ -49,9 +49,9 @@ describe('Send NFT - Filtering', function () {
         const sendPage = new SendPage(driver);
         await sendPage.checkPageIsLoaded();
         await sendPage.selectNft('Test Dapp NFTs #1');
-        await sendPage.fillRecipient(
-          '0x1234567890123456789012345678901234567890',
-        );
+        await sendPage.fillRecipient({
+          recipientAddress: '0x1234567890123456789012345678901234567890',
+        });
       },
     );
   });

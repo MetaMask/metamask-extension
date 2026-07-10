@@ -27,6 +27,7 @@ import { updateTransactionGasFees } from '../../store/actions/update-transaction
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { EMPTY_ARRAY } from '../../selectors/shared';
+import { getIsUnlocked } from './base-selectors';
 
 const initialState = {
   isInitialized: false,
@@ -49,6 +50,7 @@ const initialState = {
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
+  hasSeenOnboardingCompletionPage: false,
   knownMethodData: {},
   use4ByteResolution: true,
   analyticsId: null,
@@ -163,11 +165,19 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.SET_HAS_SEEN_ONBOARDING_COMPLETION_PAGE: {
+      return {
+        ...metamaskState,
+        hasSeenOnboardingCompletionPage: true,
+      };
+    }
+
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
         isInitialized: false,
         completedOnboarding: false,
+        hasSeenOnboardingCompletionPage: false,
         firstTimeFlowType: null,
         isUnlocked: false,
         onboardingTabs: {},
@@ -490,6 +500,11 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
+
+export function getHasSeenOnboardingCompletionPage(state) {
+  return state.metamask.hasSeenOnboardingCompletionPage;
+}
+
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }
@@ -568,4 +583,24 @@ export function getOpenedWithSidepanel(state) {
  */
 export function getPasskeyAutoUnlockSuppressed(state) {
   return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
+}
+
+/**
+ * True when a locked user should unlock before resuming the onboarding
+ * completion page (return visit without tapping Done).
+ *
+ * @param {object} state - MetaMask state tree
+ * @returns {boolean} Whether the user must unlock before onboarding completion
+ */
+export function getShouldUnlockBeforeOnboardingCompletion(state) {
+  const { hasSeenOnboardingCompletionPage, completedOnboarding } =
+    state.metamask;
+
+  return (
+    hasSeenOnboardingCompletionPage &&
+    !completedOnboarding &&
+    !getIsUnlocked(state) &&
+    getIsInitialized(state) &&
+    !getIsWalletResetInProgress(state)
+  );
 }

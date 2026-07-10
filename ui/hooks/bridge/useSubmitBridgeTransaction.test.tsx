@@ -3,15 +3,15 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
-import { createMemoryRouterWrapper } from '../../../../test/lib/render-helpers-navigate';
+import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
-} from '../../../../test/data/bridge/mock-bridge-store';
+} from '../../../test/data/bridge/mock-bridge-store';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
-} from '../../../../test/data/bridge/dummy-quotes';
+} from '../../../test/data/bridge/dummy-quotes';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -99,9 +99,7 @@ const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
 };
 
 jest.mock('../../../shared/lib/selectors/networks', () => {
-  const original = jest.requireActual(
-    '../../../shared/lib/selectors/networks',
-  );
+  const original = jest.requireActual('../../../shared/lib/selectors/networks');
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',
@@ -202,6 +200,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       setBackgroundConnection({
         submitTx: submitTxSpy,
         submitIntent: submitIntentSpy,
+        getLocation: jest.fn().mockResolvedValue('Main View'),
         getStatePatches: jest.fn(),
         setEnabledAllPopularNetworks: jest.fn(),
         resetState: () => mockResetState(),
@@ -226,7 +225,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -279,7 +278,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -330,7 +329,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             },
           ],
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
               "state": {
@@ -406,18 +405,16 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitIntentSpy).toHaveBeenCalledWith({
         quoteResponse: quoteWithIntent,
         accountAddress: expect.any(String),
+        location: 'Main View',
         tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
@@ -452,15 +449,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         );
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
       expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
@@ -503,16 +497,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
         { state: {} },
       );
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(
-        2,
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            stayOnHomePage: true,
-          },
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(2, DEFAULT_ROUTE, {
+        replace: true,
+        state: {
+          stayOnHomePage: true,
         },
-      );
+      });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });

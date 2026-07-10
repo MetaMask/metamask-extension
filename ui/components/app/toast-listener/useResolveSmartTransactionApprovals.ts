@@ -8,7 +8,7 @@ import { mapSmartTransactionToastStatus } from './useSmartTransactionToasts';
 export function useResolveSmartTransactionApprovals() {
   const dispatch = useDispatch();
   const transactions = useSelector(selectSmartTransactions);
-  const resolvedApprovalIdsRef = useRef<Set<string>>(new Set());
+  const resolvedTxIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     for (const tx of transactions) {
@@ -21,11 +21,11 @@ export function useResolveSmartTransactionApprovals() {
         continue;
       }
 
-      if (resolvedApprovalIdsRef.current.has(tx.approvalId)) {
+      if (resolvedTxIdsRef.current.has(tx.txId)) {
         continue;
       }
 
-      resolvedApprovalIdsRef.current.add(tx.approvalId);
+      resolvedTxIdsRef.current.add(tx.txId);
       dispatch(resolvePendingApproval(tx.approvalId, true));
     }
   }, [dispatch, transactions]);
