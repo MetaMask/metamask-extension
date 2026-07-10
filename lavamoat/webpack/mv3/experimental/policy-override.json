@@ -171,11 +171,6 @@
         "@noble/hashes": true
       }
     },
-    "@mui/system>@mui/utils": {
-      "packages": {
-        "prop-types": true
-      }
-    },
     "@solana/addresses>@solana/assertions": {
       "globals": {
         "crypto": true,
