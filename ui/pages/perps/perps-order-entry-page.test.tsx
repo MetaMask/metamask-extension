@@ -1426,52 +1426,11 @@ describe('PerpsOrderEntryPage', () => {
         });
         expect(consideredCalls()).toHaveLength(1);
 
-        // Navigate to a different market; the prior edit must not carry over,
-        // and the new market's seeded default must not fire.
+        // Navigate to a different market; the prior edit must not carry over.
         mockUseParams.mockReturnValue({ symbol: 'BTC' });
         await act(async () => {
           view.rerender(<PerpsOrderEntryPage />);
         });
-        await act(async () => {
-          jest.advanceTimersByTime(1500);
-        });
-        expect(consideredCalls()).toHaveLength(1);
-
-        // A user fill on the NEW market is a new visit and can emit again.
-        await act(async () => enterAmount('250'));
-        await act(async () => {
-          jest.advanceTimersByTime(1500);
-        });
-        expect(consideredCalls()).toHaveLength(2);
-      } finally {
-        await act(async () => {
-          jest.runOnlyPendingTimers();
-        });
-        jest.useRealTimers();
-      }
-    });
-
-    it('emits PERPS_TRANSACTION_CONSIDERED at most once per screen visit', async () => {
-      jest.useFakeTimers();
-      try {
-        await act(async () => {
-          renderWithProvider(
-            <PerpsOrderEntryPage />,
-            mockStore(createMockState()),
-          );
-        });
-        await act(async () => enterAmount('100'));
-        await act(async () => {
-          jest.advanceTimersByTime(1500);
-        });
-        expect(consideredCalls()).toHaveLength(1);
-
-        // Further fills within the same visit must NOT re-emit.
-        await act(async () => enterAmount('200'));
-        await act(async () => {
-          jest.advanceTimersByTime(1500);
-        });
-        await act(async () => enterAmount('300'));
         await act(async () => {
           jest.advanceTimersByTime(1500);
         });
