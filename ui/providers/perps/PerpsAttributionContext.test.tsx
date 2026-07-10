@@ -7,6 +7,7 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { captureException } from '../../../shared/lib/sentry';
 import {
   PerpsAttributionProvider,
+  resetPerpsSessionAttribution,
   usePerpsAttributionContext,
 } from './PerpsAttributionContext';
 
@@ -34,6 +35,11 @@ function createWrapper(locationSearch?: string) {
 describe('PerpsAttributionContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetPerpsSessionAttribution();
+  });
+
+  afterEach(() => {
+    resetPerpsSessionAttribution();
   });
 
   it('throws when used outside PerpsAttributionProvider', () => {

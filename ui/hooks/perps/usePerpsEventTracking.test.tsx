@@ -16,7 +16,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
+import {
+  PerpsAttributionProvider,
+  resetPerpsSessionAttribution,
+} from '../../providers/perps/PerpsAttributionContext';
 import { usePerpsEventTracking } from './usePerpsEventTracking';
 
 const mockTrackEvent = jest.fn();
@@ -46,11 +49,14 @@ jest.mock('../../../shared/lib/sentry', () => ({
 describe('usePerpsEventTracking', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetPerpsSessionAttribution();
   });
 
   afterEach(() => {
-    // Reset the hash so window.location-based attribution never leaks tests.
+    // Reset the hash + session store so location-based attribution never leaks
+    // between tests.
     window.location.hash = '';
+    resetPerpsSessionAttribution();
   });
 
   describe('imperative API', () => {
@@ -462,6 +468,51 @@ describe('usePerpsEventTracking', () => {
       );
 
       await waitFor(() => expect(mockTrackEvent).toHaveBeenCalledTimes(1));
+      const { properties } = mockTrackEvent.mock.calls[0][0];
+      expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('deeplink');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_MEDIUM]).toBe('push');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN]).toBe('q3_launch');
+    });
+  });
+
+  // Cross-provider session attribution: a deeplink to the wallet perps tab
+  // mounts one provider (utm in its search); navigating deeper into /perps/*
+  // mounts a FRESH provider on a bare URL. The second instance must inherit the
+  // session's utm so its client screen view still carries it (the hash no longer
+  // has utm on the in-app route).
+  describe('cross-provider session utm inheritance', () => {
+    function Emitter() {
+      usePerpsEventTracking({
+        eventName: MetaMetricsEventName.PerpsScreenViewed,
+        conditions: true,
+        properties: {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'asset_details',
+          [PERPS_EVENT_PROPERTY.SOURCE]: 'market_list',
+        },
+      });
+      return null;
+    }
+
+    it('a fresh provider on a bare URL inherits the entry-session utm', () => {
+      // Provider A — deeplink entry with utm (e.g. wallet perps tab).
+      const entry = render(
+        <PerpsAttributionProvider locationSearch="?source=deeplink&utm_source=cdp_test&utm_medium=push&utm_campaign=q3_launch">
+          <div />
+        </PerpsAttributionProvider>,
+      );
+      // User navigates deeper — the entry provider unmounts.
+      entry.unmount();
+
+      // Provider B — a new instance on a bare in-app URL (no utm in the search
+      // or the hash) emits a screen view.
+      render(
+        <PerpsAttributionProvider locationSearch="">
+          <Emitter />
+        </PerpsAttributionProvider>,
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       const { properties } = mockTrackEvent.mock.calls[0][0];
       expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('deeplink');
       expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');
