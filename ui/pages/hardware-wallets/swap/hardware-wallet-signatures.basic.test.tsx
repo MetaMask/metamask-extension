@@ -29,6 +29,24 @@ jest.mock('./generic-hardware-wallet-animation', () => ({
   default: () => <div data-testid="generic-hardware-wallet-animation" />,
 }));
 
+jest.mock('../../../components/app/qr-hardware-popover/base-qr-reader', () => {
+  const MockBaseQrReader = () => <div data-testid="mock-base-qr-reader" />;
+  MockBaseQrReader.displayName = 'MockBaseQrReader';
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: MockBaseQrReader,
+    UrType: {
+      CryptoHdkey: 'crypto-hdkey',
+      CryptoAccount: 'crypto-account',
+      EthSignature: 'eth-signature',
+    },
+    PAIRING_EXPECTED_UR_TYPES: ['crypto-hdkey', 'crypto-account'],
+    SIGNING_EXPECTED_UR_TYPES: ['eth-signature'],
+    CBOR_ENCODING: 'hex',
+  };
+});
+
 const mockUseHardwareWalletState = jest.fn();
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 
