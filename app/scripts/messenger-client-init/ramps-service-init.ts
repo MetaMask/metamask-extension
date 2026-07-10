@@ -20,7 +20,7 @@ export const RampsServiceInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     environment: getRampsEnvironment(),
     context: 'extension',
-    fetch: global.fetch.bind(global),
+    fetch: globalThis.fetch.bind(globalThis),
   });
 
   return { messengerClient, persistedStateKey: null, memStateKey: null };
