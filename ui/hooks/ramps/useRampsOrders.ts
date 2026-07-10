@@ -44,9 +44,7 @@ export function useRampsOrders(): UseRampsOrdersResult {
   const getOrderById = useCallback(
     (providerOrderId: string) => {
       const orderCode = getInternalOrderCode(providerOrderId);
-      return orders.find(
-        (order) => getInternalOrderCode(order) === orderCode,
-      );
+      return orders.find((order) => getInternalOrderCode(order) === orderCode);
     },
     [orders],
   );
