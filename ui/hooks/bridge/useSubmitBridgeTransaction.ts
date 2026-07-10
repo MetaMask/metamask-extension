@@ -29,7 +29,9 @@ import {
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
+  useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
@@ -37,20 +39,19 @@ import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
-const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
-const APPROVAL_TX_ERROR = 'Approve transaction failed';
-
-export const isAllowanceResetError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(ALLOWANCE_RESET_ERROR);
+type UseSubmitBridgeTransactionOptions = {
+  /**
+   * When true, submit immediately instead of navigating to the hardware-wallet
+   * signing page. Used by the signing page itself. Callers should catch
+   * rejections/failures from `submitBridgeTransaction` — this hook throws on
+   * hardware-wallet reject/fail instead of invoking callbacks.
+   */
+  submitOnHardwareWalletSigningPage?: boolean;
 };
 
-export const isApprovalTxError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(APPROVAL_TX_ERROR);
-};
-
-export default function useSubmitBridgeTransaction() {
+export default function useSubmitBridgeTransaction({
+  submitOnHardwareWalletSigningPage = false,
+}: UseSubmitBridgeTransactionOptions = {}) {
   const navigate = useNavigate();
   const { navigateToBridgePage, navigateToHwSigningPage } =
     useBridgeNavigation();
@@ -70,15 +71,20 @@ export default function useSubmitBridgeTransaction() {
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
+  const { connectionState } = useHardwareWalletState();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
+    options?: { rpcTimeoutMs?: number },
   ) => {
     setIsSubmitting(true);
 
     try {
-      if (isHardwareWalletAccount) {
+      if (
+        isHardwareWalletAccount &&
+        connectionState.status !== ConnectionStatus.Ready
+      ) {
         const isDeviceReady = await ensureDeviceReady();
         if (!isDeviceReady) {
           throw new Error('Hardware wallet device is not ready');
@@ -101,17 +107,30 @@ export default function useSubmitBridgeTransaction() {
           formatChainIdToCaip(quoteResponse.quote.destChainId),
         );
       }
-    } catch {
+    } catch (e) {
       setIsSubmitting(false);
       return;
     }
 
     const intentData = quoteResponse.quote.intent;
 
-    if (hardwareWalletUsed) {
+    if (hardwareWalletUsed && intentData) {
+      const error = new Error(
+        'Hardware wallets cannot submit bridge intent quotes',
+      );
+      captureException(error);
+      dispatch(setWasTxDeclined(true));
+      setIsSubmitting(false);
+      throw error;
+    }
+
+    if (hardwareWalletUsed && !submitOnHardwareWalletSigningPage) {
       navigateToHwSigningPage();
       setIsSubmitting(false);
+      return;
     }
+
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     try {
       const location = await getBridgeLocation();
@@ -126,7 +145,7 @@ export default function useSubmitBridgeTransaction() {
           }),
         );
       } else {
-        await dispatch(
+        const rpcPromise = dispatch(
           submitBridgeTx(
             fromAccount.address,
             quoteResponse,
@@ -143,16 +162,43 @@ export default function useSubmitBridgeTransaction() {
             toToken?.securityData?.type ?? null,
           ),
         );
+
+        if (options?.rpcTimeoutMs) {
+          const timeoutPromise = new Promise<never>((_, reject) => {
+            timeoutId = setTimeout(() => {
+              reject(new Error('Bridge transaction RPC timed out'));
+            }, options.rpcTimeoutMs);
+          });
+          await Promise.race([rpcPromise, timeoutPromise]);
+        } else {
+          await rpcPromise;
+        }
       }
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigateToBridgePage();
-        return;
+        if (!submitOnHardwareWalletSigningPage) {
+          navigateToBridgePage();
+        }
+        throw e;
+      }
+
+      if (hardwareWalletUsed) {
+        dispatch(setWasTxDeclined(true));
+        throw e;
       }
     } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
       setIsSubmitting(false);
+    }
+
+    // Stay on the hardware-wallet signing page after submit; progress is
+    // tracked by the signing-page state machine / sign tracker.
+    if (submitOnHardwareWalletSigningPage) {
+      return;
     }
 
     navigate(DEFAULT_ROUTE, {

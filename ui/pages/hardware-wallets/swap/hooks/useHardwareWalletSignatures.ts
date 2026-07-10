@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import log from 'loglevel';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { getIsStxEnabled } from '../../../../ducks/bridge/selectors';
@@ -114,12 +115,12 @@ function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
  * Terminal signature state machine statuses — the flow has finished (either
  * successfully or due to an error) and no further signing is expected.
  */
-const TERMINAL_STATUSES = new Set<HardwareWalletSignatureStatus>([
+const TERMINAL_STATUSES: readonly HardwareWalletSignatureStatus[] = [
   HardwareWalletSignatureStatus.Submitted,
   HardwareWalletSignatureStatus.Failed,
   HardwareWalletSignatureStatus.Rejected,
   HardwareWalletSignatureStatus.Disconnected,
-]);
+];
 
 /**
  * Hardware wallet connection statuses that permit a retry. The device must be
@@ -234,9 +235,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   const hasTrackedPageView = useRef(false);
   const retryGenerationRef = useRef(0);
-  // Guards the HW callbacks (Submitted / Rejected / Failed) so that errors
-  // produced by the OLD submission during cancelCurrentBatch() don't race
-  // with the retry and prematurely transition the state machine.
+  // Guards HW reject/fail dispatches so errors from the OLD submission during
+  // cancelCurrentBatch() don't race with the retry and prematurely transition
+  // the state machine.
   const isRetryingRef = useRef(false);
   // Tracks whether the user has retried at least once. Once true, the
   // "Resend transaction" button becomes eligible after SIGNATURE_STUCK_TIMEOUT_MS.
@@ -274,16 +275,10 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
     try {
       await dispatch(updateAndApproveTx(sendBundleTxMeta, true, ''));
-      if (isRetryingRef.current) {
-        return;
-      }
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
-      if (isRetryingRef.current) {
-        return;
-      }
       if (isUserRejectedHardwareWalletError(error)) {
         dispatchSignatureEvent({
           type: HardwareWalletSignatureEvent.TransactionRejected,
@@ -304,7 +299,49 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     sendBundleTxMeta,
   ]);
 
-  const { submitBridgeTransaction } = useSubmitBridgeTransaction();
+  const { submitBridgeTransaction: submitBridgeTransactionBase } =
+    useSubmitBridgeTransaction({
+      submitOnHardwareWalletSigningPage: true,
+    });
+
+  /**
+   * Wraps bridge submission so hardware-wallet reject/fail outcomes update the
+   * signature state machine. `useSubmitBridgeTransaction` throws on those
+   * outcomes; we translate them here (unless a retry is in flight, so errors
+   * from the old batch during `cancelCurrentBatch` cannot race the new attempt).
+   */
+  const submitBridgeTransaction = useCallback(
+    async (
+      quoteResponse: QuoteResponse & QuoteMetadata,
+      options?: { rpcTimeoutMs?: number },
+    ) => {
+      try {
+        await submitBridgeTransactionBase(quoteResponse, options);
+      } catch (error) {
+        if (!isRetryingRef.current) {
+          if (isUserRejectedHardwareWalletError(error)) {
+            log.debug(
+              '[HW-Batch] submitBridgeTransaction rejected, current state:',
+              signatureState.status,
+            );
+            dispatchSignatureEvent({
+              type: HardwareWalletSignatureEvent.TransactionRejected,
+            });
+          } else {
+            dispatchSignatureEvent({
+              type: HardwareWalletSignatureEvent.TransactionFailed,
+            });
+          }
+        }
+        throw error;
+      }
+    },
+    [
+      dispatchSignatureEvent,
+      signatureState.status,
+      submitBridgeTransactionBase,
+    ],
+  );
 
   /**
    * Recreates the sendBundle transaction batch after a rejection or failure.
@@ -339,7 +376,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
     // 1. Reject the old approval (cleanup) — may already be resolved.
     if (currentApprovalRequestId) {
-      cleanupPendingApproval(dispatch, currentApprovalRequestId);
+      await cleanupPendingApproval(dispatch, currentApprovalRequestId);
     }
 
     // 2. Find the network client for this chain.
@@ -475,12 +512,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     stepTrackingResetKey: `${activeSigningRequestId}:${retryGenerationRef.current}`,
   });
 
-  useHwSwapNavigation({
-    signatureState,
-    returnRoute: isSendBundleFlow
-      ? (sendBundleState?.returnRoute ?? DEFAULT_ROUTE)
-      : undefined,
-  });
+  useHwSwapNavigation({ signatureState });
 
   const { cancelCurrentBatch } = useHwSignTracker(
     fromAddress,
@@ -503,7 +535,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   useEffect(() => {
     const isAwaiting = isAwaitingSignature(signatureState.status);
-    const isTerminal = TERMINAL_STATUSES.has(signatureState.status);
+    const isTerminal = TERMINAL_STATUSES.includes(signatureState.status);
 
     if (hasStartedHardwareWalletSubmission.current && isAwaiting) {
       setSigningInProgress(true);
@@ -779,7 +811,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       // Reject the pending approval so the confirmation is cleaned up and
       // does not linger after navigating back to the send flow.
       if (currentApprovalRequestId) {
-        cleanupPendingApproval(dispatch, currentApprovalRequestId);
+        await cleanupPendingApproval(dispatch, currentApprovalRequestId);
       }
       navigate(sendBundleState?.returnRoute ?? DEFAULT_ROUTE, {
         replace: true,
