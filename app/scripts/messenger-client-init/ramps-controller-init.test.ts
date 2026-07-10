@@ -254,6 +254,17 @@ describe('RampsControllerInit', () => {
     ).toThrow(RAMPS_NETWORK_ACCESS_DENIED_MESSAGE);
   });
 
+  it('stopRampsLifecycle stops polling when network access is allowed', async () => {
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(mockStartOrderPolling).toHaveBeenCalled();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  });
+
   it('stops order polling when basic functionality is disabled', async () => {
     const { initMessenger, setUseExternalServices } = createInitMessenger({
       completedOnboarding: true,

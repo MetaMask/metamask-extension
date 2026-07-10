@@ -144,7 +144,7 @@ export const RampsControllerInit: MessengerClientInitFunction<
     api: {
       ...getRampsControllerApi(messengerClient),
       startRampsLifecycle: tryStartRampsLifecycle,
-      stopRampsLifecycle: tryStopRampsLifecycle,
+      stopRampsLifecycle,
     },
   };
 };
