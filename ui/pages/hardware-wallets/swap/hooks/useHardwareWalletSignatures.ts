@@ -114,12 +114,12 @@ function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
  * Terminal signature state machine statuses — the flow has finished (either
  * successfully or due to an error) and no further signing is expected.
  */
-const TERMINAL_STATUSES: readonly HardwareWalletSignatureStatus[] = [
+const TERMINAL_STATUSES = new Set<HardwareWalletSignatureStatus>([
   HardwareWalletSignatureStatus.Submitted,
   HardwareWalletSignatureStatus.Failed,
   HardwareWalletSignatureStatus.Rejected,
   HardwareWalletSignatureStatus.Disconnected,
-];
+]);
 
 /**
  * Hardware wallet connection statuses that permit a retry. The device must be
@@ -339,7 +339,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
     // 1. Reject the old approval (cleanup) — may already be resolved.
     if (currentApprovalRequestId) {
-      await cleanupPendingApproval(dispatch, currentApprovalRequestId);
+      cleanupPendingApproval(dispatch, currentApprovalRequestId);
     }
 
     // 2. Find the network client for this chain.
@@ -503,7 +503,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   useEffect(() => {
     const isAwaiting = isAwaitingSignature(signatureState.status);
-    const isTerminal = TERMINAL_STATUSES.includes(signatureState.status);
+    const isTerminal = TERMINAL_STATUSES.has(signatureState.status);
 
     if (hasStartedHardwareWalletSubmission.current && isAwaiting) {
       setSigningInProgress(true);
@@ -779,7 +779,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       // Reject the pending approval so the confirmation is cleaned up and
       // does not linger after navigating back to the send flow.
       if (currentApprovalRequestId) {
-        await cleanupPendingApproval(dispatch, currentApprovalRequestId);
+        cleanupPendingApproval(dispatch, currentApprovalRequestId);
       }
       navigate(sendBundleState?.returnRoute ?? DEFAULT_ROUTE, {
         replace: true,
