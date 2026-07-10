@@ -34,6 +34,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
         ],
         "destAsset": {
           "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          "assetId": "eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
           "chainId": 42161,
           "coinKey": "USDC",
           "decimals": 6,
@@ -50,6 +51,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             "amount": "96250",
             "asset": {
               "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "assetId": "eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "chainId": 1,
               "coinKey": "USDC",
               "decimals": 6,
@@ -61,9 +63,11 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             },
           },
         },
+        "minDestTokenAmount": "10876521",
         "requestId": "0cd5caf6-9844-465b-89ad-9c89b639f432",
         "srcAsset": {
           "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "assetId": "eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
           "chainId": 1,
           "coinKey": "USDC",
           "decimals": 6,
@@ -81,6 +85,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             "destAmount": "10876521",
             "destAsset": {
               "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+              "assetId": "eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
               "chainId": 42161,
               "coinKey": "USDC",
               "decimals": 6,
@@ -99,6 +104,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             "srcAmount": "10903750",
             "srcAsset": {
               "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "assetId": "eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "chainId": 1,
               "coinKey": "USDC",
               "decimals": 6,
@@ -194,6 +200,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
         ],
         "destAsset": {
           "address": "0x0000000000000000000000000000000000000000",
+          "assetId": "eip155:42161/slip44:60",
           "chainId": 42161,
           "coinKey": "ETH",
           "decimals": 18,
@@ -210,6 +217,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             "amount": "43750000000000",
             "asset": {
               "address": "0x0000000000000000000000000000000000000000",
+              "assetId": "eip155:10/slip44:60",
               "chainId": 10,
               "coinKey": "ETH",
               "decimals": 18,
@@ -221,9 +229,11 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             },
           },
         },
+        "minDestTokenAmount": "4927504629714929",
         "requestId": "be448070-7849-4d14-bb35-8dcdaf7a4d69",
         "srcAsset": {
           "address": "0x0000000000000000000000000000000000000000",
+          "assetId": "eip155:10/slip44:60",
           "chainId": 10,
           "coinKey": "ETH",
           "decimals": 18,
@@ -241,6 +251,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             "destAmount": "4927504629714929",
             "destAsset": {
               "address": "0x0000000000000000000000000000000000000000",
+              "assetId": "eip155:42161/slip44:60",
               "chainId": 42161,
               "coinKey": "ETH",
               "decimals": 18,
@@ -259,6 +270,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             "srcAmount": "4956250000000000",
             "srcAsset": {
               "address": "0x0000000000000000000000000000000000000000",
+              "assetId": "eip155:10/slip44:60",
               "chainId": 10,
               "coinKey": "ETH",
               "decimals": 18,

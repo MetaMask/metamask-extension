@@ -403,7 +403,7 @@ export const getBatchSellQuotesValidationErrors = createDeepEqualSelector(
     (state: BridgeAppState, params: { requestCount: number }) =>
       getBatchSellQuotes(state, params),
     getPriceImpactThresholds,
-    (state: BridgeAppState) => isHardwareWallet(state as never),
+    (state: BridgeAppState) => isHardwareWallet(state),
     ({ metamask }: BridgeAppState) =>
       selectMinimumBalanceForRentExemptionInSOL(metamask),
   ],
