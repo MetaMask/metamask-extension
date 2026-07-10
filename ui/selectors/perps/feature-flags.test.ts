@@ -4,6 +4,7 @@ import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
   getIsPerpsExperienceAvailable,
+  getIsPerpsShowFullAssetNamesEnabled,
   getIsPerpsTerminalBackendEnabled,
   getIsVipProgramEnabled,
 } from './feature-flags';
@@ -181,6 +182,60 @@ describe('Perps Feature Flags', () => {
         expect(getIsPerpsExperienceAvailable(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0-beta.1');
       });
+    });
+  });
+
+  describe('getIsPerpsShowFullAssetNamesEnabled', () => {
+    it('returns false when the perpsShowFullAssetNames flag is absent (default OFF)', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+      expect(getIsPerpsShowFullAssetNamesEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns false when the flag is disabled', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsShowFullAssetNames: {
+              enabled: false,
+              minimumVersion: '0.0.0',
+            },
+          },
+        },
+      };
+      expect(getIsPerpsShowFullAssetNamesEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns true when enabled and the version check passes', () => {
+      semverGteMock.mockReturnValue(true);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsShowFullAssetNames: {
+              enabled: true,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+      expect(getIsPerpsShowFullAssetNamesEnabled(state)).toBe(true);
+      expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.0.0');
+    });
+
+    it('returns false when enabled but the version check fails', () => {
+      semverGteMock.mockReturnValue(false);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsShowFullAssetNames: {
+              enabled: true,
+              minimumVersion: '99.0.0',
+            },
+          },
+        },
+      };
+      expect(getIsPerpsShowFullAssetNamesEnabled(state)).toBe(false);
     });
   });
 
