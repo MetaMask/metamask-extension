@@ -117,8 +117,11 @@ export const EditGasFeesRow = ({
     !isGasFeeSponsored;
   const shouldShowPrimaryFiatValue =
     showFiat && hasFiatValue && !showAdvancedDetails && !isGasFeeSponsored;
+  // Only ever show the computed added-protection surcharge, or a $0.00
+  // placeholder when it could not be determined. Never fall back to the
+  // full network fee, which would mislabel the entire fee as the surcharge.
   const addedProtectionFeeDisplay = showAddedProtectionFee
-    ? addedProtectionFeeFiat || fiatFee || fiatFormatter(0)
+    ? addedProtectionFeeFiat || fiatFormatter(0)
     : null;
 
   return (

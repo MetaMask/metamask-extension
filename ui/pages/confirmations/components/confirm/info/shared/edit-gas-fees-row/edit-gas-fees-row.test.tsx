@@ -159,6 +159,32 @@ describe('<EditGasFeesRow />', () => {
     ).toBeInTheDocument();
   });
 
+  it('never falls back to the full network fee for the added protection copy', () => {
+    const { getByTestId, getByText } = render({
+      addedProtectionFeeFiat: undefined,
+      fiatFee: '$12.34',
+      showAddedProtectionFee: true,
+    });
+
+    expect(getByTestId('added-protection-network-fee')).toBeInTheDocument();
+    expect(
+      getByText(
+        messages.addedProtectionIncludesNetworkFee.message.replace(
+          '$1',
+          '$0.00',
+        ),
+      ),
+    ).toBeInTheDocument();
+    expect(() =>
+      getByText(
+        messages.addedProtectionIncludesNetworkFee.message.replace(
+          '$1',
+          '$12.34',
+        ),
+      ),
+    ).toThrow();
+  });
+
   it('does not renders edit gas fee button for quote suggested swap', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
