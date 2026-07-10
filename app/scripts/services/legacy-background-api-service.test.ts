@@ -12,7 +12,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { add0x, hexToBytes } from '@metamask/utils';
+import { add0x, hexToBytes, type Hex } from '@metamask/utils';
 import {
   EncAccountDataType,
   SecretType,
@@ -33,11 +33,15 @@ import {
 } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
+import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
+import { DecodedTransactionDataSource } from '../../../shared/types/transaction-decode';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import { decodeTransactionData } from '../lib/transaction/decode/util';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -57,6 +61,9 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 );
 
 jest.mock('../lib/transaction/sentinel-api');
+jest.mock('../lib/transaction/transaction-relay');
+jest.mock('../lib/transaction/decode/util');
+jest.mock('../../../shared/lib/sentry');
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -534,6 +541,44 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('checkDelegationDisabled', () => {
+    it('performs an eth_call against the delegation manager and returns the decoded result', async () => {
+      const delegationManagerAddress: Hex =
+        '0x1234567890123456789012345678901234567890';
+      const delegationHash: Hex = `0x${'0'.repeat(63)}1`;
+      const mockRequest = jest
+        .fn()
+        .mockResolvedValue(
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+        );
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({
+            provider: { request: mockRequest },
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkDelegationDisabled',
+          delegationManagerAddress,
+          delegationHash,
+          'networkClientId',
+        );
+
+        expect(mockRequest).toHaveBeenCalledWith({
+          method: 'eth_call',
+          params: [
+            { to: delegationManagerAddress, data: expect.any(String) },
+            'latest',
+          ],
+        });
+        expect(result).toBe(true);
+      });
+    });
+  });
+
   describe('getNextNonce', () => {
     it('returns the next nonce and releases the nonce lock', async () => {
       await withService(async ({ rootMessenger }) => {
@@ -598,6 +643,47 @@ describe('LegacyBackgroundApiService', () => {
             to: '0x123',
           }),
         ).rejects.toThrow('No network client available for gas estimation');
+      });
+    });
+  });
+
+  describe('decodeTransactionData', () => {
+    it('decodes transaction data using the selected network client provider', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const provider = { request: jest.fn() };
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            selectedNetworkClientId: 'networkClientId',
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ provider }),
+        );
+
+        const decoded = {
+          data: [],
+          source: DecodedTransactionDataSource.FourByte,
+        };
+        jest.mocked(decodeTransactionData).mockResolvedValue(decoded);
+
+        const request = {
+          transactionData: '0xabc',
+          contractAddress: '0x123',
+          chainId: '0x1',
+        } as const;
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:decodeTransactionData',
+          request,
+        );
+
+        expect(decodeTransactionData).toHaveBeenCalledWith({
+          ...request,
+          provider,
+        });
+        expect(result).toStrictEqual(decoded);
       });
     });
   });
@@ -3381,6 +3467,49 @@ describe('LegacyBackgroundApiService', () => {
         expect(() => jest.runAllTimers()).toThrow(
           expect.objectContaining({ name: 'TestError', message: 'boom' }),
         );
+      });
+    });
+  });
+
+  describe('captureTestError', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('captures a TestError with the given message from a timeout handler', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.call(
+          'LegacyBackgroundApiService:captureTestError',
+          'boom',
+        );
+
+        jest.runAllTimers();
+
+        expect(captureException).toHaveBeenCalledWith(
+          expect.objectContaining({ name: 'TestError', message: 'boom' }),
+        );
+      });
+    });
+  });
+
+  describe('isRelaySupported', () => {
+    const isRelaySupportedMock = jest.mocked(isRelaySupported);
+
+    it('delegates to the transaction relay lib and returns its result', async () => {
+      isRelaySupportedMock.mockResolvedValue(true);
+
+      await withService(async ({ rootMessenger }) => {
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:isRelaySupported',
+          '0x1',
+        );
+
+        expect(isRelaySupportedMock).toHaveBeenCalledWith('0x1');
+        expect(result).toBe(true);
       });
     });
   });
