@@ -42,6 +42,19 @@ function shouldUseDefaultLinkNavigation(
   );
 }
 
+function getClientRouteFromExtensionLinkRoute(
+  extensionLinkRoute: string,
+): string | undefined {
+  if (extensionLinkRoute === 'home.html') {
+    return '/';
+  }
+
+  const [, hashRoute] =
+    /^home\.html#(\/.*)$/u.exec(extensionLinkRoute) ?? [];
+
+  return hashRoute && isInternalRouteHref(hashRoute) ? hashRoute : undefined;
+}
+
 const useAnalyticEventCallback = (props: {
   id: string;
   type: string;
@@ -88,16 +101,19 @@ export const ExtensionLinkButton = (props: {
   }
 
   const href = `/${extensionLink.extensionLinkRoute}`;
+  const clientRoute = getClientRouteFromExtensionLinkRoute(
+    extensionLink.extensionLinkRoute,
+  );
 
   const onClick: React.MouseEventHandler<HTMLElement> = (event) => {
     analyticCallback();
 
-    if (shouldUseDefaultLinkNavigation(event)) {
+    if (!clientRoute || shouldUseDefaultLinkNavigation(event)) {
       return;
     }
 
     event.preventDefault();
-    navigate(href);
+    navigate(clientRoute);
   };
 
   return (
@@ -105,6 +121,7 @@ export const ExtensionLinkButton = (props: {
       variant={ButtonVariant.Primary}
       text={extensionLink.extensionLinkText}
       href={href}
+      isExternal={!clientRoute}
       onClick={onClick}
     />
   );
