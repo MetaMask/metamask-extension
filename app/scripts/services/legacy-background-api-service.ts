@@ -162,6 +162,7 @@ import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/o
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
+import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
   PreferencesControllerSetPasswordForgottenAction,
@@ -213,6 +214,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
+  'isRelaySupported',
   'isSendBundleSupported',
   'markPasswordForgotten',
   'onAccountRemoved',
@@ -1725,5 +1727,15 @@ export class LegacyBackgroundApiService {
       error.name = 'TestError';
       throw error;
     });
+  }
+
+  /**
+   * Determines if the transaction relay supports the given chain.
+   *
+   * @param chainId - The chain ID to check for relay support.
+   * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+   */
+  async isRelaySupported(chainId: Hex): Promise<boolean> {
+    return isRelaySupported(chainId);
   }
 }
