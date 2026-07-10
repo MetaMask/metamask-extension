@@ -48,11 +48,7 @@ import {
 } from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
-import {
-  HardwareDeviceNames,
-  KEYRING_DEVICE_PROPERTY_MAP,
-} from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
+import { KEYRING_DEVICE_PROPERTY_MAP } from '../../shared/constants/hardware-wallets';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util';

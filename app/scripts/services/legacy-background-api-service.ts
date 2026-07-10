@@ -37,10 +37,12 @@ import {
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import {
+  AccountPage,
+  LedgerKeyring,
+} from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
-import { AccountPage } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import {
   TrezorKeyring as TrezorKeyringV2,
