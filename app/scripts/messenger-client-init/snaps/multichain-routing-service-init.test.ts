@@ -124,7 +124,7 @@ describe('withSnapKeyring', () => {
           method: mockRequest.method,
           params: mockRequest.params,
         },
-        id: '',
+        id: expect.any(String), // Random UUID.
       }),
     );
   });
