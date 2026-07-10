@@ -88,6 +88,7 @@ export type ExpectedTransactionParams = {
   value?: string;
 };
 
+/** Options for configuring the hardware wallet signature tracker. */
 export type UseHwSignTrackerOptions = {
   enabled?: boolean;
   useBatchTracking: boolean;

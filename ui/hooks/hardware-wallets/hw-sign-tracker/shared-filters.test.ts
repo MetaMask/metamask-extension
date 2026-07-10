@@ -133,19 +133,3 @@ describe('bundle transaction type constants', () => {
     expect(BUNDLE_TRANSACTION_TYPES.has(TransactionType.simpleSend)).toBe(true);
   });
 });
-
-describe('bundle transaction type constants', () => {
-  it('includes known fee and send transaction types', () => {
-    expect(BUNDLE_FEE_TRANSACTION_TYPES.has(TransactionType.gasPayment)).toBe(
-      true,
-    );
-    expect(BUNDLE_SEND_TRANSACTION_TYPES.has(TransactionType.simpleSend)).toBe(
-      true,
-    );
-    expect(
-      BUNDLE_SEND_TRANSACTION_TYPES.has(TransactionType.tokenMethodTransfer),
-    ).toBe(true);
-    expect(BUNDLE_TRANSACTION_TYPES.has(TransactionType.gasPayment)).toBe(true);
-    expect(BUNDLE_TRANSACTION_TYPES.has(TransactionType.simpleSend)).toBe(true);
-  });
-});

@@ -34,7 +34,6 @@ import {
 } from '../../../../contexts/hardware-wallets';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
-import { isHardwareWalletUserRejection } from '../../../bridge/utils/hardware-wallet-errors';
 import { useHwSignTracker } from '../../../../hooks/hardware-wallets/useHwSignTracker';
 import {
   addTransaction,
@@ -320,7 +319,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         await submitBridgeTransactionBase(quoteResponse, options);
       } catch (error) {
         if (!isRetryingRef.current) {
-          if (isHardwareWalletUserRejection(error)) {
+          if (isUserRejectedHardwareWalletError(error)) {
             log.debug(
               '[HW-Batch] submitBridgeTransaction rejected, current state:',
               signatureState.status,

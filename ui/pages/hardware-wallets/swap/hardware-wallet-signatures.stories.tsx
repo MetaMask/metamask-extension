@@ -11,40 +11,43 @@ import {
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { HardwareConnectionPermissionState } from '../../../contexts/hardware-wallets/types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import mockState from '../../../../test/data/mock-state.json';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  createBridgeMockStore,
+  MOCK_LEDGER_ACCOUNT,
+} from '../../../../test/data/bridge/mock-bridge-store';
 import {
   hwSwapStoryState,
   type HwSwapStoryArgs,
 } from '../../../__mocks__/hardware-wallet-swap/story-state';
 
-/**
- * Stories for the real `HardwareWalletSignatures` component.
- *
- * The component reads its state from hooks that touch Redux, the hardware
- * wallet contexts, and the background. Those I/O hooks are intercepted via the
- * scoped webpack aliases defined in `.storybook/main.js` (pointing at
- * `ui/__mocks__/hardware-wallet-swap/hooks.ts`), which neutralize side effects
- * and drive the component's REAL internal state machine to the status selected
- * in the controls. Everything rendered here — the state machine, the step
- * derivation, the JSX — is the genuine component output.
- */
-
-const CHAIN_ID_MOCK = '0x1';
+const LEDGER_ACCOUNT_GROUP =
+  'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82';
 
 type Args = HwSwapStoryArgs;
 
+/**
+ * Use the same bridge-ready store shape as the unit tests. A thin
+ * `mock-state.json` slice is not enough: selectors such as `getBridgeQuotes`
+ * array-destructure `metamask.quoteRequest`, and `getIsStxEnabled` walks the
+ * full bridge/network selector tree.
+ */
 const createMockStore = () =>
-  configureStore({
-    metamask: {
-      ...mockState.metamask,
-      preferences: {
-        ...mockState.metamask.preferences,
-        useNativeCurrencyAsPrimaryCurrency: false,
+  configureStore(
+    createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromToken: { address: '0x0', symbol: 'ETH', chainId: 'eip155:1' },
+        toToken: { address: '0x1', symbol: 'USDC', chainId: 'eip155:1' },
       },
-      ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
-    },
-  });
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+        accountTree: {
+          selectedAccountGroup: LEDGER_ACCOUNT_GROUP,
+        },
+      },
+    }),
+  );
 
 const metricsValue = {
   trackEvent: () => Promise.resolve(),
