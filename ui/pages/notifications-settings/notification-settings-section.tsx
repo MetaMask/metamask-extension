@@ -238,6 +238,7 @@ const WalletActivitySectionContent = ({
     },
     [
       accountAddresses,
+      getAccountEnabledValue,
       isAccountEnabled,
       listNotifications,
       refetchAccountSettings,
