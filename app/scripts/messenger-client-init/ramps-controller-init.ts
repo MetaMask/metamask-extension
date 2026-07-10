@@ -8,8 +8,9 @@ import type { PreferencesControllerState } from '../controllers/preferences-cont
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
+import { applyRampsNetworkGate } from './ramps-network-gate';
 
-function shouldStartRampsLifecycle(
+function isRampsNetworkAllowed(
   initMessenger: RampsControllerInitMessenger,
 ): boolean {
   const { completedOnboarding } = initMessenger.call(
@@ -42,18 +43,26 @@ function createRampsLifecycleManager(messengerClient: RampsController) {
       });
   };
 
-  return { startRampsLifecycle };
+  const stopRampsLifecycle = (): void => {
+    messengerClient.stopOrderPolling();
+    lifecycleStarted = false;
+  };
+
+  return { startRampsLifecycle, stopRampsLifecycle };
 }
 
 function registerRampsLifecycleSubscriptions(
   initMessenger: RampsControllerInitMessenger,
   tryStartRampsLifecycle: () => void,
+  tryStopRampsLifecycle: () => void,
 ): void {
   initMessenger.subscribe(
     'OnboardingController:stateChange',
     (state: OnboardingControllerState) => {
       if (state.completedOnboarding) {
         tryStartRampsLifecycle();
+      } else {
+        tryStopRampsLifecycle();
       }
     },
   );
@@ -63,6 +72,8 @@ function registerRampsLifecycleSubscriptions(
     (state: PreferencesControllerState) => {
       if (state.useExternalServices) {
         tryStartRampsLifecycle();
+      } else {
+        tryStopRampsLifecycle();
       }
     },
   );
@@ -91,22 +102,37 @@ export const RampsControllerInit: MessengerClientInitFunction<
     state: persistedState.RampsController ?? getDefaultRampsControllerState(),
   });
 
-  const { startRampsLifecycle } = createRampsLifecycleManager(messengerClient);
+  const isNetworkAllowed = () => isRampsNetworkAllowed(initMessenger);
+  applyRampsNetworkGate(messengerClient, isNetworkAllowed);
+
+  const { startRampsLifecycle, stopRampsLifecycle } =
+    createRampsLifecycleManager(messengerClient);
 
   const tryStartRampsLifecycle = (): void => {
-    if (shouldStartRampsLifecycle(initMessenger)) {
+    if (isNetworkAllowed()) {
       startRampsLifecycle();
     }
   };
 
+  const tryStopRampsLifecycle = (): void => {
+    if (!isNetworkAllowed()) {
+      stopRampsLifecycle();
+    }
+  };
+
   tryStartRampsLifecycle();
-  registerRampsLifecycleSubscriptions(initMessenger, tryStartRampsLifecycle);
+  registerRampsLifecycleSubscriptions(
+    initMessenger,
+    tryStartRampsLifecycle,
+    tryStopRampsLifecycle,
+  );
 
   return {
     messengerClient,
     api: {
       ...getRampsControllerApi(messengerClient),
       startRampsLifecycle: tryStartRampsLifecycle,
+      stopRampsLifecycle: tryStopRampsLifecycle,
     },
   };
 };

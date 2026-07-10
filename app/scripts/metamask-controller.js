@@ -1785,6 +1785,7 @@ export default class MetamaskController extends EventEmitter {
           console.error(error);
         });
     }
+    this.messengerClientApi.stopRampsLifecycle?.();
   }
 
   /**
@@ -1922,6 +1923,17 @@ export default class MetamaskController extends EventEmitter {
               ?.catch((error) => {
                 console.error(error);
               });
+          }
+        }
+        if (
+          prev !== curr &&
+          this.messengerClientApi.startRampsLifecycle &&
+          this.messengerClientApi.stopRampsLifecycle
+        ) {
+          if (curr) {
+            this.messengerClientApi.startRampsLifecycle?.();
+          } else {
+            this.messengerClientApi.stopRampsLifecycle?.();
           }
         }
         return true;

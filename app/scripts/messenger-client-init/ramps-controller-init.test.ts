@@ -20,28 +20,38 @@ import {
 } from './messengers';
 import { RampsControllerInit } from './ramps-controller-init';
 
+import { RAMPS_NETWORK_ACCESS_DENIED_MESSAGE } from './ramps-network-gate';
+
+const mockRampsController = {
+  init: jest.fn().mockResolvedValue(undefined),
+  getCountries: jest.fn(),
+  startOrderPolling: jest.fn(),
+  stopOrderPolling: jest.fn(),
+  setUserRegion: jest.fn(),
+  setSelectedToken: jest.fn(),
+  setSelectedProvider: jest.fn(),
+  setSelectedPaymentMethod: jest.fn(),
+  getTokens: jest.fn(),
+  getProviders: jest.fn(),
+  getPaymentMethods: jest.fn(),
+  getQuotes: jest.fn(),
+  getBuyWidgetData: jest.fn(),
+  addPrecreatedOrder: jest.fn(),
+  addOrder: jest.fn(),
+  removeOrder: jest.fn(),
+  getOrder: jest.fn(),
+  getOrderFromCallback: jest.fn(),
+};
+
+let mockInit: jest.Mock;
+let mockStartOrderPolling: jest.Mock;
+let mockStopOrderPolling: jest.Mock;
+
 jest.mock('@metamask/ramps-controller', () => {
   const actual = jest.requireActual('@metamask/ramps-controller');
   return {
     ...actual,
-    RampsController: jest.fn().mockImplementation(() => ({
-      init: jest.fn().mockResolvedValue(undefined),
-      startOrderPolling: jest.fn(),
-      setUserRegion: jest.fn(),
-      setSelectedToken: jest.fn(),
-      setSelectedProvider: jest.fn(),
-      setSelectedPaymentMethod: jest.fn(),
-      getTokens: jest.fn(),
-      getProviders: jest.fn(),
-      getPaymentMethods: jest.fn(),
-      getQuotes: jest.fn(),
-      getBuyWidgetData: jest.fn(),
-      addPrecreatedOrder: jest.fn(),
-      addOrder: jest.fn(),
-      removeOrder: jest.fn(),
-      getOrder: jest.fn(),
-      getOrderFromCallback: jest.fn(),
-    })),
+    RampsController: jest.fn().mockImplementation(() => mockRampsController),
   };
 });
 
@@ -108,9 +118,33 @@ function getInitRequestMock(
   };
 }
 
+function resetMockRampsController(): void {
+  mockInit = jest.fn().mockResolvedValue(undefined);
+  mockStartOrderPolling = jest.fn();
+  mockStopOrderPolling = jest.fn();
+  mockRampsController.init = mockInit;
+  mockRampsController.getCountries = jest.fn();
+  mockRampsController.startOrderPolling = mockStartOrderPolling;
+  mockRampsController.stopOrderPolling = mockStopOrderPolling;
+  mockRampsController.setUserRegion = jest.fn();
+  mockRampsController.setSelectedToken = jest.fn();
+  mockRampsController.setSelectedProvider = jest.fn();
+  mockRampsController.setSelectedPaymentMethod = jest.fn();
+  mockRampsController.getTokens = jest.fn();
+  mockRampsController.getProviders = jest.fn();
+  mockRampsController.getPaymentMethods = jest.fn();
+  mockRampsController.getQuotes = jest.fn();
+  mockRampsController.getBuyWidgetData = jest.fn();
+  mockRampsController.addPrecreatedOrder = jest.fn();
+  mockRampsController.addOrder = jest.fn();
+  mockRampsController.removeOrder = jest.fn();
+  mockRampsController.getOrder = jest.fn();
+  mockRampsController.getOrderFromCallback = jest.fn();
+}
+
 describe('RampsControllerInit', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    resetMockRampsController();
   });
 
   it('initializes the controller with default state', () => {
@@ -128,35 +162,35 @@ describe('RampsControllerInit', () => {
   });
 
   it('starts order polling after init resolves when onboarding is complete', async () => {
-    const { messengerClient } = RampsControllerInit(getInitRequestMock());
+    RampsControllerInit(getInitRequestMock());
     await Promise.resolve();
-    expect(messengerClient.init).toHaveBeenCalled();
+    expect(mockInit).toHaveBeenCalled();
     await Promise.resolve();
-    expect(messengerClient.startOrderPolling).toHaveBeenCalled();
+    expect(mockStartOrderPolling).toHaveBeenCalled();
   });
 
   it('does not call init during onboarding', async () => {
-    const { messengerClient } = RampsControllerInit(
+    RampsControllerInit(
       getInitRequestMock({
         completedOnboarding: false,
         useExternalServices: true,
       }),
     );
     await Promise.resolve();
-    expect(messengerClient.init).not.toHaveBeenCalled();
-    expect(messengerClient.startOrderPolling).not.toHaveBeenCalled();
+    expect(mockInit).not.toHaveBeenCalled();
+    expect(mockStartOrderPolling).not.toHaveBeenCalled();
   });
 
   it('does not call init when basic functionality is disabled', async () => {
-    const { messengerClient } = RampsControllerInit(
+    RampsControllerInit(
       getInitRequestMock({
         completedOnboarding: true,
         useExternalServices: false,
       }),
     );
     await Promise.resolve();
-    expect(messengerClient.init).not.toHaveBeenCalled();
-    expect(messengerClient.startOrderPolling).not.toHaveBeenCalled();
+    expect(mockInit).not.toHaveBeenCalled();
+    expect(mockStartOrderPolling).not.toHaveBeenCalled();
   });
 
   it('starts lifecycle when onboarding completes', async () => {
@@ -186,15 +220,15 @@ describe('RampsControllerInit', () => {
     });
 
     await Promise.resolve();
-    expect(messengerClient.init).not.toHaveBeenCalled();
+    expect(mockInit).not.toHaveBeenCalled();
 
     setCompletedOnboarding(true);
     onboardingListeners[0]?.({ completedOnboarding: true });
 
     await Promise.resolve();
     await Promise.resolve();
-    expect(messengerClient.init).toHaveBeenCalled();
-    expect(messengerClient.startOrderPolling).toHaveBeenCalled();
+    expect(mockInit).toHaveBeenCalled();
+    expect(mockStartOrderPolling).toHaveBeenCalled();
     subscribeSpy.mockRestore();
   });
 
@@ -206,40 +240,85 @@ describe('RampsControllerInit', () => {
       }),
     );
     expect(api?.startRampsLifecycle).toEqual(expect.any(Function));
+    expect(api?.stopRampsLifecycle).toEqual(expect.any(Function));
+  });
+
+  it('blocks network methods before onboarding completes', () => {
+    const { messengerClient } = RampsControllerInit(
+      getInitRequestMock({
+        completedOnboarding: false,
+        useExternalServices: true,
+      }),
+    );
+
+    expect(() => messengerClient.getQuotes()).toThrow(
+      RAMPS_NETWORK_ACCESS_DENIED_MESSAGE,
+    );
+  });
+
+  it('stops order polling when basic functionality is disabled', async () => {
+    const { initMessenger } = createInitMessenger({
+      completedOnboarding: true,
+      useExternalServices: true,
+    });
+    let useExternalServices = true;
+    jest.spyOn(initMessenger, 'call').mockImplementation((action: string) => {
+      if (action === 'OnboardingController:getState') {
+        return {
+          completedOnboarding: true,
+          seedPhraseBackedUp: null,
+          firstTimeFlowType: null,
+        };
+      }
+      if (action === 'PreferencesController:getState') {
+        return { useExternalServices };
+      }
+      throw new Error(`Unexpected action: ${action}`);
+    });
+
+    const preferenceListeners: ((state: {
+      useExternalServices: boolean;
+    }) => void)[] = [];
+    jest
+      .spyOn(initMessenger, 'subscribe')
+      .mockImplementation((event, listener) => {
+        if (event === 'PreferencesController:stateChange') {
+          preferenceListeners.push(
+            listener as (state: { useExternalServices: boolean }) => void,
+          );
+        }
+        return undefined as never;
+      });
+
+    const baseMessenger = getRootMessenger<never, never>();
+    RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(mockStartOrderPolling).toHaveBeenCalled();
+
+    useExternalServices = false;
+    preferenceListeners[0]?.({ useExternalServices: false });
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
   });
 
   it('does not start order polling when init rejects', async () => {
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
-    const startOrderPolling = jest.fn();
-    jest.mocked(RampsController).mockImplementationOnce(
-      () =>
-        ({
-          init: jest.fn().mockRejectedValue(new Error('init failed')),
-          startOrderPolling,
-          setUserRegion: jest.fn(),
-          setSelectedToken: jest.fn(),
-          setSelectedProvider: jest.fn(),
-          setSelectedPaymentMethod: jest.fn(),
-          getTokens: jest.fn(),
-          getProviders: jest.fn(),
-          getPaymentMethods: jest.fn(),
-          getQuotes: jest.fn(),
-          getBuyWidgetData: jest.fn(),
-          addPrecreatedOrder: jest.fn(),
-          addOrder: jest.fn(),
-          removeOrder: jest.fn(),
-          getOrder: jest.fn(),
-          getOrderFromCallback: jest.fn(),
-        }) as never,
-    );
+    mockInit.mockRejectedValueOnce(new Error('init failed'));
 
     RampsControllerInit(getInitRequestMock());
     await Promise.resolve();
     await Promise.resolve();
 
-    expect(startOrderPolling).not.toHaveBeenCalled();
+    expect(mockStartOrderPolling).not.toHaveBeenCalled();
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'RampsController failed to initialize',
       expect.any(Error),
