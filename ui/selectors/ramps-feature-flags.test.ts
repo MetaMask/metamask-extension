@@ -20,8 +20,8 @@ describe('ramps feature-flag selectors', () => {
   });
   it('getIsRampsServiceDisruptionActive reads the flag', () => {
     expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getIsRampsServiceDisruptionActive(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mk({ rampsServiceDisruption: true }) as any,
       ),
     ).toBe(true);
