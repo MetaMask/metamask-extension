@@ -12,11 +12,13 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
+  bytesToString,
   CaipAccountId,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
+  stringToBytes,
 } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -389,19 +391,28 @@ export function resetOAuthLoginState() {
  * serialization to the background.
  * @param seedPhrase
  */
-function encodeSeedPhraseForBackground(seedPhrase: string): number[] {
-  return Array.from(Buffer.from(seedPhrase, 'utf8').values());
+export function encodeSeedPhraseForBackground(seedPhrase: string): number[] {
+  return Array.from(stringToBytes(seedPhrase));
 }
 
 /**
- * Decodes a seed phrase from a background response (Buffer serialized as a
- * string or byte array) into a UTF-8 string.
+ * Node `Buffer` JSON representation produced when extension-port-stream
+ * serializes background RPC responses.
+ */
+export type SerializedBuffer = {
+  type: 'Buffer';
+  data: number[];
+};
+
+/**
+ * Decodes a seed phrase from a background `Buffer` RPC response into a UTF-8
+ * string.
  * @param encodedSeedPhrase
  */
-function decodeSeedPhraseFromBackground(
-  encodedSeedPhrase: string | number[] | Uint8Array,
+export function decodeSeedPhraseFromBackground(
+  encodedSeedPhrase: SerializedBuffer,
 ): string {
-  return Buffer.from(encodedSeedPhrase).toString('utf8');
+  return bytesToString(new Uint8Array(encodedSeedPhrase.data));
 }
 
 /**
@@ -418,10 +429,11 @@ export function createNewVaultAndSyncWithSocial(
     getState: () => MetaMaskReduxState,
   ) => {
     try {
-      const encodedSeedPhrase = await submitRequestToBackground<string>(
-        'createNewVaultAndGetSeedPhrase',
-        [password],
-      );
+      const encodedSeedPhrase =
+        await submitRequestToBackground<SerializedBuffer>(
+          'createNewVaultAndGetSeedPhrase',
+          [password],
+        );
       const seedPhrase = decodeSeedPhraseFromBackground(encodedSeedPhrase);
 
       await forceUpdateMetamaskState(dispatch);
@@ -1144,10 +1156,11 @@ export function createNewVaultAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      const encodedSeedPhrase = await submitRequestToBackground<string>(
-        'createNewVaultAndGetSeedPhrase',
-        [password],
-      );
+      const encodedSeedPhrase =
+        await submitRequestToBackground<SerializedBuffer>(
+          'createNewVaultAndGetSeedPhrase',
+          [password],
+        );
       const seedPhrase = decodeSeedPhraseFromBackground(encodedSeedPhrase);
 
       // force update the state after creating the vault
@@ -1171,10 +1184,11 @@ export function unlockAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      const encodedSeedPhrase = await submitRequestToBackground<string>(
-        'unlockAndGetSeedPhrase',
-        [password],
-      );
+      const encodedSeedPhrase =
+        await submitRequestToBackground<SerializedBuffer>(
+          'unlockAndGetSeedPhrase',
+          [password],
+        );
       const seedPhrase = decodeSeedPhraseFromBackground(encodedSeedPhrase);
       await forceUpdateMetamaskState(dispatch);
       return seedPhrase;
@@ -1325,7 +1339,7 @@ export async function verifyPassword(password: string): Promise<boolean> {
 }
 
 export async function getSeedPhrase(password: string, keyringId?: string) {
-  const encodedSeedPhrase = await submitRequestToBackground<string>(
+  const encodedSeedPhrase = await submitRequestToBackground<SerializedBuffer>(
     'getSeedPhrase',
     [password, keyringId],
   );
@@ -1367,10 +1381,11 @@ export function getSeedPhraseWithPasskey(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
-      const encodedSeedPhrase = await submitRequestToBackground(
-        'exportSeedPhraseWithPasskey',
-        [authenticationResponse, keyringId],
-      );
+      const encodedSeedPhrase =
+        await submitRequestToBackground<SerializedBuffer>(
+          'exportSeedPhraseWithPasskey',
+          [authenticationResponse, keyringId],
+        );
       return decodeSeedPhraseFromBackground(encodedSeedPhrase);
     } finally {
       dispatch(hideLoadingIndication());

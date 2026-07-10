@@ -6,6 +6,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { stringToBytes } from '@metamask/utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
@@ -35,6 +36,11 @@ import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilit
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+
+const toSerializedSeedPhraseBuffer = (seedPhrase) => ({
+  type: 'Buffer',
+  data: actions.encodeSeedPhraseForBackground(seedPhrase),
+});
 
 jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
@@ -178,15 +184,14 @@ describe('Actions', () => {
 
     it('should create KeyChain, vault and Backup in the background', async () => {
       const mockSeedPhrase = 'mock seed phrase';
-      const mockEncodedSeedPhrase = Array.from(
-        Buffer.from(mockSeedPhrase).values(),
-      );
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
       const store = mockStore();
 
       const createSeedPhraseBackupStub = sinon.stub().resolves();
       const createNewVaultAndGetSeedPhraseStub = sinon
         .stub()
-        .resolves(mockEncodedSeedPhrase);
+        .resolves(mockSerializedSeedPhrase);
 
       background.getApi.returns({
         createSeedPhraseBackup: createSeedPhraseBackupStub,
@@ -202,7 +207,7 @@ describe('Actions', () => {
       expect(
         createSeedPhraseBackupStub.calledOnceWith(
           'password',
-          mockEncodedSeedPhrase,
+          mockSerializedSeedPhrase.data,
           mockUlid,
         ),
       ).toStrictEqual(true);
@@ -819,6 +824,28 @@ describe('Actions', () => {
     });
   });
 
+  describe('encodeSeedPhraseForBackground', () => {
+    it('encodes a seed phrase as UTF-8 byte values', () => {
+      const seedPhrase = 'abandon abandon abandon';
+
+      expect(actions.encodeSeedPhraseForBackground(seedPhrase)).toStrictEqual(
+        Array.from(stringToBytes(seedPhrase)),
+      );
+    });
+  });
+
+  describe('decodeSeedPhraseFromBackground', () => {
+    const seedPhrase = 'abandon abandon abandon';
+
+    it('decodes a JSON-serialized Buffer from the background', () => {
+      expect(
+        actions.decodeSeedPhraseFromBackground(
+          toSerializedSeedPhraseBuffer(seedPhrase),
+        ),
+      ).toStrictEqual(seedPhrase);
+    });
+  });
+
   describe('#createNewVaultAndGetSeedPhrase', () => {
     afterEach(() => {
       sinon.restore();
@@ -827,13 +854,12 @@ describe('Actions', () => {
     it('calls createNewVaultAndGetSeedPhrase in a single background request', async () => {
       const store = mockStore();
       const mockSeedPhrase = 'test seed phrase';
-      const mockEncodedSeedPhrase = Array.from(
-        Buffer.from(mockSeedPhrase).values(),
-      );
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
 
       const createNewVaultAndGetSeedPhraseStub = sinon
         .stub()
-        .resolves(mockEncodedSeedPhrase);
+        .resolves(mockSerializedSeedPhrase);
 
       background.getApi.returns({
         createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
@@ -862,13 +888,12 @@ describe('Actions', () => {
     it('calls unlockAndGetSeedPhrase in a single background request', async () => {
       const store = mockStore();
       const mockSeedPhrase = 'test seed phrase';
-      const mockEncodedSeedPhrase = Array.from(
-        Buffer.from(mockSeedPhrase).values(),
-      );
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
 
       const unlockAndGetSeedPhraseStub = sinon
         .stub()
-        .resolves(mockEncodedSeedPhrase);
+        .resolves(mockSerializedSeedPhrase);
 
       background.getApi.returns({
         unlockAndGetSeedPhrase: unlockAndGetSeedPhraseStub,
@@ -966,7 +991,7 @@ describe('Actions', () => {
       const verifyPassword = sinon.stub().resolves();
       const getSeedPhrase = sinon
         .stub()
-        .resolves(Array.from(Buffer.from('test').values()));
+        .resolves(toSerializedSeedPhraseBuffer('test'));
 
       background.getApi.returns({ verifyPassword, getSeedPhrase });
       setBackgroundConnection(background.getApi());
@@ -1020,7 +1045,7 @@ describe('Actions', () => {
 
       const exportSeedPhraseWithPasskey = sinon
         .stub()
-        .resolves(Array.from(Buffer.from('test seed').values()));
+        .resolves(toSerializedSeedPhraseBuffer('test seed'));
 
       background.getApi.returns({ exportSeedPhraseWithPasskey });
       setBackgroundConnection(background.getApi());
