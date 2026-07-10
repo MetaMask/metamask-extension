@@ -1695,6 +1695,49 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('surfaces failure toast when modify add-to-position place order fails', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Add to position failed',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      // Modify mode has no shared inProgress toast key — hide is not called.
+      expect(mockHidePerpsToast).not.toHaveBeenCalled();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastSubmitInProgress',
+        }),
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateFailed',
+        description: "We couldn't load this page.",
+      });
+    });
+
     it('submits existing position TP/SL values unchanged in modify mode', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({
