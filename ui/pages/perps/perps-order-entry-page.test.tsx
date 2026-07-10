@@ -1506,8 +1506,8 @@ describe('PerpsOrderEntryPage', () => {
         });
         // Position stream churns (new object refs, same ETH position) mid-
         // debounce. With the old live-`position` dep this reset the timer and
-        // could drop the event; gating on a stable `hasPosition` primitive must
-        // leave the pending debounce intact.
+        // could drop the event; gating on the stable `positionDirection`
+        // primitive must leave the pending debounce intact.
         mockLivePositions.mockReturnValue({
           positions: mockPositions.map((p) => ({ ...p })),
           isInitialLoading: false,
@@ -1531,6 +1531,51 @@ describe('PerpsOrderEntryPage', () => {
         });
         jest.useRealTimers();
       }
+    });
+
+    it('emits CONSIDERED with flip_long_to_short for a short order on a long position', async () => {
+      // ETH position is long (size 2.5); a short order flips it.
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSearchParams.set('direction', 'short');
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('100');
+
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+      expect(consideredCalls()[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ACTION]:
+            PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT,
+        }),
+      );
+    });
+
+    it('emits CONSIDERED with flip_short_to_long for a long order on a short position', async () => {
+      // BTC position is short (size -0.5); a long order flips it.
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSearchParams.set('direction', 'long');
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('100');
+
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+      expect(consideredCalls()[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ACTION]:
+            PERPS_EVENT_VALUE.ACTION.FLIP_SHORT_TO_LONG,
+        }),
+      );
     });
 
     it('tracks has_perp_balance as true when unified funds are tradeable but not withdrawable', () => {
@@ -1608,6 +1653,9 @@ describe('PerpsOrderEntryPage', () => {
             orderType: 'market',
             trackingData: expect.objectContaining({
               hlFeeRate: 0.00145,
+              // No existing position -> create_position; the controller only
+              // emits the tx `action` when trackingData.tradeAction is set.
+              tradeAction: PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,
             }),
           }),
         ],

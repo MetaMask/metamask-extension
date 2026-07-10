@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import React from 'react';
+import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
 import { usePerpsAttribution } from './usePerpsAttribution';
 
@@ -56,5 +57,36 @@ describe('usePerpsAttribution', () => {
       positionSize: 0.5,
       entryPoint: 'asset_details',
     });
+  });
+
+  it('includes tradeAction (incl. flips) when provided', () => {
+    const { result } = renderHook(() => usePerpsAttribution(), { wrapper });
+
+    expect(
+      result.current.buildTrackingData({
+        totalFee: 1,
+        marketPrice: 3000,
+        vipTier: null,
+        vipDiscount: undefined,
+        tradeAction: PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT,
+      }),
+    ).toStrictEqual({
+      totalFee: 1,
+      marketPrice: 3000,
+      tradeAction: PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT,
+    });
+  });
+
+  it('omits tradeAction when not provided', () => {
+    const { result } = renderHook(() => usePerpsAttribution(), { wrapper });
+
+    expect(
+      result.current.buildTrackingData({
+        totalFee: 1,
+        marketPrice: 3000,
+        vipTier: null,
+        vipDiscount: undefined,
+      }),
+    ).not.toHaveProperty('tradeAction');
   });
 });

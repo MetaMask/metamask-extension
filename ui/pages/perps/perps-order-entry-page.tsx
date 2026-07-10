@@ -103,7 +103,9 @@ import {
   safeDecodeURIComponent,
   formatSignedChangePercent,
   willFlipPosition,
+  getPositionDirection,
 } from '../../components/app/perps/utils';
+import { derivePerpsTradeAction } from '../../components/app/perps/utils/deriveTradeAction';
 import {
   parsePerpsDisplayPrice,
   formatPerpsFiatMinimal,
@@ -485,10 +487,12 @@ const PerpsOrderEntryPage = () => {
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allPositions]);
-  // Stable primitive for the considered-event effect: only whether a position
-  // exists matters for `action`, so gating on the live `position` object would
-  // let position-stream churn reset the debounce even when the form is unchanged.
-  const hasPosition = position !== undefined;
+  // Stable primitive for the considered-event effect: only the position
+  // DIRECTION (not the live object) affects `action`, so gating on it avoids
+  // position-stream churn resetting the debounce when the form is unchanged.
+  const positionDirection = position
+    ? getPositionDirection(position.size)
+    : null;
 
   // Reset the considered-event gating refs when the market or order context
   // changes, so a prior edit doesn't make the next market's seeded default fire
@@ -508,8 +512,8 @@ const PerpsOrderEntryPage = () => {
   // close), and only after the user has driven a size control — the `new` form
   // seeds a positive default amount, so `hasUserEditedSizeRef` (set only by
   // AmountInput's user handlers) excludes the seeded default and any pre-edit
-  // recomputation. `action` is derived from trade context (an existing position
-  // means the user is increasing exposure, otherwise creating one).
+  // recomputation. `action` is derived from the existing position direction and
+  // the order direction (create / increase / flip), matching the executed tx.
   //
   // Feasible input props ARE included: `input_method` (keypad/slider/
   // percentage/max), reported from AmountInput's per-control handlers (attributed
@@ -538,9 +542,13 @@ const PerpsOrderEntryPage = () => {
     if (!(orderSize > 0)) {
       return undefined;
     }
-    const action = hasPosition
-      ? PERPS_EVENT_VALUE.ACTION.INCREASE_EXPOSURE
-      : PERPS_EVENT_VALUE.ACTION.CREATE_POSITION;
+    // Derive from the existing position direction + order direction so an
+    // opposite-side order against an open position reports a flip, and so this
+    // matches the executed-tx `action` (both use derivePerpsTradeAction).
+    const action = derivePerpsTradeAction(
+      positionDirection,
+      orderFormState.direction,
+    );
     const timeoutId = setTimeout(() => {
       trackRef.current(MetaMetricsEventName.PerpsTransactionConsidered, {
         [PERPS_EVENT_PROPERTY.ORDER_CONTEXT]: 'trade',
@@ -566,7 +574,7 @@ const PerpsOrderEntryPage = () => {
       });
     }, 1000);
     return () => clearTimeout(timeoutId);
-  }, [orderMode, orderFormState, hasPosition]);
+  }, [orderMode, orderFormState, positionDirection]);
 
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
@@ -1319,6 +1327,10 @@ const PerpsOrderEntryPage = () => {
             vipTier,
             vipDiscount: metamaskFeeRateDiscountPercentage,
             hlFeeRate: currentFeeRate,
+            tradeAction: derivePerpsTradeAction(
+              position ? getPositionDirection(position.size) : null,
+              orderFormState.direction,
+            ),
           });
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
@@ -1410,6 +1422,10 @@ const PerpsOrderEntryPage = () => {
         vipTier,
         vipDiscount: metamaskFeeRateDiscountPercentage,
         hlFeeRate: currentFeeRate,
+        tradeAction: derivePerpsTradeAction(
+          position ? getPositionDirection(position.size) : null,
+          orderFormState.direction,
+        ),
       });
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
