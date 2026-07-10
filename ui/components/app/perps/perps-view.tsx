@@ -217,6 +217,10 @@ export const PerpsView = () => {
         });
         return;
       } else {
+        // No client close-all summary event here (would carry
+        // number_positions_closed): the controller emits the batch-close
+        // summary with number_positions_closed from the next perps-controller
+        // release (core #9471). Emitting it client-side would double-count.
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
         });
