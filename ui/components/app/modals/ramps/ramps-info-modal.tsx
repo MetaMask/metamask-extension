@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Text } from '../../../component-library';
-import { TextVariant } from '../../../../helpers/constants/design-system';
+import { Box, Text, TextVariant } from '@metamask/design-system-react';
 
 // ponytail: stub — final copy/layout pending design sign-off (TRAM-3710 open Q1)
 export default function RampsInfoModal({
@@ -14,8 +13,8 @@ export default function RampsInfoModal({
 }) {
   return (
     <Box padding={4} data-testid={testId}>
-      <Text variant={TextVariant.headingSm}>{title}</Text>
-      <Text variant={TextVariant.bodyMd}>{body}</Text>
+      <Text variant={TextVariant.HeadingSm}>{title}</Text>
+      <Text variant={TextVariant.BodyMd}>{body}</Text>
     </Box>
   );
 }
