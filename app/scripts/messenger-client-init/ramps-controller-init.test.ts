@@ -1,12 +1,23 @@
 import {
+  Messenger,
+  ActionConstraint,
+  MockAnyNamespace,
+  MOCK_ANY_NAMESPACE,
+} from '@metamask/messenger';
+import {
   RampsController,
   getDefaultRampsControllerState,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
+import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { getRootMessenger } from '../lib/messenger';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getRampsControllerMessenger } from './messengers';
+import {
+  getRampsControllerInitMessenger,
+  getRampsControllerMessenger,
+  type RampsControllerInitMessenger,
+} from './messengers';
 import { RampsControllerInit } from './ramps-controller-init';
 
 jest.mock('@metamask/ramps-controller', () => {
@@ -34,15 +45,68 @@ jest.mock('@metamask/ramps-controller', () => {
   };
 });
 
-function getInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<RampsControllerMessenger>
-> {
+type InitRequestMock = jest.Mocked<
+  MessengerClientInitRequest<
+    RampsControllerMessenger,
+    RampsControllerInitMessenger
+  >
+>;
+
+function createInitMessenger(
+  {
+    completedOnboarding = true,
+    useExternalServices = true,
+  }: {
+    completedOnboarding?: boolean;
+    useExternalServices?: boolean;
+  } = {},
+): {
+  initMessenger: RampsControllerInitMessenger;
+  setCompletedOnboarding: (value: boolean) => void;
+} {
+  let onboardingComplete = completedOnboarding;
+
+  const baseMessenger = new Messenger<
+    MockAnyNamespace,
+    | PreferencesControllerGetStateAction
+    | ActionConstraint
+    | 'OnboardingController:getState',
+    | 'OnboardingController:stateChange'
+    | 'PreferencesController:stateChange'
+  >({ namespace: MOCK_ANY_NAMESPACE });
+
+  baseMessenger.registerActionHandler('OnboardingController:getState', () => ({
+    completedOnboarding: onboardingComplete,
+    seedPhraseBackedUp: null,
+    firstTimeFlowType: null,
+  }));
+
+  baseMessenger.registerActionHandler(
+    'PreferencesController:getState',
+    () =>
+      ({
+        useExternalServices,
+      }) as never,
+  );
+
+  return {
+    initMessenger: getRampsControllerInitMessenger(baseMessenger as never),
+    setCompletedOnboarding: (value: boolean) => {
+      onboardingComplete = value;
+    },
+  };
+}
+
+function getInitRequestMock(
+  options?: Parameters<typeof createInitMessenger>[0],
+): InitRequestMock {
   const baseMessenger = getRootMessenger<never, never>();
+  const { initMessenger } = createInitMessenger(options);
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getRampsControllerMessenger(baseMessenger),
-    initMessenger: undefined,
+    initMessenger,
     persistedState: {},
   };
 }
@@ -66,12 +130,83 @@ describe('RampsControllerInit', () => {
     expect(Object.keys(api ?? {}).sort()).toMatchSnapshot();
   });
 
-  it('starts order polling after init resolves', async () => {
+  it('starts order polling after init resolves when onboarding is complete', async () => {
     const { messengerClient } = RampsControllerInit(getInitRequestMock());
     await Promise.resolve();
     expect(messengerClient.init).toHaveBeenCalled();
     await Promise.resolve();
     expect(messengerClient.startOrderPolling).toHaveBeenCalled();
+  });
+
+  it('does not call init during onboarding', async () => {
+    const { messengerClient } = RampsControllerInit(
+      getInitRequestMock({
+        completedOnboarding: false,
+        useExternalServices: true,
+      }),
+    );
+    await Promise.resolve();
+    expect(messengerClient.init).not.toHaveBeenCalled();
+    expect(messengerClient.startOrderPolling).not.toHaveBeenCalled();
+  });
+
+  it('does not call init when basic functionality is disabled', async () => {
+    const { messengerClient } = RampsControllerInit(
+      getInitRequestMock({
+        completedOnboarding: true,
+        useExternalServices: false,
+      }),
+    );
+    await Promise.resolve();
+    expect(messengerClient.init).not.toHaveBeenCalled();
+    expect(messengerClient.startOrderPolling).not.toHaveBeenCalled();
+  });
+
+  it('starts lifecycle when onboarding completes', async () => {
+    const { initMessenger, setCompletedOnboarding } = createInitMessenger({
+      completedOnboarding: false,
+      useExternalServices: true,
+    });
+    const onboardingListeners: ((state: { completedOnboarding: boolean }) => void)[] = [];
+    const subscribeSpy = jest
+      .spyOn(initMessenger, 'subscribe')
+      .mockImplementation((event, listener) => {
+        if (event === 'OnboardingController:stateChange') {
+          onboardingListeners.push(
+            listener as (state: { completedOnboarding: boolean }) => void,
+          );
+        }
+        return undefined as never;
+      });
+    const baseMessenger = getRootMessenger<never, never>();
+    const { messengerClient } = RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+
+    await Promise.resolve();
+    expect(messengerClient.init).not.toHaveBeenCalled();
+
+    setCompletedOnboarding(true);
+    onboardingListeners[0]?.({ completedOnboarding: true });
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(messengerClient.init).toHaveBeenCalled();
+    expect(messengerClient.startOrderPolling).toHaveBeenCalled();
+    subscribeSpy.mockRestore();
+  });
+
+  it('exposes startRampsLifecycle on the background API', () => {
+    const { api } = RampsControllerInit(
+      getInitRequestMock({
+        completedOnboarding: false,
+        useExternalServices: true,
+      }),
+    );
+    expect(api?.startRampsLifecycle).toEqual(expect.any(Function));
   });
 
   it('does not start order polling when init rejects', async () => {

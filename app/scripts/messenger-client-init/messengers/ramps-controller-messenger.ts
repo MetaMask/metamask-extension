@@ -7,6 +7,12 @@ import {
   RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
+import type { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
+import {
+  type OnboardingControllerGetStateAction,
+  type OnboardingControllerStateChangeEvent,
+} from '../../controllers/onboarding';
+import type { PreferencesControllerStateChangeEvent } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 /**
@@ -34,4 +40,55 @@ export function getRampsControllerMessenger(
   });
 
   return controllerMessenger;
+}
+
+type AllowedInitializationActions =
+  | OnboardingControllerGetStateAction
+  | PreferencesControllerGetStateAction;
+
+type AllowedInitializationEvents =
+  | OnboardingControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent;
+
+export type RampsControllerInitMessenger = ReturnType<
+  typeof getRampsControllerInitMessenger
+>;
+
+/**
+ * Get the init messenger for the RampsController. Scoped to onboarding and
+ * preferences state needed to defer network hydration until onboarding is
+ * complete and basic functionality is enabled.
+ *
+ * @param messenger - The root messenger.
+ * @returns The RampsControllerInitMessenger.
+ */
+export function getRampsControllerInitMessenger(
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
+) {
+  const controllerInitMessenger = new Messenger<
+    'RampsControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'RampsControllerInit',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
+      'OnboardingController:getState',
+      'PreferencesController:getState',
+    ],
+    events: [
+      'OnboardingController:stateChange',
+      'PreferencesController:stateChange',
+    ],
+  });
+
+  return controllerInitMessenger;
 }

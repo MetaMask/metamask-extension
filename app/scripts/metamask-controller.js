@@ -1718,6 +1718,10 @@ export default class MetamaskController extends EventEmitter {
           console.error(error);
         });
     }
+
+    if (this.preferencesController.state.useExternalServices) {
+      this.messengerClientApi.startRampsLifecycle?.();
+    }
   }
 
   /**
@@ -1759,6 +1763,9 @@ export default class MetamaskController extends EventEmitter {
         ?.catch((error) => {
           console.error(error);
         });
+    }
+    if (this.preferencesController.state.useExternalServices) {
+      this.messengerClientApi.startRampsLifecycle?.();
     }
   }
 
