@@ -209,21 +209,24 @@ const WalletActivitySectionContent = ({
       }));
 
       const persistWrite = accountToggleWriteChainRef.current.then(async () => {
-        await switchAccountNotifications([address], nextValue);
-        await refetchAccountSettings();
-        await refetchNotificationPreferences();
-        listNotifications();
+        try {
+          await switchAccountNotifications([address], nextValue);
+          await refetchAccountSettings();
+          await refetchNotificationPreferences();
+          listNotifications();
+          if (nextValue && enabledCountBefore === 0) {
+            trackWalletActivityAggregateToggle(true);
+          } else if (!nextValue && enabledCountBefore === 1 && wasEnabled) {
+            trackWalletActivityAggregateToggle(false);
+          }
+        } catch {
+          // write failed; chain resolves so subsequent toggles can still run
+        }
       });
-      accountToggleWriteChainRef.current = persistWrite.catch(() => undefined);
+      accountToggleWriteChainRef.current = persistWrite;
 
       try {
         await persistWrite;
-
-        if (nextValue && enabledCountBefore === 0) {
-          trackWalletActivityAggregateToggle(true);
-        } else if (!nextValue && enabledCountBefore === 1 && wasEnabled) {
-          trackWalletActivityAggregateToggle(false);
-        }
       } finally {
         setPendingAccountToggles((current) => {
           if (current[lowerAddress]?.generation !== generation) {
