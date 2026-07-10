@@ -133,6 +133,8 @@ jest.mock('../../../store/background-connection', () => {
   };
   return {
     ...actual,
+    // Retry/cancel paths call abortTransactionSigning via useHwSignTracker.
+    submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
     subscribeToMessengerEvent: jest
       .fn()
       .mockResolvedValue(createMockUnsubscribe()),
