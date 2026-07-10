@@ -3,9 +3,12 @@ import React from 'react';
 
 import {
   SimulationError,
+  TransactionContainerType,
+  TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
@@ -78,6 +81,40 @@ describe('<GasFeesDetails />', () => {
     });
 
     expect(getByText('$0.07')).toBeInTheDocument();
+  });
+
+  it('renders added protection fee copy for enforced simulations', async () => {
+    const confirmation = genUnapprovedContractInteractionConfirmation({
+      chainId: CHAIN_IDS.SEPOLIA,
+    }) as TransactionMeta;
+    confirmation.containerTypes = [
+      TransactionContainerType.EnforcedSimulations,
+    ];
+    confirmation.txParamsOriginal = { ...confirmation.txParams };
+    confirmation.txParams.gas = '0x156ee';
+
+    const store = configureStore(
+      getMockConfirmStateForTransaction(confirmation, {
+        metamask: {
+          preferences: {
+            showFiatInTestnets: true,
+          },
+        },
+      }),
+    );
+
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <GasFeesDetails />,
+      store,
+    );
+
+    await act(async () => {
+      // Intentionally empty
+    });
+
+    expect(getByTestId('added-protection-network-fee')).toHaveTextContent(
+      messages.addedProtectionIncludesNetworkFee.message.replace('$1', '$0.07'),
+    );
   });
 
   it('renders max fee if advanced', async () => {
