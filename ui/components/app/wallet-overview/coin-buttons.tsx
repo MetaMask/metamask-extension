@@ -411,8 +411,8 @@ const CoinButtons = ({
     transitionForward(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    const opened = goToBuy(getChainId());
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const opened = await goToBuy(getChainId());
     if (!opened) {
       return;
     }

@@ -1,7 +1,4 @@
-import {
-  getIsRampRegionUnsupported,
-  getIsRampsGeolocationUnknown,
-} from './ramps';
+import { getIsRampRegionUnsupported } from './ramps';
 
 const baseMetamask = {
   userRegion: null,
@@ -13,44 +10,6 @@ const baseMetamask = {
 const mk = (over = {}) => ({ metamask: { ...baseMetamask, ...over } });
 
 describe('ramps selectors', () => {
-  it('getIsRampsGeolocationUnknown is false on the never-fetched default state (fail open)', () => {
-    expect(getIsRampsGeolocationUnknown(mk())).toBe(false);
-  });
-
-  it('getIsRampsGeolocationUnknown is false when countries fetch errored (fail open)', () => {
-    expect(
-      getIsRampsGeolocationUnknown(
-        mk({
-          countries: {
-            ...baseMetamask.countries,
-            error: new Error('failed to fetch countries'),
-          },
-        }),
-      ),
-    ).toBe(false);
-  });
-
-  it('getIsRampsGeolocationUnknown is true once countries have loaded and region is still null', () => {
-    expect(
-      getIsRampsGeolocationUnknown(
-        mk({
-          countries: {
-            ...baseMetamask.countries,
-            data: [{ isoCode: 'US' }],
-          },
-        }),
-      ),
-    ).toBe(true);
-  });
-
-  it('getIsRampsGeolocationUnknown is false while countries are loading', () => {
-    expect(
-      getIsRampsGeolocationUnknown(
-        mk({ countries: { ...baseMetamask.countries, isLoading: true } }),
-      ),
-    ).toBe(false);
-  });
-
   it('getIsRampRegionUnsupported reflects the eligibility util', () => {
     const region = {
       country: { isoCode: 'FR', supported: { buy: false } },
@@ -58,5 +17,9 @@ describe('ramps selectors', () => {
       regionCode: 'fr',
     };
     expect(getIsRampRegionUnsupported(mk({ userRegion: region }))).toBe(true);
+  });
+
+  it('getIsRampRegionUnsupported fails open on the never-fetched default state', () => {
+    expect(getIsRampRegionUnsupported(mk())).toBe(false);
   });
 });
