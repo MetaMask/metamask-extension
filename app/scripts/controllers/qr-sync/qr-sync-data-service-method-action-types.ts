@@ -16,3 +16,9 @@ export type QrSyncDataServiceBuildWalletExportEntriesAction = {
   type: `QrSyncDataService:buildWalletExportEntries`;
   handler: QrSyncDataService['buildWalletExportEntries'];
 };
+
+/**
+ * Union of all QrSyncDataService action types.
+ */
+export type QrSyncDataServiceMethodActions =
+  QrSyncDataServiceBuildWalletExportEntriesAction;
