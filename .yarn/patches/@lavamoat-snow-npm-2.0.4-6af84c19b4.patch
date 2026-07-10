@@ -1,0 +1,27 @@
+diff --git a/src/request.js b/src/request.js
+index f8976d450675f116a6bb5ca8552ef07dbcc54338..3f87c9bc85c521598d6e14400ae4dbb505107758 100644
+--- a/src/request.js
++++ b/src/request.js
+@@ -26,10 +26,19 @@ function hook(win, native, cb) {
+ }
+ 
+ function hookRequest(win) {
+-    if (!win?.documentPictureInPicture?.requestWindow) {
++    // Reach requestWindow through the interface object's prototype rather
++    // than win.documentPictureInPicture: the attribute getter lazily
++    // instantiates a per-window DocumentPictureInPicture, and on Firefox
++    // (which shipped the API in 151) the instance's preserved wrapper pins
++    // the entire window realm after the window closes, leaking every
++    // protected window's document. Prototype access does not instantiate,
++    // and instance method lookup falls through to the patched prototype.
++    // Upstream: https://github.com/LavaMoat/snow/pull/171
++    const proto = win?.DocumentPictureInPicture?.prototype;
++    if (!proto?.requestWindow) {
+         return;
+     }
+-    win.documentPictureInPicture.requestWindow = hook(win, win.documentPictureInPicture.requestWindow, hookDocumentPictureInPicture);
++    proto.requestWindow = hook(win, proto.requestWindow, hookDocumentPictureInPicture);
+ }
+ 
+ module.exports = hookRequest;
+\ No newline at end of file
