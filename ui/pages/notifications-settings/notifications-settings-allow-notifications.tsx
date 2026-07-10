@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback, useContext } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -11,7 +11,7 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -39,14 +39,16 @@ export function NotificationsSettingsAllowNotifications({
   setLoading,
   disabled,
   dataTestId,
+  refetchPreferences,
 }: {
   loading: boolean;
   setLoading: (loading: boolean) => void;
   disabled: boolean;
   dataTestId: string;
+  refetchPreferences?: () => Promise<unknown>;
 }) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { listNotifications } = useMetamaskNotificationsContext();
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -57,6 +59,7 @@ export function NotificationsSettingsAllowNotifications({
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
+
   const { enableNotifications, error: errorEnableNotifications } =
     useEnableNotifications();
   const { disableNotifications, error: errorDisableNotifications } =
@@ -82,42 +85,47 @@ export function NotificationsSettingsAllowNotifications({
   const toggleNotifications = useCallback(async () => {
     setLoading(true);
     if (isMetamaskNotificationsEnabled) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationSettings,
-        event: MetaMetricsEventName.NotificationsSettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          /* eslint-disable @typescript-eslint/naming-convention */
-          settings_type: 'master',
-          notification_channel: 'all',
-          enabled: false,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.NotificationSettings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_type: 'master',
+            notification_channel: 'all',
+            enabled: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
       await disableNotifications();
     } else {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationSettings,
-        event: MetaMetricsEventName.NotificationsSettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          /* eslint-disable @typescript-eslint/naming-convention */
-          settings_type: 'master',
-          notification_channel: 'all',
-          enabled: true,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.NotificationSettings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_type: 'master',
+            notification_channel: 'all',
+            enabled: true,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
       await enableNotifications();
+      await refetchPreferences?.();
     }
     setLoading(false);
     setToggleValue(!toggleValue);
   }, [
+    createEventBuilder,
     setLoading,
     setToggleValue,
     isMetamaskNotificationsEnabled,
     disableNotifications,
     enableNotifications,
+    refetchPreferences,
     toggleValue,
     trackEvent,
   ]);

@@ -68,7 +68,7 @@ export const NotificationDetailCopyButton: FC<
         if (
           'notification_type' in notification &&
           isOnChainNotification(notification) &&
-          notification.payload?.chain_id
+          notification.payload.chain_id
         ) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
