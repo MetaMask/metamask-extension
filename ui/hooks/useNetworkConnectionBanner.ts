@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { hexToNumber } from '@metamask/utils';
-import { getNetworkConnectionBanner } from '../selectors/selectors';
+import { networkConnectionBannerControllerSelectors } from '@metamask/network-connection-banner-controller';
+import type {
+  FailedNetwork,
+  NetworkConnectionBannerStatus,
+} from '@metamask/network-connection-banner-controller';
+import type { MetaMaskReduxState } from '../store/store';
 import type { RouteMessengerInstance } from '../pages/home/messenger';
 import {
   MetaMetricsEventCategory,
@@ -9,12 +14,18 @@ import {
 } from '../../shared/constants/metametrics';
 import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
-import { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 import { useMessenger } from './useMessenger';
 import { useAnalytics } from './useAnalytics';
 
-type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
+const {
+  selectNetworkConnectionBannerStatus,
+  selectNetworkConnectionBannerNetwork,
+} = networkConnectionBannerControllerSelectors;
+
+type UseNetworkConnectionBannerResult = {
+  status: NetworkConnectionBannerStatus;
+  network: FailedNetwork | null;
   trackNetworkBannerEvent: (event: {
     bannerType: 'degraded' | 'unavailable';
     eventName: string;
@@ -32,8 +43,11 @@ export const useNetworkConnectionBanner =
     const dispatch = useDispatch();
     const messenger = useMessenger<RouteMessengerInstance>();
     const { trackEvent, createEventBuilder } = useAnalytics();
-    const networkConnectionBannerState = useSelector(
-      getNetworkConnectionBanner,
+    const status = useSelector((state: MetaMaskReduxState) =>
+      selectNetworkConnectionBannerStatus(state.metamask),
+    );
+    const network = useSelector((state: MetaMaskReduxState) =>
+      selectNetworkConnectionBannerNetwork(state.metamask),
     );
 
     const trackNetworkBannerEvent = useCallback(
@@ -44,13 +58,10 @@ export const useNetworkConnectionBanner =
         bannerType: 'degraded' | 'unavailable';
         eventName: string;
       }) => {
-        if (
-          networkConnectionBannerState.status !== 'degraded' &&
-          networkConnectionBannerState.status !== 'unavailable'
-        ) {
+        if (!network) {
           return;
         }
-        const { chainId, rpcUrl } = networkConnectionBannerState;
+        const { chainId, rpcUrl } = network;
 
         try {
           const chainIdAsDecimal = hexToNumber(chainId);
@@ -79,7 +90,7 @@ export const useNetworkConnectionBanner =
           console.error('Failed to track network banner event:', error);
         }
       },
-      [networkConnectionBannerState, trackEvent, createEventBuilder],
+      [network, trackEvent, createEventBuilder],
     );
 
     // Fire the banner-shown analytics when the banner transitions to a
@@ -87,41 +98,30 @@ export const useNetworkConnectionBanner =
     // here we just translate state changes to analytics.
     const lastReportedKeyRef = useRef<string | null>(null);
     useEffect(() => {
-      if (
-        networkConnectionBannerState.status !== 'degraded' &&
-        networkConnectionBannerState.status !== 'unavailable'
-      ) {
+      if ((status !== 'degraded' && status !== 'unavailable') || !network) {
         lastReportedKeyRef.current = null;
         return;
       }
-      const key = `${networkConnectionBannerState.status}:${networkConnectionBannerState.chainId}:${networkConnectionBannerState.rpcUrl}`;
+      const key = `${status}:${network.chainId}:${network.rpcUrl}`;
       if (lastReportedKeyRef.current === key) {
         return;
       }
       lastReportedKeyRef.current = key;
       trackNetworkBannerEvent({
-        bannerType: networkConnectionBannerState.status,
+        bannerType: status,
         eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
       });
-    }, [networkConnectionBannerState, trackNetworkBannerEvent]);
+    }, [status, network, trackNetworkBannerEvent]);
 
     const switchToInfura = useCallback(async () => {
-      if (
-        networkConnectionBannerState.status !== 'degraded' &&
-        networkConnectionBannerState.status !== 'unavailable'
-      ) {
-        return;
-      }
-
-      const { chainId, canSwitchToInfura } = networkConnectionBannerState;
-      if (!canSwitchToInfura) {
+      if (!network || network.switchableInfuraNetworkClientId === null) {
         return;
       }
 
       try {
         await messenger.call(
           'NetworkConnectionBannerController:switchToDefaultInfuraRpcEndpoint',
-          chainId,
+          network.chainId,
         );
         dispatch(setShowInfuraSwitchToast(true));
       } catch (error) {
@@ -131,10 +131,11 @@ export const useNetworkConnectionBanner =
           error,
         );
       }
-    }, [networkConnectionBannerState, messenger, dispatch]);
+    }, [network, messenger, dispatch]);
 
     return {
-      ...networkConnectionBannerState,
+      status,
+      network,
       trackNetworkBannerEvent,
       switchToInfura,
     };

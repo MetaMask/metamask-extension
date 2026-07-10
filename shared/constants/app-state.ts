@@ -1,4 +1,3 @@
-import type { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
 import { MetaMetricsEventName } from './metametrics';
 
@@ -60,20 +59,3 @@ export enum StorageWriteErrorType {
   /** Device is out of disk space */
   FileErrorNoSpace = 'file-error-no-space',
 }
-
-export type NetworkConnectionBanner =
-  | { status: 'available' }
-  | {
-      status: 'degraded' | 'unavailable';
-      networkName: string;
-      chainId: Hex;
-      /** The URL of the failing default RPC endpoint. */
-      rpcUrl: string;
-      isInfuraEndpoint: boolean;
-      /**
-       * Whether the chain has an Infura endpoint the user can switch to.
-       * False when the failing endpoint is already Infura or when no Infura
-       * alternative exists.
-       */
-      canSwitchToInfura: boolean;
-    };

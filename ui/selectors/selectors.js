@@ -3958,32 +3958,6 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 );
 
 /**
- * Returns the banner state in the flattened shape consumed by the UI,
- * derived from NetworkConnectionBannerController. Memoized so consumers get
- * a stable reference while the controller state is unchanged.
- *
- * @type {(state: MetaMaskReduxState) => import('../../shared/constants/app-state').NetworkConnectionBanner}
- */
-export const getNetworkConnectionBanner = createSelector(
-  (state) => state.metamask.networkConnectionBannerStatus,
-  (state) => state.metamask.networkConnectionBannerNetwork,
-  (status, network) => {
-    if ((status !== 'degraded' && status !== 'unavailable') || !network) {
-      return { status: 'available' };
-    }
-
-    return {
-      status,
-      networkName: network.name,
-      chainId: network.chainId,
-      rpcUrl: network.rpcUrl,
-      isInfuraEndpoint: network.isInfuraEndpoint,
-      canSwitchToInfura: network.switchableInfuraNetworkClientId !== null,
-    };
-  },
-);
-
-/**
  * Check if the device is offline.
  *
  * @param {MetaMaskReduxState} state - The Redux state

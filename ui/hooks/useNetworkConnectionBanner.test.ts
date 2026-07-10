@@ -1,15 +1,21 @@
 import { act } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
-import { getNetworkConnectionBanner } from '../selectors/selectors';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 import mockState from '../../test/data/mock-state.json';
 import { MetaMetricsEventName } from '../../shared/constants/metametrics';
 import { useMessenger } from './useMessenger';
 import { useNetworkConnectionBanner } from './useNetworkConnectionBanner';
 
-jest.mock('../selectors/selectors', () => ({
-  ...jest.requireActual('../selectors/selectors'),
-  getNetworkConnectionBanner: jest.fn(),
+const mockSelectStatus = jest.fn();
+const mockSelectNetwork = jest.fn();
+
+jest.mock('@metamask/network-connection-banner-controller', () => ({
+  networkConnectionBannerControllerSelectors: {
+    selectNetworkConnectionBannerStatus: (state: unknown) =>
+      mockSelectStatus(state),
+    selectNetworkConnectionBannerNetwork: (state: unknown) =>
+      mockSelectNetwork(state),
+  },
 }));
 
 const mockTrackEvent = jest.fn();
@@ -44,39 +50,53 @@ jest.mock('./useMessenger', () => ({
   useMessenger: jest.fn(),
 }));
 
-const mockGetNetworkConnectionBanner = jest.mocked(getNetworkConnectionBanner);
 const mockSetShowInfuraSwitchToast = jest.mocked(setShowInfuraSwitchToast);
 const mockUseMessenger = jest.mocked(useMessenger);
 const mockMessengerCall = jest.fn();
 
+/**
+ * Configure the mocked controller selectors to describe a failing network.
+ *
+ * @param overrides - Partial `FailedNetwork` fields to override the defaults.
+ * @returns The full failing-network object the selector will return.
+ */
+function mockFailedNetwork(overrides: Record<string, unknown> = {}) {
+  const network = {
+    networkClientId: 'test-client',
+    name: 'Ethereum Mainnet',
+    rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+    chainId: '0x1',
+    isInfuraEndpoint: true,
+    switchableInfuraNetworkClientId: null,
+    ...overrides,
+  };
+  mockSelectNetwork.mockReturnValue(network);
+  return network;
+}
+
 describe('useNetworkConnectionBanner', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSelectStatus.mockReturnValue('available');
+    mockSelectNetwork.mockReturnValue(null);
     mockMessengerCall.mockResolvedValue(undefined);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockUseMessenger.mockReturnValue({ call: mockMessengerCall } as any);
   });
 
-  it('returns the banner state from the selector', () => {
-    mockGetNetworkConnectionBanner.mockReturnValue({ status: 'available' });
-
+  it('returns the banner state from the controller selectors', () => {
     const { result } = renderHookWithProviderTyped(
       () => useNetworkConnectionBanner(),
       mockState,
     );
 
     expect(result.current.status).toBe('available');
+    expect(result.current.network).toBeNull();
   });
 
   it('fires the banner-shown analytics event when transitioning to a visible status', async () => {
-    mockGetNetworkConnectionBanner.mockReturnValue({
-      status: 'degraded',
-      networkName: 'Ethereum Mainnet',
-      rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
-      chainId: '0x1',
-      isInfuraEndpoint: true,
-      canSwitchToInfura: false,
-    });
+    mockSelectStatus.mockReturnValue('degraded');
+    mockFailedNetwork();
 
     await act(async () => {
       renderHookWithProviderTyped(
@@ -102,8 +122,6 @@ describe('useNetworkConnectionBanner', () => {
   });
 
   it('does not fire analytics when the banner status stays available', () => {
-    mockGetNetworkConnectionBanner.mockReturnValue({ status: 'available' });
-
     renderHookWithProviderTyped(() => useNetworkConnectionBanner(), mockState);
 
     expect(mockTrackEvent).not.toHaveBeenCalled();
@@ -111,8 +129,6 @@ describe('useNetworkConnectionBanner', () => {
 
   describe('switchToInfura', () => {
     it('is a no-op when the banner is not visible', async () => {
-      mockGetNetworkConnectionBanner.mockReturnValue({ status: 'available' });
-
       const { result } = renderHookWithProviderTyped(
         () => useNetworkConnectionBanner(),
         mockState,
@@ -126,13 +142,10 @@ describe('useNetworkConnectionBanner', () => {
     });
 
     it('is a no-op when there is no switchable Infura endpoint', async () => {
-      mockGetNetworkConnectionBanner.mockReturnValue({
-        status: 'degraded',
-        networkName: 'Ethereum Mainnet',
-        rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
-        chainId: '0x1',
+      mockSelectStatus.mockReturnValue('degraded');
+      mockFailedNetwork({
         isInfuraEndpoint: false,
-        canSwitchToInfura: false,
+        switchableInfuraNetworkClientId: null,
       });
 
       const { result } = renderHookWithProviderTyped(
@@ -148,13 +161,11 @@ describe('useNetworkConnectionBanner', () => {
     });
 
     it('switches to the Infura endpoint via the controller and shows the success toast', async () => {
-      mockGetNetworkConnectionBanner.mockReturnValue({
-        status: 'unavailable',
-        networkName: 'Ethereum Mainnet',
+      mockSelectStatus.mockReturnValue('unavailable');
+      mockFailedNetwork({
         rpcUrl: 'https://eth-mainnet.alchemyapi.io/v2/abc',
-        chainId: '0x1',
         isInfuraEndpoint: false,
-        canSwitchToInfura: true,
+        switchableInfuraNetworkClientId: 'mainnet',
       });
 
       const { result } = renderHookWithProviderTyped(
@@ -174,13 +185,11 @@ describe('useNetworkConnectionBanner', () => {
     });
 
     it('does not show the success toast when the switch fails', async () => {
-      mockGetNetworkConnectionBanner.mockReturnValue({
-        status: 'unavailable',
-        networkName: 'Ethereum Mainnet',
+      mockSelectStatus.mockReturnValue('unavailable');
+      mockFailedNetwork({
         rpcUrl: 'https://eth-mainnet.alchemyapi.io/v2/abc',
-        chainId: '0x1',
         isInfuraEndpoint: false,
-        canSwitchToInfura: true,
+        switchableInfuraNetworkClientId: 'mainnet',
       });
       mockMessengerCall.mockRejectedValueOnce(
         new Error('No Infura endpoint available'),
