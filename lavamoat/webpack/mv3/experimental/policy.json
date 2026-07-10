@@ -5409,12 +5409,15 @@
     },
     "loglevel": {
       "globals": {
+        "clients": true,
         "console": true,
         "define": true,
         "document.cookie": true,
         "localStorage": true,
         "log": "write",
-        "navigator": true
+        "navigator": true,
+        "registration": true,
+        "serviceWorker": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
