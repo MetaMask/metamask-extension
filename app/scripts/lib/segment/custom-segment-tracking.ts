@@ -3,13 +3,32 @@
 // This module provides standalone helpers for direct Segment tracking flows
 // that happen outside AnalyticsController.
 
+import type { AnalyticsContext } from '@metamask/analytics-controller';
 import { isObject, type Json } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   type MetaMetricsContext,
 } from '../../../../shared/constants/metametrics';
+import {
+  enrichEventContext,
+  enrichEventProperties,
+  type PlatformAdapterEnrichmentContext,
+} from '../../controllers/analytics/platform-adapter';
 import { segment } from '.';
+
+let optOutEnrichmentContext: PlatformAdapterEnrichmentContext | undefined;
+
+/**
+ * Configures universal metadata enrichment for direct Segment opt-out events.
+ *
+ * @param enrichmentContext - Shared enrichment context used by the platform adapter.
+ */
+export function configureOptOutSegmentEnrichment(
+  enrichmentContext: PlatformAdapterEnrichmentContext,
+): void {
+  optOutEnrichmentContext = enrichmentContext;
+}
 
 /**
  * Partial state object that may contain AnalyticsController state.
@@ -203,12 +222,34 @@ export function trackSegmentEventWhileOptedOut({
     return;
   }
 
+  if (
+    optOutEnrichmentContext &&
+    !optOutEnrichmentContext.hasBasicFunctionalityEnabled()
+  ) {
+    return;
+  }
+
+  let enrichedProperties = properties;
+  let enrichedContext = context;
+
+  if (optOutEnrichmentContext) {
+    enrichedProperties = enrichEventProperties(
+      properties ?? {},
+      optOutEnrichmentContext,
+    ) as Record<string, Json>;
+
+    enrichedContext = enrichEventContext(
+      context as AnalyticsContext | undefined,
+      optOutEnrichmentContext,
+    ) as Partial<MetaMetricsContext>;
+  }
+
   try {
     segment.track({
       userId: analyticsId,
       event,
-      properties,
-      context,
+      properties: enrichedProperties,
+      context: enrichedContext,
     });
 
     // Flush immediately so the opt-out event is not left in the in-memory SDK queue.

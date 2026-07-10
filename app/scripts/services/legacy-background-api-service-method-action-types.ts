@@ -26,6 +26,23 @@ export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
 };
 
 /**
+ * Refreshes and returns the assets for the given accounts via the
+ * AssetsController (force-updating from remote sources).
+ *
+ * No-ops when the assets unify state feature is not enabled, since the
+ * AssetsController is not registered in that case.
+ *
+ * @param accounts - The accounts to fetch assets for.
+ * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
+ * @returns The assets for the given accounts, or `undefined` when the feature
+ * is not enabled.
+ */
+export type LegacyBackgroundApiServiceGetAssetsAction = {
+  type: `LegacyBackgroundApiService:getAssets`;
+  handler: LegacyBackgroundApiService['getAssets'];
+};
+
+/**
  * Determines if the given endpoint URL is a public endpoint URL.
  *
  * @param endpointUrl - The endpoint URL to check.
@@ -34,6 +51,17 @@ export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
 export type LegacyBackgroundApiServiceIsPublicEndpointUrlAction = {
   type: `LegacyBackgroundApiService:isPublicEndpointUrl`;
   handler: LegacyBackgroundApiService['isPublicEndpointUrl'];
+};
+
+/**
+ * Determines whether the sendBundle feature is supported for the given chain.
+ *
+ * @param chainId - The chain ID to check.
+ * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceIsSendBundleSupportedAction = {
+  type: `LegacyBackgroundApiService:isSendBundleSupported`;
+  handler: LegacyBackgroundApiService['isSendBundleSupported'];
 };
 
 /**
@@ -54,6 +82,18 @@ export type LegacyBackgroundApiServiceGetRequestAccountTabIdsAction = {
 export type LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction = {
   type: `LegacyBackgroundApiService:getOpenMetamaskTabsIds`;
   handler: LegacyBackgroundApiService['getOpenMetamaskTabsIds'];
+};
+
+/**
+ * Updates the phishing lists if necessary and then checks whether the given
+ * website is a known phishing site.
+ *
+ * @param website - The website origin to check.
+ * @returns The phishing detection result.
+ */
+export type LegacyBackgroundApiServiceGetPhishingResultAction = {
+  type: `LegacyBackgroundApiService:getPhishingResult`;
+  handler: LegacyBackgroundApiService['getPhishingResult'];
 };
 
 /**
@@ -82,6 +122,20 @@ export type LegacyBackgroundApiServiceUnMarkPasswordForgottenAction = {
 export type LegacyBackgroundApiServiceGetCodeAction = {
   type: `LegacyBackgroundApiService:getCode`;
   handler: LegacyBackgroundApiService['getCode'];
+};
+
+/**
+ * Checks whether a delegation has been disabled on-chain by performing an
+ * `eth_call` against the delegation manager contract.
+ *
+ * @param delegationManagerAddress - The delegation manager contract address.
+ * @param delegationHash - The hash of the delegation to check.
+ * @param networkClientId - The ID of the network client to use for the request.
+ * @returns `true` if the delegation is disabled, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceCheckDelegationDisabledAction = {
+  type: `LegacyBackgroundApiService:checkDelegationDisabled`;
+  handler: LegacyBackgroundApiService['checkDelegationDisabled'];
 };
 
 /**
@@ -365,6 +419,21 @@ export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
 };
 
 /**
+ * Toggles external services on or off.
+ *
+ * When enabled, token detection and non-RPC gas fee APIs are started, and the
+ * shield service is started if the user has an active shield subscription.
+ * When disabled, those services are stopped, subscription polling is halted,
+ * and the shield service is stopped if applicable.
+ *
+ * @param useExternal - Whether external services should be enabled.
+ */
+export type LegacyBackgroundApiServiceToggleExternalServicesAction = {
+  type: `LegacyBackgroundApiService:toggleExternalServices`;
+  handler: LegacyBackgroundApiService['toggleExternalServices'];
+};
+
+/**
  * Accepts a permissions request. Silently ignores the request if it can no
  * longer be found.
  *
@@ -376,17 +445,33 @@ export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
 };
 
 /**
+ * Throw an artificial error in a timeout handler for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+ * use this for handling errors.
+ */
+export type LegacyBackgroundApiServiceThrowTestErrorAction = {
+  type: `LegacyBackgroundApiService:throwTestError`;
+  handler: LegacyBackgroundApiService['throwTestError'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
+  | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
+  | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
+  | LegacyBackgroundApiServiceGetPhishingResultAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction
+  | LegacyBackgroundApiServiceCheckDelegationDisabledAction
   | LegacyBackgroundApiServiceEstimateGasAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
@@ -411,4 +496,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
-  | LegacyBackgroundApiServiceAcceptPermissionsRequestAction;
+  | LegacyBackgroundApiServiceToggleExternalServicesAction
+  | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
+  | LegacyBackgroundApiServiceThrowTestErrorAction;

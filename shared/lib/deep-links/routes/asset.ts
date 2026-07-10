@@ -8,7 +8,6 @@ export enum AssetQueryParams {
 
 export const asset = new Route({
   pathname: '/asset',
-  skipInterstitial: true,
   getTitle: (_: URLSearchParams) => 'deepLink_theAssetPage',
   handler: function handler(params: URLSearchParams) {
     const assetId = params.get(AssetQueryParams.AssetId);
