@@ -21,7 +21,6 @@ import transactionGroup from '../../../../test/data/mock-pending-transaction-dat
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
@@ -43,9 +42,7 @@ import { getAccountTree } from '../../../selectors/multichain-accounts/account-t
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionListItem from '.';
 
-jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
-  useShouldShowSpeedUp: jest.fn(),
-}));
+const mockTrackEvent = jest.fn();
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -54,11 +51,15 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: jest.fn(),
+      trackEvent: mockTrackEvent,
       createEventBuilder,
     }),
   };
 });
+
+jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
+  useShouldShowSpeedUp: jest.fn(),
+}));
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,
@@ -220,35 +221,28 @@ describe('TransactionListItem', () => {
       );
 
       const store = mockStore(mockState);
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
       const { queryByTestId } = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <TransactionListItem transactionGroup={transactionGroup} />
-        </MetaMetricsContext.Provider>,
+        <TransactionListItem transactionGroup={transactionGroup} />,
         store,
       );
       const activityListItem = queryByTestId('activity-list-item');
       fireEvent.click(activityListItem);
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.ActivityDetailsOpened,
-        category: MetaMetricsEventCategory.Navigation,
+        name: MetaMetricsEventName.ActivityDetailsOpened,
         properties: {
+          category: MetaMetricsEventCategory.Navigation,
           activity_type: 'send',
         },
+        sensitiveProperties: {},
       });
       fireEvent.click(activityListItem);
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.ActivityDetailsClosed,
-        category: MetaMetricsEventCategory.Navigation,
+        name: MetaMetricsEventName.ActivityDetailsClosed,
         properties: {
+          category: MetaMetricsEventCategory.Navigation,
           activity_type: 'send',
         },
+        sensitiveProperties: {},
       });
     });
   });

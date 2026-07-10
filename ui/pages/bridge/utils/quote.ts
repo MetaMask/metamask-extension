@@ -188,9 +188,7 @@ export const bpsToPercentage = (
 
 export const readMmFee = (quote: QuoteResponse) => {
   // Get the fee percentage from the quote or fallback to default
-  // @ts-expect-error: controller types are not up to date yet
   const quoteBpsFee = quote.quote.feeData?.metabridge?.quoteBpsFee;
-  // @ts-expect-error: controller types are not up to date yet
   const baseBpsFee = quote.quote.feeData?.metabridge?.baseBpsFee;
   const discountType = quote.quote.feeData?.metabridge?.discountType;
   const quoteFeePercentage = bpsToPercentage(quoteBpsFee);

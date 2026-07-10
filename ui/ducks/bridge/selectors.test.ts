@@ -174,8 +174,23 @@ describe('Bridge selectors', () => {
     });
   };
 
-  const createBtcZeroNetworkFeeQuoteState = () =>
-    createBtcBridgeState({ nonEvmFeesInNative: '0' });
+  // The bumped @metamask/bridge-controller derives the src token exchange rate
+  // from the quote's srcAsset (assetExchangeRates/marketData/currencyRates)
+  // instead of the client-provided fromTokenExchangeRate. Seed the bridge
+  // controller's assetExchangeRates so the ERC20 srcAsset in
+  // mockErc20Erc20Quotes resolves to the same rates the old tests assumed.
+  const mockErc20SrcAssetRates = (usdExchangeRate: string) =>
+    ({
+      [(
+        toAssetId(
+          mockErc20Erc20Quotes[0].quote.srcAsset.address,
+          formatChainIdToCaip(mockErc20Erc20Quotes[0].quote.srcChainId),
+        ) as string
+      ).toLowerCase()]: {
+        exchangeRate: '1',
+        usdExchangeRate,
+      },
+    }) as never;
 
   const createTronBridgeState = ({
     fromTokenInputValue = '1',
@@ -258,6 +273,9 @@ describe('Bridge selectors', () => {
 
   const createTronZeroNetworkFeeQuoteState = () =>
     createTronBridgeState({ nonEvmFeesInNative: '0' });
+
+  const createBtcZeroNetworkFeeQuoteState = () =>
+    createBtcBridgeState({ nonEvmFeesInNative: '0' });
 
   describe('getFromChain', () => {
     it('returns the fromChain from the multichain network controller', () => {
@@ -551,6 +569,24 @@ describe('Bridge selectors', () => {
       expect(result).not.toContain(undefined);
       expect(result).not.toContain(null);
     });
+
+    it('includes Robinhood Chain when present in chainRanking and the allowlist', () => {
+      const robinhoodCaipChainId = formatChainIdToCaip(
+        CHAIN_IDS.ROBINHOOD_CHAIN,
+      );
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: robinhoodCaipChainId }],
+          },
+        },
+      });
+      const result = getFromChains(state as never);
+
+      expect(result).toStrictEqual([
+        { chainId: robinhoodCaipChainId, name: 'Robinhood' },
+      ]);
+    });
   });
 
   describe('getToChains', () => {
@@ -612,7 +648,7 @@ describe('Bridge selectors', () => {
       });
       const result = getToChains(state as never);
 
-      expect(result).toHaveLength(17);
+      expect(result).toHaveLength(18);
       expect(result.map(({ name, chainId }) => ({ name, chainId })))
         .toMatchInlineSnapshot(`
         [
@@ -681,11 +717,33 @@ describe('Bridge selectors', () => {
             "name": "Arc",
           },
           {
+            "chainId": "eip155:4663",
+            "name": "Robinhood Chain",
+          },
+          {
             "chainId": "eip155:324",
             "name": "zkSync",
           },
         ]
       `);
+    });
+
+    it('includes Robinhood Chain when present in chainRanking and the allowlist', () => {
+      const robinhoodCaipChainId = formatChainIdToCaip(
+        CHAIN_IDS.ROBINHOOD_CHAIN,
+      );
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: robinhoodCaipChainId }],
+          },
+        },
+      });
+      const result = getToChains(state as never);
+
+      expect(result).toStrictEqual([
+        { chainId: robinhoodCaipChainId, name: 'Robinhood' },
+      ]);
     });
 
     it('returns sorted toChains list when chainRanking is set', () => {
@@ -993,8 +1051,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('1'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('1'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1073,8 +1131,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1169,8 +1227,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1367,8 +1425,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('1'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('1'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1457,8 +1515,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1561,8 +1619,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1698,8 +1756,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,

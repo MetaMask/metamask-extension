@@ -9,15 +9,6 @@ import {
 import { ConnectionStatus, HardwareWalletType } from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
-jest.mock(
-  '../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked',
-);
-jest.mock('../../hooks/useHardwareWalletRecoveryLocation');
-jest.mock('./HardwareWalletContext', () => ({
-  useHardwareWalletConfig: jest.fn(),
-  useHardwareWalletState: jest.fn(),
-}));
-
 const mockTrackEvent = jest.fn();
 
 jest.mock('../../hooks/useAnalytics', () => {
@@ -32,6 +23,15 @@ jest.mock('../../hooks/useAnalytics', () => {
     }),
   };
 });
+
+jest.mock(
+  '../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked',
+);
+jest.mock('../../hooks/useHardwareWalletRecoveryLocation');
+jest.mock('./HardwareWalletContext', () => ({
+  useHardwareWalletConfig: jest.fn(),
+  useHardwareWalletState: jest.fn(),
+}));
 
 const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
   trackHardwareWalletRecoveryConnectCtaClicked,

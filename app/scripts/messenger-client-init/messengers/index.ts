@@ -23,10 +23,6 @@ import {
   getWebSocketServiceMessenger,
 } from './snaps';
 import {
-  getTransactionControllerMessenger,
-  getTransactionControllerInitMessenger,
-} from './transaction-controller-messenger';
-import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
@@ -144,6 +140,11 @@ import {
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 import { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
+import {
+  getRampsControllerInitMessenger,
+  getRampsControllerMessenger,
+} from './ramps-controller-messenger';
+import { getRampsServiceMessenger } from './ramps-service-messenger';
 import {
   getRewardsControllerInitMessenger,
   getRewardsControllerMessenger,
@@ -263,6 +264,12 @@ export { getOnboardingControllerMessenger } from './onboarding-controller-messen
 export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
+export {
+  getRampsControllerInitMessenger,
+  getRampsControllerMessenger,
+} from './ramps-controller-messenger';
+export type { RampsControllerInitMessenger } from './ramps-controller-messenger';
+export { getRampsServiceMessenger } from './ramps-service-messenger';
 export type {
   PermissionControllerMessenger,
   PermissionControllerInitMessenger,
@@ -633,6 +640,14 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getQrSyncControllerMessenger,
     getInitMessenger: noop,
   },
+  RampsService: {
+    getMessenger: getRampsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RampsController: {
+    getMessenger: getRampsControllerMessenger,
+    getInitMessenger: getRampsControllerInitMessenger,
+  },
   TokenBalancesController: {
     getMessenger: getTokenBalancesControllerMessenger,
     getInitMessenger: getTokenBalancesControllerInitMessenger,
@@ -648,10 +663,6 @@ export const MESSENGER_FACTORIES = {
   TokensController: {
     getMessenger: getTokensControllerMessenger,
     getInitMessenger: getTokensControllerInitMessenger,
-  },
-  TransactionController: {
-    getMessenger: getTransactionControllerMessenger,
-    getInitMessenger: getTransactionControllerInitMessenger,
   },
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,

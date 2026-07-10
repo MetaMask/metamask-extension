@@ -115,6 +115,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.PerpsController',
   'data.RewardsController.rewardsAccounts.bip122:000000000019d6689c085ae165831e93:bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastFreshOptInStatusCheck',
+  'data.RewardsController.rewardsActiveAccount.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3.lastFreshOptInStatusCheck',
 ];

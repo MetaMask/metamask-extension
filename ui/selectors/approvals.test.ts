@@ -71,6 +71,13 @@ describe('approval selectors', () => {
 
       expect(result).toStrictEqual(mockedState.metamask.approvalFlows);
     });
+
+    it('should return same reference when state has not changed (memoization)', () => {
+      const result1 = getApprovalFlows(mockedState);
+      const result2 = getApprovalFlows(mockedState);
+
+      expect(result1).toBe(result2);
+    });
   });
 
   describe('getPendingApprovals', () => {

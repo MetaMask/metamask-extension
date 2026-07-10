@@ -6,6 +6,7 @@ import {
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { useSmartSlippage } from './useSmartSlippage';
 
@@ -29,6 +30,34 @@ describe('useSmartSlippage', () => {
 
     const { store } = renderUseSmartSlippage(state);
     expect(store?.getState().bridge.slippage).toBe(2);
+  });
+
+  it('dispatches EVM stablecoin slippage (0.5%) for a Robinhood Chain stablecoin pair (USDe -> USDG)', () => {
+    const robinhoodCaipChainId = formatChainIdToCaip(CHAIN_IDS.ROBINHOOD_CHAIN);
+    const state = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [{ chainId: robinhoodCaipChainId }],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromToken: toBridgeToken({
+          decimals: 18,
+          assetId: `${robinhoodCaipChainId}/erc20:0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34`,
+          symbol: 'USDe',
+          name: 'USDe',
+        }),
+        toToken: toBridgeToken({
+          decimals: 6,
+          assetId: `${robinhoodCaipChainId}/erc20:0x5fc5360d0400a0fd4f2af552add042d716f1d168`,
+          symbol: 'USDG',
+          name: 'Global Dollar',
+        }),
+      },
+    });
+
+    const { store } = renderUseSmartSlippage(state);
+    expect(store?.getState().bridge.slippage).toBe(0.5);
   });
 
   it('dispatches undefined (AUTO) for a Solana-to-Solana swap', () => {

@@ -17,6 +17,7 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
+import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import { UIMessengerProvider } from '../contexts/ui-messenger';
 import ErrorPageBase from './error-page/error-page.component';
@@ -28,6 +29,7 @@ function AppProviders() {
     <MetaMetricsProvider>
       <I18nProvider>
         <QueryClientProvider client={queryClient}>
+          <RampsBootstrap />
           <AssetPollingProvider>
             <MetamaskIdentityProvider>
               <MetamaskNotificationsProvider>

@@ -865,7 +865,8 @@
     },
     "@metamask/design-system-shared": {
       "packages": {
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "react": true
       }
     },
     "@metamask/eth-token-tracker>@metamask/eth-block-tracker": {
@@ -1377,6 +1378,14 @@
         "eslint>fast-deep-equal": true,
         "@metamask/providers>is-stream": true,
         "@metamask/providers>readable-stream": true
+      }
+    },
+    "@metamask/ramps-controller": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true
       }
     },
     "@metamask/react-data-query": {
