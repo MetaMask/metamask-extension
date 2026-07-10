@@ -91,7 +91,11 @@ export const SmartTransactionsBannerAlert = React.memo(
             currentConfirmation?.type as TransactionType,
           );
 
-    const marginStyle = React.useMemo(() => {
+    if (!shouldRender) {
+      return null;
+    }
+
+    const getMarginStyle = () => {
       switch (marginType) {
         case 'none':
           return { margin: 0 };
@@ -102,11 +106,7 @@ export const SmartTransactionsBannerAlert = React.memo(
         default:
           return undefined;
       }
-    }, [marginType]);
-
-    if (!shouldRender) {
-      return null;
-    }
+    };
 
     return (
       <Box className="transaction-alerts">
@@ -114,7 +114,7 @@ export const SmartTransactionsBannerAlert = React.memo(
           severity={BannerAlertSeverity.Info}
           onClose={dismissAlert}
           data-testid="smart-transactions-banner-alert"
-          style={marginStyle}
+          style={getMarginStyle()}
         >
           <Text fontWeight={FontWeight.Bold}>
             {t('smartTransactionsEnabledTitle')}
