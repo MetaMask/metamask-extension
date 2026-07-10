@@ -5,7 +5,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { PerpsAttributionReactContext } from '../../providers/perps/PerpsAttributionContext';
+import {
+  PerpsAttributionReactContext,
+  readScreenViewedHashAttribution,
+} from '../../providers/perps/PerpsAttributionContext';
 import { useAnalytics } from '../useAnalytics';
 
 export type UsePerpsEventTrackingDeclarativeOptions = {
@@ -55,10 +58,19 @@ export function usePerpsEventTracking(
       // Attribution wins over the call-site: UTM keys are never set by call
       // sites (always safe to add), and a deeplink entry is the authoritative
       // `source`, overriding the screen's default source value.
+      // `readScreenViewedHashAttribution` reads the CURRENT hash query at emit
+      // time and wins over the provider store: react-router applies the
+      // destination `search` one render after the hash is already correct, so
+      // the fire-once entry emit reads it from the hash (deterministic, no
+      // re-fire) while the store still covers later in-app navigations.
       const attributedProperties =
         eventName === MetaMetricsEventName.PerpsScreenViewed &&
         screenViewedAttribution
-          ? { ...properties, ...screenViewedAttribution }
+          ? {
+              ...properties,
+              ...screenViewedAttribution,
+              ...readScreenViewedHashAttribution(),
+            }
           : properties;
       return createEventBuilder(eventName)
         .addCategory(MetaMetricsEventCategory.Perps)

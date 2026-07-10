@@ -48,6 +48,11 @@ describe('usePerpsEventTracking', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    // Reset the hash so window.location-based attribution never leaks tests.
+    window.location.hash = '';
+  });
+
   describe('imperative API', () => {
     it('calls trackEvent with Perps category and timestamp in properties', () => {
       const { result } = renderHook(() => usePerpsEventTracking());
@@ -285,6 +290,34 @@ describe('usePerpsEventTracking', () => {
           }),
         }),
       );
+    });
+
+    it('reads utm from window.location.hash when router search still lags', () => {
+      // The real deeplink race: window.location.hash is already the utm-bearing
+      // market route the instant it renders, but react-router applies the
+      // destination useLocation().search one render LATER. Emulate that by
+      // seeding the provider with an EMPTY search while the hash carries utm —
+      // the fire-once entry emit must read utm from the hash at emit time.
+      window.location.hash =
+        '#/perps/market/BTC?source=deeplink&utm_source=cdp_test' +
+        '&utm_medium=push&utm_campaign=q3_launch';
+
+      const { result } = renderHook(() => usePerpsEventTracking(), {
+        wrapper: wrapperWith(''),
+      });
+
+      act(() => {
+        result.current.track(MetaMetricsEventName.PerpsScreenViewed, {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'asset_details',
+          [PERPS_EVENT_PROPERTY.SOURCE]: 'market_list',
+        });
+      });
+
+      const { properties } = mockTrackEvent.mock.calls[0][0];
+      expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('deeplink');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_MEDIUM]).toBe('push');
+      expect(properties[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN]).toBe('q3_launch');
     });
 
     // Regression (real navigation race): the provider mounts, THEN the

@@ -97,6 +97,69 @@ function isDeeplinkSearch(search?: string): boolean {
 }
 
 /**
+ * The query substring of the hash route — everything from the first `?` inside
+ * `window.location.hash`. In a hash router the destination query lives in the
+ * hash, and `window.location` reflects it synchronously the instant the route
+ * renders, whereas react-router's `useLocation().search` can lag one render.
+ * Reading the hash directly makes the entry screen-view's attribution
+ * deterministic. Empty in non-hash / test environments (callers fall back to the
+ * provider's locationSearch-derived store).
+ *
+ * @returns The hash query including its leading `?`, or `''` when absent.
+ */
+export function getHashSearch(): string {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+  const queryIndex = window.location.hash.indexOf('?');
+  return queryIndex === -1 ? '' : window.location.hash.slice(queryIndex);
+}
+
+function mapUtmToProperties(
+  utm: ControllerAttributionContext,
+): Record<string, Json> {
+  const merged: Record<string, Json> = {};
+  if (utm.utmSource !== undefined) {
+    merged[PERPS_EVENT_PROPERTY.UTM_SOURCE] = utm.utmSource;
+  }
+  if (utm.utmMedium !== undefined) {
+    merged[PERPS_EVENT_PROPERTY.UTM_MEDIUM] = utm.utmMedium;
+  }
+  if (utm.utmCampaign !== undefined) {
+    merged[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN] = utm.utmCampaign;
+  }
+  if (utm.utmContent !== undefined) {
+    merged[PERPS_EVENT_PROPERTY.UTM_CONTENT] = utm.utmContent;
+  }
+  if (utm.utmTerm !== undefined) {
+    merged[PERPS_EVENT_PROPERTY.UTM_TERM] = utm.utmTerm;
+  }
+  return merged;
+}
+
+/**
+ * Read UTM + deeplink source from the CURRENT hash query at call time. Used by
+ * `usePerpsEventTracking` to stamp the entry PERPS_SCREEN_VIEWED synchronously
+ * at emit time — react-router applies the destination `search` one render after
+ * the hash is already correct, so the fire-once entry emit would otherwise miss
+ * UTM. Returns `{}` when the hash carries no attribution, so later in-app
+ * navigations fall back to the provider's sticky store.
+ *
+ * @returns PERPS_EVENT_PROPERTY-keyed UTM (plus `source=deeplink`) from the hash.
+ */
+export function readScreenViewedHashAttribution(): Record<string, Json> {
+  const search = getHashSearch();
+  if (!search) {
+    return {};
+  }
+  const merged = mapUtmToProperties(parseUtmAttribution(search) ?? {});
+  if (isDeeplinkSearch(search)) {
+    merged[PERPS_EVENT_PROPERTY.SOURCE] = PERPS_EVENT_VALUE.SOURCE.DEEPLINK;
+  }
+  return merged;
+}
+
+/**
  * Derive the flow attribution (discovery source + deeplink entry point) from a
  * location search string. Used to seed provider state synchronously on the
  * first render so the entry screen's PERPS_SCREEN_VIEWED is not emitted before
@@ -210,26 +273,10 @@ export function PerpsAttributionProvider({
     // emit's UTM; deriving from locationSearch here makes UTM as synchronous as
     // the deeplink source. The sticky store still covers later in-app
     // navigations whose search no longer carries utm.
-    const utm: ControllerAttributionContext = {
+    const merged = mapUtmToProperties({
       ...utmAttribution,
       ...(parseUtmAttribution(locationSearch ?? '') ?? {}),
-    };
-    const merged: Record<string, Json> = {};
-    if (utm.utmSource !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_SOURCE] = utm.utmSource;
-    }
-    if (utm.utmMedium !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_MEDIUM] = utm.utmMedium;
-    }
-    if (utm.utmCampaign !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_CAMPAIGN] = utm.utmCampaign;
-    }
-    if (utm.utmContent !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_CONTENT] = utm.utmContent;
-    }
-    if (utm.utmTerm !== undefined) {
-      merged[PERPS_EVENT_PROPERTY.UTM_TERM] = utm.utmTerm;
-    }
+    });
     // Sticky flag OR the current search — same render-time synchronicity.
     if (isDeeplinkEntry || isDeeplinkSearch(locationSearch)) {
       merged[PERPS_EVENT_PROPERTY.SOURCE] = PERPS_EVENT_VALUE.SOURCE.DEEPLINK;
