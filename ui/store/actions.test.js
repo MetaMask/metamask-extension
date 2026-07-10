@@ -844,6 +844,14 @@ describe('Actions', () => {
         ),
       ).toStrictEqual(seedPhrase);
     });
+
+    it('decodes a Uint8Array from the background', () => {
+      expect(
+        actions.decodeSeedPhraseFromBackground(
+          new Uint8Array(actions.encodeSeedPhraseForBackground(seedPhrase)),
+        ),
+      ).toStrictEqual(seedPhrase);
+    });
   });
 
   describe('#createNewVaultAndGetSeedPhrase', () => {
