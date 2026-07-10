@@ -4,6 +4,7 @@ import {
   Controller as NotificationServicesPushController,
   defaultState,
 } from '@metamask/notification-services-controller/push-services';
+import type { PushAnalyticsPayload } from '@metamask/notification-services-controller/push-services';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
@@ -181,10 +182,15 @@ describe('NotificationServicesPushControllerInit - pushNotificationClicked subsc
     jest.spyOn(requestMock.platform, 'getVersion').mockReturnValue('7.80.0');
     const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
     NotificationServicesPushControllerInit(requestMock);
-    const [[, clickCallback]] = subscribeSpy.mock.calls as [
-      [string, (payload: Record<string, unknown>) => void],
-    ][];
-    return { clickCallback };
+    const clickCallback = subscribeSpy.mock.calls.find(
+      (call) =>
+        call[0] ===
+        'NotificationServicesPushController:pushNotificationClicked',
+    )?.[1] as ((payload: PushAnalyticsPayload) => void) | undefined;
+    expect(clickCallback).toBeDefined();
+    return {
+      clickCallback: clickCallback as (payload: PushAnalyticsPayload) => void,
+    };
   };
 
   const mockTrackEvent = jest.mocked(trackEvent);
