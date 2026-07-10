@@ -13,6 +13,11 @@ import {
   type NotificationServicesPushControllerMessenger,
 } from '../messengers/notifications';
 import { getRootMessenger } from '../../lib/messenger';
+import { trackEvent } from '../../controllers/analytics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   getAppVersionForRegistration,
   getNormalisedLocale,
@@ -20,6 +25,16 @@ import {
 } from './notification-services-push-controller-init';
 
 jest.mock('@metamask/notification-services-controller/push-services');
+
+jest.mock('../../controllers/analytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    trackEvent: jest.fn(),
+    createEventBuilder,
+  };
+});
 
 function buildInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
@@ -156,5 +171,65 @@ describe('NotificationServicesPushControllerInit - getNormalisedLocale', () => {
 
     // does nothing (as does not specify region)
     expect(getNormalisedLocale('en')).toBe('en');
+  });
+});
+
+describe('NotificationServicesPushControllerInit - pushNotificationClicked subscription', () => {
+  const arrange = () => {
+    const requestMock = buildInitRequestMock();
+    jest.spyOn(requestMock.platform, 'getVersion').mockReturnValue('7.80.0');
+    const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+    NotificationServicesPushControllerInit(requestMock);
+    const [[, clickCallback]] = subscribeSpy.mock.calls as [
+      [string, (payload: Record<string, unknown>) => void],
+    ][];
+    return { clickCallback };
+  };
+
+  const mockTrackEvent = jest.mocked(trackEvent);
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('tracks the click event without chain_id when chain_id is absent', () => {
+    const { clickCallback } = arrange();
+    clickCallback({
+      notification_id: 'test-id',
+      notification_type: 'wallet_activity',
+      notification_subtype: 'eth_received',
+    });
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.PushNotificationClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.PushNotifications,
+          notification_id: 'test-id',
+          notification_type: 'wallet_activity',
+          notification_subtype: 'eth_received',
+          deeplink: '#notifications/test-id',
+        }),
+      }),
+    );
+    expect(mockTrackEvent.mock.calls[0][0].properties).not.toHaveProperty(
+      'chain_id',
+    );
+  });
+
+  it('includes chain_id in the tracked event when present', () => {
+    const { clickCallback } = arrange();
+    clickCallback({
+      notification_id: 'test-id',
+      notification_type: 'wallet_activity',
+      notification_subtype: 'eth_received',
+      chain_id: 1,
+    });
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          chain_id: 1,
+        }),
+      }),
+    );
   });
 });

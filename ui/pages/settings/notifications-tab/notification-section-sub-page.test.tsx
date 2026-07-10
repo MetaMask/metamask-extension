@@ -18,6 +18,9 @@ import type { NotificationsSettingsSectionType } from '../../notifications-setti
 import { getNotificationsSettingsSectionRoute } from '../../notifications-settings/notifications-settings-routes';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
+const mockTrackEvent = jest.fn();
+const mockSwitchAccountNotifications = jest.fn();
+
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
@@ -25,13 +28,11 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: jest.fn(),
+      trackEvent: mockTrackEvent,
       createEventBuilder,
     }),
   };
 });
-
-const mockSwitchAccountNotifications = jest.fn();
 
 jest.mock(
   '../../notifications-settings/notifications-settings-per-account',
@@ -508,6 +509,147 @@ describe('NotificationSectionSubPage', () => {
         'notifications-settings-account-0x1111111111111111111111111111111111111111',
       ),
     ).toBeInTheDocument();
+  });
+
+  describe('wallet-activity aggregate toggle analytics', () => {
+    const address1 =
+      '0x1111111111111111111111111111111111111111' as `0x${string}`;
+    const address2 =
+      '0x2222222222222222222222222222222222222222' as `0x${string}`;
+
+    const acc1 = createInternalAccount({
+      id: 'agg-account-1',
+      address: address1,
+      type: 'eip155:eoa',
+      name: 'Agg Account 1',
+    });
+    const acc2 = createInternalAccount({
+      id: 'agg-account-2',
+      address: address2,
+      type: 'eip155:eoa',
+      name: 'Agg Account 2',
+    });
+
+    const buildAggStore = () =>
+      mockStore({
+        metamask: {
+          isNotificationServicesEnabled: true,
+          isUpdatingMetamaskNotifications: false,
+          isUpdatingMetamaskNotificationsAccount: [],
+          subscriptionAccountsSeen: [address1, address2],
+          accountTree: {
+            selectedAccountGroup: 'entropy:wallet-agg/0',
+            wallets: {
+              'entropy:wallet-agg': {
+                id: 'entropy:wallet-agg',
+                type: 'entropy',
+                metadata: { name: 'Wallet Agg' },
+                groups: {
+                  'entropy:wallet-agg/0': {
+                    id: 'entropy:wallet-agg/0',
+                    type: 'multichain-account',
+                    metadata: {
+                      name: 'Agg Account 1',
+                      pinned: false,
+                      hidden: false,
+                    },
+                    accounts: [acc1.id],
+                  },
+                  'entropy:wallet-agg/1': {
+                    id: 'entropy:wallet-agg/1',
+                    type: 'multichain-account',
+                    metadata: {
+                      name: 'Agg Account 2',
+                      pinned: false,
+                      hidden: false,
+                    },
+                    accounts: [acc2.id],
+                  },
+                },
+              },
+            },
+          },
+          internalAccounts: {
+            selectedAccount: acc1.id,
+            accounts: { [acc1.id]: acc1, [acc2.id]: acc2 },
+          },
+        },
+      });
+
+    beforeEach(() => {
+      mockSwitchAccountNotifications.mockResolvedValue(undefined);
+    });
+
+    const renderAggPage = (accounts: { address: `0x${string}`; enabled: boolean }[]) => {
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        preferences: createMockNotificationPreferences({
+          walletActivity: {
+            pushNotificationsEnabled: true,
+            inAppNotificationsEnabled: true,
+            accounts,
+          },
+        }),
+        hasNotificationPreferences: true,
+        isLoading: false,
+        isUpdatingPreferences: false,
+        error: null,
+        refetchPreferences: jest.fn(),
+        updatePreference: jest.fn(),
+        updatePreferencesSection: jest.fn(),
+      });
+
+      renderWithProvider(
+        <NotificationSectionSubPage sectionType="walletActivity" />,
+        buildAggStore(),
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+    };
+
+    it('tracks aggregate wallet_activity enabled when the first disabled account is toggled on', async () => {
+      renderAggPage([
+        { address: address1, enabled: false },
+        { address: address2, enabled: false },
+      ]);
+
+      fireEvent.click(
+        screen.getByTestId(`notifications-settings-account-${address1}`),
+      );
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              settings_type: 'wallet_activity',
+              notification_channel: 'all',
+              enabled: true,
+            }),
+          }),
+        );
+      });
+    });
+
+    it('tracks aggregate wallet_activity disabled when the last enabled account is toggled off', async () => {
+      renderAggPage([
+        { address: address1, enabled: true },
+        { address: address2, enabled: false },
+      ]);
+
+      fireEvent.click(
+        screen.getByTestId(`notifications-settings-account-${address1}`),
+      );
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              settings_type: 'wallet_activity',
+              notification_channel: 'all',
+              enabled: false,
+            }),
+          }),
+        );
+      });
+    });
   });
 
   describe('section notification toggle wiring', () => {
