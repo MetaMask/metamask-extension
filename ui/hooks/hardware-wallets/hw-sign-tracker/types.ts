@@ -12,12 +12,6 @@ export type HwSignTrackerAction =
 /** Result of processing a transaction event through a tracking strategy. */
 export type EventResult = { action: HwSignTrackerAction | null };
 
-export const NO_ACTION: EventResult = { action: null };
-
-export type SignedEventClassifier = (
-  transactionMeta: TransactionMeta,
-) => HwSignTrackerAction | null;
-
 /**
  * Sentinel {@link EventResult} returned by tracking strategies when a processed
  * event should not dispatch any state-machine action.
@@ -95,12 +89,6 @@ export type ExpectedTransactionParams = {
 };
 
 /** Options for configuring the hardware wallet signature tracker. */
-export type ExpectedTransactionParams = {
-  data?: Hex;
-  to?: string;
-  value?: string;
-};
-
 export type UseHwSignTrackerOptions = {
   enabled?: boolean;
   useBatchTracking: boolean;

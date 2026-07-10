@@ -71,8 +71,6 @@ export function useHwSwapQrState({
   confirmationTxDataRef.current = confirmationTxData;
 
   const currentQrRequestId = qrSignRequest?.request.requestId;
-  const firstStepRequestIdRef = useRef<string | undefined>(undefined);
-  const stepTrackingResetKeyRef = useRef(stepTrackingResetKey);
 
   // Track the first-step QR request id to detect the final step before the
   // state machine transitions.
