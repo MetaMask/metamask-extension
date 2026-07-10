@@ -6,14 +6,12 @@ import process from 'node:process';
 import { join, resolve } from 'node:path';
 import {
   type Configuration,
-  type Chunk,
   type FileCacheOptions,
   webpack,
   Compiler,
   WebpackPluginInstance,
   RuleSetRule,
 } from 'webpack';
-import { LavaMoatPlugin } from '@lavamoat/webpack';
 import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
