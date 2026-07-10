@@ -16,7 +16,6 @@ import {
 // resolve to this file (TypeScript prefers sibling `utils.ts` over the
 // `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
 export { willFlipPosition } from './utils/orderUtils';
-export { buildPerpsVipTrackingData } from './utils/trackingData';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -657,36 +656,4 @@ export const getPositionPnlRatio = (position: {
   }
 
   return undefined;
-};
-
-/**
- * Derives the TP/SL risk management type string for analytics.
- * Returns a value like 'create_tpsl', 'update_tp', 'create_sl', etc.
- *
- * @param options - Input values used to determine the type string.
- * @param options.takeProfitPrice - The take profit price, if set.
- * @param options.stopLossPrice - The stop loss price, if set.
- * @param options.hasExistingTpsl - Whether the position already has a TP or SL set.
- * @returns A type string such as 'create_tpsl', 'update_tp', or 'create_sl'.
- */
-export const deriveTpslType = ({
-  takeProfitPrice,
-  stopLossPrice,
-  hasExistingTpsl,
-}: {
-  takeProfitPrice: string | null | undefined;
-  stopLossPrice: string | null | undefined;
-  hasExistingTpsl: boolean;
-}): string => {
-  const prefix = hasExistingTpsl ? 'update' : 'create';
-  if (takeProfitPrice && stopLossPrice) {
-    return `${prefix}_tpsl`;
-  }
-  if (takeProfitPrice) {
-    return `${prefix}_tp`;
-  }
-  if (stopLossPrice) {
-    return `${prefix}_sl`;
-  }
-  return `${prefix}_tpsl`;
 };

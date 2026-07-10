@@ -42,4 +42,3 @@ export {
   getStopLossErrorDirection,
 } from './tpslValidation';
 
-export { buildPerpsVipTrackingData } from './trackingData';

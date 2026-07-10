@@ -408,10 +408,11 @@ const PerpsOrderEntryPage = () => {
   // 1. Reverse-engineering the original (pre-discount) fee from
   //    orderCalculations.estimatedFees (which OrderEntry computes with the
   //    same orderType).
-  // 2. Close-mode order submission tracking (close mode defaults to market).
+  // 2. Order submission tracking — passed as hlFeeRate on all order types
+  //    (new / modify / close).
   const {
-    feeRate: closeFeeRate,
-    undiscountedFeeRate: closeUndiscountedFeeRate,
+    feeRate: currentFeeRate,
+    undiscountedFeeRate: currentUndiscountedFeeRate,
     protocolFeeRate,
     metamaskFeeRate,
     originalMetamaskFeeRate,
@@ -425,20 +426,20 @@ const PerpsOrderEntryPage = () => {
     if (
       orderCalculations?.estimatedFees === null ||
       orderCalculations?.estimatedFees === undefined ||
-      closeFeeRate === undefined ||
-      closeFeeRate === 0 ||
-      closeUndiscountedFeeRate === undefined
+      currentFeeRate === undefined ||
+      currentFeeRate === 0 ||
+      currentUndiscountedFeeRate === undefined
     ) {
       return null;
     }
     return (
       orderCalculations.estimatedFees *
-      (closeUndiscountedFeeRate / closeFeeRate)
+      (currentUndiscountedFeeRate / currentFeeRate)
     );
   }, [
     orderCalculations?.estimatedFees,
-    closeFeeRate,
-    closeUndiscountedFeeRate,
+    currentFeeRate,
+    currentUndiscountedFeeRate,
   ]);
 
   const protocolFeeLabel =
@@ -1261,7 +1262,7 @@ const PerpsOrderEntryPage = () => {
           Math.abs(Number.parseFloat(position.size)) *
           currentPrice *
           (closePercentage / 100);
-        const closeEstimatedFees = closeNotionalUsd * (closeFeeRate ?? 0);
+        const closeEstimatedFees = closeNotionalUsd * (currentFeeRate ?? 0);
 
         const closeParams = buildClosePositionParams(
           orderFormState,
@@ -1274,7 +1275,7 @@ const PerpsOrderEntryPage = () => {
           marketPrice: currentPrice,
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
-          hlFeeRate: closeFeeRate,
+          hlFeeRate: currentFeeRate,
         });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
@@ -1314,7 +1315,7 @@ const PerpsOrderEntryPage = () => {
             marketPrice: currentPrice,
             vipTier,
             vipDiscount: metamaskFeeRateDiscountPercentage,
-            hlFeeRate: closeFeeRate,
+            hlFeeRate: currentFeeRate,
           });
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
@@ -1405,7 +1406,7 @@ const PerpsOrderEntryPage = () => {
         marketPrice: currentPrice,
         vipTier,
         vipDiscount: metamaskFeeRateDiscountPercentage,
-        hlFeeRate: closeFeeRate,
+        hlFeeRate: currentFeeRate,
       });
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
@@ -1556,7 +1557,7 @@ const PerpsOrderEntryPage = () => {
     hidePerpsToast,
     replacePerpsToastByKey,
     t,
-    closeFeeRate,
+    currentFeeRate,
     hasPendingPerpsDeposit,
     marketInfo?.szDecimals,
     vipTier,

@@ -294,6 +294,10 @@ export const EditMarginModalContent = ({
         const signedAmount =
           marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
 
+        // The controller's UpdateMarginParams only accepts { symbol, amount,
+        // providerId } — it does not take trackingData, so (unlike the order /
+        // close / TP-SL flows) margin risk events can't carry client fee/VIP
+        // attribution until the controller adds it.
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsUpdateMargin',
           [
