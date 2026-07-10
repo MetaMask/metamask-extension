@@ -137,9 +137,10 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
     [nonTestEvmNetworksByKey, orderedNetworksList],
   );
 
-  const currentlyOnTestnet = activeDappChainId
-    ? TEST_CHAINS.includes(activeDappChainId)
-    : false;
+  const currentlyOnTestnet = useMemo(
+    () => Boolean(activeDappChainId && TEST_CHAINS.includes(activeDappChainId)),
+    [activeDappChainId],
+  );
 
   // Only include test networks when the global "Show test networks" toggle is
   // on, or when the dapp is already on a testnet (so the user can see the
