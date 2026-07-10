@@ -30,6 +30,7 @@ import {
   ConnectionStatus,
   useHardwareWalletActions,
   useHardwareWalletConfig,
+  useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
@@ -39,17 +40,17 @@ import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQ
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 type UseSubmitBridgeTransactionOptions = {
+  /**
+   * When true, submit immediately instead of navigating to the hardware-wallet
+   * signing page. Used by the signing page itself. Callers should catch
+   * rejections/failures from `submitBridgeTransaction` — this hook throws on
+   * hardware-wallet reject/fail instead of invoking callbacks.
+   */
   submitOnHardwareWalletSigningPage?: boolean;
-  onHardwareWalletSubmitted?: () => void;
-  onHardwareWalletRejected?: () => void;
-  onHardwareWalletFailed?: () => void;
 };
 
 export default function useSubmitBridgeTransaction({
   submitOnHardwareWalletSigningPage = false,
-  onHardwareWalletSubmitted,
-  onHardwareWalletRejected,
-  onHardwareWalletFailed,
 }: UseSubmitBridgeTransactionOptions = {}) {
   const navigate = useNavigate();
   const { navigateToBridgePage, navigateToHwSigningPage } =
@@ -114,13 +115,13 @@ export default function useSubmitBridgeTransaction({
     const intentData = quoteResponse.quote.intent;
 
     if (hardwareWalletUsed && intentData) {
-      captureException(
-        new Error('Hardware wallets cannot submit bridge intent quotes'),
+      const error = new Error(
+        'Hardware wallets cannot submit bridge intent quotes',
       );
+      captureException(error);
       dispatch(setWasTxDeclined(true));
-      onHardwareWalletFailed?.();
       setIsSubmitting(false);
-      return;
+      throw error;
     }
 
     if (hardwareWalletUsed && !submitOnHardwareWalletSigningPage) {
@@ -129,7 +130,6 @@ export default function useSubmitBridgeTransaction({
       return;
     }
 
-    let submissionSucceeded = false;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     try {
@@ -174,28 +174,31 @@ export default function useSubmitBridgeTransaction({
           await rpcPromise;
         }
       }
-      submissionSucceeded = true;
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        onHardwareWalletRejected?.();
         if (!submitOnHardwareWalletSigningPage) {
           navigateToBridgePage();
         }
-        return;
+        throw e;
       }
 
       if (hardwareWalletUsed) {
         dispatch(setWasTxDeclined(true));
-        onHardwareWalletFailed?.();
-        return;
+        throw e;
       }
     } finally {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
       setIsSubmitting(false);
+    }
+
+    // Stay on the hardware-wallet signing page after submit; progress is
+    // tracked by the signing-page state machine / sign tracker.
+    if (submitOnHardwareWalletSigningPage) {
+      return;
     }
 
     navigate(DEFAULT_ROUTE, {

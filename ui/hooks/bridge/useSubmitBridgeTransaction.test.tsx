@@ -361,13 +361,11 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           },
         },
       });
-      const onHardwareWalletSubmitted = jest.fn();
       isHardwareWalletSpy.mockImplementation(() => true);
       const { result } = renderHook(
         () =>
           useSubmitBridgeTransaction({
             submitOnHardwareWalletSigningPage: true,
-            onHardwareWalletSubmitted,
           }),
         {
           wrapper: makeWrapper(store),
@@ -384,10 +382,10 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
 
       expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(submitTxSpy).toHaveBeenCalledTimes(1);
-      expect(onHardwareWalletSubmitted).toHaveBeenCalledTimes(1);
+      expect(result.current.isSubmitting).toBe(false);
     });
 
-    it('does not mark hardware-wallet signing as submitted when submission fails', async () => {
+    it('throws when hardware-wallet submission fails from the signing page', async () => {
       const store = makeMockStore({
         metamaskStateOverrides: {
           internalAccounts: {
@@ -399,8 +397,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           },
         },
       });
-      const onHardwareWalletSubmitted = jest.fn();
-      const onHardwareWalletFailed = jest.fn();
       const submitTx = jest.fn(async () => {
         throw new Error('transport disconnected');
       });
@@ -416,28 +412,27 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         () =>
           useSubmitBridgeTransaction({
             submitOnHardwareWalletSigningPage: true,
-            onHardwareWalletSubmitted,
-            onHardwareWalletFailed,
           }),
         {
           wrapper: makeWrapper(store),
         },
       );
 
-      await act(async () => {
-        await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
-        );
-      });
+      await expect(
+        act(async () => {
+          await result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          );
+        }),
+      ).rejects.toThrow('transport disconnected');
 
-      expect(onHardwareWalletSubmitted).not.toHaveBeenCalled();
-      expect(onHardwareWalletFailed).toHaveBeenCalledTimes(1);
       expect(captureExceptionSpy).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'transport disconnected' }),
       );
       expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(result.current.isSubmitting).toBe(false);
     });
 
     it('returns early if hardware device is not ready', async () => {
