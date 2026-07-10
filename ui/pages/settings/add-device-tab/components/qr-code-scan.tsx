@@ -101,7 +101,10 @@ const QrCodeScan = () => {
         justifyContent={BoxJustifyContent.Center}
         marginTop={4}
       >
-        <Box style={{ opacity: shouldDimQr ? 0.3 : 1 }}>
+        <Box
+          style={{ opacity: shouldDimQr ? 0.3 : 1 }}
+          data-testid={qrPayload ? 'qr-sync-qr-code' : 'qr-sync-qr-loading'}
+        >
           {qrPayload ? (
             <QRCodeImage data={qrPayload} />
           ) : (

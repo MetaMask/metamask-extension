@@ -1,7 +1,7 @@
 # QrSync E2E Setup Plan
 
-> **Last updated:** 2026-07-10  
-> **Resume from:** [Phase 4 — UI hooks for automation](#phase-4--ui-hooks-for-automation)  
+> **Last updated:** 2026-07-11  
+> **Resume from:** [Phase 5 — Test helpers & page objects](#phase-5--test-helpers--page-objects)  
 > **First test goal:** Happy path — user syncs one wallet from extension to mobile (simulated)
 
 ---
@@ -50,7 +50,7 @@ Use this table to see where we are and what to do next.
 | **1** | [Build & feature flags](#phase-1--build--feature-flags) | ✅ **Done** | Test builds show “Add device” in Settings |
 | **2** | [Faster timers](#phase-2--faster-timers) | ✅ **Done** | Tests don’t wait 60s for QR/code expiry |
 | **3** | [Mock transport + simulator code](#phase-3--mock-transport--simulator) | ✅ **Done** | Test harness can script mobile behaviour |
-| **4** | [UI hooks for automation](#phase-4--ui-hooks-for-automation) | ⬜ Not started | Stable buttons/fields for the test robot |
+| **4** | [UI hooks for automation](#phase-4--ui-hooks-for-automation) | ✅ **Done** | Stable buttons/fields for the test robot |
 | **5** | [Test helpers & page objects](#phase-5--test-helpers--page-objects) | ⬜ Not started | Reusable “go to Add device / enter OTP” steps |
 | **6** | [Happy path E2E test](#phase-6--happy-path-e2e-test) | ⬜ Not started | One passing automated test in CI |
 | **7** | [CI & follow-ups](#phase-7--ci--follow-ups) | ⬜ Not started | Documented run commands; optional error scenarios |
@@ -67,7 +67,7 @@ Use this table to see where we are and what to do next.
 
 ### Resume checklist (for the next coding session)
 
-1. Read **Progress tracker** — start at first non-✅ phase (currently **Phase 4**).
+1. Read **Progress tracker** — start at first non-✅ phase (currently **Phase 5**).
 2. Phase 0 complete — see [MOCK_TRANSPORT_DESIGN.md](./MOCK_TRANSPORT_DESIGN.md).
 3. Then Phase 1 → 2 → 3 in order (don’t skip — each phase unlocks the next).
 4. `spike/` folder was removed — do not recreate unless we revisit real relay testing.
@@ -216,28 +216,25 @@ qrSyncSimulate('deliverSyncCompleted');
 
 ## Phase 4 — UI hooks for automation
 
-**Status:** ⬜ Not started  
-**Depends on:** Phase 3 (can parallelize with 5 after 3.1)
+**Status:** ✅ Done (2026-07-11)  
+**Depends on:** Phase 3 ✅
 
-### Plain language
+### What changed
 
-Add stable labels (`data-testid`) on buttons and fields so the test robot can
-find “OTP input”, “Continue”, “Sync”, “Done”.
+`data-testid` attributes added directly on Add Device flow elements.
 
-### Tasks
+| Screen | Test IDs |
+|--------|----------|
+| QR code | `qr-sync-qr-code`, `qr-sync-qr-loading` |
+| OTP | `qr-sync-otp-input-0` … `5`, `qr-sync-otp-expired` |
+| Password | `qr-sync-password-input`, `qr-sync-password-continue` |
+| Wallet pick | `qr-sync-sync-button`, `qr-sync-wallet-row-{id}` |
+| Success | `qr-sync-success`, `qr-sync-done-button` |
+| Loading | `qr-sync-loading` |
 
-| # | Component | test ids |
-|---|-----------|----------|
-| 4.1 | QR screen | `qr-sync-qr-code`, `qr-sync-qr-loading` |
-| 4.2 | OTP screen | `qr-sync-otp-input-0` … `5`, `qr-sync-otp-expired` |
-| 4.3 | Password | `qr-sync-password-input`, `qr-sync-password-continue` |
-| 4.4 | Wallet pick | `qr-sync-sync-button`, `qr-sync-wallet-row-*` |
-| 4.5 | Success | `qr-sync-success`, `qr-sync-done-button` |
-| 4.6 | Loading | `qr-sync-loading` |
+Settings tab (unchanged): `settings-tab-item-add-device`.
 
-Settings tab (already generated): `settings-tab-item-add-device`.
-
-**Exit criteria:** Each step of happy path has at least one reliable selector.
+**Exit criteria:** ✅ Each happy-path step has at least one reliable selector.
 
 ---
 

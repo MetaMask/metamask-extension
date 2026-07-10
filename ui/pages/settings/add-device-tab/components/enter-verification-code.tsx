@@ -228,6 +228,7 @@ const EnterVerificationCode = () => {
             maxLength={1}
             autoFocus={index === 0}
             isDisabled={isExpired}
+            data-testid={`qr-sync-otp-input-${index}`}
             className="w-12 h-[54px] rounded-lg border border-muted bg-default text-center text-l-medium"
           />
         ))}
@@ -244,8 +245,16 @@ const EnterVerificationCode = () => {
         )}
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
           {isError && !isExpired && t('enter_verification_code_error')}
-          {isExpired && t('enter_verification_code_expired')}
         </Text>
+        {isExpired && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.ErrorDefault}
+            data-testid="qr-sync-otp-expired"
+          >
+            {t('enter_verification_code_expired')}
+          </Text>
+        )}
         {(isExpired || isError) && (
           <TextButton onClick={handleRestart}>
             {t('start_with_new_qr_code')}

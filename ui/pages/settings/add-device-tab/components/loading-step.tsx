@@ -75,6 +75,7 @@ const LoadingStep = ({
       gap={8}
       paddingTop={8}
       className="flex-1"
+      data-testid="qr-sync-loading"
     >
       <Box
         alignItems={BoxAlignItems.Center}

@@ -149,6 +149,7 @@ export const WalletSelectionList = ({
             paddingRight={4}
             paddingTop={2}
             paddingBottom={2}
+            data-testid={`qr-sync-wallet-row-${item.walletId}`}
           >
             <Checkbox
               id={`wallet-select-${item.walletId}`}
@@ -187,14 +188,16 @@ export const WalletSelectionList = ({
       const currency = account?.userCurrency ?? '';
 
       return (
-        <MultichainAccountCell
-          accountId={item.groupId}
-          accountName={item.groupData.metadata.name}
-          accountNameString={item.groupData.metadata.name}
-          balance={formatCurrencyWithMinThreshold(balance, currency)}
-          selected={false}
-          showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
-        />
+        <Box data-testid={`qr-sync-wallet-row-${item.groupId}`}>
+          <MultichainAccountCell
+            accountId={item.groupId}
+            accountName={item.groupData.metadata.name}
+            accountNameString={item.groupData.metadata.name}
+            balance={formatCurrencyWithMinThreshold(balance, currency)}
+            selected={false}
+            showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+          />
+        </Box>
       );
     },
     [
