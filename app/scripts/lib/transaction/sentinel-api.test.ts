@@ -1,125 +1,107 @@
 import { Hex } from '@metamask/utils';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
-import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import {
   getSentinelNetworkFlags,
-  buildUrl,
-  SentinelNetwork,
   getSendBundleSupportedChains,
   isSendBundleSupported,
   setSentinelApiAuth,
-  getSentinelApiHeadersAsync,
 } from './sentinel-api';
+import { resetSentinelApiService } from './sentinel-api-service';
 
-jest.mock('../../../../shared/lib/fetch-with-timeout');
 jest.mock('../../../../shared/lib/conversion.utils');
-
-const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
-  jest.fn();
 
 const NETWORK_ETHEREUM_MOCK = 'ethereum-mainnet';
 
-const COMMON_ETH: SentinelNetwork['nativeCurrency'] = {
-  name: 'ETH',
-  symbol: 'ETH',
-  decimals: 18,
-};
-const COMMON_MATIC: SentinelNetwork['nativeCurrency'] = {
-  name: 'MATIC',
-  symbol: 'MATIC',
-  decimals: 18,
-};
-
 const MAINNET_BASE = {
-  name: 'Mainnet',
-  group: 'ethereum',
-  chainID: 1,
-  nativeCurrency: COMMON_ETH,
   network: NETWORK_ETHEREUM_MOCK,
-  explorer: 'https://etherscan.io',
   confirmations: true,
   smartTransactions: true,
   relayTransactions: true,
-  hidden: false,
   sendBundle: true,
 } as const;
 
 const POLYGON_BASE = {
-  name: 'Polygon',
-  group: 'polygon',
-  chainID: 137,
-  nativeCurrency: COMMON_MATIC,
   network: 'polygon-mainnet',
-  explorer: 'https://polygonscan.com',
   confirmations: true,
   smartTransactions: false,
   relayTransactions: false,
-  hidden: false,
   sendBundle: false,
 } as const;
 
-const MOCK_NETWORKS: Record<string, SentinelNetwork> = {
+const MOCK_NETWORKS = {
   '1': { ...MAINNET_BASE },
   '137': { ...POLYGON_BASE },
 };
 
+/**
+ * Builds a mock `Response` resolving to the given JSON body.
+ *
+ * @param json - The JSON body the response resolves to.
+ * @param ok - Whether the response is a 2xx response. Defaults to true.
+ * @returns The mock response.
+ */
+function mockResponse(json: unknown, ok = true): Response {
+  return {
+    ok,
+    status: ok ? 200 : 500,
+    json: async () => json,
+    text: async () => JSON.stringify(json),
+  } as Response;
+}
+
+const fetchMock = jest.fn<Promise<Response>, [string, RequestInit?]>();
+
 describe('sentinel-api', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mocked(getFetchWithTimeout).mockReturnValue(fetchMock);
+    resetSentinelApiService();
     setSentinelApiAuth(undefined);
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    (hexToDecimal as jest.Mock).mockImplementation((hex: string) => {
+      if (hex === '0x1') {
+        return '1';
+      }
+      if (hex === '0x89') {
+        return '137';
+      }
+      return '12345';
+    });
   });
 
-  describe('setSentinelApiAuth and getSentinelApiHeadersAsync', () => {
-    it('returns base headers when no auth setter is configured', async () => {
-      const headers = await getSentinelApiHeadersAsync();
-      expect(headers).toMatchObject({
-        'X-Client-Id': 'extension',
-      });
-    });
-
-    it('includes Authorization when getter returns a token', async () => {
+  describe('setSentinelApiAuth', () => {
+    it('includes Authorization header on requests when a token getter is set', async () => {
       setSentinelApiAuth(async () => 'test-token');
-      const headers = await getSentinelApiHeadersAsync();
-      expect(headers).toMatchObject({
-        'X-Client-Id': 'extension',
-        Authorization: 'Bearer test-token',
-      });
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
+
+      await getSentinelNetworkFlags('0x1' as Hex);
+
+      const [, requestInit] = fetchMock.mock.calls[0];
+      expect(
+        (requestInit?.headers as Record<string, string>).Authorization,
+      ).toBe('Bearer test-token');
     });
 
-    it('adds Bearer prefix to the raw token', async () => {
-      setSentinelApiAuth(async () => 'raw-token');
-      const headers = await getSentinelApiHeadersAsync();
-      expect((headers as Record<string, string>).Authorization).toBe(
-        'Bearer raw-token',
-      );
+    it('omits Authorization header when no token getter is set', async () => {
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
+
+      await getSentinelNetworkFlags('0x1' as Hex);
+
+      const [, requestInit] = fetchMock.mock.calls[0];
+      expect(
+        (requestInit?.headers as Record<string, string>).Authorization,
+      ).toBeUndefined();
     });
 
-    it('omits Authorization when getter returns undefined', async () => {
-      setSentinelApiAuth(async () => undefined);
-      const headers = await getSentinelApiHeadersAsync();
-      expect(headers).toMatchObject({ 'X-Client-Id': 'extension' });
-      expect((headers as Record<string, string>).Authorization).toBeUndefined();
-    });
+    it('includes the client identity headers on requests', async () => {
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
 
-    it('omits Authorization when getter throws', async () => {
-      setSentinelApiAuth(async () => {
-        throw new Error('token error');
-      });
-      const headers = await getSentinelApiHeadersAsync();
-      expect(headers).toMatchObject({ 'X-Client-Id': 'extension' });
-      expect((headers as Record<string, string>).Authorization).toBeUndefined();
-    });
-  });
+      await getSentinelNetworkFlags('0x1' as Hex);
 
-  describe('buildUrl', () => {
-    it('builds the correct sentinel API URL for a subdomain', () => {
-      expect(buildUrl('my-chain')).toBe(
-        'https://tx-sentinel-my-chain.api.cx.metamask.io/',
-      );
-      expect(buildUrl(NETWORK_ETHEREUM_MOCK)).toBe(
-        'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/',
-      );
+      const [, requestInit] = fetchMock.mock.calls[0];
+      expect(
+        (requestInit?.headers as Record<string, string>)['X-Client-Id'],
+      ).toBe('extension');
     });
   });
 
@@ -127,23 +109,8 @@ describe('sentinel-api', () => {
     const mainnetHex: Hex = '0x1';
     const polygonHex: Hex = '0x89';
 
-    beforeEach(() => {
-      (hexToDecimal as jest.Mock).mockImplementation((hex: string) => {
-        if (hex === '0x1') {
-          return '1';
-        }
-        if (hex === '0x89') {
-          return '137';
-        }
-        return '12345';
-      });
-    });
-
     it('returns network data for provided chainId (Mainnet)', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => MOCK_NETWORKS,
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
 
       const result = await getSentinelNetworkFlags(mainnetHex);
       expect(hexToDecimal).toHaveBeenCalledWith('0x1');
@@ -155,10 +122,7 @@ describe('sentinel-api', () => {
     });
 
     it('returns network data for another registered chainId (Polygon)', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => MOCK_NETWORKS,
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
 
       const result = await getSentinelNetworkFlags(polygonHex);
       expect(hexToDecimal).toHaveBeenCalledWith('0x89');
@@ -166,27 +130,21 @@ describe('sentinel-api', () => {
     });
 
     it('returns undefined for chainId not in network data', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => MOCK_NETWORKS,
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
       (hexToDecimal as jest.Mock).mockReturnValue('99999');
       const result = await getSentinelNetworkFlags('0xFAFA' as Hex);
       expect(result).toBeUndefined();
     });
 
-    it('returns undefined if getNetworkData throws', async () => {
+    it('returns undefined if the networks request throws', async () => {
       fetchMock.mockRejectedValueOnce(new Error('API connection error'));
       await expect(getSentinelNetworkFlags('0x1' as Hex)).resolves.toBe(
         undefined,
       );
     });
 
-    it('returns undefined if getNetworkData returns null', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => null,
-        ok: true,
-      } as Response);
+    it('returns undefined if the networks response is not ok', async () => {
+      fetchMock.mockResolvedValueOnce(mockResponse({}, false));
 
       await expect(getSentinelNetworkFlags('0x1' as Hex)).resolves.toBe(
         undefined,
@@ -197,23 +155,8 @@ describe('sentinel-api', () => {
   describe('getSendBundleSupportedChains', () => {
     const chainIds: Hex[] = ['0x1', '0x89', '0xFAFA'];
 
-    beforeEach(() => {
-      (hexToDecimal as jest.Mock).mockImplementation((hex: string) => {
-        if (hex === '0x1') {
-          return '1';
-        }
-        if (hex === '0x89') {
-          return '137';
-        }
-        return '12345';
-      });
-    });
-
     it('returns a map of chain IDs to sendBundle support status', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => MOCK_NETWORKS,
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
 
       const result = await getSendBundleSupportedChains(chainIds);
       expect(result).toEqual({
@@ -224,31 +167,14 @@ describe('sentinel-api', () => {
     });
 
     it('returns false for unsupported chains', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => MOCK_NETWORKS,
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
 
       const result = await getSendBundleSupportedChains(['0xFAFA']);
       expect(result).toEqual({ '0xFAFA': false });
     });
 
-    it('returns false for all chains if getNetworkData throws', async () => {
+    it('returns false for all chains if the networks request throws', async () => {
       fetchMock.mockRejectedValueOnce(new Error('API connection error'));
-
-      const result = await getSendBundleSupportedChains(chainIds);
-      expect(result).toEqual({
-        '0x1': false,
-        '0x89': false,
-        '0xFAFA': false,
-      });
-    });
-
-    it('returns false for all chains if getNetworkData returns null', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => null,
-        ok: true,
-      } as Response);
 
       const result = await getSendBundleSupportedChains(chainIds);
       expect(result).toEqual({
@@ -263,25 +189,8 @@ describe('sentinel-api', () => {
     const mainnetHex: Hex = '0x1';
     const polygonHex: Hex = '0x89';
 
-    beforeEach(() => {
-      jest.resetAllMocks();
-      jest.mocked(getFetchWithTimeout).mockReturnValue(fetchMock);
-      (hexToDecimal as jest.Mock).mockImplementation((hex: string) => {
-        if (hex === mainnetHex) {
-          return '1';
-        }
-        if (hex === polygonHex) {
-          return '137';
-        }
-        return '12345';
-      });
-    });
-
     it('returns true if network supports sendBundle', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => MOCK_NETWORKS,
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
       const result = await isSendBundleSupported(mainnetHex);
       expect(result).toBe(true);
       expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -292,40 +201,29 @@ describe('sentinel-api', () => {
         ...MOCK_NETWORKS,
         '1': { ...MAINNET_BASE, sendBundle: false },
       };
-      fetchMock.mockResolvedValueOnce({
-        json: async () => networksWithFalse,
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse(networksWithFalse));
       const result = await isSendBundleSupported(mainnetHex);
       expect(result).toBe(false);
     });
 
     it('returns false if network is undefined', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => ({}),
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse({}));
       const result = await isSendBundleSupported('0xFAFA' as Hex);
       expect(result).toBe(false);
     });
 
     it('returns false if sendBundle is missing', async () => {
-      const networksMissing = { ...MOCK_NETWORKS, '1': { ...MAINNET_BASE } };
-      delete (networksMissing['1'] as unknown as { sendBundle?: boolean })
-        .sendBundle;
-      fetchMock.mockResolvedValueOnce({
-        json: async () => networksMissing,
-        ok: true,
-      } as Response);
+      const networksMissing = {
+        ...MOCK_NETWORKS,
+        '1': { network: NETWORK_ETHEREUM_MOCK, relayTransactions: true },
+      };
+      fetchMock.mockResolvedValueOnce(mockResponse(networksMissing));
       const result = await isSendBundleSupported(mainnetHex);
       expect(result).toBe(false);
     });
 
     it('returns false for another network where sendBundle is false', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => MOCK_NETWORKS,
-        ok: true,
-      } as Response);
+      fetchMock.mockResolvedValueOnce(mockResponse(MOCK_NETWORKS));
       const result = await isSendBundleSupported(polygonHex);
       expect(result).toBe(false);
     });
@@ -337,20 +235,12 @@ describe('sentinel-api', () => {
 
     it('returns false if response json parsing fails', async () => {
       fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
         json: async () => {
           throw new Error('Invalid JSON');
         },
-        ok: true,
       } as unknown as Response);
-
-      await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
-    });
-
-    it('returns false if response json is null', async () => {
-      fetchMock.mockResolvedValueOnce({
-        json: async () => null,
-        ok: true,
-      } as Response);
 
       await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
     });

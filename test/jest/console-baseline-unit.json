@@ -44,6 +44,16 @@
       "error: Failed to record sentinel_relay metrics": 1,
       "error: Failed to record sentinel_stx metrics": 1
     },
+    "app/scripts/lib/transaction/sentinel-api.test.ts": {
+      "error: Error: API connection error": 2,
+      "error: Error: API error!": 1,
+      "error: Error: Invalid JSON": 1,
+      "error: HttpError: Sentinel networks request failed": 1
+    },
+    "app/scripts/lib/transaction/transaction-relay.test.ts": {
+      "error: Error: network error": 1,
+      "error: HttpError: Sentinel relay status request": 1
+    },
     "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },
