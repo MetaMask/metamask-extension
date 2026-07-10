@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version X.Y.Z — must match release/X.Y.Z branch semver when run from release/*'
+        description: 'Release version X.Y.Z — must match release/X.Y.Z branch semver'
         required: true
         type: string
       release_sha:
@@ -80,21 +80,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.sha }}
           sparse-checkout: .github/scripts
-          sparse-checkout-cone-mode: false
 
       - name: Validate branch ref
         env:
           GITHUB_REF: ${{ github.ref }}
         run: |
           set -euo pipefail
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            echo "Branch: main (allowed for orchestrator dispatch)"
-          elif [[ "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
+          if [[ "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
             echo "Branch: ${GITHUB_REF#refs/heads/}"
           else
-            echo "::error::Orchestrator must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+            echo "::error::Orchestrator must run from refs/heads/release/* (current: ${GITHUB_REF})"
             exit 1
           fi
 
@@ -109,12 +105,10 @@ jobs:
             echo "::error::Invalid version: ${VERSION} — expected numeric X.Y.Z"
             exit 1
           fi
-          if [[ "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
-            branch_version="${GITHUB_REF#refs/heads/release/}"
-            if [[ "${branch_version}" != "${VERSION}" ]]; then
-              echo "::error::Version input ${VERSION} does not match branch release/${branch_version}"
-              exit 1
-            fi
+          branch_version="${GITHUB_REF#refs/heads/release/}"
+          if [[ "${branch_version}" != "${VERSION}" ]]; then
+            echo "::error::Version input ${VERSION} does not match branch release/${branch_version}"
+            exit 1
           fi
           {
             echo "version=${VERSION}"
@@ -164,7 +158,6 @@ jobs:
           fi
 
       - name: Verify Runway sender (UX quick-fail)
-        if: startsWith(github.ref, 'refs/heads/release/')
         env:
           RUNWAY_ACTOR_LOGIN: 'runway-github[bot]'
           RUNWAY_ACTOR_ID: '73448015'
