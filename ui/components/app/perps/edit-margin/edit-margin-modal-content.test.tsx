@@ -242,4 +242,44 @@ describe('EditMarginModalContent', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks the liquidation price and available amount when privacy mode is enabled', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        privacyStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-edit-margin-available-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('masks the liquidation price comparison values when privacy mode is enabled', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        privacyStore,
+      );
+
+      const amountInput = screen.getByPlaceholderText('0.00');
+      fireEvent.change(amountInput, { target: { value: '100' } });
+
+      expect(
+        screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+      ).toHaveTextContent('••••••');
+    });
+  });
 });

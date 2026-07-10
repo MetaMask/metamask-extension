@@ -437,7 +437,7 @@ const PerpsOrderEntryPage = () => {
         PERPS_EVENT_VALUE.INTERACTION_TYPE.ORDER_TYPE_SELECTED,
       [PERPS_EVENT_PROPERTY.SELECTED_ORDER_TYPE]: orderType,
     });
-    // Intentionally omit `track`: stable ref avoids spurious events when MetaMetricsContext changes.
+    // Intentionally omit `track`: stable ref avoids spurious events when useAnalytics changes.
   }, [orderType]);
 
   const position = useMemo(() => {

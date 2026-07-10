@@ -120,6 +120,22 @@ export const getIsPerpsOrderBookEnabled = createSelector(
 );
 
 /**
+ * Whether perps surfaces should render full asset names (e.g. "Bitcoin")
+ * instead of just the ticker (e.g. "BTC").
+ *
+ * Gated behind the `perpsShowFullAssetNames` remote rollout flag (default OFF)
+ * so full names can be shipped dark and rolled out independently. Follows the
+ * same `{ enabled, minimumVersion }` rollout shape as `perpsEnabledVersion`
+ * (boolean still supported for backward compatibility). When disabled, consumers
+ * fall back to the ticker via `getDisplayName(symbol)`.
+ */
+export const getIsPerpsShowFullAssetNamesEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsShowFullAssetNames),
+);
+
+/**
  * Whether the Terminal API backend is enabled for perps market data.
  *
  * When true, REST calls for market metadata (`getMarkets`,
