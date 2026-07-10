@@ -7488,14 +7488,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^28.1.1, @metamask/profile-sync-controller@npm:^28.2.0":
-  version: 28.2.0
-  resolution: "@metamask/profile-sync-controller@npm:28.2.0"
+"@metamask/profile-sync-controller@npm:^28.1.1, @metamask/profile-sync-controller@npm:^28.2.0, @metamask/profile-sync-controller@npm:^28.3.0":
+  version: 28.3.0
+  resolution: "@metamask/profile-sync-controller@npm:28.3.0"
   dependencies:
     "@metamask/address-book-controller": "npm:^7.1.2"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/keyring-controller": "npm:^27.0.0"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
@@ -7508,7 +7508,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/49f9a69a205613dc1dab9d122048601713561c385e21cbb0d9f501925e888d3f5681f3a4a7cebdc1b3d2488f76ab6a8b2a7b9ae47ffe567245819415444f678c
+  checksum: 10/a0fa6dad8a183bcd41907e7ab5d35fcb321bd1c7040125120deebc20b3d809a0e0f076feb2e80ef70b9ce1330138a8d1c8d8b5eea18086cd765ae4301a32e2ba
   languageName: node
   linkType: hard
 
@@ -33050,7 +33050,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.8.1"
     "@metamask/profile-metrics-controller": "npm:^4.0.1"
-    "@metamask/profile-sync-controller": "npm:^28.2.0"
+    "@metamask/profile-sync-controller": "npm:^28.3.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^0.2.0"
