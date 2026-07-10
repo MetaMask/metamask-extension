@@ -54,7 +54,7 @@ const QUOTE_MOCK = {
   request: {
     targetTokenAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
   },
-  strategy: TransactionPayStrategy.Bridge,
+  strategy: TransactionPayStrategy.Relay,
 } as unknown as TransactionPayQuote<Json>;
 
 const GAS_QUOTE_MOCK = {
@@ -65,7 +65,7 @@ const GAS_QUOTE_MOCK = {
   request: {
     targetTokenAddress: NATIVE_TOKEN_ADDRESS,
   },
-  strategy: TransactionPayStrategy.Bridge,
+  strategy: TransactionPayStrategy.Relay,
 } as unknown as TransactionPayQuote<Json>;
 
 const TOTALS_MOCK: TransactionPayTotals = {
@@ -337,40 +337,13 @@ describe('useTransactionPayMetrics', () => {
     );
   });
 
-  it('sets mm_pay_strategy to mm_swaps_bridge for Bridge quotes', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: PAY_TOKEN_MOCK,
-      setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
-
-    useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK]);
-
-    renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(),
-    });
-
-    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
-      TRANSACTION_ID_MOCK,
-      {
-        properties: expect.objectContaining({
-          mm_pay_strategy: 'mm_swaps_bridge',
-        }),
-      },
-    );
-  });
-
   it('sets mm_pay_strategy to relay for Relay quotes', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,
       setPayToken: jest.fn(),
     } as ReturnType<typeof useTransactionPayToken>);
 
-    const relayQuote = {
-      ...QUOTE_MOCK,
-      strategy: TransactionPayStrategy.Relay,
-    } as TransactionPayQuote<Json>;
-
-    useTransactionPayQuotesMock.mockReturnValue([relayQuote]);
+    useTransactionPayQuotesMock.mockReturnValue([QUOTE_MOCK]);
 
     renderHook(() => useTransactionPayMetrics(), {
       wrapper: createWrapper(),
