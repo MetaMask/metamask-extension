@@ -196,7 +196,9 @@ const WalletActivitySectionContent = ({
   const handleToggleAccountNotifications = useCallback(
     async (address: string, nextValue: boolean) => {
       const lowerAddress = address.toLowerCase();
-      const enabledCountBefore = accountAddresses.filter(isAccountEnabled).length;
+      const enabledCountBefore = accountAddresses.filter(
+        getAccountEnabledValue,
+      ).length;
       const wasEnabled = isAccountEnabled(address);
       const generation =
         (accountToggleGenerationRef.current[lowerAddress] ?? 0) + 1;

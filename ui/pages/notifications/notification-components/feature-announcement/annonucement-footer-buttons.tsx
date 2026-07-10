@@ -29,11 +29,11 @@ function shouldUseDefaultLinkNavigation(
 ): boolean {
   return Boolean(
     event.defaultPrevented ||
-    event.button !== 0 ||
-    event.metaKey ||
-    event.altKey ||
-    event.ctrlKey ||
-    event.shiftKey,
+      event.button !== 0 ||
+      event.metaKey ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.shiftKey,
   );
 }
 

@@ -45,11 +45,7 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         handleSnapNavigate(href);
       }
     },
-    [
-      handleSnapNavigate,
-      props.notification,
-      trackEvent,
-    ],
+    [handleSnapNavigate, props.notification, trackEvent],
   );
 
   if (!footer) {
