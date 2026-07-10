@@ -60,6 +60,12 @@ import {
   TransactionPayControllerGetStateAction,
   TransactionPayControllerGetStrategyAction,
 } from '@metamask/transaction-pay-controller';
+import type {
+  SentinelApiServiceGetNetworksAction,
+  SentinelApiServiceGetRelayStatusAction,
+  SentinelApiServiceSimulateTransactionsAction,
+  SentinelApiServiceSubmitRelayTransactionAction,
+} from '@metamask/sentinel-api-service';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
@@ -69,11 +75,6 @@ import {
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import type {
-  SentinelApiServiceGetNetworksAction,
-  SentinelApiServiceGetRelayStatusAction,
-  SentinelApiServiceSubmitRelayTransactionAction,
-} from '@metamask/sentinel-api-service';
 
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
@@ -106,6 +107,7 @@ export type TransactionControllerInitMessengerActions =
   | RemoteFeatureFlagControllerGetStateAction
   | SentinelApiServiceGetNetworksAction
   | SentinelApiServiceGetRelayStatusAction
+  | SentinelApiServiceSimulateTransactionsAction
   | SentinelApiServiceSubmitRelayTransactionAction
   | SmartTransactionsControllerGetFeesAction
   | SmartTransactionsControllerSubmitSignedTransactionsAction
@@ -198,6 +200,7 @@ export function getTransactionControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'SentinelApiService:getNetworks',
       'SentinelApiService:getRelayStatus',
+      'SentinelApiService:simulateTransactions',
       'SentinelApiService:submitRelayTransaction',
       'SmartTransactionsController:getFees',
       'SmartTransactionsController:submitSignedTransactions',
