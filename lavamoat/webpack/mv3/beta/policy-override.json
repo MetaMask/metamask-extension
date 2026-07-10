@@ -284,6 +284,11 @@
         "fetch": false,
         "localStorage": false
       }
+    },
+    "eth-lattice-keyring>gridplus-sdk>zod": {
+      "globals": {
+        "__zod_globalRegistry": "write"
+      }
     }
   }
 }
