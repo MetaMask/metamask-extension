@@ -174,9 +174,7 @@ export const ReversePositionModal = ({
         if (flipResult?.success !== true) {
           // Controller already emitted flip submitted/terminal analytics —
           // surface UI only; do not throw into catch (would duplicate PerpsError).
-          const err = new Error(
-            flipResult?.error || 'Failed to flip position',
-          );
+          const err = new Error(flipResult?.error || 'Failed to flip position');
           const message = handlePerpsError(err, t as (key: string) => string);
           setError(message);
           replacePerpsToastByKey({
