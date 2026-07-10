@@ -9,12 +9,14 @@ export const createSignatureState = (
     case HardwareWalletSignatureStatus.Rejected:
       return {
         status,
-        rejectedSignature: savedStep ?? HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        rejectedSignature:
+          savedStep ?? HardwareWalletSignatureStatus.AwaitingFirstSignature,
       };
     case HardwareWalletSignatureStatus.Failed:
       return {
         status,
-        failedSignature: savedStep ?? HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        failedSignature:
+          savedStep ?? HardwareWalletSignatureStatus.AwaitingFirstSignature,
       };
     case HardwareWalletSignatureStatus.Disconnected:
       return {
