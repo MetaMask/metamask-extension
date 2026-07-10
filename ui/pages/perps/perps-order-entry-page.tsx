@@ -280,6 +280,9 @@ const PerpsOrderEntryPage = () => {
   // to gate PERPS_TRANSACTION_CONSIDERED so the seeded/default amount and any
   // pre-edit recomputation never count as a user "consideration".
   const hasUserEditedSizeRef = useRef(false);
+  // Fires-once-per-visit guard for PERPS_TRANSACTION_CONSIDERED. Set when the
+  // event emits; reset on a new visit (mount + symbol/order-mode change).
+  const hasEmittedConsideredRef = useRef(false);
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
@@ -492,19 +495,22 @@ const PerpsOrderEntryPage = () => {
   // let position-stream churn reset the debounce even when the form is unchanged.
   const hasPosition = position !== undefined;
 
-  // Reset the considered-event gating refs when the market or order context
-  // changes, so a prior edit doesn't make the next market's seeded default fire
-  // as a user consideration (the page is reused across symbols).
+  // Reset the considered-event gating refs on a new visit (mount + market /
+  // order-context change), so a prior edit doesn't make the next market's seeded
+  // default fire as a consideration, and so the fires-once guard re-arms for the
+  // new visit (the page is reused across symbols).
   useEffect(() => {
     hasUserEditedSizeRef.current = false;
     lastInputMethodRef.current = 'default';
+    hasEmittedConsideredRef.current = false;
   }, [decodedSymbol, orderMode]);
 
-  // Emit PERPS_TRANSACTION_CONSIDERED once the user has a meaningful
-  // fill on the open-order screen. Debounced 1s and re-armed on EVERY form
-  // change (once the user has edited the size) so it fires once, 1s after the
-  // LATEST change, with the latest payload — a non-size change (leverage / TP /
-  // SL / order type) reschedules the pending event rather than cancelling it.
+  // Emit PERPS_TRANSACTION_CONSIDERED at most ONCE per screen visit, once the
+  // user has a meaningful fill on the open-order screen. Debounced 1s and
+  // re-armed on every form change until it fires (so it coalesces to a single
+  // event 1s after the LATEST change, with the latest payload — a pre-emit
+  // non-size change reschedules rather than cancels). After it emits, further
+  // form changes do NOT re-emit; the fires-once guard resets only on a new visit.
   //
   // Gated to avoid over-firing: only the open-order flow (`new`, not modify or
   // close), and only after the user has driven a size control — the `new` form
@@ -527,7 +533,12 @@ const PerpsOrderEntryPage = () => {
   // quote is synchronous), and `order_execution_latency_ms` on submitted tx
   // events is controller-owned (deferred to controller 9.2.2).
   useEffect(() => {
-    if (orderMode !== 'new' || !orderFormState || !hasUserEditedSizeRef.current) {
+    if (
+      orderMode !== 'new' ||
+      !orderFormState ||
+      !hasUserEditedSizeRef.current ||
+      hasEmittedConsideredRef.current
+    ) {
       return undefined;
     }
     const orderSize = Number.parseFloat(
@@ -540,6 +551,7 @@ const PerpsOrderEntryPage = () => {
       ? PERPS_EVENT_VALUE.ACTION.INCREASE_EXPOSURE
       : PERPS_EVENT_VALUE.ACTION.CREATE_POSITION;
     const timeoutId = setTimeout(() => {
+      hasEmittedConsideredRef.current = true;
       trackRef.current(MetaMetricsEventName.PerpsTransactionConsidered, {
         [PERPS_EVENT_PROPERTY.ORDER_CONTEXT]: 'trade',
         [PERPS_EVENT_PROPERTY.ACTION]: action,
