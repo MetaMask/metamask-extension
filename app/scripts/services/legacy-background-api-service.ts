@@ -144,6 +144,8 @@ import {
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
+import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   ASSETS_UNIFY_STATE_VERSION_1,
   AssetsUnifyStateFeatureFlag,
@@ -162,6 +164,8 @@ import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/o
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
+import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
   PreferencesControllerSetPasswordForgottenAction,
@@ -196,9 +200,11 @@ const serviceName = 'LegacyBackgroundApiService';
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
   'applyTransactionContainersExisting',
+  'captureTestError',
   'changePassword',
   'checkDelegationDisabled',
   'checkIsSeedlessPasswordOutdated',
+  'decodeTransactionData',
   'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
@@ -213,6 +219,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
+  'isRelaySupported',
   'isSendBundleSupported',
   'markPasswordForgotten',
   'onAccountRemoved',
@@ -633,6 +640,38 @@ export class LegacyBackgroundApiService {
     });
 
     return result.toString(16);
+  }
+
+  /**
+   * Decodes the data of a transaction using the currently selected network
+   * client's provider.
+   *
+   * @param request - The transaction decode request.
+   * @param request.transactionData - The transaction data to decode.
+   * @param request.contractAddress - The address of the contract the
+   * transaction interacts with.
+   * @param request.chainId - The chain ID of the network the transaction is on.
+   * @returns The decoded transaction data, or `undefined` if it could not be
+   * decoded.
+   */
+  async decodeTransactionData(request: {
+    transactionData: Hex;
+    contractAddress: Hex;
+    chainId: Hex;
+  }): Promise<DecodedTransactionDataResponse | undefined> {
+    const { selectedNetworkClientId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const { provider } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    );
+
+    return decodeTransactionData({
+      ...request,
+      provider,
+    });
   }
 
   /**
@@ -1713,6 +1752,21 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Capture an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+   * use this for handling errors.
+   */
+  captureTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      captureException(error);
+    });
+  }
+
+  /**
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
@@ -1725,5 +1779,15 @@ export class LegacyBackgroundApiService {
       error.name = 'TestError';
       throw error;
     });
+  }
+
+  /**
+   * Determines if the transaction relay supports the given chain.
+   *
+   * @param chainId - The chain ID to check for relay support.
+   * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+   */
+  async isRelaySupported(chainId: Hex): Promise<boolean> {
+    return isRelaySupported(chainId);
   }
 }

@@ -55,17 +55,19 @@ development/circular-deps.ts         @MetaMask/extension-security-team
 ui/components/component-library      @MetaMask/design-system-engineers
 tailwind.config.js                   @MetaMask/design-system-engineers
 
-# The Notifications team is responsible for code related to notifications
+# The Engagement team is responsible for code related to notifications.
 
-# Controllers
-**/controllers/metamask-notifications/**            @MetaMask/notifications
-**/controllers/push-platform-notifications/**       @MetaMask/notifications
+# Notifications - controllers and services
+app/scripts/controllers/push-notifications/**                     @MetaMask/engagement
+app/scripts/messenger-client-init/messengers/notifications/**    @MetaMask/engagement
+app/scripts/messenger-client-init/notifications/**               @MetaMask/engagement
 
-# UI
-**/metamask-notifications/**                        @MetaMask/notifications
-**/multichain/notification*/**                      @MetaMask/notifications
-**/pages/notification*/**                           @MetaMask/notifications
-**/utils/notification.util.ts                       @MetaMask/notifications
+# Notifications - UI
+**/metamask-notifications/**                                @MetaMask/engagement
+ui/pages/notifications/**                                         @MetaMask/engagement
+ui/pages/notification-details/**                                  @MetaMask/engagement
+ui/pages/notifications-settings/**                                @MetaMask/engagement
+ui/helpers/utils/notification.util.ts                             @MetaMask/engagement
 
 # Accounts team is responsible for code related with: Snap accounts,
 # Multichain accounts, Authentication, Backup and sync, Hardware Wallets
@@ -131,6 +133,9 @@ ui/components/multichain/                       @MetaMask/core-extension-ux
 ui/components/app/transaction-list              @MetaMask/core-extension-ux
 ui/components/app/transaction-list-item-details @MetaMask/core-extension-ux
 ui/components/app/transaction-list-item         @MetaMask/core-extension-ux
+ui/pages/settings/notifications-tab/**          @MetaMask/core-extension-ux @MetaMask/engagement
+ui/components/multichain/notification*/**       @MetaMask/core-extension-ux @MetaMask/engagement
+ui/components/multichain/notifications*/**      @MetaMask/core-extension-ux @MetaMask/engagement
 
 # Co-owned by accounts and core-extension-ux
 ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/core-extension-ux
@@ -284,15 +289,15 @@ app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
 shared/lib/gator-permissions                         @MetaMask/delegation
 
 # Wallet Library initialization
-app/scripts/wallet-init/initialization* @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/keyrings* @MetaMask/accounts-engineers @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/remote-feature-flags* @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/instance-options/approval-controller* @MetaMask/confirmations
-app/scripts/wallet-init/instance-options/connectivity-controller* @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/instance-options/keyring-controller* @MetaMask/accounts-engineers @MetaMask/core-platform
-app/scripts/wallet-init/instance-options/network-controller* @MetaMask/core-platform
+app/scripts/wallet-init/initialization*                                  @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/keyrings*                                        @MetaMask/accounts-engineers @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/remote-feature-flags*                            @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/approval-controller*            @MetaMask/confirmations
+app/scripts/wallet-init/instance-options/connectivity-controller*        @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/keyring-controller*             @MetaMask/accounts-engineers @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/network-controller*             @MetaMask/core-platform
 app/scripts/wallet-init/instance-options/remote-feature-flag-controller* @MetaMask/extension-platform @MetaMask/core-platform
-app/scripts/wallet-init/instance-options/storage-service* @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/storage-service*                @MetaMask/extension-platform @MetaMask/core-platform
 
 # Snapshots – no code owners assigned
 # This allows anyone with write access to approve changes to any *.snap files.
