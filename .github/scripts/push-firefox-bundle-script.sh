@@ -65,7 +65,7 @@ remote_tag_sha="$(git ls-remote --tags origin "refs/tags/${version}^{}" | awk 'N
 if [[ -n "${remote_tag_sha}" ]]; then
   echo "Tag ${version} already exists on origin (${remote_tag_sha}); leaving immutable release tag untouched"
 else
-  git tag -f -a "${version}" -m "${version}"
+  git tag -a "${version}" -m "${version}"
   git push origin "refs/tags/${version}"
   echo "Pushed tag ${version}"
 fi
