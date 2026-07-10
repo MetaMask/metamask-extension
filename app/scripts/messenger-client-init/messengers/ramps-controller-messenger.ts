@@ -7,12 +7,14 @@ import {
   RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
-import type { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 import {
   type OnboardingControllerGetStateAction,
   type OnboardingControllerStateChangeEvent,
 } from '../../controllers/onboarding';
-import type { PreferencesControllerStateChangeEvent } from '../../controllers/preferences-controller';
+import {
+  type PreferencesControllerGetStateAction,
+  type PreferencesControllerStateChangeEvent,
+} from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 /**

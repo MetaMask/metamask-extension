@@ -56,9 +56,9 @@ describe('ramps-network-gate', () => {
 
       applyRampsNetworkGate(controller, () => false);
 
-      expect(() => controller.getQuotes()).toThrow(
-        RAMPS_NETWORK_ACCESS_DENIED_MESSAGE,
-      );
+      expect(() =>
+        controller.getQuotes({ amount: 0, walletAddress: '0x0' }),
+      ).toThrow(RAMPS_NETWORK_ACCESS_DENIED_MESSAGE);
       expect(getQuotes).not.toHaveBeenCalled();
     });
   });

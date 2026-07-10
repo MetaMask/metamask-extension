@@ -18,7 +18,7 @@ function isRampsNetworkAllowed(
   );
   const { useExternalServices } = initMessenger.call(
     'PreferencesController:getState',
-  ) as Pick<PreferencesControllerState, 'useExternalServices'>;
+  );
 
   return completedOnboarding && Boolean(useExternalServices);
 }

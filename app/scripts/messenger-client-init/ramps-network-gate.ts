@@ -59,11 +59,13 @@ export function applyRampsNetworkGate(
   rampsController: RampsController,
   isNetworkAllowed: () => boolean,
 ): void {
-  const controller = rampsController as RampsController &
-    Record<RampsNetworkMethodName, (...args: never[]) => unknown>;
+  const controller = rampsController as Record<
+    RampsNetworkMethodName,
+    (...args: unknown[]) => unknown
+  >;
 
   for (const methodName of RAMPS_NETWORK_METHOD_NAMES) {
-    const original = controller[methodName].bind(controller);
+    const original = controller[methodName].bind(rampsController);
     controller[methodName] = wrapRampsNetworkMethod(original, isNetworkAllowed);
   }
 }

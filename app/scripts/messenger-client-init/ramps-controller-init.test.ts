@@ -1,15 +1,8 @@
 import {
-  Messenger,
-  ActionConstraint,
-  MockAnyNamespace,
-  MOCK_ANY_NAMESPACE,
-} from '@metamask/messenger';
-import {
   RampsController,
   getDefaultRampsControllerState,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
-import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { getRootMessenger } from '../lib/messenger';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -47,6 +40,11 @@ let mockInit: jest.Mock;
 let mockStartOrderPolling: jest.Mock;
 let mockStopOrderPolling: jest.Mock;
 
+const mockGetQuotesParams = {
+  amount: 0,
+  walletAddress: '0x0',
+};
+
 jest.mock('@metamask/ramps-controller', () => {
   const actual = jest.requireActual('@metamask/ramps-controller');
   return {
@@ -71,35 +69,35 @@ function createInitMessenger({
 } = {}): {
   initMessenger: RampsControllerInitMessenger;
   setCompletedOnboarding: (value: boolean) => void;
+  setUseExternalServices: (value: boolean) => void;
 } {
   let onboardingComplete = completedOnboarding;
+  let externalServices = useExternalServices;
 
-  const baseMessenger = new Messenger<
-    MockAnyNamespace,
-    | PreferencesControllerGetStateAction
-    | ActionConstraint
-    | 'OnboardingController:getState',
-    'OnboardingController:stateChange' | 'PreferencesController:stateChange'
-  >({ namespace: MOCK_ANY_NAMESPACE });
+  const baseMessenger = getRootMessenger<never, never>();
+  const initMessenger = getRampsControllerInitMessenger(baseMessenger);
 
-  baseMessenger.registerActionHandler('OnboardingController:getState', () => ({
-    completedOnboarding: onboardingComplete,
-    seedPhraseBackedUp: null,
-    firstTimeFlowType: null,
-  }));
-
-  baseMessenger.registerActionHandler(
-    'PreferencesController:getState',
-    () =>
-      ({
-        useExternalServices,
-      }) as never,
-  );
+  initMessenger.call = jest.fn().mockImplementation((action) => {
+    if (action === 'OnboardingController:getState') {
+      return {
+        completedOnboarding: onboardingComplete,
+        seedPhraseBackedUp: null,
+        firstTimeFlowType: null,
+      };
+    }
+    if (action === 'PreferencesController:getState') {
+      return { useExternalServices: externalServices };
+    }
+    throw new Error(`Unexpected action: ${action}`);
+  });
 
   return {
-    initMessenger: getRampsControllerInitMessenger(baseMessenger as never),
+    initMessenger,
     setCompletedOnboarding: (value: boolean) => {
       onboardingComplete = value;
+    },
+    setUseExternalServices: (value: boolean) => {
+      externalServices = value;
     },
   };
 }
@@ -251,29 +249,15 @@ describe('RampsControllerInit', () => {
       }),
     );
 
-    expect(() => messengerClient.getQuotes()).toThrow(
-      RAMPS_NETWORK_ACCESS_DENIED_MESSAGE,
-    );
+    expect(() =>
+      messengerClient.getQuotes(mockGetQuotesParams),
+    ).toThrow(RAMPS_NETWORK_ACCESS_DENIED_MESSAGE);
   });
 
   it('stops order polling when basic functionality is disabled', async () => {
-    const { initMessenger } = createInitMessenger({
+    const { initMessenger, setUseExternalServices } = createInitMessenger({
       completedOnboarding: true,
       useExternalServices: true,
-    });
-    let useExternalServices = true;
-    jest.spyOn(initMessenger, 'call').mockImplementation((action: string) => {
-      if (action === 'OnboardingController:getState') {
-        return {
-          completedOnboarding: true,
-          seedPhraseBackedUp: null,
-          firstTimeFlowType: null,
-        };
-      }
-      if (action === 'PreferencesController:getState') {
-        return { useExternalServices };
-      }
-      throw new Error(`Unexpected action: ${action}`);
     });
 
     const preferenceListeners: ((state: {
@@ -302,7 +286,7 @@ describe('RampsControllerInit', () => {
     await Promise.resolve();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
-    useExternalServices = false;
+    setUseExternalServices(false);
     preferenceListeners[0]?.({ useExternalServices: false });
 
     expect(mockStopOrderPolling).toHaveBeenCalled();
@@ -317,23 +301,9 @@ describe('RampsControllerInit', () => {
         }),
     );
 
-    const { initMessenger } = createInitMessenger({
+    const { initMessenger, setUseExternalServices } = createInitMessenger({
       completedOnboarding: true,
       useExternalServices: true,
-    });
-    let useExternalServices = true;
-    jest.spyOn(initMessenger, 'call').mockImplementation((action: string) => {
-      if (action === 'OnboardingController:getState') {
-        return {
-          completedOnboarding: true,
-          seedPhraseBackedUp: null,
-          firstTimeFlowType: null,
-        };
-      }
-      if (action === 'PreferencesController:getState') {
-        return { useExternalServices };
-      }
-      throw new Error(`Unexpected action: ${action}`);
     });
 
     const preferenceListeners: ((state: {
@@ -362,7 +332,7 @@ describe('RampsControllerInit', () => {
     expect(mockInit).toHaveBeenCalled();
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
 
-    useExternalServices = false;
+    setUseExternalServices(false);
     preferenceListeners[0]?.({ useExternalServices: false });
     expect(mockStopOrderPolling).toHaveBeenCalled();
 
