@@ -33,6 +33,7 @@ import {
 } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
+import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
@@ -62,6 +63,7 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
+jest.mock('../../../shared/lib/sentry');
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -3463,6 +3465,31 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.call('LegacyBackgroundApiService:throwTestError', 'boom');
 
         expect(() => jest.runAllTimers()).toThrow(
+          expect.objectContaining({ name: 'TestError', message: 'boom' }),
+        );
+      });
+    });
+  });
+
+  describe('captureTestError', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('captures a TestError with the given message from a timeout handler', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.call(
+          'LegacyBackgroundApiService:captureTestError',
+          'boom',
+        );
+
+        jest.runAllTimers();
+
+        expect(captureException).toHaveBeenCalledWith(
           expect.objectContaining({ name: 'TestError', message: 'boom' }),
         );
       });
