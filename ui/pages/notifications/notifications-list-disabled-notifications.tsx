@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -13,14 +13,57 @@ import {
   IconName,
   IconSize,
   Text,
+  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../helpers/constants/routes';
+import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
+import { getIsUpdatingMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
+import { useNotificationAnalyticsProperties } from './notification-hooks/use-notification-analytics-properties';
 
 export const NotificationsListDisabledNotifications = () => {
   const t = useI18nContext();
-  const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const { listNotifications } = useMetamaskNotificationsContext();
+  const { profile_id: profileId } = useNotificationAnalyticsProperties();
+  const { enableNotifications, error: errorEnableNotifications } =
+    useEnableNotifications();
+  const isUpdatingMetamaskNotifications = useSelector(
+    getIsUpdatingMetamaskNotifications,
+  );
+  const [loading, setLoading] = useState(isUpdatingMetamaskNotifications);
+
+  useEffect(() => {
+    setLoading(isUpdatingMetamaskNotifications);
+  }, [isUpdatingMetamaskNotifications]);
+
+  const handleTurnOnNotifications = useCallback(async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationSettings,
+      event: MetaMetricsEventName.NotificationsSettingsUpdated,
+      properties: {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'master',
+        notification_channel: 'all',
+        enabled: true,
+        ...(profileId && { profile_id: profileId }),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
+    });
+    setLoading(true);
+    try {
+      await enableNotifications();
+      listNotifications();
+    } finally {
+      setLoading(false);
+    }
+  }, [enableNotifications, listNotifications, profileId, trackEvent]);
 
   return (
     <Box
@@ -41,12 +84,21 @@ export const NotificationsListDisabledNotifications = () => {
         </Text>
       </Box>
       <Button
-        onClick={() => navigate(NOTIFICATIONS_SETTINGS_ROUTE)}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onClick={handleTurnOnNotifications}
         size={ButtonSize.Md}
         variant={ButtonVariant.Secondary}
+        disabled={loading}
+        data-testid="notifications-list-turn-on-notifications-button"
       >
-        {t('notificationSettings')}
+        {t('turnOnMetamaskNotificationsButton')}
       </Button>
+      {errorEnableNotifications && (
+        <Text color={TextColor.ErrorDefault}>
+          {t('turnOnMetamaskNotificationsError')}
+        </Text>
+      )}
     </Box>
   );
 };
