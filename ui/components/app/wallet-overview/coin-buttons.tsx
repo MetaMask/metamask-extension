@@ -412,8 +412,11 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
+    const opened = goToBuy(getChainId());
+    if (!opened) {
+      return;
+    }
     setShowTabOpenedToast(true);
-    goToBuy(getChainId());
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)

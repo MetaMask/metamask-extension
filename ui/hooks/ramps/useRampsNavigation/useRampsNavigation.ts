@@ -26,7 +26,8 @@ import useRamps from '../useRamps/useRamps';
  * gate is skipped entirely when the `rampsEnabled` rollout flag is off.
  *
  * @returns An object with `goToBuy`, a callback that runs the gate and
- * either shows a blocking modal or opens the buy destination.
+ * either shows a blocking modal or opens the buy destination. Returns
+ * `true` if the buy destination was opened, `false` if blocked by a modal.
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -44,23 +45,23 @@ export default function useRampsNavigation() {
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
         openBuyCryptoInPdapp(chainId);
-        return;
+        return true;
       }
 
       // 1. Geolocation unknown.
       if (isGeoUnknown) {
         dispatch(showModal({ name: 'RAMPS_ELIGIBILITY_FAILED' }));
-        return;
+        return false;
       }
       // 2. Service-disruption kill-switch.
       if (isDisruption) {
         dispatch(showModal({ name: 'RAMPS_SERVICE_DISRUPTION' }));
-        return;
+        return false;
       }
       // 3. Region definitively unsupported.
       if (isRegionUnsupported) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
-        return;
+        return false;
       }
       // 4. Providers/tokens fetched but empty. `tokens.data === null` means
       // providers/tokens haven't been fetched yet (fetched together by the
@@ -74,12 +75,13 @@ export default function useRampsNavigation() {
           (tokens.data.allTokens?.length ?? 0) === 0;
         if (providersEmpty || tokensEmpty) {
           dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
-          return;
+          return false;
         }
       }
 
       // 5. Proceed. Destination stays Portfolio until native pages (TRAM-3714+).
       openBuyCryptoInPdapp(chainId);
+      return true;
     },
     [
       isEnabled,
