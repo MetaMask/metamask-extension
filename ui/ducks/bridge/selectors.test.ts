@@ -190,7 +190,26 @@ describe('Bridge selectors', () => {
         exchangeRate: '1',
         usdExchangeRate,
       },
+      // [(
+      //   toAssetId(
+      //     mockErc20Erc20Quotes[0].quote.destAsset.address,
+      //     formatChainIdToCaip(mockErc20Erc20Quotes[0].quote.destChainId),
+      //   ) as string
+      // ).toLowerCase()]: {
+      //   exchangeRate: '1',
+      //   usdExchangeRate,
+      // },
     }) as never;
+  // const mockErc20SrcAssetRates = (usdExchangeRate: string) => ({
+  //   [mockErc20Erc20Quotes[0].quote.src.asset.assetId.toLowerCase()]: {
+  //     exchangeRate: '1',
+  //     usdExchangeRate,
+  //   },
+  //   [mockErc20Erc20Quotes[0].quote.dest.asset.assetId.toLowerCase()]: {
+  //     exchangeRate: '1',
+  //     usdExchangeRate,
+  //   },
+  // });
 
   const createTronBridgeState = ({
     fromTokenInputValue = '1',
