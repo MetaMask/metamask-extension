@@ -58,7 +58,11 @@ export function useRampsPaymentMethods(): UseRampsPaymentMethodsResult {
 
   useEffect(() => {
     const methods = paymentMethodsQuery.data;
-    if (!methods || methods.length === 0) {
+    if (methods === undefined) {
+      return;
+    }
+
+    if (methods.length === 0) {
       if (selectedPaymentMethod !== null) {
         setSelectedPaymentMethod(null);
       }
