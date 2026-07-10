@@ -15,6 +15,12 @@ import {
   type QrHardwareSignRequest,
 } from './types';
 
+export {
+  SignatureStepStatus,
+  type BridgeTxHistory,
+  type QrHardwareSignRequest,
+};
+
 /**
  * Checks whether a signature step display status represents an error
  * (rejected, failed, or disconnected).
@@ -195,6 +201,73 @@ export const getTitle = ({
 };
 
 /**
+ * Returns the title for the QR hardware wallet signing flow.
+ *
+ * A QR signature has two phases per transaction: **display** (the user scans
+ * the QR code shown in MetaMask with their wallet) and **scan** (the user scans
+ * the signed QR code shown on their wallet). A two-confirmation flow (approval
+ * + trade) therefore has 4 steps; a single-confirmation flow has 2.
+ *
+ * Step numbering:
+ * Two confirmations (4 steps): approval display 1, approval scan 2, trade display 3, trade scan 4.
+ * Single confirmation (2 steps): display 1, scan 2.
+ *
+ * The final scan step uses the "Last step" title.
+ *
+ * @param options - Configuration object.
+ * @param options.activeQrStep - The signature step currently using QR signing.
+ * @param options.isDisplayPhase - True when the QR code is being displayed for
+ * the user to scan with their wallet; false when scanning the signed QR code
+ * back from the wallet. Defaults to the scan phase.
+ * @param options.needsTwoConfirmations - Whether the transaction requires approval.
+ * @param options.t - The i18n translation function.
+ * @returns The localized page title string.
+ */
+export const getQrHardwareSigningPageTitle = ({
+  activeQrStep,
+  isDisplayPhase = false,
+  needsTwoConfirmations,
+  t,
+}: {
+  activeQrStep: HardwareWalletSignatureStatus;
+  isDisplayPhase?: boolean;
+  needsTwoConfirmations: boolean;
+  t: ReturnType<typeof useI18nContext>;
+}) => {
+  const isFinalSignature =
+    activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature;
+  const totalSteps = needsTwoConfirmations ? 4 : 2;
+
+  // Two-confirmation: approval 1–2, trade 3–4. Single-confirmation: 1–2.
+  // Within each signature: display is the odd step, scan is the even step.
+  let currentStep: number;
+  if (needsTwoConfirmations && isFinalSignature) {
+    currentStep = isDisplayPhase ? 3 : 4;
+  } else {
+    currentStep = isDisplayPhase ? 1 : 2;
+  }
+
+  const isLastStep = currentStep === totalSteps;
+
+  // The final scan step uses the dedicated "Last step" title.
+  if (!isDisplayPhase && isLastStep) {
+    return t('bridgeQrHardwareSignLastStepTitle');
+  }
+
+  if (isDisplayPhase) {
+    return t('bridgeQrHardwareSignDisplayStepTitle', [
+      String(currentStep),
+      String(totalSteps),
+    ]);
+  }
+
+  return t('bridgeQrHardwareSignStepTitle', [
+    String(currentStep),
+    String(totalSteps),
+  ]);
+};
+
+/**
  * Returns the label for the final step in the signature progress indicator.
  *
  * @param options - Configuration object.
@@ -288,6 +361,188 @@ export const getFinalStepDescription = ({
   }
 
   return t('hardwareToAddress', [shortenAddress(toAddress)]);
+};
+
+/**
+ * Computes the localized labels for the first and final signature steps,
+ * branching on flow.
+ *
+ * sendBundle (two confirmations — gas-token payment): first step = the SEND
+ * tx (signed first on the device; Send / Sending / Sent by status), final
+ * step = the GAS-PAYMENT tx (signed second).
+ * sendBundle (single confirmation — no gas token): only the final step is
+ * rendered, and it IS the SEND tx, so it uses the status-aware send label.
+ * bridge/swap: first step = approval (or "approved" once complete), final
+ * step = trade (delegated to {@link getFinalStepLabel}).
+ *
+ * @param options - Configuration object.
+ * @param options.isSendBundleFlow - True when rendering the sendBundle flow.
+ * @param options.needsTwoConfirmations - Whether the flow renders two steps
+ * (true) or a single step (false). For sendBundle, two steps means a
+ * gas-token payment follows the send; one step means a plain send.
+ * @param options.status - The current signature state machine status.
+ * @param options.firstStepStatus - The display status of the first step.
+ * @param options.finalStepStatus - The display status of the final step.
+ * @param options.fromAmount - The amount being sent (bridge/swap only).
+ * @param options.fromTokenSymbol - The symbol of the token being sent
+ * (bridge/swap only).
+ * @param options.sendAmount - The amount being sent (sendBundle flow).
+ * @param options.sendSymbol - The symbol of the token being sent
+ * (sendBundle flow).
+ * @param options.gasSymbol - The symbol of the token used to pay the network
+ * fee (always the chain's native currency). Labels the gas-payment step in a
+ * two-step sendBundle flow.
+ * @param options.t - The i18n translation function.
+ * @returns An object containing the localized `firstStepLabel` and
+ * `finalStepLabel` strings.
+ */
+export const getStepLabels = ({
+  isSendBundleFlow,
+  needsTwoConfirmations,
+  status,
+  firstStepStatus,
+  finalStepStatus,
+  fromAmount,
+  fromTokenSymbol,
+  sendAmount,
+  sendSymbol,
+  gasSymbol,
+  t,
+}: {
+  isSendBundleFlow: boolean;
+  needsTwoConfirmations: boolean;
+  status: HardwareWalletSignatureStatus;
+  firstStepStatus: SignatureStepStatus;
+  finalStepStatus: SignatureStepStatus;
+  fromAmount?: string;
+  fromTokenSymbol?: string;
+  sendAmount?: string;
+  sendSymbol?: string;
+  gasSymbol?: string;
+  t: ReturnType<typeof useI18nContext>;
+}): {
+  firstStepLabel: string;
+  finalStepLabel: string;
+} => {
+  if (isSendBundleFlow) {
+    // Send tense mirrors getFinalStepLabel: Sent (complete), Sending (active),
+    // Send (pending / interrupted).
+    const getSendAmountLabel = (stepStatus: SignatureStepStatus) => {
+      if (
+        status === HardwareWalletSignatureStatus.Submitted ||
+        stepStatus === SignatureStepStatus.Complete
+      ) {
+        return t('hardwareSentAmount', [sendAmount, sendSymbol]);
+      }
+
+      if (stepStatus === SignatureStepStatus.Active) {
+        return t('hardwareSendingAmount', [sendAmount, sendSymbol]);
+      }
+
+      return t('hardwareSendAmount', [sendAmount, sendSymbol]);
+    };
+
+    // Two-step sendBundle: step 1 is the SEND, step 2 is the gas-token payment.
+    if (needsTwoConfirmations) {
+      return {
+        firstStepLabel: getSendAmountLabel(firstStepStatus),
+        finalStepLabel: t('sendBundleHwGasPayment', [gasSymbol]),
+      };
+    }
+
+    // Single-step sendBundle: only the final step is rendered (see
+    // signature-step-list.tsx), and that step IS the SEND tx, so it uses the
+    // send label. `firstStepLabel` is not rendered but kept valid.
+    const sendLabel = getSendAmountLabel(finalStepStatus);
+    return {
+      firstStepLabel: sendLabel,
+      finalStepLabel: sendLabel,
+    };
+  }
+
+  const firstStepLabel =
+    status === HardwareWalletSignatureStatus.Submitted ||
+    firstStepStatus === SignatureStepStatus.Complete
+      ? t('hardwareApprovedAmount', [fromAmount, fromTokenSymbol])
+      : t('hardwareApproveAmount', [fromAmount, fromTokenSymbol]);
+
+  return {
+    firstStepLabel,
+    finalStepLabel: getFinalStepLabel({
+      status,
+      finalStepStatus,
+      fromAmount,
+      fromTokenSymbol,
+      t,
+    }),
+  };
+};
+
+/**
+ * Computes the optional localized descriptions for the first and final
+ * signature steps, branching on flow.
+ *
+ * sendBundle (two confirmations — gas-token payment): first step (SEND) shows
+ * the destination address; final step (GAS-PAYMENT) has no description.
+ * sendBundle (single confirmation — no gas token): only the final step is
+ * rendered, and it IS the SEND, so the destination address shows on the final
+ * step.
+ * bridge/swap: delegates to {@link getFirstStepDescription} and
+ * {@link getFinalStepDescription}.
+ *
+ * @param options - Configuration object.
+ * @param options.isSendBundleFlow - True when rendering the sendBundle flow.
+ * @param options.needsTwoConfirmations - Whether the flow renders two steps
+ * (true) or a single step (false).
+ * @param options.firstStepStatus - The display status of the first step.
+ * @param options.spenderAddress - The spender contract address (bridge only).
+ * @param options.toAddress - The destination address.
+ * @param options.t - The i18n translation function.
+ * @returns An object containing optional `firstStepDescription` and
+ * `finalStepDescription` strings (either may be `undefined`).
+ */
+export const getStepDescriptions = ({
+  isSendBundleFlow,
+  needsTwoConfirmations,
+  firstStepStatus,
+  spenderAddress,
+  toAddress,
+  t,
+}: {
+  isSendBundleFlow: boolean;
+  needsTwoConfirmations: boolean;
+  firstStepStatus: SignatureStepStatus;
+  spenderAddress?: string;
+  toAddress?: string;
+  t: ReturnType<typeof useI18nContext>;
+}): {
+  firstStepDescription?: string;
+  finalStepDescription?: string;
+} => {
+  if (isSendBundleFlow) {
+    // Two-step sendBundle: destination shows on the first (SEND) step.
+    if (needsTwoConfirmations) {
+      return {
+        firstStepDescription: getFinalStepDescription({ toAddress, t }),
+        finalStepDescription: undefined,
+      };
+    }
+
+    // Single-step sendBundle: only the final step is rendered, and it IS the
+    // SEND, so the destination shows there.
+    return {
+      finalStepDescription: getFinalStepDescription({ toAddress, t }),
+    };
+  }
+
+  return {
+    firstStepDescription: getFirstStepDescription({
+      firstStepStatus,
+      spenderAddress,
+      t,
+    }),
+    finalStepDescription: getFinalStepDescription({ toAddress, t }),
+  };
 };
 
 /**
@@ -412,3 +667,25 @@ export const getStepStatus = (
       return SignatureStepStatus.Pending;
   }
 };
+
+/**
+ * Derives first- and final-step display statuses from the signature state
+ * machine in a single call instead of two separate calls.
+ *
+ * @param signatureState - The current state of the hardware-wallet signature state machine.
+ * @returns An object containing the `first` and `final` step statuses.
+ */
+export function getAllStepStatuses(
+  signatureState: HardwareWalletSignaturesState,
+): { first: SignatureStepStatus; final: SignatureStepStatus } {
+  return {
+    first: getStepStatus(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      signatureState,
+    ),
+    final: getStepStatus(
+      HardwareWalletSignatureStatus.AwaitingFinalSignature,
+      signatureState,
+    ),
+  };
+}

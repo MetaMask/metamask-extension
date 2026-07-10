@@ -152,6 +152,23 @@ export type LegacyBackgroundApiServiceEstimateGasAction = {
 };
 
 /**
+ * Decodes the data of a transaction using the currently selected network
+ * client's provider.
+ *
+ * @param request - The transaction decode request.
+ * @param request.transactionData - The transaction data to decode.
+ * @param request.contractAddress - The address of the contract the
+ * transaction interacts with.
+ * @param request.chainId - The chain ID of the network the transaction is on.
+ * @returns The decoded transaction data, or `undefined` if it could not be
+ * decoded.
+ */
+export type LegacyBackgroundApiServiceDecodeTransactionDataAction = {
+  type: `LegacyBackgroundApiService:decodeTransactionData`;
+  handler: LegacyBackgroundApiService['decodeTransactionData'];
+};
+
+/**
  * Verifies the validity of the current vault's seed phrase.
  *
  * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -569,6 +586,17 @@ export type LegacyBackgroundApiServiceThrowTestErrorAction = {
 };
 
 /**
+ * Determines if the transaction relay supports the given chain.
+ *
+ * @param chainId - The chain ID to check for relay support.
+ * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceIsRelaySupportedAction = {
+  type: `LegacyBackgroundApiService:isRelaySupported`;
+  handler: LegacyBackgroundApiService['isRelaySupported'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -585,6 +613,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceGetCodeAction
   | LegacyBackgroundApiServiceCheckDelegationDisabledAction
   | LegacyBackgroundApiServiceEstimateGasAction
+  | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
@@ -620,4 +649,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceGetTrezorFeaturesAction
   | LegacyBackgroundApiServiceForgetDeviceAction
   | LegacyBackgroundApiServiceUnlockHardwareWalletAccountAction
-  | LegacyBackgroundApiServiceThrowTestErrorAction;
+  | LegacyBackgroundApiServiceThrowTestErrorAction
+  | LegacyBackgroundApiServiceIsRelaySupportedAction;
