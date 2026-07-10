@@ -1,3 +1,4 @@
+import type { AccountGroupId } from '@metamask/account-api';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Text } from '../../../../../components/component-library';
@@ -26,7 +27,7 @@ function getMultichainAccountsState(
     : undefined;
 }
 
-function selectAccountGroupId(state: unknown): string | undefined {
+function selectAccountGroupId(state: unknown): AccountGroupId | undefined {
   const multichainAccountsState = getMultichainAccountsState(state);
   return multichainAccountsState
     ? getSelectedAccountGroup(multichainAccountsState)
