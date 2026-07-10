@@ -96,34 +96,33 @@ describe('PerpsAttributionContext', () => {
       wrapper: createWrapper(),
     });
 
-    const cases: { source: string; discovery: string; entry?: string }[] =
-      [
-        {
-          source: 'asset_details',
-          discovery: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
-        },
-        {
-          source: 'trading',
-          discovery: PERPS_EVENT_VALUE.SOURCE.TRADING,
-        },
-        {
-          source: 'wallet_home_perps_tab',
-          discovery: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
-        },
-        {
-          source: 'homescreen_tab',
-          discovery: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
-        },
-        {
-          source: 'deeplink',
-          discovery: PERPS_EVENT_VALUE.SOURCE.DEEPLINK,
-          entry: PERPS_EVENT_VALUE.SOURCE.DEEPLINK,
-        },
-        {
-          source: 'custom_campaign',
-          discovery: 'custom_campaign',
-        },
-      ];
+    const cases: { source: string; discovery: string; entry?: string }[] = [
+      {
+        source: 'asset_details',
+        discovery: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+      },
+      {
+        source: 'trading',
+        discovery: PERPS_EVENT_VALUE.SOURCE.TRADING,
+      },
+      {
+        source: 'wallet_home_perps_tab',
+        discovery: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      },
+      {
+        source: 'homescreen_tab',
+        discovery: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      },
+      {
+        source: 'deeplink',
+        discovery: PERPS_EVENT_VALUE.SOURCE.DEEPLINK,
+        entry: PERPS_EVENT_VALUE.SOURCE.DEEPLINK,
+      },
+      {
+        source: 'custom_campaign',
+        discovery: 'custom_campaign',
+      },
+    ];
 
     for (const { source, discovery, entry } of cases) {
       act(() => {

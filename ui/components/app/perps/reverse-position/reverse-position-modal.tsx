@@ -172,7 +172,18 @@ export const ReversePositionModal = ({
           },
         ]);
         if (flipResult?.success !== true) {
-          throw new Error(flipResult?.error || 'Failed to flip position');
+          // Controller already emitted flip submitted/terminal analytics —
+          // surface UI only; do not throw into catch (would duplicate PerpsError).
+          const err = new Error(
+            flipResult?.error || 'Failed to flip position',
+          );
+          const message = handlePerpsError(err, t as (key: string) => string);
+          setError(message);
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+            description: message,
+          });
+          return;
         }
         const streamManager = getPerpsStreamManager();
         const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
@@ -184,6 +195,8 @@ export const ReversePositionModal = ({
         replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
         onClose();
       } catch (err) {
+        // Transport/background throws never reach the controller flip
+        // submitted/terminal pipeline — keep client PerpsError for that gap.
         const raw =
           err instanceof Error ? err.message : 'An unknown error occurred';
         track(MetaMetricsEventName.PerpsError, {

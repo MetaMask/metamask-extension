@@ -28,6 +28,7 @@ jest.mock('../../compliance', () => ({
 
 const mockUsePerpsOrderFees = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockTrack = jest.fn();
 
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
   usePerpsOrderFees: () => mockUsePerpsOrderFees(),
@@ -35,7 +36,7 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: jest.fn() }),
+  usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
@@ -521,6 +522,10 @@ describe('ReversePositionModal', () => {
           screen.getByText(messages.perpsInsufficientMargin.message),
         ).toBeInTheDocument();
       });
+      // Controller terminal failure — UI only; no duplicate client PerpsError.
+      expect(
+        mockTrack.mock.calls.some(([event]) => event === 'Perp Error'),
+      ).toBe(false);
     });
 
     it('does not call perpsClosePosition or perpsPlaceOrder when flip fails', async () => {
@@ -594,6 +599,10 @@ describe('ReversePositionModal', () => {
           screen.getByText(messages.perpsNetworkError.message),
         ).toBeInTheDocument();
       });
+      // Transport throws never reach controller pipeline — keep client PerpsError.
+      expect(
+        mockTrack.mock.calls.some(([event]) => event === 'Perp Error'),
+      ).toBe(true);
     });
   });
 
