@@ -249,9 +249,9 @@ describe('RampsControllerInit', () => {
       }),
     );
 
-    expect(() =>
-      messengerClient.getQuotes(mockGetQuotesParams),
-    ).toThrow(RAMPS_NETWORK_ACCESS_DENIED_MESSAGE);
+    expect(() => messengerClient.getQuotes(mockGetQuotesParams)).toThrow(
+      RAMPS_NETWORK_ACCESS_DENIED_MESSAGE,
+    );
   });
 
   it('stopRampsLifecycle stops polling when network access is allowed', async () => {
