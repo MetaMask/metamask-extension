@@ -2628,6 +2628,7 @@
         "@metamask/network-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/storage-service": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },

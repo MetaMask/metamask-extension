@@ -12,7 +12,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { add0x, hexToBytes } from '@metamask/utils';
+import { add0x, hexToBytes, type Hex } from '@metamask/utils';
 import {
   EncAccountDataType,
   SecretType,
@@ -34,6 +34,7 @@ import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscr
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
+import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -51,6 +52,8 @@ jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
 const mockGetIsShieldSubscriptionActive = jest.mocked(
   getIsShieldSubscriptionActive,
 );
+
+jest.mock('../lib/transaction/sentinel-api');
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -253,6 +256,96 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('getAssets', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    it('fetches assets from the AssetsController with forceUpdate when the feature is enabled', async () => {
+      const accounts = [{ id: 'account-1' }] as never;
+      const options = { chainIds: ['eip155:1'] };
+      const assets = { 'account-1': {} };
+
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const getAssetsHandler = jest.fn().mockResolvedValue(assets);
+        rootMessenger.registerActionHandler(
+          'AssetsController:getAssets',
+          getAssetsHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:getAssets',
+            accounts,
+            options as never,
+          ),
+        ).resolves.toStrictEqual(assets);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AssetsController:getAssets',
+          accounts,
+          { ...options, forceUpdate: true },
+        );
+      });
+    });
+
+    it('resolves to undefined and does not call the AssetsController when the feature is not enabled', async () => {
+      const accounts = [{ id: 'account-1' }] as never;
+
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const getAssetsHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:getAssets',
+          getAssetsHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:getAssets', accounts),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AssetsController:getAssets',
+          expect.anything(),
+          expect.anything(),
+        );
+        expect(getAssetsHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('isPublicEndpointUrl', () => {
     it('returns true for a public endpoint URL', async () => {
       await withService(({ rootMessenger }) => {
@@ -318,6 +411,35 @@ describe('LegacyBackgroundApiService', () => {
           expect(mockGetOpenMetamaskTabsIds).toHaveBeenCalled();
         },
       );
+    });
+  });
+
+  describe('getPhishingResult', () => {
+    it('updates the phishing state and returns the test result for the website', async () => {
+      const website = 'https://example.com';
+      const phishingResult = { result: false, type: 'all' };
+      const mockMaybeUpdateState = jest.fn();
+      const mockTestOrigin = jest.fn().mockReturnValue(phishingResult);
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PhishingController:maybeUpdateState',
+          mockMaybeUpdateState,
+        );
+        rootMessenger.registerActionHandler(
+          'PhishingController:testOrigin',
+          mockTestOrigin,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getPhishingResult',
+          website,
+        );
+
+        expect(mockMaybeUpdateState).toHaveBeenCalled();
+        expect(mockTestOrigin).toHaveBeenCalledWith(website);
+        expect(result).toBe(phishingResult);
+      });
     });
   });
 
@@ -405,6 +527,44 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).resolves.toStrictEqual('0x123');
+      });
+    });
+  });
+
+  describe('checkDelegationDisabled', () => {
+    it('performs an eth_call against the delegation manager and returns the decoded result', async () => {
+      const delegationManagerAddress: Hex =
+        '0x1234567890123456789012345678901234567890';
+      const delegationHash: Hex = `0x${'0'.repeat(63)}1`;
+      const mockRequest = jest
+        .fn()
+        .mockResolvedValue(
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+        );
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({
+            provider: { request: mockRequest },
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkDelegationDisabled',
+          delegationManagerAddress,
+          delegationHash,
+          'networkClientId',
+        );
+
+        expect(mockRequest).toHaveBeenCalledWith({
+          method: 'eth_call',
+          params: [
+            { to: delegationManagerAddress, data: expect.any(String) },
+            'latest',
+          ],
+        });
+        expect(result).toBe(true);
       });
     });
   });
@@ -1181,6 +1341,22 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(['0x123']);
+      });
+    });
+  });
+
+  describe('isSendBundleSupported', () => {
+    it('returns whether the sendBundle feature is supported for the chain', async () => {
+      jest.mocked(isSendBundleSupported).mockResolvedValue(true);
+
+      await withService(async ({ rootMessenger }) => {
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:isSendBundleSupported',
+          '0x1',
+        );
+
+        expect(isSendBundleSupported).toHaveBeenCalledWith('0x1');
+        expect(result).toBe(true);
       });
     });
   });
@@ -3182,6 +3358,26 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('throwTestError', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('throws a TestError with the given message from a timeout handler', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.call('LegacyBackgroundApiService:throwTestError', 'boom');
+
+        expect(() => jest.runAllTimers()).toThrow(
+          expect.objectContaining({ name: 'TestError', message: 'boom' }),
+        );
+      });
+    });
+  });
 });
 
 /**
@@ -3246,6 +3442,7 @@ function getMessenger(
       'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
+      'AssetsController:getAssets',
       'AssetsController:setSelectedCurrency',
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
@@ -3314,6 +3511,8 @@ function getMessenger(
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',
+      'PhishingController:maybeUpdateState',
+      'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
       'TokenDetectionController:enable',

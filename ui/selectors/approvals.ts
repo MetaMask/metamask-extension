@@ -5,7 +5,18 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
+<<<<<<< HEAD
 import { EMPTY_OBJECT } from './shared';
+=======
+import {
+  createDeepEqualSelector,
+  createShallowResultSelector,
+} from '../../shared/lib/selectors/selector-creators';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+>>>>>>> origin/main
 
 export type ApprovalsMetaMaskState = {
   metamask: {
@@ -51,9 +62,19 @@ export const getApprovalRequestsByType = (
   return pendingApprovalRequests;
 };
 
-export function getApprovalFlows(state: ApprovalsMetaMaskState) {
-  return state.metamask.approvalFlows;
-}
+const getApprovalFlowsFromState = (state: ApprovalsMetaMaskState) =>
+  state.metamask.approvalFlows;
+
+export const getApprovalFlows = createShallowResultSelector(
+  getApprovalFlowsFromState,
+  (approvalFlows) => {
+    if (!approvalFlows?.length) {
+      return EMPTY_ARRAY;
+    }
+
+    return [...approvalFlows];
+  },
+);
 
 export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
   return (state.metamask.approvalFlows?.length ?? 0) > 0;
@@ -72,15 +93,36 @@ export const pendingApprovalsSortedSelector = createSelector(
   (approvals) => [...approvals].sort((a1, a2) => a1.time - a2.time),
 );
 
+const getSkipSmartTransactionStatusPage = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(
+      remoteFeatureFlags?.extensionSkipTransactionStatusPage,
+      true,
+    ),
+);
+
 /**
  * Returns pending approvals sorted by time for use in confirmation navigation.
  * Excludes duplicate watch asset approvals as they are combined into a single confirmation.
  */
-export const selectPendingApprovalsForNavigation = createSelector(
+export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
   pendingApprovalsSortedSelector,
-  (sortedPendingApprovals) =>
+  getSkipSmartTransactionStatusPage,
+  (sortedPendingApprovals, skipSmartTransactionStatusPage) =>
     sortedPendingApprovals.filter((approval, index) => {
       if (
+<<<<<<< HEAD
+=======
+        skipSmartTransactionStatusPage &&
+        approval.type ===
+          SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
+      ) {
+        return false;
+      }
+
+      if (
+>>>>>>> origin/main
         isWatchNftApproval(approval) &&
         sortedPendingApprovals.findIndex(isWatchNftApproval) !== index
       ) {

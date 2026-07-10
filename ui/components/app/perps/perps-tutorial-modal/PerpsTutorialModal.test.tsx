@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { PerpsTutorialStep } from '../../../../ducks/perps';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import PerpsTutorialModal from './PerpsTutorialModal';
 
 const mockDispatch = jest.fn();
@@ -39,24 +38,24 @@ jest.mock('./PerpsTutorialAnimation', () => {
 
 const mockStore = configureStore([]);
 
-const mockMetaMetricsContext = {
-  trackEvent: jest.fn().mockResolvedValue(undefined),
-  bufferedTrace: jest.fn().mockResolvedValue(undefined),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn().mockResolvedValue(undefined),
+      createEventBuilder,
+    }),
+  };
+});
 
 function renderWithProviders(
   store: ReturnType<typeof mockStore>,
   ui: React.ReactElement,
 ) {
-  return render(
-    <Provider store={store}>
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        {ui}
-      </MetaMetricsContext.Provider>
-    </Provider>,
-  );
+  return render(<Provider store={store}>{ui}</Provider>);
 }
 
 describe('PerpsTutorialModal', () => {

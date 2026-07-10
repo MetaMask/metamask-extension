@@ -1,7 +1,7 @@
 import type { Json } from '@metamask/utils';
 import type { WalletOptions } from '@metamask/wallet';
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
-import type { WalletInitMessenger } from '../initialization';
+import type { WalletInitMessenger } from '../types';
 import { getRemoteFeatureFlagClientConfigApiService } from '../remote-feature-flags';
 
 const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;

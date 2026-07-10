@@ -640,6 +640,7 @@
     },
     "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
+    "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object"
     },
