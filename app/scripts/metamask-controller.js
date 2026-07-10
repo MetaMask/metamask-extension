@@ -320,7 +320,6 @@ import {
 } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
-import { decodeTransactionData } from './lib/transaction/decode/util';
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
@@ -3877,7 +3876,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:throwTestError',
       ),
-      captureTestError: this.captureTestError.bind(this),
+      captureTestError: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:captureTestError',
+      ),
 
       // NameController
       updateProposedNames: this.nameController.updateProposedNames.bind(
@@ -3902,11 +3904,10 @@ export default class MetamaskController extends EventEmitter {
           accountId,
         ),
       // Transaction Decode
-      decodeTransactionData: (request) =>
-        decodeTransactionData({
-          ...request,
-          provider: this.provider,
-        }),
+      decodeTransactionData: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:decodeTransactionData',
+      ),
       // metrics data deleteion
       createMetaMetricsDataDeletionTask:
         this.metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
@@ -3918,7 +3919,10 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Other
-      isRelaySupported,
+      isRelaySupported: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:isRelaySupported',
+      ),
       isSendBundleSupported: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
@@ -8078,21 +8082,6 @@ export default class MetamaskController extends EventEmitter {
 
     releaseLock();
     return pendingNonce;
-  }
-
-  /**
-   * Capture an artificial error in a timeout handler for testing purposes.
-   *
-   * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
-   * use this for handling errors.
-   */
-  captureTestError(message) {
-    setTimeout(() => {
-      const error = new Error(message);
-      error.name = 'TestError';
-      captureException(error);
-    });
   }
 
   getTransactionUIMetricsFragmentId(transactionId) {
