@@ -10,9 +10,11 @@ import {
 import {
   getIsRampsGeolocationUnknown,
   getIsRampRegionUnsupported,
-  getRampsProviders,
-  getRampsTokens,
 } from '../../../selectors/ramps';
+import {
+  selectProviders,
+  selectTokens,
+} from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
 
 /**
@@ -34,8 +36,8 @@ export default function useRampsNavigation() {
   const isDisruption = useSelector(getIsRampsServiceDisruptionActive);
   const isGeoUnknown = useSelector(getIsRampsGeolocationUnknown);
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
-  const providers = useSelector(getRampsProviders);
-  const tokens = useSelector(getRampsTokens);
+  const providers = useSelector(selectProviders);
+  const tokens = useSelector(selectTokens);
 
   const goToBuy = useCallback(
     (chainId?: ChainId | CaipChainId) => {

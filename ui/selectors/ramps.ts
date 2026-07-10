@@ -1,58 +1,6 @@
 import { createSelector } from 'reselect';
-import type {
-  Country,
-  Provider,
-  RampsToken,
-  ResourceState,
-  TokensResponse,
-  UserRegion,
-} from '@metamask/ramps-controller';
 import { isRampRegionDefinitivelyUnsupported } from '../pages/ramps/utils/rampRegionEligibility';
-
-// Controller state is flattened onto `state.metamask`.
-type RampsRootState = {
-  metamask: {
-    userRegion: UserRegion | null;
-    countries: ResourceState<Country[]>;
-    providers: ResourceState<Provider[], Provider | null>;
-    tokens: ResourceState<TokensResponse | null, RampsToken | null>;
-  };
-};
-
-/**
- * Selects the user's region from Ramps controller state.
- *
- * @param state - The Redux state.
- * @returns The user's region or null if not set.
- */
-export const getRampsUserRegion = (state: RampsRootState) =>
-  state.metamask.userRegion;
-
-/**
- * Selects the countries resource state from Ramps controller.
- *
- * @param state - The Redux state.
- * @returns The countries resource state.
- */
-export const getRampsCountries = (state: RampsRootState) =>
-  state.metamask.countries;
-
-/**
- * Selects the providers resource state from Ramps controller.
- *
- * @param state - The Redux state.
- * @returns The providers resource state.
- */
-export const getRampsProviders = (state: RampsRootState) =>
-  state.metamask.providers;
-
-/**
- * Selects the tokens resource state from Ramps controller.
- *
- * @param state - The Redux state.
- * @returns The tokens resource state.
- */
-export const getRampsTokens = (state: RampsRootState) => state.metamask.tokens;
+import { selectUserRegion, selectCountries } from './rampsController';
 
 /**
  * Determines if the user's region is unsupported for ramps.
@@ -61,10 +9,10 @@ export const getRampsTokens = (state: RampsRootState) => state.metamask.tokens;
  * @returns True if the region is unsupported, false otherwise.
  */
 export const getIsRampRegionUnsupported = createSelector(
-  getRampsUserRegion,
-  getRampsCountries,
+  selectUserRegion,
+  selectCountries,
   (userRegion, countries) =>
-    isRampRegionDefinitivelyUnsupported(userRegion, countries?.data ?? []),
+    isRampRegionDefinitivelyUnsupported(userRegion, countries.data),
 );
 
 /**
@@ -78,10 +26,8 @@ export const getIsRampRegionUnsupported = createSelector(
  * @returns True if geolocation is unknown, false otherwise.
  */
 export const getIsRampsGeolocationUnknown = createSelector(
-  getRampsUserRegion,
-  getRampsCountries,
+  selectUserRegion,
+  selectCountries,
   (userRegion, countries) =>
-    userRegion === null &&
-    !countries?.isLoading &&
-    (countries?.data?.length ?? 0) > 0,
+    userRegion === null && !countries.isLoading && countries.data.length > 0,
 );

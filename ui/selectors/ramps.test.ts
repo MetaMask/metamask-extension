@@ -1,5 +1,4 @@
 import {
-  getRampsUserRegion,
   getIsRampRegionUnsupported,
   getIsRampsGeolocationUnknown,
 } from './ramps';
@@ -14,11 +13,6 @@ const baseMetamask = {
 const mk = (over = {}) => ({ metamask: { ...baseMetamask, ...over } });
 
 describe('ramps selectors', () => {
-  it('getRampsUserRegion returns the region', () => {
-    const region = { country: { isoCode: 'US' }, state: null, regionCode: 'us' };
-    expect(getRampsUserRegion(mk({ userRegion: region }))).toBe(region);
-  });
-
   it('getIsRampsGeolocationUnknown is false on the never-fetched default state (fail open)', () => {
     expect(getIsRampsGeolocationUnknown(mk())).toBe(false);
   });
