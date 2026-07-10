@@ -10,7 +10,10 @@ import {
   mockDialogSnap,
   mockErrorSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
+import {
+  DAPP_PATH,
+  MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES,
+} from '../constants';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -89,6 +92,7 @@ describe('Test Snap installed', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Installed');
         assert.deepStrictEqual(events[0].properties, {
+          ...MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES,
           /* eslint-disable @typescript-eslint/naming-convention */
           snap_id: 'npm:@metamask/dialog-example-snap',
           snap_category: null,
