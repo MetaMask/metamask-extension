@@ -236,6 +236,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
+    hasSeenOnboardingCompletionPage: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },

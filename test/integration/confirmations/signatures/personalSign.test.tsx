@@ -13,6 +13,7 @@ import mockMetaMaskState from '../../data/integration-init-state.json';
 import {
   getSelectedAccountGroupAccounts,
   getSelectedAccountGroupName,
+  createMockImplementation,
 } from '../../helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -70,6 +71,9 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
 describe('PersonalSign Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+      createMockImplementation({}),
+    );
   });
 
   it('displays the header account modal with correct data', async () => {
@@ -139,7 +143,7 @@ describe('PersonalSign Confirmation', () => {
       expect.arrayContaining([
         expect.objectContaining({
           name: MetaMetricsEventName.AccountDetailsOpened,
-          properties: {
+          properties: expect.objectContaining({
             category: MetaMetricsEventCategory.Confirmations,
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
@@ -149,8 +153,9 @@ describe('PersonalSign Confirmation', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
-          },
+          }),
         }),
+        expect.anything(),
       ]),
     );
 

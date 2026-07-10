@@ -1,10 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
   BackgroundColor,
@@ -48,7 +49,6 @@ import { getMarketData, getCurrencyRates } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -116,7 +116,7 @@ export const TokenListItemComponent = ({
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const currencyRates = useSelector(getCurrencyRates);
   const noFeeAssets = useSelector((state) => selectNoFeeAssets(state, chainId));
 
@@ -222,20 +222,21 @@ export const TokenListItemComponent = ({
             }
 
             onClick();
-            trackEvent({
-              category: MetaMetricsEventCategory.Tokens,
-              event: MetaMetricsEventName.TokenDetailsOpened,
-              properties: {
-                location: 'Home',
-                // FIXME: This might not be a number for non-EVM accounts
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id: chainId,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                token_symbol: tokenSymbol,
-              },
-            });
+            trackEvent(
+              createEventBuilder(MetaMetricsEventName.TokenDetailsOpened)
+                .addCategory(MetaMetricsEventCategory.Tokens)
+                .addProperties({
+                  location: 'Home',
+                  // FIXME: This might not be a number for non-EVM accounts
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: chainId,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_symbol: tokenSymbol,
+                })
+                .build(),
+            );
           },
         })}
       >

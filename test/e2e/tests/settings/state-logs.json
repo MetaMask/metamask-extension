@@ -32,7 +32,6 @@
     "importNftsModal": {
       "open": "boolean"
     },
-    "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
@@ -641,6 +640,7 @@
     },
     "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
+    "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object"
     },
@@ -1564,19 +1564,6 @@
   "platform": {
     "arch": "string",
     "os": "string"
-  },
-  "ramps": {
-    "buyableChains": [
-      {
-        "active": "boolean",
-        "chainId": "string",
-        "chainName": "string",
-        "isEvm": "boolean",
-        "nativeTokenSupported": "boolean",
-        "shortName": "string"
-      }
-    ],
-    "isFetched": "boolean"
   },
   "rewards": {
     "rewardsModalOpen": "boolean",
