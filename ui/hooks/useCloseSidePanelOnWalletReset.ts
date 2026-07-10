@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../shared/constants/app';
 import { getEnvironmentType } from '../../shared/lib/environment-type';
 import { getIsWalletResetInProgress } from '../ducks/metamask/metamask';
-import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 
 /**
  * Closes the side panel when a wallet reset is in progress and the wallet
@@ -13,7 +12,6 @@ import { getIsUnlocked } from '../ducks/metamask/base-selectors';
  */
 export function useCloseSidePanelOnWalletReset(): void {
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
-  const isUnlocked = useSelector(getIsUnlocked);
 
   useEffect(() => {
     if (
@@ -22,5 +20,5 @@ export function useCloseSidePanelOnWalletReset(): void {
     ) {
       window.close();
     }
-  }, [isWalletResetInProgress, isUnlocked]);
+  }, [isWalletResetInProgress]);
 }
