@@ -238,13 +238,14 @@ export const getQrHardwareSigningPageTitle = ({
     activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature;
   const totalSteps = needsTwoConfirmations ? 4 : 2;
 
-  // Two-confirmation flow: 4 steps (display/scan × approval/trade).
-  // approval display = 1, approval scan = 2, trade display = 3, trade scan = 4.
-  // Single-confirmation flow: 2 steps (display/scan): display = 1, scan = 2.
-  const phaseOffset = isDisplayPhase ? 1 : 2;
-  const currentStep = needsTwoConfirmations
-    ? (isFinalSignature ? 2 : 0) + phaseOffset
-    : phaseOffset;
+  // Two-confirmation: approval 1–2, trade 3–4. Single-confirmation: 1–2.
+  // Within each signature: display is the odd step, scan is the even step.
+  let currentStep: number;
+  if (needsTwoConfirmations && isFinalSignature) {
+    currentStep = isDisplayPhase ? 3 : 4;
+  } else {
+    currentStep = isDisplayPhase ? 1 : 2;
+  }
 
   const isLastStep = currentStep === totalSteps;
 
