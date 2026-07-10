@@ -1,5 +1,8 @@
 import { useCallback, useMemo } from 'react';
-import type { TPSLTrackingData, TrackingData } from '@metamask/perps-controller';
+import type {
+  TPSLTrackingData,
+  TrackingData,
+} from '@metamask/perps-controller';
 import { usePerpsAttributionContext } from '../../providers/perps/PerpsAttributionContext';
 
 type BuildTrackingDataInput = {

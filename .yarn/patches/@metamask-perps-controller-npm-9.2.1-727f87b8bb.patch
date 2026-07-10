@@ -1,0 +1,26 @@
+diff --git a/dist/services/HyperLiquidClientService.cjs b/dist/services/HyperLiquidClientService.cjs
+index f8c6e5133a84dd2b233845016ecfd6daeba7f291..6b28df5f24507ccdce67271bd27677d11841e654 100644
+--- a/dist/services/HyperLiquidClientService.cjs
++++ b/dist/services/HyperLiquidClientService.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var _HyperLiquidClientService_instances, _HyperLiquidClientService_exchangeClient, _HyperLiquidClientService_infoClient, _HyperLiquidClientService_infoClientHttp, _HyperLiquidClientService_subscriptionClient, _HyperLiquidClientService_wsTransport, _HyperLiquidClientService_httpTransport, _HyperLiquidClientService_isTestnet, _HyperLiquidClientService_connectionState, _HyperLiquidClientService_disconnectionPromise, _HyperLiquidClientService_onTerminateCallback, _HyperLiquidClientService_onReconnectCallback, _HyperLiquidClientService_reconnectionAttempt, _HyperLiquidClientService_connectionStateListeners, _HyperLiquidClientService_reconnectionRetryTimeout, _HyperLiquidClientService_deps, _HyperLiquidClientService_createTransports, _HyperLiquidClientService_runCandleSnapshotFetch, _HyperLiquidClientService_runHistoricalOrdersFetch, _HyperLiquidClientService_getIntervalMilliseconds, _HyperLiquidClientService_performDisconnection, _HyperLiquidClientService_updateConnectionState, _HyperLiquidClientService_notifyConnectionStateListeners, _HyperLiquidClientService_isReconnecting, _HyperLiquidClientService_handleConnectionDrop;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.HyperLiquidClientService = exports.WebSocketConnectionState = void 0;
+-const hyperliquid_1 = require("file:///home/runner/work/hyperliquid/hyperliquid/src/mod.ts");
++const hyperliquid_1 = require("@nktkas/hyperliquid");
+ const chartConfig_1 = require("../constants/chartConfig.cjs");
+ const hyperLiquidConfig_1 = require("../constants/hyperLiquidConfig.cjs");
+ const perpsConfig_1 = require("../constants/perpsConfig.cjs");
+diff --git a/dist/utils/standaloneInfoClient.cjs b/dist/utils/standaloneInfoClient.cjs
+index a5e4d889a866472c8e3ea79680ac68341fe1bfc7..1acf3eb6aa712bf9c08b612937d7d48526b8c5f2 100644
+--- a/dist/utils/standaloneInfoClient.cjs
++++ b/dist/utils/standaloneInfoClient.cjs
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.queryStandaloneOpenOrders = exports.queryStandaloneClearinghouseStates = exports.createStandaloneInfoClient = void 0;
+-const hyperliquid_1 = require("file:///home/runner/work/hyperliquid/hyperliquid/src/mod.ts");
++const hyperliquid_1 = require("@nktkas/hyperliquid");
+ const perpsConfig_1 = require("../constants/perpsConfig.cjs");
+ /**
+  * Creates a standalone InfoClient for lightweight read-only queries.

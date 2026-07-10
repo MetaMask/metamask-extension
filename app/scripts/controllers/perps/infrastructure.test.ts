@@ -230,9 +230,12 @@ describe('createPerpsInfrastructure', () => {
         getDeps({ mergeAttributionContext }),
       );
 
-      infrastructure.metrics.trackPerpsEvent(PerpsAnalyticsEvent.TradeTransaction, {
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
-      });
+      infrastructure.metrics.trackPerpsEvent(
+        PerpsAnalyticsEvent.TradeTransaction,
+        {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+        },
+      );
 
       expect(mergeAttributionContext).toHaveBeenCalledWith({
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
