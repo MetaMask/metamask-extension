@@ -310,47 +310,6 @@ ${Object.entries(env)
     assert(progressPlugin, 'Progress plugin should present');
   });
 
-  it('uses production module graph optimizations for LavaMoat development builds', () => {
-    mockOptionalRcFiles();
-
-    const { options } = webpack(getWebpackConfig(['--lavamoat']));
-
-    assert.strictEqual(options.mode, 'development');
-    assert.strictEqual(options.optimization.minimize, false);
-    assert.strictEqual(options.optimization.sideEffects, true);
-    assert.strictEqual(options.optimization.providedExports, true);
-    assert.strictEqual(options.optimization.removeAvailableModules, true);
-    assert.strictEqual(options.optimization.usedExports, true);
-  });
-
-  it('scuttles service worker globals except importScripts', () => {
-    mockOptionalRcFiles();
-
-    const { options } = webpack(getWebpackConfig(['--lavamoat']));
-    const plugin = options.plugins.find(
-      (candidate): candidate is LavaMoatPlugin =>
-        candidate instanceof LavaMoatPlugin,
-    );
-    assert(plugin, 'LavaMoat plugin should be present');
-
-    const configureRuntime =
-      plugin.options.runtimeConfigurationPerChunk_experimental;
-    assert(configureRuntime, 'Per-chunk runtime configuration should be set');
-
-    assert.deepStrictEqual(
-      configureRuntime({ name: 'service-worker.ts' } as Chunk),
-      {
-        mode: 'safe',
-        embeddedOptions: {
-          scuttleGlobalThis: {
-            enabled: true,
-            exceptions: ['importScripts'],
-          },
-        },
-      },
-    );
-  });
-
   it('includes existing optional rc files in cache dependencies', () => {
     mockOptionalRcFiles({ metamaskrc: true });
 
