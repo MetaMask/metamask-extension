@@ -8269,6 +8269,12 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsErrorLoadingTokens": {
+    "message": "Error loading tokens"
+  },
+  "rampsShowAllTokens": {
+    "message": "Show all tokens"
+  },
   "rank": {
     "message": "Rank"
   },
