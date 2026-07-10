@@ -7057,9 +7057,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@12.0.0-preview-e196c24cd":
-  version: 12.0.0-preview-e196c24cd
-  resolution: "@metamask-previews/multichain-account-service@npm:12.0.0-preview-e196c24cd"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@12.0.0-preview-73d3a0389":
+  version: 12.0.0-preview-73d3a0389
+  resolution: "@metamask-previews/multichain-account-service@npm:12.0.0-preview-73d3a0389"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/accounts-controller": "npm:^39.0.4"
@@ -7084,7 +7084,7 @@ __metadata:
     "@metamask/account-api": ^1.0.4
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/dca16da93a5b61486895f1b94bb4679e31ebe8bd14d935562bee116365ef89bd14bc34c72a61555b0ead35ad2b0d4c09eae53b4c3d91ee62461f1ee9f2cd898b
+  checksum: 10/2c14f92b63b727d1ef3ff8127b6ce74864bf75c1693ee25f162d9bab7b0f2fc657f70e6fc5392f60fd30c3e9f69ac7189f650395dd35c0f318464fcb230cd0bf
   languageName: node
   linkType: hard
 
@@ -33053,7 +33053,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@12.0.0-preview-e196c24cd"
+    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@12.0.0-preview-73d3a0389"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^3.1.4"
     "@metamask/multichain-network-controller": "npm:^3.1.0"
