@@ -525,6 +525,11 @@ export const UpdateTPSLModalContent = ({
         );
         streamManager.positions.pushData(optimisticallyUpdatedPositions);
 
+        // Intentionally not retained/cleared on unmount: this reconciliation
+        // is meant to run ~2.5s AFTER the modal closes (see the "runs delayed
+        // refetch reconciliation after modal closes" test), and it only pushes
+        // into the global stream manager — no React state is touched, so there
+        // is no unmounted-component update to guard against.
         setTimeout(async () => {
           try {
             const freshPositions = await submitRequestToBackground<

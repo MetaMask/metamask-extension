@@ -309,8 +309,11 @@ export const EditMarginModalContent = ({
         );
 
         if (!result.success) {
-          // Controller already emitted margin risk analytics — surface UI
-          // only; do not throw into catch (would duplicate PerpsError).
+          // Surface UI only; do not throw into catch or re-emit a client
+          // PerpsRiskManagement here. The controller emits the terminal margin
+          // risk "failed" event for the `{ success: false }` branch from the
+          // next perps-controller release (core #9471) — a client fallback
+          // would double-emit once that ships.
           const errorMessage = result.error || 'Failed to update margin';
           const normalizedErrorMessage = errorMessage.trim();
           const shouldUseFallbackDescription =
