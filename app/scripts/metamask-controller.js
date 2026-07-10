@@ -3918,7 +3918,10 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Other
-      isRelaySupported,
+      isRelaySupported: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:isRelaySupported',
+      ),
       isSendBundleSupported: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
