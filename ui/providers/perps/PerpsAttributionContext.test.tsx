@@ -110,9 +110,7 @@ describe('PerpsAttributionContext', () => {
     });
 
     await act(async () => {
-      result.current.syncUtmAttributionFromSearch(
-        '?utm_source=A&utm_medium=B',
-      );
+      result.current.syncUtmAttributionFromSearch('?utm_source=A&utm_medium=B');
     });
     await act(async () => {
       result.current.syncUtmAttributionFromSearch('?utm_source=C');
