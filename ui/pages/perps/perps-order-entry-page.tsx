@@ -509,11 +509,14 @@ const PerpsOrderEntryPage = () => {
 
   // Reset the considered-event gating refs when the market or order context
   // changes, so a prior edit doesn't make the next market's seeded default fire
-  // as a user consideration (the page is reused across symbols).
+  // as a user consideration (the page is reused across symbols). `orderDirection`
+  // is included because switching Long/Short reseeds usePerpsOrderForm to its
+  // default amount — without this reset a prior size edit would let that reseeded
+  // default emit CONSIDERED with no new size interaction.
   useEffect(() => {
     hasUserEditedSizeRef.current = false;
     lastInputMethodRef.current = 'default';
-  }, [decodedSymbol, orderMode]);
+  }, [decodedSymbol, orderMode, orderDirection]);
 
   // Emit PERPS_TRANSACTION_CONSIDERED once the user has a meaningful
   // fill on the open-order screen. Debounced 1s and re-armed on EVERY form

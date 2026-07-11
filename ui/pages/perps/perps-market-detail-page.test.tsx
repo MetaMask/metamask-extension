@@ -502,6 +502,55 @@ describe('PerpsMarketDetailPage', () => {
       });
     });
 
+    it('emits exactly one error screen view and no asset_details view for an unknown symbol', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
+      await renderPage(mockStore(createMockState(true)));
+
+      type ScreenViewOption = {
+        conditions?: boolean;
+        properties?: Record<string, unknown>;
+      };
+      const activeErrorViews = (
+        mockPerpsScreenViewedOptions as ScreenViewOption[]
+      ).filter(
+        (option) =>
+          option.properties?.screen_type === 'error' &&
+          option.conditions === true,
+      );
+      const activeAssetDetailViews = (
+        mockPerpsScreenViewedOptions as ScreenViewOption[]
+      ).filter(
+        (option) =>
+          option.properties?.screen_type === 'asset_details' &&
+          option.conditions === true,
+      );
+
+      expect(activeErrorViews).toHaveLength(1);
+      // asset_details is gated on `market`, so an unknown symbol must not also
+      // fire it (one rendered error screen => one screen-view event).
+      expect(activeAssetDetailViews).toHaveLength(0);
+    });
+
+    it('re-arms the error screen view per symbol via resetKey', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'BADONE' });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as { resetKey?: unknown } | undefined;
+
+      // resetKey keyed on the symbol lets consecutive invalid symbols each track.
+      expect(errorView?.resetKey).toBe('BADONE');
+    });
+
     it('re-asserts the asset_details entry point on mount', async () => {
       await renderPage(mockStore(createMockState(true)));
 

@@ -104,6 +104,30 @@ describe('PerpsAttributionContext', () => {
     });
   });
 
+  it('forwards the accumulated session UTM to the controller across consecutive partial updates', async () => {
+    const { result } = renderHook(() => usePerpsAttributionContext(), {
+      wrapper: createWrapper(),
+    });
+
+    await act(async () => {
+      result.current.syncUtmAttributionFromSearch(
+        '?utm_source=A&utm_medium=B',
+      );
+    });
+    await act(async () => {
+      result.current.syncUtmAttributionFromSearch('?utm_source=C');
+    });
+
+    // The controller replaces its stored context wholesale, so the second call
+    // must carry the MERGED session UTM ({ utmSource: 'C', utmMedium: 'B' }) —
+    // not just the latest partial ({ utmSource: 'C' }) — to stay in sync with
+    // the client-side accumulation.
+    expect(mockSubmitRequestToBackground).toHaveBeenLastCalledWith(
+      'perpsSetAttributionContext',
+      [{ utmSource: 'C', utmMedium: 'B' }],
+    );
+  });
+
   it('maps known source params and sets deeplink entry point', async () => {
     const { result } = renderHook(() => usePerpsAttributionContext(), {
       wrapper: createWrapper(),

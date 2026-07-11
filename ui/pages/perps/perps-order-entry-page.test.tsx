@@ -1444,6 +1444,45 @@ describe('PerpsOrderEntryPage', () => {
       }
     });
 
+    it('resets considered gating on direction switch so the reseeded amount does not fire', async () => {
+      jest.useFakeTimers();
+      try {
+        await act(async () => {
+          renderWithProvider(
+            <PerpsOrderEntryPage />,
+            mockStore(createMockState()),
+          );
+        });
+
+        // User edits the size, then switches Long/Short before the debounce
+        // elapses. Switching reseeds usePerpsOrderForm to its default amount;
+        // the seeded default must NOT emit CONSIDERED without a fresh edit.
+        await act(async () => enterAmount('100'));
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('direction-tab-short'));
+        });
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(0);
+
+        // A new size interaction after the switch re-arms the event.
+        await act(async () => enterAmount('250'));
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(1);
+        expect(consideredCalls()[0][0].properties).toEqual(
+          expect.objectContaining({ [PERPS_EVENT_PROPERTY.ORDER_SIZE]: 250 }),
+        );
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
     it('emits the error screen view when the order submit fails', async () => {
       mockSearchParams.set('orderType', 'limit');
       mockSearchParams.set('direction', 'long');

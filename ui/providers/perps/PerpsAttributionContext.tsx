@@ -174,8 +174,13 @@ let sessionUtmAttribution: ControllerAttributionContext = {};
 
 // Module-level writer so the store update is not a variable reassignment inside
 // the component/hook body (react-compiler purity rule) — it runs from effects.
-function rememberSessionUtm(utm: ControllerAttributionContext): void {
+// Returns the merged accumulated context so callers can forward the full
+// session UTM (not just the latest partial) to the controller.
+function rememberSessionUtm(
+  utm: ControllerAttributionContext,
+): ControllerAttributionContext {
   sessionUtmAttribution = { ...sessionUtmAttribution, ...utm };
+  return sessionUtmAttribution;
 }
 
 /**
@@ -260,14 +265,19 @@ export function PerpsAttributionProvider({
     if (utmContext) {
       // Persist to the session store so later provider instances inherit it,
       // and merge into this instance's state.
-      rememberSessionUtm(utmContext);
+      const mergedSessionUtm = rememberSessionUtm(utmContext);
       setUtmAttribution((prev) => ({ ...prev, ...utmContext }));
+      // Forward the ACCUMULATED session UTM (not just this latest partial):
+      // setAttributionContext replaces the controller's stored context wholesale,
+      // so sending only `utmContext` would drop earlier partials and diverge from
+      // the client-side accumulation (e.g. {source,medium} on the client vs
+      // {source} on the controller).
       // fire-and-forget — analytics must not block navigation. A failed write
       // only means controller-emitted events miss UTM enrichment; the client
       // still merges the mirrored context, so log for visibility rather than
       // swallow.
       submitRequestToBackground('perpsSetAttributionContext', [
-        utmContext,
+        mergedSessionUtm,
       ]).catch(captureException);
     }
 
