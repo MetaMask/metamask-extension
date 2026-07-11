@@ -52,6 +52,7 @@ import {
 } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
+import { RampsOrdersTab } from '../../../pages/activity/ramps-orders-tab';
 import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
 import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
 import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
@@ -136,6 +137,7 @@ export const AccountOverviewTabs = ({
     ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
     ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
     ...(showActivity ? [AccountOverviewTabKey.Activity] : []),
+    AccountOverviewTabKey.Orders,
   ];
   // Perps is the effective active tab when it is explicitly selected, or when
   // the active tab isn't rendered and Tabs clamps to the first rendered tab.
@@ -351,6 +353,16 @@ export const AccountOverviewTabs = ({
             </ErrorBoundary>
           </Tab>
         )}
+
+        <Tab
+          name="Orders"
+          tabKey={AccountOverviewTabKey.Orders}
+          data-testid="account-overview__orders-tab"
+        >
+          <ErrorBoundary key="orders">
+            <RampsOrdersTab />
+          </ErrorBoundary>
+        </Tab>
       </Tabs>
     </>
   );
