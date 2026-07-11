@@ -935,9 +935,6 @@
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/pages/home/home.container.test.tsx": {
-      "Reselect: Input stability warnings": 1
-    },
     "ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.test.tsx": {
       "React: Missing key props in lists": 1
     },

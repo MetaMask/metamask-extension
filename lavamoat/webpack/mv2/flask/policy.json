@@ -2152,12 +2152,22 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
+    "@metamask/ramps-controller": {
       "globals": {
-        "URL": true
+        "AbortController": true,
+        "URL": true,
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
       },
       "packages": {
-        "@metamask/controller-utils": true
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "cockatiel": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -2509,7 +2519,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,

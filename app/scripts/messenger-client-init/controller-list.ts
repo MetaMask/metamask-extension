@@ -106,6 +106,7 @@ import {
   ComplianceService,
 } from '@metamask/compliance-controller';
 import { PerpsController } from '@metamask/perps-controller';
+import { RampsController, RampsService } from '@metamask/ramps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
 import { AnalyticsController } from '@metamask/analytics-controller';
 import { OnboardingController } from '../controllers/onboarding';
@@ -195,6 +196,8 @@ export type MessengerClient =
   | PPOMController
   | PreferencesController
   | QrSyncController
+  | RampsController
+  | RampsService
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | RemoteFeatureFlagController
@@ -299,6 +302,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   QrSyncController['state'] &
+  RampsController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   RewardsController['state'] &

@@ -228,6 +228,7 @@ jobs:
       QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
       QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
       QUICKNODE_ARC_URL: ${{ secrets.QUICKNODE_ARC_URL }}
+      QUICKNODE_ROBINHOOD_URL: ${{ secrets.QUICKNODE_ROBINHOOD_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
@@ -370,8 +371,6 @@ jobs:
         id: amo-reviewer-s3
         continue-on-error: true
         uses: ./.github/actions/publish-amo-reviewer-artifacts
-        with:
-          firefox_bundle_script_ref: ${{ vars.FIREFOX_BUNDLE_SCRIPT_REF }}
 
       - name: Summary
         env:

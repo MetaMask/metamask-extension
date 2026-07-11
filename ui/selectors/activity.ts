@@ -526,17 +526,33 @@ export const selectLocalActivityItems = createSelector(
 );
 
 export const selectLocalActivityItemsByIdentifier = createSelector(
+  selectLocalTransactions,
   selectLocalActivityItems,
-  (items) => {
+  (transactionGroups, items) => {
     const itemsByIdentifier = new Map<string, ActivityListItem>();
 
-    for (const item of items) {
-      const hash = item.hash?.toLowerCase();
-
-      if (hash) {
-        itemsByIdentifier.set(hash, item);
+    transactionGroups.forEach((transactionGroup, index) => {
+      const item = items[index];
+      if (!item) {
+        return;
       }
-    }
+
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        const hash = transaction.hash?.toLowerCase();
+        if (hash) {
+          itemsByIdentifier.set(hash, item);
+        }
+
+        // Also index by id so both pending transactions and toast listeners can resolve the item
+        const id = transaction.id?.toLowerCase();
+        if (id) {
+          itemsByIdentifier.set(id, item);
+        }
+      }
+    });
 
     return itemsByIdentifier;
   },
