@@ -100,9 +100,11 @@ describe('LavamoatPlugin', () => {
     });
 
     it('uses safe mode for unrecognised chunks', () => {
-      const result = runtimeConfig(mockChunk({
-        name: 'some-other-chunk',
-      })) as {
+      const result = runtimeConfig(
+        mockChunk({
+          name: 'some-other-chunk',
+        }),
+      ) as {
         mode: string;
       };
       assert.strictEqual(result.mode, 'safe');
