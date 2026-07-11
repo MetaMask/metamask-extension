@@ -91,7 +91,7 @@ export const selectLocalTransactions = createSelector(
     transactions,
     selectedAccount,
     smartTransactions,
-    requiredTransactionIds,
+    internalTxIds,
     internalTxHashes,
   ): TransactionGroup[] => {
     if (!selectedAccount?.address) {
@@ -100,8 +100,10 @@ export const selectLocalTransactions = createSelector(
 
     const selectedAddress = selectedAccount.address.toLowerCase();
 
-    const isRequiredChildTx = (tx: { id?: string; hash?: string }) => {
-      if (tx.id && requiredTransactionIds.has(tx.id)) {
+    const isInternalRequiredTransaction = (
+      tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
+    ) => {
+      if (tx.id && internalTxIds.has(tx.id)) {
         return true;
       }
       if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
@@ -110,17 +112,16 @@ export const selectLocalTransactions = createSelector(
       return false;
     };
 
-    const filtered = (transactions ?? []).filter((tx) => {
-      if (!isFromSelectedAccount(tx, selectedAddress)) {
-        return false;
-      }
-      return !isRequiredChildTx(tx);
-    });
+    const filtered = (transactions ?? []).filter(
+      (tx) =>
+        isFromSelectedAccount(tx, selectedAddress) &&
+        !isInternalRequiredTransaction(tx),
+    );
 
     const filteredSmartTransactions = smartTransactions.filter(
       (tx) =>
         !(tx.type && EXCLUDED_TRANSACTION_TYPES.has(tx.type)) &&
-        !isRequiredChildTx(tx),
+        !isInternalRequiredTransaction(tx),
     );
 
     const combined = [...filtered, ...filteredSmartTransactions];
