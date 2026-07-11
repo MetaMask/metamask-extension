@@ -37,7 +37,15 @@ export function getRampsControllerMessenger(
 
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: [...RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS],
+    actions: [
+      ...RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS,
+      'UserStorageController:getState',
+      'UserStorageController:performGetStorage',
+      'UserStorageController:performGetStorageAllFeatureEntries',
+      'UserStorageController:performSetStorage',
+      'UserStorageController:performBatchSetStorage',
+      'AuthenticationController:isSignedIn',
+    ],
     events: [],
   });
 

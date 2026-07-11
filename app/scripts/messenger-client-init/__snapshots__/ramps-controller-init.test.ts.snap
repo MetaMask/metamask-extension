@@ -18,5 +18,6 @@ exports[`RampsControllerInit exposes ramps background API methods 1`] = `
   "setRampsUserRegion",
   "startRampsLifecycle",
   "stopRampsLifecycle",
+  "syncRampsOrdersWithUserStorage",
 ]
 `;
