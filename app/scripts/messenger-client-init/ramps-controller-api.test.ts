@@ -18,6 +18,7 @@ describe('getRampsControllerApi', () => {
       removeOrder: jest.fn(),
       getOrder: jest.fn(),
       getOrderFromCallback: jest.fn(),
+      syncOrdersWithUserStorage: jest.fn(),
     };
 
     const api = getRampsControllerApi(

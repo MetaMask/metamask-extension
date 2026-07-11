@@ -35,6 +35,7 @@ const mockRampsController = {
   removeOrder: jest.fn(),
   getOrder: jest.fn(),
   getOrderFromCallback: jest.fn(),
+  syncOrdersWithUserStorage: jest.fn(),
 };
 
 let mockInit: jest.Mock;
