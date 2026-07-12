@@ -43,16 +43,23 @@ function useRampsTokenSelectionData() {
       controllerTokens?.allTokens,
       networksByCaipChainId,
     );
+    const hasAttemptedLoad =
+      tokensLoading || controllerTokens !== null || tokensError !== null;
 
     return {
       topTokens: mapRampsTokensToSendAssets(topTokens, networksByCaipChainId),
       allTokens: mapRampsTokensToSendAssets(allTokens, networksByCaipChainId),
-      isLoading: tokensLoading || (controllerTokens === null && !tokensError),
+      isLoading: tokensLoading || (!hasAttemptedLoad && !tokensError),
       error: tokensError,
     };
   }, [controllerTokens, tokensLoading, tokensError, networksByCaipChainId]);
 }
 
+/**
+ * Ramps buy-flow token selection screen.
+ *
+ * Route registration and entry-point navigation are tracked in TRAM-3711.
+ */
 export function RampsTokenSelectionScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -61,18 +68,35 @@ export function RampsTokenSelectionScreen() {
     useRampsTokenSelectionData();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
   const [showAllTokens, setShowAllTokens] = useState(false);
 
   const isSearching = Boolean(searchQuery.trim());
+  const isNetworkFilterActive = selectedChainId !== null;
   const sourceTokens = useMemo(() => {
-    if (isSearching || showAllTokens) {
+    if (isSearching || showAllTokens || isNetworkFilterActive) {
       return allTokens;
     }
     return topTokens;
-  }, [allTokens, isSearching, showAllTokens, topTokens]);
+  }, [allTokens, isNetworkFilterActive, isSearching, showAllTokens, topTokens]);
+
+  const emptyStateMessage = useMemo(() => {
+    if (isSearching) {
+      return t('noTokensMatchSearch');
+    }
+
+    if (isNetworkFilterActive) {
+      return t('noTokensMatchingYourFilters');
+    }
+
+    return t('rampsNoTokensAvailable');
+  }, [isNetworkFilterActive, isSearching, t]);
 
   const canExpandTokenList =
-    !isSearching && !showAllTokens && allTokens.length > topTokens.length;
+    !isSearching &&
+    !isNetworkFilterActive &&
+    !showAllTokens &&
+    allTokens.length > topTokens.length;
 
   const handleBack = useCallback(() => {
     navigate(-1);
@@ -143,9 +167,10 @@ export function RampsTokenSelectionScreen() {
           hideBalances
           disableMetrics
           searchPlaceholder={t('enterTokenNameOrAddress')}
-          emptyStateMessage={t('rampsNoTokensAvailable')}
+          emptyStateMessage={emptyStateMessage}
           onAssetSelect={handleAssetSelect}
           onSearchQueryChange={setSearchQuery}
+          onSelectedChainIdChange={setSelectedChainId}
         />
       </ScrollContainer>
 

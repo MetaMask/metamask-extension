@@ -59,6 +59,11 @@ exports[`RampsTokenSelectionScreen matches snapshot with send asset picker 1`] =
           No tokens available
         </span>
         <button
+          data-testid="apply-network-filter"
+        >
+          Apply network filter
+        </button>
+        <button
           data-testid="mapped-token-eip155:1/slip44:60"
         >
           ETH
@@ -84,7 +89,7 @@ exports[`RampsTokenSelectionScreen matches snapshot with send asset picker 1`] =
 </div>
 `;
 
-exports[`RampsTokenSelectionScreen shows loading and error states 1`] = `
+exports[`RampsTokenSelectionScreen shows error state when tokensError exists 1`] = `
 <div>
   <div
     class="flex h-full flex-col bg-background-default"

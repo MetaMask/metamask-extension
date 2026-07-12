@@ -36,6 +36,7 @@ export type AssetProps = {
   searchPlaceholder?: string;
   emptyStateMessage?: string;
   onSearchQueryChange?: (searchQuery: string) => void;
+  onSelectedChainIdChange?: (selectedChainId: string | null) => void;
 };
 
 export const Asset = ({
@@ -50,6 +51,7 @@ export const Asset = ({
   searchPlaceholder,
   emptyStateMessage,
   onSearchQueryChange,
+  onSelectedChainIdChange,
 }: AssetProps = {}) => {
   const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -98,7 +100,8 @@ export const Asset = ({
     setSearchQuery('');
     setSelectedChainId(null);
     onSearchQueryChange?.('');
-  }, [onSearchQueryChange]);
+    onSelectedChainIdChange?.(null);
+  }, [onSearchQueryChange, onSelectedChainIdChange]);
 
   const handleSearchQueryChange = useCallback(
     (value: string) => {
@@ -111,6 +114,14 @@ export const Asset = ({
       onSearchQueryChange?.(value);
     },
     [addAssetFilterMethod, onSearchQueryChange, removeAssetFilterMethod],
+  );
+
+  const handleSelectedChainIdChange = useCallback(
+    (chainId: string | null) => {
+      setSelectedChainId(chainId);
+      onSelectedChainIdChange?.(chainId);
+    },
+    [onSelectedChainIdChange],
   );
 
   return (
@@ -128,7 +139,7 @@ export const Asset = ({
         tokens={filteredByCustomFilter}
         nfts={effectiveNfts}
         selectedChainId={selectedChainId}
-        onChainIdChange={setSelectedChainId}
+        onChainIdChange={handleSelectedChainIdChange}
         disableMetrics={disableMetrics}
       />
       <AssetList

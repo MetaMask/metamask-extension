@@ -6,6 +6,7 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import { type RampsToken } from '@metamask/ramps-controller';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { type AssetType } from '../../../../components/app/asset-picker';
 import { RampsTokenSelectionScreen } from './token-selection';
 
@@ -16,6 +17,9 @@ const mockOnAssetSelectRef: {
 } = {};
 const mockOnSearchQueryChangeRef: {
   current?: (query: string) => void;
+} = {};
+const mockOnSelectedChainIdChangeRef: {
+  current?: (chainId: string | null) => void;
 } = {};
 
 jest.mock('react-router-dom', () => ({
@@ -38,6 +42,7 @@ jest.mock('../../../../components/app/asset-picker', () => ({
     disableMetrics,
     onAssetSelect,
     onSearchQueryChange,
+    onSelectedChainIdChange,
     emptyStateMessage,
   }: {
     tokens?: AssetType[];
@@ -45,10 +50,12 @@ jest.mock('../../../../components/app/asset-picker', () => ({
     disableMetrics?: boolean;
     onAssetSelect?: (asset: AssetType) => void;
     onSearchQueryChange?: (query: string) => void;
+    onSelectedChainIdChange?: (chainId: string | null) => void;
     emptyStateMessage?: string;
   }) => {
     mockOnAssetSelectRef.current = onAssetSelect;
     mockOnSearchQueryChangeRef.current = onSearchQueryChange;
+    mockOnSelectedChainIdChangeRef.current = onSelectedChainIdChange;
 
     return (
       <div data-testid="send-asset-picker">
@@ -56,6 +63,12 @@ jest.mock('../../../../components/app/asset-picker', () => ({
         <span data-testid="disable-metrics">{String(disableMetrics)}</span>
         <span data-testid="token-count">{tokens?.length ?? 0}</span>
         <span data-testid="empty-state-message">{emptyStateMessage}</span>
+        <button
+          data-testid="apply-network-filter"
+          onClick={() => onSelectedChainIdChange?.('eip155:1')}
+        >
+          Apply network filter
+        </button>
         {(tokens ?? []).map((token) => (
           <button
             key={token.assetId}
@@ -127,6 +140,7 @@ describe('RampsTokenSelectionScreen', () => {
     jest.clearAllMocks();
     mockOnAssetSelectRef.current = undefined;
     mockOnSearchQueryChangeRef.current = undefined;
+    mockOnSelectedChainIdChangeRef.current = undefined;
     useRampsController.mockReturnValue({
       tokens: { topTokens: mockTopTokens, allTokens: mockAllTokens },
       tokensLoading: false,
@@ -155,6 +169,9 @@ describe('RampsTokenSelectionScreen', () => {
     expect(screen.getByTestId('hide-balances')).toHaveTextContent('true');
     expect(screen.getByTestId('disable-metrics')).toHaveTextContent('true');
     expect(screen.getByTestId('token-count')).toHaveTextContent('1');
+    expect(screen.getByTestId('empty-state-message')).toHaveTextContent(
+      messages.rampsNoTokensAvailable.message,
+    );
     expect(
       screen.queryByTestId(
         'mapped-token-eip155:137/erc20:0x0000000000000000000000000000000000000001',
@@ -190,9 +207,40 @@ describe('RampsTokenSelectionScreen', () => {
     });
 
     expect(screen.getByTestId('token-count')).toHaveTextContent('2');
+    expect(screen.getByTestId('empty-state-message')).toHaveTextContent(
+      messages.noTokensMatchSearch.message,
+    );
   });
 
-  it('shows loading and error states', () => {
+  it('expands to all tokens when a network filter is active', () => {
+    renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    expect(screen.getByTestId('token-count')).toHaveTextContent('1');
+    expect(
+      screen.queryByTestId(
+        'mapped-token-eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      ),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('apply-network-filter'));
+
+    expect(screen.getByTestId('token-count')).toHaveTextContent('2');
+    expect(
+      screen.getByTestId(
+        'mapped-token-eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-message')).toHaveTextContent(
+      messages.noTokensMatchingYourFilters.message,
+    );
+    expect(screen.queryByTestId('ramps-show-all-tokens')).toBeNull();
+  });
+
+  it('shows loading screen when tokensLoading is true', () => {
     useRampsController.mockReturnValue({
       tokens: null,
       tokensLoading: true,
@@ -200,23 +248,7 @@ describe('RampsTokenSelectionScreen', () => {
       setSelectedToken: mockSetSelectedToken,
     });
 
-    const { unmount } = renderWithProvider(
-      <RampsTokenSelectionScreen />,
-      createStore(),
-      '/ramps/token-selection',
-    );
-
-    expect(screen.queryByTestId('ramps-token-selection-screen')).toBeNull();
-    unmount();
-
-    useRampsController.mockReturnValue({
-      tokens: null,
-      tokensLoading: false,
-      tokensError: null,
-      setSelectedToken: mockSetSelectedToken,
-    });
-
-    const { unmount: unmountPendingTokens } = renderWithProvider(
+    renderWithProvider(
       <RampsTokenSelectionScreen />,
       createStore(),
       '/ramps/token-selection',
@@ -224,8 +256,27 @@ describe('RampsTokenSelectionScreen', () => {
 
     expect(screen.queryByTestId('ramps-token-selection-screen')).toBeNull();
     expect(screen.queryByTestId('send-asset-picker')).toBeNull();
-    unmountPendingTokens();
+  });
 
+  it('shows loading screen when tokens are unset and there is no error', () => {
+    useRampsController.mockReturnValue({
+      tokens: null,
+      tokensLoading: false,
+      tokensError: null,
+      setSelectedToken: mockSetSelectedToken,
+    });
+
+    renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    expect(screen.queryByTestId('ramps-token-selection-screen')).toBeNull();
+    expect(screen.queryByTestId('send-asset-picker')).toBeNull();
+  });
+
+  it('shows error state when tokensError exists', () => {
     useRampsController.mockReturnValue({
       tokens: null,
       tokensLoading: false,

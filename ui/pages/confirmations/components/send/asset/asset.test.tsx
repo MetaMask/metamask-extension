@@ -224,5 +224,18 @@ describe('Asset', () => {
 
       expect(onSearchQueryChange).toHaveBeenCalledWith('usdc');
     });
+
+    it('notifies parent when network filter changes', () => {
+      const onSelectedChainIdChange = jest.fn();
+      const { getByTestId } = render(
+        <Asset onSelectedChainIdChange={onSelectedChainIdChange} />,
+      );
+
+      fireEvent.change(getByTestId('network-filter'), {
+        target: { value: '1' },
+      });
+
+      expect(onSelectedChainIdChange).toHaveBeenCalledWith('1');
+    });
   });
 });
