@@ -5,6 +5,10 @@ import {
 } from '@metamask/messenger';
 import { LegacyBackgroundApiServiceMessenger } from '../../services/legacy-background-api-service';
 import { RootMessenger } from '../../lib/messenger';
+import {
+  NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_ACTIONS,
+  NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_EVENTS,
+} from './assets/network-enablement-controller-messenger';
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -112,7 +116,9 @@ export function getLegacyBackgroundApiServiceMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      ...NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_ACTIONS,
     ],
+    events: [...NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_EVENTS],
   });
 
   return serviceMessenger;

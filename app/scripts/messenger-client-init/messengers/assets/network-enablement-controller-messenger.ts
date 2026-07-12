@@ -3,13 +3,48 @@ import {
   type MessengerActions,
   type MessengerEvents,
 } from '@metamask/messenger';
-import { NetworkEnablementControllerMessenger } from '@metamask/network-enablement-controller';
+import {
+  NetworkEnablementControllerMessenger,
+  type NetworkEnablementControllerGetStateAction,
+  type NetworkEnablementControllerRestoreEnabledNetworkMapAction,
+  type NetworkEnablementControllerStateChangeEvent,
+} from '@metamask/network-enablement-controller';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
 import { RootMessenger } from '../../../lib/messenger';
+
+/**
+ * Actions on NetworkEnablementController that external messengers may delegate
+ * when adding a network without switching the active network filter.
+ */
+export type NetworkEnablementControllerExternalActions =
+  | NetworkEnablementControllerGetStateAction
+  | NetworkEnablementControllerRestoreEnabledNetworkMapAction;
+
+/**
+ * Events on NetworkEnablementController that external messengers may subscribe
+ * to when restoring enabled networks after adding a network.
+ */
+export type NetworkEnablementControllerExternalEvents =
+  NetworkEnablementControllerStateChangeEvent;
+
+/**
+ * Actions on NetworkEnablementController delegated to external callers.
+ */
+export const NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_ACTIONS = [
+  'NetworkEnablementController:getState',
+  'NetworkEnablementController:restoreEnabledNetworkMap',
+] as const satisfies readonly NetworkEnablementControllerExternalActions['type'][];
+
+/**
+ * Events on NetworkEnablementController delegated to external callers.
+ */
+export const NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_EVENTS = [
+  'NetworkEnablementController:stateChange',
+] as const satisfies readonly NetworkEnablementControllerExternalEvents['type'][];
 
 export function getNetworkEnablementControllerMessenger(
   messenger: RootMessenger<
