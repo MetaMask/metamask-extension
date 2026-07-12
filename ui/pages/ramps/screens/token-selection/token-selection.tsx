@@ -177,7 +177,7 @@ export function RampsTokenSelectionScreen() {
       {canExpandTokenList && (
         <Box className="border-t border-border-muted px-4 py-3">
           <TextButton
-            size={TextButtonSize.Md}
+            size={TextButtonSize.BodyMd}
             onClick={handleExpandTokens}
             data-testid="ramps-show-all-tokens"
           >

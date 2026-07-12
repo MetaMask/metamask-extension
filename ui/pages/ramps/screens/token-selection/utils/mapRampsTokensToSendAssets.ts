@@ -2,7 +2,7 @@ import { type RampsToken } from '@metamask/ramps-controller';
 import { type CaipChainId } from '@metamask/utils';
 import {
   AssetStandard,
-  type Asset,
+  type AssetType,
 } from '../../../../../components/app/asset-picker';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
@@ -74,7 +74,7 @@ function parseAddressFromAssetId(assetId: string): string | undefined {
 export function mapRampsTokenToSendAsset(
   token: RampsToken,
   networkDetails: { networkName: string; networkImage: string },
-): Asset {
+): AssetType {
   const isNative = token.assetId.includes('/slip44:');
 
   return {
@@ -96,7 +96,7 @@ export function mapRampsTokenToSendAsset(
 export function mapRampsTokensToSendAssets(
   tokens: RampsToken[],
   networksByCaipChainId: Record<string, { name?: string }>,
-): Asset[] {
+): AssetType[] {
   return tokens.map((token) => {
     const configuredName =
       networksByCaipChainId[token.chainId as CaipChainId]?.name;
