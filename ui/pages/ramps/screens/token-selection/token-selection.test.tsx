@@ -212,6 +212,23 @@ describe('RampsTokenSelectionScreen', () => {
     useRampsController.mockReturnValue({
       tokens: null,
       tokensLoading: false,
+      tokensError: null,
+      setSelectedToken: mockSetSelectedToken,
+    });
+
+    const { unmount: unmountPendingTokens } = renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    expect(screen.queryByTestId('ramps-token-selection-screen')).toBeNull();
+    expect(screen.queryByTestId('send-asset-picker')).toBeNull();
+    unmountPendingTokens();
+
+    useRampsController.mockReturnValue({
+      tokens: null,
+      tokensLoading: false,
       tokensError: new Error('failed'),
       setSelectedToken: mockSetSelectedToken,
     });

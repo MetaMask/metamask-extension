@@ -47,7 +47,7 @@ function useRampsTokenSelectionData() {
     return {
       topTokens: mapRampsTokensToSendAssets(topTokens, networksByCaipChainId),
       allTokens: mapRampsTokensToSendAssets(allTokens, networksByCaipChainId),
-      isLoading: tokensLoading,
+      isLoading: tokensLoading || (controllerTokens === null && !tokensError),
       error: tokensError,
     };
   }, [controllerTokens, tokensLoading, tokensError, networksByCaipChainId]);
