@@ -227,11 +227,13 @@ describe('AssetList', () => {
         nfts={[]}
         allTokens={[]}
         allNfts={[]}
-        emptyStateMessage="No tokens available"
+        emptyStateMessage={messages.rampsNoTokensAvailable.message}
       />,
     );
 
-    expect(getByText('No tokens available')).toBeInTheDocument();
+    expect(
+      getByText(messages.rampsNoTokensAvailable.message),
+    ).toBeInTheDocument();
   });
 
   it('does not select disabled assets', () => {
