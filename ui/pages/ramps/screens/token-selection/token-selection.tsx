@@ -8,7 +8,6 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonBase,
   Icon,
   IconColor,
   IconName,
@@ -16,18 +15,11 @@ import {
   Text,
   TextColor,
   TextVariant,
-  FontWeight,
   TextButton,
   TextButtonSize,
-} from '@metamask/design-system-react';
-import {
   TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../../components/component-library';
-import {
-  BorderRadius,
-  BlockSize,
-} from '../../../../helpers/constants/design-system';
+  TextFieldSize,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
@@ -91,8 +83,6 @@ function useRampsTokenSelectionData() {
   );
 
   return useMemo(() => {
-    const tokensNotYetLoaded = controllerTokens === null && !tokensError;
-
     const topTokens = filterTokensByEnabledNetworks(
       controllerTokens?.topTokens,
       networksByCaipChainId,
@@ -105,7 +95,7 @@ function useRampsTokenSelectionData() {
     return {
       topTokens,
       allTokens,
-      isLoading: tokensLoading || tokensNotYetLoaded,
+      isLoading: tokensLoading,
       error: tokensError,
     };
   }, [controllerTokens, tokensLoading, tokensError, networksByCaipChainId]);
@@ -176,6 +166,18 @@ export function RampsTokenSelectionScreen() {
   const canExpandTokenList =
     !isSearching && !showAllTokens && allTokens.length > topTokens.length;
 
+  const emptyStateMessage = useMemo(() => {
+    if (isSearching) {
+      return t('noTokensMatchSearch');
+    }
+
+    if (networkFilter) {
+      return t('noTokensMatchingYourFilters');
+    }
+
+    return t('rampsNoTokensAvailable');
+  }, [isSearching, networkFilter, t]);
+
   const handleBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
@@ -241,13 +243,13 @@ export function RampsTokenSelectionScreen() {
 
       <Box className="w-full px-4 pb-3">
         <TextFieldSearch
-          size={TextFieldSearchSize.Md}
+          size={TextFieldSize.Md}
           placeholder={t('enterTokenNameOrAddress')}
           value={searchString}
           onChange={(event) => setSearchString(event.target.value)}
           clearButtonOnClick={() => setSearchString('')}
-          borderRadius={BorderRadius.LG}
-          width={BlockSize.Full}
+          clearButtonProps={{ ariaLabel: t('clear') }}
+          className="w-full rounded-lg"
           data-testid="ramps-token-search"
           inputProps={{
             'data-testid': 'ramps-token-search-input',
@@ -292,7 +294,7 @@ export function RampsTokenSelectionScreen() {
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
             >
-              {t('noTokensMatchSearch')}
+              {emptyStateMessage}
             </Text>
           </Box>
         )}
