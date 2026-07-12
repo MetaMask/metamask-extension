@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -14,6 +14,8 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
+import { getRampsTokens } from '../../../../store/controller-actions/ramps-controller';
+import { selectUserRegion } from '../../../../selectors/rampsController';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
@@ -25,16 +27,30 @@ import {
 } from './utils/mapRampsTokensToSendAssets';
 
 function useRampsTokenSelectionData() {
+  const userRegion = useSelector(selectUserRegion);
   const {
     tokens: controllerTokens,
     tokensLoading,
     tokensError,
+    setSelectedToken,
   } = useRampsController();
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
   );
 
-  return useMemo(() => {
+  useEffect(() => {
+    const regionCode = userRegion?.regionCode;
+    if (
+      regionCode &&
+      controllerTokens === null &&
+      !tokensLoading &&
+      !tokensError
+    ) {
+      getRampsTokens(regionCode, 'buy');
+    }
+  }, [controllerTokens, tokensError, tokensLoading, userRegion?.regionCode]);
+
+  const mappedTokens = useMemo(() => {
     const topTokens = filterRampsTokensByEnabledNetworks(
       controllerTokens?.topTokens,
       networksByCaipChainId,
@@ -43,16 +59,15 @@ function useRampsTokenSelectionData() {
       controllerTokens?.allTokens,
       networksByCaipChainId,
     );
-    const hasAttemptedLoad =
-      tokensLoading || controllerTokens !== null || tokensError !== null;
-
     return {
       topTokens: mapRampsTokensToSendAssets(topTokens, networksByCaipChainId),
       allTokens: mapRampsTokensToSendAssets(allTokens, networksByCaipChainId),
-      isLoading: tokensLoading || (!hasAttemptedLoad && !tokensError),
+      isLoading: tokensLoading,
       error: tokensError,
     };
   }, [controllerTokens, tokensLoading, tokensError, networksByCaipChainId]);
+
+  return { ...mappedTokens, setSelectedToken };
 }
 
 /**
@@ -63,8 +78,7 @@ function useRampsTokenSelectionData() {
 export function RampsTokenSelectionScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { setSelectedToken } = useRampsController();
-  const { topTokens, allTokens, isLoading, error } =
+  const { topTokens, allTokens, isLoading, error, setSelectedToken } =
     useRampsTokenSelectionData();
 
   const [searchQuery, setSearchQuery] = useState('');
