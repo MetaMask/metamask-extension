@@ -289,39 +289,6 @@
       "globals": {
         "__zod_globalRegistry": "write"
       }
-    },
-    "@metamask/perps-controller": {
-      "globals": {
-        "AbortController": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "fetch": true,
-        "performance.now": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
-    },
-    "@metamask/perps-controller>@nktkas/hyperliquid": {
-      "globals": {
-        "AbortController": true,
-        "AbortSignal": true,
-        "CustomEvent": true,
-        "DOMException": true,
-        "DecompressionStream": true,
-        "Event": true,
-        "EventTarget": true,
-        "Headers": true,
-        "Response": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "atob": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
     }
   }
 }
