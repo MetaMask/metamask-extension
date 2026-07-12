@@ -364,10 +364,14 @@ export const PerpsOrderBook = ({
       ) : (
         <Box
           flexDirection={BoxFlexDirection.Column}
-          className="flex-1 overflow-y-auto overflow-x-hidden"
+          className="flex-1 min-h-0 overflow-hidden"
         >
-          {/* Asks (sell) */}
-          <Box flexDirection={BoxFlexDirection.Column}>
+          {/* Asks (sell) — fills the top half, anchored to the spread */}
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.End}
+            className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
+          >
             {reversedAsks.map((level, index) => (
               <OrderBookRow
                 // Price-based key keeps React identity stable across live
@@ -403,6 +407,7 @@ export const PerpsOrderBook = ({
             paddingRight={3}
             paddingTop={2}
             paddingBottom={2}
+            className="shrink-0"
             data-testid={`${dataTestId}-spread`}
           >
             <Text
@@ -427,8 +432,11 @@ export const PerpsOrderBook = ({
             )}
           </Box>
 
-          {/* Bids (buy) */}
-          <Box flexDirection={BoxFlexDirection.Column}>
+          {/* Bids (buy) — fills the bottom half, anchored to the spread */}
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
+          >
             {grouped.bids.map((level, index) => (
               <OrderBookRow
                 key={`bid-${level.price}`}

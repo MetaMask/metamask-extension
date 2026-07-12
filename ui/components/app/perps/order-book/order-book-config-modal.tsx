@@ -2,9 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
-  Button,
-  ButtonSize,
-  ButtonVariant,
+  ModalFooter,
   Text,
   TextColor,
   TextVariant,
@@ -15,7 +13,6 @@ import {
   Modal,
   ModalContent,
   ModalContentSize,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
@@ -286,18 +283,15 @@ export const PerpsOrderBookConfigModal = ({
           </Box>
         </Box>
 
-        <ModalFooter>
-          <Button
-            type="button"
-            size={ButtonSize.Lg}
-            variant={ButtonVariant.Primary}
-            onClick={handleApply}
-            data-testid={`${dataTestId}-apply`}
-            className="w-full"
-          >
-            {t('perpsOrderBookApply')}
-          </Button>
-        </ModalFooter>
+        <ModalFooter
+          className="pb-4"
+          primaryButtonProps={{
+            children: t('perpsOrderBookApply'),
+            onClick: handleApply,
+            type: 'button',
+            'data-testid': `${dataTestId}-apply`,
+          }}
+        />
       </ModalContent>
     </Modal>
   );

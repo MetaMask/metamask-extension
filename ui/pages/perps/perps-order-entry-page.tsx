@@ -1845,7 +1845,7 @@ const PerpsOrderEntryPage = () => {
             )}
           >
             <Icon
-              name={IconName.Candlestick}
+              name={IconName.Book}
               size={IconSize.Lg}
               className={
                 isOrderBookOpen ? 'text-primary-default' : 'text-alternative'
