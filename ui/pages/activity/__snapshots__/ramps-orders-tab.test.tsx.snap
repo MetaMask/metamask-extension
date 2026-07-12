@@ -1,0 +1,462 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsOrdersTab matches snapshot when empty 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-4 px-4 pb-4"
+    data-testid="ramps-orders-tab"
+  >
+    <div
+      class="rounded-xl border border-border-muted bg-background-muted p-4"
+    >
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default font-medium"
+      >
+        Ramps order sync QA
+      </p>
+      <p
+        class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mt-1 text-alternative"
+      >
+        All orders: 
+        0
+         · Selected account:
+         
+        0
+      </p>
+      <div
+        class="mt-3 flex flex-wrap items-center gap-3"
+      >
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          data-testid="ramps-orders-sync-button"
+          role="button"
+          type="button"
+        >
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Sync from User Storage
+          </span>
+        </button>
+      </div>
+    </div>
+    <div
+      class="rounded-xl border border-dashed border-border-muted p-6 text-center"
+    >
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        No ramps orders in controller state.
+      </p>
+      <p
+        class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mt-1 text-alternative"
+      >
+        Use sync above after completing a buy flow on another client.
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsOrdersTab matches snapshot with orders 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-4 px-4 pb-4"
+    data-testid="ramps-orders-tab"
+  >
+    <div
+      class="rounded-xl border border-border-muted bg-background-muted p-4"
+    >
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default font-medium"
+      >
+        Ramps order sync QA
+      </p>
+      <p
+        class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mt-1 text-alternative"
+      >
+        All orders: 
+        1
+         · Selected account:
+         
+        0
+      </p>
+      <div
+        class="mt-3 flex flex-wrap items-center gap-3"
+      >
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          data-testid="ramps-orders-sync-button"
+          role="button"
+          type="button"
+        >
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Sync from User Storage
+          </span>
+        </button>
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-3"
+    >
+      <button
+        class="w-full rounded-xl border border-border-muted bg-background-default p-4 text-left transition-colors hover:bg-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+        data-testid="ramps-order-card-provider-order-1"
+        type="button"
+      >
+        <div
+          class="flex items-start justify-between gap-3"
+        >
+          <div
+            class="min-w-0 flex-1"
+          >
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default truncate font-medium"
+            >
+              Transak
+            </p>
+            <p
+              class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mt-1 truncate text-alternative"
+            >
+              provider-order-1
+            </p>
+          </div>
+          <span
+            class="shrink-0 rounded-full px-2 py-1 text-xs font-medium uppercase bg-success-muted text-success-default"
+          >
+            COMPLETED
+          </span>
+        </div>
+        <div
+          class="mt-3 grid grid-cols-2 gap-3"
+        >
+          <div>
+            <p
+              class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+            >
+              Fiat
+            </p>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default font-medium"
+            >
+              USD 100
+            </p>
+          </div>
+          <div>
+            <p
+              class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+            >
+              Crypto
+            </p>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default font-medium"
+            >
+              0.05 ETH
+            </p>
+          </div>
+        </div>
+        <div
+          class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-alternative"
+        >
+          <p
+            class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+          >
+            1/1/2024, 12:00:00 AM
+          </p>
+          <p
+            class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+          >
+            0x1234…5678
+          </p>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsOrdersTab opens order details when a card is clicked 1`] = `
+<div
+  class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+  data-testid="ramps-order-detail-modal"
+>
+  <section
+    aria-modal="true"
+    class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+    role="dialog"
+  >
+    <header
+      class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+    >
+      <div
+        class="mm-box mm-box--width-full"
+      >
+        <h4
+          class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+        >
+          Order details
+        </h4>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+        style="min-width: 0px;"
+      >
+        <button
+          aria-label="[close]"
+          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+        </button>
+      </div>
+    </header>
+    <div
+      class="px-4 pb-4"
+    >
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Order ID
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          provider-order-1
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Provider
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          Transak
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Status
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          COMPLETED
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Type
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          BUY
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Fiat
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          USD 100
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Crypto
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          0.05 ETH
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Wallet
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          0x1234567890abcdef1234567890abcdef12345678
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Network
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          Ethereum
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Payment
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          Debit card
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Created
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          1/1/2024, 12:00:00 AM
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Tx hash
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          —
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Region
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          —
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-[120px_minmax(0,1fr)] gap-3 border-b border-border-muted py-2 last:border-b-0"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-alternative"
+        >
+          Provider link
+        </p>
+        <p
+          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default break-all"
+        >
+          <a
+            class="text-primary-default underline"
+            href="https://example.com/order/1"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Open
+          </a>
+        </p>
+      </div>
+      <div
+        class="mt-4"
+      >
+        <p
+          class="text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mb-2 text-alternative"
+        >
+          Raw payload
+        </p>
+        <pre
+          class="max-h-64 overflow-auto rounded-lg bg-background-muted p-3 text-xs whitespace-pre-wrap"
+        >
+          {
+  "id": "order-1",
+  "providerOrderId": "provider-order-1",
+  "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+  "status": "COMPLETED",
+  "createdAt": 1704067200000,
+  "fiatAmount": 100,
+  "cryptoAmount": "0.05",
+  "fiatCurrency": {
+    "symbol": "USD"
+  },
+  "cryptoCurrency": {
+    "symbol": "ETH"
+  },
+  "provider": {
+    "id": "/providers/transak",
+    "name": "Transak"
+  },
+  "network": {
+    "name": "Ethereum",
+    "chainId": "eip155:1"
+  },
+  "paymentMethod": {
+    "id": "card",
+    "name": "Debit card"
+  },
+  "orderType": "BUY",
+  "providerOrderLink": "https://example.com/order/1",
+  "txHash": "",
+  "isOnlyLink": false,
+  "success": true,
+  "totalFeesFiat": 2,
+  "canBeUpdated": false,
+  "idHasExpired": false,
+  "excludeFromPurchases": false,
+  "timeDescriptionPending": ""
+}
+        </pre>
+      </div>
+    </div>
+  </section>
+</div>
+`;
