@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { type CaipChainId } from '@metamask/utils';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -9,10 +11,6 @@ import {
   TextVariant,
   FontWeight,
 } from '@metamask/design-system-react';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type RampsNetworkOption = {
