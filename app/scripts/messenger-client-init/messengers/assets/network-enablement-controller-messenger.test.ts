@@ -3,8 +3,6 @@ import { getRootMessenger } from '../../../lib/messenger';
 import {
   getNetworkEnablementControllerMessenger,
   getNetworkEnablementControllerInitMessenger,
-  NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_ACTIONS,
-  NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_EVENTS,
 } from './network-enablement-controller-messenger';
 
 const NETWORK_ENABLEMENT_CONTROLLER_DELEGATED_ACTIONS = [
@@ -55,19 +53,6 @@ describe('getNetworkEnablementControllerMessenger', () => {
         ]),
       }),
     );
-  });
-
-  it('exports external actions for callers that restore enabled networks', () => {
-    expect(NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_ACTIONS).toEqual([
-      'NetworkEnablementController:getState',
-      'NetworkEnablementController:restoreEnabledNetworkMap',
-    ]);
-  });
-
-  it('exports external events for callers that restore enabled networks', () => {
-    expect(NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_EVENTS).toEqual([
-      'NetworkEnablementController:stateChange',
-    ]);
   });
 });
 

@@ -23,15 +23,8 @@ export { getNetworkOrderControllerMessenger } from './network-order-controller-m
 export {
   getNetworkEnablementControllerMessenger,
   getNetworkEnablementControllerInitMessenger,
-  NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_ACTIONS,
-  NETWORK_ENABLEMENT_CONTROLLER_EXTERNAL_EVENTS,
 } from './network-enablement-controller-messenger';
-export type {
-  NetworkEnablementControllerInitMessenger,
-  NetworkEnablementControllerExternalActions,
-  NetworkEnablementControllerExternalEvents,
-} from './network-enablement-controller-messenger';
-export type { NetworkEnablementControllerRestoreEnabledNetworkMapAction } from '@metamask/network-enablement-controller';
+export type { NetworkEnablementControllerInitMessenger } from './network-enablement-controller-messenger';
 
 export {
   getAssetsControllerMessenger,

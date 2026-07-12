@@ -61,7 +61,6 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import {
   NetworkEnablementControllerGetStateAction,
   NetworkEnablementControllerRestoreEnabledNetworkMapAction,
-  NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
 import {
   PhishingControllerMaybeUpdateStateAction,
@@ -344,15 +343,13 @@ type AllowedActions =
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerWipeTransactionsAction;
 
-type AllowedEvents = NetworkEnablementControllerStateChangeEvent;
-
 /**
  * The {@link LegacyBackgroundApiService} messenger.
  */
 export type LegacyBackgroundApiServiceMessenger = Messenger<
   typeof serviceName,
   LegacyBackgroundApiServiceActions | AllowedActions,
-  AllowedEvents
+  never
 >;
 
 /**
