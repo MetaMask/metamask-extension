@@ -1,5 +1,7 @@
+import type { AccountGroupId } from '@metamask/account-api';
+
 export type AddDeviceSyncRequest = {
-  entropyIds: string[];
+  selectedAccountGroupIds: AccountGroupId[];
   syncedAccountCount: number;
   syncedWalletCount: number;
 };

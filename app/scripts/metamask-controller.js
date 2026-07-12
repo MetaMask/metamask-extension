@@ -439,6 +439,7 @@ import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-ser
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync-controller-init';
+import { QrSyncDataServiceInit } from './messenger-client-init/qr-sync-data-service-init';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
@@ -733,6 +734,7 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
+      QrSyncDataService: QrSyncDataServiceInit,
       QrSyncController: QrSyncControllerInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
