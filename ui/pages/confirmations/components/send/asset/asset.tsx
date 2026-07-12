@@ -14,11 +14,28 @@ import { AssetFilterInput } from '../asset-filter-input';
 import { NetworkFilter } from '../network-filter';
 import { type Asset as AssetType } from '../../../types/send';
 
+const noop = () => undefined;
+
 export type AssetProps = {
   hideNfts?: boolean;
   includeNoBalance?: boolean;
   onAssetSelect?: (asset: AssetType) => void;
   tokenFilter?: (assets: AssetType[]) => AssetType[];
+  /**
+   * When provided, these tokens are used instead of wallet tokens from
+   * `useSendAssets`. Useful for catalog-style pickers (e.g. ramps).
+   */
+  tokens?: AssetType[];
+  /**
+   * Optional NFT list used with `tokens`. Defaults to an empty list when
+   * `tokens` is provided.
+   */
+  nfts?: AssetType[];
+  hideBalances?: boolean;
+  disableMetrics?: boolean;
+  searchPlaceholder?: string;
+  emptyStateMessage?: string;
+  onSearchQueryChange?: (searchQuery: string) => void;
 };
 
 export const Asset = ({
@@ -26,13 +43,38 @@ export const Asset = ({
   includeNoBalance = false,
   onAssetSelect,
   tokenFilter,
+  tokens: tokensProp,
+  nfts: nftsProp,
+  hideBalances = false,
+  disableMetrics = false,
+  searchPlaceholder,
+  emptyStateMessage,
+  onSearchQueryChange,
 }: AssetProps = {}) => {
   const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const { addAssetFilterMethod, removeAssetFilterMethod, setAssetListSize } =
-    useAssetSelectionMetrics();
+  const {
+    addAssetFilterMethod: addAssetFilterMethodFromMetrics,
+    removeAssetFilterMethod: removeAssetFilterMethodFromMetrics,
+    setAssetListSize: setAssetListSizeFromMetrics,
+  } = useAssetSelectionMetrics();
 
-  const { tokens, nfts } = useSendAssets({ includeNoBalance });
+  const addAssetFilterMethod = disableMetrics
+    ? noop
+    : addAssetFilterMethodFromMetrics;
+  const removeAssetFilterMethod = disableMetrics
+    ? noop
+    : removeAssetFilterMethodFromMetrics;
+  const setAssetListSize = disableMetrics ? noop : setAssetListSizeFromMetrics;
+
+  const sendAssets = useSendAssets({ includeNoBalance });
+  const tokens = tokensProp ?? sendAssets.tokens;
+  const nfts = useMemo(() => {
+    if (tokensProp === undefined) {
+      return sendAssets.nfts;
+    }
+    return nftsProp ?? [];
+  }, [nftsProp, sendAssets.nfts, tokensProp]);
 
   const filteredByCustomFilter = useMemo(() => {
     return tokenFilter ? tokenFilter(tokens) : tokens;
@@ -55,7 +97,8 @@ export const Asset = ({
   const handleClearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedChainId(null);
-  }, []);
+    onSearchQueryChange?.('');
+  }, [onSearchQueryChange]);
 
   const handleSearchQueryChange = useCallback(
     (value: string) => {
@@ -65,8 +108,9 @@ export const Asset = ({
         addAssetFilterMethod(AssetFilterMethod.Search);
       }
       setSearchQuery(value);
+      onSearchQueryChange?.(value);
     },
-    [addAssetFilterMethod, removeAssetFilterMethod],
+    [addAssetFilterMethod, onSearchQueryChange, removeAssetFilterMethod],
   );
 
   return (
@@ -78,12 +122,14 @@ export const Asset = ({
       <AssetFilterInput
         searchQuery={searchQuery}
         onChange={handleSearchQueryChange}
+        placeholder={searchPlaceholder}
       />
       <NetworkFilter
         tokens={filteredByCustomFilter}
         nfts={effectiveNfts}
         selectedChainId={selectedChainId}
         onChainIdChange={setSelectedChainId}
+        disableMetrics={disableMetrics}
       />
       <AssetList
         tokens={filteredTokens}
@@ -92,7 +138,10 @@ export const Asset = ({
         allNfts={effectiveNfts}
         onClearFilters={handleClearFilters}
         hideNfts={hideNfts}
+        hideBalances={hideBalances}
         onAssetSelect={onAssetSelect}
+        emptyStateMessage={emptyStateMessage}
+        disableMetrics={disableMetrics}
       />
     </Box>
   );

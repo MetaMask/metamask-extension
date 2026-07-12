@@ -1,15 +1,16 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
-import { useSendContext } from '../../../context/send';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { AssetList } from './asset-list';
 
-jest.mock('../../../../../hooks/useI18nContext');
+const mockUpdateAsset = jest.fn();
+
+jest.mock('../../../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
 jest.mock('../../../../../components/component-library', () => ({
   Box: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="box">{children}</div>
@@ -53,7 +54,23 @@ jest.mock('../../UI/asset', () => ({
   ),
 }));
 jest.mock('../../../hooks/send/useNavigateSendPage');
-jest.mock('../../../context/send');
+jest.mock('../../../context/send', () => {
+  const ReactActual = jest.requireActual('react');
+  return {
+    SendContext: ReactActual.createContext({
+      updateAsset: (...args: unknown[]) => mockUpdateAsset(...args),
+      fromAccount: {},
+      from: '',
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateValue: jest.fn(),
+      updateHexData: jest.fn(),
+      updateNonEVMSubmitError: jest.fn(),
+      updateToResolved: jest.fn(),
+    }),
+    useSendContext: jest.fn(),
+  };
+});
 jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 
 function mockVirtualizerDOM() {
@@ -63,12 +80,9 @@ function mockVirtualizerDOM() {
 }
 
 describe('AssetList', () => {
-  const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockUseNavigateSendPage = jest.mocked(useNavigateSendPage);
-  const mockUseSendContext = jest.mocked(useSendContext);
   const mockUseAssetSelectionMetrics = jest.mocked(useAssetSelectionMetrics);
   const mockGoToAmountRecipientPage = jest.fn();
-  const mockUpdateAsset = jest.fn();
   const mockOnClearFilters = jest.fn();
   const mockCaptureAssetSelected = jest.fn();
 
@@ -83,23 +97,14 @@ describe('AssetList', () => {
 
   beforeEach(() => {
     mockVirtualizerDOM();
-    mockUseI18nContext.mockReturnValue((key: string) => key);
     mockUseNavigateSendPage.mockReturnValue({
       goToAmountRecipientPage: mockGoToAmountRecipientPage,
       goToPreviousPage: jest.fn(),
     });
-    mockUseSendContext.mockReturnValue({
-      updateAsset: mockUpdateAsset,
-      fromAccount: {} as InternalAccount,
-      from: '' as string,
-      updateCurrentPage: jest.fn(),
-      updateTo: jest.fn(),
-      updateValue: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
+    mockUseAssetSelectionMetrics.mockReturnValue({
+      captureAssetSelected: mockCaptureAssetSelected,
+    } as unknown as ReturnType<typeof useAssetSelectionMetrics>);
   });
-  mockUseAssetSelectionMetrics.mockReturnValue({
-    captureAssetSelected: mockCaptureAssetSelected,
-  } as unknown as ReturnType<typeof useAssetSelectionMetrics>);
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -213,6 +218,44 @@ describe('AssetList', () => {
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  it('renders emptyStateMessage when no assets available', () => {
+    const { getByText } = render(
+      <AssetList
+        tokens={[]}
+        nfts={[]}
+        allTokens={[]}
+        allNfts={[]}
+        emptyStateMessage="No tokens available"
+      />,
+    );
+
+    expect(getByText('No tokens available')).toBeInTheDocument();
+  });
+
+  it('does not select disabled assets', () => {
+    const mockOnAssetSelect = jest.fn();
+    const disabledToken = {
+      address: '0xabc',
+      chainId: '1',
+      name: 'Disabled',
+      disabled: true,
+    };
+
+    const { getAllByTestId } = render(
+      <AssetList
+        tokens={[disabledToken]}
+        nfts={[]}
+        allTokens={[disabledToken]}
+        allNfts={[]}
+        onAssetSelect={mockOnAssetSelect}
+      />,
+    );
+
+    fireEvent.click(getAllByTestId('asset-component')[0]);
+
+    expect(mockOnAssetSelect).not.toHaveBeenCalled();
   });
 
   describe('hideNfts', () => {

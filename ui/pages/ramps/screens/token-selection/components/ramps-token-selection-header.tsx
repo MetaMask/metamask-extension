@@ -26,14 +26,13 @@ export default function RampsTokenSelectionHeader({
 
   return (
     <Box
-      className="border-b border-border-muted px-4 py-3"
+      className="relative flex min-h-16 items-center justify-center px-4 py-3"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      gap={3}
     >
       <ButtonBase
         onClick={onBack}
-        className="rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        className="absolute left-4 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
         data-testid="ramps-token-selection-back"
         aria-label={t('back')}
       >
