@@ -3,9 +3,7 @@ import {
   type MessengerActions,
   type MessengerEvents,
 } from '@metamask/messenger';
-import {
-  NetworkEnablementControllerMessenger,
-} from '@metamask/network-enablement-controller';
+import { NetworkEnablementControllerMessenger } from '@metamask/network-enablement-controller';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
