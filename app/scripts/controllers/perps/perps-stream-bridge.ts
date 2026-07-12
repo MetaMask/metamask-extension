@@ -105,6 +105,20 @@ export class PerpsStreamBridge {
 
   readonly #dynamicUnsubs: Record<string, () => void> = {};
 
+  /**
+   * Per-channel activation generation for the deferred dynamic subscriptions
+   * (prices / orderBook / orderBookAggregated). Each `perpsDeactivate*Stream`
+   * bumps its channel's counter, so an activation whose `#initAndActivate()`
+   * only resolves *after* that deactivation ran will see the mismatch and
+   * refuse to subscribe. Without this, opening and quickly closing a panel
+   * during cold init would let the activation continuation resurrect the
+   * subscription after teardown, leaking a hidden stream that survives until
+   * the next (de)activation or bridge destruction. Mirrors the candle path's
+   * `#destroyGeneration` guard, but scoped per channel so an unrelated
+   * channel's teardown never cancels this activation.
+   */
+  readonly #dynamicActivationGeneration: Record<string, number> = {};
+
   readonly #pendingCandleTeardowns = new Map<
     string,
     ReturnType<typeof setTimeout>
@@ -220,22 +234,20 @@ export class PerpsStreamBridge {
           this.#activateStreaming(params);
         }
       },
-      perpsActivatePriceStream: async ({
+      perpsActivatePriceStream: ({
         symbols,
         includeMarketData,
       }: {
         symbols: string[];
         includeMarketData?: boolean;
-      }) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
-          this.#activatePriceStream(symbols, includeMarketData);
-        }
-      },
+      }) =>
+        this.#activateDynamicWhenReady('prices', () =>
+          this.#activatePriceStream(symbols, includeMarketData),
+        ),
       perpsDeactivatePriceStream: () => {
-        this.#tearDownChannel('prices');
+        this.#deactivateDynamicChannel('prices');
       },
-      perpsActivateOrderBookStream: async ({
+      perpsActivateOrderBookStream: ({
         symbol,
         levels,
         nSigFigs,
@@ -245,16 +257,14 @@ export class PerpsStreamBridge {
         levels?: number;
         nSigFigs?: 2 | 3 | 4 | 5;
         mantissa?: 2 | 5;
-      }) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
-          this.#activateOrderBookStream({ symbol, levels, nSigFigs, mantissa });
-        }
-      },
+      }) =>
+        this.#activateDynamicWhenReady('orderBook', () =>
+          this.#activateOrderBookStream({ symbol, levels, nSigFigs, mantissa }),
+        ),
       perpsDeactivateOrderBookStream: () => {
-        this.#tearDownChannel('orderBook');
+        this.#deactivateDynamicChannel('orderBook');
       },
-      perpsActivateOrderBookAggregatedStream: async ({
+      perpsActivateOrderBookAggregatedStream: ({
         symbol,
         levels,
         nSigFigs,
@@ -264,19 +274,17 @@ export class PerpsStreamBridge {
         levels?: number;
         nSigFigs?: 2 | 3 | 4 | 5;
         mantissa?: 2 | 5;
-      }) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
+      }) =>
+        this.#activateDynamicWhenReady('orderBookAggregated', () =>
           this.#activateOrderBookAggregatedStream({
             symbol,
             levels,
             nSigFigs,
             mantissa,
-          });
-        }
-      },
+          }),
+        ),
       perpsDeactivateOrderBookAggregatedStream: () => {
-        this.#tearDownChannel('orderBookAggregated');
+        this.#deactivateDynamicChannel('orderBookAggregated');
       },
       perpsActivateCandleStream: async ({
         symbol,
@@ -406,6 +414,55 @@ export class PerpsStreamBridge {
     if (!this.#activated && this.#isConnectionAlive()) {
       this.#activate();
     }
+  }
+
+  /**
+   * Runs a deferred dynamic-channel activation behind a per-channel generation
+   * guard. If a `perpsDeactivate*Stream` for the same channel — or a full
+   * `destroy()` — fires while `#initAndActivate()` is still pending, the
+   * captured generation no longer matches on resume and the subscription is
+   * skipped, so a quick open→close during cold init cannot leak a hidden
+   * subscription created after teardown.
+   *
+   * @param channel - The dynamic channel being (re)activated.
+   * @param activate - Subscribe callback, invoked only if still current.
+   */
+  async #activateDynamicWhenReady(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+    activate: () => void,
+  ): Promise<void> {
+    const activationGenerationAtStart =
+      this.#dynamicActivationGeneration[channel] ?? 0;
+    const destroyGenerationAtStart = this.#destroyGeneration;
+
+    await this.#initAndActivate();
+
+    if (
+      this.#destroyGeneration !== destroyGenerationAtStart ||
+      (this.#dynamicActivationGeneration[channel] ?? 0) !==
+        activationGenerationAtStart
+    ) {
+      return;
+    }
+
+    if (this.#isConnectionAlive()) {
+      activate();
+    }
+  }
+
+  /**
+   * Tears down a dynamic channel and bumps its activation generation so any
+   * activation that is still awaiting init for this channel aborts on resume
+   * instead of resurrecting the subscription.
+   *
+   * @param channel - The dynamic channel to deactivate.
+   */
+  #deactivateDynamicChannel(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+  ): void {
+    this.#dynamicActivationGeneration[channel] =
+      (this.#dynamicActivationGeneration[channel] ?? 0) + 1;
+    this.#tearDownChannel(channel);
   }
 
   #activate(): void {

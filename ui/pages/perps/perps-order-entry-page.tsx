@@ -1126,6 +1126,16 @@ const PerpsOrderEntryPage = () => {
           [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
         }),
       });
+    } else {
+      // Closing unmounts PerpsOrderBook, which resets its in-memory grouping
+      // selection back to the default. The aggregated book cache, however,
+      // outlives the panel, and usePerpsChannel does not clear it on first
+      // mount — so a reopen would render the previous grouping's rows under the
+      // reset default label until the next stream update lands. Clear the
+      // aggregated cache on close so a reopen starts from a clean slate. This
+      // is distinct from the cross-market clear in the order-book stream effect
+      // (that one guards against showing the *prior symbol's* book).
+      getPerpsStreamManager().orderBookAggregated.clearCache();
     }
   }, [isOrderBookOpen, track, decodedSymbol]);
 

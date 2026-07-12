@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -44,6 +44,8 @@ type PillProps = {
   label: string;
   isSelected: boolean;
   onSelect: () => void;
+  onKeyDown?: (event: React.KeyboardEvent) => void;
+  tabIndex?: number;
   className?: string;
   testId?: string;
 };
@@ -52,20 +54,17 @@ const Pill = ({
   label,
   isSelected,
   onSelect,
+  onKeyDown,
+  tabIndex = 0,
   className,
   testId,
 }: PillProps) => (
   <Box
     role="radio"
-    tabIndex={0}
+    tabIndex={tabIndex}
     aria-checked={isSelected}
     onClick={onSelect}
-    onKeyDown={(event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onSelect();
-      }
-    }}
+    onKeyDown={onKeyDown}
     data-testid={testId}
     className={twMerge(
       PILL_BASE_CLASS,
@@ -82,6 +81,127 @@ const Pill = ({
     </Text>
   </Box>
 );
+
+type RadioPillOption<Value> = {
+  value: Value;
+  label: string;
+  testId?: string;
+};
+
+type RadioPillGroupProps<Value> = {
+  ariaLabel: string;
+  options: RadioPillOption<Value>[];
+  value: Value | null;
+  onChange: (value: Value) => void;
+  className?: string;
+  pillClassName?: string;
+};
+
+/**
+ * A WAI-ARIA radiogroup of pills implementing the roving-tabindex pattern.
+ *
+ * Exactly one pill is in the tab order at a time — the checked one, or the
+ * first pill when nothing is checked — and Arrow/Home/End keys move both focus
+ * and selection between options (with wraparound), matching the keyboard
+ * contract that `role="radio"` advertises to screen readers. Enter/Space
+ * select the focused pill. Focus is moved imperatively by querying the group's
+ * rendered radios, so the pills stay presentational.
+ *
+ * @param props - Component props.
+ * @param props.ariaLabel - Accessible name for the radiogroup.
+ * @param props.options - Selectable options rendered as pills.
+ * @param props.value - Currently selected value, or null when none.
+ * @param props.onChange - Called with the newly selected value.
+ * @param props.className - Optional class for the group container.
+ * @param props.pillClassName - Optional class applied to every pill.
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function RadioPillGroup<Value extends string | number>({
+  ariaLabel,
+  options,
+  value,
+  onChange,
+  className,
+  pillClassName,
+}: RadioPillGroupProps<Value>) {
+  const groupRef = useRef<HTMLDivElement>(null);
+
+  const selectedIndex = options.findIndex((option) => option.value === value);
+  // The group always exposes a single tab stop: the selected option, or the
+  // first option when nothing is selected yet.
+  const tabStopIndex = selectedIndex === -1 ? 0 : selectedIndex;
+
+  const moveTo = useCallback(
+    (index: number) => {
+      if (options.length === 0) {
+        return;
+      }
+      const nextIndex = (index + options.length) % options.length;
+      onChange(options[nextIndex].value);
+      const radios =
+        groupRef.current?.querySelectorAll<HTMLElement>('[role="radio"]');
+      radios?.[nextIndex]?.focus();
+    },
+    [onChange, options],
+  );
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent, index: number) => {
+      switch (event.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+          event.preventDefault();
+          moveTo(index + 1);
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          event.preventDefault();
+          moveTo(index - 1);
+          break;
+        case 'Home':
+          event.preventDefault();
+          moveTo(0);
+          break;
+        case 'End':
+          event.preventDefault();
+          moveTo(options.length - 1);
+          break;
+        case 'Enter':
+        case ' ':
+          event.preventDefault();
+          onChange(options[index].value);
+          break;
+        default:
+          break;
+      }
+    },
+    [moveTo, onChange, options],
+  );
+
+  return (
+    <Box
+      ref={groupRef}
+      role="radiogroup"
+      aria-label={ariaLabel}
+      flexDirection={BoxFlexDirection.Row}
+      gap={3}
+      className={className}
+    >
+      {options.map((option, index) => (
+        <Pill
+          key={String(option.value)}
+          label={option.label}
+          isSelected={option.value === value}
+          tabIndex={index === tabStopIndex ? 0 : -1}
+          onSelect={() => onChange(option.value)}
+          onKeyDown={(event) => handleKeyDown(event, index)}
+          className={pillClassName}
+          testId={option.testId}
+        />
+      ))}
+    </Box>
+  );
+}
 
 /**
  * PerpsOrderBookConfigModal - "Listed by & Group by" bottom sheet used to pick
@@ -210,48 +330,42 @@ export const PerpsOrderBookConfigModal = ({
             >
               {t('perpsOrderBookListedBy')}
             </Text>
-            <Box
-              role="radiogroup"
-              aria-label={t('perpsOrderBookListedBy')}
-              flexDirection={BoxFlexDirection.Row}
-              gap={3}
-            >
-              <Pill
-                label={baseSymbol}
-                isSelected={draftCurrency === 'base'}
-                onSelect={() => setDraftCurrency('base')}
-                className="flex-1"
-                testId={`${dataTestId}-currency-base`}
-              />
-              <Pill
-                label="USD"
-                isSelected={draftCurrency === 'usd'}
-                onSelect={() => setDraftCurrency('usd')}
-                className="flex-1"
-                testId={`${dataTestId}-currency-usd`}
-              />
-            </Box>
-            <Box
-              role="radiogroup"
-              aria-label={t('perpsOrderBookValueType')}
-              flexDirection={BoxFlexDirection.Row}
-              gap={3}
-            >
-              <Pill
-                label={t('perpsOrderBookSize')}
-                isSelected={draftMetric === 'size'}
-                onSelect={() => setDraftMetric('size')}
-                className="flex-1"
-                testId={`${dataTestId}-metric-size`}
-              />
-              <Pill
-                label={t('perpsOrderBookTotal')}
-                isSelected={draftMetric === 'total'}
-                onSelect={() => setDraftMetric('total')}
-                className="flex-1"
-                testId={`${dataTestId}-metric-total`}
-              />
-            </Box>
+            <RadioPillGroup<OrderBookListCurrency>
+              ariaLabel={t('perpsOrderBookListedBy')}
+              value={draftCurrency}
+              onChange={setDraftCurrency}
+              pillClassName="flex-1"
+              options={[
+                {
+                  value: 'base',
+                  label: baseSymbol,
+                  testId: `${dataTestId}-currency-base`,
+                },
+                {
+                  value: 'usd',
+                  label: 'USD',
+                  testId: `${dataTestId}-currency-usd`,
+                },
+              ]}
+            />
+            <RadioPillGroup<OrderBookListMetric>
+              ariaLabel={t('perpsOrderBookValueType')}
+              value={draftMetric}
+              onChange={setDraftMetric}
+              pillClassName="flex-1"
+              options={[
+                {
+                  value: 'size',
+                  label: t('perpsOrderBookSize'),
+                  testId: `${dataTestId}-metric-size`,
+                },
+                {
+                  value: 'total',
+                  label: t('perpsOrderBookTotal'),
+                  testId: `${dataTestId}-metric-total`,
+                },
+              ]}
+            />
           </Box>
 
           {/* Group by */}
@@ -262,24 +376,18 @@ export const PerpsOrderBookConfigModal = ({
             >
               {t('perpsOrderBookGroupBy')}
             </Text>
-            <Box
-              role="radiogroup"
-              aria-label={t('perpsOrderBookGroupBy')}
-              flexDirection={BoxFlexDirection.Row}
-              gap={3}
+            <RadioPillGroup<number>
+              ariaLabel={t('perpsOrderBookGroupBy')}
+              value={draftGrouping}
+              onChange={setDraftGrouping}
               className="flex-wrap"
-            >
-              {groupingOptions.map((option) => (
-                <Pill
-                  key={option}
-                  label={formatGroupingLabel(option)}
-                  isSelected={draftGrouping === option}
-                  onSelect={() => setDraftGrouping(option)}
-                  className="min-w-16"
-                  testId={`${dataTestId}-grouping-${option}`}
-                />
-              ))}
-            </Box>
+              pillClassName="min-w-16"
+              options={groupingOptions.map((option) => ({
+                value: option,
+                label: formatGroupingLabel(option),
+                testId: `${dataTestId}-grouping-${option}`,
+              }))}
+            />
           </Box>
         </Box>
 

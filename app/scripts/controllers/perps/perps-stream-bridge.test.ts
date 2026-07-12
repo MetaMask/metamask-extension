@@ -771,6 +771,71 @@ describe('PerpsStreamBridge', () => {
 
       expect(unsub).toHaveBeenCalledTimes(1);
     });
+
+    it('does not subscribe when deactivated before init resolves (deferred-init guard)', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      let resolveInit: () => void = () => undefined;
+      controllerApi.perpsInit.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveInit = resolve;
+        }),
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+
+      // Activation starts but blocks on the still-pending init promise.
+      const activation = (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<void>
+      )({ symbol: 'ETH' });
+
+      // The panel is closed (deactivated) before init resolves.
+      (api.perpsDeactivateOrderBookStream as () => void)();
+
+      // Init finally resolves; the stale continuation must abort instead of
+      // resurrecting the subscription after teardown.
+      resolveInit();
+      await activation;
+
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+    });
+
+    it('still subscribes for a deferred activation that is not deactivated', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      let resolveInit: () => void = () => undefined;
+      controllerApi.perpsInit.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveInit = resolve;
+        }),
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+
+      const activation = (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<void>
+      )({ symbol: 'ETH' });
+
+      // No deactivation this time — the guard must not suppress a legitimate
+      // activation once init resolves.
+      resolveInit();
+      await activation;
+
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        callback: expect.any(Function),
+      });
+    });
   });
 
   describe('perpsActivateOrderBookAggregatedStream / perpsDeactivateOrderBookAggregatedStream', () => {
@@ -843,6 +908,36 @@ describe('PerpsStreamBridge', () => {
       (api.perpsDeactivateOrderBookAggregatedStream as () => void)();
       expect(aggregatedUnsub).toHaveBeenCalledTimes(1);
       expect(rawUnsub).not.toHaveBeenCalled();
+    });
+
+    it('does not subscribe when deactivated before init resolves (deferred-init guard)', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      let resolveInit: () => void = () => undefined;
+      controllerApi.perpsInit.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveInit = resolve;
+        }),
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+
+      const activation = (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+        }) => Promise<void>
+      )({ symbol: 'ETH', nSigFigs: 3 });
+
+      (api.perpsDeactivateOrderBookAggregatedStream as () => void)();
+
+      resolveInit();
+      await activation;
+
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
     });
   });
 
