@@ -11,7 +11,6 @@ import {
   BoxJustifyContent,
   TextButton,
 } from '@metamask/design-system-react';
-import log from 'loglevel';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';

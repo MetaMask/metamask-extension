@@ -1,18 +1,14 @@
-import type {
-  IKeyManager,
-  ISessionStore,
-  ITransport,
-  SessionRequest,
-} from '@metamask/mobile-wallet-protocol-core';
+import type { SessionRequest } from '@metamask/mobile-wallet-protocol-core';
 import {
   DappClient,
   type OtpRequiredPayload,
 } from '@metamask/mobile-wallet-protocol-dapp-client';
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
-
-const E2E_MWP_STUB_TRANSPORT = {} as ITransport;
-const E2E_MWP_STUB_SESSION_STORE = {} as ISessionStore;
-const E2E_MWP_STUB_KEY_MANAGER = {} as IKeyManager;
+import {
+  E2E_MWP_STUB_KEY_MANAGER,
+  E2E_MWP_STUB_SESSION_STORE,
+  E2E_MWP_STUB_TRANSPORT,
+} from './e2e-mwp-stubs';
 
 /**
  * Test-build stand-in for {@link DappClient} used by QrSync E2E tests.

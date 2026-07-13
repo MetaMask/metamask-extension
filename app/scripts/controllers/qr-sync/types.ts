@@ -15,11 +15,6 @@ import {
   AccountTreeControllerGetAccountWalletObjectAction,
 } from '@metamask/account-tree-controller';
 import { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
-import type {
-  ISessionStore,
-  WebSocketTransport,
-} from '@metamask/mobile-wallet-protocol-core';
-import { DappClient } from '@metamask/mobile-wallet-protocol-dapp-client';
 import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
 import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
 import type { KeyManager } from './key-manager';
@@ -35,12 +30,6 @@ import type { QrSyncController } from './qr-sync-controller';
 
 export type QrSyncConnectionStatusType =
   (typeof QrSyncConnectionStatus)[keyof typeof QrSyncConnectionStatus];
-
-export type QrSyncMwpStack = {
-  transport: WebSocketTransport | null;
-  sessionStore: ISessionStore | null;
-  dappClient: DappClient;
-};
 
 export type QrSyncControllerInitOptions = {
   keyManager: KeyManager;

@@ -53,8 +53,8 @@ class SettingsPage {
   private readonly backupAndSyncSettingsButton =
     '[data-testid="settings-tab-item-backup-and-sync"]';
 
-  private readonly addDeviceSettingsButton =
-    '[data-testid="settings-tab-item-add-device"]';
+  private readonly syncAccountsSettingsButton =
+    '[data-testid="settings-tab-item-sync-accounts"]';
 
   private readonly showNativeTokenAsMainBalanceToggleLabel = {
     xpath:
@@ -270,9 +270,8 @@ class SettingsPage {
     await this.driver.clickElement(this.backupAndSyncSettingsButton);
   }
 
-  async goToAddDeviceSettings(): Promise<void> {
-    console.log('Navigating to Add device settings page');
-    await this.driver.clickElement(this.addDeviceSettingsButton);
+  async goToSyncAccountsSettings(): Promise<void> {
+    await this.driver.clickElement(this.syncAccountsSettingsButton);
   }
 
   async goToTransactionsSettings(): Promise<void> {

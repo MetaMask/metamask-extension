@@ -69,13 +69,13 @@ const SyncAccountsSettings = () => {
     navigate(DEFAULT_ROUTE);
   }, [navigate, resetQrSyncState]);
 
-  useEffect(() => {
-    if (!isQrSyncTerminal) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!isQrSyncTerminal) {
+  //     return;
+  //   }
 
-    handleExit().catch(() => undefined);
-  }, [handleExit, isQrSyncTerminal]);
+  //   handleExit().catch(() => undefined);
+  // }, [handleExit, isQrSyncTerminal]);
 
   const handleAddWallets = useCallback(
     async ({

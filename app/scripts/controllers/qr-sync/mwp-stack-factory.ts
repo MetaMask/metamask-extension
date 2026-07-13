@@ -5,8 +5,9 @@ import {
 } from '@metamask/mobile-wallet-protocol-core';
 import { DappClient } from '@metamask/mobile-wallet-protocol-dapp-client';
 import type { KeyManager } from './key-manager';
-import { createE2eMwpStack } from './e2e/create-e2e-mwp-stack';
-import type { QrSyncMwpStack } from './types';
+import { registerQrSyncE2eBridge } from './e2e/qr-sync-e2e-bridge';
+import { MobileWalletSimulator } from './e2e/mobile-wallet-simulator';
+import { E2eMwpMockClient } from './e2e/e2e-mwp-mock-client';
 
 export type MwpStackFactoryOptions = {
   kvStore: IKVStore;
@@ -26,30 +27,36 @@ function shouldUseE2eMwpStack(): boolean {
  * @param options0.relayUrl
  * @param options0.keyManager
  */
-export async function createProductionMwpStack({
-  kvStore,
-  relayUrl,
-  keyManager,
-}: MwpStackFactoryOptions): Promise<QrSyncMwpStack> {
+export async function createProductionMwpStack(
+  keyStore: IKVStore,
+  relayUrl: string,
+  keyManager: KeyManager,
+): Promise<DappClient> {
   const transport = await WebSocketTransport.create({
-    kvstore: kvStore,
+    kvstore: keyStore,
     url: relayUrl,
     websocket: typeof WebSocket === 'undefined' ? undefined : WebSocket,
   });
 
-  const sessionStore = await SessionStore.create(kvStore);
+  const sessionStore = await SessionStore.create(keyStore);
 
-  const dappClient = new DappClient({
+  return new DappClient({
     transport,
     sessionstore: sessionStore,
     keymanager: keyManager,
   });
+}
 
-  return {
-    transport,
-    sessionStore,
-    dappClient,
-  };
+/**
+ * Creates the in-extension MWP mock stack for QrSync E2E tests.
+ */
+export async function createE2eMwpStack(): Promise<DappClient> {
+  const client = new E2eMwpMockClient();
+  const simulator = new MobileWalletSimulator(client);
+  simulator.bind();
+  registerQrSyncE2eBridge(simulator);
+
+  return client;
 }
 
 /**
@@ -57,12 +64,14 @@ export async function createProductionMwpStack({
  * In extension test builds (`IN_TEST`, not Jest), uses the E2E mock client.
  * @param options
  */
-export async function mwpStackFactory(
-  options: MwpStackFactoryOptions,
-): Promise<QrSyncMwpStack> {
+export async function getMwpDappClient(
+  keyStore: IKVStore,
+  relayUrl: string,
+  keyManager: KeyManager,
+): Promise<DappClient> {
   if (shouldUseE2eMwpStack()) {
     return createE2eMwpStack();
   }
 
-  return createProductionMwpStack(options);
+  return createProductionMwpStack(keyStore, relayUrl, keyManager);
 }

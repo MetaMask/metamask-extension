@@ -9,7 +9,9 @@ let simulatorInstance: MobileWalletSimulator | null = null;
  *
  * @param simulator - The simulator bound to the active mock MWP client.
  */
-export function registerQrSyncE2eBridge(simulator: MobileWalletSimulator): void {
+export function registerQrSyncE2eBridge(
+  simulator: MobileWalletSimulator,
+): void {
   simulatorInstance = simulator;
 }
 

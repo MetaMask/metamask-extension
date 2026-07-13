@@ -51,7 +51,7 @@ import {
   MESSENGER_EXPOSED_METHODS,
 } from './metadata';
 import { InMemoryKvStore } from './kv-store';
-import { mwpStackFactory } from './mwp-stack-factory';
+import { getMwpDappClient } from './mwp-stack-factory';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -220,13 +220,11 @@ export class QrSyncController extends BaseController<
     });
 
     try {
-      const stack = await mwpStackFactory({
-        kvStore: this.#kvStore,
-        relayUrl: this.#relayUrl,
-        keyManager: this.#keyManager,
-      });
-
-      this.#mwpDappClient = stack.dappClient;
+      this.#mwpDappClient = await getMwpDappClient(
+        this.#kvStore,
+        this.#relayUrl,
+        this.#keyManager,
+      );
 
       this.#registerClientEventHandlers(this.#mwpDappClient);
       this.#transitionPhase(this.state.qrSyncPhase, 'connected');
@@ -517,6 +515,7 @@ export class QrSyncController extends BaseController<
 
     switch (parsedMessage.type) {
       case QrSyncActionTypes.SYNC_OFFER:
+        console.log('QrSyncController: current state', this.state);
         if (
           !canAcceptSyncOffer({
             hasDappClient: Boolean(this.#mwpDappClient),

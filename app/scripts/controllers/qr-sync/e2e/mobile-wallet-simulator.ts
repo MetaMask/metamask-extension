@@ -92,9 +92,7 @@ export class MobileWalletSimulator {
     }
 
     const sessionId =
-      params.sessionId ??
-      this.#client.sessionRequest?.id ??
-      'e2e-session-id';
+      params.sessionId ?? this.#client.sessionRequest?.id ?? 'e2e-session-id';
 
     this.#client.emitMessage({
       type: QrSyncActionTypes.SYNC_OFFER,
