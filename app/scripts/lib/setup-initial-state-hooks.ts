@@ -61,6 +61,10 @@ export const persistenceManager = new PersistenceManager({ localStore })
     });
   });
 
+type PersistedStateOptions = Parameters<
+  typeof globalThis.stateHooks.getPersistedState
+>[0];
+
 /**
  * Get the persisted wallet state.
  *
@@ -68,7 +72,9 @@ export const persistenceManager = new PersistenceManager({ localStore })
  * @param options.reportErrors - Whether read errors should be reported to Sentry.
  * @returns The persisted wallet state.
  */
-globalThis.stateHooks.getPersistedState = async function (options = {}) {
+globalThis.stateHooks.getPersistedState = async function (
+  options: PersistedStateOptions = {},
+) {
   const { reportErrors = true } = options;
   return await persistenceManager.get({ validateVault: false, reportErrors });
 };
@@ -126,7 +132,7 @@ globalThis.stateHooks.getSentryState = function () {
   ) {
     const persistedState =
       persistenceManager.mostRecentRetrievedState ||
-      globalThis.stateHooks.getMostRecentPersistedState();
+      globalThis.stateHooks.getMostRecentPersistedState?.();
     // This can be unset when this method is called in the background for an
     // opt-in check, but the state hasn't been loaded yet.
     if (persistedState) {

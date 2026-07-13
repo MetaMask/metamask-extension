@@ -1,17 +1,21 @@
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-let __define;
+let __define: unknown;
+
+const globalObject = global as typeof globalThis & {
+  define?: unknown;
+};
 
 /**
  * Caches reference to global define object and deletes it to
  * avoid conflicts with other global define objects, such as
  * AMD's define function
  */
-const cleanContextForImports = () => {
-  __define = global.define;
+const cleanContextForImports = (): void => {
+  __define = globalObject.define;
   try {
-    global.define = undefined;
+    globalObject.define = undefined;
   } catch (_) {
     console.warn('MetaMask - global.define could not be deleted.');
   }
@@ -20,9 +24,9 @@ const cleanContextForImports = () => {
 /**
  * Restores global define object from cached reference
  */
-const restoreContextAfterImports = () => {
+const restoreContextAfterImports = (): void => {
   try {
-    global.define = __define;
+    globalObject.define = __define;
   } catch (_) {
     console.warn('MetaMask - global.define could not be overwritten.');
   }
@@ -36,6 +40,7 @@ import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
 import ObjectMultiplex from '@metamask/object-multiplex';
+// @ts-expect-error @types/readable-stream does not export pipeline
 import { pipeline } from 'readable-stream';
 
 import {
@@ -54,6 +59,17 @@ const INPAGE = 'metamask-inpage';
 
 restoreContextAfterImports();
 
+const getRequiredBuildValue = (
+  value: string | undefined,
+  key: string,
+): string => {
+  if (!value) {
+    throw new Error(`Missing required build value: ${key}`);
+  }
+
+  return value;
+};
+
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 
 //
@@ -61,6 +77,19 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 //
 
 if (shouldInjectProvider()) {
+  const providerName = getRequiredBuildValue(
+    process.env.METAMASK_BUILD_NAME,
+    'METAMASK_BUILD_NAME',
+  );
+  const providerIcon = getRequiredBuildValue(
+    process.env.METAMASK_BUILD_ICON,
+    'METAMASK_BUILD_ICON',
+  );
+  const providerRdns = getRequiredBuildValue(
+    process.env.METAMASK_BUILD_APP_ID,
+    'METAMASK_BUILD_APP_ID',
+  );
+
   // setup background connection
   const metamaskStream = new WindowPostMessageStream({
     name: INPAGE,
@@ -100,7 +129,7 @@ if (shouldInjectProvider()) {
    * - https://github.com/MetaMask/metamask-extension/issues/26337
    * - https://github.com/MetaMask/metamask-extension/issues/35241
    */
-  pipeline(metamaskStream, mux, metamaskStream, (error) => {
+  pipeline(metamaskStream, mux, metamaskStream, (error: Error | null) => {
     let warningMsg = `Lost connection to "${METAMASK_EIP_1193_PROVIDER}".`;
     if (error?.stack) {
       warningMsg += `\n${error.stack}`;
@@ -115,9 +144,9 @@ if (shouldInjectProvider()) {
     shouldSendMetadata: false,
     providerInfo: {
       uuid: uuid(),
-      name: process.env.METAMASK_BUILD_NAME,
-      icon: process.env.METAMASK_BUILD_ICON,
-      rdns: process.env.METAMASK_BUILD_APP_ID,
+      name: providerName,
+      icon: providerIcon,
+      rdns: providerRdns,
     },
   });
 
@@ -126,8 +155,9 @@ if (shouldInjectProvider()) {
     transport: getDefaultTransport(),
   });
   registerSolanaWalletStandard({
-    client: solanaMultichainClient,
-    walletName: process.env.METAMASK_BUILD_NAME,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    client: solanaMultichainClient as any,
+    walletName: providerName,
   });
 
   // Bitcoin SatsConnect Wallet Standard registration
@@ -135,7 +165,8 @@ if (shouldInjectProvider()) {
     transport: getDefaultTransport(),
   });
   registerBitcoinWalletStandard({
-    client: btcMultichainClient,
-    walletName: process.env.METAMASK_BUILD_NAME,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    client: btcMultichainClient as any,
+    walletName: providerName,
   });
 }

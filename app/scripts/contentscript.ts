@@ -15,7 +15,11 @@ import {
   isDetectedCookieMarketingSite,
 } from './streams/cookie-handler-stream';
 
-const start = () => {
+type PrerenderDocument = Document & {
+  prerendering?: boolean;
+};
+
+const start = (): void => {
   if (isDetectedPhishingSite) {
     initPhishingStreams();
     return;
@@ -28,7 +32,10 @@ const start = () => {
   if (shouldInjectProvider()) {
     initStreams();
 
-    if (document.prerendering && getIsBrowserPrerenderBroken()) {
+    if (
+      (document as PrerenderDocument).prerendering &&
+      getIsBrowserPrerenderBroken()
+    ) {
       document.addEventListener('prerenderingchange', () => {
         onDisconnectDestroyStreams(
           new Error('Prerendered page has become active.'),

@@ -59,7 +59,7 @@ async function importFresh(): Promise<{
   persistenceManager: PersistenceManagerType;
 }> {
   // eslint-disable-next-line import-x/extensions -- jest.resetModules requires extension for re-import
-  const mod = await import('./setup-initial-state-hooks.js');
+  const mod = await import('./setup-initial-state-hooks.ts');
   return mod as unknown as { persistenceManager: PersistenceManagerType };
 }
 

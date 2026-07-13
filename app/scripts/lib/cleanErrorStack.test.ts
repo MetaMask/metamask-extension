@@ -1,6 +1,6 @@
 import cleanErrorStack from './cleanErrorStack';
 
-describe('Clean Error Stack', () => {
+describe('cleanErrorStack', () => {
   const testMessage = 'Test Message';
   const testError = new Error(testMessage);
   const undefinedErrorName = new Error(testMessage);
@@ -8,29 +8,31 @@ describe('Clean Error Stack', () => {
   const blankMsgError = new Error();
 
   beforeEach(() => {
-    undefinedErrorName.name = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (undefinedErrorName as any).name = undefined;
     blankErrorName.name = '';
   });
 
-  it('tests error with message', () => {
+  it('handles error with message', () => {
     expect(cleanErrorStack(testError).toString()).toStrictEqual(
       'Error: Test Message',
     );
   });
 
-  it('tests error with undefined name', () => {
+  it('handles error with undefined name', () => {
     expect(cleanErrorStack(undefinedErrorName).toString()).toStrictEqual(
       'Error: Test Message',
     );
   });
 
-  it('tests error with blank name', () => {
+  it('handles error with blank name', () => {
     expect(cleanErrorStack(blankErrorName).toString()).toStrictEqual(
       'Test Message',
     );
   });
 
-  it('tests error with blank message', () => {
+  it('handles error with blank message', () => {
     expect(cleanErrorStack(blankMsgError).toString()).toStrictEqual('Error');
   });
 });
+

@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+
 import {
   dropLowValueMarkSpans,
   removeUrlsFromBreadCrumb,
@@ -7,10 +8,58 @@ import {
   shouldCreateSpanForRequest,
 } from './setupSentry';
 
+type TestBreadcrumb = ReturnType<typeof removeUrlsFromBreadCrumb> & {
+  data?: {
+    address?: string;
+    arguments?: Array<Error | string | Record<string, unknown>>;
+    from?: string;
+    logger?: string;
+    to?: string;
+    url?: string;
+  };
+  message?: string;
+};
+
+type TestReport = Parameters<typeof rewriteReport>[0] & {
+  breadcrumbs?: TestBreadcrumb[];
+  contexts?: {
+    account?: {
+      address?: string;
+    };
+  };
+  exception?: {
+    values?: Array<{
+      value?: string;
+    }>;
+  };
+  extra?: {
+    accountAddress?: string;
+    appState?: unknown;
+    extensionId?: string;
+    first?: string[];
+    installType?: string;
+    nested?: {
+      evmAddress?: string;
+    };
+    second?: string[];
+  };
+  message?: string;
+  request?: {
+    url?: string;
+  };
+  spans?: Array<{
+    description?: string;
+    name?: string;
+    op?: string;
+  }>;
+  transaction?: string;
+  type?: string;
+};
+
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
     it('should remove urls from error messages', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message: 'This report has a test url: http://example.com',
         request: {},
       };
@@ -21,7 +70,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should remove urls from error reports that have an exception with an array of values', () => {
-      const testReport = {
+      const testReport: TestReport = {
         exception: {
           values: [
             {
@@ -35,7 +84,7 @@ describe('Setup Sentry', () => {
         request: {},
       };
       rewriteReport(testReport);
-      expect(testReport.exception.values).toStrictEqual([
+      expect(testReport.exception?.values).toStrictEqual([
         {
           value: 'This report has a test url: **',
         },
@@ -46,7 +95,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should remove ethereum addresses from error messages', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'There is an ethereum address 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 in this message',
         request: {},
@@ -58,7 +107,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should not remove urls from our allow list', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message: 'This report has an allowed url: https://codefi.network/',
         request: {},
       };
@@ -69,7 +118,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should not remove urls at subdomains of the urls in the allow list', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'This report has an allowed url: https://subdomain.codefi.network/',
         request: {},
@@ -81,7 +130,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should remove urls very similar to, but different from, those in our allow list', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'This report does not have an allowed url: https://nodefi.network/',
         request: {},
@@ -93,7 +142,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should remove urls with allow list urls in their domain path', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'This report does not have an allowed url: https://codefi.network.another.domain.com/',
         request: {},
@@ -105,7 +154,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should remove urls have allowed urls in their URL path', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'This report does not have an allowed url: https://example.com/test?redirect=http://codefi.network',
         request: {},
@@ -117,7 +166,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should remove urls with subdomains', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'This report does not have an allowed url: https://subdomain.example.com/',
         request: {},
@@ -129,7 +178,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should remove invalid urls', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'This report does not have an allowed url: https://example.%%%/',
         request: {},
@@ -141,7 +190,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should remove urls and ethereum addresses from error messages', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'This 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 address used http://example.com on Saturday',
         request: {},
@@ -153,7 +202,7 @@ describe('Setup Sentry', () => {
     });
 
     it('should not modify an error message with no urls or addresses', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message: 'This is a simple report',
         request: {},
       };
@@ -162,7 +211,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes Solana addresses from error messages', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'There is a Solana address 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs in this message',
         request: {},
@@ -174,7 +223,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes Tron addresses from error messages', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'There is a Tron address TJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC in this message',
         request: {},
@@ -186,7 +235,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes Stellar (XLM) addresses from error messages', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'There is a Stellar address GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX in this message',
         request: {},
@@ -198,7 +247,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes Bitcoin bech32 addresses from error messages', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'There is a Bitcoin address bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq in this message',
         request: {},
@@ -210,7 +259,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes Bitcoin legacy addresses from error messages', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'There is a Bitcoin address 17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem in this message',
         request: {},
@@ -222,7 +271,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes multiple EVM addresses from a single error message', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message:
           'Addresses 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 and 0x1234567890123456789012345678901234567890 failed',
         request: {},
@@ -234,7 +283,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes addresses from report.extra parameters', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message: 'An error occurred',
         extra: {
           accountAddress: '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
@@ -245,13 +294,13 @@ describe('Setup Sentry', () => {
         request: {},
       };
       rewriteReport(testReport);
-      expect(testReport.extra.accountAddress).toStrictEqual('**');
-      expect(testReport.extra.nested.evmAddress).toStrictEqual('0x**');
+      expect(testReport.extra?.accountAddress).toStrictEqual('**');
+      expect(testReport.extra?.nested?.evmAddress).toStrictEqual('0x**');
     });
 
     it('removes addresses from an array shared across multiple properties', () => {
       const sharedAddresses = ['7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs'];
-      const testReport = {
+      const testReport: TestReport = {
         message: 'An error occurred',
         extra: {
           first: sharedAddresses,
@@ -260,12 +309,12 @@ describe('Setup Sentry', () => {
         request: {},
       };
       rewriteReport(testReport);
-      expect(testReport.extra.first).toStrictEqual(['**']);
-      expect(testReport.extra.second).toStrictEqual(['**']);
+      expect(testReport.extra?.first).toStrictEqual(['**']);
+      expect(testReport.extra?.second).toStrictEqual(['**']);
     });
 
     it('removes addresses from report.contexts parameters', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message: 'An error occurred',
         contexts: {
           account: {
@@ -275,11 +324,11 @@ describe('Setup Sentry', () => {
         request: {},
       };
       rewriteReport(testReport);
-      expect(testReport.contexts.account.address).toStrictEqual('**');
+      expect(testReport.contexts?.account?.address).toStrictEqual('**');
     });
 
     it('removes addresses from breadcrumbs when sending an error report', () => {
-      const testReport = {
+      const testReport: TestReport = {
         message: 'An error occurred',
         breadcrumbs: [
           {
@@ -296,9 +345,9 @@ describe('Setup Sentry', () => {
         request: {},
       };
       rewriteReport(testReport);
-      expect(testReport.breadcrumbs[0].data.arguments[0].message).toStrictEqual(
-        'Failed for 0x**',
-      );
+      expect(testReport.breadcrumbs?.[0].data?.arguments?.[0]).toMatchObject({
+        message: 'Failed for 0x**',
+      });
     });
 
     it('scrubs breadcrumbs without mutating live source objects', () => {
@@ -306,7 +355,7 @@ describe('Setup Sentry', () => {
         'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
       );
       const liveArgs = [liveError];
-      const testReport = cloneDeep({
+      const testReport: TestReport = cloneDeep({
         message: 'An error occurred',
         breadcrumbs: [
           {
@@ -319,9 +368,9 @@ describe('Setup Sentry', () => {
 
       rewriteReport(testReport);
 
-      expect(testReport.breadcrumbs[0].data.arguments[0].message).toStrictEqual(
-        'Failed for 0x**',
-      );
+      expect(testReport.breadcrumbs?.[0].data?.arguments?.[0]).toMatchObject({
+        message: 'Failed for 0x**',
+      });
       expect(liveError.message).toStrictEqual(
         'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
       );
@@ -330,7 +379,7 @@ describe('Setup Sentry', () => {
 
   describe('rewriteTransactionReport', () => {
     it('removes addresses from breadcrumbs when sending a transaction', () => {
-      const testReport = {
+      const testReport: TestReport = {
         type: 'transaction',
         transaction: 'ui.popup',
         breadcrumbs: [
@@ -343,13 +392,13 @@ describe('Setup Sentry', () => {
         ],
       };
       rewriteTransactionReport(testReport);
-      expect(testReport.breadcrumbs[0].data.url).toStrictEqual('');
+      expect(testReport.breadcrumbs?.[0].data?.url).toStrictEqual('');
     });
   });
 
   describe('dropLowValueMarkSpans', () => {
     it('drops the listed low-value mark spans, keeping the transaction and other marks/spans', () => {
-      const testReport = {
+      const testReport: TestReport = {
         type: 'transaction',
         transaction: 'ui.popup',
         spans: [
@@ -368,7 +417,7 @@ describe('Setup Sentry', () => {
     });
 
     it('keeps a non-mark span even if its description matches a low-value mark name', () => {
-      const testReport = {
+      const testReport: TestReport = {
         type: 'transaction',
         transaction: 'ui.popup',
         spans: [{ op: 'http.client', description: 'sentry-tracing-init' }],
@@ -384,7 +433,7 @@ describe('Setup Sentry', () => {
         { op: 'mark', description: 'first-contentful-paint' },
         { op: 'http.client', description: 'GET /foo' },
       ];
-      const testReport = {
+      const testReport: TestReport = {
         type: 'transaction',
         transaction: 'ui.popup',
         spans,
@@ -394,13 +443,16 @@ describe('Setup Sentry', () => {
     });
 
     it('does not throw when the transaction has no spans array', () => {
-      const testReport = { type: 'transaction', transaction: 'ui.popup' };
+      const testReport: TestReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+      };
       expect(() => dropLowValueMarkSpans(testReport)).not.toThrow();
       expect(testReport.spans).toBeUndefined();
     });
 
     it('matches the mark name on the `name` field (SDK v10 forward-compat)', () => {
-      const testReport = {
+      const testReport: TestReport = {
         type: 'transaction',
         transaction: 'ui.popup',
         spans: [
@@ -526,73 +578,73 @@ describe('Setup Sentry', () => {
 
   describe('removeUrlsFromBreadCrumb', () => {
     it('should hide the breadcrumb data url', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         data: {
           url: 'https://example.com',
         },
       };
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
-      expect(rewrittenBreadcrumb.data.url).toStrictEqual('');
+      expect(rewrittenBreadcrumb.data?.url).toStrictEqual('');
     });
 
     it('should hide the breadcrumb data "to" page', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         data: {
           to: 'https://example.com',
         },
       };
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
-      expect(rewrittenBreadcrumb.data.to).toStrictEqual('');
+      expect(rewrittenBreadcrumb.data?.to).toStrictEqual('');
     });
 
     it('should hide the breadcrumb data "from" page', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         data: {
           from: 'https://example.com',
         },
       };
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
-      expect(rewrittenBreadcrumb.data.from).toStrictEqual('');
+      expect(rewrittenBreadcrumb.data?.from).toStrictEqual('');
     });
 
     it('should NOT hide the breadcrumb data url if the url is on the extension protocol', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         data: {
           url: 'chrome-extension://abcefg/home.html',
         },
       };
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
-      expect(rewrittenBreadcrumb.data.url).toStrictEqual(
+      expect(rewrittenBreadcrumb.data?.url).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
     });
 
     it('should NOT hide the breadcrumb data "to" page if the url is on the extension protocol', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         data: {
           to: 'chrome-extension://abcefg/home.html',
         },
       };
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
-      expect(rewrittenBreadcrumb.data.to).toStrictEqual(
+      expect(rewrittenBreadcrumb.data?.to).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
     });
 
     it('should NOT hide the breadcrumb data "from" page if the url is on the extension protocol', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         data: {
           from: 'chrome-extension://abcefg/home.html',
         },
       };
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
-      expect(rewrittenBreadcrumb.data.from).toStrictEqual(
+      expect(rewrittenBreadcrumb.data?.from).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
     });
 
     it('should hide "to" but not "from" or url if "to" is the only one not matching an internal url', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         data: {
           url: 'chrome-extension://abcefg/home.html',
           to: 'https://example.com',
@@ -608,7 +660,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes addresses from the breadcrumb message', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         message:
           'Selected account 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
         data: {
@@ -620,7 +672,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes addresses from the breadcrumb data', () => {
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         message:
           'Selected account 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
         data: {
@@ -628,7 +680,7 @@ describe('Setup Sentry', () => {
         },
       };
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
-      expect(rewrittenBreadcrumb.data.address).toStrictEqual('0x**');
+      expect(rewrittenBreadcrumb.data?.address).toStrictEqual('0x**');
     });
 
     it('redacts the breadcrumb data without mutating the live source objects', () => {
@@ -639,7 +691,7 @@ describe('Setup Sentry', () => {
         liveError,
         '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
       ];
-      const testBreadcrumb = {
+      const testBreadcrumb: TestBreadcrumb = {
         message: 'console.error',
         data: { arguments: liveArgs, logger: 'console' },
       };
@@ -647,10 +699,10 @@ describe('Setup Sentry', () => {
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
 
       // The breadcrumb sent to Sentry is redacted...
-      expect(rewrittenBreadcrumb.data.arguments[0].message).toStrictEqual(
-        'Failed for 0x**',
-      );
-      expect(rewrittenBreadcrumb.data.arguments[1]).toStrictEqual('**');
+      expect(rewrittenBreadcrumb.data?.arguments?.[0]).toMatchObject({
+        message: 'Failed for 0x**',
+      });
+      expect(rewrittenBreadcrumb.data?.arguments?.[1]).toStrictEqual('**');
       // ...but the live Error and array the extension still holds are untouched.
       expect(liveError.message).toStrictEqual(
         'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
