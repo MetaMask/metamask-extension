@@ -10,14 +10,11 @@ import { Asset } from '../types/asset';
 import TokenButtons from './token-buttons';
 
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
-jest.mock(
-  '../../../hooks/ramps/useRampsNavigation/useRampsNavigation',
-  () => ({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    default: () => ({ goToBuy: mockGoToBuy }),
-  }),
-);
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => ({ goToBuy: mockGoToBuy }),
+}));
 
 jest.mock('../../../hooks/bridge/useBridging', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention

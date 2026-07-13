@@ -419,7 +419,10 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
-    const opened = await goToBuy({ assetId: buyAssetId, chainId: getChainId() });
+    const opened = await goToBuy({
+      assetId: buyAssetId,
+      chainId: getChainId(),
+    });
     if (!opened) {
       return;
     }

@@ -5,7 +5,11 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { Header, Page, Content } from '../../../components/multichain/pages/page';
+import {
+  Header,
+  Page,
+  Content,
+} from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 

@@ -66,14 +66,7 @@ const AddFundsModal = ({
         .build(),
     );
     onClose();
-  }, [
-    chainId,
-    onClose,
-    goToBuy,
-    token.symbol,
-    createEventBuilder,
-    trackEvent,
-  ]);
+  }, [chainId, onClose, goToBuy, token.symbol, createEventBuilder, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
