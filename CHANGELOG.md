@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.39.2]
 
+### Fixed
+
+- Fixed a memory leak on Firefox where closed MetaMask windows were retained in memory, growing extension memory use with every popup open (#44352)
+
 ## [13.39.1]
 
 ### Added
