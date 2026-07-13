@@ -5,7 +5,10 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_PHASES,
+  QrSyncErrorCodes,
+} from '../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import SyncAccountsSettings from './sync-accounts-settings';
 
@@ -39,6 +42,22 @@ jest.mock('./components', () => ({
   AddWallets: () => <div data-testid="add-wallets" />,
   LoadingStep: () => <div data-testid="loading-step" />,
   Success: () => <div data-testid="success" />,
+  SyncError: ({
+    onRetry,
+    onCancel,
+  }: {
+    onRetry: () => void;
+    onCancel: () => void;
+  }) => (
+    <div data-testid="sync-error">
+      <button type="button" data-testid="sync-error-retry" onClick={onRetry}>
+        retry
+      </button>
+      <button type="button" data-testid="sync-error-cancel" onClick={onCancel}>
+        cancel
+      </button>
+    </div>
+  ),
 }));
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
@@ -141,7 +160,7 @@ describe('SyncAccountsSettings', () => {
     });
   });
 
-  it('exits automatically when the flow reaches a terminal phase', async () => {
+  it('renders SyncError when the phase is cancelled', () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -150,6 +169,121 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+  });
+
+  it('renders SyncError when the phase is failed', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+  });
+
+  it('renders QrCodeScan when the phase is failed with a QR_EXPIRED error', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+        qrSyncError: {
+          code: QrSyncErrorCodes.QR_EXPIRED,
+          message: 'QR code expired.',
+        },
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
+    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+  });
+
+  it('renders EnterVerificationCode when the phase is failed with an OTP_EXPIRED error', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+        qrSyncError: {
+          code: QrSyncErrorCodes.OTP_EXPIRED,
+          message: 'OTP expired.',
+        },
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
+    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+  });
+
+  it('renders EnterVerificationCode when the phase is failed with an OTP_ATTEMPTS_EXCEEDED error', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+        qrSyncError: {
+          code: QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
+          message: 'Too many attempts.',
+        },
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
+    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+  });
+
+  it('renders SyncError when the phase is failed with a non-overridden error', () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+        qrSyncError: {
+          code: QrSyncErrorCodes.SYNC_FAILED,
+          message: 'Sync failed.',
+        },
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+    expect(screen.queryByTestId('qr-code-scan')).not.toBeInTheDocument();
+  });
+
+  it('resets the session when retry is clicked on the error step', async () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.FAILED,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+
+    fireEvent.click(screen.getByTestId('sync-error-retry'));
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'messengerCall',
+        ['QrSyncController:resetState', []],
+      );
+    });
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('resets and navigates away when cancel is clicked on the error step', async () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.CANCELLED,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+
+    fireEvent.click(screen.getByTestId('sync-error-cancel'));
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(

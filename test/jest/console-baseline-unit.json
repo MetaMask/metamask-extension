@@ -1063,7 +1063,13 @@
     "ui/pages/settings/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings/sync-accounts/components/enter-verification-code.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/pages/settings/sync-accounts/components/qr-code-scan.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/sync-accounts/components/sync-error.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/sync-accounts/sync-accounts-settings.test.tsx": {

@@ -6,11 +6,9 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import {
-  QR_SYNC_TIMEOUT_MS,
-  QrSyncErrorCodes,
-} from '../../../../../shared/constants/qr-sync';
+import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import QrCodeScan from './qr-code-scan';
 
 jest.mock(
@@ -24,7 +22,13 @@ jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('../../../../selectors/qr-sync/qr-sync', () => ({
+  ...jest.requireActual('../../../../selectors/qr-sync/qr-sync'),
+  selectQrSyncQrPayload: jest.fn(),
+}));
+
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+const mockSelectQrSyncQrPayload = jest.mocked(selectQrSyncQrPayload);
 
 const createMockStore = (metamaskOverrides = {}) =>
   configureMockStore([thunk])({
@@ -40,6 +44,9 @@ const createMockStore = (metamaskOverrides = {}) =>
 describe('QrCodeScan', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSelectQrSyncQrPayload.mockImplementation(
+      (state) => state.metamask.qrSyncQrPayload,
+    );
   });
 
   afterEach(() => {
@@ -85,21 +92,16 @@ describe('QrCodeScan', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows the scan error message when the controller reports an error', () => {
-    const mockStore = createMockStore({
-      qrSyncError: {
-        code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
-        message: 'The sync channel disconnected.',
-      },
-    });
-    renderWithProvider(<QrCodeScan />, mockStore);
+  it('keeps the previous QR image when the payload becomes null', () => {
+    const mockStore = createMockStore();
+    const { rerender } = renderWithProvider(<QrCodeScan />, mockStore);
 
-    expect(
-      screen.getByText(messages.qrCodeScanError.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.generateNewQrCode.message),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
+
+    mockSelectQrSyncQrPayload.mockReturnValue(null);
+    rerender(<QrCodeScan />);
+
+    expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
   });
 
   it('requests a new session when the reset button is clicked', async () => {

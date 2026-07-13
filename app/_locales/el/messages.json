@@ -7951,9 +7951,6 @@
     "message": "Λήγει σε $1δ",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Κάτι πήγε στραβά κατά τη σάρωση του κωδικού QR. Δημιουργήστε έναν νέο και προσπαθήστε ξανά."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Αυτός ο κωδικός QR αφορά διαφορετική συναλλαγή. Ακυρώστε και προσπαθήστε ξανά, διασφαλίζοντας ότι πρώτα θα σαρώσετε τον κωδικό QR στο MetaMask με το πορτοφόλι υλικού σας.",
     "description": "Body text when a signature QR belongs to a previous transaction."
