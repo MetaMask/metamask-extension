@@ -21,11 +21,12 @@ const separatorStyle = {
 export default function DefiDetailsListV2({ sections }: DefiDetailsListV2Props) {
   return (
     <>
-      {sections.map((section) => (
+      {sections.map((section, sectionIndex) => (
         <Box key={section.protocolName}>
           <Text
             variant={TextVariant.bodyMdMedium}
             paddingLeft={4}
+            paddingBottom={2}
             color={TextColor.textAlternative}
             data-testid={`defi-details-list-v2-${section.protocolName}-section`}
           >
@@ -46,6 +47,16 @@ export default function DefiDetailsListV2({ sections }: DefiDetailsListV2Props) 
               )}
             </Box>
           ))}
+          {sectionIndex !== sections.length - 1 && (
+            <Box
+              paddingLeft={4}
+              paddingTop={4}
+              paddingBottom={4}
+              paddingRight={4}
+            >
+              <hr style={separatorStyle} />
+            </Box>
+          )}
         </Box>
       ))}
     </>
