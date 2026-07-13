@@ -1163,15 +1163,13 @@ class Driver {
   /** Reloads the unpacked extension from Chrome's extensions page. */
   async reloadChromeExtension() {
     const extensionId = this.extensionUrl.split('/')[2];
-    await this.executeAsyncScript(`
-      const callback = arguments[arguments.length - 1];
+    await this.executeScript(`
       chrome.developerPrivate.reload(
         '${extensionId}',
         {
           failQuietly: false,
           populateErrorForUnpacked: true,
         },
-        callback,
       );
     `);
     await this.delay(1000);

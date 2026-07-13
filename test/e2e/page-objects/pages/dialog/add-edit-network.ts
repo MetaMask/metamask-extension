@@ -45,6 +45,8 @@ class AddEditNetworkModal {
   private readonly editModalRpcDropDownButton =
     '[data-testid="test-add-rpc-drop-down"]';
 
+  private readonly editModalRpcDropDownItem = '.dropdown-editor__item';
+
   private readonly editModalSaveButton = {
     testId: 'page-container-footer-next',
   };
@@ -147,6 +149,14 @@ class AddEditNetworkModal {
 
   async saveEditedNetwork(): Promise<void> {
     console.log('Save and close edit network modal');
+    if (
+      await this.driver.isElementPresentAndVisible(
+        this.editModalRpcDropDownItem,
+        500,
+      )
+    ) {
+      await this.driver.clickElement(this.editModalRpcDropDownButton);
+    }
     await this.driver.clickElementAndWaitToDisappear(this.editModalSaveButton);
   }
 

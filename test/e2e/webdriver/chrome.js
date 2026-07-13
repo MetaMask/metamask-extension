@@ -87,7 +87,6 @@ class ChromeDriver {
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
-      'extensions.ui.developer_mode': true,
       'profile.content_settings.exceptions.clipboard': {
         '[*.]': {
           last_modified: Date.now(),
@@ -135,6 +134,15 @@ class ChromeDriver {
         const chromeDriver = new ChromeDriver(driver);
         extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
       }
+
+      await driver.get('chrome://extensions');
+      await driver.executeAsyncScript(`
+        const callback = arguments[arguments.length - 1];
+        chrome.developerPrivate.updateProfileConfiguration(
+          { inDeveloperMode: true },
+          callback,
+        );
+      `);
 
       await driver.sendDevToolsCommand('Browser.grantPermissions', {
         origin: `chrome-extension://${extensionId}`,
