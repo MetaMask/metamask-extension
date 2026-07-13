@@ -9,6 +9,7 @@ import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 import BottomNavBar from '../../page-objects/pages/bottom-nav-bar';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
@@ -35,6 +36,7 @@ function getBottomNavTreatmentFixtures(title?: string) {
         remoteFeatureFlags: {
           ...getProductionRemoteFlagDefaults(),
           [BOTTOM_NAV_AB_TEST_KEY]: 'treatment',
+          perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.1' },
         },
       })
       .build(),
@@ -42,6 +44,7 @@ function getBottomNavTreatmentFixtures(title?: string) {
     manifestFlags: {
       remoteFeatureFlags: {
         [BOTTOM_NAV_AB_TEST_KEY]: 'treatment',
+        perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.1' },
       },
     },
   };
@@ -143,6 +146,21 @@ describe('Bottom nav bar', function (this: Suite) {
 
         await bottomNav.clickHome();
         await bottomNav.assertOnRoute(DEFAULT_ROUTE);
+      },
+    );
+  });
+
+  it('navigates to the perps page when clicking the perps tab', async function () {
+    await withFixtures(
+      getBottomNavTreatmentFixtures(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+
+        const bottomNav = new BottomNavBar(driver);
+        await bottomNav.waitForBottomNavBar();
+
+        await bottomNav.clickPerps();
+        await bottomNav.assertOnRoute(PERPS_HOME_PAGE_ROUTE);
       },
     );
   });
