@@ -13,7 +13,10 @@ export async function getStorageItem<T>(key: string): Promise<T | undefined> {
   }
 }
 
-export async function setStorageItem(key: string, value: unknown): Promise<void> {
+export async function setStorageItem(
+  key: string,
+  value: unknown,
+): Promise<void> {
   try {
     const serializedData = JSON.stringify(value);
     await localforage.setItem(key, serializedData);
