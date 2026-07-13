@@ -115,7 +115,6 @@ describe('initializeWallet', () => {
         ...state,
         PreferencesController: {
           currentLocale: '',
-          ...state.PreferencesController,
         },
       },
     });
