@@ -294,6 +294,15 @@ export const MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES = {
   canonical_profile_id: MOCK_CANONICAL_PROFILE_ID,
 } as const;
 
+/** Universal event properties added downstream by the platform adapter in E2E. */
+export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
+  locale: 'en',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  chain_id: '0x539',
+  ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
+} as const;
+
 /* Mock remote feature flags response */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,

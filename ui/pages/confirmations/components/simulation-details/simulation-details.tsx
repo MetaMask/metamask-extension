@@ -577,8 +577,10 @@ export const SimulationDetails = ({
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
+              labelChildren={
+                <BalanceChangesAlert transactionId={transactionId} />
+              }
             />
-            <BalanceChangesAlert transactionId={transactionId} />
           </Fragment>
         ))}
         <BalanceChangeList
