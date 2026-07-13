@@ -19,9 +19,7 @@ export const migrate = (async (versionedData, changedControllers) => {
   }
 }) satisfies Migrate;
 
-function removeEnableMV3TimestampSave(
-  state: Record<string, unknown>,
-): boolean {
+function removeEnableMV3TimestampSave(state: Record<string, unknown>): boolean {
   if (
     !hasProperty(state, 'PreferencesController') ||
     !isObject(state.PreferencesController)

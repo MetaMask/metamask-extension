@@ -28,7 +28,9 @@ describe(`migration #${VERSION}`, () => {
         },
       },
     });
-    expect(changedControllers).toStrictEqual(new Set(['PreferencesController']));
+    expect(changedControllers).toStrictEqual(
+      new Set(['PreferencesController']),
+    );
   });
 
   it('does not mark PreferencesController changed when enableMV3TimestampSave is absent', async () => {
