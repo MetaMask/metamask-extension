@@ -176,7 +176,7 @@ describe('Bridge tests', function (this: Suite) {
         // check if the Linea network is selected
         await networkManager.openNetworkManager();
         await driver.delay(veryLargeDelayMs);
-
+        await networkManager.selectTab('Popular');
         await networkManager.checkAllPopularNetworksIsSelected();
       },
     );
