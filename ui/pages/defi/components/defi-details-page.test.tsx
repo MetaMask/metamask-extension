@@ -9,6 +9,10 @@ import DeFiPage from './defi-details-page';
 
 const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
+jest.mock('../../../selectors/defi-controller-v2/feature-flags', () => ({
+  getIsDefiControllerV2Enabled: jest.fn(() => false),
+}));
+
 jest.mock('../../../../ui/hooks/musd/useMusdGeoBlocking', () => ({
   ...jest.requireActual('../../../../ui/hooks/musd/useMusdGeoBlocking'),
   useMusdGeoBlocking: () => ({

@@ -7,22 +7,45 @@ import { AvatarType } from '../../../../multichain/avatar-group/avatar-group.typ
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { AvatarGroup } from '../../../../multichain/avatar-group/avatar-group';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import type { DeFiProtocolListItem } from '../types';
 import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
 
 type DeFiProtocolCellV2Props = {
+  onClick: (chainId: string, protocolId: string) => void;
   position: DeFiProtocolListItem;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DeFiProtocolCellV2({
+  onClick,
   position,
 }: DeFiProtocolCellV2Props) {
   const { privacyMode } = useSelector(getPreferences);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const handleClick = () => {
-    // DeFi details navigation will be wired up in a follow-up change.
+    onClick(position.chainId, position.protocolId);
+
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.DeFiDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.DeFi)
+        .addProperties({
+          location: 'Home',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: position.chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          protocol_id: position.protocolId,
+        })
+        .build(),
+    );
   };
 
   return (

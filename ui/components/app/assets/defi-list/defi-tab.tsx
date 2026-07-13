@@ -10,12 +10,15 @@ import DefiListV2 from './defi-list-v2';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DeFiTab({ onClickAsset }: AssetListProps) {
   const isDefiControllerV2Enabled = useSelector(getIsDefiControllerV2Enabled);
-  const DefiListComponent = isDefiControllerV2Enabled ? DefiListV2 : DefiList;
 
   return (
     <>
       <AssetListControlBar showImportTokenButton={false} />
-      <DefiListComponent onClick={onClickAsset} />
+      {isDefiControllerV2Enabled ? (
+        <DefiListV2 onClick={onClickAsset} />
+      ) : (
+        <DefiList onClick={onClickAsset} />
+      )}
     </>
   );
 }

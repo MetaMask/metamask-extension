@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -31,7 +31,7 @@ type DefiListV2Props = {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function DefiListV2({ onClick: _onClick }: DefiListV2Props) {
+export default function DefiListV2({ onClick }: DefiListV2Props) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenSortConfig = useSelector(getTokenSortConfig);
@@ -42,13 +42,6 @@ export default function DefiListV2({ onClick: _onClick }: DefiListV2Props) {
     () => groupDefiProtocolPositions(data),
     [data],
   );
-
-  useEffect(() => {
-    console.log('DEBUG XXX DefiListV2', {
-      data,
-      groupedPositions,
-    });
-  }, [data, groupedPositions]);
 
   const sortedFilteredDefi = useMemo(():
     | DeFiProtocolListItem[]
@@ -117,7 +110,7 @@ export default function DefiListV2({ onClick: _onClick }: DefiListV2Props) {
       overscan={10}
       keyExtractor={(position) => `${position.protocolId}#${position.chainId}`}
       renderItem={({ item: position }) => (
-        <DeFiProtocolCellV2 position={position} />
+        <DeFiProtocolCellV2 position={position} onClick={onClick} />
       )}
       listEmptyComponent={<DeFiEmptyStateMessage />}
     />

@@ -28,11 +28,13 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { getDefiPositions } from '../../../selectors/assets';
+import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
 import DefiDetailsList, {
   PositionTypeKeys,
   PositionTypeLabels,
   ProtocolTokenWithMarketValue,
 } from './defi-details-list';
+import DeFiDetailsPageV2 from './defi-details-page-v2';
 
 const useExtractUnderlyingTokens = (
   positions?: ProtocolTokenWithMarketValue[][],
@@ -47,7 +49,7 @@ const useExtractUnderlyingTokens = (
     );
   }, [positions]);
 
-const DeFiPage = () => {
+const DeFiDetailsPageV1 = () => {
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId, protocolId } = useParams();
   const navigate = useNavigate();
@@ -161,4 +163,14 @@ const DeFiPage = () => {
   );
 };
 
-export default DeFiPage;
+const DeFiDetailsPage = () => {
+  const isDefiControllerV2Enabled = useSelector(getIsDefiControllerV2Enabled);
+
+  if (isDefiControllerV2Enabled) {
+    return <DeFiDetailsPageV2 />;
+  }
+
+  return <DeFiDetailsPageV1 />;
+};
+
+export default DeFiDetailsPage;

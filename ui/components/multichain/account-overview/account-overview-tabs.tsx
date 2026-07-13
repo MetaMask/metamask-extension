@@ -21,7 +21,8 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { buildDefiRoutePath } from '../../../../shared/lib/defi-route';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../networks-form/use-safe-chains';
@@ -227,7 +228,7 @@ export const AccountOverviewTabs = ({
   const onClickDeFi = useCallback(
     (chainId: string, protocolId: string) =>
       transitionForward(() =>
-        navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+        navigate(buildDefiRoutePath(chainId, protocolId)),
       ),
     [navigate],
   );
