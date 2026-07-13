@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import type { Hex } from '@metamask/utils';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,6 +35,7 @@ export function ContactDetailsPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const lastTrackedContactKeyRef = useRef<string | null>(null);
   const { chainId, address } = useParams<{
     chainId: string;
     address: string;
@@ -54,21 +55,30 @@ export function ContactDetailsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    if (address && contact?.chainId) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ContactDetailsViewed)
-          .addCategory(MetaMetricsEventCategory.Contacts)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: contact.chainId,
-          })
-          .addSensitiveProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            contact_address: address,
-          })
-          .build(),
-      );
+    if (!address || !contact?.chainId) {
+      lastTrackedContactKeyRef.current = null;
+      return;
     }
+
+    const contactKey = `${contact.chainId}:${address}`;
+    if (lastTrackedContactKeyRef.current === contactKey) {
+      return;
+    }
+
+    lastTrackedContactKeyRef.current = contactKey;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ContactDetailsViewed)
+        .addCategory(MetaMetricsEventCategory.Contacts)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: contact.chainId,
+        })
+        .addSensitiveProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          contact_address: address,
+        })
+        .build(),
+    );
   }, [address, contact?.chainId, createEventBuilder, trackEvent]);
 
   const handleBack = () => {

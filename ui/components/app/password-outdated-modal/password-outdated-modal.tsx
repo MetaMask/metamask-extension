@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -42,15 +42,24 @@ export default function PasswordOutdatedModal() {
   const navigate = useNavigate();
   const isSeedlessPwdOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const hasTrackedView = useRef(false);
 
   useEffect(() => {
-    if (isSeedlessPwdOutdated) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasswordOutdatedModalViewed)
-          .addCategory(MetaMetricsEventCategory.App)
-          .build(),
-      );
+    if (!isSeedlessPwdOutdated) {
+      hasTrackedView.current = false;
+      return;
     }
+
+    if (hasTrackedView.current) {
+      return;
+    }
+
+    hasTrackedView.current = true;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasswordOutdatedModalViewed)
+        .addCategory(MetaMetricsEventCategory.App)
+        .build(),
+    );
   }, [createEventBuilder, isSeedlessPwdOutdated, trackEvent]);
 
   return (

@@ -42,6 +42,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const bottomRef = useRef(null);
   const scrollContainerRef = useRef(null);
+  const hasTrackedView = useRef(false);
 
   const handleScrollDownClick = (e) => {
     e.stopPropagation();
@@ -84,6 +85,10 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   }, []);
 
   useEffect(() => {
+    if (hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
     trackEvent(
       createEventBuilder(MetaMetricsEventName.TermsOfUseShown)
         .addCategory(MetaMetricsEventCategory.Onboarding)

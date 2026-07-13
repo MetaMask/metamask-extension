@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -36,9 +36,14 @@ function UpdateModal() {
   const t = useI18nContext();
   const [isLoading, setIsLoading] = useState(false);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const hasTrackedView = useRef(false);
 
   // Track when modal is viewed
   useEffect(() => {
+    if (hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
     trackEvent(
       createEventBuilder(
         MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
@@ -53,6 +53,7 @@ export function ContactsListPage() {
   const [searchParams] = useSearchParams();
   const fromPath = searchParams.get('from') ?? undefined;
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const lastTrackedContactCountRef = useRef<number | null>(null);
   const completeAddressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const [showDeletedToast, setShowDeletedToast] = useState(false);
@@ -88,6 +89,11 @@ export function ContactsListPage() {
   );
 
   useEffect(() => {
+    if (lastTrackedContactCountRef.current === contacts.length) {
+      return;
+    }
+
+    lastTrackedContactCountRef.current = contacts.length;
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ContactsPageViewed)
         .addCategory(MetaMetricsEventCategory.Contacts)
