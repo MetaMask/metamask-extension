@@ -186,6 +186,38 @@ describe('useRampsNavigation goToBuy', () => {
     expect(openTab).toHaveBeenCalled();
   });
 
+  it('providers fetch errored → fails open and proceeds', async () => {
+    const { result, getModalName } = run(
+      buildState({
+        providers: {
+          data: [],
+          selected: null,
+          isLoading: false,
+          error: 'network down',
+        },
+      }),
+    );
+    await goToBuy(result);
+    expect(openTab).toHaveBeenCalled();
+    expect(getModalName()).toBeNull();
+  });
+
+  it('tokens fetch errored → fails open and proceeds', async () => {
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: { topTokens: [], allTokens: [] },
+          selected: null,
+          isLoading: false,
+          error: 'network down',
+        },
+      }),
+    );
+    await goToBuy(result);
+    expect(openTab).toHaveBeenCalled();
+    expect(getModalName()).toBeNull();
+  });
+
   it('providers/tokens never fetched (default state) → fails open and proceeds', async () => {
     // RampsController's never-fetched default: providers.data === [] and
     // tokens.data === null. This must NOT be treated as "fetched and empty".

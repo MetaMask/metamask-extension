@@ -83,11 +83,16 @@ export default function useRampsNavigation() {
       // 4. Providers/tokens fetched but empty. `tokens.data === null` means
       // providers/tokens haven't been fetched yet (fetched together by the
       // native flow), so fail open and skip this check entirely until then.
-      if (tokens.data !== null) {
-        const providersEmpty =
-          !providers.isLoading && providers.data.length === 0;
+      // A fetch error also fails open (mobile parity) — an empty result only
+      // counts once the catalog has actually settled, not on a failed fetch.
+      const catalogSettled =
+        !providers.isLoading &&
+        !tokens.isLoading &&
+        !providers.error &&
+        !tokens.error;
+      if (catalogSettled && tokens.data !== null) {
+        const providersEmpty = providers.data.length === 0;
         const tokensEmpty =
-          !tokens.isLoading &&
           (tokens.data.topTokens?.length ?? 0) === 0 &&
           (tokens.data.allTokens?.length ?? 0) === 0;
         if (providersEmpty || tokensEmpty) {
