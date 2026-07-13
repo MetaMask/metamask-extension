@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
@@ -116,31 +116,29 @@ export const LegacyAggregatedBalance = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const showNativeTokenAsMain =
-    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1;
+  const showNativeTokenAsMain = useMemo(
+    () =>
+      showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
+    [showNativeTokenAsMainBalance, enabledNetworks],
+  );
 
-  const isNotAggregatedFiatBalance =
-    !shouldShowFiat || showNativeTokenAsMain || isTestnet;
+  const isNotAggregatedFiatBalance = useMemo(
+    () => !shouldShowFiat || showNativeTokenAsMain || isTestnet,
+    [shouldShowFiat, showNativeTokenAsMain, isTestnet],
+  );
 
-  let balanceToDisplay;
-  if (isNotAggregatedFiatBalance) {
-    balanceToDisplay = balance;
-  } else {
-    balanceToDisplay = totalFiatBalance;
-  }
+  const balanceToDisplay = useMemo(
+    () => (isNotAggregatedFiatBalance ? balance : totalFiatBalance),
+    [isNotAggregatedFiatBalance, balance, totalFiatBalance],
+  );
 
-  /**
-   * Determines the currency display type based on network configuration.
-   * Returns SECONDARY for multi-network setups, otherwise returns PRIMARY for single network configurations.
-   */
-  const getCurrencyDisplayType = (): typeof PRIMARY | typeof SECONDARY => {
+  const currencyDisplayType = useMemo((): typeof PRIMARY | typeof SECONDARY => {
     const isMultiNetwork = Object.keys(enabledNetworks).length > 1;
-
     if (isMultiNetwork && showNativeTokenAsMainBalance) {
       return SECONDARY;
     }
     return PRIMARY;
-  };
+  }, [enabledNetworks, showNativeTokenAsMainBalance]);
 
   return (
     <Skeleton
@@ -157,7 +155,7 @@ export const LegacyAggregatedBalance = ({
         })}
         data-testid={`${classPrefix}-overview__primary-currency`}
         value={balanceToDisplay}
-        type={getCurrencyDisplayType()}
+        type={currencyDisplayType}
         ethNumberOfDecimals={4}
         hideTitle
         shouldCheckShowNativeToken
@@ -191,7 +189,10 @@ export const CoinOverview = ({
     getCompletedMetaMetricsOnboarding,
   );
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = useMemo(
+    () => completedMetaMetricsOnboarding && isOptedIn,
+    [completedMetaMetricsOnboarding, isOptedIn],
+  );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const dispatch = useDispatch();
@@ -209,18 +210,25 @@ export const CoinOverview = ({
 
   useRewardsModal();
 
-  // Only show empty state when Receive can act (selectedAccountGroup exists);
-  // otherwise the Receive button would be a no-op.
-  const shouldShowBalanceEmptyState =
-    Boolean(selectedAccountGroup) &&
-    !isTestnet &&
-    !balanceIsCached &&
-    !hasBalance &&
-    !balanceIsLoading;
+  const shouldShowBalanceEmptyState = useMemo(
+    () =>
+      Boolean(selectedAccountGroup) &&
+      !isTestnet &&
+      !balanceIsCached &&
+      !hasBalance &&
+      !balanceIsLoading,
+    [
+      selectedAccountGroup,
+      isTestnet,
+      balanceIsCached,
+      hasBalance,
+      balanceIsLoading,
+    ],
+  );
 
-  const handleSensitiveToggle = () => {
+  const handleSensitiveToggle = useCallback(() => {
     dispatch(setPrivacyMode(!privacyMode));
-  };
+  }, [dispatch, privacyMode]);
 
   const handlePortfolioOnClick = useCallback(() => {
     const url = getPortfolioUrl(

@@ -385,7 +385,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "Converted $1",
+    "message": "Converted to $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -1142,9 +1142,6 @@
   },
   "addCustomToken": {
     "message": "Add a custom token"
-  },
-  "addDevice": {
-    "message": "Sync with mobile"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
@@ -3027,6 +3024,9 @@
   },
   "contractInteraction": {
     "message": "Contract interaction"
+  },
+  "convertAgain": {
+    "message": "Convert again"
   },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
@@ -10820,6 +10820,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
+  },
+  "syncAccounts": {
+    "message": "Sync with mobile"
   },
   "syncing": {
     "message": "Syncing..."

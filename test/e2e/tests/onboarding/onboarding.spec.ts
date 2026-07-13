@@ -23,6 +23,7 @@ import {
   completeImportSRPOnboardingWithPasskey,
   completeImportSRPOnboardingFlow,
   completeOnboardingWithPasskey,
+  goToOnboardingWelcomeLoginPage,
   handleSidepanelPostOnboarding,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
@@ -109,6 +110,24 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('opens Terms of Use and Privacy notice links from login options', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+          driver,
+        });
+        await startOnboardingPage.clickCreateWalletButton();
+        await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible();
+        await startOnboardingPage.clickTermsOfUseLinkAndVerifyExpectedUrlOpens();
+        await startOnboardingPage.clickPrivacyNoticeLinkAndVerifyExpectedUrlOpens();
       },
     );
   });
