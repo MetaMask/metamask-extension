@@ -127,7 +127,6 @@ export class QrSyncController extends BaseController<
   }
 
   async createSession(): Promise<void> {
-    console.log('check: createSession', this.state);
     await this.#initialize();
     this.#assertDappClientInitialized(this.#mwpDappClient);
 
@@ -137,7 +136,6 @@ export class QrSyncController extends BaseController<
         mode: 'untrusted',
       });
     } catch (error) {
-      console.log('check: createSession catch', error, this.state);
       this.#setError({
         error,
         code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
