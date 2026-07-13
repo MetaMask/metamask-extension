@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import {
@@ -76,8 +83,11 @@ export const HomeNotificationsContainer = memo(function () {
     [],
   );
 
-  const showOutdatedBrowserWarningRaw = useSelector(getShowOutdatedBrowserWarning);
-  const showOutdatedBrowserWarning = isBrowserDeprecated && showOutdatedBrowserWarningRaw;
+  const showOutdatedBrowserWarningRaw = useSelector(
+    getShowOutdatedBrowserWarning,
+  );
+  const showOutdatedBrowserWarning =
+    isBrowserDeprecated && showOutdatedBrowserWarningRaw;
 
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
@@ -92,13 +102,14 @@ export const HomeNotificationsContainer = memo(function () {
   );
   const shouldShowSeedPhraseReminder = useSelector(seedPhraseReminderSelector);
 
-  const web3ShimUsageAlertEnabled = useSelector(getWeb3ShimUsageAlertEnabledness);
+  const web3ShimUsageAlertEnabled = useSelector(
+    getWeb3ShimUsageAlertEnabledness,
+  );
   const hasActiveTabPermissions = useSelector(activeTabHasPermissions);
-  const web3ShimUsageStateForOrigin = useSelector(
-    (state: MetaMaskReduxState) =>
-      originOfCurrentTab
-        ? getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab)
-        : undefined,
+  const web3ShimUsageStateForOrigin = useSelector((state: MetaMaskReduxState) =>
+    originOfCurrentTab
+      ? getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab)
+      : undefined,
   );
   const shouldShowWeb3ShimUsageNotification = useMemo(
     () =>
