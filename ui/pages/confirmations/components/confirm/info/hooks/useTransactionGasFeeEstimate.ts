@@ -13,11 +13,11 @@ import { HEX_ZERO } from '../shared/constants';
 export function useTransactionGasFeeEstimate(
   transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
-  gasLimitOverride?: Hex,
+  quotedGasLimit?: Hex,
 ): Hex {
   const { gas } = transactionMeta.txParams;
   let { gasPrice } = transactionMeta.txParams;
-  let gasLimit = gasLimitOverride || gas;
+  let gasLimit = quotedGasLimit || gas;
 
   const { gasFeeEstimates } = useGasFeeEstimates(
     transactionMeta.networkClientId,

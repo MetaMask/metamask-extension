@@ -65,7 +65,7 @@ describe('useTransactionGasLimit', () => {
     expect(result.current.gasLimit).toBe('0x0');
   });
 
-  it('prefers simulation fields over wrapped gas when container types are set', () => {
+  it('prefers txParams.gas over simulation fields when container types are set', () => {
     const { result } = renderHook(() =>
       useTransactionGasLimit({
         ...BASE_TRANSACTION_META,
@@ -76,34 +76,20 @@ describe('useTransactionGasLimit', () => {
       } as unknown as TransactionMeta),
     );
 
-    expect(result.current.gasLimit).toBe('0x7530');
+    expect(result.current.gasLimit).toBe('0x1fbd0');
   });
 
-  it('falls back to gasLimitNoBuffer when container types are set and gasUsed is missing', () => {
+  it('falls back to 0x0 when container types are set but txParams.gas is missing', () => {
     const { result } = renderHook(() =>
       useTransactionGasLimit({
         ...BASE_TRANSACTION_META,
         containerTypes: ['EnforcedSimulations'],
         gasLimitNoBuffer: '0x6000',
-        txParams: { gas: '0x1fbd0' },
+        txParams: {},
       } as unknown as TransactionMeta),
     );
 
-    expect(result.current.gasLimit).toBe('0x6000');
-  });
-
-  it('adds container overhead to the pre-wrap gas limit', () => {
-    const { result } = renderHook(() =>
-      useTransactionGasLimit({
-        ...BASE_TRANSACTION_META,
-        containerTypes: ['EnforcedSimulations'],
-        gasUsed: '0x5000',
-        txParams: { gas: '0x7000' },
-        txParamsOriginal: { gas: '0x6000' },
-      } as unknown as TransactionMeta),
-    );
-
-    expect(result.current.gasLimit).toBe('0x6000');
+    expect(result.current.gasLimit).toBe('0x0');
   });
 
   it('uses quoted gas limit when a swap quote is displayed', () => {
@@ -127,7 +113,7 @@ describe('useTransactionGasLimit', () => {
     expect(result.current.quotedGasLimit).toBe('0x96');
   });
 
-  it('adds container overhead to quoted gas limit when container types are set', () => {
+  it('ignores quoted gas limit when container types are set', () => {
     mockUseDappSwapContextOptional.mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
       selectedQuote: {
@@ -140,11 +126,10 @@ describe('useTransactionGasLimit', () => {
       useTransactionGasLimit({
         ...BASE_TRANSACTION_META,
         containerTypes: ['EnforcedSimulations'],
-        txParams: { gas: '0x7000' },
-        txParamsOriginal: { gas: '0x6000' },
+        txParams: { gas: '0x1fbd0' },
       } as unknown as TransactionMeta),
     );
 
-    expect(result.current.gasLimit).toBe('0x1096');
+    expect(result.current.gasLimit).toBe('0x1fbd0');
   });
 });

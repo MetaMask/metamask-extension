@@ -61,7 +61,7 @@ describe('useTransactionGasFeeEstimate', () => {
     expect(result.current).toMatchInlineSnapshot(`"0"`);
   });
 
-  it('returns the correct estimate when a gas limit override is provided', () => {
+  it('returns the correct estimate when quotedGasLimit is provided', () => {
     const transactionMeta = {
       ...genUnapprovedContractInteractionConfirmation({
         address: CONTRACT_INTERACTION_SENDER_ADDRESS,

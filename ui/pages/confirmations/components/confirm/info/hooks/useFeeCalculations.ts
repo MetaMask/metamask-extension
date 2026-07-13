@@ -107,7 +107,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     getValidConversionRate(ethConversionRate);
   const hasValidConversionRate = conversionRate !== undefined;
 
-  const { gasLimit: optimizedGasLimit } =
+  const { gasLimit: optimizedGasLimit, quotedGasLimit } =
     useTransactionGasLimit(transactionMeta);
 
   const getFeesFromHex = useCallback(
@@ -170,7 +170,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const gasFeeEstimate = useTransactionGasFeeEstimate(
     transactionMeta,
     supportsEIP1559,
-    optimizedGasLimit,
+    quotedGasLimit,
   );
 
   const { gasFeeEstimates } = useGasFeeEstimates(
