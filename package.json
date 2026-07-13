@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.39.0",
+  "version": "13.39.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -309,7 +309,8 @@
     "@metamask/assets-controller@npm:^9.1.0": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch",
     "@metamask/assets-controller@npm:^10.0.1": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch",
     "@metamask/accounts-controller": "^39.0.3",
-    "@metamask/multichain-account-service": "^11.0.0"
+    "@metamask/multichain-account-service": "^11.0.0",
+    "@metamask/network-enablement-controller@npm:^5.4.1": "patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -344,13 +345,13 @@
     "@metamask/analytics-controller": "^1.1.1",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A10.0.1#~/.yarn/patches/@metamask-assets-controller-npm-10.0.1-d3c86d8983.patch",
-    "@metamask/assets-controllers": "^109.2.1",
+    "@metamask/assets-controller": "^10.2.0",
+    "@metamask/assets-controllers": "^109.4.0",
     "@metamask/authenticated-user-storage": "^2.1.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.14.0",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
-    "@metamask/bridge-controller": "^77.2.0",
+    "@metamask/bridge-controller": "^77.4.0",
     "@metamask/bridge-status-controller": "^74.1.1",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
@@ -410,7 +411,7 @@
     "@metamask/multichain-transactions-controller": "^7.1.0",
     "@metamask/name-controller": "^9.1.0",
     "@metamask/network-controller": "^34.0.0",
-    "@metamask/network-enablement-controller": "^5.3.0",
+    "@metamask/network-enablement-controller": "patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch",
     "@metamask/notification-services-controller": "^24.2.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",

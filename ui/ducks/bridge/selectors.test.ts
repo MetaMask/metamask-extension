@@ -468,6 +468,24 @@ describe('Bridge selectors', () => {
       expect(result).not.toContain(undefined);
       expect(result).not.toContain(null);
     });
+
+    it('includes Robinhood Chain when present in chainRanking and the allowlist', () => {
+      const robinhoodCaipChainId = formatChainIdToCaip(
+        CHAIN_IDS.ROBINHOOD_CHAIN,
+      );
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: robinhoodCaipChainId }],
+          },
+        },
+      });
+      const result = getFromChains(state as never);
+
+      expect(result).toStrictEqual([
+        { chainId: robinhoodCaipChainId, name: 'Robinhood' },
+      ]);
+    });
   });
 
   describe('getToChains', () => {
@@ -529,7 +547,7 @@ describe('Bridge selectors', () => {
       });
       const result = getToChains(state as never);
 
-      expect(result).toHaveLength(17);
+      expect(result).toHaveLength(18);
       expect(result.map(({ name, chainId }) => ({ name, chainId })))
         .toMatchInlineSnapshot(`
         [
@@ -598,11 +616,33 @@ describe('Bridge selectors', () => {
             "name": "Arc",
           },
           {
+            "chainId": "eip155:4663",
+            "name": "Robinhood Chain",
+          },
+          {
             "chainId": "eip155:324",
             "name": "zkSync",
           },
         ]
       `);
+    });
+
+    it('includes Robinhood Chain when present in chainRanking and the allowlist', () => {
+      const robinhoodCaipChainId = formatChainIdToCaip(
+        CHAIN_IDS.ROBINHOOD_CHAIN,
+      );
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: robinhoodCaipChainId }],
+          },
+        },
+      });
+      const result = getToChains(state as never);
+
+      expect(result).toStrictEqual([
+        { chainId: robinhoodCaipChainId, name: 'Robinhood' },
+      ]);
     });
 
     it('returns sorted toChains list when chainRanking is set', () => {

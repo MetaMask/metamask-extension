@@ -1309,6 +1309,23 @@ describe('MetaMaskController', () => {
             useExternalServices: true,
           });
 
+        // IA-assisted solution: Stub required since @metamask/account-tree-controller@7.5.4 (core#9343):
+        // the sync body is no longer wrapped in traceFn (which this suite's trace
+        // mock swallowed), so it now runs for real and hangs in tests.
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorageAtLeastOnce',
+          )
+          .mockResolvedValue();
+
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorageAtLeastOnce',
+          )
+          .mockResolvedValue(undefined);
+
         jest
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
