@@ -29,7 +29,7 @@ import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { selectConversionRateByChainId } from '../../../../../../selectors';
 import { useTransactionGasLimit } from '../../../../hooks/gas/useTransactionGasLimit';
 import { HEX_ZERO } from '../shared/constants';
-import { logConfirmationTransactionDebug } from '../../../../../../utils/enforced-simulations-debug';
+import { logConfirmationTransactionDebug } from '../../../../utils/enforced-simulations-debug';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
