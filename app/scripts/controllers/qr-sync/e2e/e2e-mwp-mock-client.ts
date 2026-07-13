@@ -50,6 +50,7 @@ export class E2eMwpMockClient extends DappClient {
       channel: 'websocket',
       publicKeyB64: 'e2e-mock-public-key',
     };
+    console.log('E2E MWP Mock Client: session request', sessionRequest);
 
     this.#sessionRequest = sessionRequest;
     this.emit('session_request', sessionRequest);

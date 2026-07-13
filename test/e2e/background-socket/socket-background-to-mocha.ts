@@ -20,7 +20,7 @@ class SocketBackgroundToMocha {
 
     this.client.onmessage = (ev: MessageEvent) => {
       let message: MessageType;
-
+      console.log('SocketBackgroundToMocha:::Message', ev.data);
       try {
         message = JSON.parse(ev.data);
       } catch (e) {

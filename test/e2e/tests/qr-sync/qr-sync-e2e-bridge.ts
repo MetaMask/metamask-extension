@@ -14,9 +14,12 @@ export function qrSyncSimulate(
   action: QrSyncSimulatorAction,
   params?: SimulatorParams,
 ): void {
-  getServerMochaToBackground().send({
+  const mock = getServerMochaToBackground();
+  console.log('Mock', mock);
+  mock.send({
     command: 'qrSyncSimulate',
     action,
     params,
   });
+  console.log('QrSyncSimulate', action, params);
 }

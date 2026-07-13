@@ -42,7 +42,7 @@ const QR_SYNC_TIMEOUT_MS_E2E = {
  * tests from waiting on production-length session windows.
  */
 export const QR_SYNC_TIMEOUT_MS = process.env.IN_TEST
-  ? QR_SYNC_TIMEOUT_MS_E2E
+  ? QR_SYNC_TIMEOUT_MS_PRODUCTION
   : QR_SYNC_TIMEOUT_MS_PRODUCTION;
 
 export const QrSyncErrorCodes = {

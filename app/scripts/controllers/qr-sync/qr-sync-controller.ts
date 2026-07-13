@@ -415,10 +415,12 @@ export class QrSyncController extends BaseController<
 
   #registerClientEventHandlers(client: DappClient): void {
     const sessionRequest = (request: SessionRequest) => {
+      console.log('QrSyncController: session request', request);
       this.#handleSessionRequest(request);
     };
 
     const message = (messagePayload: unknown) => {
+      console.log('QrSyncController: message', messagePayload);
       this.#handleMessage(messagePayload);
     };
 

@@ -1,7 +1,7 @@
 # QrSync E2E Setup Plan
 
 > **Last updated:** 2026-07-11  
-> **Resume from:** [Phase 5 — Test helpers & page objects](#phase-5--test-helpers--page-objects)  
+> **Resume from:** [Phase 6 — Happy path E2E test](#phase-6--happy-path-e2e-test)  
 > **First test goal:** Happy path — user syncs one wallet from extension to mobile (simulated)
 
 ---
@@ -51,7 +51,7 @@ Use this table to see where we are and what to do next.
 | **2** | [Faster timers](#phase-2--faster-timers) | ✅ **Done** | Tests don’t wait 60s for QR/code expiry |
 | **3** | [Mock transport + simulator code](#phase-3--mock-transport--simulator) | ✅ **Done** | Test harness can script mobile behaviour |
 | **4** | [UI hooks for automation](#phase-4--ui-hooks-for-automation) | ✅ **Done** | Stable buttons/fields for the test robot |
-| **5** | [Test helpers & page objects](#phase-5--test-helpers--page-objects) | ⬜ Not started | Reusable “go to Add device / enter OTP” steps |
+| **5** | [Test helpers & page objects](#phase-5--test-helpers--page-objects) | ✅ **Done** | Reusable “go to Add device / enter OTP” steps |
 | **6** | [Happy path E2E test](#phase-6--happy-path-e2e-test) | ⬜ Not started | One passing automated test in CI |
 | **7** | [CI & follow-ups](#phase-7--ci--follow-ups) | ⬜ Not started | Documented run commands; optional error scenarios |
 
@@ -67,7 +67,7 @@ Use this table to see where we are and what to do next.
 
 ### Resume checklist (for the next coding session)
 
-1. Read **Progress tracker** — start at first non-✅ phase (currently **Phase 5**).
+1. Read **Progress tracker** — start at first non-✅ phase (currently **Phase 6**).
 2. Phase 0 complete — see [MOCK_TRANSPORT_DESIGN.md](./MOCK_TRANSPORT_DESIGN.md).
 3. Then Phase 1 → 2 → 3 in order (don’t skip — each phase unlocks the next).
 4. `spike/` folder was removed — do not recreate unless we revisit real relay testing.
@@ -240,18 +240,22 @@ Settings tab (unchanged): `settings-tab-item-add-device`.
 
 ## Phase 5 — Test helpers & page objects
 
-**Status:** ⬜ Not started  
-**Depends on:** Phase 4
+**Status:** ✅ Done (2026-07-11)  
+**Depends on:** Phase 4 ✅
 
-### Tasks
+### What changed
 
-| # | Task | File |
-|---|------|------|
-| 5.1 | Page object: Add device flow | `test/e2e/page-objects/pages/settings/add-device-settings-page.ts` |
-| 5.2 | Flow helper | `test/e2e/page-objects/flows/qr-sync.flow.ts` |
-| 5.3 | Fixture: single HD wallet, standard password | `FixtureBuilderV2` + `test/e2e/constants.ts` |
+| # | Deliverable | File |
+|---|-------------|------|
+| 5.1 | Add device page object | `test/e2e/page-objects/pages/settings/add-device-settings-page.ts` |
+| 5.2 | Flow helpers | `test/e2e/page-objects/flows/qr-sync.flow.ts` |
+| 5.3 | Fixture helper + password constant | `buildQrSyncFixtures()`, `QR_SYNC_E2E_PASSWORD` in `test/e2e/tests/qr-sync/constants.ts` |
 
-**Exit criteria:** Helpers documented in page object; one dry-run path in comments.
+`SettingsPage.goToAddDeviceSettings()` added for tab navigation.
+
+**Exports:** `navigateToAddDeviceSettings()`, `completeQrSyncHappyPath()`
+
+**Exit criteria:** ✅ Page object documented; dry-run path in `qr-sync.flow.ts` comments.
 
 ---
 
