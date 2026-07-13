@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Tambahkan token khusus"
   },
-  "addDevice": {
-    "message": "Sinkronkan dengan seluler"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Cukup tambahkan penyedia RPC ini jika Anda yakin dapat memercayainya. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4199,7 +4196,8 @@
     "message": "Lanjutkan"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Hubungkan kembali"
+    "message": "Hubungkan kembali",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Pastikan dompet perangkat keras terhubung dengan benar melalui USB"
@@ -7960,9 +7958,6 @@
   "qrCodeExpiresIn": {
     "message": "Berakhir dalam $1 dtk",
     "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
-  "qrCodeScanError": {
-    "message": "Terjadi kesalahan saat memindai kode QR. Buat kode QR baru untuk mencoba lagi."
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "Kode QR ini untuk transaksi yang berbeda. Batalkan dan coba lagi, pastikan untuk memindai kode QR yang ditampilkan di MetaMask dengan dompet perangkat keras Anda terlebih dahulu.",

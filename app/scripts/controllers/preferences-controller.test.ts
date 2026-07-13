@@ -334,18 +334,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setServiceWorkerKeepAlivePreference', () => {
-    const { controller } = setupController({});
-    it('should default to true', () => {
-      expect(controller.state.enableMV3TimestampSave).toStrictEqual(true);
-    });
-
-    it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
-      controller.setServiceWorkerKeepAlivePreference(false);
-      expect(controller.state.enableMV3TimestampSave).toStrictEqual(false);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -674,7 +662,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "isMultiAccountBalancesEnabled": true,
@@ -741,7 +728,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",
@@ -825,7 +811,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",
@@ -910,7 +895,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",

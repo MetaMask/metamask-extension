@@ -87,10 +87,7 @@ function TransactionListItemDetails({
       imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId],
     };
 
-    const blockExplorerLink = getBlockExplorerLink(
-      primaryTx,
-      rpcPrefs,
-    );
+    const blockExplorerLink = getBlockExplorerLink(primaryTx, rpcPrefs);
 
     if (!rpcPrefs.blockExplorerUrl && isCustomNetwork) {
       onClose();

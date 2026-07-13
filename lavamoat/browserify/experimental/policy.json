@@ -2271,7 +2271,7 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
+    "@metamask/ramps-controller": {
       "globals": {
         "AbortController": true,
         "URL": true,
@@ -2725,7 +2725,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
@@ -2843,6 +2843,7 @@
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/scure-bip39": true,
         "@metamask/storage-service": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -2948,7 +2949,6 @@
     },
     "@mui/x-date-pickers>@mui/utils": {
       "globals": {
-        "ShadowRoot": true,
         "URL": true,
         "clearTimeout": true,
         "console.error": true,
@@ -3976,7 +3976,7 @@
         "Buffer": true
       },
       "packages": {
-        "react>object-assign": true,
+        "gulp-watch>object-assign": true,
         "browserify>assert>util": true
       }
     },
@@ -4566,7 +4566,7 @@
       "packages": {
         "currency-formatter>accounting": true,
         "currency-formatter>locale-currency": true,
-        "react>object-assign": true
+        "gulp-watch>object-assign": true
       }
     },
     "nock>debug": {
@@ -5777,7 +5777,7 @@
         "console": true
       },
       "packages": {
-        "react>object-assign": true,
+        "gulp-watch>object-assign": true,
         "prop-types>react-is": true
       }
     },
@@ -5878,10 +5878,9 @@
     },
     "react": {
       "globals": {
+        "MessageChannel": true,
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
         "console": true
-      },
-      "packages": {
-        "react>object-assign": true
       }
     },
     "react-chartjs-2": {
@@ -5910,6 +5909,7 @@
     "react-dom": {
       "globals": {
         "HTMLIFrameElement": true,
+        "IS_REACT_ACT_ENVIRONMENT": true,
         "MSApp": true,
         "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
         "addEventListener": true,
@@ -5922,13 +5922,14 @@
         "jest": true,
         "location.protocol": true,
         "navigator.userAgent.indexOf": true,
+        "queueMicrotask": true,
         "removeEventListener": true,
+        "reportError": true,
         "self": true,
         "setTimeout": true,
         "top": true
       },
       "packages": {
-        "react>object-assign": true,
         "react": true,
         "react-dom>scheduler": true
       }
@@ -6463,12 +6464,15 @@
     "react-dom>scheduler": {
       "globals": {
         "MessageChannel": true,
-        "cancelAnimationFrame": true,
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
         "clearTimeout": true,
         "console": true,
+        "navigator": true,
         "performance": true,
-        "requestAnimationFrame": true,
         "setTimeout": true
+      },
+      "packages": {
+        "browserify>timers-browserify": true
       }
     },
     "ethers>@ethersproject/json-wallets>scrypt-js": {

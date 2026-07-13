@@ -2153,12 +2153,22 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
+    "@metamask/ramps-controller": {
       "globals": {
-        "URL": true
+        "AbortController": true,
+        "URL": true,
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
       },
       "packages": {
-        "@metamask/controller-utils": true
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "cockatiel": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -2510,7 +2520,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
@@ -2628,6 +2638,7 @@
         "@metamask/network-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/storage-service": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -4375,7 +4386,7 @@
       "packages": {
         "currency-formatter>accounting": true,
         "currency-formatter>locale-currency": true,
-        "react>object-assign": true
+        "gulp-watch>object-assign": true
       }
     },
     "nock>debug": {
@@ -5660,11 +5671,6 @@
         "mockttp>express>safe-buffer": true
       }
     },
-    "react": {
-      "packages": {
-        "react>object-assign": true
-      }
-    },
     "react-chartjs-2": {
       "globals": {
         "setTimeout": true
@@ -5753,11 +5759,13 @@
         "clipboardData": true,
         "console.error": true,
         "document": true,
+        "event": true,
+        "queueMicrotask": true,
         "removeEventListener": true,
+        "reportError": true,
         "setTimeout": true
       },
       "packages": {
-        "react>object-assign": true,
         "react": true,
         "react-dom>scheduler": true
       }
@@ -6357,12 +6365,15 @@
     "react-dom>scheduler": {
       "globals": {
         "MessageChannel": true,
-        "cancelAnimationFrame": true,
         "clearTimeout": true,
-        "console": true,
+        "console.error": true,
+        "navigator": true,
         "performance": true,
-        "requestAnimationFrame": true,
+        "setImmediate": true,
         "setTimeout": true
+      },
+      "packages": {
+        "core-js-pure": true
       }
     },
     "ethers>@ethersproject/json-wallets>scrypt-js": {

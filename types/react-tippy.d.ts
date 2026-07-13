@@ -16,10 +16,15 @@ declare module 'react-tippy' {
     | 'right'
     | 'right-start'
     | 'right-end';
-  export type Trigger = 'mouseenter' | 'focus' | 'click' | 'manual';
+  export type Trigger =
+    | 'mouseenter'
+    | 'focus'
+    | 'click'
+    | 'manual'
+    | (string & {});
   export type Animation = 'shift' | 'perspective' | 'fade' | 'scale' | 'none';
   export type Size = 'small' | 'regular' | 'big';
-  export type Theme = 'dark' | 'light' | 'transparent';
+  export type Theme = 'dark' | 'light' | 'transparent' | (string & {});
 
   export type TooltipProps = {
     children?: React.ReactNode;

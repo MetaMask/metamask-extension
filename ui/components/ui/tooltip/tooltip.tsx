@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { memo, type CSSProperties, type ReactNode } from 'react';
-import { Tooltip as ReactTippy, type Position, type Size } from 'react-tippy';
+import {
+  Tooltip as ReactTippy,
+  type Position,
+  type Size,
+  type Theme,
+  type Trigger,
+} from 'react-tippy';
 
 const Tooltip = ({
   arrow = true,
@@ -10,6 +16,8 @@ const Tooltip = ({
   interactive,
   onHidden = null,
   distance = 0,
+  delay = 0,
+  duration = 0,
   position = 'left',
   offset = 0,
   open,
@@ -34,14 +42,16 @@ const Tooltip = ({
   interactive?: boolean;
   onHidden?: (() => void) | null;
   distance?: number;
+  delay?: number;
+  duration?: number;
   position?: 'top' | 'right' | 'bottom' | 'left' | Position;
   offset?: number;
   open?: boolean;
   size?: Size;
   title?: string | null;
-  trigger?: string;
+  trigger?: Trigger;
   wrapperClassName?: string;
-  theme?: string;
+  theme?: Theme;
   tag?: keyof JSX.IntrinsicElements | string;
   wrapperStyle?: CSSProperties;
   style?: CSSProperties;
@@ -64,6 +74,8 @@ const Tooltip = ({
       disabled={disabled}
       hideOnClick={false}
       distance={distance}
+      delay={delay}
+      duration={duration}
       html={html as React.ReactElement | undefined}
       interactive={interactive}
       onHidden={onHidden ?? undefined}
@@ -74,7 +86,7 @@ const Tooltip = ({
       title={disabled ? '' : title}
       trigger={trigger}
       open={open}
-      theme={`tippy-tooltip--mm-custom ${theme}`}
+      theme={`tippy-tooltip--mm-custom ${theme}` as Theme}
       tabIndex={tabIndex || 0}
     >
       {children}

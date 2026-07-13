@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Προσθήκη προσαρμοσμένου token"
   },
-  "addDevice": {
-    "message": "Συγχρονισμός με κινητό"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Προσθέστε αυτόν τον πάροχο RPC μόνο αν είστε σίγουροι ότι μπορείτε να τον εμπιστευτείτε. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Συνεχίστε"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Επανασύνδεση"
+    "message": "Επανασύνδεση",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Βεβαιωθείτε ότι το πορτοφόλι υλικού σας είναι σωστά συνδεδεμένο μέσω USB"
@@ -7952,9 +7950,6 @@
   "qrCodeExpiresIn": {
     "message": "Λήγει σε $1δ",
     "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
-  "qrCodeScanError": {
-    "message": "Κάτι πήγε στραβά κατά τη σάρωση του κωδικού QR. Δημιουργήστε έναν νέο και προσπαθήστε ξανά."
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "Αυτός ο κωδικός QR αφορά διαφορετική συναλλαγή. Ακυρώστε και προσπαθήστε ξανά, διασφαλίζοντας ότι πρώτα θα σαρώσετε τον κωδικό QR στο MetaMask με το πορτοφόλι υλικού σας.",

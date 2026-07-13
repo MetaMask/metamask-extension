@@ -9,7 +9,7 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 import { EnforceSimulationHook } from './enforce-simulation-hook';
 

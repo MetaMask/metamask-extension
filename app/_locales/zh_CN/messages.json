@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "添加自定义代币"
   },
-  "addDevice": {
-    "message": "与移动设备同步"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "仅当您确定可以信任此 RPC 提供商时才能添加它。$1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "继续"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "重新连接"
+    "message": "重新连接",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "确保您的硬件钱包已通过 USB 正确连接"
@@ -7952,9 +7950,6 @@
   "qrCodeExpiresIn": {
     "message": "$1 秒后过期",
     "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
-  "qrCodeScanError": {
-    "message": "扫描二维码时出现问题。请生成新的二维码后重试。"
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",

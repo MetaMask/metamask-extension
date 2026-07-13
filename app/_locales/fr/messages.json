@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Ajouter un jeton personnalisé"
   },
-  "addDevice": {
-    "message": "Synchroniser avec le mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "N’ajoutez ce fournisseur de RPC que si vous lui faites confiance. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Continuer"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Reconnecter"
+    "message": "Reconnecter",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Assurez-vous que votre portefeuille matériel est correctement connecté via USB"
@@ -7952,9 +7950,6 @@
   "qrCodeExpiresIn": {
     "message": "Expire dans $1 s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
-  "qrCodeScanError": {
-    "message": "Une erreur s’est produite lors de la lecture du code QR. Générez-en un nouveau pour réessayer."
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "Ce code QR concerne une autre transaction. Annulez l’opération et réessayez, en veillant à scanner d’abord le code QR affiché dans MetaMask avec votre portefeuille matériel.",

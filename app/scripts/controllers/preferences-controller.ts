@@ -99,7 +99,6 @@ export type PreferencesControllerState = Omit<
   advancedGasFee: Record<string, Record<string, string>>;
   currentLocale: string;
   dismissSeedBackUpReminder: boolean;
-  enableMV3TimestampSave: boolean;
   forgottenPassword: boolean;
   knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
@@ -134,7 +133,6 @@ export const getDefaultPreferencesControllerState =
     advancedGasFee: {},
     currentLocale: '',
     dismissSeedBackUpReminder: false,
-    enableMV3TimestampSave: true,
     featureFlags: {},
     forgottenPassword: false,
     // ENS decentralized website resolution
@@ -236,12 +234,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   dismissSeedBackUpReminder: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableMV3TimestampSave: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -461,7 +453,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setDismissSeedBackUpReminder',
   'setOverrideContentSecurityPolicyHeader',
   'setManageInstitutionalWallets',
-  'setServiceWorkerKeepAlivePreference',
   'setUseSidePanelAsDefault',
   'setShowDefaultAddress',
   'setDefaultAddressScope',
@@ -961,12 +952,6 @@ export class PreferencesController extends BaseController<
   setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
     this.update((state) => {
       state.manageInstitutionalWallets = manageInstitutionalWallets;
-    });
-  }
-
-  setServiceWorkerKeepAlivePreference(value: boolean): void {
-    this.update((state) => {
-      state.enableMV3TimestampSave = value;
     });
   }
 

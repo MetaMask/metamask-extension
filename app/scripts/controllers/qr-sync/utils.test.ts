@@ -12,9 +12,12 @@ import {
   getSyncCompletionTimeoutMs,
   getSyncOfferFailureError,
   canAcceptSyncOffer,
+  isQrExpiredError,
   isQrSyncOffer,
+  MWP_REQUEST_EXPIRED_CODE,
   normalizeQrSyncMessage,
   parseJsonMessage,
+  resolveQrSyncErrorCode,
 } from './utils';
 import { QrSyncOffer } from './types';
 
@@ -149,6 +152,61 @@ describe('qr-sync utils', () => {
     it('returns false for non-object payloads', () => {
       expect(isQrSyncOffer(null)).toBe(false);
       expect(isQrSyncOffer('isOnboardingCompleted')).toBe(false);
+    });
+  });
+
+  describe('isQrExpiredError', () => {
+    it('returns true when the error code is REQUEST_EXPIRED', () => {
+      const error = Object.assign(
+        new Error('Did not receive handshake offer from wallet in time.'),
+        { code: MWP_REQUEST_EXPIRED_CODE },
+      );
+      expect(isQrExpiredError(error)).toBe(true);
+    });
+
+    it('returns true when the error name is REQUEST_EXPIRED', () => {
+      const error = new Error(
+        'Did not receive handshake offer from wallet in time.',
+      );
+      error.name = MWP_REQUEST_EXPIRED_CODE;
+      expect(isQrExpiredError(error)).toBe(true);
+    });
+
+    it('returns false for unrelated errors', () => {
+      expect(isQrExpiredError(new Error('Relay error'))).toBe(false);
+      expect(isQrExpiredError({ code: 'SESSION_EXPIRED' })).toBe(false);
+    });
+
+    it('returns false for non-object values', () => {
+      expect(isQrExpiredError(null)).toBe(false);
+      expect(isQrExpiredError('REQUEST_EXPIRED')).toBe(false);
+    });
+  });
+
+  describe('resolveQrSyncErrorCode', () => {
+    it('resolves REQUEST_EXPIRED errors to QR_EXPIRED', () => {
+      const error = Object.assign(
+        new Error('Did not receive handshake offer from wallet in time.'),
+        { code: MWP_REQUEST_EXPIRED_CODE },
+      );
+      expect(
+        resolveQrSyncErrorCode(error, QrSyncErrorCodes.CHANNEL_INIT_FAILED),
+      ).toBe(QrSyncErrorCodes.QR_EXPIRED);
+    });
+
+    it('falls back to the default code when no detector matches', () => {
+      expect(
+        resolveQrSyncErrorCode(
+          new Error('Relay error'),
+          QrSyncErrorCodes.CHANNEL_INIT_FAILED,
+        ),
+      ).toBe(QrSyncErrorCodes.CHANNEL_INIT_FAILED);
+    });
+
+    it('falls back to the default code for non-error values', () => {
+      expect(resolveQrSyncErrorCode(undefined, QrSyncErrorCodes.UNKNOWN)).toBe(
+        QrSyncErrorCodes.UNKNOWN,
+      );
     });
   });
 
