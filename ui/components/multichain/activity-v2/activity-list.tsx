@@ -70,7 +70,7 @@ export const ActivityList = ({ filter }: Props) => {
   // EVM transactions - from API
   const {
     data,
-    isInitialLoading,
+    isLoading,
     isError,
     refetch,
     fetchNextPage,
@@ -256,7 +256,7 @@ export const ActivityList = ({ filter }: Props) => {
         />
       )}
 
-      {!isInitialLoading && flattenedItems.length > 0 && (
+      {!isLoading && flattenedItems.length > 0 && (
         <>
           <div
             ref={listRef}
@@ -297,7 +297,7 @@ export const ActivityList = ({ filter }: Props) => {
         </>
       )}
 
-      {!isInitialLoading && isError && flattenedItems.length === 0 && (
+      {!isLoading && isError && flattenedItems.length === 0 && (
         <TabEmptyState
           className="mx-auto mt-5 mb-6"
           description={t('somethingWentWrong')}
@@ -306,7 +306,7 @@ export const ActivityList = ({ filter }: Props) => {
         />
       )}
 
-      {!isInitialLoading && !isError && flattenedItems.length === 0 && (
+      {!isLoading && !isError && flattenedItems.length === 0 && (
         <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
       )}
 

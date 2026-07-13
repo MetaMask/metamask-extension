@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
 import { parseCaipAssetType } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
@@ -52,6 +52,7 @@ function withKnownApiResponse(queryFn: TransactionQueryOptions['queryFn']) {
             count: 0,
             hasNextPage: false,
           },
+          unprocessedNetworks: [],
         };
       }
 
@@ -91,14 +92,17 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
     evmNetworks.length > 0 &&
     accountAddresses.length > 0;
 
+  // Wrapped queryFn + select widen the options union enough that TS loses
+  // getNextPageParam from FetchInfiniteQueryOptions.
+  // @ts-expect-error Infinite query options from apiClient + local wrappers
   const query = useInfiniteQuery({
     ...queryOptions,
-    // @ts-expect-error apiClient returns v5 types, repo still in v4
     queryFn: withKnownApiResponse(queryOptions.queryFn),
+    initialPageParam: queryOptions.initialPageParam,
     select: selectFn,
     enabled,
     retry: false,
-    keepPreviousData: enabled,
+    placeholderData: enabled ? keepPreviousData : undefined,
     staleTime: 5 * MINUTE,
     refetchOnMount: true,
     refetchOnWindowFocus: true,

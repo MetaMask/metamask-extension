@@ -189,12 +189,12 @@ export const useMerklRewards = ({
     },
     enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
     staleTime: MERKL_REWARDS_STALE_TIME,
-    cacheTime: MERKL_REWARDS_CACHE_TIME,
+    gcTime: MERKL_REWARDS_CACHE_TIME,
   });
 
   const fiatRate = useTokenFiatRate((tokenAddress ?? '0x0') as Hex, chainId);
 
-  // When `enabled` is false TanStack Query v4 still returns the last cached
+  // When `enabled` is false TanStack Query still returns the last cached
   // `data` for this queryKey. Gate on `isEligible` so a stale `true` never
   // leaks to callers that shouldn't show a badge.
   const hasClaimableRewardData = isEligible ? queryData : undefined;

@@ -38,6 +38,7 @@ const emptyResponse = {
     count: 0,
     hasNextPage: false,
   },
+  unprocessedNetworks: [],
 };
 const mockStore = configureMockStore()({
   localeMessages: {

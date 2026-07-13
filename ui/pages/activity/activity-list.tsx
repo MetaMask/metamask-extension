@@ -45,7 +45,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   );
   const filters = filter ?? { networks: networks ?? [] };
 
-  const { data, isInitialLoading, fetchNextVisiblePage } =
+  const { data, isLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
 
   const localItems = useLocalTransactions(filters);
@@ -68,7 +68,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
 
   useActivityScreenOpened({
     filter,
-    isSettled: networks !== null && !isInitialLoading,
+    isSettled: networks !== null && !isLoading,
     isEmpty: groupedItems.length === 0,
     pendingLength: [...localItems, ...nonEvmItems].filter(
       (item) => item.status === 'pending',
@@ -134,7 +134,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         keyExtractor={getItemKey}
         itemRef={itemRef}
         listEmptyComponent={
-          isInitialLoading ? (
+          isLoading ? (
             <Box className="p-4">
               <Text>{t('loading')}</Text>
             </Box>

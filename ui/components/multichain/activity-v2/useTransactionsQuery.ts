@@ -1,6 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
 import { getErrorBodyMessage } from '../../../../shared/lib/error';
@@ -53,6 +57,7 @@ function withKnownApiResponse(queryFn: TransactionsQueryOptions['queryFn']) {
             count: 0,
             hasNextPage: false,
           },
+          unprocessedNetworks: [],
         };
       }
       throw error;
@@ -116,17 +121,20 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
       lang,
     });
 
+  // Wrapped queryFn + select widen the options union enough that TS loses
+  // getNextPageParam from FetchInfiniteQueryOptions.
+  // @ts-expect-error Infinite query options from apiClient + local wrappers
   return useInfiniteQuery({
     ...queryOptions,
-    // @ts-expect-error apiClient returns v5 types, repo still in v4
     queryFn: withKnownApiResponse(queryOptions.queryFn),
+    initialPageParam: queryOptions.initialPageParam,
     select: selectFn,
     enabled:
       Boolean(useExternalServices) &&
       networks.length > 0 &&
       accountAddresses.length > 0,
     retry: false,
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
     staleTime: 5 * MINUTE,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
@@ -167,8 +175,8 @@ export function usePrefetchTransactions() {
     queryClient
       .prefetchInfiniteQuery({
         ...queryOptions,
-        // @ts-expect-error apiClient returns v5 types, repo still in v4
         queryFn: withKnownApiResponse(queryOptions.queryFn),
+        initialPageParam: queryOptions.initialPageParam,
         retry: false,
         staleTime: 5 * MINUTE,
       })

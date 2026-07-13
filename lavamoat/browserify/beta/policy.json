@@ -985,7 +985,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controllers>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -1315,7 +1315,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "uuid": true
       }
@@ -3532,47 +3532,8 @@
     },
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
-        "AbortController": true,
-        "CancelledError": true,
-        "InfiniteQueryObserver": true,
-        "Mutation": true,
-        "MutationCache": true,
-        "MutationObserver": true,
-        "QueriesObserver": true,
-        "Query": true,
-        "QueryCache": true,
-        "QueryClient": true,
-        "QueryObserver": true,
         "addEventListener": false,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "defaultScheduler": true,
-        "defaultShouldDehydrateMutation": true,
-        "defaultShouldDehydrateQuery": true,
-        "dehydrate": true,
-        "document": false,
-        "experimental_streamedQuery": true,
-        "focusManager": true,
-        "hashKey": true,
-        "hydrate": true,
-        "isCancelledError": true,
-        "isServer": true,
-        "keepPreviousData": true,
-        "matchMutation": true,
-        "matchQuery": true,
-        "noop": true,
-        "notifyManager": true,
-        "onlineManager": true,
-        "partialMatchKey": true,
-        "removeEventListener": true,
-        "replaceEqualDeep": true,
-        "setInterval": true,
-        "setTimeout": true,
-        "shouldThrowError": true,
-        "skipToken": true,
-        "timeoutManager": true
+        "document": false
       }
     },
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
@@ -3589,6 +3550,12 @@
     },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
+        "addEventListener": false,
+        "document": false
+      }
+    },
+    "@tanstack/react-query>@tanstack/query-core": {
+      "globals": {
         "AbortController": true,
         "CancelledError": true,
         "InfiniteQueryObserver": true,
@@ -3610,6 +3577,7 @@
         "defaultShouldDehydrateQuery": true,
         "dehydrate": true,
         "document": false,
+        "environmentManager": true,
         "experimental_streamedQuery": true,
         "focusManager": true,
         "hashKey": true,
@@ -3632,29 +3600,36 @@
         "timeoutManager": true
       }
     },
-    "@tanstack/react-query>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": false,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": false,
-        "navigator": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
-    },
     "@tanstack/react-query": {
       "globals": {
-        "ReactQueryClientContext": "write"
+        "HydrationBoundary": true,
+        "IsRestoringProvider": true,
+        "QueryClientContext": true,
+        "QueryClientProvider": true,
+        "QueryErrorResetBoundary": true,
+        "console.error": true,
+        "infiniteQueryOptions": true,
+        "mutationOptions": true,
+        "queryOptions": true,
+        "useInfiniteQuery": true,
+        "useIsFetching": true,
+        "useIsMutating": true,
+        "useIsRestoring": true,
+        "useMutation": true,
+        "useMutationState": true,
+        "usePrefetchInfiniteQuery": true,
+        "usePrefetchQuery": true,
+        "useQueries": true,
+        "useQuery": true,
+        "useQueryClient": true,
+        "useQueryErrorResetBoundary": true,
+        "useSuspenseInfiniteQuery": true,
+        "useSuspenseQueries": true,
+        "useSuspenseQuery": true
       },
       "packages": {
         "@tanstack/react-query>@tanstack/query-core": true,
-        "react": true,
-        "react-dom": true,
-        "@tanstack/react-query>use-sync-external-store": true
+        "react": true
       }
     },
     "@tanstack/react-virtual": {
@@ -6072,7 +6047,7 @@
         "react": true,
         "react-dom": true,
         "@metamask/snap-simple-keyring-site>react-is": true,
-        "@tanstack/react-query>use-sync-external-store": true
+        "@hello-pangea/dnd>react-redux>use-sync-external-store": true
       }
     },
     "react-router-dom": {
@@ -6803,12 +6778,11 @@
         "tslib": true
       }
     },
-    "@tanstack/react-query>use-sync-external-store": {
+    "@hello-pangea/dnd>react-redux>use-sync-external-store": {
       "globals": {
-        "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
         "console.error": true,
-        "document": false,
-        "document.createElement": true
+        "document": true
       },
       "packages": {
         "react": true

@@ -124,12 +124,6 @@ describe('useTronResources', () => {
       defaultOptions: {
         queries: { retry: false },
       },
-      logger: {
-        log: () => undefined,
-        warn: () => undefined,
-        // Silence expected error output from rejected snap queries.
-        error: () => undefined,
-      },
     });
   });
 
