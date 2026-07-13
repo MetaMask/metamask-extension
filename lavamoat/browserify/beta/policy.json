@@ -2647,9 +2647,11 @@
     },
     "@metamask/phishing-controller>@metamask/transaction-controller": {
       "globals": {
+        "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
         "fetch": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
