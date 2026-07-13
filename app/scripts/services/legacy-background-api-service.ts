@@ -151,15 +151,11 @@ import {
   AssetsUnifyStateFeatureFlag,
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-} from '../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
 } from '../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
@@ -709,53 +705,6 @@ export class LegacyBackgroundApiService {
     ).address;
 
     const globalChainId = this.getGlobalChainId();
-
-    const { pendingApprovals } = this.#messenger.call(
-      'ApprovalController:getState',
-    );
-
-    const { transactions } = this.#messenger.call(
-      'TransactionController:getState',
-    );
-
-    const matchingSmartTransactionApprovals = Object.values(
-      pendingApprovals ?? {},
-    ).filter((approval) => {
-      if (
-        approval.type !==
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
-      ) {
-        return false;
-      }
-
-      const txId = approval.requestState?.txId;
-
-      if (typeof txId !== 'string') {
-        return false;
-      }
-
-      const transaction = transactions.find(({ id }) => id === txId);
-
-      return (
-        transaction &&
-        transaction?.chainId === globalChainId &&
-        isEqualCaseInsensitive(transaction.txParams?.from, selectedAddress)
-      );
-    });
-
-    for (const approval of matchingSmartTransactionApprovals) {
-      try {
-        this.#messenger.call(
-          'ApprovalController:rejectRequest',
-          approval.id,
-          new Error('Transaction activity reset'),
-        );
-      } catch (error) {
-        if (!(error instanceof ApprovalRequestNotFoundError)) {
-          throw error;
-        }
-      }
-    }
 
     this.#messenger.call('TransactionController:wipeTransactions', {
       address: selectedAddress,
