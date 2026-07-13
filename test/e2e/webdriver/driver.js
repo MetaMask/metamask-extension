@@ -1144,6 +1144,20 @@ class Driver {
    */
   async prepareExtensionReload() {
     const extensionWindow = await this.driver.getWindowHandle();
+    if (this.browser === Browser.CHROME) {
+      const windowHandles = await this.driver.getAllWindowHandles();
+      for (const windowHandle of windowHandles) {
+        if (windowHandle === extensionWindow) {
+          continue;
+        }
+        await this.switchToWindow(windowHandle);
+        if ((await this.getCurrentUrl()).startsWith('chrome://extensions')) {
+          await this.switchToWindow(extensionWindow);
+          return windowHandle;
+        }
+      }
+      await this.switchToWindow(extensionWindow);
+    }
     const recoveryWindow = await this.openNewPage(
       this.browser === Browser.CHROME ? 'chrome://extensions' : 'about:blank',
     );
@@ -1211,7 +1225,8 @@ class Driver {
   /** Reloads the extension while keeping it available to WebDriver. */
   async reloadExtension() {
     if (this.browser === Browser.CHROME) {
-      const recoveryWindow = await this.openNewPage('chrome://extensions');
+      const recoveryWindow = await this.prepareExtensionReload();
+      await this.restoreExtensionAfterReload(recoveryWindow);
       await this.reloadChromeExtension();
       return recoveryWindow;
     }
