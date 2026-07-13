@@ -948,8 +948,8 @@ export class AppStateController extends BaseController<
     );
 
     const isEligible = evaluateBottomNavEligibility({
-      firstTimeInfoDate: firstTimeInfo?.date,
-      firstTimeFlowType,
+      installDate: firstTimeInfo?.date,
+      onboardingType: firstTimeFlowType,
     });
 
     this.setExperimentEligibility(BOTTOM_NAV_AB_TEST_KEY, isEligible);
