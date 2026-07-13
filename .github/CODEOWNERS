@@ -88,6 +88,15 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/bridge-status/**                                   @MetaMask/swaps-engineers
 
 # Money Movement team (formerly Ramps) to own code for the ramps folder
+ui/hooks/ramps/                                       @MetaMask/money-movement
+ui/selectors/rampsController/                         @MetaMask/money-movement
+ui/store/controller-actions/ramps-controller*         @MetaMask/money-movement
+app/scripts/messenger-client-init/ramps-*             @MetaMask/money-movement
+app/scripts/messenger-client-init/messengers/ramps-*  @MetaMask/money-movement
+test/e2e/tests/ramps/                                 @MetaMask/money-movement
+test/e2e/tests/btc/mocks/ramps.ts                     @MetaMask/money-movement
+shared/lib/deep-links/routes/ramps.ts                 @MetaMask/money-movement
+docs/ramps/                                           @MetaMask/money-movement
 **/ramps/**                                           @MetaMask/money-movement
 
 # Product Safety Team
