@@ -7,9 +7,9 @@ export default function RampsInfoModal({
   title,
   body,
 }: {
-  testId: string;
-  title: string;
-  body: string;
+  readonly testId: string;
+  readonly title: string;
+  readonly body: string;
 }) {
   return (
     <Box padding={4} data-testid={testId}>
