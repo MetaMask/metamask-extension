@@ -46,7 +46,7 @@ jest.mock('../../../../hooks/hardware-wallets/useHwSignTracker');
 jest.mock('../../../../hooks/bridge/useBridgeNavigation');
 jest.mock('../hardware-wallet-signatures.utils', () => ({
   ...jest.requireActual('../hardware-wallet-signatures.utils'),
-  cleanupPendingApproval: jest.fn().mockResolvedValue(undefined),
+  cleanupPendingApproval: jest.fn(),
 }));
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
@@ -238,7 +238,13 @@ function renderUseHardwareWalletSignatures({
           element: children as React.ReactElement,
         },
       ],
-      { initialEntries },
+      {
+        initialEntries,
+        future: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          v7_relativeSplatPath: true,
+        },
+      },
     );
 
     return (
@@ -259,8 +265,6 @@ function renderUseHardwareWalletSignatures({
               future={{
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 v7_startTransition: true,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                v7_relativeSplatPath: true,
               }}
             />
           </MetaMetricsContext.Provider>
@@ -306,7 +310,7 @@ describe('useHardwareWalletSignatures', () => {
     mockTrackEvent.mockReset().mockResolvedValue(undefined);
     mockNavigate.mockReset();
     mockSetSigningInProgress.mockReset();
-    mockCleanupPendingApproval.mockReset().mockResolvedValue(undefined);
+    mockCleanupPendingApproval.mockReset();
     mockUpdateAndApproveTx
       .mockReset()
       .mockReturnValue((() => Promise.resolve(undefined)) as never);
@@ -344,14 +348,15 @@ describe('useHardwareWalletSignatures', () => {
       resetConnectionError: mockResetConnectionError,
     });
     mockUseHwSwapConfirmationMonitoring.mockReturnValue({
-      confirmationTxData: null,
+      confirmationTxData: undefined,
     });
     mockUseHwSwapQrState.mockReturnValue({
       isReadingQrSignature: false,
       setIsReadingQrSignature: jest.fn(),
-      qrSignRequest: null,
+      isQrHardwareWallet: false,
+      qrSignRequest: undefined,
       showInlineQrSigning: false,
-      activeQrStep: null,
+      activeQrStep: undefined,
       handleQrScanSuccess: jest.fn(),
       handleQrSignatureCancel: jest.fn(),
     });
