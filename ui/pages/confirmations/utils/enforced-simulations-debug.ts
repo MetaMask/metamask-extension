@@ -162,8 +162,16 @@ export function logConfirmationTransactionDebug(
   transactionMeta?: TransactionMeta,
   details?: Record<string, unknown>,
 ) {
-  console.warn(DEBUG_LOG_PREFIX, event, {
-    transaction: getConfirmationTransactionDebugInfo(transactionMeta),
-    ...details,
-  });
+  console.warn(
+    DEBUG_LOG_PREFIX,
+    event,
+    JSON.stringify(
+      {
+        transaction: getConfirmationTransactionDebugInfo(transactionMeta),
+        ...details,
+      },
+      null,
+      2,
+    ),
+  );
 }
