@@ -20,13 +20,10 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventName,
   type MetaMetricsContext,
-  type MetaMetricsEventOptions,
-  type MetaMetricsEventPayload,
   type MetaMetricsPagePayload,
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
 } from '../../../../shared/constants/metametrics';
-import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { AnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment-tracking';
 import { getPlatform } from '../../lib/util';
@@ -294,54 +291,6 @@ function applyLegacyEventOptions(
   if (options?.matomoEvent === true) {
     eventPayload.properties.legacy_event = true;
   }
-}
-
-/**
- * Track a legacy MetaMetrics event payload through the analytics pipeline.
- *
- * @param payload - Legacy MetaMetrics event payload.
- * @param options - Optional routing and handling options.
- */
-export function trackMetaMetricsPayload(
-  payload: MetaMetricsEventPayload,
-  options?: MetaMetricsEventOptions,
-): void {
-  if (!payload.event) {
-    throw new Error(
-      `Must specify event. Event was: ${
-        payload.event
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      }. Payload keys were: ${Object.keys(payload)}. ${
-        typeof payload.properties === 'object'
-          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `Payload property keys were: ${Object.keys(payload.properties)}`
-          : ''
-      }`,
-    );
-  }
-
-  trackEvent(
-    createEventBuilder(payload.event)
-      .addProperties({
-        ...(payload.properties ?? {}),
-        ...(payload.category === undefined ? {} : { category: payload.category }),
-        ...(payload.revenue === undefined ? {} : { revenue: payload.revenue }),
-        ...(payload.value === undefined ? {} : { value: payload.value }),
-        ...(payload.currency === undefined
-          ? {}
-          : { currency: payload.currency }),
-      })
-      .addSensitiveProperties(payload.sensitiveProperties)
-      .build({
-        environmentType: payload.environmentType,
-        page: payload.page,
-        referrer: payload.referrer,
-        excludeMetaMetricsId: options?.excludeMetaMetricsId,
-        matomoEvent: options?.matomoEvent,
-      }),
-  );
 }
 
 export function trackEvent(

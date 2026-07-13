@@ -91,6 +91,44 @@ const exceptionsToFilter: Record<string, boolean> = {
   [`You must pass either an "anonymousId" or a "userId".`]: true,
 };
 
+function trackLegacyMetaMetricsPayload(payload: MetaMetricsEventPayload): void {
+  if (!payload.event) {
+    throw new Error(
+      `Must specify event. Event was: ${
+        payload.event
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      }. Payload keys were: ${Object.keys(payload)}. ${
+        typeof payload.properties === 'object'
+          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Payload property keys were: ${Object.keys(payload.properties)}`
+          : ''
+      }`,
+    );
+  }
+
+  analytics.trackEvent(
+    analytics
+      .createEventBuilder(payload.event)
+      .addProperties({
+        ...(payload.properties ?? {}),
+        ...(payload.category === undefined ? {} : { category: payload.category }),
+        ...(payload.revenue === undefined ? {} : { revenue: payload.revenue }),
+        ...(payload.value === undefined ? {} : { value: payload.value }),
+        ...(payload.currency === undefined
+          ? {}
+          : { currency: payload.currency }),
+      })
+      .addSensitiveProperties(payload.sensitiveProperties)
+      .build({
+        environmentType: payload.environmentType,
+        page: payload.page,
+        referrer: payload.referrer,
+      }),
+  );
+}
+
 /**
  * Represents a buffered trace that is stored before user consent.
  * Simplified for JSON serialization - doesn't include callback functions.
@@ -548,7 +586,7 @@ export class MetaMetricsController extends BaseController<
     });
 
     if (fragment.initialEvent) {
-      analytics.trackMetaMetricsPayload({
+      trackLegacyMetaMetricsPayload({
         event: fragment.initialEvent,
         category: fragment.category,
         properties: fragment.properties,
@@ -685,7 +723,7 @@ export class MetaMetricsController extends BaseController<
 
     const eventName = abandoned ? fragment.failureEvent : fragment.successEvent;
 
-    analytics.trackMetaMetricsPayload({
+    trackLegacyMetaMetricsPayload({
       event: eventName ?? '',
       category: fragment.category,
       properties: fragment.properties,
@@ -816,7 +854,7 @@ export class MetaMetricsController extends BaseController<
   trackEventsAfterMetricsOptIn(): void {
     const { eventsBeforeMetricsOptIn } = this.state;
     eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
-      analytics.trackMetaMetricsPayload(eventBeforeMetricsOptIn);
+      trackLegacyMetaMetricsPayload(eventBeforeMetricsOptIn);
     });
   }
 
