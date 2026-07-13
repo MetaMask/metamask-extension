@@ -188,7 +188,7 @@ describe('useSimulationMetrics', () => {
         initialProps: props,
       });
 
-      expect(setLoadingCompleteMock).toHaveBeenCalled();
+      expect(setLoadingCompleteMock).toHaveBeenCalledTimes(1);
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         expect.objectContaining({
           properties: expect.objectContaining({
