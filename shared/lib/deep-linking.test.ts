@@ -45,7 +45,7 @@ describe('#openCustomProtocol', () => {
   describe('without msLaunchUri available', () => {
     it('successfully open when protocol found', async () => {
       // eslint-disable-next-line consistent-return
-      const mockAddEventListener = jest.fn().mockImplementation((event, cb) => {
+      const mockAddEventListener = jest.fn().mockImplementation((event: string, cb: () => void) => {
         if (event === 'blur') {
           return cb();
         }
