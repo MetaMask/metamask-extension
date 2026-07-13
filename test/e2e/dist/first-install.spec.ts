@@ -23,7 +23,9 @@ describe('First install', function () {
           await startOnboardingPage.checkLoginPageIsLoaded();
         }
 
+        const recoveryWindow = await driver.prepareExtensionReload();
         await driver.executeScript('window.stateHooks.reloadExtension()');
+        await driver.restoreExtensionAfterReload(recoveryWindow);
 
         // Wait for extension to reload, signified by the onboarding tab closing
         await driver.waitUntilXWindowHandles(1);

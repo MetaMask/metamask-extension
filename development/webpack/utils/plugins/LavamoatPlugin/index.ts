@@ -69,6 +69,7 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'Window',
   'Node',
   'self',
+  'se_exportedFunctionSymbol',
   // globals sentry needs to function
   '__SENTRY__',
   'appState',

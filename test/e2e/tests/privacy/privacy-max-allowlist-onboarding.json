@@ -2,10 +2,12 @@
   "duringOnboarding": [
     "accounts.api.cx.metamask.io",
     "accounts.google.com",
+    "android.clients.google.com",
     "chainid.network",
     "firefox.settings.services.mozilla.com",
     "metamask.github.io",
-    "sentry.io"
+    "sentry.io",
+    "www.google.com"
   ],
   "toBeRemoved": {
     "accounts.google.com": "Should be removed - web3auth team - will only call during social login",
@@ -14,6 +16,7 @@
   "untilOnboardingComplete": [
     "accounts.api.cx.metamask.io",
     "acl.execution.metamask.io",
+    "android.clients.google.com",
     "token.api.cx.metamask.io",
     "static.cx.metamask.io",
     "accounts.google.com",
@@ -35,6 +38,7 @@
     "optimism-mainnet.infura.io",
     "polygon-mainnet.infura.io",
     "sei-mainnet.infura.io",
-    "sentry.io"
+    "sentry.io",
+    "www.google.com"
   ]
 }

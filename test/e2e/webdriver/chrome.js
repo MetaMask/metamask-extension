@@ -135,6 +135,11 @@ class ChromeDriver {
         extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
       }
 
+      await driver.sendDevToolsCommand('Browser.grantPermissions', {
+        origin: `chrome-extension://${extensionId}`,
+        permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'],
+      });
+
       return {
         driver,
         extensionId,

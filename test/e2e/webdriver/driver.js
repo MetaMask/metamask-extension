@@ -1137,6 +1137,67 @@ class Driver {
   }
 
   /**
+   * Opens a browser-owned page that can reload the unpacked extension after
+   * Chrome 151 removes command-line-loaded extensions on runtime.reload().
+   *
+   * @returns {Promise<string>} The recovery page window handle.
+   */
+  async prepareExtensionReload() {
+    const extensionWindow = await this.driver.getWindowHandle();
+    const recoveryWindow = await this.openNewPage(
+      this.browser === Browser.CHROME ? 'chrome://extensions' : 'about:blank',
+    );
+    await this.switchToWindow(extensionWindow);
+    return recoveryWindow;
+  }
+
+  /**
+   * Restores an unpacked Chrome extension after runtime.reload(). Firefox
+   * keeps the extension installed and only needs its surviving tab selected.
+   *
+   * @param {string} recoveryWindow - Handle returned by prepareExtensionReload.
+   */
+  async restoreExtensionAfterReload(recoveryWindow) {
+    await this.switchToWindow(recoveryWindow);
+    if (this.browser !== Browser.CHROME) {
+      return;
+    }
+
+    const extensionId = this.extensionUrl.split('/')[2];
+    await this.executeAsyncScript(`
+      const callback = arguments[arguments.length - 1];
+      chrome.developerPrivate.updateProfileConfiguration(
+        { inDeveloperMode: true },
+        () => chrome.developerPrivate.reload(
+          '${extensionId}',
+          {
+            failQuietly: false,
+            populateErrorForUnpacked: true,
+          },
+          callback,
+        ),
+      );
+    `);
+    await this.delay(1000);
+  }
+
+  /** Reloads the extension while keeping it available to WebDriver. */
+  async reloadExtension() {
+    if (this.browser === Browser.CHROME) {
+      const recoveryWindow = await this.openNewPage('chrome://extensions');
+      await this.restoreExtensionAfterReload(recoveryWindow);
+      return recoveryWindow;
+    }
+
+    const recoveryWindow = await this.prepareExtensionReload();
+    await this.executeScript(
+      '(globalThis.browser ?? globalThis.chrome).runtime.reload()',
+    );
+    await this.restoreExtensionAfterReload(recoveryWindow);
+    return recoveryWindow;
+  }
+
+  /**
    * Waits for the controllers to be loaded on the page.
    *
    * This function waits until an element with the class 'controller-loaded' is located,
