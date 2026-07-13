@@ -7,6 +7,7 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { getTokenSortConfig } from '../../../../selectors';
+import { getSelectedCurrency } from '../../../../selectors/assets';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../../selectors/multichain/networks';
 import { sortAssets } from '../util/sort';
 import PulseLoader from '../../../ui/pulse-loader';
@@ -35,6 +36,7 @@ export default function DefiListV2({ onClick }: DefiListV2Props) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenSortConfig = useSelector(getTokenSortConfig);
+  const selectedCurrency = useSelector(getSelectedCurrency);
   const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const { data, isLoading, isError } = useMultiAccountDefiBalances();
 
@@ -65,7 +67,7 @@ export default function DefiListV2({ onClick }: DefiListV2Props) {
         ...position,
         marketValue: formatCurrencyWithMinThreshold(
           position.tokenFiatAmount,
-          'USD',
+          selectedCurrency,
         ),
       }),
     );
@@ -78,6 +80,7 @@ export default function DefiListV2({ onClick }: DefiListV2Props) {
     formatCurrencyWithMinThreshold,
     isError,
     isLoading,
+    selectedCurrency,
     tokenSortConfig,
   ]);
 

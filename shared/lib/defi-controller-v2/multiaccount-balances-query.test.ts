@@ -145,6 +145,19 @@ describe('multiaccount-balances-query', () => {
         vsCurrency: 'usd',
       });
     });
+
+    it('uses the provided currency for v6 API request params', () => {
+      const balancesQuery = buildMultiAccountBalancesQuery(
+        [EVM_ACCOUNT],
+        ['eip155:1'],
+      );
+
+      expect(
+        getMultiAccountBalancesV6ApiParams(balancesQuery, 'EUR'),
+      ).toMatchObject({
+        vsCurrency: 'eur',
+      });
+    });
   });
 
   describe('buildMultiAccountBalancesUrl', () => {

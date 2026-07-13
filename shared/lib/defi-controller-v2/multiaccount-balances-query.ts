@@ -71,15 +71,18 @@ export type MultiAccountBalancesV6ApiParams = {
  * Maps a multi-account balances query into v6 Accounts API request params.
  *
  * @param balancesQuery - Query params derived from the selected account group.
+ * @param vsCurrency - Fiat currency for returned prices.
  * @returns Request params for the v6 multiaccount balances endpoint.
  */
 export function getMultiAccountBalancesV6ApiParams(
   balancesQuery: MultiAccountBalancesQueryParams,
+  vsCurrency: string = DEFI_BALANCES_V6_REQUEST_OPTIONS.vsCurrency,
 ): MultiAccountBalancesV6ApiParams {
   return {
     accountIds: balancesQuery.accountIds,
     networks: balancesQuery.networks,
     ...DEFI_BALANCES_V6_REQUEST_OPTIONS,
+    vsCurrency: vsCurrency.toLowerCase(),
   };
 }
 

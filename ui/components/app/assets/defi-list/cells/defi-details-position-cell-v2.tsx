@@ -6,7 +6,9 @@ import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { Tag } from '../../../../component-library';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
+import { getSelectedCurrency } from '../../../../../selectors/assets';
 import { useTokenDisplayInfo } from '../../hooks/useTokenDisplayInfo';
+import { useFormatters } from '../../../../../hooks/useFormatters';
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
@@ -25,6 +27,8 @@ export default function DefiDetailsPositionCellV2({
   position,
 }: DefiDetailsPositionCellV2Props) {
   const { privacyMode } = useSelector(getPreferences);
+  const selectedCurrency = useSelector(getSelectedCurrency);
+  const { formatCurrencyWithMinThreshold } = useFormatters();
 
   const token = useMemo(
     () => mapDefiProtocolDetailsPositionV2ToToken(position),
@@ -33,16 +37,28 @@ export default function DefiDetailsPositionCellV2({
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
-    fixCurrencyToUSD: true,
   });
 
-  const displayToken = useMemo(
-    () => ({
+  const displayToken = useMemo(() => {
+    const secondary =
+      token.tokenFiatAmount !== null && token.tokenFiatAmount !== undefined
+        ? formatCurrencyWithMinThreshold(
+            token.tokenFiatAmount,
+            selectedCurrency,
+          )
+        : undefined;
+
+    return {
       ...token,
       ...tokenDisplayInfo,
-    }),
-    [token, tokenDisplayInfo],
-  );
+      secondary,
+    };
+  }, [
+    formatCurrencyWithMinThreshold,
+    selectedCurrency,
+    token,
+    tokenDisplayInfo,
+  ]);
 
   return (
     <GenericAssetCellLayout

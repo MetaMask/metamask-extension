@@ -23,6 +23,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getSelectedCurrency } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import PulseLoader from '../../../components/ui/pulse-loader';
@@ -39,6 +40,7 @@ export default function DeFiDetailsPageV2() {
   const navigate = useNavigate();
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
+  const selectedCurrency = useSelector(getSelectedCurrency);
   const { data, isLoading, isError, isPending, isFetching } =
     useMultiAccountDefiBalances();
 
@@ -123,7 +125,7 @@ export default function DeFiDetailsPageV2() {
         >
           {formatCurrencyWithMinThreshold(
             protocolDetails.aggregatedMarketValue,
-            'USD',
+            selectedCurrency,
           )}
         </SensitiveText>
       </Box>

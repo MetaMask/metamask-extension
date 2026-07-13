@@ -13,10 +13,12 @@ import {
 } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../../../selectors/multichain/networks';
 import { getUseExternalServices } from '../../../../../selectors';
+import { getSelectedCurrency } from '../../../../../selectors/assets';
 import { apiClient } from '../../../../../helpers/api-client';
 
 export function useMultiAccountDefiBalances() {
   const useExternalServices = useSelector(getUseExternalServices);
+  const selectedCurrency = useSelector(getSelectedCurrency);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const groupAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, selectedAccountGroup),
@@ -36,8 +38,8 @@ export function useMultiAccountDefiBalances() {
   );
 
   const apiParams = useMemo(
-    () => getMultiAccountBalancesV6ApiParams(balancesQuery),
-    [balancesQuery],
+    () => getMultiAccountBalancesV6ApiParams(balancesQuery, selectedCurrency),
+    [balancesQuery, selectedCurrency],
   );
 
   const queryOptions = useMemo(
