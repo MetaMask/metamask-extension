@@ -6,6 +6,7 @@ import {
 } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../../shared/lib/conversion.utils';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
+import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import type { TokenWithFiatAmount } from '../../types';
 import type { DefiProtocolDetailsPosition } from './group-defi-protocol-details';
 
@@ -21,6 +22,19 @@ function toTokenCellChainId(
   return chainId as TokenWithFiatAmount['chainId'];
 }
 
+function toTokenCellAddress(
+  position: DefiProtocolDetailsPosition,
+): TokenWithFiatAmount['address'] {
+  const { assetReference, assetNamespace } = parseCaipAssetType(position.assetId);
+
+  if (assetNamespace === 'slip44') {
+    return assetReference as TokenWithFiatAmount['address'];
+  }
+
+  return (toChecksumHexAddress(assetReference) ??
+    assetReference) as TokenWithFiatAmount['address'];
+}
+
 /**
  * Maps a v6 DeFi protocol position to the token cell shape.
  *
@@ -30,12 +44,13 @@ function toTokenCellChainId(
 export function mapDefiProtocolDetailsPositionV2ToToken(
   position: DefiProtocolDetailsPosition,
 ): TokenWithFiatAmount {
-  const { assetReference } = parseCaipAssetType(position.assetId);
+  const { assetNamespace } = parseCaipAssetType(position.assetId);
+  const isNative = assetNamespace === 'slip44';
 
   return {
-    address: assetReference as TokenWithFiatAmount['address'],
+    address: toTokenCellAddress(position),
     title: position.name,
-    symbol: position.name,
+    symbol: position.symbol,
     tokenFiatAmount: position.tokenFiatAmount,
     image: position.tokenImage,
     balance: position.normalizedBalance.toString(),
@@ -44,5 +59,6 @@ export function mapDefiProtocolDetailsPositionV2ToToken(
     decimals: position.decimals,
     chainId: toTokenCellChainId(position.chainId),
     assetId: position.assetId,
+    isNative,
   } as TokenWithFiatAmount;
 }

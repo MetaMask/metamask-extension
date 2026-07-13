@@ -12,11 +12,6 @@ import {
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from '../../token-cell/cells';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  PositionTypeLabels,
-  type PositionTypeLabelKey,
-} from '../constants/position-type-labels';
 import type { DefiProtocolDetailsPosition } from '../utils/group-defi-protocol-details';
 import { mapDefiProtocolDetailsPositionV2ToToken } from '../utils/map-defi-protocol-details-position-v2';
 
@@ -29,7 +24,6 @@ type DefiDetailsPositionCellV2Props = {
 export default function DefiDetailsPositionCellV2({
   position,
 }: DefiDetailsPositionCellV2Props) {
-  const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
 
   const token = useMemo(
@@ -50,11 +44,6 @@ export default function DefiDetailsPositionCellV2({
     [token, tokenDisplayInfo],
   );
 
-  const positionTypeLabel = t(
-    PositionTypeLabels[position.positionType as PositionTypeLabelKey] ??
-      position.positionType,
-  );
-
   return (
     <GenericAssetCellLayout
       badge={
@@ -68,7 +57,12 @@ export default function DefiDetailsPositionCellV2({
       headerLeftDisplay={
         <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
           <AssetCellTitle title={displayToken.title} />
-          <Tag label={positionTypeLabel} />
+          {position.positionType ? (
+            <Tag
+              label={position.positionType}
+              data-testid="defi-details-position-type-tag"
+            />
+          ) : null}
         </Box>
       }
       headerRightDisplay={
