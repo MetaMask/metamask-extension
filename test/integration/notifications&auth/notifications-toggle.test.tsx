@@ -37,8 +37,9 @@ const selectors = {
   notificationsSettingsButton: 'notifications-settings-button',
   notificationsSettingsAllowToggleInput:
     'notifications-settings-allow-toggle-input',
-  marketingSection: 'notifications-settings-section-marketing',
-  marketingInAppToggleInput: 'marketing-in-app-notifications-toggle-input',
+  marketingSection: 'notifications-settings-section-updatesAndRewards',
+  marketingInAppToggleInput:
+    'updatesAndRewards-in-app-notifications-toggle-input',
 };
 
 const clickElement = async (testId: string) => {
@@ -48,7 +49,12 @@ const clickElement = async (testId: string) => {
 };
 
 const waitForElement = async (testId: string) => {
-  expect(await screen.findByTestId(testId)).toBeInTheDocument();
+  // The notification category catalog is fetched asynchronously (with an
+  // artificial delay to exercise the loading skeleton), so section-level
+  // elements can take a bit longer than the default findBy timeout to appear.
+  expect(
+    await screen.findByTestId(testId, {}, { timeout: 5000 }),
+  ).toBeInTheDocument();
 };
 
 const verifyMetametricsEvent = async (
@@ -221,7 +227,7 @@ describe('Notifications Toggle', () => {
         {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'marketing_inAppNotificationsEnabled',
+          settings_type: 'updatesAndRewards_inAppNotificationsEnabled',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           old_value: false,
