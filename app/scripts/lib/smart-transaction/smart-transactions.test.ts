@@ -139,7 +139,7 @@ function withRequest<ReturnValue>(
     actions: [
       'TransactionController:getNonceLock',
       'TransactionController:getTransactions',
-      'TransactionController:updateTransaction',
+      'TransactionController:failTransaction',
       'RemoteFeatureFlagController:getState',
     ],
     events: [

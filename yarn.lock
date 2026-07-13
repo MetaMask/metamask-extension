@@ -7777,30 +7777,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^24.2.2":
-  version: 24.2.2
-  resolution: "@metamask/smart-transactions-controller@npm:24.2.2"
+"@metamask/smart-transactions-controller@npm:25.0.0":
+  version: 25.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:25.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.23.9"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/keccak256": "npm:^5.8.0"
     "@ethersproject/transactions": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.2.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/network-controller": "npm:^32.0.0"
-    "@metamask/polling-controller": "npm:^16.0.6"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/polling-controller": "npm:^16.0.8"
     "@metamask/profile-sync-controller": "npm:^28.2.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^68.0.1"
+    "@metamask/transaction-controller": "npm:^68.3.0"
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     reselect: "npm:^5.1.1"
-  checksum: 10/fd23c3132733185040532053db831d9d231c5d70bbfadec587d86037535332ac96689ea2b7aa535724182261bbeddb66223209efad4513f89a895ced6be5b702
+  checksum: 10/fadc5632b4efd1de8b027fddde459f575989ee252500ad21e7d2ed03fd720b362122228c62d7399e17b103eab592d492a4cb26270c52c9b9c106ebe76ba9c18b
   languageName: node
   linkType: hard
 
@@ -8255,7 +8255,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^68.0.0, @metamask/transaction-controller@npm:^68.0.1, @metamask/transaction-controller@npm:^68.1.1, @metamask/transaction-controller@npm:^68.2.0, @metamask/transaction-controller@npm:^68.2.2, @metamask/transaction-controller@npm:^68.3.0, @metamask/transaction-controller@npm:^68.4.0":
+"@metamask/transaction-controller@npm:^68.0.0, @metamask/transaction-controller@npm:^68.1.1, @metamask/transaction-controller@npm:^68.2.0, @metamask/transaction-controller@npm:^68.2.2, @metamask/transaction-controller@npm:^68.3.0, @metamask/transaction-controller@npm:^68.4.0":
   version: 68.4.0
   resolution: "@metamask/transaction-controller@npm:68.4.0"
   dependencies:
@@ -33089,7 +33089,7 @@ __metadata:
     "@metamask/shield-controller": "npm:^5.1.2"
     "@metamask/signature-controller": "npm:^39.2.6"
     "@metamask/skills": "npm:^0.1.0"
-    "@metamask/smart-transactions-controller": "npm:^24.2.2"
+    "@metamask/smart-transactions-controller": "npm:25.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-account-service": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
@@ -33111,7 +33111,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.5.2"
-    "@metamask/transaction-controller": "npm:^68.2.2"
+    "@metamask/transaction-controller": "npm:^68.3.0"
     "@metamask/transaction-pay-controller": "npm:^23.17.2"
     "@metamask/tron-wallet-snap": "npm:^1.29.1"
     "@metamask/user-operation-controller": "npm:^41.2.5"
