@@ -164,6 +164,8 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@tanstack/query-core": "5.101.2",
+    "@tanstack/react-query": "5.101.2",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
@@ -436,7 +438,7 @@
     "@metamask/providers": "^22.1.1",
     "@metamask/ramps-controller": "^15.0.0",
     "@metamask/rate-limit-controller": "^7.0.0",
-    "@metamask/react-data-query": "^0.2.0",
+    "@metamask/react-data-query": "patch:@metamask/react-data-query@npm%3A0.2.0#~/.yarn/patches/@metamask-react-data-query-npm-0.2.0-1e42f0d304.patch",
     "@metamask/remote-feature-flag-controller": "^4.2.2",
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",

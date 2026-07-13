@@ -7624,7 +7624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/react-data-query@npm:^0.2.0":
+"@metamask/react-data-query@npm:0.2.0":
   version: 0.2.0
   resolution: "@metamask/react-data-query@npm:0.2.0"
   dependencies:
@@ -7637,6 +7637,22 @@ __metadata:
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-native: "*"
   checksum: 10/c54a9943bb68ad46ad9964864d4ee81604e61216ebed00026a1a4681a1e1091b6e413b9812d25e38d028493f3c75e91c8102b9d1c0232f409cd6f1dd4d22b211
+  languageName: node
+  linkType: hard
+
+"@metamask/react-data-query@patch:@metamask/react-data-query@npm%3A0.2.0#~/.yarn/patches/@metamask-react-data-query-npm-0.2.0-1e42f0d304.patch":
+  version: 0.2.0
+  resolution: "@metamask/react-data-query@patch:@metamask/react-data-query@npm%3A0.2.0#~/.yarn/patches/@metamask-react-data-query-npm-0.2.0-1e42f0d304.patch::version=0.2.0&hash=923ab2"
+  dependencies:
+    "@metamask/base-data-service": "npm:^0.1.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^4.43.0"
+    "@tanstack/react-query": "npm:^4.43.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-native: "*"
+  checksum: 10/5715f320164ebb6a4333dedc22dc0066905ec464b259a7dad9675ad8ef9907073d8c49f002daa994220764f2b67d9461a3529b2f6e3a837340e600458e75ca29
   languageName: node
   linkType: hard
 
@@ -14832,40 +14848,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:4.44.0, @tanstack/query-core@npm:^4.43.0":
-  version: 4.44.0
-  resolution: "@tanstack/query-core@npm:4.44.0"
-  checksum: 10/f7f5c69cb2d44b58e1a9bfaa304a82724bb49f0ff63fd3abdfe377f15825ad910e1d31dd529d94e0650ff17229930eef2f54e281dbe99fa6cbd6a85e7c27bb9d
-  languageName: node
-  linkType: hard
-
-"@tanstack/query-core@npm:5.101.2, @tanstack/query-core@npm:^5.62.16":
+"@tanstack/query-core@npm:5.101.2":
   version: 5.101.2
   resolution: "@tanstack/query-core@npm:5.101.2"
   checksum: 10/567af5e3c21628745a08c1a5054d838597bc620dcbbeabe20cdd6ccffdcca85a8d38128f6e80829b6e04d10f79ca793a7dd8fddc8a3d6bef10c2d580ae214c7d
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^4.43.0":
-  version: 4.44.0
-  resolution: "@tanstack/react-query@npm:4.44.0"
-  dependencies:
-    "@tanstack/query-core": "npm:4.44.0"
-    use-sync-external-store: "npm:^1.6.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-native: "*"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 10/1eda263fbabfbb0ec7fd9444c4240b62ba5e80205b652a2d82a28a7dfb5a19a626a7e58094b4b9f71edf16085473f9b1238c7796ce6e8925bca3aefc9f18a49b
-  languageName: node
-  linkType: hard
-
-"@tanstack/react-query@npm:^5.62.16":
+"@tanstack/react-query@npm:5.101.2":
   version: 5.101.2
   resolution: "@tanstack/react-query@npm:5.101.2"
   dependencies:
@@ -33090,7 +33080,7 @@ __metadata:
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/ramps-controller": "npm:^15.0.0"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
-    "@metamask/react-data-query": "npm:^0.2.0"
+    "@metamask/react-data-query": "patch:@metamask/react-data-query@npm%3A0.2.0#~/.yarn/patches/@metamask-react-data-query-npm-0.2.0-1e42f0d304.patch"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
@@ -43608,7 +43598,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.6.0":
+"use-sync-external-store@npm:^1.0.0":
   version: 1.6.0
   resolution: "use-sync-external-store@npm:1.6.0"
   peerDependencies:
