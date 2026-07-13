@@ -3180,50 +3180,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setServiceWorkerKeepAlivePreference', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('sends a value to background', async () => {
-      const store = mockStore();
-      const setServiceWorkerKeepAlivePreferenceStub = sinon.stub().resolves();
-
-      setBackgroundConnection({
-        setServiceWorkerKeepAlivePreference:
-          setServiceWorkerKeepAlivePreferenceStub,
-      });
-
-      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(true));
-      expect(setServiceWorkerKeepAlivePreferenceStub.callCount).toStrictEqual(
-        1,
-      );
-      expect(setServiceWorkerKeepAlivePreferenceStub.calledWith(true)).toBe(
-        true,
-      );
-    });
-
-    it('errors when setServiceWorkerKeepAlivePreference in background throws', async () => {
-      const store = mockStore();
-      const setServiceWorkerKeepAlivePreferenceStub = sinon
-        .stub()
-        .rejects(new Error('error'));
-
-      setBackgroundConnection({
-        setServiceWorkerKeepAlivePreference:
-          setServiceWorkerKeepAlivePreferenceStub,
-      });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(false));
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setParticipateInMetaMetrics', () => {
     it('calls background with true when opting in', async () => {
       const store = mockStore();

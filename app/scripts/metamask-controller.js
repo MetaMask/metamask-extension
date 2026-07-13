@@ -2722,10 +2722,6 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
-      setServiceWorkerKeepAlivePreference:
-        preferencesController.setServiceWorkerKeepAlivePreference.bind(
-          preferencesController,
-        ),
       markPasswordForgotten: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:markPasswordForgotten',
