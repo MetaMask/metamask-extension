@@ -91,6 +91,8 @@ export class QrSyncController extends BaseController<
 
   #syncOfferTimeoutId: NodeJS.Timeout | null = null;
 
+  #otpTimeoutId: NodeJS.Timeout | null = null;
+
   #clientEventHandlers: {
     sessionRequest: (request: SessionRequest) => void;
     message: (message: unknown) => void;
@@ -140,7 +142,8 @@ export class QrSyncController extends BaseController<
         code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
         message: QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
       });
-      throw error;
+      log.error('QrSyncController: failed to create session', error);
+      this.#cleanupSession({ cancelOtp: true });
     } finally {
       this.#finishSubmission();
     }
@@ -157,6 +160,7 @@ export class QrSyncController extends BaseController<
 
     try {
       await this.#otpSubmitCallback(otp.trim());
+      this.#clearOtpTimeout();
 
       this.update((state) => {
         state.qrSyncPhase = QR_SYNC_PHASES.AWAITING_SYNC_OFFER;
@@ -361,6 +365,7 @@ export class QrSyncController extends BaseController<
     assertQrSyncPhase(this.state.qrSyncPhase, [
       QR_SYNC_PHASES.AWAITING_OTP_INPUT,
     ]);
+    this.#clearOtpTimeout();
     await this.#notifyPeerCancel();
     this.#cleanupSession({ cancelOtp: true });
 
@@ -510,7 +515,32 @@ export class QrSyncController extends BaseController<
     //   type: QrSyncActionTypes.OTP_DISPLAY_GRANT,
     // });
 
+    this.#scheduleOtpTimeout();
+
     this.#finishSubmission();
+  }
+
+  #scheduleOtpTimeout(): void {
+    this.#clearOtpTimeout();
+
+    this.#otpTimeoutId = setTimeout(() => {
+      if (this.state.qrSyncPhase !== QR_SYNC_PHASES.AWAITING_OTP_INPUT) {
+        return;
+      }
+
+      // set error to OTP expired
+      this.#setError({
+        code: QrSyncErrorCodes.OTP_EXPIRED,
+        message: QrSyncErrorMessages.OTP_EXPIRED,
+      });
+    }, QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
+  }
+
+  #clearOtpTimeout(): void {
+    if (this.#otpTimeoutId !== null) {
+      clearTimeout(this.#otpTimeoutId);
+      this.#otpTimeoutId = null;
+    }
   }
 
   #handleMessage(message: unknown): void {
@@ -685,6 +715,8 @@ export class QrSyncController extends BaseController<
   }
 
   #cleanupSession({ cancelOtp = false }: { cancelOtp?: boolean } = {}): void {
+    this.#clearOtpTimeout();
+
     if (this.#syncOfferDeferred) {
       this.#rejectSyncOffer(
         new Error(QrSyncErrorMessages.SYNC_SESSION_ENDED_BEFORE_SYNC_OFFER),

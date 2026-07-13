@@ -448,15 +448,33 @@ describe('QrSyncController', () => {
       const { controller } = setupController();
       mockMwp.connect.mockRejectedValueOnce(new Error('Relay unavailable'));
 
-      await expect(controller.createSession()).rejects.toThrow(
-        'Relay unavailable',
-      );
+      await controller.createSession();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
         message: 'Relay unavailable',
       });
+    });
+
+    it('cancels OTP and cleans up when connect fails during handshake', async () => {
+      const cancelOtp = jest.fn();
+      const { controller } = setupController();
+
+      mockMwp.connect.mockImplementationOnce(async () => {
+        mockEmitSessionRequest();
+        mockEmitOtpRequired(jest.fn().mockResolvedValue(undefined), cancelOtp);
+        throw new Error('Relay unavailable');
+      });
+
+      await controller.createSession();
+
+      expect(cancelOtp).toHaveBeenCalledTimes(1);
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncQrPayload).toBeNull();
     });
 
     it('marks the session as QR expired when the handshake request expires', async () => {
@@ -467,11 +485,11 @@ describe('QrSyncController', () => {
       );
       mockMwp.connect.mockRejectedValueOnce(expiredError);
 
-      await expect(controller.createSession()).rejects.toThrow(
-        'Did not receive handshake offer from wallet in time.',
-      );
+      await controller.createSession();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.QR_EXPIRED,
         message: 'Did not receive handshake offer from wallet in time.',
@@ -534,6 +552,33 @@ describe('QrSyncController', () => {
         expect(controller.state.qrSyncError).toStrictEqual({
           code: QrSyncErrorCodes.SESSION_EXPIRED,
           message: QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT,
+        });
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('fails the session and cancels OTP when OTP submission times out', async () => {
+      const cancelOtp = jest.fn();
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+
+      jest.useFakeTimers();
+      try {
+        mockEmitOtpRequired(jest.fn(), cancelOtp);
+
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+        );
+
+        expect(cancelOtp).toHaveBeenCalledTimes(1);
+        expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+        expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+        expect(controller.state.qrSyncQrPayload).toBeNull();
+        expect(controller.state.qrSyncError).toStrictEqual({
+          code: QrSyncErrorCodes.OTP_EXPIRED,
+          message: QrSyncErrorMessages.OTP_EXPIRED,
         });
       } finally {
         jest.useRealTimers();

@@ -99,6 +99,7 @@ export const QrSyncErrorMessages = {
   SYNC_SESSION_ENDED_BEFORE_SYNC_OFFER: 'Sync session ended before sync offer',
   SYNC_SESSION_ENCOUNTERED_ERROR: 'The sync session encountered an error.',
   OTP_VALIDATION_FAILED: 'Failed to validate OTP',
+  OTP_EXPIRED: 'OTP expired.',
   SYNC_SESSION_CANCELLED_BY_PEER: 'Sync session cancelled by peer',
   SYNC_FAILED_TO_SEND_MESSAGE: 'Failed to send message to mobile wallet client',
   PREMATURE_SYNC_OFFER_RECEIVED: 'Premature sync offer received',
