@@ -26,6 +26,7 @@ jest.mock('../../../hooks/bridge/useBridgeNavigation', () => ({
 
 const mockOpenBridgeExperience = jest.fn();
 jest.mock('../../../hooks/bridge/useBridging', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => ({
     openBridgeExperience: mockOpenBridgeExperience,
