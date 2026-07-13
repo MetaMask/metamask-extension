@@ -15,7 +15,11 @@ function getIsStellarEnabled(
     );
 
     return isMultichainFeatureEnabled(
+      // Individual feature flag for stellar accounts
       remoteFeatureFlagState?.remoteFeatureFlags?.stellarAccounts,
+    ) && isMultichainFeatureEnabled(
+      // Individual feature flag for asset enrichment
+      remoteFeatureFlagState?.remoteFeatureFlags?.assetEnrichment,
     );
   } catch {
     return false;

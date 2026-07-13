@@ -185,7 +185,9 @@ const stellarAssetsControllerMetadata: StateMetadata<StellarAssetsControllerStat
   };
 
 /**
- * Caches per-account Stellar asset enrichment from the wallet snap.
+ * Transitional controller that caches per-account Stellar asset enrichment from
+ * the wallet snap. It bridges Stellar snap asset data until Stellar snap support
+ * is integrated with the Accounts API in the unified assets controller.
  */
 export class StellarAssetsController extends BaseController<
   typeof CONTROLLER,
