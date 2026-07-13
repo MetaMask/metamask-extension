@@ -35,7 +35,7 @@ export function useStateSyncHealth(isSyncing: boolean): void {
   // Track when syncing started / stopped without triggering re-renders
   useEffect(() => {
     if (isSyncing) {
-      syncStartTimeRef.current = syncStartTimeRef.current ?? Date.now();
+      syncStartTimeRef.current = Date.now();
     } else {
       syncStartTimeRef.current = null;
     }
