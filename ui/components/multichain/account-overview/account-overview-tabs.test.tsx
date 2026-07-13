@@ -8,6 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
@@ -197,7 +198,13 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   const PERPS_TAB_TESTID = 'account-overview__perps-tab';
   let originalPerpsEnabled: string | undefined;
 
-  const trackEvent = mockTrackEvent;
+  const trackEvent = jest.fn(() => Promise.resolve());
+  const metaMetricsContext = {
+    trackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   const renderTabs = ({
     variantFlag,
@@ -229,13 +236,15 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     });
 
     return renderWithProvider(
-      <AccountOverviewTabs
-        showTokens={showTokens}
-        showNfts={false}
-        showActivity={false}
-        setBasicFunctionalityModalOpen={jest.fn()}
-        onSupportLinkClick={jest.fn()}
-      />,
+      <MetaMetricsContext.Provider value={metaMetricsContext}>
+        <AccountOverviewTabs
+          showTokens={showTokens}
+          showNfts={false}
+          showActivity={false}
+          setBasicFunctionalityModalOpen={jest.fn()}
+          onSupportLinkClick={jest.fn()}
+        />
+      </MetaMetricsContext.Provider>,
       store,
       route,
     );
@@ -332,7 +341,7 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     fireEvent.click(getByText(messages.perps.message));
 
-    expect(trackEvent).not.toHaveBeenCalledWith(
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
       expect.objectContaining({
         name: MetaMetricsEventName.PerpsScreenViewed,
       }),
@@ -354,7 +363,7 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     expect(trackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.ExperimentViewed,
+        event: MetaMetricsEventName.ExperimentViewed,
         properties: expect.objectContaining({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           experiment_id: PERPS_TAB_BADGE_AB_KEY,
@@ -378,7 +387,7 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     expect(trackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.ExperimentViewed,
+        event: MetaMetricsEventName.ExperimentViewed,
         properties: expect.objectContaining({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           variation_id: 'control',
@@ -392,7 +401,7 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     expect(trackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.ExperimentViewed,
+        event: MetaMetricsEventName.ExperimentViewed,
       }),
     );
   });
@@ -402,7 +411,7 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     expect(trackEvent).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.ExperimentViewed,
+        event: MetaMetricsEventName.ExperimentViewed,
       }),
     );
   });
