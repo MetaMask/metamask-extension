@@ -1,7 +1,7 @@
 import type {
   QrSyncSimulatorAction,
   SimulatorParams,
-} from '../../../../app/scripts/controllers/qr-sync/mocks/mobile-wallet-simulator';
+} from '../../helpers/qr-sync/mobile-wallet-simulator';
 import { getServerMochaToBackground } from '../../background-socket/server-mocha-to-background';
 import { WALLET_PASSWORD, QR_SYNC_E2E_OTP } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -12,7 +12,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SyncAccountsSettingsPage from '../../page-objects/pages/settings/sync-accounts-settings-page';
 import { Driver } from '../../webdriver/driver';
 
-export function qrSyncSimulate(
+function qrSyncSimulate(
   action: QrSyncSimulatorAction,
   params?: SimulatorParams,
 ): void {
@@ -30,7 +30,7 @@ export function qrSyncSimulate(
  * @param driver - The WebDriver instance.
  * @returns The Sync accounts page object.
  */
-export async function navigateToSyncAccountsSettings(
+async function navigateToSyncAccountsSettings(
   driver: Driver,
 ): Promise<SyncAccountsSettingsPage> {
   const headerNavbar = new HeaderNavbar(driver);

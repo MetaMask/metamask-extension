@@ -5,9 +5,6 @@ import {
 } from '@metamask/mobile-wallet-protocol-core';
 import { DappClient } from '@metamask/mobile-wallet-protocol-dapp-client';
 import type { KeyManager } from './key-manager';
-import { registerQrSyncE2eBridge } from './mocks/qr-sync-e2e-bridge';
-import { MobileWalletSimulator } from './mocks/mobile-wallet-simulator';
-import { E2eMwpMockClient } from './mocks/e2e-mwp-mock-client';
 
 export type MwpStackFactoryOptions = {
   kvStore: IKVStore;
@@ -52,6 +49,19 @@ export async function createProductionMwpStack(
  * Creates the in-extension MWP mock stack for QrSync E2E tests.
  */
 export async function createE2eMwpStack(): Promise<DappClient> {
+  // Use `require` to make it easier to exclude this test code from the Browserify build.
+  /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
+  const {
+    E2eMwpMockClient,
+  } = require('../../../../test/e2e/helpers/qr-sync/e2e-mwp-mock-client');
+  const {
+    MobileWalletSimulator,
+  } = require('../../../../test/e2e/helpers/qr-sync/mobile-wallet-simulator');
+  const {
+    registerQrSyncE2eBridge,
+  } = require('../../../../test/e2e/helpers/qr-sync/qr-sync-e2e-bridge');
+  /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
+
   const client = new E2eMwpMockClient();
   const simulator = new MobileWalletSimulator(client);
   simulator.bind();

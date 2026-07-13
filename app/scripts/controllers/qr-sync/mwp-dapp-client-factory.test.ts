@@ -7,10 +7,10 @@ import {
   type IKVStore,
 } from '@metamask/mobile-wallet-protocol-core';
 import { DappClient } from '@metamask/mobile-wallet-protocol-dapp-client';
+import { E2eMwpMockClient } from '../../../../test/e2e/helpers/qr-sync/e2e-mwp-mock-client';
+import { MobileWalletSimulator } from '../../../../test/e2e/helpers/qr-sync/mobile-wallet-simulator';
+import { registerQrSyncE2eBridge } from '../../../../test/e2e/helpers/qr-sync/qr-sync-e2e-bridge';
 import type { KeyManager } from './key-manager';
-import { E2eMwpMockClient } from './mocks/e2e-mwp-mock-client';
-import { MobileWalletSimulator } from './mocks/mobile-wallet-simulator';
-import { registerQrSyncE2eBridge } from './mocks/qr-sync-e2e-bridge';
 import {
   createE2eMwpStack,
   createProductionMwpStack,
@@ -28,7 +28,7 @@ const mockKeyManager: KeyManager = {
   decrypt: jest.fn(),
 };
 
-jest.mock('./mocks/qr-sync-e2e-bridge', () => ({
+jest.mock('../../../../test/e2e/helpers/qr-sync/qr-sync-e2e-bridge', () => ({
   registerQrSyncE2eBridge: jest.fn(),
 }));
 

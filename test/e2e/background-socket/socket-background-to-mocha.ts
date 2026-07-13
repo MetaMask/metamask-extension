@@ -1,6 +1,6 @@
 import log from 'loglevel';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { handleQrSyncSimulateMessage } from '../../../app/scripts/controllers/qr-sync/mocks/qr-sync-e2e-bridge';
+import { handleQrSyncSimulateMessage } from '../helpers/qr-sync/qr-sync-e2e-bridge';
 import { MessageType, WindowProperties } from './types';
 
 /**
