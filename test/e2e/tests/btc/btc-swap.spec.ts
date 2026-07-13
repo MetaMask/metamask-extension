@@ -244,10 +244,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         // Submit the swap quote
         await bridgePage.submitQuote();
 
-        // Navigate to activity list and verify the V3 pending bridge row.
-        // BTC keyring bridge history stays pending in this mock setup; V3 titles
-        // use activity_bridge_pending_title ("Bridging $1"), not V2 "Bridge to …".
-        // confirmedTx must be 0: the fixture also has a confirmed "Received BTC".
+        // Navigate to activity list and verify the pending bridge transaction
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkPendingBridgeTransactionActivity(1);
@@ -300,7 +297,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         // Submit the swap quote
         await bridgePage.submitQuote();
 
-        // Navigate to activity list and verify the V3 pending bridge row.
+        // Navigate to activity list and verify the pending bridge transaction
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkPendingBridgeTransactionActivity(1);

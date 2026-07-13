@@ -174,9 +174,7 @@ export const AccountOverviewTabs = ({
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      // ActivityScreenOpened is deferred to the list component so it can
-      // include accurate is_empty / pending_transactions after all data sources
-      // have loaded.
+
       if (
         tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
         tabName !== AccountOverviewTabKey.Activity

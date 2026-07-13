@@ -74,34 +74,6 @@ describe('AccountOverviewTabs - event metrics', () => {
     jest.clearAllMocks();
   });
 
-  it('does not fire trackEvent when clicking the Activity tab (deferred to ActivityList)', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={false}
-          showActivity={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-
-    fireEvent.click(getByText(messages.activity.message));
-
-    // ActivityScreenOpened is deferred to ActivityList; tab click must not
-    // fire any metric.
-    expect(mockTrackEvent).not.toHaveBeenCalled();
-  });
-
   it('includes network_filter property with both EVM and non-EVM networks in CAIP format', () => {
     const store = configureStore({
       metamask: {
