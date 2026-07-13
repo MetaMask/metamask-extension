@@ -1,7 +1,7 @@
 import type {
   QrSyncSimulatorAction,
   SimulatorParams,
-} from '../../../app/scripts/controllers/qr-sync/e2e/types';
+} from '../../../app/scripts/controllers/qr-sync/mocks/mobile-wallet-simulator';
 
 export type MessageType = {
   command:

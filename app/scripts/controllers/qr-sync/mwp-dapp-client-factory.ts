@@ -5,9 +5,9 @@ import {
 } from '@metamask/mobile-wallet-protocol-core';
 import { DappClient } from '@metamask/mobile-wallet-protocol-dapp-client';
 import type { KeyManager } from './key-manager';
-import { registerQrSyncE2eBridge } from './e2e/qr-sync-e2e-bridge';
-import { MobileWalletSimulator } from './e2e/mobile-wallet-simulator';
-import { E2eMwpMockClient } from './e2e/e2e-mwp-mock-client';
+import { registerQrSyncE2eBridge } from './mocks/qr-sync-e2e-bridge';
+import { MobileWalletSimulator } from './mocks/mobile-wallet-simulator';
+import { E2eMwpMockClient } from './mocks/e2e-mwp-mock-client';
 
 export type MwpStackFactoryOptions = {
   kvStore: IKVStore;

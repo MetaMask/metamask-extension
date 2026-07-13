@@ -1,6 +1,9 @@
 import log from 'loglevel';
-import type { MobileWalletSimulator } from './mobile-wallet-simulator';
-import type { QrSyncSimulatorAction, SimulatorParams } from './types';
+import type {
+  MobileWalletSimulator,
+  QrSyncSimulatorAction,
+  SimulatorParams,
+} from './mobile-wallet-simulator';
 
 let simulatorInstance: MobileWalletSimulator | null = null;
 

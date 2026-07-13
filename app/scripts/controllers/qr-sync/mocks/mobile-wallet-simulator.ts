@@ -1,12 +1,24 @@
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 import { QrSyncActionTypes, QrSyncMessageVersion } from '../constants';
-import { QR_SYNC_E2E_OTP } from './constants';
 import { E2eMwpMockClient } from './e2e-mwp-mock-client';
-import type {
-  QrSyncSimulatorAction,
-  SimulatorParams,
-  SimulatorState,
-} from './types';
+
+export type QrSyncSimulatorAction =
+  | 'mobileScanned'
+  | 'deliverSyncOffer'
+  | 'deliverSyncCompleted'
+  | 'deliverSyncCancel'
+  | 'deliverSyncError'
+  | 'reset';
+
+export type SimulatorParams = {
+  otp?: string;
+  isOnboardingCompleted?: boolean;
+  sessionId?: string;
+  errorMessage?: string;
+};
+
+/** Default OTP for QrSync E2E scenarios (matches mobile simulator). */
+export const QR_SYNC_E2E_OTP = '123456';
 
 /**
  * Scripts MetaMask Mobile behaviour for QrSync E2E by driving
@@ -58,7 +70,7 @@ export class MobileWalletSimulator {
     }
   }
 
-  getState(): SimulatorState {
+  getState() {
     return {
       sessionId: this.#client.sessionRequest?.id ?? null,
       otp: this.#otp,

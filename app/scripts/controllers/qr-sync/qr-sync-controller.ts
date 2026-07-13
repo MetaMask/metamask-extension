@@ -52,7 +52,7 @@ import {
   MESSENGER_EXPOSED_METHODS,
 } from './metadata';
 import { InMemoryKvStore } from './kv-store';
-import { getMwpDappClient } from './mwp-stack-factory';
+import { getMwpDappClient } from './mwp-dapp-client-factory';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -410,12 +410,10 @@ export class QrSyncController extends BaseController<
 
   #registerClientEventHandlers(client: DappClient): void {
     const sessionRequest = (request: SessionRequest) => {
-      console.log('QrSyncController: session request', request);
       this.#handleSessionRequest(request);
     };
 
     const message = (messagePayload: unknown) => {
-      console.log('QrSyncController: message', messagePayload);
       this.#handleMessage(messagePayload);
     };
 

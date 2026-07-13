@@ -1,15 +1,29 @@
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  buildQrSyncFixtures,
-  QR_SYNC_E2E_OTP,
-  QR_SYNC_E2E_PASSWORD,
-} from './constants';
-import { qrSyncSimulate } from './qr-sync-e2e-bridge';
 import SettingsPage from 'test/e2e/page-objects/pages/settings/settings-page';
 import SyncAccountsSettingsPage from 'test/e2e/page-objects/pages/settings/sync-accounts-settings-page';
 import HeaderNavbar from 'test/e2e/page-objects/pages/header-navbar';
+import { getServerMochaToBackground } from 'test/e2e/background-socket/server-mocha-to-background';
+import type {
+  QrSyncSimulatorAction,
+  SimulatorParams,
+} from 'app/scripts/controllers/qr-sync/mocks/mobile-wallet-simulator';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import { WALLET_PASSWORD, QR_SYNC_E2E_OTP } from 'test/e2e/constants';
+
+export function qrSyncSimulate(
+  action: QrSyncSimulatorAction,
+  params?: SimulatorParams,
+): void {
+  const mock = getServerMochaToBackground();
+  mock.send({
+    command: 'qrSyncSimulate',
+    action,
+    params,
+  });
+  console.log('QrSyncSimulate', action, params);
+}
 
 /**
  * Opens Settings and navigates to Sync accounts, waiting for the QR code.
@@ -34,17 +48,14 @@ export async function navigateToSyncAccountsSettings(
 }
 
 describe('QrSync', function () {
-  this.timeout(120_000);
-
-  it('syncs a single HD wallet to mobile (happy path)', async function () {
+  it('syncs a single HD wallet to mobile', async function () {
     await withFixtures(
       {
-        fixtures: buildQrSyncFixtures(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await driver.delay(10_000);
-        await login(driver, { password: QR_SYNC_E2E_PASSWORD });
+        await login(driver, { password: WALLET_PASSWORD });
 
         const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
 
@@ -57,7 +68,7 @@ describe('QrSync', function () {
 
         qrSyncSimulate('deliverSyncOffer');
         await syncAccountsPage.waitForPasswordScreen();
-        await syncAccountsPage.enterPassword(QR_SYNC_E2E_PASSWORD);
+        await syncAccountsPage.enterPassword(WALLET_PASSWORD);
 
         await syncAccountsPage.waitForSyncButton();
         await syncAccountsPage.confirmSync();

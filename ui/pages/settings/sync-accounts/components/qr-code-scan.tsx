@@ -98,12 +98,10 @@ const QrCodeScan = () => {
         marginTop={4}
       >
         <Box
-
           style={{
             opacity: shouldDimQr ? 0.3 : 1,
             filter: shouldDimQr ? 'blur(4px)' : 'none',
           }}
-
           data-testid={qrPayload ? 'qr-sync-qr-code' : 'qr-sync-qr-loading'}
         >
           {displayedPayload ? (
