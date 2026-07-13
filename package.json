@@ -6,12 +6,6 @@
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
-  "previewBuilds": {
-    "@metamask/transaction-controller": {
-      "type": "breaking",
-      "previewVersion": "68.0.0-preview-1a8241c"
-    }
-  },
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
@@ -462,12 +456,12 @@
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.2.0",
-    "@metamask/transaction-controller": "^68.2.2",
+    "@metamask/transaction-controller": "^69.0.0",
     "@metamask/transaction-pay-controller": "^23.17.2",
     "@metamask/tron-wallet-snap": "^1.29.1",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^11.11.0",
-    "@metamask/wallet": "^7.0.0",
+    "@metamask/wallet": "^7.0.1",
     "@mui/material": "^5.18.0",
     "@mui/system": "^5.18.0",
     "@mui/x-date-pickers": "^7.29.4",
