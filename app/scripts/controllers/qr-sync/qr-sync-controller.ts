@@ -47,7 +47,6 @@ import {
   type QrSyncControllerMessenger,
   type QrSyncControllerState,
   type QrSyncReadyData,
-  type QrSyncError,
   type QrSyncOffer,
 } from './types';
 import {
