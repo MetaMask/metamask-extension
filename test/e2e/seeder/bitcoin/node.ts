@@ -30,8 +30,6 @@ export const BITCOIN_LOCAL_NODE_HOST = '127.0.0.1';
 const BITCOIN_WALLET_NAME = 'metamask-e2e';
 const DEFAULT_BTC_SCRIPT_PUBKEY =
   '0014469d76e8387e11cbe9010c72ee4b748dd9152fa5';
-const MAINNET_GENESIS_BLOCK_HASH =
-  '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
 const PROCESS_OUTPUT_LIMIT = 8_000;
 
 export type BitcoinLocalNodeOptions = {
@@ -183,7 +181,9 @@ export function createEsploraTransaction(
     size: transaction.size,
     status: {
       ...(transaction.blockhash ? { block_hash: transaction.blockhash } : {}),
-      ...(blockHeight ? { block_height: blockHeight } : {}),
+      ...(blockHeight === undefined
+        ? {}
+        : { block_height: blockHeight }),
       ...(transaction.time ? { block_time: transaction.time } : {}),
       confirmed: Boolean(transaction.confirmations),
     },
@@ -326,10 +326,6 @@ export class BitcoinNode {
   }
 
   async getBlockHash(height: number): Promise<string> {
-    if (height === 0) {
-      return MAINNET_GENESIS_BLOCK_HASH;
-    }
-
     return await this.rpc<string>('getblockhash', [height]);
   }
 
@@ -410,35 +406,37 @@ export class BitcoinNode {
       return [];
     }
 
-    const transaction = await this.getVerboseTransaction(this.#fundingTxId);
-    const output = transaction.vout.find(
-      (candidate) => candidate.scriptPubKey.hex === this.#targetScriptPubKey,
-    );
+    const txIds = [this.#fundingTxId, ...this.#broadcastTxIds];
+    const utxos: EsploraUtxo[] = [];
 
-    if (!output) {
-      return [];
+    for (const txId of txIds) {
+      const transaction = await this.getVerboseTransaction(txId);
+      const matchingOutputs = transaction.vout.filter(
+        (candidate) => candidate.scriptPubKey.hex === this.#targetScriptPubKey,
+      );
+
+      for (const output of matchingOutputs) {
+        const unspent = await this.rpc<unknown>('gettxout', [
+          txId,
+          output.n,
+          true,
+        ]);
+
+        if (!unspent) {
+          continue;
+        }
+
+        const esploraTransaction = await this.getTransaction(txId);
+        utxos.push({
+          status: esploraTransaction.status,
+          txid: txId,
+          value: bitcoinToSatoshis(output.value),
+          vout: output.n,
+        });
+      }
     }
 
-    const unspent = await this.rpc<unknown>('gettxout', [
-      this.#fundingTxId,
-      output.n,
-      true,
-    ]);
-
-    if (!unspent) {
-      return [];
-    }
-
-    const esploraTransaction = await this.getTransaction(this.#fundingTxId);
-
-    return [
-      {
-        status: esploraTransaction.status,
-        txid: this.#fundingTxId,
-        value: bitcoinToSatoshis(output.value),
-        vout: output.n,
-      },
-    ];
+    return utxos;
   }
 
   async getTipHash(): Promise<string> {
