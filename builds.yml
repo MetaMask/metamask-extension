@@ -370,7 +370,7 @@ env:
   - NEW_HARDWARE_WALLET_ONBOARDING: false
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
   # (device pairing via QR code scan and verification code).
-  - ADD_DEVICE_SYNC_ENABLED: false
+  - QR_SYNC_ENABLED: false
 
   ###
   # Meta variables

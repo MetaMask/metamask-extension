@@ -28,7 +28,7 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'SEEDLESS_ONBOARDING_ENABLED',
   'METAMASK_SHIELD_ENABLED',
   'PERPS_ENABLED',
-  'ADD_DEVICE_SYNC_ENABLED',
+  'QR_SYNC_ENABLED',
   'ASSETS_UNIFIED_STATE_ENABLED',
   'COMPLIANCE_API_URL',
 ];
@@ -54,7 +54,7 @@ function getVariablesForSetEnvironmentVariables() {
     SEEDLESS_ONBOARDING_ENABLED: 'false',
     METAMASK_SHIELD_ENABLED: 'false',
     PERPS_ENABLED: 'false',
-    ADD_DEVICE_SYNC_ENABLED: 'false',
+    QR_SYNC_ENABLED: 'false',
     ASSETS_UNIFIED_STATE_ENABLED: 'false',
     COMPLIANCE_API_URL: 'https://compliance.example.test',
   });
@@ -100,14 +100,14 @@ describe('setEnvironmentVariables', () => {
       version: '1.0.0',
     });
 
-    expect(variables.get('ADD_DEVICE_SYNC_ENABLED')).toBe('true');
+    expect(variables.get('QR_SYNC_ENABLED')).toBe('true');
     expect(variables.get('IN_TEST')).toBe(true);
   });
 
-  it('respects ADD_DEVICE_SYNC_ENABLED from config for non-test builds', () => {
+  it('respects QR_SYNC_ENABLED from config for non-test builds', () => {
     const variables = getVariablesForSetEnvironmentVariables();
 
-    variables.set('ADD_DEVICE_SYNC_ENABLED', 'true');
+    variables.set('QR_SYNC_ENABLED', 'true');
 
     setEnvironmentVariables({
       buildName: 'MetaMask',
@@ -119,6 +119,6 @@ describe('setEnvironmentVariables', () => {
       version: '1.0.0',
     });
 
-    expect(variables.get('ADD_DEVICE_SYNC_ENABLED')).toBe('true');
+    expect(variables.get('QR_SYNC_ENABLED')).toBe('true');
   });
 });

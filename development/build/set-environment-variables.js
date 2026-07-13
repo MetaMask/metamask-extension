@@ -70,9 +70,9 @@ function setEnvironmentVariables({
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
-    ADD_DEVICE_SYNC_ENABLED: isTestBuild
+    QR_SYNC_ENABLED: isTestBuild
       ? 'true'
-      : variables.getMaybe('ADD_DEVICE_SYNC_ENABLED'),
+      : variables.getMaybe('QR_SYNC_ENABLED'),
     ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
       'ASSETS_UNIFIED_STATE_ENABLED',
     ),
