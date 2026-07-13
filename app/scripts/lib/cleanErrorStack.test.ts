@@ -8,7 +8,8 @@ describe('Clean Error Stack', () => {
   const blankMsgError = new Error();
 
   beforeEach(() => {
-    undefinedErrorName.name = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (undefinedErrorName as any).name = undefined;
     blankErrorName.name = '';
   });
 

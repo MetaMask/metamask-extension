@@ -9,11 +9,20 @@ const fetchWithTimeout = getFetchWithTimeout();
 
 const supportedTopLevelDomains = ['eth'];
 
+type EthProvider = {
+  request: (args: { method: string; params?: unknown[] }) => Promise<string>;
+};
+
 export default function setupEnsIpfsResolver({
   provider,
   getCurrentChainId,
   getIpfsGateway,
   getUseAddressBarEnsResolution,
+}: {
+  provider: EthProvider;
+  getCurrentChainId: () => string;
+  getIpfsGateway: () => string;
+  getUseAddressBarEnsResolution: () => boolean;
 }) {
   // install listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
@@ -30,7 +39,7 @@ export default function setupEnsIpfsResolver({
     },
   };
 
-  async function webRequestDidFail(details) {
+  async function webRequestDidFail(details: { tabId: number; url: string }) {
     const { tabId, url } = details;
     // ignore requests that are not associated with tabs
     // only attempt ENS resolution on mainnet
@@ -54,7 +63,19 @@ export default function setupEnsIpfsResolver({
     attemptResolve({ tabId, name, pathname, search, fragment });
   }
 
-  async function attemptResolve({ tabId, name, pathname, search, fragment }) {
+  async function attemptResolve({
+    tabId,
+    name,
+    pathname,
+    search,
+    fragment,
+  }: {
+    tabId: number;
+    name: string;
+    pathname: string;
+    search: string;
+    fragment: string;
+  }) {
     const ipfsGateway = getIpfsGateway();
     const useAddressBarEnsResolution = getUseAddressBarEnsResolution();
 
@@ -65,7 +86,7 @@ export default function setupEnsIpfsResolver({
       await browser.tabs.update(tabId, { url: 'loading.html' });
     }
 
-    let url = ensSiteUrl;
+    let url: string | null = ensSiteUrl;
 
     // If we're testing ENS domain resolution support,
     // we assume the ENS domains URL

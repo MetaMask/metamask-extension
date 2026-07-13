@@ -5,7 +5,17 @@ import { Contract } from '@ethersproject/contracts';
 import registryAbi from './contracts/registry';
 import resolverAbi from './contracts/resolver';
 
-export default async function resolveEnsToIpfsContentId({ provider, name }) {
+type EthProvider = {
+  request: (args: { method: string; params?: unknown[] }) => Promise<string>;
+};
+
+export default async function resolveEnsToIpfsContentId({
+  provider,
+  name,
+}: {
+  provider: EthProvider;
+  name: string;
+}) {
   const hash = namehash.hash(name);
 
   // lookup registry
@@ -67,7 +77,7 @@ export default async function resolveEnsToIpfsContentId({ provider, name }) {
   );
 }
 
-function hexValueIsEmpty(value) {
+function hexValueIsEmpty(value: string | null | undefined): boolean {
   return [
     undefined,
     null,
@@ -80,10 +90,10 @@ function hexValueIsEmpty(value) {
 /**
  * Returns the registry address for the given chain ID
  *
- * @param {number} chainId - the chain ID
- * @returns {string|null} the registry address if known, null otherwise
+ * @param chainId - the chain ID
+ * @returns the registry address if known, null otherwise
  */
-function getRegistryForChainId(chainId) {
+function getRegistryForChainId(chainId: number): string | null {
   switch (chainId) {
     case 1:
     case 3:

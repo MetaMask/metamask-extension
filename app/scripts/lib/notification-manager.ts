@@ -1,4 +1,5 @@
 import EventEmitter from '@metamask/safe-event-emitter';
+import browser from 'webextension-polyfill';
 import ExtensionPlatform from '../platforms/extension';
 import {
   NOTIFICATION_HEIGHT,
@@ -13,6 +14,14 @@ export const NOTIFICATION_MANAGER_EVENTS = {
  * A collection of methods for controlling the showing and hiding of the notification popup.
  */
 export default class NotificationManager extends EventEmitter {
+  platform: ExtensionPlatform;
+
+  _popupId: number | undefined;
+
+  _setCurrentPopupId: ((id: number | undefined) => void) | undefined;
+
+  _popupAutomaticallyClosed: boolean | undefined;
+
   constructor() {
     super();
     this.platform = new ExtensionPlatform();
@@ -33,13 +42,16 @@ export default class NotificationManager extends EventEmitter {
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
    * notification windows are given a 'popup' type.
    *
-   * @param {Function} setCurrentPopupId - setter of current popup id from appStateController
-   * @param {number} currentPopupId - id of current opened metamask popup window
+   * @param setCurrentPopupId - setter of current popup id from appStateController
+   * @param currentPopupId - id of current opened metamask popup window
    */
-  async showPopup(setCurrentPopupId, currentPopupId) {
+  async showPopup(
+    setCurrentPopupId: (id: number | undefined) => void,
+    currentPopupId: number | undefined,
+  ) {
     this._popupId = currentPopupId;
     this._setCurrentPopupId = setCurrentPopupId;
-    const popup = await this._getPopup(currentPopupId);
+    const popup = await this._getPopup();
     // Bring focus to chrome popup
     if (popup) {
       // bring focus to existing chrome popup
@@ -51,11 +63,11 @@ export default class NotificationManager extends EventEmitter {
       try {
         const lastFocused = await this.platform.getLastFocusedWindow();
         // Position window in top right corner of lastFocused window.
-        top = lastFocused.top;
+        top = lastFocused.top ?? 0;
         // - this is to make sure no error is triggered from polyfill
         // error eg: Invalid value for bounds. Bounds must be at least 50% within visible screen space.
         left = Math.max(
-          lastFocused.left + (lastFocused.width - NOTIFICATION_WIDTH),
+          (lastFocused.left ?? 0) + ((lastFocused.width ?? 0) - NOTIFICATION_WIDTH),
           0,
         );
       } catch (_) {
@@ -87,9 +99,9 @@ export default class NotificationManager extends EventEmitter {
     }
   }
 
-  _onWindowClosed(windowId) {
+  _onWindowClosed(windowId: number) {
     if (windowId === this._popupId) {
-      this._setCurrentPopupId(undefined);
+      this._setCurrentPopupId?.(undefined);
       this._popupId = undefined;
       this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED, {
         automaticallyClosed: this._popupAutomaticallyClosed,
@@ -113,9 +125,9 @@ export default class NotificationManager extends EventEmitter {
    * Given an array of windows, returns the 'popup' that has been opened by MetaMask, or null if no such window exists.
    *
    * @private
-   * @param {Array} windows - An array of objects containing data about the open MetaMask extension windows.
+   * @param windows - An array of objects containing data about the open MetaMask extension windows.
    */
-  _getPopupIn(windows) {
+  _getPopupIn(windows: browser.Windows.Window[] | undefined) {
     return windows
       ? windows.find((win) => {
           // Returns notification popup
