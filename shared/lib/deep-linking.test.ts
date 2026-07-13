@@ -8,16 +8,19 @@ describe('#openCustomProtocol', () => {
     beforeEach(() => {
       windowSpy = jest
         .spyOn(global, 'window', 'get')
-        .mockImplementation(() => ({
-          navigator: {
-            msLaunchUri: mockMsLaunchUri,
-          },
-        }));
+        .mockImplementation(
+          () =>
+            ({
+              navigator: {
+                msLaunchUri: mockMsLaunchUri,
+              },
+            }) as unknown as Window & typeof globalThis,
+        );
     });
 
     afterEach(() => {
       windowSpy.mockRestore();
-      mockMsLaunchUri.mockRestore();
+      mockMsLaunchUri.mockReset();
     });
 
     it('successfully open when protocol found', async () => {
@@ -56,11 +59,14 @@ describe('#openCustomProtocol', () => {
 
       const windowSpy = jest
         .spyOn(global, 'window', 'get')
-        .mockImplementation(() => ({
-          addEventListener: mockAddEventListener,
-          setTimeout: jest.fn(),
-          clearTimeout: clearTimeoutMock,
-        }));
+        .mockImplementation(
+          () =>
+            ({
+              addEventListener: mockAddEventListener,
+              setTimeout: jest.fn(),
+              clearTimeout: clearTimeoutMock,
+            }) as unknown as Window & typeof globalThis,
+        );
 
       await openCustomProtocol('TEST PROTOCOL');
 
@@ -69,7 +75,7 @@ describe('#openCustomProtocol', () => {
 
       windowSpy.mockRestore();
       mockAddEventListener.mockRestore();
-      clearTimeoutMock.mockRestore();
+      clearTimeoutMock.mockReset();
     });
 
     it('throws when protocol not found', async () => {

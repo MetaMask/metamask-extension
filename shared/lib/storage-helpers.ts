@@ -1,13 +1,15 @@
 import localforage from 'localforage';
 
-export async function getStorageItem<T>(key: string): Promise<T | undefined> {
+export async function getStorageItem<TValue>(
+  key: string,
+): Promise<TValue | undefined> {
   try {
     const serializedData = await localforage.getItem<string>(key);
     if (serializedData === null) {
       return undefined;
     }
 
-    return JSON.parse(serializedData) as T;
+    return JSON.parse(serializedData) as TValue;
   } catch (err) {
     return undefined;
   }

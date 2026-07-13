@@ -2,6 +2,11 @@ import { MINUTE, SECOND } from '../constants/time';
 import getFetchWithTimeout from './fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
+type CachedFetchStorageEntry = {
+  cachedResponse?: unknown;
+  cachedTime?: number;
+};
+
 const fetchWithCache = async ({
   url,
   fetchOptions = {},
@@ -39,8 +44,14 @@ const fetchWithCache = async ({
 
   const currentTime = Date.now();
   const cacheKey = `cachedFetch:${url}`;
-  const { cachedResponse, cachedTime } = (await getStorageItem(cacheKey)) || {};
-  if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
+  const { cachedResponse, cachedTime } =
+    ((await getStorageItem(cacheKey)) as CachedFetchStorageEntry | undefined) ||
+    {};
+  if (
+    cachedResponse !== undefined &&
+    cachedTime !== undefined &&
+    currentTime - cachedTime < cacheRefreshTime
+  ) {
     return cachedResponse;
   }
   fetchOptions.headers.set('Content-Type', 'application/json');
