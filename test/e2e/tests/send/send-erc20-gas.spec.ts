@@ -42,7 +42,7 @@ describe('Send ERC20 - Gas Customization', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -115,7 +115,7 @@ describe('Send ERC20 - Gas Customization', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -190,7 +190,7 @@ describe('Send ERC20 - Gas Customization', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },

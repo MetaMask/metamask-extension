@@ -11,6 +11,9 @@ class SendPage {
 
   private readonly continueButton = { testId: 'send-continue-button' };
 
+  private readonly sendAlertAcknowledgeButton =
+    '[data-testid="send-alert-modal-acknowledge-button"]';
+
   private readonly header = {
     tag: 'h4',
     text: 'Send',
@@ -249,6 +252,27 @@ class SendPage {
   async pressContinueButton(): Promise<void> {
     console.log('Pressing continue button');
     await this.driver.clickElement(this.continueButton);
+    await this.acknowledgeSendAlertIfPresent();
+  }
+
+  /**
+   * Acknowledges the first-time recipient send alert when it appears after Continue.
+   * The alert is async; a short wait avoids racing React 18 mount on slower flows.
+   */
+  async acknowledgeSendAlertIfPresent(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.sendAlertAcknowledgeButton, {
+        timeout: 2000,
+      });
+    } catch (error) {
+      if ((error as { name?: string }).name === 'TimeoutError') {
+        console.log('No send alert modal to acknowledge');
+        return;
+      }
+      throw error;
+    }
+    console.log('Acknowledging send alert modal');
+    await this.driver.clickElement(this.sendAlertAcknowledgeButton);
   }
 
   async pressOnAmountInput(key: string): Promise<void> {

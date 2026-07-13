@@ -20,6 +20,7 @@ export default function AccountNotFound() {
     descriptionInterpolation,
     resetOnboardingAndReturn,
     trackEvent,
+    createEventBuilder,
     bufferedTrace,
     onboardingParentContext,
   } = useAccountStatusContext({
@@ -35,15 +36,16 @@ export default function AccountNotFound() {
   };
 
   const onCreateNewAccount = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletSetupStarted,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountTypeForMetrics,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletSetupStarted)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
+        })
+        .build(),
+    );
     bufferedTrace?.({
       name: TraceName.OnboardingNewSocialCreateWallet,
       op: TraceOperation.OnboardingUserJourney,

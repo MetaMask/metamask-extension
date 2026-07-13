@@ -59,25 +59,24 @@ const verifyNotificationsSettingsUpdatedEvent = async (
     const metametrics =
       mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
         (call) =>
-          call[0] === 'trackMetaMetricsEvent' &&
-          call[1]?.[0].category ===
+          call[0] === 'trackAnalyticsEvent' &&
+          call[1]?.[0]?.properties?.category ===
             MetaMetricsEventCategory.NotificationSettings,
       );
 
-    expect(metametrics?.[0]).toBe('trackMetaMetricsEvent');
+    expect(metametrics?.[0]).toBe('trackAnalyticsEvent');
 
     const [metricsEvent] = metametrics?.[1] as unknown as [
       {
-        event: string;
-        category: string;
+        name: string;
         properties: Record<string, unknown>;
       },
     ];
 
-    expect(metricsEvent?.event).toBe(
+    expect(metricsEvent?.name).toBe(
       MetaMetricsEventName.NotificationsSettingsUpdated,
     );
-    expect(metricsEvent?.category).toBe(
+    expect(metricsEvent?.properties?.category).toBe(
       MetaMetricsEventCategory.NotificationSettings,
     );
     expect(metricsEvent?.properties).toMatchObject(expectedProperties);
@@ -97,93 +96,89 @@ describe('Notifications Activation', () => {
   it('enables notifications from settings for the first time and sends correct metrics', async () => {
     const mockedState = getMockedNotificationsState();
 
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedState,
-          isBackupAndSyncEnabled: false,
-          isNotificationServicesEnabled: false,
-          isFeatureAnnouncementsEnabled: false,
-          isMetamaskNotificationsFeatureSeen: false,
-          completedMetaMetricsOnboarding: true,
-          optedIn: true,
-          dataCollectionForMarketing: false,
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
+    await integrationTestRender({
+      preloadedState: {
+        ...mockedState,
+        isBackupAndSyncEnabled: false,
+        isNotificationServicesEnabled: false,
+        isFeatureAnnouncementsEnabled: false,
+        isMetamaskNotificationsFeatureSeen: false,
+        completedMetaMetricsOnboarding: true,
+        optedIn: true,
+        dataCollectionForMarketing: false,
+      },
+      backgroundConnection: backgroundConnectionMocked,
+    });
 
-      await clickElement(selectors.accountOptionsMenuButton);
-      await waitForElement(selectors.notificationsMenuItem);
-      await clickElement(selectors.notificationsMenuItem);
-      await waitForElement(selectors.notificationsListDisabled);
-      await waitForElement(selectors.notificationsSettingsButton);
-      await clickElement(selectors.notificationsSettingsButton);
-      await waitForElement(selectors.notificationsSettingsAllowToggleInput);
-      await clickElement(selectors.notificationsSettingsAllowToggleInput);
+    await clickElement(selectors.accountOptionsMenuButton);
+    await waitForElement(selectors.notificationsMenuItem);
+    await clickElement(selectors.notificationsMenuItem);
+    await waitForElement(selectors.notificationsListDisabled);
+    await waitForElement(selectors.notificationsSettingsButton);
+    await clickElement(selectors.notificationsSettingsButton);
+    await waitForElement(selectors.notificationsSettingsAllowToggleInput);
+    await clickElement(selectors.notificationsSettingsAllowToggleInput);
 
-      await waitFor(() => {
-        const enableMetamaskNotificationsCall =
-          mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'enableMetamaskNotifications',
-          );
-
-        expect(enableMetamaskNotificationsCall?.[0]).toBe(
-          'enableMetamaskNotifications',
+    await waitFor(() => {
+      const enableMetamaskNotificationsCall =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'enableMetamaskNotifications',
         );
-        expect(enableMetamaskNotificationsCall?.[1]).toStrictEqual([
-          {
-            hasMarketingConsent: false,
-            productAnnouncementEnabled: false,
-          },
-        ]);
-      });
 
-      await verifyNotificationsSettingsUpdatedEvent({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'notifications',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        was_profile_syncing_on: false,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: false,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: true,
-      });
+      expect(enableMetamaskNotificationsCall?.[0]).toBe(
+        'enableMetamaskNotifications',
+      );
+      expect(enableMetamaskNotificationsCall?.[1]).toStrictEqual([
+        {
+          hasMarketingConsent: false,
+          productAnnouncementEnabled: false,
+        },
+      ]);
+    });
+
+    await verifyNotificationsSettingsUpdatedEvent({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      settings_type: 'notifications',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      was_profile_syncing_on: false,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      old_value: false,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      new_value: true,
     });
   });
 
   it('shows disabled notifications state when opening notifications for the first time', async () => {
     const mockedState = getMockedNotificationsState();
 
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedState,
-          isBackupAndSyncEnabled: false,
-          isNotificationServicesEnabled: false,
-          isFeatureAnnouncementsEnabled: false,
-          isMetamaskNotificationsFeatureSeen: false,
-          completedMetaMetricsOnboarding: true,
-          optedIn: true,
-          dataCollectionForMarketing: false,
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
-
-      await clickElement(selectors.accountOptionsMenuButton);
-      await waitForElement(selectors.notificationsMenuItem);
-      await clickElement(selectors.notificationsMenuItem);
-      await waitForElement(selectors.notificationsListDisabled);
-
-      const enableMetamaskNotificationsCall =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'enableMetamaskNotifications',
-        );
-
-      expect(enableMetamaskNotificationsCall).toBeUndefined();
+    await integrationTestRender({
+      preloadedState: {
+        ...mockedState,
+        isBackupAndSyncEnabled: false,
+        isNotificationServicesEnabled: false,
+        isFeatureAnnouncementsEnabled: false,
+        isMetamaskNotificationsFeatureSeen: false,
+        completedMetaMetricsOnboarding: true,
+        optedIn: true,
+        dataCollectionForMarketing: false,
+      },
+      backgroundConnection: backgroundConnectionMocked,
     });
+
+    await clickElement(selectors.accountOptionsMenuButton);
+    await waitForElement(selectors.notificationsMenuItem);
+    await clickElement(selectors.notificationsMenuItem);
+    await waitForElement(selectors.notificationsListDisabled);
+
+    const enableMetamaskNotificationsCall =
+      mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+        (call) => call[0] === 'enableMetamaskNotifications',
+      );
+
+    expect(enableMetamaskNotificationsCall).toBeUndefined();
   });
 });

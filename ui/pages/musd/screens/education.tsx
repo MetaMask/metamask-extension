@@ -5,13 +5,7 @@
  * Shown to users who haven't seen the education content before.
  */
 
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -36,7 +30,7 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -84,7 +78,7 @@ const MusdEducationScreen = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [searchParams] = useSearchParams();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';
 
@@ -96,15 +90,18 @@ const MusdEducationScreen = () => {
     }
     hasTrackedDisplayRef.current = true;
 
-    trackEvent({
-      event: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
-      category: MetaMetricsEventCategory.MusdConversion,
-      properties: {
-        location:
-          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
-      },
-    });
-  }, [trackEvent]);
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
+      )
+        .addCategory(MetaMetricsEventCategory.MusdConversion)
+        .addProperties({
+          location:
+            MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+        })
+        .build(),
+    );
+  }, [createEventBuilder, trackEvent]);
 
   const { startConversionFlow } = useMusdConversion();
   const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
@@ -175,11 +172,14 @@ const MusdEducationScreen = () => {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     // Track primary button click
-    trackEvent({
-      event: MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
-      category: MetaMetricsEventCategory.MusdConversion,
-      properties: eventProperties,
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
+      )
+        .addCategory(MetaMetricsEventCategory.MusdConversion)
+        .addProperties(eventProperties)
+        .build(),
+    );
 
     dispatch(setMusdConversionEducationSeen(true));
 
@@ -229,6 +229,7 @@ const MusdEducationScreen = () => {
     openBuyCryptoInPdapp,
     startConversionFlow,
     defaultPaymentToken,
+    createEventBuilder,
     trackEvent,
     primaryButtonLabel,
     getRedirectDestination,
@@ -250,15 +251,24 @@ const MusdEducationScreen = () => {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     // Track secondary button click
-    trackEvent({
-      event: MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
-      category: MetaMetricsEventCategory.MusdConversion,
-      properties: eventProperties,
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
+      )
+        .addCategory(MetaMetricsEventCategory.MusdConversion)
+        .addProperties(eventProperties)
+        .build(),
+    );
 
     dispatch(setMusdConversionEducationSeen(true));
     navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate, trackEvent, secondaryButtonLabel]);
+  }, [
+    dispatch,
+    navigate,
+    createEventBuilder,
+    trackEvent,
+    secondaryButtonLabel,
+  ]);
 
   return (
     <Box
@@ -348,11 +358,14 @@ const MusdEducationScreen = () => {
                         url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
                       };
 
-                      trackEvent({
-                        event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
-                        category: MetaMetricsEventCategory.MusdConversion,
-                        properties,
-                      });
+                      trackEvent(
+                        createEventBuilder(
+                          MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                        )
+                          .addCategory(MetaMetricsEventCategory.MusdConversion)
+                          .addProperties(properties)
+                          .build(),
+                      );
                     }}
                   >
                     {t('musdTermsApply')}

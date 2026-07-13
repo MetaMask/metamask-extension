@@ -334,18 +334,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setServiceWorkerKeepAlivePreference', () => {
-    const { controller } = setupController({});
-    it('should default to true', () => {
-      expect(controller.state.enableMV3TimestampSave).toStrictEqual(true);
-    });
-
-    it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
-      controller.setServiceWorkerKeepAlivePreference(false);
-      expect(controller.state.enableMV3TimestampSave).toStrictEqual(false);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -457,6 +445,7 @@ describe('preferences controller', () => {
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
+        isBasicFunctionalityConsolidatedEnabled: false,
         skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -489,6 +478,7 @@ describe('preferences controller', () => {
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
+        isBasicFunctionalityConsolidatedEnabled: false,
         skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
@@ -672,7 +662,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "isMultiAccountBalancesEnabled": true,
@@ -687,6 +676,7 @@ describe('preferences controller', () => {
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -738,7 +728,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",
@@ -757,6 +746,7 @@ describe('preferences controller', () => {
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -821,7 +811,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",
@@ -840,6 +829,7 @@ describe('preferences controller', () => {
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -905,7 +895,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",
@@ -924,6 +913,7 @@ describe('preferences controller', () => {
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -1247,6 +1237,7 @@ describe('preferences controller', () => {
             showDefaultAddress: true,
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
+            isBasicFunctionalityConsolidatedEnabled: true,
             skipDeepLinkInterstitial: false,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,

@@ -1,6 +1,6 @@
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { WalletOptions } from '@metamask/wallet';
-import type { WalletInitMessenger } from '../initialization';
+import type { WalletInitMessenger } from '../types';
 import { getKeyringBuilders, getKeyringV2Builders } from '../keyrings';
 
 type KeyringControllerInstanceOptions = NonNullable<

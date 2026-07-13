@@ -28,10 +28,10 @@
     "backupAndSyncOnboardingToggleState": "boolean",
     "externalServicesOnboardingToggleState": "boolean",
     "gasLoadingAnimationIsShowing": "boolean",
+    "homeDeepLinkQrCode": "null",
     "importNftsModal": {
       "open": "boolean"
     },
-    "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
@@ -640,6 +640,7 @@
     },
     "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
+    "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object"
     },
@@ -671,6 +672,13 @@
       }
     },
     "coverageResults": {},
+    "countries": {
+      "data": [],
+      "error": "null",
+      "errorKey": "null",
+      "isLoading": "boolean",
+      "selected": "null"
+    },
     "cryptocurrencies": ["string"],
     "currencyRates": {
       "*": {
@@ -754,7 +762,6 @@
       "eip155:137": "string",
       "eip155:6343": "string"
     },
-    "enableMV3TimestampSave": "boolean",
     "ensEntries": {
       "0x1": {
         ".": {
@@ -1169,6 +1176,29 @@
       "ethereumAddress": {}
     },
     "nameSources": {},
+    "nativeProviders": {
+      "transak": {
+        "isAuthenticated": "boolean",
+        "userDetails": {
+          "data": "null",
+          "selected": "null",
+          "isLoading": "boolean",
+          "error": "null"
+        },
+        "buyQuote": {
+          "data": "null",
+          "selected": "null",
+          "isLoading": "boolean",
+          "error": "null"
+        },
+        "kycRequirement": {
+          "data": "null",
+          "selected": "null",
+          "isLoading": "boolean",
+          "error": "null"
+        }
+      }
+    },
     "needsProfilePairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
@@ -1204,14 +1234,22 @@
       }
     ],
     "orderedTransactionHistory": [],
+    "orders": [],
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
+    "paymentMethods": {
+      "data": [],
+      "error": "null",
+      "errorKey": "null",
+      "isLoading": "boolean",
+      "selected": "null"
+    },
     "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "null",
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": "null",
     "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
@@ -1235,6 +1273,7 @@
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
+      "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
@@ -1262,6 +1301,14 @@
     "previousMigrationVersion": "number",
     "productTour": "string",
     "proofBackfillEnqueued": "boolean",
+    "providerAutoSelected": "boolean",
+    "providers": {
+      "data": [],
+      "error": "null",
+      "errorKey": "null",
+      "isLoading": "boolean",
+      "selected": "null"
+    },
     "quoteFetchError": "null",
     "quoteRequest": [
       {
@@ -1269,6 +1316,7 @@
       }
     ],
     "quoteStreamComplete": "null",
+    "quoteUpdateStatusStore": {},
     "quotes": [],
     "quotesInitialLoadTime": "null",
     "quotesLastFetched": "null",
@@ -1290,6 +1338,15 @@
       "asterdex": {},
       "gmx": {},
       "hyperliquid": {}
+    },
+    "requests": {
+      "*": {
+        "status": "string",
+        "data": [],
+        "error": "null",
+        "timestamp": "number",
+        "lastFetchedAt": "number"
+      }
     },
     "remoteFeatureFlags": {
       "feature1": "boolean",
@@ -1494,6 +1551,13 @@
     "timeoutMinutes": "number",
     "tokenBalances": {},
     "tokenScanCache": {},
+    "tokens": {
+      "data": "null",
+      "error": "null",
+      "errorKey": "null",
+      "isLoading": "boolean",
+      "selected": "null"
+    },
     "tokenSecurityTypeDestination": "null",
     "tokensChainsCache": {},
     "tokenWarnings": [],
@@ -1532,6 +1596,7 @@
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
     "userOperations": {},
+    "userRegion": "null",
     "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
@@ -1561,19 +1626,6 @@
   "platform": {
     "arch": "string",
     "os": "string"
-  },
-  "ramps": {
-    "buyableChains": [
-      {
-        "active": "boolean",
-        "chainId": "string",
-        "chainName": "string",
-        "isEvm": "boolean",
-        "nativeTokenSupported": "boolean",
-        "shortName": "string"
-      }
-    ],
-    "isFetched": "boolean"
   },
   "rewards": {
     "rewardsModalOpen": "boolean",

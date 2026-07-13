@@ -9,6 +9,7 @@ import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { TransactionId } from '../../../components/app/transaction/transaction-id';
+import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import { Row, Section } from './shared';
 import { TokenRow } from './token-row';
 
@@ -50,6 +51,11 @@ export function MetadataSection({
   const { formatDateTime } = useFormatters();
   const accountAddress = item.data.from;
   const showAddressRows = Boolean(addressRows?.from && addressRows?.to);
+  const txId =
+    item.hash &&
+    (!item.chainId.startsWith('eip155:') || isValidTransactionHash(item.hash))
+      ? item.hash
+      : undefined;
 
   return (
     <Section>
@@ -85,7 +91,7 @@ export function MetadataSection({
 
       <Row
         label={t('transactionIdLabel')}
-        value={<TransactionId value={item.hash} />}
+        value={txId ? <TransactionId value={txId} /> : null}
       />
     </Section>
   );

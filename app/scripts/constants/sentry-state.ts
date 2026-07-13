@@ -145,6 +145,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   BridgeStatusController: {
     txHistory: false,
+    quoteUpdateStatusStore: false,
   },
   ConnectivityController: {
     connectivityStatus: true,
@@ -235,6 +236,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
+    hasSeenOnboardingCompletionPage: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
@@ -292,11 +294,21 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
+  },
+  RampsController: {
+    userRegion: false,
+    countries: false,
+    providers: false,
+    tokens: false,
+    paymentMethods: false,
+    requests: false,
+    nativeProviders: false,
+    orders: false,
+    providerAutoSelected: false,
   },
   RewardsController: {
     rewardsActiveAccount: false,
