@@ -89,7 +89,7 @@ export function BottomNavBar() {
   );
 
   const handleSwapsClick = useCallback(
-    () => openBridgeExperience(MetaMetricsSwapsEventSource.MainView),
+    () => openBridgeExperience(MetaMetricsSwapsEventSource.BottomNavBar),
     [openBridgeExperience],
   );
 

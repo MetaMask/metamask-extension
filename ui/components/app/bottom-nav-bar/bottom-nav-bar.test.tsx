@@ -184,7 +184,7 @@ describe('BottomNavBar', () => {
 
       fireEvent.click(getByTestId('bottom-nav-swaps'));
       expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
-        MetaMetricsSwapsEventSource.MainView,
+        MetaMetricsSwapsEventSource.BottomNavBar,
       );
     });
 
