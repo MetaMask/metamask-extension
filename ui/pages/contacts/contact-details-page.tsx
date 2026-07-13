@@ -125,7 +125,14 @@ export function ContactDetailsPage() {
     );
     navigate(CONTACTS_ROUTE, { state: { showContactDeletedToast: true } });
     dispatch(removeFromAddressBook(contact.chainId, address));
-  }, [address, contact?.chainId, createEventBuilder, dispatch, navigate, trackEvent]);
+  }, [
+    address,
+    contact?.chainId,
+    createEventBuilder,
+    dispatch,
+    navigate,
+    trackEvent,
+  ]);
 
   if (!address) {
     return <Navigate to={CONTACTS_ROUTE} replace />;

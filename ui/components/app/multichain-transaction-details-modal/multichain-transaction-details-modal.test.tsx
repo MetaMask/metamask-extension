@@ -393,10 +393,7 @@ describe('MultichainTransactionDetailsModal', () => {
       onClose: jest.fn(),
     };
 
-    renderWithProvider(
-      <MultichainTransactionDetailsModal {...props} />,
-      store,
-    );
+    renderWithProvider(<MultichainTransactionDetailsModal {...props} />, store);
 
     const fromLabel = screen.getByText('from');
     expect(fromLabel).toBeInTheDocument();
