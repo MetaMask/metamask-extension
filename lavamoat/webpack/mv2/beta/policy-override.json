@@ -133,7 +133,7 @@
         "fetch": true
       }
     },
-    "react-beautiful-dnd": {
+    "@hello-pangea/dnd": {
       "globals": {
         "addEventListener": true,
         "removeEventListener": true
@@ -231,6 +231,13 @@
         "addEventListener": false
       }
     },
+    "@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
         "document": false,
@@ -259,13 +266,6 @@
         "importScripts": false
       }
     },
-    "@metamask/assets-controllers>@tanstack/query-core": {
-      "globals": {
-        "document": false,
-        "document.visibilityState": false,
-        "addEventListener": false
-      }
-    },
     "@metamask/mobile-wallet-protocol-core>centrifuge": {
       "globals": {
         "AbortController": false,
@@ -283,6 +283,11 @@
         "document": false,
         "fetch": false,
         "localStorage": false
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>zod": {
+      "globals": {
+        "__zod_globalRegistry": "write"
       }
     }
   }

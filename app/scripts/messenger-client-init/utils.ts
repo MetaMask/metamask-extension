@@ -67,7 +67,6 @@ export type MessengerClientsToInitialize =
   | 'PerpsController'
   | 'PPOMController'
   | 'QrSyncController'
-  | 'TransactionController'
   | 'TransactionPayController'
   | 'UserStorageController';
 
@@ -110,7 +109,9 @@ export function initMessengerClients({
 }): InitMessengerClientsResult {
   log('Initializing messenger clients', Object.keys(initFunctions).length);
 
-  const partialMessengerClientsByName: Partial<MessengerClientByName> = {};
+  const partialMessengerClientsByName: Partial<
+    Record<MessengerClientName, MessengerClient>
+  > = {};
 
   const controllerPersistedState: Record<string, MessengerClient> = {};
   const controllerMemState: Record<string, MessengerClient> = {};
@@ -178,7 +179,6 @@ export function initMessengerClients({
         ? undefined
         : (memStateKeyRaw ?? messengerClientName);
 
-    // @ts-expect-error: Union too complex.
     partialMessengerClientsByName[messengerClientName] = messengerClient;
 
     messengerClientApi = {

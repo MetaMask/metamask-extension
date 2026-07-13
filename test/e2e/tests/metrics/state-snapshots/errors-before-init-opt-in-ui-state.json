@@ -182,6 +182,7 @@
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": { "storageMetadata": "object" },
@@ -253,6 +254,12 @@
       "watchEthereumAccountEnabled": "boolean"
     },
     "ProfileMetricsController": "object",
+    "RampsController": {
+      "countries": "object",
+      "orders": "object",
+      "providerAutoSelected": "boolean",
+      "userRegion": null
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
       "localOverrides": "object",
@@ -313,5 +320,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 215 }
+  "meta": { "storageKind": "split", "version": 216 }
 }

@@ -18,6 +18,10 @@ jest.mock('react-router-dom', () => ({
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
+    },
   },
 });
 

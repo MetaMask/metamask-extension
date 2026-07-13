@@ -295,7 +295,7 @@ export const CustomTokenImportPage = () => {
 
       // Probe the chain *before* applying validation branches so the NFT
       // branch wins over the mainnet-warning/personal-address/existing-token
-      // branches, matching the order of the legacy `import-tokens-modal`
+      // branches, matching the order used by the previous token import flow.
       // switch.
       let standard: string | undefined;
       let rpcTokenInfo;

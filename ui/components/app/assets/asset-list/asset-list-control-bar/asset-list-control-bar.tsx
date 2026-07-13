@@ -69,7 +69,6 @@ import {
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
-  showImportTokensModal,
   showModal,
   updateBalancesFoAccounts,
 } from '../../../../../store/actions';
@@ -84,10 +83,7 @@ import {
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
-import {
-  getIsNetworkManagementEnabled,
-  getIsTokenManagementFilterEnabled,
-} from '../../../../../selectors/multichain/feature-flags';
+import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
@@ -121,9 +117,6 @@ const AssetListControlBar = ({
     selectAccountSupportsEnabledNetworks,
   );
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const isTokenManagementFilterEnabled = useSelector(
-    getIsTokenManagementFilterEnabled,
-  );
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
@@ -273,19 +266,6 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(!isNetworkFilterModalOpen);
   };
 
-  const handleTokenImportModal = () => {
-    dispatch(showImportTokensModal());
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          location: 'HOME',
-        })
-        .build(),
-    );
-    closePopover();
-  };
-
   const handleOpenTokenManagement = useCallback(() => {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
@@ -416,11 +396,7 @@ const AssetListControlBar = ({
               />
             ) : (
               <Tooltip
-                title={
-                  isTokenManagementFilterEnabled
-                    ? t('manageTokens')
-                    : t('importTokensCamelCase')
-                }
+                title={t('manageTokens')}
                 position="bottom"
                 distance={20}
               >
@@ -428,22 +404,10 @@ const AssetListControlBar = ({
                   ref={importButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
-                  onClick={
-                    isTokenManagementFilterEnabled
-                      ? handleOpenTokenManagement
-                      : handleTokenImportModal
-                  }
+                  onClick={handleOpenTokenManagement}
                   size={DsButtonIconSize.Sm}
-                  iconName={
-                    isTokenManagementFilterEnabled
-                      ? DsIconName.MoreVertical
-                      : DsIconName.Add
-                  }
-                  ariaLabel={
-                    isTokenManagementFilterEnabled
-                      ? t('manageTokens')
-                      : t('importTokensCamelCase')
-                  }
+                  iconName={DsIconName.MoreVertical}
+                  ariaLabel={t('manageTokens')}
                 />
               </Tooltip>
             ))}
@@ -489,28 +453,18 @@ const AssetListControlBar = ({
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
-        {isTokenManagementFilterEnabled ? (
-          <SelectableListItem
-            onClick={handleOpenTokenManagement}
-            testId="manageTokens"
-            className="min-h-12"
-          >
-            <Icon
-              name={IconName.Setting}
-              size={IconSize.Sm}
-              marginInlineEnd={2}
-            />
-            {t('manageTokens')}
-          </SelectableListItem>
-        ) : (
-          <SelectableListItem
-            onClick={handleTokenImportModal}
-            testId="importTokens"
-          >
-            <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
-            {t('importTokensCamelCase')}
-          </SelectableListItem>
-        )}
+        <SelectableListItem
+          onClick={handleOpenTokenManagement}
+          testId="manageTokens"
+          className="min-h-12"
+        >
+          <Icon
+            name={IconName.Setting}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
+          {t('manageTokens')}
+        </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
           <Icon
             name={IconName.Refresh}

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums jāatlasa konts!"
   },
-  "addAcquiredTokens": {
-    "message": "Pievienojiet marķierus, ko ieguvāt, izmantojot MetaMask"
-  },
   "addAlias": {
     "message": "Pievienot segvārdu"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Papildu"
-  },
-  "customToken": {
-    "message": "Pielāgots marķieris"
   },
   "decimal": {
     "message": "Decimāldaļu precizitāte"
@@ -347,9 +341,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask versija"
-  },
-  "mustSelectOne": {
-    "message": "Jāatlasa vismaz 1 marķieris."
   },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",

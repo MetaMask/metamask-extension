@@ -204,6 +204,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
               ? formatCurrencyWithMinThreshold(signedFiatAmount, PERPS_CURRENCY)
               : undefined,
+          primaryDirection:
+            activity.type === 'perpsAddFunds' ? 'in' : undefined,
         };
       }
       case 'nftBuy':
@@ -286,6 +288,16 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),
+        };
+      }
+      case 'assetDeactivation':
+      case 'assetActivation': {
+        const { token } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? '']),
+          subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
         };
       }
       default:

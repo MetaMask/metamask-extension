@@ -20,7 +20,10 @@ import {
   selectQrSyncError,
   selectQrSyncQrPayload,
 } from '../../../../selectors/qr-sync/qr-sync';
-import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
+import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
+
+const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
+  QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
 
 const QrCodeScan = () => {
   const t = useI18nContext();
