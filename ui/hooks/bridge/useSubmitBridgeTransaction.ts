@@ -184,8 +184,9 @@ export default function useSubmitBridgeTransaction({
         throw e;
       }
 
+      // Transport/RPC failures are not user declines — rethrow so the signing
+      // page can surface the real error without showing a declined-tx state.
       if (hardwareWalletUsed) {
-        dispatch(setWasTxDeclined(true));
         throw e;
       }
     } finally {

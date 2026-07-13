@@ -423,6 +423,64 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
 
       expect(didThrow).toBe(true);
       expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
+      expect(store.getActions()).not.toContainEqual(
+        expect.objectContaining({
+          type: 'bridge/setWasTxDeclined',
+        }),
+      );
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(result.current.isSubmitting).toBe(false);
+    });
+
+    it('marks the transaction declined on hardware-wallet user rejection', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      const rejectError = new Error('User rejected the request');
+      submitTxSpy.mockImplementationOnce((async () => {
+        throw rejectError;
+      }) as never);
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result, unmount } = renderHook(
+        () =>
+          useSubmitBridgeTransaction({
+            submitOnHardwareWalletSigningPage: true,
+          }),
+        {
+          wrapper: makeWrapper(store),
+        },
+      );
+
+      let didThrow = false;
+      await act(async () => {
+        try {
+          await result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          );
+        } catch (error) {
+          didThrow = true;
+          expect(error).toBe(rejectError);
+        }
+      });
+      unmount();
+
+      expect(didThrow).toBe(true);
+      expect(store.getActions()).toContainEqual(
+        expect.objectContaining({
+          type: 'bridge/setWasTxDeclined',
+          payload: true,
+        }),
+      );
       expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(result.current.isSubmitting).toBe(false);
     });
