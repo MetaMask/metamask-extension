@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
@@ -26,7 +26,7 @@ import {
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 
 const TokenButtons = ({
   token,
@@ -51,7 +51,7 @@ const TokenButtons = ({
 
   const currentChainId = token.chainId;
 
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
   const { openBridgeExperience } = useBridging();
 
   useEffect(() => {
@@ -65,8 +65,11 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    await goToBuy({
+      assetId: toAssetId(token.address, token.chainId),
+      chainId: token.chainId,
+    });
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -84,10 +87,12 @@ const TokenButtons = ({
     );
   }, [
     currentChainId,
+    token.address,
+    token.chainId,
     token.symbol,
     trackEvent,
     createEventBuilder,
-    openBuyCryptoInPdapp,
+    goToBuy,
   ]);
 
   const handleSendOnClick = useCallback(async () => {

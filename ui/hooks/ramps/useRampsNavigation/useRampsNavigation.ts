@@ -1,8 +1,13 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { CaipChainId } from '@metamask/utils';
+import { useNavigate } from 'react-router-dom';
+import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
 import type { ChainId } from '../../../../shared/constants/network';
+import {
+  RAMPS_BUILD_QUOTE_ROUTE,
+  RAMPS_TOKEN_SELECTION_ROUTE,
+} from '../../../helpers/constants/routes';
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
@@ -17,25 +22,40 @@ import {
 import useRamps from '../useRamps/useRamps';
 
 /**
+ * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
+ */
+export type RampIntent = {
+  /** CAIP-19 asset to pre-select, e.g. `eip155:1/erc20:0x...`. */
+  assetId?: CaipAssetType;
+  /** Chain for the flag-off Portfolio fallback deeplink only. */
+  chainId?: Hex | CaipChainId;
+};
+
+/**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
  * Runs a fixed geo-block gate (service disruption, geolocation unknown, region
- * unsupported, providers/tokens fetched-but-empty, proceed) before falling
- * through to the existing Portfolio redirect. The gate is skipped entirely when
- * the `rampsEnabled` rollout flag is off.
+ * unsupported, providers/tokens fetched-but-empty) and then routes into the
+ * native buy flow: an intent with a supported `assetId` pre-selects the token
+ * and opens the build-quote page; without one it opens the token-selection
+ * page; an unsupported `assetId` raises the unsupported modal. The gate is
+ * skipped entirely when the `rampsEnabled` rollout flag is off (unchanged
+ * Portfolio redirect).
  *
  * Geolocation is resolved on demand via the background `GeolocationController`
  * (mobile parity — it does not fetch at startup, so reading synced state alone
  * would fail closed). Any loading/indeterminate state fails open; only a
  * settled, definitively-blocking state raises a modal.
  *
- * @returns An object with `goToBuy`, an async callback that runs the gate and
- * either shows a blocking modal or opens the buy destination. Resolves to
- * `true` when it proceeded (buy destination opened) and `false` when a blocking
- * modal was shown, so callers can gate follow-up UI (e.g. a "tab opened" toast).
+ * @returns An object with `goToBuy`, an async callback taking an optional
+ * {@link RampIntent}. It runs the gate and either shows a blocking modal or
+ * opens the buy destination. Resolves to `true` when it proceeded and `false`
+ * when a blocking modal was shown, so callers can gate follow-up UI (e.g. a
+ * "tab opened" toast).
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { openBuyCryptoInPdapp } = useRamps();
 
   const isEnabled = useSelector(getIsRampsEnabled);
@@ -45,10 +65,12 @@ export default function useRampsNavigation() {
   const tokens = useSelector(selectTokens);
 
   const goToBuy = useCallback(
-    async (chainId?: ChainId | CaipChainId): Promise<boolean> => {
+    async (intent?: RampIntent): Promise<boolean> => {
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
-        openBuyCryptoInPdapp(chainId);
+        // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
+        // just an over-tight annotation.
+        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
         return true;
       }
 
@@ -101,8 +123,37 @@ export default function useRampsNavigation() {
         }
       }
 
-      // 5. Proceed. Destination stays Portfolio until native pages (TRAM-3714+).
-      openBuyCryptoInPdapp(chainId);
+      // 5. Route into the native buy flow.
+      const assetId = intent?.assetId;
+      if (assetId) {
+        // Resolve against the catalog. Only block on a settled catalog that
+        // definitively lacks/unsupports the token — an unsettled catalog fails
+        // open (proceed with it selected, page re-resolves).
+        if (catalogSettled && tokens.data !== null) {
+          const catalog = [
+            ...(tokens.data.topTokens ?? []),
+            ...(tokens.data.allTokens ?? []),
+          ];
+          const match = catalog.find(
+            (token) => token.assetId.toLowerCase() === assetId.toLowerCase(),
+          );
+          if (!match || match.tokenSupported === false) {
+            dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
+            return false;
+          }
+        }
+        try {
+          await submitRequestToBackground('setRampsSelectedToken', [assetId]);
+        } catch {
+          // Fail open — a failed pre-selection is non-fatal; the build-quote
+          // page can re-resolve the token itself.
+        }
+        navigate(RAMPS_BUILD_QUOTE_ROUTE);
+        return true;
+      }
+
+      // 6. No specific asset → token selection page.
+      navigate(RAMPS_TOKEN_SELECTION_ROUTE);
       return true;
     },
     [
@@ -112,6 +163,7 @@ export default function useRampsNavigation() {
       providers,
       tokens,
       dispatch,
+      navigate,
       openBuyCryptoInPdapp,
     ],
   );

@@ -18,7 +18,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { ReceiveModal } from '../../../multichain/receive-modal';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import {
@@ -41,15 +41,15 @@ const AddFundsModal = ({
   payerAddress: Hex;
 }) => {
   const t = useI18nContext();
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const { openBridgeExperience } = useBridging();
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    await goToBuy();
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -69,7 +69,7 @@ const AddFundsModal = ({
   }, [
     chainId,
     onClose,
-    openBuyCryptoInPdapp,
+    goToBuy,
     token.symbol,
     createEventBuilder,
     trackEvent,

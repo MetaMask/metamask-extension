@@ -5,6 +5,7 @@ import { toHex } from '@metamask/controller-utils';
 import {
   isCaipChainId,
   CaipChainId,
+  CaipAssetType,
   isCaipAssetType,
   parseCaipAssetType,
 } from '@metamask/utils';
@@ -223,6 +224,11 @@ type CoinButtonsProps = {
   classPrefix?: string;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
+  /**
+   * CAIP-19 asset to pre-select when buying (asset-page native tokens). When
+   * omitted (e.g. wallet overview), Buy opens the token-selection page instead.
+   */
+  buyAssetId?: CaipAssetType;
 };
 
 const CoinButtons = ({
@@ -233,6 +239,7 @@ const CoinButtons = ({
   isSigningEnabled,
   classPrefix = 'coin',
   disableSendForNonEvm = false,
+  buyAssetId,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -412,7 +419,7 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
-    const opened = await goToBuy(getChainId());
+    const opened = await goToBuy({ assetId: buyAssetId, chainId: getChainId() });
     if (!opened) {
       return;
     }
@@ -436,7 +443,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, goToBuy]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
