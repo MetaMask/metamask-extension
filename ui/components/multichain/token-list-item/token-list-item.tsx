@@ -69,7 +69,9 @@ import { StakeableLink } from './stakeable-link';
 
 type MarketDataMap = ReturnType<typeof getMarketData>;
 type CurrencyRatesMap = ReturnType<typeof getCurrencyRates>;
-type NetworkConfigurationsMap = ReturnType<typeof getNetworkConfigurationsByChainId>;
+type NetworkConfigurationsMap = ReturnType<
+  typeof getNetworkConfigurationsByChainId
+>;
 
 // Stable empty fallback objects returned by the "no-op" selectors below so
 // that useSelector never triggers a re-render when the value has not changed.
@@ -83,8 +85,8 @@ const EMPTY_NETWORK_CONFIGURATIONS: NetworkConfigurationsMap = {};
 // They are typed as the same selector type so useMemo can return a single type
 // that useSelector can infer without unsafe casts.
 const selectEmptyMarketData: typeof getMarketData = () => EMPTY_MARKET_DATA;
-const selectEmptyCurrencyRates: typeof getCurrencyRates =
-  () => EMPTY_CURRENCY_RATES;
+const selectEmptyCurrencyRates: typeof getCurrencyRates = () =>
+  EMPTY_CURRENCY_RATES;
 const selectEmptyNetworkConfigurations: typeof getNetworkConfigurationsByChainId =
   () => EMPTY_NETWORK_CONFIGURATIONS;
 
@@ -172,7 +174,8 @@ export const TokenListItemComponent = ({
   // component).
   const isMarketDataPropProvided = marketDataProp !== undefined;
   const isCurrencyRatesPropProvided = currencyRatesProp !== undefined;
-  const isNetworkConfigurationsPropProvided = networkConfigurationsProp !== undefined;
+  const isNetworkConfigurationsPropProvided =
+    networkConfigurationsProp !== undefined;
 
   const marketDataSelector = useMemo(
     () => (isMarketDataPropProvided ? selectEmptyMarketData : getMarketData),
@@ -201,7 +204,8 @@ export const TokenListItemComponent = ({
   // been updated to pass these props.
   const multiChainMarketData = marketDataProp ?? marketDataFromStore;
   const currencyRates = currencyRatesProp ?? currencyRatesFromStore;
-  const allNetworks = networkConfigurationsProp ?? networkConfigurationsFromStore;
+  const allNetworks =
+    networkConfigurationsProp ?? networkConfigurationsFromStore;
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:

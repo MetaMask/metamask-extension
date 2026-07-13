@@ -48,7 +48,9 @@ export type ActivityKind =
   | 'perpsCloseLongTakeProfit'
   | 'marketShort'
   | 'stopMarketCloseShort'
-  | 'marketCloseShort';
+  | 'marketCloseShort'
+  | 'assetActivation'
+  | 'assetDeactivation';
 
 export type TokenAmount = {
   amount?: string;
@@ -149,6 +151,20 @@ export type ActivityListItem =
     >
   | ActivityData<
       'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
+      {
+        token?: TokenAmount;
+        fees?: ActivityFee[];
+      }
+    >
+  | ActivityData<
+      'assetActivation',
+      {
+        token?: TokenAmount;
+        fees?: ActivityFee[];
+      }
+    >
+  | ActivityData<
+      'assetDeactivation',
       {
         token?: TokenAmount;
         fees?: ActivityFee[];

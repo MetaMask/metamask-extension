@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Magdagdag ng custom na token"
   },
-  "addDevice": {
-    "message": "I-sync sa mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Idagdag lamang ang RPC provider na ito kung sigurado kang mapagkakatiwalaan ito. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Magpatuloy"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Muling ikonekta"
+    "message": "Muling ikonekta",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Tiyaking ang wallet na hardware mo ay maayos na nakakonekta sa USB"
@@ -7952,9 +7950,6 @@
   "qrCodeExpiresIn": {
     "message": "Mai-expire pagkalipas ng $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
-  },
-  "qrCodeScanError": {
-    "message": "Nagkaproblema sa pag-scan ng QR code. Bumuo ng panibagong QR code at subukang muli."
   },
   "qrErrorMismatchedTransactionBody": {
     "message": "Ang QR na ito ay para sa ibang transaksyon. Kanselahin at subukan muli, tiyaking i-scan muna ang QR code na ipinapakita sa MetaMask kasama ng iyong wallet na hardware.",

@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   Box,
@@ -6,6 +7,7 @@ import {
   BoxAlignItems,
   ButtonBase,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
@@ -14,10 +16,16 @@ import {
 import { useNavigate } from 'react-router-dom';
 import type { Position } from '@metamask/perps-controller';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
 import { formatPnl } from '../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName, getPositionDirection } from '../utils';
+import {
+  getDisplayName,
+  getPositionDirection,
+  getPrivacyAwareColor,
+} from '../utils';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
 export type PositionCardProps = {
@@ -43,13 +51,22 @@ export const PositionCard = ({
   assetName,
 }: PositionCardProps) => {
   const navigate = useNavigate();
+  const { privacyMode } = useSelector(getPreferences);
   const { formatPercentWithMinThreshold } = useFormatters();
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
+  const pnlColor = getPrivacyAwareColor(
+    isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault,
+    privacyMode,
+  );
   const absSize = Math.abs(parseFloat(position.size)).toString();
-  // Title uses the full asset name; the size line keeps the ticker as its unit.
-  const displayName = getDisplayName(assetName || position.symbol);
+  // Title uses the full asset name when enabled; the size line keeps the ticker
+  // as its unit. When the flag is off, fall back to the ticker.
+  const displayName = getDisplayName(
+    showFullAssetNames ? assetName || position.symbol : position.symbol,
+  );
   const displaySymbol = getDisplayName(position.symbol);
   const formattedPnl = formatPnl(pnlNum);
   const roeNum = Number.parseFloat(position.returnOnEquity);
@@ -112,9 +129,13 @@ export const PositionCard = ({
             {position.leverage.value}x {direction}
           </Text>
         </Box>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {absSize} {displaySymbol}
-        </Text>
+        <SensitiveText
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          isHidden={privacyMode}
+        >
+          {`${absSize} ${displaySymbol}`}
+        </SensitiveText>
       </Box>
 
       {/* Right side: Position value and P&L */}
@@ -124,33 +145,34 @@ export const PositionCard = ({
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text
+        <SensitiveText
           fontWeight={FontWeight.Medium}
           className="text-s-body-md @compact:text-s-body-sm"
+          isHidden={privacyMode}
         >
           {formatPerpsFiatMinimal(parseFloat(position.positionValue))}
-        </Text>
+        </SensitiveText>
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Baseline}
           gap={1}
         >
-          <Text
+          <SensitiveText
             variant={TextVariant.BodySm}
-            color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+            color={pnlColor}
+            isHidden={privacyMode}
           >
             {formattedPnl}
-          </Text>
+          </SensitiveText>
           {formattedRoe !== null && (
-            <Text
+            <SensitiveText
               variant={TextVariant.BodySm}
-              color={
-                isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault
-              }
+              color={pnlColor}
+              isHidden={privacyMode}
               data-testid={`position-card-roe-${position.symbol}`}
             >
               ({formattedRoe})
-            </Text>
+            </SensitiveText>
           )}
         </Box>
       </Box>
