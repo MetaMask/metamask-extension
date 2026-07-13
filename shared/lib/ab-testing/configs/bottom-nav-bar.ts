@@ -30,11 +30,10 @@ export const evaluateBottomNavEligibility = ({
     onboardingType === FirstTimeFlowType.socialCreate;
 
   const isRecentInstall =
-    installDate !== undefined &&
-    installDate >= Date.now() - FOUR_WEEKS_MS;
+    installDate !== undefined && installDate >= Date.now() - FOUR_WEEKS_MS;
 
   return isWalletCreator && isRecentInstall;
-}
+};
 
 type BottomNavVariantConfig = {
   withBottomNavBar: boolean;
@@ -67,6 +66,6 @@ export const BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping = {
     MetaMetricsEventName.TokenScreenOpened,
     MetaMetricsEventName.PerpsScreenViewed,
     MetaMetricsEventName.ActivityScreenOpened,
-    'Unified SwapBridge Page Viewed'
+    'Unified SwapBridge Page Viewed',
   ],
 };
