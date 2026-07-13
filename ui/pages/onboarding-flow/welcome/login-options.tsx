@@ -100,7 +100,7 @@ export default function LoginOptions({
       testIdSuffix: 'google',
       icon: (
         <img
-          src="images/icons/google.svg"
+            src="images/google.svg"
           className="options-modal__social-icon"
           alt=""
         />
