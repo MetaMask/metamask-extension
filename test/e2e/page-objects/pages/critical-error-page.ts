@@ -89,10 +89,6 @@ class CriticalErrorPage {
       `Click Attempt recovery link and ${confirm ? 'confirm' : 'dismiss'} the alert`,
     );
 
-    const recoveryWindow = confirm
-      ? await this.driver.prepareExtensionReload()
-      : null;
-
     await this.driver.waitForSelector(this.restoreAccountsLink);
     await this.driver.clickElement(this.restoreAccountsLink);
 
@@ -101,10 +97,6 @@ class CriticalErrorPage {
 
     if (confirm) {
       await alert.accept();
-
-      if (recoveryWindow) {
-        await this.driver.restoreExtensionAfterReload(recoveryWindow);
-      }
 
       // runtime.reload() kills extension tabs, so the driver's current window
       // handle is stale. Wait for the reload, then reattach to a surviving tab.

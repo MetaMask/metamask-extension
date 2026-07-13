@@ -42,9 +42,7 @@ class UpdateModal {
     await this.driver.clickElement(this.submitButton);
     // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing a brief disconnect with webdriver
     await this.driver.delay(3000);
-    await this.driver.waitUntilXWindowHandles(
-      this.driver.browser === 'chrome' ? 0 : 1,
-    );
+    await this.driver.waitUntilXWindowHandles(1);
   }
 
   async close() {

@@ -1137,8 +1137,8 @@ class Driver {
   }
 
   /**
-   * Opens a browser-owned page that can reload the unpacked extension after
-   * Chrome 151 removes command-line-loaded extensions on runtime.reload().
+   * Opens a browser-owned page that remains available while the extension is
+   * reloaded.
    *
    * @returns {Promise<string>} The recovery page window handle.
    */

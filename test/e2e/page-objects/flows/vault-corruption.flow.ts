@@ -177,17 +177,8 @@ export async function onboardThenExecuteScript(
   // Ensure backup is in IndexedDB otherwise the Extension may restart with no backup to recover from.
   await waitForBackupVault(driver);
 
-  // Chrome 151 removes extensions loaded with --load-extension when they call
-  // runtime.reload(). Reload through chrome://extensions after the storage
-  // mutation instead so the unpacked extension remains installed.
-  if (driver.browser === 'chrome') {
-    await driver.executeAsyncScript(
-      script.replace('browser.runtime.reload();', ''),
-    );
-    await driver.reloadExtension();
-  } else {
-    await driver.executeAsyncScript(script);
-  }
+  // use the home page to destroy the vault
+  await driver.executeAsyncScript(script);
 
   // the previous tab we were using is now closed, so we need to tell Selenium
   // to switch back to the other page (required for Chrome)
