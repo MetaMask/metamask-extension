@@ -10,6 +10,24 @@ export const NATIVE_RESERVE_SLIP44_IDS: Set<string> = new Set([
 ]);
 
 /**
+ * Validates if a string is a valid number string.
+ *
+ * @param value - Numeric string to validate.
+ * @returns `true` when the string is a valid number string, otherwise `false`.
+ */
+function isValidNumberString(value?: string): boolean {
+  if (value === undefined) {
+    return false;
+  }
+  try {
+    const parsed = new BigNumber(value);
+    return parsed.isFinite() && !parsed.isNegative();
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Computes the spendable balance for a native asset that supports reserve
  * balance display.
  * if the total balance or base reserve is not a valid number, returns '0'.
@@ -24,25 +42,16 @@ export function computeSpendableBalance(
   totalBalance: string,
   baseReserve: string,
 ): string {
-  try {
-    const total = new BigNumber(totalBalance);
-    const reserved = new BigNumber(baseReserve);
-    if (
-      !total.isFinite() ||
-      total.isNegative() ||
-      !reserved.isFinite() ||
-      reserved.isNegative()
-    ) {
-      return '0';
-    }
-    const spendable = total.minus(reserved);
-    if (spendable.isNegative()) {
-      return '0';
-    }
-    return spendable.toString();
-  } catch {
+  if (!isValidNumberString(totalBalance) || !isValidNumberString(baseReserve)) {
     return '0';
   }
+  const total = new BigNumber(totalBalance);
+  const reserved = new BigNumber(baseReserve);
+  const spendable = total.minus(reserved);
+  if (spendable.isNegative()) {
+    return '0';
+  }
+  return spendable.toString();
 }
 
 /**
