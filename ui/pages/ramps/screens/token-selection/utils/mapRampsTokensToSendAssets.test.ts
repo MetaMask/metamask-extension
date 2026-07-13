@@ -6,6 +6,10 @@ import {
   type AssetType,
 } from '../../../../../components/app/asset-picker';
 import {
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  CHAIN_IDS,
+} from '../../../../../../shared/constants/network';
+import {
   filterRampsTokensByEnabledNetworks,
   mapRampsTokenToSendAsset,
   mapRampsTokensToSendAssets,
@@ -50,6 +54,7 @@ describe('mapRampsTokensToSendAssets', () => {
     expect(mapped[0]).toMatchObject({
       assetId: ethToken.assetId,
       chainId: '0x1',
+      image: CHAIN_ID_TOKEN_IMAGE_MAP[CHAIN_IDS.MAINNET],
       isNative: true,
       standard: AssetStandard.Native,
       disabled: false,
@@ -69,5 +74,28 @@ describe('mapRampsTokensToSendAssets', () => {
         networkImage: 'eth.png',
       }),
     ).toMatchSnapshot();
+  });
+
+  it('resolves native token images from chain maps when iconUrl is empty', () => {
+    const polygonNative = {
+      assetId: 'eip155:137/slip44:966',
+      chainId: 'eip155:137',
+      name: 'Polygon',
+      symbol: 'POL',
+      decimals: 18,
+      iconUrl: '',
+      tokenSupported: true,
+    };
+
+    expect(
+      mapRampsTokenToSendAsset(polygonNative, {
+        networkName: 'Polygon',
+        networkImage: 'polygon.png',
+      }),
+    ).toMatchObject({
+      chainId: CHAIN_IDS.POLYGON,
+      image: CHAIN_ID_TOKEN_IMAGE_MAP[CHAIN_IDS.POLYGON],
+      isNative: true,
+    });
   });
 });

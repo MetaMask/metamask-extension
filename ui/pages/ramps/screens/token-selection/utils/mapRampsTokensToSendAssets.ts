@@ -1,5 +1,5 @@
 import { type RampsToken } from '@metamask/ramps-controller';
-import { type CaipChainId } from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   AssetStandard,
   type AssetType,
@@ -8,8 +8,12 @@ import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../../../shared/constants/bridge';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../../../shared/constants/multichain/networks';
+import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
 import { convertCaipToHexChainId } from '../../../../../../shared/lib/network.utils';
 
 export function getRampsNetworkDetailsForCaipChainId(
@@ -83,20 +87,43 @@ function normalizeSendAssetChainId(chainId: string): string {
   return chainId;
 }
 
+function resolveRampsTokenImage(
+  token: RampsToken,
+  isNative: boolean,
+  hexChainId: string,
+): string {
+  const staticAssetImageUrl =
+    getAssetImageUrl(token.assetId, token.chainId as CaipChainId) ?? '';
+
+  if (isNative) {
+    return (
+      CHAIN_ID_TOKEN_IMAGE_MAP[
+        hexChainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+      ] ??
+      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId as Hex] ??
+      token.iconUrl ??
+      staticAssetImageUrl
+    );
+  }
+
+  return token.iconUrl || staticAssetImageUrl;
+}
+
 export function mapRampsTokenToSendAsset(
   token: RampsToken,
   networkDetails: { networkName: string; networkImage: string },
 ): AssetType {
   const isNative = token.assetId.includes('/slip44:');
+  const chainId = normalizeSendAssetChainId(token.chainId);
 
   return {
     assetId: token.assetId,
     address: parseAddressFromAssetId(token.assetId),
-    chainId: normalizeSendAssetChainId(token.chainId),
+    chainId,
     name: token.name,
     symbol: token.symbol,
     decimals: token.decimals,
-    image: token.iconUrl,
+    image: resolveRampsTokenImage(token, isNative, chainId),
     networkName: networkDetails.networkName,
     networkImage: networkDetails.networkImage,
     isNative,
