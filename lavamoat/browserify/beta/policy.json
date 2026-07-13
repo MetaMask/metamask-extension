@@ -1047,7 +1047,7 @@
         "@metamask/controller-utils": true,
         "@metamask/messenger": true,
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": true,
         "eslint>fast-deep-equal": true
       }
     },
@@ -2298,8 +2298,8 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
-        "@tanstack/react-query": true
+        "@metamask/react-data-query>@tanstack/query-core": true,
+        "@metamask/react-data-query>@tanstack/react-query": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -3544,14 +3544,36 @@
     },
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
+        "AbortController": true,
         "addEventListener": false,
-        "document": false
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": false,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
         "document": false
+      }
+    },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
@@ -3630,6 +3652,17 @@
       "packages": {
         "@tanstack/react-query>@tanstack/query-core": true,
         "react": true
+      }
+    },
+    "@metamask/react-data-query>@tanstack/react-query": {
+      "globals": {
+        "ReactQueryClientContext": "write"
+      },
+      "packages": {
+        "@metamask/react-data-query>@tanstack/query-core": true,
+        "react": true,
+        "react-dom": true,
+        "@hello-pangea/dnd>react-redux>use-sync-external-store": true
       }
     },
     "@tanstack/react-virtual": {
