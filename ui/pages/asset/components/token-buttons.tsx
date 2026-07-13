@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import type { CaipAssetType } from '@metamask/utils';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -135,65 +136,66 @@ const TokenButtons = ({
     isDeactivating,
     errorMessage,
   } = useAssetActivation({
-    asset: token,
+    assetId: token.address as CaipAssetType,
+    assetSymbol: token.symbol,
   });
 
   return (
     <>
-    <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.Dollar}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('buy')}
-        data-testid="token-overview-buy"
-        onClick={handleBuyAndSellOnClick}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        disabled={token.isERC721}
-      />
-
-      {shouldShowSendButton ? (
+      <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
         <IconButton
           className="token-overview__button"
-          onClick={handleSendOnClick}
           Icon={
             <Icon
-              name={IconName.Send}
+              name={IconName.Dollar}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           }
-          label={t('send')}
-          data-testid="eth-overview-send"
-          disabled={
-            token.isERC721 ||
-            (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
-          }
+          label={t('buy')}
+          data-testid="token-overview-buy"
+          onClick={handleBuyAndSellOnClick}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          disabled={token.isERC721}
         />
-      ) : null}
 
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.SwapVertical}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
+        {shouldShowSendButton ? (
+          <IconButton
+            className="token-overview__button"
+            onClick={handleSendOnClick}
+            Icon={
+              <Icon
+                name={IconName.Send}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            label={t('send')}
+            data-testid="eth-overview-send"
+            disabled={
+              token.isERC721 ||
+              (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+            }
           />
-        }
-        onClick={handleSwapOnClick}
-        data-testid="token-overview-swap"
-        label={t('swap')}
-        disabled={!isExternalServicesEnabled || isMarketClosed}
-      />
+        ) : null}
 
-{canDeactivate ? (
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.SwapVertical}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          onClick={handleSwapOnClick}
+          data-testid="token-overview-swap"
+          label={t('swap')}
+          disabled={!isExternalServicesEnabled || isMarketClosed}
+        />
+
+        {canDeactivate ? (
           <IconButton
             className="token-overview__button"
             Icon={
@@ -209,12 +211,12 @@ const TokenButtons = ({
             disabled={isDeactivating}
           />
         ) : null}
-    </Box>
-     <AssetActivationErrorToast
-     message={errorMessage}
-     onClose={dismissErrorMessage}
-   />
-   </>
+      </Box>
+      <AssetActivationErrorToast
+        message={errorMessage}
+        onClose={dismissErrorMessage}
+      />
+    </>
   );
 };
 

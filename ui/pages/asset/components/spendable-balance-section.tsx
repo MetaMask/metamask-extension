@@ -6,15 +6,18 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import React, { useMemo } from 'react';
+import type { CaipAssetType } from '@metamask/utils';
+import React from 'react';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import { computeSpendableBalance } from '../../../../shared/lib/multichain/spendable-balance';
+import { useSpendableBalance } from '../hooks/useSpendableBalance';
 
 export type SpendableBalanceSectionProps = {
+  accountId?: string;
+  assetId: CaipAssetType;
   totalBalance: string;
   symbol: string;
-  baseReserve: string;
   fiatValue: number | null;
 };
 
@@ -22,31 +25,35 @@ export type SpendableBalanceSectionProps = {
  * Spendable balance section: breakdown for a native asset (total, spendable, reserved, fiat value).
  *
  * @param params - Spendable balance section parameters
+ * @param params.accountId - Optional account id override.
+ * @param params.assetId - CAIP asset id for the native asset.
  * @param params.totalBalance - The total balance
  * @param params.symbol - The symbol of the asset
- * @param params.baseReserve - The base reserve
  * @param params.fiatValue - The fiat value
  */
 export function SpendableBalanceSection({
+  accountId,
+  assetId,
   totalBalance,
   symbol,
-  baseReserve,
   fiatValue,
 }: SpendableBalanceSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
+  const { baseReserve, spendableBalance } = useSpendableBalance({
+    accountId,
+    assetId,
+    totalBalance,
+  });
 
-  const { totalDisplay, spendableDisplay, reservedDisplay } = useMemo(() => {
-    const spendable = computeSpendableBalance(totalBalance, baseReserve);
+  if (baseReserve === undefined || spendableBalance === undefined) {
+    return null;
+  }
 
-    return {
-      totalDisplay: `${totalBalance} ${symbol}`,
-      spendableDisplay: `${spendable} ${symbol}`,
-      reservedDisplay: `${baseReserve} ${symbol}`,
-    };
-  }, [baseReserve, symbol, totalBalance]);
-
-  const valueDisplay =
+  const totalDisplay = `${totalBalance} ${symbol}`;
+  const spendableDisplay = `${spendableBalance} ${symbol}`;
+  const reservedDisplay = `${baseReserve} ${symbol}`;
+  const fiatValueDisplay =
     fiatValue !== null && Number.isFinite(fiatValue)
       ? formatFiat(fiatValue)
       : '—';
@@ -99,7 +106,7 @@ export function SpendableBalanceSection({
             variant={TextVariant.BodyMd}
             data-testid="spendable-balance-fiat-value"
           >
-            {valueDisplay}
+            {fiatValueDisplay}
           </Text>
         </Box>
       </Box>

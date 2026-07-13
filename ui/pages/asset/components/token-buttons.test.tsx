@@ -11,15 +11,9 @@ import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as storeActions from '../../../store/actions';
-import { getAsset } from '../../../selectors/assets';
 import * as stellarSnapRequests from '../utils/stellar-snap-client-requests';
 import type { Asset } from '../types/asset';
 import TokenButtons from './token-buttons';
-
-jest.mock('../../../selectors/assets', () => ({
-  ...jest.requireActual('../../../selectors/assets'),
-  getAsset: jest.fn(),
-}));
 
 const PUBNET_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
@@ -82,6 +76,15 @@ const stellarMockState = {
       },
     },
     selectedAccountGroup: STELLAR_GROUP_ID,
+    accountAssets: {
+      [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+        [PUBNET_USDC_ASSET]: {
+          limit: '10',
+          authorized: true,
+          sponsored: false,
+        },
+      },
+    },
   },
 };
 
@@ -89,9 +92,6 @@ describe('TokenButtons', () => {
   const mockStore = configureMockStore([thunk])(stellarMockState);
 
   beforeEach(() => {
-    (getAsset as unknown as jest.Mock).mockReturnValue({
-      accountAssetInfo: { limit: '10' },
-    });
     jest
       .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
       .mockResolvedValue(undefined);
@@ -183,19 +183,24 @@ describe('TokenButtons', () => {
       .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
       .mockRejectedValue(new Error('balance must be zero'));
 
-    renderWithProvider(
-      <TokenButtons
-        token={{
-          ...STELLAR_TOKEN,
-          balance: {
-            value: '255000000',
-            display: '25.50',
-            fiat: '25.50',
+    const storeWithBalance = configureMockStore([thunk])({
+      ...stellarMockState,
+      metamask: {
+        ...stellarMockState.metamask,
+        balances: {
+          [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+            [PUBNET_USDC_ASSET]: {
+              amount: '25.50',
+              unit: 'USDC',
+            },
           },
-        }}
-        disableSendForNonEvm
-      />,
-      mockStore,
+        },
+      },
+    });
+
+    renderWithProvider(
+      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
+      storeWithBalance,
     );
 
     fireEvent.click(screen.getByTestId('token-overview-deactivate-asset'));

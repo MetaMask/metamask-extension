@@ -1,5 +1,5 @@
 import { KeyringAccountType } from '@metamask/keyring-api';
-import type { Asset, TokenListToken } from '@metamask/assets-controllers';
+import type { TokenListToken } from '@metamask/assets-controllers';
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
@@ -59,9 +59,6 @@ export type TokenWithFiatAmount = Token &
     rwaData?: TokenListToken['rwaData'];
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
-    // TODO: Sync the name `accountAssetInfo` to `metadata`,
-    // it is the generic name for asset metadata.
-    accountAssetInfo?: Asset['accountAssetInfo'];
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;
