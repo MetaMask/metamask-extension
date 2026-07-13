@@ -12,6 +12,9 @@ export const NATIVE_RESERVE_SLIP44_IDS: Set<string> = new Set([
 /**
  * Computes the spendable balance for a native asset that supports reserve
  * balance display.
+ * if the total balance or base reserve is not a valid number, returns '0'.
+ * if the spendable balance is negative, returns '0'.
+ * otherwise, returns the spendable balance as a string.
  *
  * @param totalBalance - The total balance of the asset.
  * @param baseReserve - The base reserve of the asset.
@@ -21,10 +24,25 @@ export function computeSpendableBalance(
   totalBalance: string,
   baseReserve: string,
 ): string {
-  const total = new BigNumber(totalBalance);
-  const reserved = new BigNumber(baseReserve);
-  const spendable = total.minus(reserved).toString();
-  return spendable;
+  try {
+    const total = new BigNumber(totalBalance);
+    const reserved = new BigNumber(baseReserve);
+    if (
+      !total.isFinite() ||
+      total.isNegative() ||
+      !reserved.isFinite() ||
+      reserved.isNegative()
+    ) {
+      return '0';
+    }
+    const spendable = total.minus(reserved);
+    if (spendable.isNegative()) {
+      return '0';
+    }
+    return spendable.toString();
+  } catch {
+    return '0';
+  }
 }
 
 /**
