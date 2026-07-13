@@ -148,7 +148,6 @@ ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @M
 
 # Web3Auth / Onboarding
 ui/pages/onboarding-flow              @MetaMask/web3auth
-ui/pages/settings/sync-accounts       @MetaMask/web3auth
 
 # Web3Auth / Shield
 app/scripts/controller-init/claims              @MetaMask/web3auth
