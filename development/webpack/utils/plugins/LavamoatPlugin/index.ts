@@ -65,9 +65,10 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'Date',
   // Selenium atoms construct regexes while locating elements.
   'RegExp',
-  // ChromeDriver 151+ Selenium atoms inspect DOM constructors.
+  // ChromeDriver 151+ Selenium atoms inspect these globals.
   'Window',
   'Node',
+  'self',
   // globals sentry needs to function
   '__SENTRY__',
   'appState',
