@@ -8,6 +8,7 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
+  mockTronSwapApisWithoutFeeEstimation,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
 import { buildTronFixtures } from './unified-tron-assets';
@@ -34,7 +35,7 @@ describe('Swap on Tron', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('6.07');
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
@@ -52,6 +53,41 @@ describe('Swap on Tron', function () {
           swapTo: 'USDT',
           swapFromAmount: '1',
         });
+      },
+    );
+  });
+
+  it('Swap disabled when Tron network fees cannot be estimated', async function () {
+    await withFixtures(
+      {
+        fixtures: buildTronFixtures(),
+        localNodeOptions: [{ type: 'none' as const }],
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockTronSwapApisWithoutFeeEstimation,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByNameWithWait('Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
+
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.createSwap({
+          amount: 1,
+          swapTo: 'USDT',
+          swapFrom: 'TRX',
+          network: 'Tron',
+        });
+
+        await swapPage.checkQuoteIsDisplayedWithoutNetworkFee();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
       },
     );
   });
@@ -74,7 +110,7 @@ describe('Swap on Tron', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('6.07');
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();

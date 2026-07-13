@@ -126,11 +126,14 @@ jobs:
           RUN_ID: ${{ steps.find-dist.outputs.run-id }}
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
-      - name: Cache dist artifact
-        uses: actions/cache/save@v5
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v6
         with:
+          name: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
           path: build-dist-webpack
-          key: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
+          if-no-files-found: error
+          # Allow workflow re-runs to replace the artifact from a prior attempt.
+          overwrite: true
 
   update-fixtures:
     name: Update E2E fixtures
@@ -153,12 +156,11 @@ jobs:
       - name: Install anvil
         run: yarn mm-foundryup
 
-      - name: Restore dist artifact
-        uses: actions/cache/restore@v5
+      - name: Download dist artifact
+        uses: actions/download-artifact@v7
         with:
+          name: dist-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: build-dist-webpack
-          key: dist-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
 
       - name: Prepare dist
         run: |
@@ -183,13 +185,16 @@ jobs:
             ./test-artifacts
             ./test/test-results/e2e
 
-      - name: Cache updated fixture
-        uses: actions/cache/save@v5
+      - name: Upload updated fixtures
+        uses: actions/upload-artifact@v6
         with:
+          name: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
             test/e2e/fixtures/onboarding-fixture.json
             test/e2e/fixtures/default-fixture.json
-          key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
+          if-no-files-found: error
+          # Allow workflow re-runs to replace the artifact from a prior attempt.
+          overwrite: true
 
   commit-updated-fixtures:
     name: Commit the updated E2E fixtures
@@ -213,14 +218,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
-      - name: Restore updated fixtures
-        uses: actions/cache/restore@v5
+      - name: Download updated fixtures
+        uses: actions/download-artifact@v7
         with:
-          path: |
-            test/e2e/fixtures/onboarding-fixture.json
-            test/e2e/fixtures/default-fixture.json
-          key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          name: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: test/e2e/fixtures
 
       - name: Check whether there are fixture changes
         id: fixture-changes

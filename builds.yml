@@ -29,7 +29,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
@@ -55,7 +55,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -80,7 +80,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
@@ -104,7 +104,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/?utm_source=extension
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
@@ -433,3 +433,6 @@ env:
 
   # Passkey / Biometrics unlock
   - PASSKEY_ENABLED: true
+
+  # Basic Functionality toggle (required for onboarding)
+  - BFT_CONSOLIDATION_ENABLED: false

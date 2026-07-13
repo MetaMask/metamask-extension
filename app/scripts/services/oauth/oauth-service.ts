@@ -11,13 +11,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventAccountType,
   MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
 } from '../../../../shared/constants/metametrics';
 import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
 import ExtensionPlatform from '../../platforms/extension';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import type { AnalyticsEvent } from '../../controllers/analytics';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
@@ -62,8 +63,6 @@ export class OAuthService {
 
   #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
 
-  #trackEvent: OAuthServiceOptions['trackEvent'];
-
   #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
 
   #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
@@ -76,7 +75,6 @@ export class OAuthService {
     platform,
     bufferedTrace,
     bufferedEndTrace,
-    trackEvent,
     addEventBeforeMetricsOptIn,
     getCompletedMetaMetricsOnboarding,
     getOptedIn,
@@ -88,7 +86,6 @@ export class OAuthService {
     this.#platform = platform;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
-    this.#trackEvent = trackEvent;
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
     this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
     this.#getOptedIn = getOptedIn;
@@ -102,25 +99,28 @@ export class OAuthService {
   /**
    * Track a MetaMetrics event with buffering (handles consent checking)
    *
-   * @param payload - The event payload
-   * @param options - Optional event options
+   * @param built - The built analytics event.
    */
-  #trackEventWithBuffering(
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ): void {
+  #trackEventWithBuffering(built: AnalyticsEvent): void {
     const isMetricsEnabled =
       this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
 
     if (isMetricsEnabled) {
-      this.#trackEvent(payload, options);
-    } else {
-      const bufferedPayload = {
-        ...payload,
-        actionId: `${Date.now() + Math.random()}`,
-      };
-      this.#addEventBeforeMetricsOptIn(bufferedPayload);
+      trackEvent(built);
+      return;
     }
+
+    const { category, ...properties } = built.properties;
+    const bufferedPayload: MetaMetricsEventPayload = {
+      event: built.name,
+      category: category as MetaMetricsEventCategory,
+      properties: {
+        ...properties,
+        actionId: `${Date.now() + Math.random()}`,
+      },
+      sensitiveProperties: built.sensitiveProperties,
+    };
+    this.#addEventBeforeMetricsOptIn(bufferedPayload);
   }
 
   /**
@@ -383,21 +383,22 @@ export class OAuthService {
     errorCategory: 'provider_login' | 'get_auth_tokens';
     failureType: 'error' | 'user_cancelled';
   }): void {
-    this.#trackEventWithBuffering({
-      event: MetaMetricsEventName.SocialLoginFailed,
-      category: MetaMetricsEventCategory.Onboarding,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_rehydration:
-          isRehydration === null ? 'unknown' : String(isRehydration),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        failure_type: failureType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_category: errorCategory,
-      },
-    });
+    this.#trackEventWithBuffering(
+      createEventBuilder(MetaMetricsEventName.SocialLoginFailed)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: failureType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: errorCategory,
+        })
+        .build(),
+    );
   }
 
   /**

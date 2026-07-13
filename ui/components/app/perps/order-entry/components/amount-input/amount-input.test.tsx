@@ -104,6 +104,22 @@ describe('AmountInput', () => {
       expect(input).toHaveValue('25');
       expect(screen.getByText('%')).toBeInTheDocument();
     });
+
+    it('masks the available-to-trade balance when privacy mode is enabled', () => {
+      const privacyStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          preferences: {
+            ...mockState.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      renderWithProvider(<AmountInput {...defaultProps} />, privacyStore);
+
+      expect(screen.getByText('••••••')).toBeInTheDocument();
+    });
   });
 
   describe('denomination toggle', () => {

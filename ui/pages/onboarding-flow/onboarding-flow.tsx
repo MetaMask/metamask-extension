@@ -4,6 +4,7 @@ import React, {
   useState,
   useContext,
   useMemo,
+  useCallback,
 } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,8 +42,10 @@ import {
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   getCompletedOnboarding,
+  getHasSeenOnboardingCompletionPage,
   getIsPrimarySeedPhraseBackedUp,
   getOpenedWithSidepanel,
+  getShouldUnlockBeforeOnboardingCompletion,
 } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
@@ -60,6 +63,9 @@ import {
   getFirstTimeFlowTypeRouteAfterUnlock,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import type { UIMetricsEventPayload } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import type { MetaMetricsEventOptions } from '../../../shared/constants/metametrics';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
@@ -88,6 +94,7 @@ import ImportSRP from './import-srp/import-srp';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
 import { useOnboardingSearchParams } from './hooks/useOnboardingSearchParams';
+import { useOnboardingCompletion } from './hooks/useOnboardingCompletion';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
@@ -119,12 +126,40 @@ export default function OnboardingFlow() {
   const theme = useTheme();
   const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
+  const hasSeenOnboardingCompletionPage = useSelector(
+    getHasSeenOnboardingCompletionPage,
+  );
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
+  const { completeOnboarding } = useOnboardingCompletion();
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
+  const shouldUnlockBeforeOnboardingCompletion = useSelector(
+    getShouldUnlockBeforeOnboardingCompletion,
+  );
   const { isFromReminder, isFromSettingsSecurity } =
     useOnboardingSearchParams();
-  const { bufferedTrace, onboardingParentContext, trackEvent } =
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { bufferedTrace, onboardingParentContext } =
     useContext(MetaMetricsContext);
+
+  const trackLegacyEventForAction = useCallback(
+    async (
+      payload: UIMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ): Promise<void> => {
+      trackEvent(
+        createEventBuilder(payload.event)
+          .addProperties({
+            ...payload.properties,
+            ...(payload.category === undefined
+              ? {}
+              : { category: payload.category }),
+          })
+          .addSensitiveProperties(payload.sensitiveProperties)
+          .build(options),
+      );
+    },
+    [createEventBuilder, trackEvent],
+  );
   const isUnlocked = useSelector(getIsUnlocked);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
@@ -198,6 +233,14 @@ export default function OnboardingFlow() {
         },
       );
     }
+
+    if (
+      pathname === ONBOARDING_COMPLETION_ROUTE &&
+      !isFromReminder &&
+      shouldUnlockBeforeOnboardingCompletion
+    ) {
+      navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
+    }
   }, [
     isUnlocked,
     completedOnboarding,
@@ -206,6 +249,8 @@ export default function OnboardingFlow() {
     navigate,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
+    isFromReminder,
+    shouldUnlockBeforeOnboardingCompletion,
   ]);
 
   useEffect(() => {
@@ -260,7 +305,10 @@ export default function OnboardingFlow() {
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
         retrievedSecretRecoveryPhrase = await dispatch(
-          restoreSocialBackupAndGetSeedPhrase(password, trackEvent),
+          restoreSocialBackupAndGetSeedPhrase(
+            password,
+            trackLegacyEventForAction,
+          ),
         );
       } else {
         retrievedSecretRecoveryPhrase = await dispatch(
@@ -302,6 +350,14 @@ export default function OnboardingFlow() {
           }
           navigate(redirectTo, { replace: true });
         }
+      } else if (
+        hasSeenOnboardingCompletionPage &&
+        !completedOnboarding &&
+        !isFromReminder
+      ) {
+        // User saw wallet-ready but closed without tapping Done. After unlock,
+        // finish onboarding the same way as the Done button (no completion UI).
+        await completeOnboarding(true);
       } else {
         navigate(nextRoute, { replace: true });
       }

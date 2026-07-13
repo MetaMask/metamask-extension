@@ -7,7 +7,7 @@ import {
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -16,7 +16,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { showModal } from '../../../store/actions';
@@ -61,7 +61,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   // Fetch token data from tokenList
   const tokenData = Object.values(tokenList).find(
@@ -117,19 +117,20 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
             )
           }
           onClickBlockExplorer={() => {
-            trackEvent({
-              event: 'Clicked Block Explorer Link',
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                link_type: 'Token Tracker',
-                action: 'Token Options',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                block_explorer_domain: getURLHostName(tokenTrackerLink),
-              },
-            });
+            trackEvent(
+              createEventBuilder('Clicked Block Explorer Link')
+                .addCategory(MetaMetricsEventCategory.Navigation)
+                .addProperties({
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  link_type: 'Token Tracker',
+                  action: 'Token Options',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  block_explorer_domain: getURLHostName(tokenTrackerLink),
+                })
+                .build(),
+            );
             global.platform.openTab({ url: blockExplorerLink });
           }}
           token={token}

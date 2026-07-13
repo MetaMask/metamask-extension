@@ -1,6 +1,7 @@
 import {
   Box,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   BoxFlexDirection,
@@ -12,6 +13,7 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
   BorderRadius,
@@ -20,6 +22,7 @@ import {
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { formatPositionSize } from '../../../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
@@ -81,6 +84,7 @@ export const AmountInput = ({
 }: AmountInputProps) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
+  const { privacyMode } = useSelector(getPreferences);
   const [percentInputValue, setPercentInputValue] = useState<string>(
     String(balancePercent),
   );
@@ -379,9 +383,9 @@ export const AmountInput = ({
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text variant={TextVariant.BodySm}>
+          <SensitiveText variant={TextVariant.BodySm} isHidden={privacyMode}>
             {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
-          </Text>
+          </SensitiveText>
           <ButtonIcon
             iconName={IconName.AddCircle}
             size={ButtonIconSize.Xs}

@@ -44,10 +44,6 @@
       "error: Failed to record sentinel_relay metrics": 1,
       "error: Failed to record sentinel_stx metrics": 1
     },
-    "app/scripts/messenger-client-init/confirmations/transaction-controller-init.test.ts": {
-      "error: Failed to record sentinel_relay metrics": 1,
-      "error: Failed to record sentinel_stx metrics": 3
-    },
     "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },
@@ -265,9 +261,6 @@
     "ui/components/app/modals/identity/turn-on-backup-and-sync-modal/turn-on-backup-and-sync-modal.test.tsx": {
       "error: Error: MetaMetrics context trackEvent was": 2
     },
-    "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
-      "Reselect: Input stability warnings": 3
-    },
     "ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
@@ -438,12 +431,6 @@
       "Reselect: Input stability warnings": 4
     },
     "ui/components/multichain/import-nfts-modal/import-nfts-modal.test.js": {
-      "error: Warning: React does not recognize": 1
-    },
-    "ui/components/multichain/import-tokens-modal/import-tokens-modal.test.js": {
-      "React: Act warnings (component updates not wrapped)": 15,
-      "React: DOM nesting violations": 1,
-      "React: PropTypes validation failures": 2,
       "error: Warning: React does not recognize": 1
     },
     "ui/components/multichain/network-list-menu/network-list-menu.test.tsx": {
@@ -631,6 +618,9 @@
     "ui/pages/asset/components/asset-page.test.tsx": {
       "React: DOM nesting violations": 2,
       "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/asset/hooks/useHistoricalPrices.test.ts": {
+      "React: State updates on unmounted components": 1
     },
     "ui/pages/bridge/index.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5,
@@ -945,9 +935,6 @@
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/pages/home/home.container.test.tsx": {
-      "Reselect: Input stability warnings": 1
-    },
     "ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.test.tsx": {
       "React: Missing key props in lists": 1
     },
@@ -1075,6 +1062,18 @@
     },
     "ui/pages/settings/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings/sync-accounts/components/enter-verification-code.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/sync-accounts/components/qr-code-scan.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/sync-accounts/components/sync-error.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/sync-accounts/sync-accounts-settings.test.tsx": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/transactions-tab/transactions-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,

@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "एक कस्टम टोकन जोड़ें"
   },
-  "addDevice": {
-    "message": "मोबाइल के साथ सिंक करें"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "इस RPC प्रोवाइडर को केवल तभी जोड़ें जब आप निश्चित हैं कि आप इस पर विश्वास कर सकते हैं। $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "जारी रखें"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "रीकनेक्ट"
+    "message": "रीकनेक्ट",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "पक्का करें कि आपका हार्डवेयर वॉलेट USB से ठीक से कनेक्ट हो"
@@ -4409,6 +4407,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "लॉक किए गए सर्कल को दिखाने के लिए होल्ड करें"
+  },
+  "home": {
+    "message": "होम",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "यह टोकन हनीपोट जोखिम पैदा कर सकता है। किसी भी संभावित वित्तीय नुकसान को रोकने के लिए इंटरैक्ट करने से पहले पूरी जांच-पड़ताल करने की सलाह दी जाती है।"
@@ -4754,6 +4756,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "अपने Ledger डिवाइस में प्लग इन करें और Ethereum ऐप चुनें"
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "जारी रखने के लिए कृपया इसे अपने Ledger डिवाइस पर खोलें"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "Ethereum ऐप बंद है"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Ledger डिवाइस मिला"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "जारी रखने के लिए कृपया अपने Ledger डिवाइस को अनलॉक करें"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger लॉक है"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Ethereum ऐप को इनस्टॉल करें और खोलें"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "अपने Ledger डिवाइस को अनलॉक करें"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "डिवाइस नहीं मिला"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "कृपया अपना डिवाइस डिस्कनेक्ट करें और फिर से कनेक्ट करें"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger काम नहीं कर रहा है"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "कुछ गलत हो गया"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "जब तक हम इसे ढूंढते हैं, रुकें..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "आपका डिवाइस खोज रहा है"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger डिवाइस खोलने में नहीं हो पाया। आपका Ledger अन्य सॉफ्टवेयर से कनेक्ट हो सकता है। कृपया Ledger लाइव या अपने Ledger डिवाइस से जुड़े अन्य ऐप्लिकेशन को बंद करें, और फिर से कनेक्ट करने की कोशिश करें।"
@@ -7910,9 +7951,6 @@
     "message": "$1सेकंड में एक्स्पायर होगा",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "QR कोड स्कैन करते समय कुछ गड़बड़ हो गई। दोबारा कोशिश करने के लिए नया QR कोड जेनरेट करें।"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "यह QR कोड किसी दूसरे ट्रांसेक्शन के लिए है। इसे कैंसिल करें और दोबारा कोशिश करें, और दोबारा कोशिश करने से पहले सुनिश्चित करें कि आप अपने हार्डवेयर वॉलेट से MetaMask में दिखाए गए QR कोड को पहले स्कैन करें।",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8395,6 +8433,15 @@
   },
   "save": {
     "message": "सेव करें"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "जारी रखें"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "हो सकता है कि आपके साथ अभी धोखाधड़ी हो रही हो"
   },
   "scanInstructions": {
     "message": "QR कोड को अपने कैमरे के सामने रखें"

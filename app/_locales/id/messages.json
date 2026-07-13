@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Tambahkan token khusus"
   },
-  "addDevice": {
-    "message": "Sinkronkan dengan seluler"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Cukup tambahkan penyedia RPC ini jika Anda yakin dapat memercayainya. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4199,7 +4196,8 @@
     "message": "Lanjutkan"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Hubungkan kembali"
+    "message": "Hubungkan kembali",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Pastikan dompet perangkat keras terhubung dengan benar melalui USB"
@@ -4413,6 +4411,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "tahan untuk mengungkapkan lingkaran terbuka"
+  },
+  "home": {
+    "message": "Beranda",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "Token ini dapat menimbulkan risiko honeypot. Disarankan untuk melakukan uji tuntas sebelum berinteraksi untuk mencegah potensi kerugian finansial."
@@ -4758,6 +4760,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Pastikan Ledger terhubung dan untuk memilih aplikasi Ethereum."
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Buka di perangkat Ledger untuk melanjutkan"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "Aplikasi Ethereum ditutup"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Perangkat Ledger ditemukan"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Buka perangkat Ledger untuk melanjutkan"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger terkunci"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Instal dan buka aplikasi Ethereum"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Buka perangkat Ledger"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Perangkat tidak ditemukan"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Putuskan koneksi dan hubungkan kembali perangkat Anda"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger tidak responsif"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Terjadi kesalahan"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Tunggu sebentar selagi kami mencarinya..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Mencari perangkat Anda"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Perangkat Ledger gagal dibuka. Ledger Anda mungkin terhubung ke perangkat lunak lain. Tutup Ledger Live atau aplikasi lain yang terhubung ke perangkat Ledger Anda, dan coba hubungkan kembali."
@@ -7918,9 +7959,6 @@
     "message": "Berakhir dalam $1 dtk",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Terjadi kesalahan saat memindai kode QR. Buat kode QR baru untuk mencoba lagi."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Kode QR ini untuk transaksi yang berbeda. Batalkan dan coba lagi, pastikan untuk memindai kode QR yang ditampilkan di MetaMask dengan dompet perangkat keras Anda terlebih dahulu.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8403,6 +8441,15 @@
   },
   "save": {
     "message": "Simpan"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "Lanjutkan"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Hubungi dukungan"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "Anda mungkin sedang menjadi korban penipuan saat ini"
   },
   "scanInstructions": {
     "message": "Tempatkan kode QR di bagian depan kamera Anda"

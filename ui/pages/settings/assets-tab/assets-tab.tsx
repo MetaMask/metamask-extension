@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
 import {
@@ -14,6 +15,7 @@ import {
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import { ASSET_ITEMS } from '../search-config';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 
 const ShowNetworkTokenToggleItem = createToggleItem({
   name: 'ShowNetworkTokenToggleItem',
@@ -60,8 +62,23 @@ const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'autodetect-tokens', component: AutodetectTokensToggleItem },
 ];
 
+const CONSOLIDATED_BASIC_FUNCTIONALITY_ASSET_ITEMS: SettingItemConfig[] = [
+  { id: 'show-network-token', component: ShowNetworkTokenToggleItem },
+  {
+    id: 'hide-zero-balance-tokens',
+    component: HideZeroBalanceTokensToggleItem,
+  },
+];
+
 const AssetsTab = () => {
-  return <SettingsTab items={ASSET_SETTING_ITEMS} />;
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
+  const items = isBasicFunctionalityConsolidationEnabled
+    ? CONSOLIDATED_BASIC_FUNCTIONALITY_ASSET_ITEMS
+    : ASSET_SETTING_ITEMS;
+
+  return <SettingsTab items={items} />;
 };
 
 export default AssetsTab;

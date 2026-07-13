@@ -68,7 +68,7 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": null,
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
@@ -255,6 +255,7 @@
   "OnboardingController": {
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
+    "hasSeenOnboardingCompletionPage": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
@@ -293,6 +294,7 @@
       "featureNotificationsEnabled": "boolean",
       "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
+      "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
@@ -329,6 +331,18 @@
     "watchEthereumAccountEnabled": "boolean"
   },
   "ProfileMetricsController": "object",
+  "QrSyncController": "object",
+  "RampsController": {
+    "countries": "object",
+    "nativeProviders": "object",
+    "orders": "object",
+    "paymentMethods": "object",
+    "providerAutoSelected": "boolean",
+    "providers": "object",
+    "requests": "object",
+    "tokens": "object",
+    "userRegion": null
+  },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
     "localOverrides": "object",
