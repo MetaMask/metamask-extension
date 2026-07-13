@@ -91,7 +91,7 @@ export async function createOffscreen() {
     if (offscreenDocumentLoadedListener) {
       chrome.runtime.onMessage.removeListener(offscreenDocumentLoadedListener);
     }
-    // Report unrecongized errors without halting wallet initialization
+    // Report unrecognized errors without halting wallet initialization
     // Failures to create the offscreen document does not compromise wallet data integrity or
     // core functionality, it's just needed for specific features.
     captureException(error);

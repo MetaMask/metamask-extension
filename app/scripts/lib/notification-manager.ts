@@ -67,7 +67,8 @@ export default class NotificationManager extends EventEmitter {
         // - this is to make sure no error is triggered from polyfill
         // error eg: Invalid value for bounds. Bounds must be at least 50% within visible screen space.
         left = Math.max(
-          (lastFocused.left ?? 0) + ((lastFocused.width ?? 0) - NOTIFICATION_WIDTH),
+          (lastFocused.left ?? 0) +
+            ((lastFocused.width ?? 0) - NOTIFICATION_WIDTH),
           0,
         );
       } catch (_) {

@@ -5,10 +5,12 @@
  * @returns Error with clean stack trace.
  */
 export default function cleanErrorStack(err: Error): Error {
-  let name: string | undefined = err.name;
+  const { name: errName, message: errMessage } = err;
+
+  let name: string | undefined = errName;
   name = name === undefined ? 'Error' : String(name);
 
-  let msg: string | undefined = err.message;
+  let msg: string | undefined = errMessage;
   msg = msg === undefined ? '' : String(msg);
 
   if (name === '') {
