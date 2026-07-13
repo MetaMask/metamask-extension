@@ -91,8 +91,7 @@ describe('useStateSyncHealth', () => {
 
   it('does not trigger concurrent recovery calls', async () => {
     // Make forceUpdateMetamaskState hang so a second interval tick can overlap
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    let resolveRecovery: () => void = () => {};
+    let resolveRecovery: (() => void) | undefined;
     mockForceUpdateMetamaskState.mockImplementationOnce(
       () =>
         new Promise<void>((resolve) => {
@@ -119,6 +118,9 @@ describe('useStateSyncHealth', () => {
 
     // Resolve the pending recovery
     await act(async () => {
+      if (!resolveRecovery) {
+        throw new Error('resolveRecovery was not assigned');
+      }
       resolveRecovery();
       await Promise.resolve();
     });

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { forceUpdateMetamaskState } from '../store/actions';
 
@@ -29,31 +29,31 @@ const CHECK_INTERVAL_MS = 10_000; // 10 seconds (reduced overhead)
  */
 export function useStateSyncHealth(isSyncing: boolean): void {
   const dispatch = useDispatch();
-  const [syncStartTime, setSyncStartTime] = useState<number | null>(null);
+  const syncStartTimeRef = useRef<number | null>(null);
   const isRecoveringRef = useRef(false);
 
-  // Track when syncing started / stopped
+  // Track when syncing started / stopped without triggering re-renders
   useEffect(() => {
     if (isSyncing) {
-      setSyncStartTime((prev) => prev ?? Date.now());
+      syncStartTimeRef.current = syncStartTimeRef.current ?? Date.now();
     } else {
-      setSyncStartTime(null);
+      syncStartTimeRef.current = null;
     }
   }, [isSyncing]);
 
   // Periodically check whether the sync has been stuck
   useEffect(() => {
-    if (!isSyncing || syncStartTime === null) {
+    if (!isSyncing) {
       return undefined;
     }
 
     const checkStale = async () => {
       // Skip if a recovery is already in progress to prevent concurrent calls
-      if (isRecoveringRef.current) {
+      if (isRecoveringRef.current || syncStartTimeRef.current === null) {
         return;
       }
 
-      const elapsed = Date.now() - syncStartTime;
+      const elapsed = Date.now() - syncStartTimeRef.current;
       if (elapsed > STALE_THRESHOLD_MS) {
         console.warn('Stale state sync detected, triggering recovery', {
           elapsed,
@@ -61,7 +61,7 @@ export function useStateSyncHealth(isSyncing: boolean): void {
         isRecoveringRef.current = true;
         try {
           await forceUpdateMetamaskState(dispatch);
-          setSyncStartTime(null);
+          syncStartTimeRef.current = null;
         } finally {
           isRecoveringRef.current = false;
         }
@@ -70,5 +70,5 @@ export function useStateSyncHealth(isSyncing: boolean): void {
 
     const interval = setInterval(checkStale, CHECK_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [isSyncing, syncStartTime, dispatch]);
+  }, [isSyncing, dispatch]);
 }
