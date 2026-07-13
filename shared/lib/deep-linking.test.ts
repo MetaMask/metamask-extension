@@ -3,7 +3,7 @@ import { openCustomProtocol } from './deep-linking';
 describe('#openCustomProtocol', () => {
   describe('with msLaunchUri available', () => {
     const mockMsLaunchUri = jest.fn();
-    let windowSpy;
+    let windowSpy: jest.SpyInstance;
 
     beforeEach(() => {
       windowSpy = jest
@@ -21,7 +21,9 @@ describe('#openCustomProtocol', () => {
     });
 
     it('successfully open when protocol found', async () => {
-      mockMsLaunchUri.mockImplementation((_protocol, cb) => cb());
+      mockMsLaunchUri.mockImplementation((_protocol: string, cb: () => void) =>
+        cb(),
+      );
 
       await openCustomProtocol('TEST PROTOCOL');
 
@@ -29,8 +31,8 @@ describe('#openCustomProtocol', () => {
     });
 
     it('throws when protocol not found', async () => {
-      mockMsLaunchUri.mockImplementation((_protocol, _cb, errorCb) =>
-        errorCb(),
+      mockMsLaunchUri.mockImplementation(
+        (_protocol: string, _cb: () => void, errorCb: () => void) => errorCb(),
       );
 
       await expect(openCustomProtocol('TEST PROTOCOL')).rejects.toThrow(
