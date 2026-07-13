@@ -17,7 +17,7 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
@@ -27,6 +27,8 @@ import {
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import { Numeric } from '../../shared/lib/Numeric';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
+import { convertCaipToHexChainId } from '../../shared/lib/network.utils';
 import {
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
@@ -377,10 +379,21 @@ function getNonEvmCachedBalance(
 }
 
 export function getImageForChainId(chainId: string): string | undefined {
-  return {
+  const imageMap: Record<string, string> = {
     ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
     ...MULTICHAIN_TOKEN_IMAGE_MAP,
-  }[chainId];
+  };
+
+  const directMatch = imageMap[chainId];
+  if (directMatch) {
+    return directMatch;
+  }
+
+  if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
+    return imageMap[convertCaipToHexChainId(chainId)];
+  }
+
+  return undefined;
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected

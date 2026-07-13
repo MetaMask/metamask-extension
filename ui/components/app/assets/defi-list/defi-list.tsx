@@ -56,6 +56,12 @@ export default function DefiList({ onClick }: DefiListProps) {
     const currentAddressDefiPositions =
       allDefiPositions?.[selectedAccount.address];
 
+    console.log('DEBUG XXXX', {
+      allDefiPositions,
+      address: selectedAccount.address,
+      currentAddressDefiPositions,
+    });
+
     // loading spinner
     if (currentAddressDefiPositions === undefined) {
       return undefined;

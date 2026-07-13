@@ -19,4 +19,4 @@ export type DefiControllerV2FeatureFlag = {
  */
 export const isDefiControllerV2Enabled = (
   featureFlag: DefiControllerV2FeatureFlag | undefined | null,
-): boolean => Boolean(featureFlag?.enabled);
+): boolean => Boolean(featureFlag?.enabled) || true;
