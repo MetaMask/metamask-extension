@@ -5,6 +5,21 @@ import { render, fireEvent } from '@testing-library/react';
 import * as MetametricsHooks from '../../../hooks/useMetametrics';
 import MetametricsToggle from './metametrics-toggle';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const enableMetametricsMock = jest.fn(() => Promise.resolve());
 const disableMetametricsMock = jest.fn(() => Promise.resolve());
 
