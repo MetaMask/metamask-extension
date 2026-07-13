@@ -92,7 +92,7 @@ export function PerpsDepositDetails({ item }: Props) {
           />
           {bridgeFeeFiat ? (
             <Row
-              label={t('bridgeFee')}
+              label={t('providerFee')}
               testId="transaction-bridge-fee"
               value={formatFiat(bridgeFeeFiat)}
             />
