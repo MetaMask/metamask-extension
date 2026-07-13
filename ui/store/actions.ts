@@ -4536,26 +4536,6 @@ export function resetWallet(restoreOnly = false) {
   };
 }
 
-export function setServiceWorkerKeepAlivePreference(
-  value: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setServiceWorkerKeepAlivePreference`);
-    try {
-      await submitRequestToBackground('setServiceWorkerKeepAlivePreference', [
-        value,
-      ]);
-    } catch {
-      // TODO: Stop suppressing this error (either log or re-throw)
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {
