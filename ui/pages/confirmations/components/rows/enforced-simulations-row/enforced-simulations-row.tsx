@@ -25,6 +25,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
+import { logConfirmationTransactionDebug } from '../../../utils/enforced-simulations-debug';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
   'https://support.metamask.io/manage-crypto/transactions/simulations/';
@@ -47,10 +48,28 @@ export function EnforcedSimulationsRow() {
       return;
     }
 
+    logConfirmationTransactionDebug(
+      'protection-auto-enable-request',
+      currentConfirmation,
+      {
+        requestedContainerTypes: [
+          ...(containerTypes ?? []),
+          TransactionContainerType.EnforcedSimulations,
+        ],
+      },
+    );
+
     applyTransactionContainersExisting(transactionId, [
       ...(containerTypes ?? []),
       TransactionContainerType.EnforcedSimulations,
-    ]).catch(console.error);
+    ]).catch((error) => {
+      logConfirmationTransactionDebug(
+        'protection-auto-enable-failed',
+        currentConfirmation,
+        { error },
+      );
+      console.error(error);
+    });
   }, [isEligible, hasAutoEnabled, transactionId, containerTypes]);
 
   if (!isEligible && !hasAutoEnabled) {
@@ -129,12 +148,32 @@ function EnforcedSimulationsCheckbox({
       newContainerTypes.push(TransactionContainerType.EnforcedSimulations);
     }
 
+    logConfirmationTransactionDebug('protection-toggle-request', undefined, {
+      transactionId,
+      currentContainerTypes: containerTypes,
+      requestedContainerTypes: newContainerTypes,
+      targetEnabled,
+    });
+
     try {
       await applyTransactionContainersExisting(
         transactionId,
         newContainerTypes,
       );
-    } catch {
+      logConfirmationTransactionDebug('protection-toggle-complete', undefined, {
+        transactionId,
+        currentContainerTypes: containerTypes,
+        requestedContainerTypes: newContainerTypes,
+        targetEnabled,
+      });
+    } catch (error) {
+      logConfirmationTransactionDebug('protection-toggle-failed', undefined, {
+        transactionId,
+        currentContainerTypes: containerTypes,
+        requestedContainerTypes: newContainerTypes,
+        targetEnabled,
+        error,
+      });
       setPendingEnabled(null);
     }
   }, [containerTypes, isEnabled, transactionId]);
