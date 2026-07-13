@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Magdagdag ng custom na token"
   },
-  "addDevice": {
-    "message": "I-sync sa mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Idagdag lamang ang RPC provider na ito kung sigurado kang mapagkakatiwalaan ito. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
