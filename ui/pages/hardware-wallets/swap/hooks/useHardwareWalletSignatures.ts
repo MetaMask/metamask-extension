@@ -48,7 +48,6 @@ import {
 import type { SignatureStepListProps } from '../components/signature-step-list.types';
 import type { SignatureFooterProps } from '../components/signature-footer.types';
 import {
-  SignatureStepStatus,
   getStepDescriptions,
   getStepLabels,
   getQrHardwareSigningPageTitle,
@@ -115,12 +114,12 @@ function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
  * Terminal signature state machine statuses — the flow has finished (either
  * successfully or due to an error) and no further signing is expected.
  */
-const TERMINAL_STATUSES: readonly HardwareWalletSignatureStatus[] = [
+const TERMINAL_STATUSES = new Set<HardwareWalletSignatureStatus>([
   HardwareWalletSignatureStatus.Submitted,
   HardwareWalletSignatureStatus.Failed,
   HardwareWalletSignatureStatus.Rejected,
   HardwareWalletSignatureStatus.Disconnected,
-];
+]);
 
 /**
  * Hardware wallet connection statuses that permit a retry. The device must be
@@ -536,7 +535,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   useEffect(() => {
     const isAwaiting = isAwaitingSignature(signatureState.status);
-    const isTerminal = TERMINAL_STATUSES.includes(signatureState.status);
+    const isTerminal = TERMINAL_STATUSES.has(signatureState.status);
 
     if (hasStartedHardwareWalletSubmission.current && isAwaiting) {
       setSigningInProgress(true);
