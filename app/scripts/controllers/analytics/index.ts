@@ -11,6 +11,7 @@ export {
   canSubmitAnalytics,
   identify,
   trackEvent,
+  trackMetaMetricsPayload,
   trackPage,
   updateProfileSessionData,
   validateIdentifyPayload,

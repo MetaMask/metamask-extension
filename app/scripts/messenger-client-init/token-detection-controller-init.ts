@@ -3,6 +3,7 @@ import {
   TokenDetectionControllerMessenger,
 } from '@metamask/assets-controllers';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
+import { trackMetaMetricsPayload } from '../controllers/analytics';
 import { MessengerClientInitFunction } from './types';
 import { TokenDetectionControllerInitMessenger } from './messengers';
 import { tokenListService } from './token-list-service';
@@ -26,8 +27,7 @@ export const TokenDetectionControllerInit: MessengerClientInitFunction<
         'AssetsContractController:getBalancesInSingleCall',
         ...args,
       ),
-    trackMetaMetricsEvent: (...args) =>
-      initMessenger.call('MetaMetricsController:trackEvent', ...args),
+    trackMetaMetricsEvent: trackMetaMetricsPayload,
     useTokenDetection: () => Boolean(getRetypedPrefState().useTokenDetection),
     // Don't reach external services (token list API + balance multicall) until
     // onboarding is complete — otherwise detection triggered by the vault

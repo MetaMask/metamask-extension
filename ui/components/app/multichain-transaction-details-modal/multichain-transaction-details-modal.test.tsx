@@ -12,7 +12,6 @@ import {
   MOCK_ACCOUNT_SOLANA_MAINNET,
   MOCK_ACCOUNT_BIP122_P2WPKH,
 } from '../../../../test/data/mock-accounts';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -27,6 +26,21 @@ import {
   getTransactionUrl,
   shortenTransactionId,
 } from './helpers';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -152,13 +166,6 @@ const mockStateWithBitcoin = {
 };
 
 describe('MultichainTransactionDetailsModal', () => {
-  const mockTrackEvent = jest.fn();
-  const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
-    bufferedTrace: jest.fn(),
-    bufferedEndTrace: jest.fn(),
-    onboardingParentContext: { current: null },
-  };
   const useI18nContextMock = useI18nContext as jest.Mock;
 
   beforeEach(() => {
@@ -177,9 +184,7 @@ describe('MultichainTransactionDetailsModal', () => {
   ) => {
     const store = configureStore(mockStateWithBitcoin);
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <MultichainTransactionDetailsModal {...props} />
-      </MetaMetricsContext.Provider>,
+      <MultichainTransactionDetailsModal {...props} />,
       store,
     );
   };
@@ -389,9 +394,7 @@ describe('MultichainTransactionDetailsModal', () => {
     };
 
     renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <MultichainTransactionDetailsModal {...props} />
-      </MetaMetricsContext.Provider>,
+      <MultichainTransactionDetailsModal {...props} />,
       store,
     );
 

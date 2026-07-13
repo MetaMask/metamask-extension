@@ -271,6 +271,7 @@ import { ReferralStatus } from './controllers/preferences-controller';
 import {
   createEventBuilder,
   trackEvent,
+  trackMetaMetricsPayload,
   trackPage,
 } from './controllers/analytics';
 import Backup from './lib/backup';
@@ -895,10 +896,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController: this.addressBookController,
       accountsController: this.accountsController,
       networkController: this.networkController,
-      trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
     });
     this.geolocationController = messengerClientsByName.GeolocationController;
 
@@ -980,7 +977,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: walletFundsObtainedMonitorMessenger,
       events: ['NotificationServicesController:notificationsListUpdated'],
       actions: [
-        'MetaMetricsController:trackEvent',
         'AppStateController:setCanTrackWalletFundsObtained',
         'OnboardingController:getState',
         'NotificationServicesController:getState',
@@ -3609,33 +3605,7 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: (payload, options) => {
-        trackEvent(
-          createEventBuilder(payload.event)
-            .addProperties({
-              ...(payload.properties ?? {}),
-              ...(payload.category === undefined
-                ? {}
-                : { category: payload.category }),
-              ...(payload.revenue === undefined
-                ? {}
-                : { revenue: payload.revenue }),
-              ...(payload.value === undefined ? {} : { value: payload.value }),
-              ...(payload.currency === undefined
-                ? {}
-                : { currency: payload.currency }),
-            })
-            .addSensitiveProperties(payload.sensitiveProperties)
-            .build({
-              environmentType: payload.environmentType,
-              page: payload.page,
-              referrer: payload.referrer,
-              excludeMetaMetricsId: options?.excludeMetaMetricsId,
-              matomoEvent: options?.matomoEvent,
-            }),
-          options,
-        );
-      },
+      trackMetaMetricsEvent: trackMetaMetricsPayload,
       trackAnalyticsEvent: trackEvent,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,

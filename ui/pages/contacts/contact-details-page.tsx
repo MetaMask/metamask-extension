@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import type { Hex } from '@metamask/utils';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +22,7 @@ import {
 } from '../../selectors/snaps/address-book';
 import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import { removeFromAddressBook } from '../../store/actions';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -34,7 +34,7 @@ export function ContactDetailsPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { chainId, address } = useParams<{
     chainId: string;
     address: string;
@@ -55,20 +55,21 @@ export function ContactDetailsPage() {
 
   useEffect(() => {
     if (address && contact?.chainId) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Contacts,
-        event: MetaMetricsEventName.ContactDetailsViewed,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: contact.chainId,
-        },
-        sensitiveProperties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          contact_address: address,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ContactDetailsViewed)
+          .addCategory(MetaMetricsEventCategory.Contacts)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: contact.chainId,
+          })
+          .addSensitiveProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            contact_address: address,
+          })
+          .build(),
+      );
     }
-  }, [address, contact?.chainId, trackEvent]);
+  }, [address, contact?.chainId, createEventBuilder, trackEvent]);
 
   const handleBack = () => {
     navigate(CONTACTS_ROUTE);
@@ -79,22 +80,26 @@ export function ContactDetailsPage() {
   };
 
   const openDeleteModal = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Contacts,
-      event: MetaMetricsEventName.DeleteContactClicked,
-      properties: {
+    const deleteContactEventBuilder = createEventBuilder(
+      MetaMetricsEventName.DeleteContactClicked,
+    )
+      .addCategory(MetaMetricsEventCategory.Contacts)
+      .addProperties({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: contact?.chainId,
-      },
-      ...(address && {
-        sensitiveProperties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          contact_address: address,
-        },
-      }),
-    });
+      });
+
+    trackEvent(
+      (address
+        ? deleteContactEventBuilder.addSensitiveProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            contact_address: address,
+          })
+        : deleteContactEventBuilder
+      ).build(),
+    );
     setShowDeleteModal(true);
-  }, [address, contact?.chainId, trackEvent]);
+  }, [address, contact?.chainId, createEventBuilder, trackEvent]);
 
   const closeDeleteModal = useCallback(() => {
     setShowDeleteModal(false);
@@ -105,21 +110,22 @@ export function ContactDetailsPage() {
       return;
     }
     setShowDeleteModal(false);
-    trackEvent({
-      category: MetaMetricsEventCategory.Contacts,
-      event: MetaMetricsEventName.ContactDeleted,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: contact.chainId,
-      },
-      sensitiveProperties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        contact_address: address,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ContactDeleted)
+        .addCategory(MetaMetricsEventCategory.Contacts)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: contact.chainId,
+        })
+        .addSensitiveProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          contact_address: address,
+        })
+        .build(),
+    );
     navigate(CONTACTS_ROUTE, { state: { showContactDeletedToast: true } });
     dispatch(removeFromAddressBook(contact.chainId, address));
-  }, [address, contact?.chainId, dispatch, navigate, trackEvent]);
+  }, [address, contact?.chainId, createEventBuilder, dispatch, navigate, trackEvent]);
 
   if (!address) {
     return <Navigate to={CONTACTS_ROUTE} replace />;
@@ -167,18 +173,19 @@ export function ContactDetailsPage() {
             memo={memo}
             chainId={contact.chainId ?? ''}
             onEdit={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Contacts,
-                event: MetaMetricsEventName.EditContactClicked,
-                properties: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  chain_id: contact.chainId,
-                },
-                sensitiveProperties: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  contact_address: address,
-                },
-              });
+              trackEvent(
+                createEventBuilder(MetaMetricsEventName.EditContactClicked)
+                  .addCategory(MetaMetricsEventCategory.Contacts)
+                  .addProperties({
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    chain_id: contact.chainId,
+                  })
+                  .addSensitiveProperties({
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    contact_address: address,
+                  })
+                  .build(),
+              );
               navigate(`${CONTACTS_EDIT_ROUTE}/${chainId}/${address}`);
             }}
             onDelete={openDeleteModal}
