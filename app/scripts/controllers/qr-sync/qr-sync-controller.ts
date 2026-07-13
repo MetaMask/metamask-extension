@@ -509,7 +509,6 @@ export class QrSyncController extends BaseController<
 
     switch (parsedMessage.type) {
       case QrSyncActionTypes.SYNC_OFFER:
-        console.log('QrSyncController: current state', this.state);
         if (
           !canAcceptSyncOffer({
             hasDappClient: Boolean(this.#mwpDappClient),
