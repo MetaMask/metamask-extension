@@ -6,7 +6,11 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import { QR_SYNC_TIMEOUT_MS, QrSyncErrorCode, QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_TIMEOUT_MS,
+  QrSyncErrorCode,
+  QrSyncErrorCodes,
+} from '../../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import EnterVerificationCode from './enter-verification-code';
 

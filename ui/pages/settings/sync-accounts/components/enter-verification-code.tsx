@@ -14,7 +14,10 @@ import {
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { QR_SYNC_TIMEOUT_MS, QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_TIMEOUT_MS,
+  QrSyncErrorCodes,
+} from '../../../../../shared/constants/qr-sync';
 import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
 
 const CODE_LENGTH = 6;
