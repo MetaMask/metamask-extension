@@ -75,8 +75,7 @@ describe('useStateSyncHealth', () => {
 
   it('clears the interval when syncing stops', () => {
     const { rerender } = renderHook(
-      ({ isSyncing }: { isSyncing: boolean }) =>
-        useStateSyncHealth(isSyncing),
+      ({ isSyncing }: { isSyncing: boolean }) => useStateSyncHealth(isSyncing),
       { initialProps: { isSyncing: true } },
     );
 
@@ -129,8 +128,7 @@ describe('useStateSyncHealth', () => {
 
   it('resets the start time when syncing resumes after recovery', async () => {
     const { rerender } = renderHook(
-      ({ isSyncing }: { isSyncing: boolean }) =>
-        useStateSyncHealth(isSyncing),
+      ({ isSyncing }: { isSyncing: boolean }) => useStateSyncHealth(isSyncing),
       { initialProps: { isSyncing: true } },
     );
 
