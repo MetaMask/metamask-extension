@@ -71,6 +71,18 @@ function parseAddressFromAssetId(assetId: string): string | undefined {
   return undefined;
 }
 
+function normalizeSendAssetChainId(chainId: string): string {
+  if (chainId.startsWith('eip155:')) {
+    try {
+      return convertCaipToHexChainId(chainId as CaipChainId);
+    } catch {
+      return chainId;
+    }
+  }
+
+  return chainId;
+}
+
 export function mapRampsTokenToSendAsset(
   token: RampsToken,
   networkDetails: { networkName: string; networkImage: string },
@@ -80,7 +92,7 @@ export function mapRampsTokenToSendAsset(
   return {
     assetId: token.assetId,
     address: parseAddressFromAssetId(token.assetId),
-    chainId: token.chainId,
+    chainId: normalizeSendAssetChainId(token.chainId),
     name: token.name,
     symbol: token.symbol,
     decimals: token.decimals,

@@ -142,6 +142,20 @@ describe('AssetList', () => {
     expect(queryByText(messages.nfts.message)).not.toBeInTheDocument();
   });
 
+  it('renders custom emptyStateMessage when filters hide all assets', () => {
+    const { getByText } = render(
+      <AssetList
+        tokens={[]}
+        nfts={[]}
+        allTokens={mockTokens}
+        allNfts={mockNfts}
+        emptyStateMessage={messages.noTokensMatchSearch.message}
+      />,
+    );
+
+    expect(getByText(messages.noTokensMatchSearch.message)).toBeInTheDocument();
+  });
+
   it('renders no results message when no filtered assets but has all assets', () => {
     const { getByText, getByTestId } = render(
       <AssetList

@@ -49,6 +49,7 @@ describe('mapRampsTokensToSendAssets', () => {
     expect(mapped).toMatchSnapshot();
     expect(mapped[0]).toMatchObject({
       assetId: ethToken.assetId,
+      chainId: '0x1',
       isNative: true,
       standard: AssetStandard.Native,
       disabled: false,

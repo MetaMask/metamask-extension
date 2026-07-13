@@ -4,7 +4,7 @@ exports[`mapRampsTokensToSendAssets maps a single token with provided network de
 {
   "address": undefined,
   "assetId": "eip155:1/slip44:60",
-  "chainId": "eip155:1",
+  "chainId": "0x1",
   "decimals": 18,
   "disabled": false,
   "image": "https://example.com/eth.png",
@@ -22,7 +22,7 @@ exports[`mapRampsTokensToSendAssets maps ramps tokens into send assets 1`] = `
   {
     "address": undefined,
     "assetId": "eip155:1/slip44:60",
-    "chainId": "eip155:1",
+    "chainId": "0x1",
     "decimals": 18,
     "disabled": false,
     "image": "https://example.com/eth.png",
@@ -36,7 +36,7 @@ exports[`mapRampsTokensToSendAssets maps ramps tokens into send assets 1`] = `
   {
     "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-    "chainId": "eip155:1",
+    "chainId": "0x1",
     "decimals": 6,
     "disabled": true,
     "image": "https://example.com/usdc.png",

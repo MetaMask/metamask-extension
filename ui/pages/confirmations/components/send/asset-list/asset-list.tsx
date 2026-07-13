@@ -130,7 +130,7 @@ export const AssetList = ({
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
         >
-          {t('noTokensMatchingYourFilters')}
+          {emptyStateMessage ?? t('noTokensMatchingYourFilters')}
         </Text>
         {onClearFilters && (
           <Button
