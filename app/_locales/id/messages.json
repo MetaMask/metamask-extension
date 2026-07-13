@@ -7959,9 +7959,6 @@
     "message": "Berakhir dalam $1 dtk",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Terjadi kesalahan saat memindai kode QR. Buat kode QR baru untuk mencoba lagi."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Kode QR ini untuk transaksi yang berbeda. Batalkan dan coba lagi, pastikan untuk memindai kode QR yang ditampilkan di MetaMask dengan dompet perangkat keras Anda terlebih dahulu.",
     "description": "Body text when a signature QR belongs to a previous transaction."

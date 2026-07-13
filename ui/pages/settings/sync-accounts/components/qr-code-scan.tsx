@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Text,
@@ -11,15 +11,11 @@ import {
   TextButton,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
-import log from 'loglevel';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 import { QRCodeImage } from '../../../../components/app/deeplink-qr-code/deeplink-qr-code';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import {
-  selectQrSyncError,
-  selectQrSyncQrPayload,
-} from '../../../../selectors/qr-sync/qr-sync';
+import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 
 const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
@@ -28,13 +24,16 @@ const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
 const QrCodeScan = () => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
-  const qrSyncError = useSelector(selectQrSyncError);
+  const lastQrPayloadRef = useRef<string | null>(null);
+  if (qrPayload) {
+    lastQrPayloadRef.current = qrPayload;
+  }
+  const displayedPayload = qrPayload ?? lastQrPayloadRef.current;
   const [secondsLeft, setSecondsLeft] = useState(
     MWP_SESSION_REQUEST_EXPIRY_SECONDS,
   );
-  const hasError = Boolean(qrSyncError);
   const isExpired = secondsLeft <= 0;
-  const shouldDimQr = isExpired || Boolean(qrSyncError);
+  const shouldDimQr = isExpired;
 
   useEffect(() => {
     if (shouldDimQr) {
@@ -70,10 +69,7 @@ const QrCodeScan = () => {
   );
 
   let statusContent;
-  if (hasError) {
-    log.error('qrSyncError', qrSyncError);
-    statusContent = renderResetBlock(t('qrCodeScanError'));
-  } else if (isExpired) {
+  if (isExpired) {
     statusContent = renderResetBlock(t('qrCodeExpired'));
   } else {
     statusContent = (
@@ -102,11 +98,16 @@ const QrCodeScan = () => {
         marginTop={4}
       >
         <Box
-          style={{ opacity: shouldDimQr ? 0.3 : 1 }}
+
+          style={{
+            opacity: shouldDimQr ? 0.3 : 1,
+            filter: shouldDimQr ? 'blur(4px)' : 'none',
+          }}
+
           data-testid={qrPayload ? 'qr-sync-qr-code' : 'qr-sync-qr-loading'}
         >
-          {qrPayload ? (
-            <QRCodeImage data={qrPayload} />
+          {displayedPayload ? (
+            <QRCodeImage data={displayedPayload} />
           ) : (
             <Skeleton width={240} height={240} />
           )}

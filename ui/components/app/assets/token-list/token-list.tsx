@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+  isCaipAssetType,
+} from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import {
   Box,
@@ -52,7 +57,11 @@ import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type TokenListProps = {
-  onTokenClick: (chainId: string, address: string) => void;
+  onTokenClick: (
+    chainId: string,
+    address: string,
+    assetId?: CaipAssetType,
+  ) => void;
   safeChains?: SafeChain[];
 };
 
@@ -342,7 +351,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     const tokenAddress =
       isEvmChainId(token.chainId) && token.isNative ? '' : token.address;
 
-    onTokenClick(token.chainId, tokenAddress);
+    const routeAssetId =
+      token.assetId && isCaipAssetType(token.assetId)
+        ? token.assetId
+        : undefined;
+
+    onTokenClick(token.chainId, tokenAddress, routeAssetId);
 
     // Track event: token details
     trackEvent(
