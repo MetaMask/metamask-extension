@@ -186,11 +186,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
         return false;
       }
     },
-    // TEMPORARY (ASSETS-3346): provide the legacy persisted state slices the
-    // controller needs to heal `assetsInfo` metadata (and custom-asset
-    // tracking) wiped by a prior defect for tokens on niche EVM chains. The
-    // controller treats this input as untrusted and re-validates every shape.
-    // Remove together with the option once the healing is no longer needed.
+    // TEMPORARY (ASSETS-3346): legacy state slices used to heal wiped `assetsInfo` metadata.
     tempMigrateAssetsInfoMetadataAssets3346: () => ({
       TokensController: persistedState.TokensController,
       AccountsController: persistedState.AccountsController,
