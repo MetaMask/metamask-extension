@@ -329,7 +329,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.22.1",
     "@lavamoat/lavadome-react": "0.0.20",
-    "@lavamoat/snow": "^2.0.4",
+    "@lavamoat/snow": "patch:@lavamoat/snow@npm%3A2.0.4#~/.yarn/patches/@lavamoat-snow-npm-2.0.4-6af84c19b4.patch",
     "@lavamoat/webpack": "2.2.3",
     "@ledgerhq/errors": "^6.21.0",
     "@ledgerhq/hw-app-eth": "^6.42.0",

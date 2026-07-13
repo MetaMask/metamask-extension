@@ -4903,10 +4903,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^2.0.4":
+"@lavamoat/snow@npm:2.0.4":
   version: 2.0.4
   resolution: "@lavamoat/snow@npm:2.0.4"
   checksum: 10/6502e7dc367e65023b3ccdc69500c269dba039995fb195f7fbdd998fa26a462bb008e16c6bba75a5a7bca6ba8036c78a33191d42e5e5b04bf53ae43cdca196fc
+  languageName: node
+  linkType: hard
+
+"@lavamoat/snow@patch:@lavamoat/snow@npm%3A2.0.4#~/.yarn/patches/@lavamoat-snow-npm-2.0.4-6af84c19b4.patch":
+  version: 2.0.4
+  resolution: "@lavamoat/snow@patch:@lavamoat/snow@npm%3A2.0.4#~/.yarn/patches/@lavamoat-snow-npm-2.0.4-6af84c19b4.patch::version=2.0.4&hash=ac5e99"
+  checksum: 10/742598fbdf2e583643a0ea34ed5c42ec2e382c3ad657de45dbcfe03a465a60d38207790ace9c14762baca91f8713a5a545210c80ea93a6e484fc47b57fdb344a
   languageName: node
   linkType: hard
 
@@ -32946,7 +32953,7 @@ __metadata:
     "@lavamoat/lavadome-core": "npm:0.0.20"
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.22"
-    "@lavamoat/snow": "npm:^2.0.4"
+    "@lavamoat/snow": "patch:@lavamoat/snow@npm%3A2.0.4#~/.yarn/patches/@lavamoat-snow-npm-2.0.4-6af84c19b4.patch"
     "@lavamoat/webpack": "npm:2.2.3"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
