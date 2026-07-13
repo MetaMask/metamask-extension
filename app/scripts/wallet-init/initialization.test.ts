@@ -2,7 +2,6 @@ import { Wallet } from '@metamask/wallet';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { Json } from '@metamask/utils';
-import { RootMessenger } from '../lib/messenger';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -241,9 +240,9 @@ describe('initializeWallet — PreferencesController override', () => {
     initLangCode?: string;
   }) {
     initializeWallet({
-      messenger: {} as unknown as RootMessenger,
+      messenger: createMockMessenger(),
       state,
-      connectivityAdapter: {} as unknown as ConnectivityAdapter,
+      connectivityAdapter,
       getFlatState,
       getPermittedAccounts,
       getTransactionMetricsRequest,
