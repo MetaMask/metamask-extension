@@ -20,7 +20,7 @@ import {
 } from './components';
 import type { AddDeviceSyncRequest } from './types';
 
-const AddDeviceSettings = () => {
+const SyncAccountsSettings = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const qrSyncPhase = useSelector(selectQrSyncPhase);
@@ -142,4 +142,4 @@ const AddDeviceSettings = () => {
   return <>{renderStep()}</>;
 };
 
-export default AddDeviceSettings;
+export default SyncAccountsSettings;

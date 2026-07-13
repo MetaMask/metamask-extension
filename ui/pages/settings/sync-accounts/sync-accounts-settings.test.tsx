@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import AddDeviceSettings from './add-device-settings';
+import SyncAccountsSettings from './sync-accounts-settings';
 
 const mockNavigate = jest.fn();
 
@@ -53,7 +53,7 @@ const qrSyncState = {
   },
 };
 
-describe('AddDeviceSettings', () => {
+describe('SyncAccountsSettings', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
@@ -65,7 +65,7 @@ describe('AddDeviceSettings', () => {
 
   it('renders QrCodeScan when the phase is idle', () => {
     const store = configureMockStore([thunk])(qrSyncState);
-    renderWithProvider(<AddDeviceSettings />, store);
+    renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
   });
 
@@ -77,7 +77,7 @@ describe('AddDeviceSettings', () => {
         qrSyncPhase: QR_SYNC_PHASES.DISPLAYING_QR,
       },
     });
-    renderWithProvider(<AddDeviceSettings />, store);
+    renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
   });
 
@@ -89,7 +89,7 @@ describe('AddDeviceSettings', () => {
         qrSyncPhase: QR_SYNC_PHASES.AWAITING_OTP_INPUT,
       },
     });
-    renderWithProvider(<AddDeviceSettings />, store);
+    renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
   });
 
@@ -101,7 +101,7 @@ describe('AddDeviceSettings', () => {
         qrSyncPhase: QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
       },
     });
-    renderWithProvider(<AddDeviceSettings />, store);
+    renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('loading-step')).toBeInTheDocument();
   });
 
@@ -113,7 +113,7 @@ describe('AddDeviceSettings', () => {
         qrSyncPhase: QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
       },
     });
-    renderWithProvider(<AddDeviceSettings />, store);
+    renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('enter-password')).toBeInTheDocument();
   });
 
@@ -125,13 +125,13 @@ describe('AddDeviceSettings', () => {
         qrSyncPhase: QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
       },
     });
-    renderWithProvider(<AddDeviceSettings />, store);
+    renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('loading-step')).toBeInTheDocument();
   });
 
   it('creates a QR sync session when mounted in the idle phase', async () => {
     const store = configureMockStore([thunk])(qrSyncState);
-    renderWithProvider(<AddDeviceSettings />, store);
+    renderWithProvider(<SyncAccountsSettings />, store);
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -149,7 +149,7 @@ describe('AddDeviceSettings', () => {
         qrSyncPhase: QR_SYNC_PHASES.CANCELLED,
       },
     });
-    renderWithProvider(<AddDeviceSettings />, store);
+    renderWithProvider(<SyncAccountsSettings />, store);
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(

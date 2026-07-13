@@ -1143,9 +1143,6 @@
   "addCustomToken": {
     "message": "Add a custom token"
   },
-  "addDevice": {
-    "message": "Sync with mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -10823,6 +10820,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
+  },
+  "syncAccounts": {
+    "message": "Sync with mobile"
   },
   "syncing": {
     "message": "Syncing..."

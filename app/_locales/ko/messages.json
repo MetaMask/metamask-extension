@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "맞춤형 토큰 추가"
   },
-  "addDevice": {
-    "message": "모바일과 동기화"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "신뢰할 수 있는 경우에만 이 RPC 공급입체를 추가하세요. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"

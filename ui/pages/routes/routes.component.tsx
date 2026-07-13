@@ -75,8 +75,10 @@ import {
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
+import { getIsAddDeviceSyncEnabled } from '../../../shared/lib/environment';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -155,6 +157,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const Settings = mmLazy(() => import('../settings/index.ts'));
+const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
@@ -344,6 +347,14 @@ export const routeConfig = [
           </GlobalMenuRouteTransition>
         ),
       },
+      ...(getIsAddDeviceSyncEnabled()
+        ? [
+            {
+              path: SYNC_ACCOUNTS_ROUTE,
+              element: <SyncAccounts />,
+            },
+          ]
+        : []),
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
