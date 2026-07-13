@@ -28,7 +28,7 @@ import type {
   ReviewFieldView,
   SchemaElement,
   SchemaSection,
-} from '../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
+} from '@metamask/7715-permission-types';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
@@ -65,7 +65,7 @@ function formatHexAmount(
 }
 
 function formatRawAmount(
-  rawValue: import('bignumber.js').BigNumber,
+  rawValue: bigint,
   decimals: number | undefined,
   symbol: string,
   isRatePerSecond = false,

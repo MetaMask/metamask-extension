@@ -6,10 +6,10 @@ import {
   AvatarTokenSize,
   BoxAlignItems,
 } from '@metamask/design-system-react';
-import { BigNumber } from 'bignumber.js';
 import React from 'react';
 
 import { ConfirmInfoRowTextTokenUnits } from '../../../../../../../components/app/confirm/info/row/text-token-units';
+import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 
 /**
@@ -18,7 +18,7 @@ import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info
  *
  * @param props - The component props.
  * @param props.label - The label to display for the row.
- * @param props.value - The amount of the token as a BigNumber.
+ * @param props.value - The amount of the token as a bigint.
  * @param props.symbol - The symbol for the native token (e.g., 'ETH').
  * @param props.decimals - The number of decimals the native token uses.
  * @param props.imageUrl - (Optional) The URL of the network or token image.
@@ -34,9 +34,9 @@ export const NativeAmountRow = ({
   imageUrl,
 }: {
   label: string;
-  value: BigNumber;
+  value: bigint;
   symbol: string;
-  decimals: number;
+  decimals: number | undefined;
   imageUrl?: string;
   tooltip?: string;
 }) => {
@@ -51,7 +51,14 @@ export const NativeAmountRow = ({
         gap={2}
         alignItems={BoxAlignItems.Center}
       >
-        <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />
+        {decimals === undefined ? (
+          <Skeleton width="100%" height={20} />
+        ) : (
+          <ConfirmInfoRowTextTokenUnits
+            value={value.toString()}
+            decimals={decimals}
+          />
+        )}
         {avatar}
         <Text>{symbol}</Text>
       </Box>

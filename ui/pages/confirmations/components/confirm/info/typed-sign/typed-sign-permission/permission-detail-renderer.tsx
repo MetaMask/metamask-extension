@@ -41,13 +41,12 @@ import { extractAddressesFromRuleByType } from '../../../../../../../../shared/l
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
   AmountField,
-  DeepNonNullable,
   I18nFunction,
   PermissionRenderContext,
   SchemaElement,
   SchemaSection,
   TokenResolution,
-} from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
+} from '@metamask/7715-permission-types';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
@@ -128,7 +127,7 @@ function renderAmountField(
   }
 
   // Native token amount — tokenInfo is guaranteed to be set for native schemas
-  const tokenInfo = ctx.tokenInfo as DeepNonNullable<
+  const tokenInfo = ctx.tokenInfo as NonNullable<
     PermissionRenderContext['tokenInfo']
   >;
   return (
