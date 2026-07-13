@@ -454,7 +454,9 @@ async function mockTronFixtureAssets(
       const json =
         assetIdsParam.length > 0
           ? knownAssets.filter((asset) => assetIdsParam.includes(asset.assetId))
-          : knownAssets.filter((asset) => !asset.assetId.endsWith('/slip44:195'));
+          : knownAssets.filter(
+              (asset) => !asset.assetId.endsWith('/slip44:195'),
+            );
 
       return {
         statusCode: 200,

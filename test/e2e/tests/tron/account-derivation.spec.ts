@@ -3,7 +3,10 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import { waitUntilAccountTreeSyncIdle, addNHdAccountsForTronDerivation } from '../../page-objects/flows/tron-account-derivation.flow';
+import {
+  waitUntilAccountTreeSyncIdle,
+  addNHdAccountsForTronDerivation,
+} from '../../page-objects/flows/tron-account-derivation.flow';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';

@@ -49,7 +49,7 @@ class TokensTab extends HomePage {
 
   private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
 
-  private readonly importTokensButton = '[data-testid="importTokens"]';
+  private readonly importTokensButton = '[data-testid="importTokens-button"]';
 
   private readonly importTokensLoading = {
     testId: 'import-tokens-loading',
@@ -756,13 +756,10 @@ class TokensTab extends HomePage {
     console.log(
       `Waiting for ${expectedNumber} collapsed token items to be displayed`,
     );
-    await this.driver.wait(
-      async () => {
-        const tokenItemsNumber = await this.getNumberOfAssets();
-        return tokenItemsNumber === expectedNumber;
-      },
-      30_000,
-    );
+    await this.driver.wait(async () => {
+      const tokenItemsNumber = await this.getNumberOfAssets();
+      return tokenItemsNumber === expectedNumber;
+    }, 30_000);
   }
 
   /**

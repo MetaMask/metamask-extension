@@ -154,9 +154,7 @@ class TronAssetDetailsPage {
     await this.driver.waitForSelector(this.tokenBuyButton);
     await this.driver.waitForSelector(this.tokenSendButton);
     await this.driver.waitForSelector(this.tokenSwapButton);
-    await this.driver.assertElementNotPresent(
-      this.nativeOverflowReceiveInMenu,
-    );
+    await this.driver.assertElementNotPresent(this.nativeOverflowReceiveInMenu);
     await this.driver.assertElementNotPresent(this.nativeOverflowSoleAction);
   }
 }
