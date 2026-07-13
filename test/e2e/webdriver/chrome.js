@@ -80,6 +80,10 @@ class ChromeDriver {
     }
 
     const options = new chrome.Options().addArguments(args);
+    options.set('goog:chromeOptions', {
+      ...options.get('goog:chromeOptions'),
+      enableExtensionTargets: true,
+    });
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
@@ -91,8 +95,7 @@ class ChromeDriver {
       },
     });
 
-    // Temporarily lock to version 126
-    options.setBrowserVersion('126');
+    options.setBrowserVersion(process.env.SELENIUM_CHROME_VERSION || '151');
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
