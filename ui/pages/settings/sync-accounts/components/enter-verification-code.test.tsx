@@ -1,9 +1,16 @@
 import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import { renderWithLocalization } from '../../../../../test/lib/render-helpers-navigate';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_TIMEOUT_MS,
+  QrSyncErrorCode,
+  QrSyncErrorCodes,
+} from '../../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import EnterVerificationCode from './enter-verification-code';
 
@@ -12,6 +19,28 @@ jest.mock('../../../../store/background-connection', () => ({
 }));
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+
+type QrSyncError = {
+  code: QrSyncErrorCode;
+  message: string;
+};
+
+const renderComponent = (
+  onRestart: () => void = jest.fn(),
+  qrSyncError: QrSyncError | null = null,
+) => {
+  const store = configureMockStore([thunk])({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      qrSyncError,
+    },
+  });
+  return renderWithProvider(
+    <EnterVerificationCode onRestart={onRestart} />,
+    store,
+  );
+};
 
 const getInputs = () =>
   Array.from(document.querySelectorAll('input')) as HTMLInputElement[];
@@ -34,7 +63,7 @@ describe('EnterVerificationCode', () => {
   });
 
   it('renders the heading, description and six inputs', () => {
-    renderWithLocalization(<EnterVerificationCode />);
+    renderComponent();
 
     expect(
       screen.getByText(messages.enter_verification_code.message),
@@ -46,7 +75,7 @@ describe('EnterVerificationCode', () => {
   });
 
   it('submits the OTP when six digits are entered', async () => {
-    renderWithLocalization(<EnterVerificationCode />);
+    renderComponent();
 
     typeCode('123456');
 
@@ -60,7 +89,7 @@ describe('EnterVerificationCode', () => {
 
   it('shows an error message when OTP submission fails', async () => {
     mockSubmitRequestToBackground.mockRejectedValue(new Error('invalid otp'));
-    renderWithLocalization(<EnterVerificationCode />);
+    renderComponent();
 
     typeCode('123456');
 
@@ -72,11 +101,10 @@ describe('EnterVerificationCode', () => {
     ).toBeInTheDocument();
   });
 
-  it('requests a new session when restart is clicked after an error', async () => {
-    mockSubmitRequestToBackground
-      .mockRejectedValueOnce(new Error('invalid otp'))
-      .mockResolvedValueOnce(undefined);
-    renderWithLocalization(<EnterVerificationCode />);
+  it('calls onRestart when restart is clicked after an error', async () => {
+    mockSubmitRequestToBackground.mockRejectedValue(new Error('invalid otp'));
+    const onRestart = jest.fn();
+    renderComponent(onRestart);
 
     typeCode('111111');
 
@@ -84,20 +112,32 @@ describe('EnterVerificationCode', () => {
 
     fireEvent.click(screen.getByText(messages.start_with_new_qr_code.message));
 
-    await waitFor(() => {
-      expect(mockSubmitRequestToBackground).toHaveBeenLastCalledWith(
-        'messengerCall',
-        ['QrSyncController:createSession', []],
-      );
+    expect(onRestart).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the max-attempts message, restart button and disables the inputs', () => {
+    renderComponent(jest.fn(), {
+      code: QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
+      message: 'Too many attempts.',
+    });
+
+    expect(
+      screen.getByText(messages.enter_verification_code_max_attempts.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.start_with_new_qr_code.message),
+    ).toBeInTheDocument();
+    getInputs().forEach((input) => {
+      expect(input).toBeDisabled();
     });
   });
 
   it('shows the expired message and restart button after the timer runs out', () => {
     jest.useFakeTimers();
-    renderWithLocalization(<EnterVerificationCode />);
+    renderComponent();
 
     act(() => {
-      jest.advanceTimersByTime(MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000);
+      jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
     });
 
     expect(

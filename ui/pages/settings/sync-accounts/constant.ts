@@ -1,4 +1,4 @@
-export enum AddDeviceSettingsStep {
+export enum SyncAccountsStep {
   EnterPassword = 'EnterPassword',
   AddWallets = 'AddWallets',
   ScanQrCode = 'ScanQrCode',

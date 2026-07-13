@@ -4,9 +4,12 @@ import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
 import {
-  selectIsQrSyncTerminal,
+  QR_SYNC_ERROR_PHASE_OVERRIDES,
+  QR_SYNC_PHASES,
+} from '../../../../shared/constants/qr-sync';
+import {
+  selectQrSyncError,
   selectQrSyncPhase,
   selectShouldCreateQrSyncSession,
 } from '../../../selectors/qr-sync/qr-sync';
@@ -17,15 +20,16 @@ import {
   LoadingStep,
   QrCodeScan,
   Success,
+  SyncError,
 } from './components';
 import type { AddDeviceSyncRequest } from './types';
 
-const AddDeviceSettings = () => {
+const SyncAccountsSettings = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const qrSyncPhase = useSelector(selectQrSyncPhase);
+  const qrSyncError = useSelector(selectQrSyncError);
   const shouldCreateSession = useSelector(selectShouldCreateQrSyncSession);
-  const isQrSyncTerminal = useSelector(selectIsQrSyncTerminal);
   const [isExiting, setIsExiting] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
   const [syncSummary, setSyncSummary] = useState<Pick<
@@ -69,17 +73,13 @@ const AddDeviceSettings = () => {
     navigate(DEFAULT_ROUTE);
   }, [navigate, resetQrSyncState]);
 
-  useEffect(() => {
-    if (!isQrSyncTerminal) {
-      return;
-    }
-
-    handleExit().catch(() => undefined);
-  }, [handleExit, isQrSyncTerminal]);
+  const handleRetry = useCallback(() => {
+    resetQrSyncState().catch(() => undefined);
+  }, [resetQrSyncState]);
 
   const handleAddWallets = useCallback(
     async ({
-      entropyIds,
+      selectedAccountGroupIds,
       syncedAccountCount,
       syncedWalletCount,
     }: AddDeviceSyncRequest) => {
@@ -91,19 +91,24 @@ const AddDeviceSettings = () => {
 
       await submitRequestToBackground<void>('messengerCall', [
         'QrSyncController:syncAccounts',
-        [password, entropyIds],
+        [password, selectedAccountGroupIds],
       ]);
     },
     [password],
   );
 
   const renderStep = () => {
-    switch (qrSyncPhase) {
+    const effectivePhase =
+      qrSyncError && QR_SYNC_ERROR_PHASE_OVERRIDES[qrSyncError.code]
+        ? QR_SYNC_ERROR_PHASE_OVERRIDES[qrSyncError.code]
+        : qrSyncPhase;
+
+    switch (effectivePhase) {
       case QR_SYNC_PHASES.IDLE:
       case QR_SYNC_PHASES.DISPLAYING_QR:
         return <QrCodeScan />;
       case QR_SYNC_PHASES.AWAITING_OTP_INPUT:
-        return <EnterVerificationCode />;
+        return <EnterVerificationCode onRestart={handleRetry} />;
       case QR_SYNC_PHASES.AWAITING_SYNC_OFFER:
         return (
           <LoadingStep
@@ -134,6 +139,12 @@ const AddDeviceSettings = () => {
         ) : null;
       case QR_SYNC_PHASES.CANCELLED:
       case QR_SYNC_PHASES.FAILED:
+        return (
+          <SyncError
+            onRetry={handleRetry}
+            onCancel={() => handleExit().catch(() => undefined)}
+          />
+        );
       default:
         return null;
     }
@@ -142,4 +153,4 @@ const AddDeviceSettings = () => {
   return <>{renderStep()}</>;
 };
 
-export default AddDeviceSettings;
+export default SyncAccountsSettings;

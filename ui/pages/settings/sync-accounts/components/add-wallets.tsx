@@ -15,6 +15,7 @@ import { getAccountTree } from '../../../../selectors/multichain-accounts/accoun
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
 import type { AddDeviceSyncRequest } from '../types';
+import { filterSyncableWallets } from '../utils';
 import { WalletSelectionList } from './wallet-selection-list';
 
 type AddWalletsProps = {
@@ -25,17 +26,22 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   const t = useI18nContext();
   const { wallets } = useSelector(getAccountTree);
 
-  // Show entropy wallets first and imported/other wallets last, while
+  const syncableWallets = useMemo(
+    () => filterSyncableWallets(wallets),
+    [wallets],
+  );
+
+  // Show entropy wallets first and imported wallets last, while
   // preserving the relative order within each group.
   const sortedWallets = useMemo(() => {
     return Object.fromEntries(
-      Object.entries(wallets).sort(([, a], [, b]) => {
+      Object.entries(syncableWallets).sort(([, a], [, b]) => {
         const rank = (type: string) =>
           type === AccountWalletType.Entropy ? 0 : 1;
         return rank(a.type) - rank(b.type);
       }),
     );
-  }, [wallets]);
+  }, [syncableWallets]);
 
   const [selectedAccountGroups, setSelectedAccountGroups] = useState<
     AccountGroupId[]
@@ -46,20 +52,18 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   );
 
   const handleSyncWallets = useCallback(async () => {
-    const selectedEntropyIds = [
+    const selectedWalletIds = [
       ...new Set(
-        selectedAccountGroups.map((accountGroupId) => {
-          const walletId = extractWalletIdFromGroupId(accountGroupId);
-          const [, entropyId] = walletId.split(':');
-          return entropyId;
-        }),
+        selectedAccountGroups.map((accountGroupId) =>
+          extractWalletIdFromGroupId(accountGroupId),
+        ),
       ),
     ];
 
     await onAddWallets({
-      entropyIds: selectedEntropyIds,
+      selectedAccountGroupIds: selectedAccountGroups,
       syncedAccountCount: selectedAccountGroups.length,
-      syncedWalletCount: selectedEntropyIds.length,
+      syncedWalletCount: selectedWalletIds.length,
     });
   }, [onAddWallets, selectedAccountGroups]);
 

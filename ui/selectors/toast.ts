@@ -1,17 +1,10 @@
 import {
   TransactionStatus,
   type TransactionMeta,
-  TransactionType,
 } from '@metamask/transaction-controller';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import type { MetaMaskReduxState } from '../store/store';
-import {
-  TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES,
-  TOAST_EXCLUDED_TRANSACTION_TYPES,
-} from '../helpers/constants/transactions';
 import { isPerpsWithdrawTransaction } from '../../shared/lib/transactions.utils';
-import { getPendingApprovals } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 const selectTransactions = (state: MetaMaskReduxState) =>
@@ -124,92 +117,4 @@ export const selectPerpsWithdrawTransactionsForToast = createDeepEqualSelector(
           networkConfigurationsByChainId,
         ),
       ),
-);
-
-type TxRequest = {
-  approvalId: string;
-  txId: string;
-  smartTransactionStatus: string | undefined;
-  evmStatus: string | undefined;
-};
-
-function isTransactionTypeExcluded(transaction: TransactionMeta | undefined) {
-  const type = transaction?.type;
-  const isExcludedType = Boolean(
-    type && TOAST_EXCLUDED_TRANSACTION_TYPES.has(type),
-  );
-  const isExcludedNestedType = Boolean(
-    transaction?.nestedTransactions?.some(
-      (nested) =>
-        nested.type && TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES.has(nested.type),
-    ),
-  );
-
-  return isExcludedType || isExcludedNestedType;
-}
-
-function getEffectiveEvmStatus(
-  txId: string,
-  transactions: ReturnType<typeof selectTransactions>,
-) {
-  const originalTx = transactions.find((tx) => tx.id === txId);
-  if (!originalTx) {
-    return undefined;
-  }
-
-  if (
-    originalTx.status === TransactionStatus.dropped &&
-    originalTx.replacedById
-  ) {
-    const replacement = transactions.find(
-      (tx) => tx.id === originalTx.replacedById,
-    );
-    if (replacement?.type === TransactionType.retry) {
-      return replacement.status;
-    }
-  }
-
-  return originalTx.status;
-}
-
-export const selectSmartTransactions = createDeepEqualSelector(
-  getPendingApprovals,
-  selectTransactions,
-  (pendingApprovals, transactions) => {
-    const result: TxRequest[] = [];
-
-    for (const approval of pendingApprovals) {
-      if (
-        approval.type !==
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
-      ) {
-        continue;
-      }
-
-      const { requestState = {} } = approval;
-      const { txId, smartTransaction } = requestState as {
-        txId?: string;
-        smartTransaction?: { status?: string };
-      };
-
-      if (!txId) {
-        continue;
-      }
-
-      const transaction = transactions.find((tx) => tx.id === txId);
-      if (isTransactionTypeExcluded(transaction)) {
-        continue;
-      }
-
-      result.push({
-        approvalId: approval.id,
-        txId,
-        smartTransactionStatus: smartTransaction?.status,
-        // Track EVM transaction status to detect cancels and speed ups
-        evmStatus: getEffectiveEvmStatus(txId, transactions),
-      });
-    }
-
-    return result;
-  },
 );
