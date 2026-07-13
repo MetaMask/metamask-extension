@@ -6,6 +6,10 @@ import type {
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { parseCaipAssetType } from '@metamask/utils';
 import { getCaipAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
+import {
+  getDefiPositionMarketValue,
+  getNormalizedV6Balance,
+} from './normalize-v6-balance';
 
 export type DefiProtocolDetailsPosition = {
   assetId: CaipAssetType;
@@ -51,29 +55,6 @@ function isDefiBalanceWithMetadata(
   );
 }
 
-function getDefiPositionMarketValue(balance: V6BalanceItem): number {
-  const normalizedBalance =
-    Number.parseFloat(balance.balance) / 10 ** balance.decimals;
-
-  if (!Number.isFinite(normalizedBalance)) {
-    return 0;
-  }
-
-  const price = Number.parseFloat(balance.price ?? '0');
-  if (!Number.isFinite(price)) {
-    return 0;
-  }
-
-  return normalizedBalance * price;
-}
-
-function getNormalizedBalance(balance: V6BalanceItem): number {
-  const normalizedBalance =
-    Number.parseFloat(balance.balance) / 10 ** balance.decimals;
-
-  return Number.isFinite(normalizedBalance) ? normalizedBalance : 0;
-}
-
 function toDefiProtocolDetailsPosition(
   balance: DefiBalanceWithMetadata,
 ): DefiProtocolDetailsPosition {
@@ -86,7 +67,7 @@ function toDefiProtocolDetailsPosition(
     symbol: balance.symbol,
     name: balance.name,
     balance: balance.balance,
-    normalizedBalance: getNormalizedBalance(balance),
+    normalizedBalance: getNormalizedV6Balance(balance),
     decimals: balance.decimals,
     tokenFiatAmount: getDefiPositionMarketValue(balance),
     positionType,

@@ -6,6 +6,7 @@ import type {
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { parseCaipAssetType } from '@metamask/utils';
 import { getCaipAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
+import { getDefiPositionMarketValue } from './normalize-v6-balance';
 
 export type GroupedDeFiProtocolPosition = {
   chainId: CaipChainId;
@@ -31,22 +32,6 @@ function isDefiBalanceWithMetadata(
     balance.metadata !== undefined &&
     'protocolId' in balance.metadata
   );
-}
-
-function getDefiPositionMarketValue(balance: V6BalanceItem): number {
-  const normalizedBalance =
-    Number.parseFloat(balance.balance) / 10 ** balance.decimals;
-
-  if (!Number.isFinite(normalizedBalance)) {
-    return 0;
-  }
-
-  const price = Number.parseFloat(balance.price ?? '0');
-  if (!Number.isFinite(price)) {
-    return 0;
-  }
-
-  return normalizedBalance * price;
 }
 
 function orderIconGroup(

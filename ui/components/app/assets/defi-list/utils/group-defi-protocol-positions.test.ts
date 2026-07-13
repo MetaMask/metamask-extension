@@ -53,7 +53,7 @@ describe('group-defi-protocol-positions', () => {
           createDefiBalance({
             assetId: 'eip155:1/erc20:0xwsteth',
             symbol: 'wstETH',
-            balance: '1000000000000000000',
+            balance: '1',
             decimals: 18,
             price: '2000',
             protocolId: 'lido',
@@ -63,7 +63,7 @@ describe('group-defi-protocol-positions', () => {
           createDefiBalance({
             assetId: 'eip155:1/erc20:0xsteth',
             symbol: 'stETH',
-            balance: '500000000000000000',
+            balance: '0.5',
             decimals: 18,
             price: '2000',
             protocolId: 'lido',
@@ -73,7 +73,7 @@ describe('group-defi-protocol-positions', () => {
           createDefiBalance({
             assetId: 'eip155:137/erc20:0xusdc',
             symbol: 'USDC',
-            balance: '1000000',
+            balance: '1',
             decimals: 6,
             price: '1',
             protocolId: 'aave-v3',
@@ -89,7 +89,7 @@ describe('group-defi-protocol-positions', () => {
             assetId:
               'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/spl:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
             symbol: 'USDC',
-            balance: '2000000',
+            balance: '2',
             decimals: 6,
             price: '1',
             protocolId: 'aave-v3',
