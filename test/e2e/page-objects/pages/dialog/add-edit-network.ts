@@ -243,6 +243,7 @@ class AddEditNetworkModal {
         tag: 'p',
       });
     }
+    await this.driver.clickElement(this.editModalRpcDropDownButton);
   }
 
   async checkSaveButtonIsEnabled(): Promise<boolean> {

@@ -1152,30 +1152,26 @@ class Driver {
   }
 
   /**
-   * Restores an unpacked Chrome extension after runtime.reload(). Firefox
-   * keeps the extension installed and only needs its surviving tab selected.
+   * Selects the browser-owned window that survives runtime.reload().
    *
    * @param {string} recoveryWindow - Handle returned by prepareExtensionReload.
    */
   async restoreExtensionAfterReload(recoveryWindow) {
     await this.switchToWindow(recoveryWindow);
-    if (this.browser !== Browser.CHROME) {
-      return;
-    }
+  }
 
+  /** Reloads the unpacked extension from Chrome's extensions page. */
+  async reloadChromeExtension() {
     const extensionId = this.extensionUrl.split('/')[2];
     await this.executeAsyncScript(`
       const callback = arguments[arguments.length - 1];
-      chrome.developerPrivate.updateProfileConfiguration(
-        { inDeveloperMode: true },
-        () => chrome.developerPrivate.reload(
-          '${extensionId}',
-          {
-            failQuietly: false,
-            populateErrorForUnpacked: true,
-          },
-          callback,
-        ),
+      chrome.developerPrivate.reload(
+        '${extensionId}',
+        {
+          failQuietly: false,
+          populateErrorForUnpacked: true,
+        },
+        callback,
       );
     `);
     await this.delay(1000);
@@ -1185,7 +1181,7 @@ class Driver {
   async reloadExtension() {
     if (this.browser === Browser.CHROME) {
       const recoveryWindow = await this.openNewPage('chrome://extensions');
-      await this.restoreExtensionAfterReload(recoveryWindow);
+      await this.reloadChromeExtension();
       return recoveryWindow;
     }
 
