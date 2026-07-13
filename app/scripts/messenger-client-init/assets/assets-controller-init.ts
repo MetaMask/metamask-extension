@@ -10,20 +10,6 @@ import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 
 /**
- * TEMPORARY (ASSETS-3346) — remove together with the
- * `tempMigrateAssetsInfoMetadataAssets3346` option in a future release.
- *
- * Shape of the legacy state root read by the AssetsController healing
- * migration. The type is not exported from `@metamask/assets-controller`,
- * so it is derived from the constructor option here.
- */
-type Assets3346MigrationState = ReturnType<
-  NonNullable<
-    AssetsControllerOptions['tempMigrateAssetsInfoMetadataAssets3346']
-  >
->;
-
-/**
  * Cached API client instance.
  */
 let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
@@ -200,14 +186,15 @@ export const AssetsControllerInit: MessengerClientInitFunction<
         return false;
       }
     },
-    // TEMPORARY (ASSETS-3346): provide the legacy persisted state root so the
-    // controller can heal `assetsInfo` metadata (and custom-asset tracking)
-    // wiped by a prior defect for tokens on niche EVM chains. The controller
-    // treats this input as untrusted and re-validates every shape, so passing
-    // the whole persisted state is safe. Remove together with the option once
-    // the healing is no longer needed.
-    tempMigrateAssetsInfoMetadataAssets3346: () =>
-      persistedState as Assets3346MigrationState,
+    // TEMPORARY (ASSETS-3346): provide the legacy persisted state slices the
+    // controller needs to heal `assetsInfo` metadata (and custom-asset
+    // tracking) wiped by a prior defect for tokens on niche EVM chains. The
+    // controller treats this input as untrusted and re-validates every shape.
+    // Remove together with the option once the healing is no longer needed.
+    tempMigrateAssetsInfoMetadataAssets3346: () => ({
+      TokensController: persistedState.TokensController,
+      AccountsController: persistedState.AccountsController,
+    }),
   });
 
   return { messengerClient };

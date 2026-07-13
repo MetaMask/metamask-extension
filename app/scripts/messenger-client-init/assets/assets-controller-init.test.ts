@@ -447,7 +447,7 @@ describe('AssetsControllerInit', () => {
   });
 
   describe('tempMigrateAssetsInfoMetadataAssets3346', () => {
-    it('returns the full persisted state root for the healing migration', () => {
+    it('returns the TokensController and AccountsController persisted state slices for the healing migration', () => {
       const persistedState = {
         TokensController: {
           allTokens: {
@@ -490,7 +490,13 @@ describe('AssetsControllerInit', () => {
         );
       }
 
-      expect(getMigrationState()).toBe(persistedState);
+      const migrationState = getMigrationState();
+      expect(migrationState.TokensController).toBe(
+        persistedState.TokensController,
+      );
+      expect(migrationState.AccountsController).toBe(
+        persistedState.AccountsController,
+      );
     });
   });
 
