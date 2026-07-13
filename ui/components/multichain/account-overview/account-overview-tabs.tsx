@@ -134,10 +134,12 @@ export const AccountOverviewTabs = ({
   // rendered. Membership only — render order is irrelevant here.
   const renderedTabKeys: AccountOverviewTab[] = [
     ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
-    ...(isPerpsExperienceAvailable ? [AccountOverviewTabKey.Perps] : []),
+    ...(isPerpsExperienceAvailable && !showBottomNav
+      ? [AccountOverviewTabKey.Perps]
+      : []),
     ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
     ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
-    ...(showActivity ? [AccountOverviewTabKey.Activity] : []),
+    ...(showActivity && !showBottomNav ? [AccountOverviewTabKey.Activity] : []),
   ];
   // Perps is the effective active tab when it is explicitly selected, or when
   // the active tab isn't rendered and Tabs clamps to the first rendered tab.
