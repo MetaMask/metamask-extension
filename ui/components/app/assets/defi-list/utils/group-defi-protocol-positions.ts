@@ -65,7 +65,9 @@ function orderIconGroup(
   return orderedIcons;
 }
 
-function toGroupedPosition(group: MutableGroupedPosition): GroupedDeFiProtocolPosition {
+function toGroupedPosition(
+  group: MutableGroupedPosition,
+): GroupedDeFiProtocolPosition {
   const iconGroup = orderIconGroup([...group.symbolMap.values()]);
 
   return {
@@ -100,7 +102,7 @@ export function groupDefiProtocolPositions(
         continue;
       }
 
-      const { chainId } = parseCaipAssetType(balance.assetId);
+      const { chainId } = parseCaipAssetType(balance.assetId as CaipAssetType);
       const { protocolId, protocolIconUrl } = balance.metadata;
       const groupKey = `${chainId}#${protocolId}`;
       const marketValue = getDefiPositionMarketValue(balance);
