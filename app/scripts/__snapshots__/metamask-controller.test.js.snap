@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MetaMaskController MetaMaskController Behaviour RampsController wiring always assigns rampsController and background API 1`] = `
+[
+  "addRampsOrder",
+  "addRampsPrecreatedOrder",
+  "getRampsBuyWidgetData",
+  "getRampsOrderFromCallback",
+  "getRampsPaymentMethods",
+  "getRampsProviders",
+  "getRampsQuotes",
+  "getRampsTokens",
+  "refreshRampsOrder",
+  "removeRampsOrder",
+  "setRampsSelectedPaymentMethod",
+  "setRampsSelectedProvider",
+  "setRampsSelectedToken",
+  "setRampsUserRegion",
+]
+`;

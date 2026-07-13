@@ -935,9 +935,6 @@
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/pages/home/home.container.test.tsx": {
-      "Reselect: Input stability warnings": 1
-    },
     "ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.test.tsx": {
       "React: Missing key props in lists": 1
     },
@@ -998,12 +995,6 @@
     },
     "ui/pages/settings/about-tab/about-info.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
-    },
-    "ui/pages/settings/add-device-tab/add-device-settings.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/settings/add-device-tab/components/qr-code-scan.test.tsx": {
-      "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -1071,6 +1062,18 @@
     },
     "ui/pages/settings/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings/sync-accounts/components/enter-verification-code.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/sync-accounts/components/qr-code-scan.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/sync-accounts/components/sync-error.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/settings/sync-accounts/sync-accounts-settings.test.tsx": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/transactions-tab/transactions-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,

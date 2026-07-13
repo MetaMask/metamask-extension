@@ -1,4 +1,5 @@
 import React, { useMemo, useEffect, useRef, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   Box,
@@ -13,6 +14,7 @@ import { Tag } from '../../../component-library';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
 import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import {
   BackgroundColor,
   BorderRadius,
@@ -92,16 +94,23 @@ export const OrderEntry = ({
   limitPricePrefill,
 }: OrderEntryProps) => {
   const t = useI18nContext();
+  const activeProvider = useSelector(selectPerpsActiveProvider);
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
   const marketInfo = usePerpsMarketInfo(asset);
 
   // Fetch dynamic fee rates from the controller (user-specific, with discounts)
-  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
-    usePerpsOrderFees({
-      symbol: asset,
-      orderType: orderType ?? 'market',
-    });
+  const {
+    feeRate,
+    undiscountedFeeRate,
+    protocolFeeRate,
+    metamaskFeeRate,
+    originalMetamaskFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: orderType ?? 'market',
+  });
 
   // Use custom hook for form state management
   const {
@@ -150,6 +159,11 @@ export const OrderEntry = ({
     }
     return calculations.estimatedFees * (undiscountedFeeRate / feeRate);
   }, [calculations.estimatedFees, feeRate, undiscountedFeeRate]);
+
+  const protocolFeeLabel =
+    activeProvider === 'hyperliquid'
+      ? t('perpsFeesTooltipHyperliquidFee')
+      : t('perpsFeesTooltipProviderFee');
 
   const onCalculationsChangeRef = useRef(onCalculationsChange);
   onCalculationsChangeRef.current = onCalculationsChange;
@@ -420,6 +434,10 @@ export const OrderEntry = ({
             metamaskFeeRateDiscountPercentage={
               metamaskFeeRateDiscountPercentage
             }
+            metamaskFeeRate={metamaskFeeRate}
+            originalMetamaskFeeRate={originalMetamaskFeeRate}
+            protocolFeeRate={protocolFeeRate}
+            protocolFeeLabel={protocolFeeLabel}
           />
         )}
       </Box>

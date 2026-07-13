@@ -154,6 +154,7 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
 }));
 
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  ...jest.requireActual('../../hooks/perps/usePerpsOrderFees'),
   usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
 }));
 

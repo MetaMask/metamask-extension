@@ -54,6 +54,8 @@ export function getTransactionPayControllerMessenger(
       'TransactionController:updateTransaction',
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
+      'RampsController:getOrder',
+      'RampsController:getQuotes',
     ],
     events: [
       'AssetsController:stateChange',

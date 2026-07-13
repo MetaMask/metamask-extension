@@ -71,6 +71,7 @@ import {
   selectPerpsDepositPending,
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
+  selectPerpsActiveProvider,
 } from '../../selectors/perps-controller';
 import {
   CandlePeriod,
@@ -292,6 +293,7 @@ const PerpsOrderEntryPage = () => {
   trackRef.current = track;
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
+  const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
@@ -382,6 +384,9 @@ const PerpsOrderEntryPage = () => {
   const {
     feeRate: closeFeeRate,
     undiscountedFeeRate: closeUndiscountedFeeRate,
+    protocolFeeRate,
+    metamaskFeeRate,
+    originalMetamaskFeeRate,
     metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
     symbol: decodedSymbol ?? '',
@@ -407,6 +412,11 @@ const PerpsOrderEntryPage = () => {
     closeFeeRate,
     closeUndiscountedFeeRate,
   ]);
+
+  const protocolFeeLabel =
+    activeProvider === 'hyperliquid'
+      ? t('perpsFeesTooltipHyperliquidFee')
+      : t('perpsFeesTooltipProviderFee');
 
   const isLimitPriceInvalid = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -1948,6 +1958,10 @@ const PerpsOrderEntryPage = () => {
                 metamaskFeeRateDiscountPercentage={
                   metamaskFeeRateDiscountPercentage
                 }
+                metamaskFeeRate={metamaskFeeRate}
+                originalMetamaskFeeRate={originalMetamaskFeeRate}
+                protocolFeeRate={protocolFeeRate}
+                protocolFeeLabel={protocolFeeLabel}
                 showSlippageRow={
                   isSlippageConfigEnabled &&
                   orderType === 'market' &&
