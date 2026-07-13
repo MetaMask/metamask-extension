@@ -1,10 +1,10 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import type { Migrate } from './types';
 
-export const version = 216;
+export const version = 217;
 
 /**
- * Migration 216: clear any stored `advancedGasFee` from `PreferencesController`.
+ * Migration 217: clear any stored `advancedGasFee` from `PreferencesController`.
  *
  * The UI for saving advanced gas fee defaults (the "Save these values as my
  * default" option in the advanced gas fee popover) was removed in
