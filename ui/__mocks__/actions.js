@@ -55,10 +55,7 @@ module.exports = {
     // Intentionally empty
   },
 
-  // eslint-disable-next-line no-empty-function
-  trackAnalyticsEvent: () => {
-    // Intentionally empty
-  },
+  trackAnalyticsEvent: () => Promise.resolve(),
 
   decodeTransactionData: async (request) => {
     const { contractAddress } = request;

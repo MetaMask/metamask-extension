@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -6,8 +6,8 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { resolveABTestAssignment } from '../../shared/lib/ab-testing/resolve-ab-test-assignment';
+import { MetaMetricsContext } from '../contexts/metametrics';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
-import { useAnalytics } from "./useAnalytics";
 
 /**
  * Type constraint for variants object. Every A/B test must define a `control`
@@ -39,7 +39,7 @@ export type UseABTestResult<TVariants extends ABTestVariants> = {
 };
 
 const trackedExposureAssignments = new Set<string>();
-const inFlightExposureAssignments = new Set<string>();
+const inFlightExposureAssignments = new Map<string, Promise<void>>();
 const MAX_TRACKED_EXPOSURE_ASSIGNMENTS = 500;
 
 const getExposureCacheKey = (experimentId: string, variationId: string) =>
@@ -105,7 +105,7 @@ export function useABTest<TVariants extends ABTestVariants>(
   options?: { trackExposure?: boolean },
 ): UseABTestResult<TVariants> {
   const trackExposure = options?.trackExposure ?? true;
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const flags = useSelector(getRemoteFeatureFlags);
   const { variantName, isActive } = resolveABTestAssignment(
     flags,
@@ -129,40 +129,46 @@ export function useABTest<TVariants extends ABTestVariants>(
       return;
     }
 
-    inFlightExposureAssignments.add(assignmentKey);
+    let trackingPromise: Promise<void>;
 
     try {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ExperimentViewed)
-          .addCategory(MetaMetricsEventCategory.Analytics)
-          .addProperties({
+      trackingPromise = trackEvent({
+        event: MetaMetricsEventName.ExperimentViewed,
+        category: MetaMetricsEventCategory.Analytics,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          experiment_id: flagKey,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          variation_id: variationId,
+          ...(exposureMetadata?.experimentName && {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            experiment_id: flagKey,
+            experiment_name: exposureMetadata.experimentName,
+          }),
+          ...(variationDisplayName && {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            variation_id: variationId,
-            ...(exposureMetadata?.experimentName && {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              experiment_name: exposureMetadata.experimentName,
-            }),
-            ...(variationDisplayName && {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              variation_name: variationDisplayName,
-            }),
-          })
-          .build(),
-      );
-      rememberExposureAssignment(assignmentKey);
+            variation_name: variationDisplayName,
+          }),
+        },
+      });
     } catch {
       return;
-    } finally {
-      inFlightExposureAssignments.delete(assignmentKey);
     }
+
+    const trackedPromise = trackingPromise
+      .then(() => {
+        rememberExposureAssignment(assignmentKey);
+      })
+      .catch(() => undefined)
+      .finally(() => {
+        inFlightExposureAssignments.delete(assignmentKey);
+      });
+
+    inFlightExposureAssignments.set(assignmentKey, trackedPromise);
   }, [
-    createEventBuilder,
     exposureMetadata?.experimentName,
     flagKey,
     isActive,

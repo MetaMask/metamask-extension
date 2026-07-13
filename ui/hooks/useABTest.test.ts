@@ -6,20 +6,19 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../contexts/metametrics';
 import type { ABTestExposureMetadata } from './useABTest';
 import { clearABTestExposureTrackingForTest, useABTest } from './useABTest';
 
-const mockTrackEvent = jest.fn();
-
-jest.mock('./useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../shared/lib/analytics/create-event-builder',
-  );
+jest.mock('../contexts/metametrics', () => {
+  const ReactActual = jest.requireActual('react');
 
   return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
+    MetaMetricsContext: ReactActual.createContext({
+      trackEvent: jest.fn(),
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
     }),
   };
 });
@@ -34,9 +33,21 @@ jest.mock('../../shared/lib/selectors/remote-feature-flags', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn().mockResolvedValue(undefined),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 
 const wrapper = ({ children }: { children: React.ReactNode }) =>
-  React.createElement(React.Fragment, null, children);
+  React.createElement(
+    MetaMetricsContext.Provider,
+    { value: mockMetaMetricsContext },
+    children,
+  );
 
 const buttonColorVariants = {
   control: { long: 'green', short: 'red' },
@@ -84,10 +95,18 @@ const setRemoteFeatureFlags = (flags: unknown) => {
   mockUseSelector.mockReturnValue(flags as never);
 };
 
+async function flushPromises() {
+  await act(async () => {
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+}
+
 describe('useABTest', () => {
   beforeEach(() => {
     mockUseSelector.mockReset();
     mockTrackEvent.mockReset();
+    mockTrackEvent.mockResolvedValue(undefined);
     clearABTestExposureTrackingForTest();
     setRemoteFeatureFlags({});
   });
@@ -178,9 +197,9 @@ describe('useABTest', () => {
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        name: MetaMetricsEventName.ExperimentViewed,
+        event: MetaMetricsEventName.ExperimentViewed,
+        category: MetaMetricsEventCategory.Analytics,
         properties: {
-          category: MetaMetricsEventCategory.Analytics,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           experiment_id: flagKey,
@@ -194,7 +213,6 @@ describe('useABTest', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           variation_name: 'Larger Presets',
         },
-        sensitiveProperties: {},
       });
     });
 
@@ -241,13 +259,15 @@ describe('useABTest', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     });
 
-    it('emits once per experiment and variation after a successful track', () => {
+    it('emits once per experiment and variation after a successful track', async () => {
       const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
       setRemoteFeatureFlags({
         [flagKey]: { name: 'control' },
       });
 
       renderABTestHook(flagKey, experimentVariants);
+      await flushPromises();
+
       renderABTestHook(flagKey, experimentVariants);
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
@@ -273,9 +293,9 @@ describe('useABTest', () => {
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
       expect(mockTrackEvent.mock.calls[1][0]).toEqual({
-        name: MetaMetricsEventName.ExperimentViewed,
+        event: MetaMetricsEventName.ExperimentViewed,
+        category: MetaMetricsEventCategory.Analytics,
         properties: {
-          category: MetaMetricsEventCategory.Analytics,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           experiment_id: flagKey,
@@ -283,12 +303,18 @@ describe('useABTest', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           variation_id: 'treatment',
         },
-        sensitiveProperties: {},
       });
     });
 
-    it('does not emit duplicate exposures while the first emit is in flight', () => {
+    it('does not emit duplicate exposures while the first emit is in flight', async () => {
       const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
+      let resolveTrackingPromise: (() => void) | undefined;
+
+      mockTrackEvent.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveTrackingPromise = resolve;
+        }),
+      );
       setRemoteFeatureFlags({
         [flagKey]: { name: 'control' },
       });
@@ -297,9 +323,36 @@ describe('useABTest', () => {
       renderABTestHook(flagKey, experimentVariants);
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+
+      resolveTrackingPromise?.();
+      await flushPromises();
+
+      renderABTestHook(flagKey, experimentVariants);
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     });
 
-    it('evicts the oldest tracked assignment when the cache reaches capacity', () => {
+    it('retries exposure tracking after a failed emit', async () => {
+      const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
+
+      mockTrackEvent
+        .mockRejectedValueOnce(new Error('track failed'))
+        .mockResolvedValue(undefined);
+      setRemoteFeatureFlags({
+        [flagKey]: { name: 'control' },
+      });
+
+      renderABTestHook(flagKey, experimentVariants);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+
+      await flushPromises();
+
+      renderABTestHook(flagKey, experimentVariants);
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+    });
+
+    it('evicts the oldest tracked assignment when the cache reaches capacity', async () => {
       const unmountHooks: (() => void)[] = [];
       const flagKeys = Array.from(
         { length: 501 },
@@ -319,6 +372,8 @@ describe('useABTest', () => {
       }
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(501);
+
+      await flushPromises();
 
       setRemoteFeatureFlags({
         [flagKeys[0]]: { name: 'control' },
