@@ -349,6 +349,7 @@ type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
   seedlessOperationMutex: Mutex;
+  createVaultMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   sendUpdate: () => void;
@@ -379,6 +380,8 @@ export class LegacyBackgroundApiService {
 
   readonly #seedlessOperationMutex: Mutex;
 
+  readonly #createVaultMutex: Mutex;
+
   readonly #offscreenPromise: Promise<void>;
 
   #passkeyAutoUnlockSuppressedResetTimeoutId: NodeJS.Timeout | null = null;
@@ -392,6 +395,7 @@ export class LegacyBackgroundApiService {
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
+   * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -401,6 +405,7 @@ export class LegacyBackgroundApiService {
     getOpenMetamaskTabsIds,
     sendUpdate,
     seedlessOperationMutex,
+    createVaultMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -413,6 +418,7 @@ export class LegacyBackgroundApiService {
     // migrate the seedless onboarding functionality to this service.
     // TODO: Remove this once the migration is complete.
     this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#createVaultMutex = createVaultMutex;
     this.#offscreenPromise = offscreenPromise;
 
     this.#messenger.registerMethodActionHandlers(
@@ -1343,57 +1349,62 @@ export class LegacyBackgroundApiService {
    * @param options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
   async setLocked({ skipSeedlessOperationLock = false } = {}): Promise<void> {
-    const isSocialLoginFlow = this.#messenger.call(
-      'OnboardingController:getIsSocialLoginFlow',
-    );
-
-    let releaseLock;
-    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
-      releaseLock = await this.#seedlessOperationMutex.acquire();
-    }
-
+    const releaseVaultMutex = await this.#createVaultMutex.acquire();
     try {
-      if (isSocialLoginFlow) {
-        await this.#messenger.call('SeedlessOnboardingController:setLocked');
-      }
-      await this.#messenger.call('KeyringController:setLocked');
-
-      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
-      this.#messenger.call('SubscriptionController:stopAllPolling');
-
-      // sign out from Authentication service and clear the Session Data if user is signed in
-      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
-      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
-      const { isSignedIn } = this.#messenger.call(
-        'AuthenticationController:getState',
+      const isSocialLoginFlow = this.#messenger.call(
+        'OnboardingController:getIsSocialLoginFlow',
       );
-      if (isSignedIn) {
-        this.#messenger.call('AuthenticationController:performSignOut');
+
+      let releaseLock;
+      if (isSocialLoginFlow && !skipSeedlessOperationLock) {
+        releaseLock = await this.#seedlessOperationMutex.acquire();
       }
 
-      // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
-      if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
-        clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
-      }
-      this.#messenger.call(
-        'AppStateController:setPasskeyAutoUnlockSuppressed',
-        true,
-      );
-      this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      try {
+        if (isSocialLoginFlow) {
+          await this.#messenger.call('SeedlessOnboardingController:setLocked');
+        }
+        await this.#messenger.call('KeyringController:setLocked');
+
+        // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
+        this.#messenger.call('SubscriptionController:stopAllPolling');
+
+        // sign out from Authentication service and clear the Session Data if user is signed in
+        // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
+        // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
+        const { isSignedIn } = this.#messenger.call(
+          'AuthenticationController:getState',
+        );
+        if (isSignedIn) {
+          this.#messenger.call('AuthenticationController:performSignOut');
+        }
+
+        // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
+        if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+          clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+        }
         this.#messenger.call(
           'AppStateController:setPasskeyAutoUnlockSuppressed',
-          false,
+          true,
         );
-      }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
-    } catch (error) {
-      log.error('Error setting locked state', error);
-      throw error;
-    } finally {
-      if (releaseLock) {
-        releaseLock();
+        this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+          this.#messenger.call(
+            'AppStateController:setPasskeyAutoUnlockSuppressed',
+            false,
+          );
+        }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
+      } catch (error) {
+        log.error('Error setting locked state', error);
+        throw error;
+      } finally {
+        if (releaseLock) {
+          releaseLock();
+        }
       }
+    } finally {
+      releaseVaultMutex();
     }
   }
 

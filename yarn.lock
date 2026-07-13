@@ -42723,7 +42723,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ua-parser-js@npm:^2.0.10":
+"ua-parser-js@npm:^2.0.3":
   version: 2.0.10
   resolution: "ua-parser-js@npm:2.0.10"
   dependencies:

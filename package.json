@@ -164,8 +164,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "ua-parser-js": "^2.0.10",
-    "@metamask/bridge-controller@npm:^73.2.0": "patch:@metamask/bridge-controller@npm%3A73.2.0#~/.yarn/patches/@metamask-bridge-controller-npm-73.2.0-be55b13227.patch",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
