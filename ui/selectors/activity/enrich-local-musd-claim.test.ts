@@ -143,8 +143,8 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1778633325000,
+      hash: '0xmusdclaim',
       data: {
-        hash: '0xmusdclaim',
         from,
         token: {
           amount: '5000000',
@@ -222,8 +222,8 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778633400000,
+      hash: '0xmusdclaimconfirmed',
       data: {
-        hash: '0xmusdclaimconfirmed',
         from,
         token: {
           amount: '5000000',
@@ -299,8 +299,8 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144' as const,
       status: 'success' as const,
       timestamp: 1,
+      hash: '0xapi',
       data: {
-        hash: '0xapi',
         token: {
           direction: 'in' as const,
           symbol: 'mUSD',

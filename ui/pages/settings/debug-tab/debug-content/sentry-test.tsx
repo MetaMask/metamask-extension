@@ -1,5 +1,4 @@
 import React, { useState, useCallback, ReactElement } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -19,23 +18,15 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 
-import {
-  forceUpdateMetamaskState,
-  setCurrentLocale,
-} from '../../../../store/actions';
-import { FALLBACK_LOCALE, fetchLocale } from '../../../../../shared/lib/i18n';
-import { getCurrentLocale } from '../../../../ducks/locale/locale';
-
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const SentryTest = () => {
-  const currentLocale: string =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    useSelector(getCurrentLocale) || FALLBACK_LOCALE;
+type SentryTestProps = {
+  triggerPageCrash: () => void;
+};
 
+const SentryTest = ({ triggerPageCrash }: SentryTestProps) => {
   return (
     <>
       <Text className="settings-page__security-tab-sub-header__bold">
@@ -47,7 +38,7 @@ const SentryTest = () => {
         <CaptureUIError />
         <CaptureBackgroundError />
         <GenerateTrace />
-        <GeneratePageCrash currentLocale={currentLocale} />
+        <GeneratePageCrash triggerPageCrash={triggerPageCrash} />
       </div>
     </>
   );
@@ -184,19 +175,14 @@ function GenerateTrace() {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
-  const dispatch = useDispatch();
-  const handleClick = async () => {
-    const localeMessages = await fetchLocale(currentLocale);
-    await dispatch(
-      setCurrentLocale(currentLocale, {
-        ...localeMessages,
-        // @ts-expect-error - remove a language string in this page to trigger a page crash
-        debug: undefined,
-      }),
-    );
-    await forceUpdateMetamaskState(dispatch);
-  };
+function GeneratePageCrash({
+  triggerPageCrash,
+}: {
+  triggerPageCrash: () => void;
+}) {
+  const handleClick = useCallback(async () => {
+    triggerPageCrash();
+  }, [triggerPageCrash]);
 
   return (
     <TestButton
@@ -238,7 +224,9 @@ function TestButton({
       await onClick();
     } catch (error) {
       hasError = true;
-      throw error;
+      if (!expectError) {
+        throw error;
+      }
     } finally {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -246,7 +234,7 @@ function TestButton({
         setIsComplete(true);
       }
     }
-  }, [onClick]);
+  }, [onClick, expectError]);
 
   return (
     <Box

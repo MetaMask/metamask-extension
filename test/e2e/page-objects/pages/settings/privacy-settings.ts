@@ -147,7 +147,7 @@ class PrivacySettings {
 
   private readonly revealSrpWrongPasswordMessage = '.mm-help-text';
 
-  private readonly participateInMetaMetricsToggle =
+  private readonly optedInToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
 
   private readonly backToSrpListButton =
@@ -391,7 +391,7 @@ class PrivacySettings {
     await this.driver.clickElement(this.privacyTabButton);
     await this.checkPageIsLoaded();
     await this.driver.clickElement(this.thirdPartyApisSubpageLink);
-    await this.driver.waitForSelector(this.ipfsGatewayToggle);
+    await this.driver.waitForSelector(this.networkDetailsCheckToggle);
   }
 
   async toggleNetworkDetailsCheck(): Promise<void> {
@@ -452,9 +452,9 @@ class PrivacySettings {
     console.log(
       'Toggle participate in meta metrics in Security and Privacy settings page',
     );
-    await this.driver.clickElement(this.participateInMetaMetricsToggle);
+    await this.driver.clickElement(this.optedInToggle);
     await this.driver.waitForSelector(
-      `${this.participateInMetaMetricsToggle}.toggle-button--${targetState}`,
+      `${this.optedInToggle}.toggle-button--${targetState}`,
     );
   }
 

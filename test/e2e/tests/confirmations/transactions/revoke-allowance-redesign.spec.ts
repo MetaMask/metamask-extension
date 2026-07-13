@@ -49,7 +49,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityTab.clickConfirmedTransaction();
-        await activityTab.checkSpendingCapValueInDetails('0 TST');
+        await activityTab.checkTransactionDetailsTitle('Revoked spending cap');
       },
     );
   });

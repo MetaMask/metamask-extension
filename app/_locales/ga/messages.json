@@ -64,12 +64,6 @@
   "account": {
     "message": "Cuntas"
   },
-  "accountActivity": {
-    "message": "Gníomhaíocht chuntais"
-  },
-  "accountActivityText": {
-    "message": "Roghnaigh na cuntais ar mhaith leat fógra a fháil fúthu:"
-  },
   "accountAlreadyExistsLogin": {
     "message": "Logáil isteach"
   },
@@ -168,9 +162,6 @@
   },
   "addAccount": {
     "message": "Cuir cuntas leis"
-  },
-  "addAcquiredTokens": {
-    "message": "Cuir na comharthaí leis atá faighte agat ag baint úsáide as MetaMask"
   },
   "addAlias": {
     "message": "Cuir leasainm leis"
@@ -1018,9 +1009,6 @@
     "message": "Dún $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Is féidir leat an fhuinneog seo a dhúnadh am ar bith."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -1457,20 +1445,11 @@
   "customSlippage": {
     "message": "Saincheaptha"
   },
-  "customToken": {
-    "message": "Comhartha saincheaptha"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Is féidir le duine ar bith comhartha a chruthú, lena n-áirítear leaganacha bréige de chomharthaí atá ann cheana a chruthú. Foghlaim faoi $1"
   },
   "customerSupport": {
     "message": "tacaíocht do chustaiméirí"
-  },
-  "customizeYourNotifications": {
-    "message": "Saincheap do fhógraí"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Cas air na cineálacha fógraí is mian leat a fháil:"
   },
   "dappSuggested": {
     "message": "Suíomh molta"
@@ -1885,9 +1864,6 @@
   "enableAutoDetect": {
     "message": " Cumasaigh uathbhrath"
   },
-  "enableFromSettings": {
-    "message": " Cumasaigh é ó na Socruithe."
-  },
   "enableSmartContractAccount": {
     "message": "Cumasaigh cuntas conartha cliste"
   },
@@ -1914,9 +1890,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "Thug an URL RPC a chuir tú isteach ID slabhra difriúil ($1) ar ais.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "Tá braiteadh feabhsaithe comharthaí ar fáil faoi láthair ar $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "Le MetaMask is féidir leat fearainn ENS a fheiceáil i mbarra seoltaí do bhrabhsálaí. Seo mar a oibríonn sé:"
@@ -2467,15 +2440,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Iompórtáil Frása Rúnda Aisghabhála"
   },
-  "importTokenQuestion": {
-    "message": "Comhartha a allmhairiú?"
-  },
-  "importTokenWarning": {
-    "message": "Is féidir le duine ar bith comhartha a chruthú le haon ainm, lena n-áirítear leaganacha bréige de chomharthaí atá ann cheana féin. Cuir leis agus déan trádáil ar do phriacal féin!"
-  },
-  "importTokensCamelCase": {
-    "message": "Iompórtáil comharthaí"
-  },
   "importTokensError": {
     "message": "Níorbh fhéidir linn na comharthaí a allmhairiú. Déan iarracht arís ar ball."
   },
@@ -2744,9 +2708,6 @@
   },
   "lightTheme": {
     "message": "Solas"
-  },
-  "likeToImportToken": {
-    "message": "Ar mhaith leat an comhartha seo a allmhairiú?"
   },
   "likeToImportTokens": {
     "message": "Ar mhaith leat na comharthaí seo a allmhairiú?"
@@ -3023,9 +2984,6 @@
     "message": "Tá $1 ag iarraidh $2 Snaps a úsáid",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "mustSelectOne": {
-    "message": "Ní mór comhartha amháin ar a laghad a roghnú."
-  },
   "name": {
     "message": "Ainm"
   },
@@ -3300,9 +3258,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Tá ár mbeartas príobháideachais nuashonraithe againn"
   },
-  "newRpcUrl": {
-    "message": "URL RPC nua"
-  },
   "newTokensImportedMessage": {
     "message": "D'éirigh leat $1 a allmhairiú.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -3408,9 +3363,6 @@
   },
   "notCurrentAccount": {
     "message": "An é seo an cuntas ceart? Tá sé difriúil ón gcuntas atá roghnaithe i do sparán faoi láthair."
-  },
-  "notEnoughGas": {
-    "message": "Gan dóthain gáis"
   },
   "notificationDetail": {
     "message": "Sonraí"
@@ -3565,9 +3517,6 @@
   },
   "notificationsSettingsBoxError": {
     "message": "Chuaigh rud éigin mícheart. Déan iarracht arís."
-  },
-  "notificationsSettingsPageAllowNotifications": {
-    "message": "Fan ar an eolas faoi na rudaí atá ag tarlú i do sparán le fógraí. Chun fógraí a úsáid, úsáidimid próifíl chun roinnt socruithe a shioncronú ar fud do ghléasanna. $1"
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Foghlaim conas a chosnaímid do phríobháideacht agus an ghné seo in úsáid agat."
@@ -4175,9 +4124,6 @@
   },
   "proceedWithTransaction": {
     "message": "Ba mhaith liom dul ar aghaidh ar aon nós"
-  },
-  "productAnnouncements": {
-    "message": "Fógraí táirgí"
   },
   "provide": {
     "message": "Cuir ar fáil"
@@ -5117,24 +5063,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Níl Smart Swaps ar fáil go sealadach."
   },
-  "smartTransactionCancelled": {
-    "message": "Cuireadh do idirbheart ar ceal"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Níorbh fhéidir d’idirbheart a chríochnú, mar sin cuireadh ar ceal é chun tú a shábháil ó tháillí gáis neamhriachtanacha a íoc."
-  },
-  "smartTransactionError": {
-    "message": "Theip ar do idirbheart"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Is féidir le hathruithe tobann sa mhargadh teipeanna a chur faoi deara. Má leanann an fhadhb, déan teagmháil le tacaíocht do chustaiméirí MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Cuireadh isteach d’idirbheart"
-  },
-  "smartTransactionSuccess": {
-    "message": "Tá d’idirbheart críochnaithe"
-  },
   "smartTransactions": {
     "message": "Idirbhearta Cliste"
   },
@@ -6008,14 +5936,8 @@
   "tokenContractAddress": {
     "message": "Seoladh conartha comhartha"
   },
-  "tokenContractError": {
-    "message": "Is seoladh conartha comharthaí é an seoladh seo. Má sheolann tú comharthaí chuig an seoladh seo, caillfidh tú iad."
-  },
   "tokenDecimal": {
     "message": "Deicheamhach comhartha"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "Deicheamh comhartha ag teastáil. Aimsigh é ar: $1"
   },
   "tokenDetails": {
     "message": "Sonraí an chomhartha"
@@ -6170,29 +6092,8 @@
   "turnOn": {
     "message": "Cas air"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Cuir fógraí ar siúl"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Cas air"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Tharla earráid agus na fógraí á gcruthú. Déan iarracht arís ar ball."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Fan ar an eolas faoi na rudaí atá ag tarlú i do sparán le fógraí."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "socruithe fógraí."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Foghlaim conas a chosnaímid do phríobháideacht agus an ghné seo in úsáid agat."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Chun fógraí sparán a úsáid, úsáidimid próifíl chun roinnt socruithe a shioncronú ar fud do ghléasanna. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Is féidir leat fógraí a mhúchadh ag am ar bith sa $1"
   },
   "turnOnTokenDetection": {
     "message": "Cuir feabhas ar bhrath comharthaí i bhfeidhm"
@@ -6364,9 +6265,6 @@
   "view": {
     "message": "Amharc"
   },
-  "viewActivity": {
-    "message": "Féach ar ghníomhaíocht"
-  },
   "viewAddressOnExplorer": {
     "message": "Féach ar $1",
     "description": "$1 is the block explorer name"
@@ -6390,9 +6288,6 @@
   },
   "viewOnOpensea": {
     "message": "Féach ar Opensea"
-  },
-  "viewTransaction": {
-    "message": "Féach ar an idirbheart"
   },
   "viewinExplorer": {
     "message": "Féach ar $1 in iniúchóir",

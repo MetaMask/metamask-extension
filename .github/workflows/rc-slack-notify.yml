@@ -57,6 +57,7 @@ jobs:
         if: github.event_name == 'workflow_run'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           BRANCH: ${{ github.event.workflow_run.head_branch }}
         run: |
           set -euo pipefail
@@ -65,7 +66,7 @@ jobs:
             echo "Not release/x.y.z: $BRANCH — skipping Slack."
             exit 0
           fi
-          PR_JSON="$(gh pr list --head "$BRANCH" --base stable --json number,labels --jq '.[0]' 2>/dev/null || true)"
+          PR_JSON="$(gh pr list --repo "$GH_REPO" --head "$BRANCH" --base stable --json number,labels --jq '.[0]' 2>/dev/null || true)"
           if [[ -z "$PR_JSON" || "$PR_JSON" == "null" ]]; then
             echo "No PR with base stable for head $BRANCH — skipping Slack."
             exit 0
@@ -74,8 +75,12 @@ jobs:
             echo "PR exists but missing auto-rc-builds label — skipping Slack."
             exit 0
           fi
-          echo "skip=false" >> "$GITHUB_OUTPUT"
-          echo "semver=${BRANCH#release/}" >> "$GITHUB_OUTPUT"
+          PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
+          {
+            echo "skip=false"
+            echo "semver=${BRANCH#release/}"
+            echo "pr_number=${PR_NUMBER}"
+          } >> "$GITHUB_OUTPUT"
           echo "Proceeding: release PR has auto-rc-builds."
 
       - name: Set notification variables
@@ -98,15 +103,27 @@ jobs:
             echo "semver=${GATE_SEMVER}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Checkout and setup
+      - name: Checkout and setup Slack notification tooling from default branch
         if: >-
           github.event_name == 'workflow_dispatch' ||
           (github.event_name == 'workflow_run' && steps.gate.outputs.skip == 'false')
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          ref: ${{ github.event.repository.default_branch }}
           is-high-risk-environment: false
           skip-allow-scripts: true
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.head_sha || github.event.workflow_run.head_sha }}
+
+      - name: Checkout release notification inputs from release branch
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'workflow_run' && steps.gate.outputs.skip == 'false')
+        env:
+          HEAD_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.head_sha || github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "${HEAD_SHA}"
+          git show "${HEAD_SHA}:package.json" > package.json
+          git show "${HEAD_SHA}:CHANGELOG.md" > CHANGELOG.md
 
       - name: Post RC Slack notification
         if: >-
@@ -115,11 +132,14 @@ jobs:
         continue-on-error: true
         env:
           SEMVER: ${{ steps.notif.outputs.semver }}
-          GITHUB_RUN_ID: ${{ steps.notif.outputs.run_id }}
+          BUILD_RUN_ID: ${{ steps.notif.outputs.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           # Dispatch: workflow input. Automated runs: optional vars.SLACK_RC_CHANNEL to test destinations.
           SLACK_RC_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_channel || vars.SLACK_RC_CHANNEL || '' }}
           # AWS_CLOUDFRONT_URL: full origin (https://…); if empty, artifact links are skipped.
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ steps.notif.outputs.run_id }}
-        run: yarn exec tsx ./.github/scripts/slack-rc-notification.mts
+          PR_NUMBER: ${{ steps.gate.outputs.pr_number || '' }}
+          # build-links.ts is a shared TypeScript helper; keep Node's typeless .ts warning out of the Actions log.
+          NODE_OPTIONS: --disable-warning=MODULE_TYPELESS_PACKAGE_JSON
+        run: node ./.github/scripts/slack-rc-notification.mts

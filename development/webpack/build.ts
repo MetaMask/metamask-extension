@@ -1,14 +1,11 @@
 import { webpack } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
+import { logStats, noop, ignoreCacheShutdownSignal } from './utils/helpers';
+import config from './webpack.config';
 import {
   logWatchBuildStats,
-  logStats,
-  noop,
-  ignoreCacheShutdownSignal,
   suppressDevServerInfoLogs,
-} from './utils/helpers';
-import config from './webpack.config';
-import { DEV_SERVER_OPTIONS } from './utils/constants';
+} from './utils/dev-server';
 
 // disable browserslist stats as it needlessly traverses the filesystem multiple
 // times looking for a stats file that doesn't exist.
@@ -29,7 +26,7 @@ export function build(onComplete: () => void = noop) {
     suppressDevServerInfoLogs(compiler);
     logWatchBuildStats(compiler, '🦊 Watching for changes…');
     const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
-    const server = new WebpackDevServer(DEV_SERVER_OPTIONS, compiler);
+    const server = new WebpackDevServer(options.devServer, compiler);
     server.start().catch((error: unknown) => {
       console.error(
         `🦊 Failed to start dev server on ${server.options.host ?? 'localhost'}:${server.options.port ?? '(auto)'}.`,

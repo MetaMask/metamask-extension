@@ -3,11 +3,16 @@ import {
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PRIVACY_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
   SETTINGS_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
   THEME_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
@@ -118,6 +123,26 @@ describe('settings-registry', () => {
         }),
       );
     });
+
+    it('matches notification section sub-pages', () => {
+      expect(
+        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'notificationsSettingsWalletActivityTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+        }),
+      );
+
+      expect(
+        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'notificationsSettingsMarketingTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+        }),
+      );
+    });
   });
 
   describe('SETTINGS_TABS', () => {
@@ -140,6 +165,41 @@ describe('settings-registry', () => {
     });
   });
 
+  describe('external routes (sync accounts)', () => {
+    const loadRegistryWithSyncEnabled = () => {
+      let registry: typeof import('./settings-registry');
+      jest.isolateModules(() => {
+        jest.doMock('../../../shared/lib/environment', () => ({
+          ...jest.requireActual('../../../shared/lib/environment'),
+          getIsAddDeviceSyncEnabled: () => true,
+        }));
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        registry = require('./settings-registry');
+      });
+      // @ts-expect-error assigned within isolateModules callback
+      return registry;
+    };
+
+    afterEach(() => {
+      jest.dontMock('../../../shared/lib/environment');
+    });
+
+    it('exposes sync accounts as a tab', () => {
+      const { SETTINGS_TABS: tabs } = loadRegistryWithSyncEnabled();
+      const tabPaths = tabs.map((tab) => tab.path);
+
+      expect(tabPaths).toContain(SYNC_ACCOUNTS_ROUTE);
+    });
+
+    it('excludes the top-level sync accounts route from nested settings routes', () => {
+      const { SETTINGS_RENDERABLE_ROUTES: renderable } =
+        loadRegistryWithSyncEnabled();
+      const paths = renderable.map((route) => route.path);
+
+      expect(paths).not.toContain(SYNC_ACCOUNTS_ROUTE);
+    });
+  });
+
   describe('SETTINGS_RENDERABLE_ROUTES', () => {
     it('includes both tabs and sub-pages', () => {
       const paths = SETTINGS_RENDERABLE_ROUTES.map((r) => r.path);
@@ -158,6 +218,9 @@ describe('settings-registry', () => {
       expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
       expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE);
       expect(paths).toContain(`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE);
     });
 
     it('does not include settings root', () => {

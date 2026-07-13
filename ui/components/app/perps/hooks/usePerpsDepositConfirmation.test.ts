@@ -17,6 +17,14 @@ jest.mock('./createPerpsDepositTransaction', () => ({
   createPerpsDepositTransaction: jest.fn(),
 }));
 
+const mockEnsureArbitrumNetworkExists = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('./usePerpsNetworkManagement', () => ({
+  usePerpsNetworkManagement: () => ({
+    ensureArbitrumNetworkExists: mockEnsureArbitrumNetworkExists,
+  }),
+}));
+
 const mockCreatePerpsDepositTransaction =
   createPerpsDepositTransaction as jest.MockedFunction<
     typeof createPerpsDepositTransaction
@@ -52,6 +60,30 @@ describe('usePerpsDepositConfirmation', () => {
       { replace: true },
     );
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
+  });
+
+  it('ensures the Arbitrum network exists before creating the deposit transaction', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-net',
+    });
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsDepositConfirmation(),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockEnsureArbitrumNetworkExists).toHaveBeenCalledTimes(1);
+    // The network must be ensured BEFORE the deposit tx is created, otherwise
+    // the controller throws "Invalid chain ID" and the deposit silently fails.
+    expect(
+      mockEnsureArbitrumNetworkExists.mock.invocationCallOrder[0],
+    ).toBeLessThan(
+      mockCreatePerpsDepositTransaction.mock.invocationCallOrder[0],
+    );
   });
 
   it('includes goBackTo param when triggered from a non-root route', async () => {

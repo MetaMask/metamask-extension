@@ -1,10 +1,11 @@
 import log from 'loglevel';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button as DSButton,
   ButtonSize as DSButtonSize,
   ButtonVariant as DSButtonVariant,
+  IconName,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -12,6 +13,7 @@ import {
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -33,7 +35,6 @@ import {
 } from '../../../../shared/lib/network.utils';
 import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
@@ -94,6 +95,7 @@ export const NetworksForm = ({
   usePageFooterStyle = false,
   onComplete,
   onEdit,
+  onAddFromChainlist,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
@@ -104,10 +106,11 @@ export const NetworksForm = ({
   usePageFooterStyle?: boolean;
   onComplete?: () => void;
   onEdit?: () => void;
+  onAddFromChainlist?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -354,18 +357,21 @@ export const NetworksForm = ({
                 sanitizeRpcUrl(newRpcEndpoint.url),
               ]);
 
-              trackEvent({
-                category: MetaMetricsEventCategory.Network,
-                event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
-                // The names of Segment properties have a particular case.
-                /* eslint-disable @typescript-eslint/naming-convention */
-                properties: {
-                  chain_id_caip: `eip155:${chainIdAsDecimal}`,
-                  from_rpc_domain: fromRpcDomain,
-                  to_rpc_domain: toRpcDomain,
-                },
-                /* eslint-enable @typescript-eslint/naming-convention */
-              });
+              trackEvent(
+                createEventBuilder(
+                  MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
+                )
+                  .addCategory(MetaMetricsEventCategory.Network)
+                  .addProperties({
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    from_rpc_domain: fromRpcDomain,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    to_rpc_domain: toRpcDomain,
+                  })
+                  .build(),
+              );
             } catch (error) {
               // Analytics tracking failed, but network update succeeded - don't surface this error
               console.error('Failed to track RPC update analytics:', error);
@@ -387,37 +393,39 @@ export const NetworksForm = ({
           }
         }
 
-        trackEvent({
-          event: MetaMetricsEventName.CustomNetworkAdded,
-          category: MetaMetricsEventCategory.Network,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            block_explorer_url:
-              blockExplorers?.blockExplorerUrls?.[
-                blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
-              ],
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainIdHex,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            network_name: name,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            source_connection_method:
-              MetaMetricsNetworkEventSource.CustomNetworkForm,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: ticker,
-          },
-          sensitiveProperties: {
-            rpcUrl: rpcIdentifierUtility(
-              rpcUrls?.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex ?? -1]?.url,
-              safeChains ?? [],
-            ),
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.CustomNetworkAdded)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              block_explorer_url:
+                blockExplorers?.blockExplorerUrls?.[
+                  blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
+                ],
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainIdHex,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              network_name: name,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              source_connection_method:
+                MetaMetricsNetworkEventSource.CustomNetworkForm,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: ticker,
+            })
+            .addSensitiveProperties({
+              rpcUrl: rpcIdentifierUtility(
+                rpcUrls?.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex ?? -1]
+                  ?.url,
+                safeChains ?? [],
+              ),
+            })
+            .build(),
+        );
 
         dispatch(
           setEditedNetwork({
@@ -459,6 +467,20 @@ export const NetworksForm = ({
         paddingRight={4}
         paddingBottom={2}
       >
+        {onAddFromChainlist && !existingNetwork ? (
+          <DSButton
+            variant={DSButtonVariant.Secondary}
+            size={DSButtonSize.Lg}
+            startIconName={IconName.FlashFilled}
+            isFullWidth
+            onClick={onAddFromChainlist}
+            className="mb-4 rounded-xl"
+            data-testid="network-form-add-from-chainlist"
+          >
+            {t('addFromChainlist')}
+          </DSButton>
+        ) : null}
+
         <FormTextField
           id="networkName"
           size={FormTextFieldSize.Lg}

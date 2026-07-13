@@ -1,7 +1,7 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import React from 'react';
-import { render } from 'react-dom';
+import React, { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
@@ -13,6 +13,9 @@ import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
+// TODO: Remove restricted import
+// eslint-disable-next-line import-x/no-restricted-paths
+import { sanitizeStateLogs } from '../app/scripts/lib/state-utils';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -65,6 +68,30 @@ export {
 } from './helpers/utils/display-critical-error';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+const reactRoots = new WeakMap();
+
+function renderUi(element, container) {
+  let root = reactRoots.get(container);
+  if (!root) {
+    root = createRoot(container);
+    reactRoots.set(container, root);
+  }
+  root.render(element);
+}
+
+function wrapWithStrictModeIfDevelopment(element) {
+  const isDevelopment =
+    process.env.NODE_ENV === 'development' ||
+    process.env.METAMASK_DEBUG ||
+    global.METAMASK_DEBUG;
+
+  if (isDevelopment) {
+    return <StrictMode>{element}</StrictMode>;
+  }
+
+  return element;
+}
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -246,7 +273,12 @@ async function startApp(metamaskState, opts) {
   // `submitRequestToBackground` with it.
   const uiMessenger = createUIMessenger();
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
+    renderUi(
+      wrapWithStrictModeIfDevelopment(
+        <Root store={store} uiMessenger={uiMessenger} />,
+      ),
+      opts.container,
+    ),
   );
 
   return store;
@@ -327,10 +359,10 @@ export async function getCleanAppState(store) {
   state.browser = window.navigator.userAgent;
 
   // when JSON.stringiy, `undefined` value will be left out.
-  state.metamask = {
+  state.metamask = sanitizeStateLogs({
     ...state.metamask,
     socialLoginEmail: undefined,
-  };
+  });
 
   return state;
 }
@@ -408,7 +440,13 @@ function setupStateHooks(store) {
   };
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
-    return maskObject(reduxState, SENTRY_UI_STATE);
+    return maskObject(
+      {
+        ...reduxState,
+        metamask: sanitizeStateLogs(reduxState.metamask),
+      },
+      SENTRY_UI_STATE,
+    );
   };
   window.stateHooks.getLogs = function () {
     // These logs are logged by LoggingController

@@ -9,6 +9,8 @@ export const ExtensionPasskeyErrorCode = {
   VaultKeyRenewalFailed: 'extension_vault_key_renewal_failed',
 } as const;
 
+export type TranslateFn = (key: string, substitutions?: string[]) => string;
+
 /**
  * Maps passkey error `code` strings (controller + extension) to extension `messages.json` keys.
  */
@@ -77,7 +79,7 @@ export function getPasskeyErrorCode(err: unknown): string {
 
 function translatePasskeyCode(
   code: string,
-  t: (key: string, substitutions?: string[]) => string,
+  t: TranslateFn,
   authMethodLabel: string,
 ): string | null {
   const i18nKey = PASSKEY_ERROR_CODE_TO_I18N_KEY[code];
@@ -121,7 +123,7 @@ function getCauseCode(data: unknown): unknown {
  */
 export function translatePasskeyError(
   error: unknown,
-  t: (key: string, substitutions?: string[]) => string,
+  t: TranslateFn,
   authMethodLabel: string,
 ): string | null {
   const code = getPasskeyControllerErrorCode(error);

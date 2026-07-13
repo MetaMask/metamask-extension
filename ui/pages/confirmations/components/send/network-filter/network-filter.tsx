@@ -14,18 +14,15 @@ import {
   IconName,
   IconSize,
   Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Icon,
   ButtonIconSize,
   ButtonIcon,
 } from '../../../../../components/component-library';
 import {
   BackgroundColor,
+  BorderRadius,
   TextColor,
-  Display,
-  AlignItems,
   BorderColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -33,6 +30,7 @@ import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSe
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
+import { getNetworkSections } from '../../../../../helpers/utils/network-sections';
 import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   NetworkSelectionModal,
@@ -45,6 +43,33 @@ type NetworkFilterProps = {
   selectedChainId?: string | null;
   onChainIdChange?: (chainId: string | null) => void;
 };
+
+type ChainNetworkDetails = {
+  networkName?: string;
+  networkImage?: string;
+};
+
+function getNetworkSelectionItem({
+  chainId,
+  selectedChainId,
+  chainNetworkDetails,
+  handleNetworkSelection,
+}: {
+  chainId: string;
+  selectedChainId: string | null;
+  chainNetworkDetails?: ChainNetworkDetails;
+  handleNetworkSelection: (chainId: string | null) => void;
+}): NetworkSelectionSection['items'][number] {
+  return {
+    key: chainId,
+    chainId,
+    name: chainNetworkDetails?.networkName || `Chain ${chainId}`,
+    iconSrc: chainNetworkDetails?.networkImage || '',
+    selected: selectedChainId === chainId,
+    onClick: () => handleNetworkSelection(chainId),
+    testId: `send-network-filter-${chainId}`,
+  };
+}
 
 export const NetworkFilter = ({
   tokens,
@@ -93,32 +118,23 @@ export const NetworkFilter = ({
     });
   }, [tokens, nfts]);
 
-  const { displayName, displayIcon, isAllNetworks } = useMemo(() => {
+  const displayName = useMemo(() => {
     if (selectedChainId === null) {
-      return {
-        displayName: 'All networks',
-        displayIcon: IconName.Global,
-        isAllNetworks: true,
-      };
+      return t('allNetworks');
     }
 
     const networkName = chainNetworkNAmeAndImageMap.get(
       selectedChainId as string,
     )?.networkName;
-    const networkImage = chainNetworkNAmeAndImageMap.get(
-      selectedChainId as string,
-    )?.networkImage;
 
-    return {
-      displayName: networkName || `Chain ${selectedChainId}`,
-      displayIcon: networkImage || '',
-      isAllNetworks: false,
-    };
-  }, [selectedChainId, chainNetworkNAmeAndImageMap]);
+    return networkName || `Chain ${selectedChainId}`;
+  }, [selectedChainId, chainNetworkNAmeAndImageMap, t]);
+
+  const isSingleNetworkSelected = selectedChainId !== null;
 
   const handleNetworkFilterClick = useCallback(() => {
-    setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
-  }, [isNetworkFilterPopoverOpen]);
+    setIsNetworkFilterPopoverOpen((isOpen) => !isOpen);
+  }, []);
 
   const closePopover = useCallback(() => {
     setIsNetworkFilterPopoverOpen(false);
@@ -143,35 +159,43 @@ export const NetworkFilter = ({
     ],
   );
 
+  // Group the networks the user holds assets on into Default / Custom / Testnets
+  // sections (sorted by fiat balance within each), so custom networks such as
+  // newly added chains surface under the "Custom networks" header.
+  const networkSections = useMemo(
+    () =>
+      getNetworkSections(
+        uniqueChainIds.map((chainId) => ({
+          chainId,
+          balance: tokens
+            .filter((token) => String(token.chainId) === chainId)
+            .reduce((total, token) => total + (token.fiat?.balance ?? 0), 0),
+        })),
+        (networkA, networkB) => networkB.balance - networkA.balance,
+      ),
+    [tokens, uniqueChainIds],
+  );
+
   const sharedModalSections = useMemo<NetworkSelectionSection[]>(
     () =>
-      [
-        {
-          key: 'send-network-filter-section',
-          items: uniqueChainIds.map((chainId) => {
-            const networkName =
-              chainNetworkNAmeAndImageMap.get(chainId)?.networkName;
-            const networkImage =
-              chainNetworkNAmeAndImageMap.get(chainId)?.networkImage;
-
-            return {
-              key: chainId,
-              chainId,
-              name: networkName || `Chain ${chainId}`,
-              iconSrc: networkImage || '',
-              selected: selectedChainId === chainId,
-              onClick: () => handleNetworkSelection(chainId),
-              testId: `send-network-filter-${chainId}`,
-            };
+      networkSections.map((section) => ({
+        key: section.key,
+        title: section.titleKey ? t(section.titleKey) : undefined,
+        items: section.items.map(({ chainId }) =>
+          getNetworkSelectionItem({
+            chainId,
+            selectedChainId,
+            chainNetworkDetails: chainNetworkNAmeAndImageMap.get(chainId),
+            handleNetworkSelection,
           }),
-        },
-      ] satisfies NetworkSelectionSection[],
+        ),
+      })),
     [
       chainNetworkNAmeAndImageMap,
       handleNetworkSelection,
+      networkSections,
       selectedChainId,
       t,
-      uniqueChainIds,
     ],
   );
 
@@ -181,28 +205,35 @@ export const NetworkFilter = ({
         <ButtonBase
           data-testid="send-network-filter-toggle"
           onClick={handleNetworkFilterClick}
-          size={ButtonBaseSize.Md}
-          endIconName={IconName.ArrowDown}
+          size={ButtonBaseSize.Sm}
+          startIconName={IconName.Filter}
+          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
+          className="hover:bg-hover active:bg-pressed"
           backgroundColor={BackgroundColor.backgroundDefault}
-          color={TextColor.textDefault}
-          borderColor={BorderColor.borderDefault}
+          borderRadius={BorderRadius.LG}
+          color={
+            isSingleNetworkSelected
+              ? TextColor.primaryDefault
+              : TextColor.textDefault
+          }
+          borderColor={BorderColor.borderMuted}
+          paddingLeft={2}
+          paddingRight={2}
           marginBottom={2}
           marginTop={2}
           ellipsis
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {isAllNetworks ? (
-              <Icon name={displayIcon as IconName} size={IconSize.Sm} />
-            ) : (
-              <AvatarNetwork
-                name={displayName}
-                src={displayIcon}
-                size={AvatarNetworkSize.Sm}
-                borderWidth={0}
-              />
-            )}
-            <Text ellipsis>{displayName}</Text>
-          </Box>
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={
+              isSingleNetworkSelected
+                ? TextColor.primaryDefault
+                : TextColor.textDefault
+            }
+            ellipsis
+          >
+            {displayName}
+          </Text>
         </ButtonBase>
       </Box>
       {isNetworkManagementEnabled ? (

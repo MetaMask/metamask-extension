@@ -45,6 +45,7 @@ import {
 import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { removePermissionsFor } from '../../../../store/actions';
+import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
 import { Toast, ToastContainer } from '../../toast';
 import { ConnectionListItem } from './connection-list-item';
@@ -54,6 +55,7 @@ const PermissionsPage = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const dispatch = useDispatch();
   const headerRef = useRef();
 
@@ -61,7 +63,7 @@ const PermissionsPage = () => {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(
         isGatorPermissionsRevocationFeatureEnabled()

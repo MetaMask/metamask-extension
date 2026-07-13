@@ -9,8 +9,6 @@ import { MultichainNativeAssets } from '../../../../shared/constants/multichain/
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -18,6 +16,21 @@ import {
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import NonEvmOverview from './non-evm-overview';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 // After BIP-44 refactor, CoinOverview always uses AccountGroupBalance and shows
 // BalanceEmptyState when selectAccountGroupBalanceForEmptyState is false. Mock
@@ -81,7 +94,7 @@ const BTC_OVERVIEW_SWAP = 'coin-overview-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
-const mockMetaMetricsId = 'deadbeef';
+const mockAnalyticsId = 'deadbeef';
 const mockNonEvmBalance = '1';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
@@ -101,31 +114,6 @@ const mockNonEvmAccount = {
   methods: Object.values(BtcMethod),
   type: BtcAccountType.P2wpkh,
 };
-
-const mockBtcChain = {
-  active: true,
-  chainId: MultichainNetworks.BITCOIN,
-  chainName: 'Bitcoin',
-  shortName: 'Bitcoin',
-  nativeTokenSupported: true,
-  isEvm: false,
-};
-
-const mockSolanaChain = {
-  active: true,
-  chainId: MultichainNetworks.SOLANA,
-  chainName: 'Solana',
-  shortName: 'Solana',
-  nativeTokenSupported: true,
-  isEvm: false,
-};
-
-// default chains do not include BTC
-const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
-  (chain) =>
-    chain.chainId !== MultichainNetworks.BITCOIN &&
-    chain.chainId !== MultichainNetworks.SOLANA,
-);
 
 const mockMetamaskStore = {
   ...mockState.metamask,
@@ -191,7 +179,7 @@ const mockMetamaskStore = {
   // selected account
   completedOnboarding: true,
   // Used when clicking on some buttons
-  metaMetricsId: mockMetaMetricsId,
+  analyticsId: mockAnalyticsId,
   // Override state if provided
   multichainNetworkConfigurationsByChainId:
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -203,9 +191,6 @@ const mockMetamaskStore = {
     },
   },
 };
-const mockRampsStore = {
-  buyableChains: mockBuyableChainsEvmOnly,
-};
 
 function getStore(state?: Record<string, unknown>) {
   return configureMockStore([thunk])({
@@ -213,7 +198,6 @@ function getStore(state?: Record<string, unknown>) {
     localeMessages: {
       currentLocale: 'en-US',
     },
-    ramps: mockRampsStore,
     ...state,
   });
 }
@@ -325,7 +309,7 @@ describe('NonEvmOverview', () => {
     expect(buyButton).toBeInTheDocument();
   });
 
-  it('"Buy & Sell" button is disabled if BTC is not buyable and SOL is not buyable', () => {
+  it('keeps the "Buy & Sell" button enabled regardless of buyable chain state', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
@@ -333,56 +317,13 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BUY_BUTTON);
 
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
-  });
-
-  it('"Buy & Sell" button is enabled if BTC is buyable', () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <NonEvmOverview />,
-      storeWithBtcBuyable,
-    );
-
-    const buyButton = queryByTestId(BUY_BUTTON);
-
-    expect(buyButton).toBeInTheDocument();
-    expect(buyButton).not.toBeDisabled();
-  });
-
-  // TODO: Add solana buyable test
-  it.skip('"Buy & Sell" button is enabled if SOL is buyable', () => {
-    const storeWithSolanaBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockSolanaChain],
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <NonEvmOverview />,
-      storeWithSolanaBuyable,
-    );
-
-    const buyButton = queryByTestId(BUY_BUTTON);
-
-    expect(buyButton).toBeInTheDocument();
     expect(buyButton).not.toBeDisabled();
   });
 
   it('calls openBuyInPdapp when clicking on "Buy & Sell" button', async () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
-
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
-      storeWithBtcBuyable,
+      getStore(),
     );
 
     const buyButton = queryByTestId(BUY_BUTTON);
@@ -392,23 +333,11 @@ describe('NonEvmOverview', () => {
   });
 
   it('sends an event when clicking the Buy button', () => {
-    const storeWithBtcBuyable = getStore({
-      ramps: {
-        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
-      },
-    });
+    mockTrackEvent.mockClear();
+    const storeWithBtcBuyable = getStore();
 
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NonEvmOverview />
-      </MetaMetricsContext.Provider>,
+      <NonEvmOverview />,
       storeWithBtcBuyable,
     );
 
@@ -417,27 +346,24 @@ describe('NonEvmOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton as HTMLElement);
 
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: mockNonEvmAccount.type,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: MultichainNetworks.BITCOIN,
-        location: 'Home',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        snap_id: mockNonEvmAccount.metadata.snap.id,
-        text: 'Buy',
-        // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: expect.any(Object),
-      },
-    });
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NavBuyButtonClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Navigation,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: mockNonEvmAccount.type,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: MultichainNetworks.BITCOIN,
+          location: 'Home',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: mockNonEvmAccount.metadata.snap.id,
+          text: 'Buy',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: expect.any(Object),
+        }),
+      }),
+    );
   });
 
   it('shows the Receive button inside the more-options dropdown', () => {
@@ -465,17 +391,9 @@ describe('NonEvmOverview', () => {
   });
 
   it('sends an event when clicking the Send button', () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
+    mockTrackEvent.mockClear();
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NonEvmOverview />
-      </MetaMetricsContext.Provider>,
+      <NonEvmOverview />,
       getStore(),
     );
 
@@ -485,27 +403,22 @@ describe('NonEvmOverview', () => {
     fireEvent.click(sendButton as HTMLElement);
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
-      {
-        event: MetaMetricsEventName.SendStarted,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      expect.objectContaining({
+        name: MetaMetricsEventName.SendStarted,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Navigation,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: mockNonEvmAccount.type,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: MultichainNetworks.BITCOIN,
           location: 'Home',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockNonEvmAccount.metadata.snap.id,
           text: 'Send',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: 'BTC',
-        },
-      },
-      expect.any(Object),
+        }),
+      }),
     );
   });
 

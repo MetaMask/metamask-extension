@@ -7,6 +7,7 @@ import {
 } from '@metamask/transaction-controller';
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import { RevertReason } from '../revert-reason/revert-reason';
 import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
@@ -25,7 +26,6 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import { Skeleton } from '../../../../components/component-library/skeleton';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -392,7 +392,11 @@ function SimulationDetailsSkeleton({
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
         >
-          <Skeleton height={20} width={72} />
+          <Skeleton
+            height={20}
+            width={72}
+            data-testid="simulation-details-skeleton"
+          />
           <Skeleton height={20} width={100} />
         </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
@@ -573,8 +577,10 @@ export const SimulationDetails = ({
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
+              labelChildren={
+                <BalanceChangesAlert transactionId={transactionId} />
+              }
             />
-            <BalanceChangesAlert transactionId={transactionId} />
           </Fragment>
         ))}
         <BalanceChangeList

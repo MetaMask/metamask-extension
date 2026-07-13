@@ -59,7 +59,6 @@ export const TransactionListItemPendingActions = ({
         ...speedUp,
         onClick: wrapHandler(speedUp.onClick),
       }}
-      primaryTransaction={primaryTransaction}
       className="px-[60px] pb-2"
     />
   );

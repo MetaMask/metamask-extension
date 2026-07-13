@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { useSelector, shallowEqual } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -39,6 +40,8 @@ import {
 import { shortenString } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getIsNetworkManagementEnabled } from '../../../selectors/multichain/feature-flags';
+import { SWAP_ASSETS_PATH } from '../../../helpers/constants/routes';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
@@ -89,6 +92,8 @@ export const BridgeInputGroup = ({
   | 'isDestination'
 >) => {
   const t = useI18nContext();
+  const navigate = useNavigate();
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
 
   const { isInsufficientBalance, isEstimatedReturnLow } = useSelector(
     getValidationErrors,
@@ -259,21 +264,34 @@ export const BridgeInputGroup = ({
             {...amountFieldProps}
           />
         )}
-        <BridgeAssetPicker
-          disabledChainId={disabledChainId}
-          selectedAsset={token}
-          header={header}
-          isOpen={isAssetPickerOpen}
-          onClose={() => setIsAssetPickerOpen(false)}
-          onAssetChange={(asset) => {
-            onAssetChange?.(asset);
-          }}
-          chains={networks}
-          accountAddress={accountAddress}
-          isDestination={isDestination}
-        />
+        {/*
+         * When the network management feature flag is enabled, token selection
+         * happens on a dedicated page (`BridgeAssetPickerPage`) instead of this
+         * modal. The button below records which picker is open and navigates to
+         * that page.
+         */}
+        {!isNetworkManagementEnabled && (
+          <BridgeAssetPicker
+            disabledChainId={disabledChainId}
+            selectedAsset={token}
+            header={header}
+            isOpen={isAssetPickerOpen}
+            onClose={() => setIsAssetPickerOpen(false)}
+            onAssetChange={(asset) => {
+              onAssetChange?.(asset);
+            }}
+            chains={networks}
+            accountAddress={accountAddress}
+            isDestination={isDestination}
+          />
+        )}
         <SelectedAssetButton
-          onClick={() => setIsAssetPickerOpen(true)}
+          onClick={() => {
+            setIsAssetPickerOpen(true);
+            if (isNetworkManagementEnabled) {
+              navigate(SWAP_ASSETS_PATH);
+            }
+          }}
           asset={token}
           data-testid={buttonProps.testId}
         />

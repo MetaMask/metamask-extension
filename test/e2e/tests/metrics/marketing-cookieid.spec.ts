@@ -8,7 +8,7 @@ import {
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../constants';
+import { MOCK_ANALYTICS_ID, WINDOW_TITLES } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -49,8 +49,9 @@ describe('Marketing cookieId', function (this: Suite) {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
             dataCollectionForMarketing: true,
           })
           .build(),
@@ -95,8 +96,9 @@ describe('Marketing cookieId', function (this: Suite) {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -133,7 +135,7 @@ describe('Marketing cookieId', function (this: Suite) {
       },
     );
   });
-  it('should not be send to segment when participateInMetaMetrics is never toggled on ', async function () {
+  it('should not send to segment when optedIn is never toggled on', async function () {
     await withFixtures(
       {
         dappOptions: {
@@ -180,8 +182,9 @@ describe('Marketing cookieId', function (this: Suite) {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
             dataCollectionForMarketing: true,
           })
           .build(),

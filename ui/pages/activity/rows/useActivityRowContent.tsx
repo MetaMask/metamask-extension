@@ -204,9 +204,22 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
               ? formatCurrencyWithMinThreshold(signedFiatAmount, PERPS_CURRENCY)
               : undefined,
+          primaryDirection:
+            activity.type === 'perpsAddFunds' ? 'in' : undefined,
         };
       }
       case 'nftBuy':
+      case 'nftSell': {
+        const { token, paymentToken } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
+          primaryAmount: formatTokenAmount(paymentToken),
+          primaryDirection: paymentToken?.direction,
+          secondaryAmount: formatAsFiat(paymentToken),
+        };
+      }
       case 'nftMint': {
         const { token } = activity.data;
 
@@ -275,6 +288,16 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),
+        };
+      }
+      case 'assetDeactivation':
+      case 'assetActivation': {
+        const { token } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? '']),
+          subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
         };
       }
       default:

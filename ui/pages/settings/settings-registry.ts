@@ -16,6 +16,10 @@ import {
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
@@ -31,8 +35,13 @@ import {
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import {
+  getIsAddDeviceSyncEnabled,
+  getIsPerpsIncludedInBuild,
+} from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
 
@@ -50,6 +59,15 @@ export type SettingsRouteMeta = {
   isTab?: boolean;
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
+  /**
+   * If true, the route's component is mounted by the top-level app router
+   * (outside `SettingsLayout`) rather than by the nested Settings router.
+   * Used for full-page routes whose path is not under `/settings` (e.g.
+   * `/sync-accounts`). These are excluded from `SETTINGS_RENDERABLE_ROUTES`
+   * so the Settings router does not also mount a nested `/settings/<path>`
+   * child that would duplicate headers and skip `hideAppHeader` matching.
+   */
+  externalRoute?: boolean;
 };
 
 export const SETTINGS_ROOT_SECTIONS: readonly {
@@ -75,6 +93,7 @@ export const SETTINGS_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
+      ...(getIsAddDeviceSyncEnabled() ? [SYNC_ACCOUNTS_ROUTE] : []),
     ],
   },
 ] as const;
@@ -141,6 +160,38 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(() => import('./notifications-tab/index.ts')),
     isTab: true,
     iconName: IconName.Notification,
+  },
+  [NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE]: {
+    labelKey: 'notificationsSettingsWalletActivityTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/wallet-activity-sub-page.tsx'),
+    ),
+  },
+  ...(getIsPerpsIncludedInBuild()
+    ? {
+        [NOTIFICATIONS_SETTINGS_PERPS_ROUTE]: {
+          labelKey: 'notificationsSettingsPerpsTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+          component: mmLazy(
+            () => import('./notifications-tab/perps-sub-page.tsx'),
+          ),
+        },
+      }
+    : {}),
+  [NOTIFICATIONS_SETTINGS_MARKETING_ROUTE]: {
+    labelKey: 'notificationsSettingsMarketingTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/marketing-sub-page.tsx'),
+    ),
+  },
+  [NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE]: {
+    labelKey: 'notificationsSettingsAgenticCliTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/agentic-cli-sub-page.tsx'),
+    ),
   },
 
   // --- Security and Password tab ---
@@ -285,6 +336,21 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     iconName: IconName.SwapVertical,
   },
 
+  // --- Sync Accounts tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
+  ...(getIsAddDeviceSyncEnabled()
+    ? {
+        [SYNC_ACCOUNTS_ROUTE]: {
+          labelKey: 'syncAccounts',
+          component: mmLazy(() => import('./sync-accounts/index.ts')),
+          isTab: true,
+          iconName: IconName.Mobile,
+          // Mounted top-level at `/sync-accounts` by the app router, not nested
+          // under `/settings`. Excluded from SETTINGS_RENDERABLE_ROUTES below.
+          externalRoute: true,
+        },
+      }
+    : {}),
+
   // --- Experimental tab ---
   [EXPERIMENTAL_ROUTE]: {
     labelKey: 'experimental',
@@ -390,12 +456,14 @@ export const SETTINGS_TABS = Object.entries(SETTINGS_ROUTES)
   }));
 
 /**
- * All routes that have a component (for generating Route elements).
+ * All routes that have a component and are rendered by the nested Settings
+ * router (for generating Route elements). Excludes `externalRoute` entries,
+ * which are mounted top-level by the app router.
  */
 export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
   .filter((entry): entry is [string, RenderableRouteMeta] => {
     const [, meta] = entry;
-    return Boolean(meta.component);
+    return Boolean(meta.component) && !meta.externalRoute;
   })
   .map(([path, meta]) => ({
     path,

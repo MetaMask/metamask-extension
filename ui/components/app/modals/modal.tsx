@@ -25,8 +25,6 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal from './fade-modal';
-// Metamask Notifications
-import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -169,19 +167,6 @@ const MODALS: Record<string, ModalConfig> = {
 
   [TURN_ON_BACKUP_AND_SYNC_MODAL_NAME]: {
     contents: <TurnOnBackupAndSyncModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TURN_ON_METAMASK_NOTIFICATIONS: {
-    contents: <TurnOnMetamaskNotifications />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

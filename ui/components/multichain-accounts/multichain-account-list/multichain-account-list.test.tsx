@@ -106,7 +106,7 @@ const mockSetSelectedMultichainAccount = jest.requireMock(
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
-const modalHeaderSelector = '.mm-modal-header';
+const modalHeaderTestId = 'account-edit-modal-header';
 const walletHeaderTestId = 'multichain-account-tree-wallet-header';
 const accountNameInputTestId = 'account-name-input';
 
@@ -387,16 +387,12 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify the modal is open by finding the modal header
-    const modalHeader = document.querySelector(modalHeaderSelector);
+    const modalHeader = screen.getByTestId(modalHeaderTestId);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the header text inside the modal
-    if (modalHeader) {
-      const headerText = within(modalHeader as HTMLElement).getByText(
-        messages.rename.message,
-      );
-      expect(headerText).toBeInTheDocument();
-    }
+    const headerText = within(modalHeader).getByText(messages.rename.message);
+    expect(headerText).toBeInTheDocument();
 
     // Find the actual input element directly
     const inputContainer = screen.getByTestId(accountNameInputTestId);
@@ -470,7 +466,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify that the modal is open
-    const modalHeader = document.querySelector(modalHeaderSelector);
+    const modalHeader = screen.getByTestId(modalHeaderTestId);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the close button by aria-label

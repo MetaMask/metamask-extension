@@ -23,6 +23,7 @@ export type ActivityKind =
   | 'convert'
   | 'nftBuy'
   | 'nftMint'
+  | 'nftSell'
   | 'smartAccountUpgrade'
   | 'lendingDeposit'
   | 'lendingWithdrawal'
@@ -47,7 +48,9 @@ export type ActivityKind =
   | 'perpsCloseLongTakeProfit'
   | 'marketShort'
   | 'stopMarketCloseShort'
-  | 'marketCloseShort';
+  | 'marketCloseShort'
+  | 'assetActivation'
+  | 'assetDeactivation';
 
 export type TokenAmount = {
   amount?: string;
@@ -76,8 +79,8 @@ type ActivityData<Type extends ActivityKind, Data> = {
   status: Status;
   timestamp: number;
   isEarliestNonce?: boolean;
+  hash?: string;
   data: Data & {
-    hash?: string;
     from?: string;
   };
 };
@@ -154,11 +157,35 @@ export type ActivityListItem =
       }
     >
   | ActivityData<
+      'assetActivation',
+      {
+        token?: TokenAmount;
+        fees?: ActivityFee[];
+      }
+    >
+  | ActivityData<
+      'assetDeactivation',
+      {
+        token?: TokenAmount;
+        fees?: ActivityFee[];
+      }
+    >
+  | ActivityData<
       'nftBuy' | 'nftMint',
       {
         from?: string;
         to?: string;
         token?: TokenAmount;
+        paymentToken?: TokenAmount;
+      }
+    >
+  | ActivityData<
+      'nftSell',
+      {
+        from?: string;
+        to?: string;
+        token?: TokenAmount;
+        paymentToken?: TokenAmount;
       }
     >
   | ActivityData<

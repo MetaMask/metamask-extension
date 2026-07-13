@@ -8,7 +8,10 @@ import {
   isCaipAssetType,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import {
+  BridgeAsset,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -26,6 +29,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useAppSelector } from '../../../store/store';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
@@ -45,7 +49,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BackgroundColor,
   BlockSize,
@@ -77,7 +80,25 @@ import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useOnClickOutside } from '../perps/hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
+import {
+  ARC_ERC20_USDC_BRIDGE_ASSET,
+  ARC_HEX_CHAIN_ID,
+} from '../assets/enablement/arc';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
+
+/**
+ * Allows to manually set the default Swap token when clicking on the Swap CTA from
+ * native token page. If unset, `getNativeAssetForChainId` of bridge-controller is used.
+ */
+const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
+  // On Arc, we want to Bridge/Swap the ERC20 flavor of USDC, not the native one.
+  [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
+};
+
+function getSwapNativeTokenWithOverridesForChain(chainId: string): BridgeAsset {
+  const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[chainId];
+  return override ?? getNativeAssetForChainId(chainId);
+}
 
 type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
   classPrefix?: string;
@@ -199,7 +220,6 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
-  isBuyableChain: boolean;
   classPrefix?: string;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
@@ -211,14 +231,13 @@ const CoinButtons = ({
   trackingLocation,
   isSwapsChain,
   isSigningEnabled,
-  isBuyableChain,
   classPrefix = 'coin',
   disableSendForNonEvm = false,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [showReceiveModal, setShowReceiveModal] = useState(false);
   const [showTabOpenedToast, setShowTabOpenedToast] = useState(false);
 
@@ -267,7 +286,6 @@ const CoinButtons = ({
   const isEvmAsset = isEvmChainId(normalizedChainId);
 
   const buttonTooltips = {
-    buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
       {
@@ -367,10 +385,9 @@ const CoinButtons = ({
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
-      {
-        event: MetaMetricsEventName.SendStarted,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
+      createEventBuilder(MetaMetricsEventName.SendStarted)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: account.type,
@@ -383,9 +400,8 @@ const CoinButtons = ({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
           ...getSnapAccountMetaMetricsPropertiesIfAny(account),
-        },
-      },
-      { excludeMetaMetricsId: false },
+        })
+        .build({ excludeMetaMetricsId: false }),
     );
 
     // Native Send flow
@@ -398,24 +414,25 @@ const CoinButtons = ({
   const handleBuyAndSellOnClick = useCallback(() => {
     setShowTabOpenedToast(true);
     openBuyCryptoInPdapp(getChainId());
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: account.type,
-        location: 'Home',
-        text: 'Buy',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: defaultSwapsToken,
-        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: account.type,
+          location: 'Home',
+          text: 'Buy',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: defaultSwapsToken,
+          ...getSnapAccountMetaMetricsPropertiesIfAny(account),
+        })
+        .build(),
+    );
   }, [chainId, defaultSwapsToken]);
 
   const handleSwapOnClick = useCallback(async () => {
@@ -433,7 +450,7 @@ const CoinButtons = ({
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
         chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-          ? getNativeAssetForChainId(chainIdToUse)
+          ? getSwapNativeTokenWithOverridesForChain(chainIdToUse)
           : undefined,
       ),
     );
@@ -441,17 +458,18 @@ const CoinButtons = ({
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
-    trackEvent({
-      event: MetaMetricsEventName.NavReceiveButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        text: 'Receive',
-        location: trackingLocation,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavReceiveButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          text: 'Receive',
+          location: trackingLocation,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+        })
+        .build(),
+    );
 
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
@@ -468,17 +486,18 @@ const CoinButtons = ({
 
   const handleBatchSellOnClick = useCallback(() => {
     trace({ name: TraceName.BatchSellModal });
-    trackEvent({
-      event: MetaMetricsEventName.NavBatchSellButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        text: 'Batch Sell',
-        location: trackingLocation,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavBatchSellButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          text: 'Batch Sell',
+          location: trackingLocation,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+        })
+        .build(),
+    );
 
     transitionForward(() => openBatchSellExperience());
   }, [trackEvent, trackingLocation, chainId, openBatchSellExperience]);
@@ -506,14 +525,10 @@ const CoinButtons = ({
             size={IconSizeLegacy.Md}
           />
         }
-        disabled={!isBuyableChain}
         data-testid={`${classPrefix}-overview-buy`}
         label={t('buy')}
         onClick={handleBuyAndSellOnClick}
         width={BlockSize.Full}
-        tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('buyButton', contents)
-        }
       />
       <IconButton
         className={`${classPrefix}-overview__button`}

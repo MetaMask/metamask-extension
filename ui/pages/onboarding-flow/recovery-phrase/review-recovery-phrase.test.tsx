@@ -1,14 +1,32 @@
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_REVEAL_SRP_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import * as Actions from '../../../store/actions';
 import RecoveryPhrase from './review-recovery-phrase';
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
@@ -20,6 +38,13 @@ jest.mock('react-router-dom', () => {
     useLocation: () => mockUseLocation(),
   };
 });
+
+jest.mock('../../../hooks/useIsFirefox', () => ({
+  useIsFirefox: jest.fn().mockReturnValue(false),
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { useIsFirefox } = jest.requireMock('../../../hooks/useIsFirefox');
 
 const mockState = {
   metamask: {
@@ -167,6 +192,111 @@ describe('Review Recovery Phrase Component', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should navigate to reveal SRP route when back button is clicked', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?isFromReminder=true&isFromSettingsSecurity=true',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    const backButton = getByTestId('reveal-recovery-phrase-review-back-button');
+
+    fireEvent.click(backButton);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}?isFromReminder=true&isFromSettingsSecurity=true`,
+      { replace: true },
+    );
+  });
+
+  it('should open the SRP details modal when the SRP details link is clicked', () => {
+    const { getAllByText, queryByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    // The link appears as interpolated text inside seedPhraseReviewDetails
+    const srpDetailsLinks = getAllByText(messages.secretRecoveryPhrase.message);
+    fireEvent.click(srpDetailsLinks[0]);
+
+    expect(queryByTestId('srp-details-modal')).toBeInTheDocument();
+  });
+
+  it('should navigate to metametrics page when remind later is clicked', async () => {
+    jest
+      .spyOn(Actions, 'setSeedPhraseBackedUp')
+      .mockReturnValue(jest.fn().mockResolvedValue(null));
+
+    const store = configureMockStore([thunk])(mockState);
+    const { getByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      store,
+    );
+
+    const remindLaterButton = getByTestId('recovery-phrase-remind-later');
+    fireEvent.click(remindLaterButton);
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+        replace: true,
+      });
+    });
+  });
+
+  it('should navigate to completion route on remind later when running on Firefox', async () => {
+    jest.mocked(useIsFirefox).mockReturnValue(true);
+    jest
+      .spyOn(Actions, 'setSeedPhraseBackedUp')
+      .mockReturnValue(jest.fn().mockResolvedValue(null));
+
+    const store = configureMockStore([thunk])(mockState);
+    const { getByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      store,
+    );
+
+    const remindLaterButton = getByTestId('recovery-phrase-remind-later');
+    fireEvent.click(remindLaterButton);
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
+      );
+    });
+  });
+
+  it('should navigate to completion route on remind later when firstTimeFlowType is restore', async () => {
+    jest
+      .spyOn(Actions, 'setSeedPhraseBackedUp')
+      .mockReturnValue(jest.fn().mockResolvedValue(null));
+
+    const store = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        firstTimeFlowType: FirstTimeFlowType.restore,
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      store,
+    );
+
+    const remindLaterButton = getByTestId('recovery-phrase-remind-later');
+    fireEvent.click(remindLaterButton);
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
+      );
+    });
   });
 
   it('onClose should navigate to reveal srp list route', () => {

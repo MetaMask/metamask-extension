@@ -1,34 +1,34 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 import { getGasMetricsProperties } from './gas';
 import { createBuilderRequest } from './test-utils';
 
 describe('gas builder', () => {
-  it('builds gas selection and converts hex gas values', async () => {
+  it('maps userFeeLevel "dappSuggested" to gas_fee_selected "dapp_proposed"', async () => {
     const result = await getGasMetricsProperties(
       createBuilderRequest({
         transactionMeta: {
           ...createBuilderRequest().transactionMeta,
           userFeeLevel: 'dappSuggested',
-          txParams: {
-            ...createBuilderRequest().transactionMeta.txParams,
-            maxFeePerGas: '0x3b9aca00',
-            maxPriorityFeePerGas: '0x59682f00',
-          },
-          defaultGasEstimates: {
-            estimateType: 'medium',
-            gas: '0x5208',
-            gasPrice: '0x3b9aca00',
-          },
         } as never,
       }),
     );
-    expect(result.properties.gas_fee_selected).toBe('dapp_proposed');
-    expect(result.sensitiveProperties.max_fee_per_gas).toBe(
-      hexWEIToDecGWEI('0x3b9aca00'),
+
+    expect(result.properties).toStrictEqual({
+      gas_fee_selected: 'dapp_proposed',
+    });
+    expect(result.sensitiveProperties).toStrictEqual({});
+  });
+
+  it('passes through other userFeeLevel values verbatim', async () => {
+    const result = await getGasMetricsProperties(
+      createBuilderRequest({
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          userFeeLevel: 'high',
+        } as never,
+      }),
     );
-    expect(result.sensitiveProperties.max_priority_fee_per_gas).toBe(
-      hexWEIToDecGWEI('0x59682f00'),
-    );
+
+    expect(result.properties.gas_fee_selected).toBe('high');
   });
 });

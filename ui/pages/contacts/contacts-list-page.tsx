@@ -38,6 +38,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { buildDuplicateContactMap, hasDuplicateContacts } from './utils';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
@@ -47,6 +48,7 @@ const TOAST_AUTO_HIDE_MS = 2500;
 export function ContactsListPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const fromPath = searchParams.get('from') ?? undefined;
@@ -130,7 +132,7 @@ export function ContactsListPage() {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(DEFAULT_ROUTE);
     }

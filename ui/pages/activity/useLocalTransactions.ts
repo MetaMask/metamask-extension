@@ -32,7 +32,7 @@ export function useLocalTransactions(filters: ActivityListFilter) {
   const localTransactionGroups = useMemo(
     () =>
       filteredLocalItems.flatMap((item) => {
-        const hash = item.data.hash?.toLowerCase();
+        const hash = item.hash?.toLowerCase();
         const transactionGroup = hash
           ? localTransactionsByHash.get(hash)
           : undefined;
@@ -46,7 +46,7 @@ export function useLocalTransactions(filters: ActivityListFilter) {
   return useMemo(
     () =>
       filteredLocalItems.map((item) => {
-        const hash = item.data.hash?.toLowerCase();
+        const hash = item.hash?.toLowerCase();
         const transactionGroup = hash
           ? localTransactionsByHash.get(hash)
           : undefined;

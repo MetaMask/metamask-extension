@@ -12,6 +12,19 @@ import configureStore from '../../../store/store';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => {
@@ -140,7 +153,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(checkbox).toBeChecked();
     expect(checkbox).toBeInTheDocument();
 
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 
@@ -182,7 +195,7 @@ describe('Onboarding Metametrics Component', () => {
     ) as HTMLElement;
 
     // Opt out of MetaMetrics; this should clear marketing consent
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 
@@ -224,7 +237,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
-    await act(() => {
+    act(() => {
       fireEvent.click(marketingContainer);
     });
 
@@ -232,7 +245,7 @@ describe('Onboarding Metametrics Component', () => {
       expect(marketingCheckbox).toBeChecked();
     });
 
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 

@@ -16,6 +16,11 @@ import {
 import { MenuItem } from '../../ui/menu';
 import { GlobalMenuListProps, isRouteItem } from './global-menu-list.types';
 
+const getRouteState = (state?: object) => ({
+  ...state,
+  globalMenuTransition: 'forward',
+});
+
 /**
  * Renders menu item content with badge and chevron
  *
@@ -101,6 +106,7 @@ export const GlobalMenuList = ({
           {section.items.map((item) => {
             // Show chevron for route items or when explicitly requested (e.g. notifications)
             const showChevron = isRouteItem(item) || item.showChevron === true;
+
             return (
               <MenuItem
                 key={item.id}
@@ -111,12 +117,16 @@ export const GlobalMenuList = ({
                 fontWeight={FontWeight.Medium}
                 textColor={item.textColor}
                 to={isRouteItem(item) ? item.to : undefined}
-                state={isRouteItem(item) ? item.state : undefined}
+                state={
+                  isRouteItem(item) ? getRouteState(item.state) : undefined
+                }
                 onClick={item.onClick}
                 disabled={item.disabled}
                 showInfoDot={item.showInfoDot}
                 subtitle={item.subtitle}
-                className="first:rounded-t-none last:rounded-b-none"
+                className={`first:rounded-t-none last:rounded-b-none ${
+                  item.className ?? ''
+                }`}
                 data-testid={item.id}
               >
                 {renderMenuItemContent(item.label, item.badge, showChevron)}

@@ -53,6 +53,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Immer, Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
@@ -161,6 +162,10 @@ import {
   MetaMetricsUserTraits,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
+import type {
+  AnalyticsEvent,
+  AnalyticsEventBuildOptions,
+} from '../../shared/lib/analytics/create-event-builder';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors';
@@ -1153,7 +1158,9 @@ export function unlockAndGetSeedPhrase(
 }
 
 export function submitPassword(password: string): Promise<void> {
-  return submitRequestToBackground('submitPassword', [password]);
+  return submitRequestToBackground('submitPasswordOrEncryptionKey', [
+    { password },
+  ]);
 }
 
 /**
@@ -1316,6 +1323,32 @@ export function requestRevealSeedWords(
       await verifyPassword(password);
       const seedPhrase = await getSeedPhrase(password, keyringId);
       return seedPhrase;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Returns the Secret Recovery Phrase using a verified passkey assertion instead
+ * of the wallet password.
+ *
+ * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+ * @param keyringId - The id of the HD keyring to export. Defaults to the primary keyring.
+ * @returns The decoded seed phrase.
+ */
+export function getSeedPhraseWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+  keyringId?: string,
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      const encodedSeedPhrase = await submitRequestToBackground(
+        'exportSeedPhraseWithPasskey',
+        [authenticationResponse, keyringId],
+      );
+      return Buffer.from(encodedSeedPhrase).toString('utf8');
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -2132,6 +2165,17 @@ export async function getTransactions(
   ]);
 }
 
+export async function checkFirstTimeInteraction(request: {
+  from: string;
+  to: string;
+  chainId: number;
+}): Promise<boolean | undefined> {
+  return submitRequestToBackground<boolean | undefined>(
+    'checkFirstTimeInteraction',
+    [request],
+  );
+}
+
 function completedTx(
   txId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -2545,7 +2589,7 @@ export function createNextMultichainAccountGroup(
       const walletIdWithoutTypePrefix =
         stripWalletTypePrefixFromWalletId(walletId);
       await submitRequestToBackground('createNextMultichainAccountGroup', [
-        walletIdWithoutTypePrefix,
+        { entropySource: walletIdWithoutTypePrefix },
       ]);
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
@@ -3753,18 +3797,6 @@ export function removeFromAddressBook(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-export function showImportTokensModal(): Action {
-  return {
-    type: actionConstants.IMPORT_TOKENS_POPOVER_OPEN,
-  };
-}
-
-export function hideImportTokensModal(): Action {
-  return {
-    type: actionConstants.IMPORT_TOKENS_POPOVER_CLOSE,
-  };
-}
-
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModalPayload = { name: string } & Record<string, any>;
@@ -4050,6 +4082,31 @@ export function exportAccounts(
   };
 }
 
+/**
+ * Reveals the private keys of multiple accounts using a single verified passkey
+ * assertion instead of the wallet password.
+ *
+ * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+ * @param addresses - The addresses whose private keys should be revealed.
+ * @returns The private keys as hex strings, in the same order as `addresses`.
+ */
+export function exportAccountsWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+  addresses: string[],
+): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      return await submitRequestToBackground<string[]>(
+        'exportAccountsWithPasskey',
+        [authenticationResponse, addresses],
+      );
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function showPrivateKey(key: string): PayloadAction<string> {
   return {
     type: actionConstants.SHOW_PRIVATE_KEY,
@@ -4235,6 +4292,10 @@ export function setTokenSortConfig(value: SortCriteria) {
 
 export function setTokenNetworkFilter(value: Record<string, boolean>) {
   return setPreference('tokenNetworkFilter', value, false);
+}
+
+export function setGasSponsorshipOptOut(value: Record<string, boolean>) {
+  return setPreference('gasSponsorshipOptOutByChainId', value, false);
 }
 
 export function setSmartTransactionsPreferenceEnabled(
@@ -4840,6 +4901,27 @@ export function toggleExternalServices(
     log.debug(`background.toggleExternalServices`);
     try {
       await submitRequestToBackground('toggleExternalServices', [val]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (err) {
+      // TODO: Stop suppressing this error (either log or re-throw)
+    }
+  };
+}
+
+export function toggleBasicFunctionality(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.toggleBasicFunctionality`);
+    try {
+      await submitRequestToBackground('toggleExternalServices', [val]);
+      await Promise.all([
+        submitRequestToBackground('setUseMultiAccountBalanceChecker', [val]),
+        submitRequestToBackground('setUseTransactionSimulations', [val]),
+        submitRequestToBackground('setSecurityAlertsEnabled', [val]),
+        submitRequestToBackground('setUse4ByteResolution', [val]),
+        submitRequestToBackground('setUseExternalNameSources', [val]),
+      ]);
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
@@ -5822,6 +5904,35 @@ export function setSeedPhraseBackedUp(
   };
 }
 
+export function setHasSeenOnboardingCompletionPage(
+  hasSeenOnboardingCompletionPage: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      log.debug(`background.setHasSeenOnboardingCompletionPage`);
+      await submitRequestToBackground('setHasSeenOnboardingCompletionPage', [
+        hasSeenOnboardingCompletionPage,
+      ]);
+      if (hasSeenOnboardingCompletionPage) {
+        dispatch(setHasSeenOnboardingCompletionPageAction());
+      }
+    } catch (error) {
+      console.error(
+        'Failed to mark onboarding completion page as seen:',
+        error,
+      );
+    }
+  };
+}
+
+function setHasSeenOnboardingCompletionPageAction() {
+  return {
+    type: actionConstants.SET_HAS_SEEN_ONBOARDING_COMPLETION_PAGE,
+  };
+}
+
 export function setNextNonce(nextNonce: string): PayloadAction<string> {
   return {
     type: actionConstants.SET_NEXT_NONCE,
@@ -6313,6 +6424,17 @@ export function trackMetaMetricsEvent(
   return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
 }
 
+export function trackAnalyticsEvent(
+  payload: AnalyticsEvent,
+  options: AnalyticsEventBuildOptions & {
+    environmentType: string;
+    page?: MetaMetricsPageObject;
+    referrer?: MetaMetricsReferrerObject;
+  },
+) {
+  return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
+}
+
 export function createEventFragment(
   options: MetaMetricsEventFragment,
 ): Promise<string> {
@@ -6801,12 +6923,17 @@ export function estimateRewardsPoints(
 
 export function validateRewardsReferralCode(
   code: string,
-): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<
+  Promise<{ valid: boolean; isVipCode: boolean }>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async () => {
-    return await submitRequestToBackground<boolean>(
-      'validateRewardsReferralCode',
-      [code],
-    );
+    return await submitRequestToBackground<{
+      valid: boolean;
+      isVipCode: boolean;
+    }>('validateRewardsReferralCode', [code]);
   };
 }
 
@@ -7552,24 +7679,49 @@ export function checkAccountsPresence(
     }
   };
 }
+
 /**
- * Triggers a modal to confirm the action of turning on MetaMask notifications.
- * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn on MetaMask notifications.
+ * Gets notification preferences from Authenticated User Storage.
  *
- * @returns A thunk action that, when dispatched, shows the confirmation modal.
+ * @returns A thunk action that retrieves the current notification preferences.
  */
-export function showConfirmTurnOnMetamaskNotifications(): ThunkAction<
-  void,
+export function getNotificationPreferences(): ThunkAction<
+  Promise<NotificationPreferences | null>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      showModal({
-        name: 'TURN_ON_METAMASK_NOTIFICATIONS',
-      }),
-    );
+  return async () => {
+    try {
+      return (await submitRequestToBackground(
+        'getNotificationPreferences',
+      )) as NotificationPreferences | null;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Writes notification preferences to Authenticated User Storage.
+ *
+ * @param preferences - The complete notification preferences object to persist.
+ * @returns A thunk action that writes notification preferences.
+ */
+export function putNotificationPreferences(
+  preferences: NotificationPreferences,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('putNotificationPreferences', [
+        preferences,
+        'extension',
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
   };
 }
 
@@ -7578,16 +7730,18 @@ export function showConfirmTurnOnMetamaskNotifications(): ThunkAction<
  * This function dispatches a request to the background script to enable MetaMask notifications.
  * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
+ * @param options - Optional notification-enablement options.
  * @returns A thunk action that, when dispatched, attempts to enable MetaMask notifications.
  */
-export function enableMetamaskNotifications(): ThunkAction<
-  void,
-  unknown,
-  AnyAction
-> {
+export function enableMetamaskNotifications(
+  options?: NotificationServicesControllerEnableNotificationsOptions,
+): ThunkAction<void, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('enableMetamaskNotifications');
+      await submitRequestToBackground(
+        'enableMetamaskNotifications',
+        options ? [options] : [],
+      );
     } catch (error) {
       log.error(error);
       throw error;
@@ -7638,6 +7792,18 @@ export function setMultichainAccountsIntroModalShown(value: boolean) {
 export function setMusdConversionEducationSeen(value: boolean) {
   return async () => {
     await submitRequestToBackground('setMusdConversionEducationSeen', [value]);
+  };
+}
+
+/**
+ * Persist that the user has seen (and dismissed) the Perps tab "New" badge.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setPerpsTabBadgeSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setPerpsTabBadgeSeen', [value]);
   };
 }
 

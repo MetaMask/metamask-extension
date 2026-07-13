@@ -70,20 +70,22 @@ describe('sentry-get-state', () => {
     });
 
     it('resolves participation from persisted state when snapshot has no state keys', async () => {
+      const getPersistedState = jest.fn().mockResolvedValue({
+        data: {
+          AnalyticsController: {
+            analyticsId: 'id-123',
+            optedIn: true,
+          },
+          MetaMetricsController: {
+            completedMetaMetricsOnboarding: true,
+          },
+        },
+      });
+
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
         getSentryState: () => emptySentrySnapshot(),
-        getPersistedState: async () => ({
-          data: {
-            AnalyticsController: {
-              analyticsId: 'id-123',
-              optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
-            },
-          },
-        }),
+        getPersistedState,
         getBackupState: async () => ({}),
       };
 
@@ -91,6 +93,9 @@ describe('sentry-get-state', () => {
         completedMetaMetricsOnboarding: true,
         optedIn: true,
         analyticsId: 'id-123',
+      });
+      expect(getPersistedState).toHaveBeenCalledWith({
+        reportErrors: false,
       });
     });
 
@@ -310,7 +315,7 @@ describe('sentry-get-state', () => {
       });
     });
 
-    it('returns participateInMetaMetrics false and no metaMetricsId when not opted in', () => {
+    it('returns optedIn false with analyticsId when not opted in', () => {
       expect(
         getAnalyticsStateFromAppState({
           state: {

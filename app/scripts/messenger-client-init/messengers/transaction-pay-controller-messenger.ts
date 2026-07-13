@@ -42,6 +42,7 @@ export function getTransactionPayControllerMessenger(
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
       'TokenBalancesController:getState',
       'TokenRatesController:getState',
@@ -53,6 +54,8 @@ export function getTransactionPayControllerMessenger(
       'TransactionController:updateTransaction',
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
+      'RampsController:getOrder',
+      'RampsController:getQuotes',
     ],
     events: [
       'AssetsController:stateChange',

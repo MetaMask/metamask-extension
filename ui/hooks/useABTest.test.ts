@@ -229,6 +229,36 @@ describe('useABTest', () => {
       expect(mockTrackEvent).not.toHaveBeenCalled();
     });
 
+    it('does not emit an exposure event when trackExposure is false', () => {
+      const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
+      setRemoteFeatureFlags({ [flagKey]: { name: 'treatment' } });
+
+      renderHook(
+        () =>
+          useABTest(flagKey, experimentVariants, undefined, {
+            trackExposure: false,
+          }),
+        { wrapper },
+      );
+
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('emits the exposure event when trackExposure is true', () => {
+      const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
+      setRemoteFeatureFlags({ [flagKey]: { name: 'treatment' } });
+
+      renderHook(
+        () =>
+          useABTest(flagKey, experimentVariants, undefined, {
+            trackExposure: true,
+          }),
+        { wrapper },
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    });
+
     it('emits once per experiment and variation after a successful track', async () => {
       const flagKey = 'swapsSWAPS4135AbtestNumpadQuickAmounts';
       setRemoteFeatureFlags({

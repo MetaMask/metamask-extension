@@ -6,9 +6,9 @@ import {
   getLocalizedSnapManifest,
   SnapStatus,
 } from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
+import { cloneDeep, memoize } from 'lodash';
 import semver from 'semver';
-import { createSelector } from 'reselect';
+import { createSelector, lruMemoize } from 'reselect';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -32,6 +32,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 
 import log from 'loglevel';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
@@ -172,6 +173,7 @@ import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   createDeepEqualSelector,
   createParameterizedSelector,
+  createParameterizedDeepEqualSelector,
   createParameterizedShallowEqualSelector,
   createResultEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
@@ -377,14 +379,6 @@ export function getAnalyticsId(state) {
   return analyticsId;
 }
 
-/**
- * @param state
- * @deprecated Use `getAnalyticsId` instead.
- */
-export function getMetaMetricsId(state) {
-  return getAnalyticsId(state);
-}
-
 export function isCurrentProviderCustom(state) {
   const provider = getProviderConfig(state);
   return (
@@ -395,6 +389,10 @@ export function isCurrentProviderCustom(state) {
 
 export function getActiveQrCodeScanRequest(state) {
   return state.metamask.activeQrCodeScanRequest;
+}
+
+export function getLastQrScanCompletedSuccessfully(state) {
+  return state.metamask.lastQrScanCompletedSuccessfully;
 }
 
 export function getIsSigningQRHardwareTransaction(state) {
@@ -661,7 +659,11 @@ export const getInternalAccountsSortedByKeyring = createSelector(
     /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount[]>} */
     const entropySourceToAccountsMap = Object.values(accounts).reduce(
       (map, account) => {
-        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
+        const keyringType = account.metadata?.keyring?.type;
+        if (
+          keyringType === KeyringTypes.snap ||
+          keyringType === KeyringTypeV2.Snap
+        ) {
           const { entropySource = thirdPartySnaps } = account.options || {};
           if (!map[entropySource]) {
             map[entropySource] = [];
@@ -691,7 +693,10 @@ export const getInternalAccountsSortedByKeyring = createSelector(
           entropySourceToAccountsMap[keyring.metadata.id] || [];
         internalAccounts.push(...keyringAccounts, ...snapAccounts);
         return internalAccounts;
-      } else if (keyring.type === KeyringTypes.snap) {
+      } else if (
+        keyring.type === KeyringTypes.snap ||
+        keyring.type === KeyringTypeV2.Snap
+      ) {
         const thirdpartySnapAccounts =
           entropySourceToAccountsMap[thirdPartySnaps] || [];
         // In a scenario where there are multiple snap keyrings, which isn't the case for today
@@ -1344,9 +1349,8 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-// Deep-equal memo: pendingApprovals map identity can change while approvals list is unchanged.
-export const getUnapprovedConfirmations = createDeepEqualSelector(
-  (state) => state.metamask.pendingApprovals || {},
+export const getUnapprovedConfirmations = createSelector(
+  (state) => state.metamask.pendingApprovals ?? EMPTY_OBJECT,
   (pendingApprovals) => Object.values(pendingApprovals),
 );
 
@@ -1470,10 +1474,9 @@ export function getTokenSortConfig(state) {
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
  *
- * Deep-equal memo: merged tokenNetworkFilter object is often a new reference for the same filter.
  */
 // @deprecated('Use `getEnabledNetworks` instead')
-export const getTokenNetworkFilter = createDeepEqualSelector(
+export const getTokenNetworkFilter = createSelector(
   getCurrentChainId,
   getPreferences,
   getIsEvmMultichainNetworkSelected,
@@ -1745,10 +1748,11 @@ export const getAnySnapUpdateAvailable = createSelector(
 /**
  * Return if the snap branding should show in the UI.
  *
- * Deep-equal memo: snap install map / inputs can change reference without changing branding flag.
+ * Parameterized selector for snap-specific branding visibility.
  */
-export const getHideSnapBranding = createDeepEqualSelector(
-  [selectInstalledSnaps, selectSnapId],
+export const getHideSnapBranding = createParameterizedSelector(10)(
+  selectInstalledSnaps,
+  selectSnapId,
   (installedSnaps, snapId) => {
     return installedSnaps[snapId]?.hideSnapBranding;
   },
@@ -1931,25 +1935,27 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsDefaultToken(state, overrideChainId = null) {
-  const selectedAccount = getSelectedAccount(state);
-  const balance = selectedAccount?.balance;
-  const currentChainId = getCurrentChainId(state);
+export const getSwapsDefaultToken = createSelector(
+  (state) => getSelectedAccount(state),
+  (state) => getCurrentChainId(state),
+  (_state, overrideChainId = null) => overrideChainId,
+  (selectedAccount, currentChainId, overrideChainId) => {
+    const balance = selectedAccount?.balance;
+    const chainId = overrideChainId ?? currentChainId;
+    const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
-  const chainId = overrideChainId ?? currentChainId;
-  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
-
-  return {
-    ...defaultTokenObject,
-    chainId,
-    balance: hexToDecimal(balance),
-    string: getValueFromWeiHex({
-      value: balance,
-      numberOfDecimals: 4,
-      toDenomination: 'ETH',
-    }),
-  };
-}
+    return {
+      ...defaultTokenObject,
+      chainId,
+      balance: hexToDecimal(balance),
+      string: getValueFromWeiHex({
+        value: balance,
+        numberOfDecimals: 4,
+        toDenomination: 'ETH',
+      }),
+    };
+  },
+);
 
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
@@ -2066,16 +2072,18 @@ export const getMetadataContractName = createSelector(
 
 export const getTxData = (state) => state.confirmTransaction.txData;
 
-// Deep-equal memo: tx map lookups; controller-backed maps can get new references with same txs.
-export const getUnapprovedTransaction = createDeepEqualSelector(
-  (state) => getUnapprovedTransactions(state),
+const unapprovedTransactionSelectorFactory =
+  createParameterizedDeepEqualSelector(20);
+
+export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
+  getUnapprovedTransactions,
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) =>
-    Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
+  (unapprovedTxs, transactionId) => unapprovedTxs?.[transactionId],
 );
 
-// Deep-equal memo: find + EMPTY_OBJECT fallback makes output reference unstable without deep memo.
-export const getTransaction = createDeepEqualSelector(
+const transactionSelectorFactory = createParameterizedDeepEqualSelector(50);
+
+export const getTransaction = transactionSelectorFactory(
   getCurrentNetworkTransactions,
   (_, transactionId) => transactionId,
   (transactions, transactionId) => {
@@ -2083,26 +2091,31 @@ export const getTransaction = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: merges txData and tx meta; nested objects often re-created for the same tx.
-export const getFullTxData = createDeepEqualSelector(
+const fullTxDataSelectorFactory = createParameterizedDeepEqualSelector(20);
+
+export const getFullTxData = fullTxDataSelectorFactory(
   getTxData,
   (state, transactionId, status) => {
-    if (status === TransactionStatus.unapproved) {
-      return getUnapprovedTransaction(state, transactionId) ?? {};
+    const transaction =
+      status === TransactionStatus.unapproved
+        ? getUnapprovedTransaction(state, transactionId)
+        : getTransaction(state, transactionId);
+    if (!transaction?.id) {
+      return EMPTY_OBJECT;
     }
-    return getTransaction(state, transactionId);
+    // Snapshot for memoization: child selectors may return live transaction
+    // objects that mutate in place, which reference/deep input checks miss.
+    return cloneDeep(transaction);
   },
+  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
   (
     _state,
     _transactionId,
     _status,
-    customTxParamsData,
+    _customTxParamsData,
     hexTransactionAmount,
-  ) => ({
-    customTxParamsData,
-    hexTransactionAmount,
-  }),
-  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
+  ) => hexTransactionAmount,
+  (txData, transaction, customTxParamsData, hexTransactionAmount) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };
@@ -2126,6 +2139,16 @@ export const getFullTxData = createDeepEqualSelector(
       };
     }
     return fullTxData;
+  },
+  {
+    // Always re-run input selectors so in-place transaction mutations are visible.
+    // argsMemoize defaults to weakMapMemoize keyed by state reference, which skips
+    // input selectors when the Redux state object is unchanged.
+    argsMemoize: lruMemoize,
+    argsMemoizeOptions: {
+      maxSize: 1,
+      equalityCheck: () => false,
+    },
   },
 );
 
@@ -2211,8 +2234,8 @@ export function getLocale(state) {
   return state.metamask.currentLocale;
 }
 
-// Deep-equal memo: keyed snap lookup; parent snaps object identity can churn without snap change.
-export const getSnap = createDeepEqualSelector(
+// Parameterized selector with bounded snap ID cache.
+export const getSnap = createParameterizedSelector(20)(
   getSnaps,
   (_, snapId) => snapId,
   (snaps, snapId) => {
@@ -2260,9 +2283,9 @@ export const getSnapsMetadata = createDeepEqualSelector(
  * @param {string} snapId - The snap ID to get the metadata for.
  * @returns {object} An object containing the snap name and description.
  *
- * Deep-equal memo: metadata lookup + default object; parent metadata map can churn references.
+ * Parameterized selector with bounded snap ID cache.
  */
-export const getSnapMetadata = createDeepEqualSelector(
+export const getSnapMetadata = createParameterizedSelector(20)(
   getSnapsMetadata,
   (_, snapId) => snapId,
   (metadata, snapId) => {
@@ -2274,8 +2297,8 @@ export const getSnapMetadata = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: reduce into enabled map; new object when snap list identity shifts.
-const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
+// Selector for enabled snaps.
+const getEnabledSnaps = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).reduce((acc, cur) => {
     if (cur.enabled) {
       acc[cur.id] = cur;
@@ -2284,21 +2307,18 @@ const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   }, {});
 });
 
-// Deep-equal memo: reduce into preinstalled map; same rationale as getEnabledSnaps.
-export const getPreinstalledSnaps = createDeepEqualSelector(
-  getSnaps,
-  (snaps) => {
-    return Object.values(snaps).reduce((acc, snap) => {
-      if (snap.preinstalled) {
-        acc[snap.id] = snap;
-      }
-      return acc;
-    }, {});
-  },
-);
+// Selector for preinstalled snaps.
+export const getPreinstalledSnaps = createSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).reduce((acc, snap) => {
+    if (snap.preinstalled) {
+      acc[snap.id] = snap;
+    }
+    return acc;
+  }, {});
+});
 
-// Deep-equal memo: filter + permissions join yields new array refs for unchanged snap set.
-const getSettingsPageSnaps = createDeepEqualSelector(
+// Selector for settings page snaps.
+const getSettingsPageSnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2311,8 +2331,8 @@ const getSettingsPageSnaps = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: filtered id list is a new array when underlying snaps/permissions churn.
-export const getNameLookupSnapsIds = createDeepEqualSelector(
+// Selector for name lookup snap IDs.
+export const getNameLookupSnapsIds = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2322,8 +2342,8 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: mapped {id, permission} rows are new objects each evaluation.
-export const getNameLookupSnaps = createDeepEqualSelector(
+// Selector for name lookup snaps and permissions.
+export const getNameLookupSnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2336,14 +2356,14 @@ export const getNameLookupSnaps = createDeepEqualSelector(
   },
 );
 
-// Deep-equal memo: map over filtered snaps always allocates a new ids array.
-export const getSettingsPageSnapsIds = createDeepEqualSelector(
+// Selector for settings page snap IDs.
+export const getSettingsPageSnapsIds = createSelector(
   getSettingsPageSnaps,
   (snaps) => snaps.map((snap) => snap.id),
 );
 
-// Deep-equal memo: filter notify-capable snaps; new array when permissions map identity shifts.
-export const getNotifySnaps = createDeepEqualSelector(
+// Selector for notify-enabled snaps.
+export const getNotifySnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2358,9 +2378,9 @@ export const getNotifySnaps = createDeepEqualSelector(
  * @param {object} state - The Redux state object.
  * @returns {object[]} An array of notify snaps that are not preinstalled.
  *
- * Deep-equal memo: second filter layer; notify snap array identity can flicker.
+ * Selector for non-preinstalled notify-enabled snaps.
  */
-export const getThirdPartyNotifySnaps = createDeepEqualSelector(
+export const getThirdPartyNotifySnaps = createSelector(
   getNotifySnaps,
   (snaps) => snaps.filter((snap) => !snap.preinstalled),
 );
@@ -2369,8 +2389,8 @@ function getAllSnapInsights(state) {
   return state.metamask.insights;
 }
 
-// Deep-equal memo: indexed read on insights map; insights object can be replaced with equal contents.
-export const getSnapInsights = createDeepEqualSelector(
+// Parameterized selector with bounded insight ID cache.
+export const getSnapInsights = createParameterizedSelector(10)(
   getAllSnapInsights,
   (_, id) => id,
   (insights, id) => insights?.[id],
@@ -2992,9 +3012,8 @@ export function getTokenScanCache(state) {
  * @param {string[]} tokenAddresses
  * @returns {Record<string, TokenScanCacheResult>}
  *
- * Deep-equal memo: builds a fresh results object from cache + address list args.
  */
-export const getTokenScanResultsForAddresses = createDeepEqualSelector(
+export const getTokenScanResultsForAddresses = createParameterizedSelector(30)(
   getTokenScanCache,
   (_state, chainId) => chainId,
   (_state, _chainId, tokenAddresses) => tokenAddresses,
@@ -3133,19 +3152,17 @@ export function getBlockExplorerLinkText(
 
   return blockExplorerLinkText;
 }
-export function getUnconnectedAccounts(state, activeTab) {
-  const accounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
-    state,
-    activeTab,
-  );
-  const unConnectedAccounts = accounts.filter((account) => {
-    return !connectedAccounts.some(
-      (connectedAccount) => connectedAccount.address === account.address,
-    );
-  });
-  return unConnectedAccounts;
-}
+export const getUnconnectedAccounts = createSelector(
+  getMetaMaskAccountsOrdered,
+  getOrderedConnectedAccountsForConnectedDapp,
+  (accounts, connectedAccounts) =>
+    accounts.filter(
+      (account) =>
+        !connectedAccounts.some(
+          (connectedAccount) => connectedAccount.address === account.address,
+        ),
+    ),
+);
 
 export const getOrderedConnectedAccountsForActiveTab = createSelector(
   getOriginOfCurrentTab,
@@ -3315,10 +3332,10 @@ export function getUseCurrencyRateCheck(state) {
 }
 
 export function getNames(state) {
-  return state.metamask.names || {};
+  return state.metamask.names ?? EMPTY_OBJECT;
 }
 export function getNameSources(state) {
-  return state.metamask.nameSources || {};
+  return state.metamask.nameSources ?? EMPTY_OBJECT;
 }
 
 export function getMetaMetricsDataDeletionId(state) {

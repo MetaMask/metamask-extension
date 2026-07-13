@@ -23,6 +23,7 @@ import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { TransactionId } from '../../../components/app/transaction/transaction-id';
+import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import { Footer, Row, Section } from '../components/shared';
 import { TokenRow } from '../components/token-row';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
@@ -89,7 +90,14 @@ export function BridgeDetails({
     destinationChainId && destinationChainId !== sourceChainId,
   );
 
-  const sourceTxHash = item.data.hash;
+  const sourceTxHash = item.hash;
+  const txId =
+    sourceTxHash &&
+    (!sourceChainId.startsWith('eip155:') ||
+      isValidTransactionHash(sourceTxHash))
+      ? sourceTxHash
+      : undefined;
+
   const { destTxHash, destinationAccountAddress, fromAddress } = useSelector(
     (state) => {
       const bridgeHistoryItem = sourceTxHash
@@ -191,7 +199,7 @@ export function BridgeDetails({
           />
           <Row
             label={t('transactionIdLabel')}
-            value={<TransactionId value={sourceTxHash} />}
+            value={txId ? <TransactionId value={txId} /> : null}
           />
         </Section>
 

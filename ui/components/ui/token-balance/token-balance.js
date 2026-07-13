@@ -11,7 +11,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export default function TokenBalance({
-  className,
+  className = undefined,
   token,
   showFiat,
   ...restProps
@@ -46,8 +46,4 @@ TokenBalance.propTypes = {
     symbol: PropTypes.string,
   }).isRequired,
   showFiat: PropTypes.bool,
-};
-
-TokenBalance.defaultProps = {
-  className: undefined,
 };

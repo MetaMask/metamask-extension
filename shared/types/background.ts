@@ -120,6 +120,7 @@ export type ControllerStatePropertiesEnumerated = {
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
   canTrackWalletFundsObtained: AppStateControllerState['canTrackWalletFundsObtained'];
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
+  lastQrScanCompletedSuccessfully: AppStateControllerState['lastQrScanCompletedSuccessfully'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   shieldSubscriptionError: AppStateControllerState['shieldSubscriptionError'];
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
@@ -129,6 +130,7 @@ export type ControllerStatePropertiesEnumerated = {
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
+  perpsTabBadgeSeen: AppStateControllerState['perpsTabBadgeSeen'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
@@ -160,10 +162,12 @@ export type ControllerStatePropertiesEnumerated = {
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   tokenSecurityTypeDestination: BridgeControllerState['tokenSecurityTypeDestination'];
+  inputPrimaryDenomination: BridgeControllerState['inputPrimaryDenomination'];
   tokenWarnings: BridgeControllerState['tokenWarnings'];
   batchSellTrades: BridgeControllerState['batchSellTrades'];
   batchSellTradesLoadingStatus: BridgeControllerState['batchSellTradesLoadingStatus'];
   txHistory: BridgeStatusControllerState['txHistory'];
+  quoteUpdateStatusStore: BridgeStatusControllerState['quoteUpdateStatusStore'];
   events: CronjobControllerState['events'];
   currentCurrency: CurrencyRateState['currentCurrency'];
   currencyRates: CurrencyRateState['currencyRates'];
@@ -235,6 +239,7 @@ export type ControllerStatePropertiesEnumerated = {
   fcmToken: NotificationServicesPushController.NotificationServicesPushControllerState['fcmToken'];
   isUpdatingFCMToken: NotificationServicesPushController.NotificationServicesPushControllerState['isUpdatingFCMToken'];
   completedOnboarding: OnboardingControllerState['completedOnboarding'];
+  hasSeenOnboardingCompletionPage: OnboardingControllerState['hasSeenOnboardingCompletionPage'];
   firstTimeFlowType: OnboardingControllerState['firstTimeFlowType'];
   onboardingTabs?: OnboardingControllerState['onboardingTabs'];
   seedPhraseBackedUp: OnboardingControllerState['seedPhraseBackedUp'];
