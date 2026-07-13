@@ -65,15 +65,15 @@ jest.mock(
   }),
 );
 
-const walletId = toAccountWalletId(AccountWalletType.Keyring, 'wallet1');
+const walletId = toAccountWalletId(AccountWalletType.Entropy, 'entropy1');
 const groupOneId = `${walletId}/0` as AccountGroupId;
 const groupTwoId = `${walletId}/1` as AccountGroupId;
 
 const mockWallets = {
   [walletId]: {
     id: walletId,
-    type: AccountWalletType.Keyring,
-    metadata: { name: 'My Wallet' },
+    type: AccountWalletType.Entropy,
+    metadata: { name: 'My Wallet', entropy: { id: 'entropy1' } },
     groups: {
       [groupOneId]: {
         id: groupOneId,
@@ -111,16 +111,15 @@ describe('WalletSelectionList', () => {
     expect(screen.getByText('Account 2')).toBeInTheDocument();
   });
 
-  it('selects an account when its checkbox is clicked', () => {
-    const onSelectionChange = jest.fn();
-    render({ onSelectionChange });
+  it('does not render per-account checkboxes', () => {
+    render();
 
-    const checkbox = document.querySelector(
-      `input[id="account-select-${groupOneId}"]`,
-    ) as HTMLInputElement;
-    fireEvent.click(checkbox);
-
-    expect(onSelectionChange).toHaveBeenCalledWith([groupOneId]);
+    expect(
+      document.querySelector(`input[id="account-select-${groupOneId}"]`),
+    ).toBeNull();
+    expect(
+      document.querySelector(`input[id="account-select-${groupTwoId}"]`),
+    ).toBeNull();
   });
 
   it('selects all accounts when the wallet header checkbox is clicked', () => {

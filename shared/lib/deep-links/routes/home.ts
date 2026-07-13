@@ -8,12 +8,14 @@ export enum HomeQueryParams {
   BatchSellDeeplinkUrl = 'batchSellDeeplinkUrl',
   OpenNetworkSelector = 'openNetworkSelector',
   PredictDeeplinkUrl = 'predictDeeplinkUrl',
+  TrendingDeeplinkUrl = 'trendingDeeplinkUrl',
 }
 
 export function createHomeQrCodeDestination(
   queryParam:
     | HomeQueryParams.BatchSellDeeplinkUrl
-    | HomeQueryParams.PredictDeeplinkUrl,
+    | HomeQueryParams.PredictDeeplinkUrl
+    | HomeQueryParams.TrendingDeeplinkUrl,
   deeplinkUrl: string,
 ): Destination {
   return {

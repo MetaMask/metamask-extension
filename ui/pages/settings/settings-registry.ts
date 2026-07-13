@@ -59,6 +59,15 @@ export type SettingsRouteMeta = {
   isTab?: boolean;
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
+  /**
+   * If true, the route's component is mounted by the top-level app router
+   * (outside `SettingsLayout`) rather than by the nested Settings router.
+   * Used for full-page routes whose path is not under `/settings` (e.g.
+   * `/sync-accounts`). These are excluded from `SETTINGS_RENDERABLE_ROUTES`
+   * so the Settings router does not also mount a nested `/settings/<path>`
+   * child that would duplicate headers and skip `hideAppHeader` matching.
+   */
+  externalRoute?: boolean;
 };
 
 export const SETTINGS_ROOT_SECTIONS: readonly {
@@ -335,6 +344,9 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
           component: mmLazy(() => import('./sync-accounts/index.ts')),
           isTab: true,
           iconName: IconName.Mobile,
+          // Mounted top-level at `/sync-accounts` by the app router, not nested
+          // under `/settings`. Excluded from SETTINGS_RENDERABLE_ROUTES below.
+          externalRoute: true,
         },
       }
     : {}),
@@ -444,12 +456,14 @@ export const SETTINGS_TABS = Object.entries(SETTINGS_ROUTES)
   }));
 
 /**
- * All routes that have a component (for generating Route elements).
+ * All routes that have a component and are rendered by the nested Settings
+ * router (for generating Route elements). Excludes `externalRoute` entries,
+ * which are mounted top-level by the app router.
  */
 export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
   .filter((entry): entry is [string, RenderableRouteMeta] => {
     const [, meta] = entry;
-    return Boolean(meta.component);
+    return Boolean(meta.component) && !meta.externalRoute;
   })
   .map(([path, meta]) => ({
     path,

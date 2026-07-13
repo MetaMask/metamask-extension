@@ -11,15 +11,11 @@ import {
   BoxJustifyContent,
   TextButton,
 } from '@metamask/design-system-react';
-import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { QR_SYNC_TIMEOUT_MS, QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
 import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
-import {
-  MWP_SESSION_REQUEST_EXPIRY_SECONDS,
-  QrSyncErrorCodes,
-} from '../../../../../shared/constants/qr-sync';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
@@ -27,6 +23,8 @@ const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
 // TODO: source this from the controller
 
 const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
+const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
+  QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
 
 type EnterVerificationCodeProps = {
   onRestart: () => void;

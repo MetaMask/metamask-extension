@@ -615,6 +615,35 @@
         "react-dom": true
       }
     },
+    "@hello-pangea/dnd": {
+      "globals": {
+        "Element.prototype": true,
+        "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
+        "addEventListener": true,
+        "cancelAnimationFrame": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "getComputedStyle": true,
+        "pageXOffset": true,
+        "pageYOffset": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true,
+        "scrollBy": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@hello-pangea/dnd>css-box-model": true,
+        "@hello-pangea/dnd>memoize-one": true,
+        "@hello-pangea/dnd>raf-schd": true,
+        "react": true,
+        "react-dom": true,
+        "@hello-pangea/dnd>react-redux": true,
+        "redux": true,
+        "@hello-pangea/dnd>use-memo-one": true
+      }
+    },
     "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
@@ -1238,25 +1267,6 @@
       }
     },
     "@metamask/ppom-validator>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "ethereumjs-util>bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
-    "@metamask/shield-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
         "console.error": true,
@@ -2261,7 +2271,7 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
+    "@metamask/ramps-controller": {
       "globals": {
         "AbortController": true,
         "URL": true,
@@ -2349,7 +2359,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/shield-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
         "@metamask/shield-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -2489,7 +2499,8 @@
     "@metamask/snaps-sdk": {
       "globals": {
         "URL": true,
-        "fetch": true
+        "fetch": true,
+        "snap.request": true
       },
       "packages": {
         "@metamask/rpc-errors": true,
@@ -2681,8 +2692,7 @@
         "@ethersproject/providers": true,
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
-        "@metamask/shield-controller>@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
@@ -2690,7 +2700,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "async-mutex": true,
-        "@metamask/shield-controller>@metamask/controller-utils>bignumber.js": true,
+        "@metamask/shield-controller>@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
@@ -2715,7 +2725,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
@@ -2833,6 +2843,7 @@
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/scure-bip39": true,
         "@metamask/storage-service": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -4072,12 +4083,6 @@
         "define": true
       }
     },
-    "@metamask/shield-controller>@metamask/controller-utils>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
     "@metamask/notification-services-controller>bignumber.js": {
       "globals": {
         "crypto": true,
@@ -4115,6 +4120,12 @@
       }
     },
     "@metamask/phishing-controller>@metamask/transaction-controller>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/shield-controller>@metamask/transaction-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -4542,14 +4553,14 @@
         "browserify>browser-resolve": true
       }
     },
-    "react-beautiful-dnd>css-box-model": {
+    "@hello-pangea/dnd>css-box-model": {
       "globals": {
         "getComputedStyle": true,
         "pageXOffset": true,
         "pageYOffset": true
       },
       "packages": {
-        "react-beautiful-dnd>css-box-model>tiny-invariant": true
+        "@hello-pangea/dnd>css-box-model>tiny-invariant": true
       }
     },
     "currency-formatter": {
@@ -5839,7 +5850,7 @@
         "queueMicrotask": true
       }
     },
-    "react-beautiful-dnd>raf-schd": {
+    "@hello-pangea/dnd>raf-schd": {
       "globals": {
         "cancelAnimationFrame": true,
         "requestAnimationFrame": true
@@ -5872,35 +5883,6 @@
       },
       "packages": {
         "react>object-assign": true
-      }
-    },
-    "react-beautiful-dnd": {
-      "globals": {
-        "Element.prototype": true,
-        "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
-        "addEventListener": true,
-        "cancelAnimationFrame": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "getComputedStyle": true,
-        "pageXOffset": true,
-        "pageYOffset": true,
-        "removeEventListener": true,
-        "requestAnimationFrame": true,
-        "scrollBy": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-beautiful-dnd>css-box-model": true,
-        "react-beautiful-dnd>memoize-one": true,
-        "react-beautiful-dnd>raf-schd": true,
-        "react": true,
-        "react-dom": true,
-        "react-redux": true,
-        "redux": true,
-        "react-beautiful-dnd>use-memo-one": true
       }
     },
     "react-chartjs-2": {
@@ -6010,6 +5992,11 @@
         "react": true
       }
     },
+    "@metamask/snap-simple-keyring-site>react-is": {
+      "globals": {
+        "console": true
+      }
+    },
     "react-redux>hoist-non-react-statics>react-is": {
       "globals": {
         "console": true
@@ -6072,6 +6059,20 @@
         "react": true,
         "react-dom": true,
         "react-redux>react-is": true
+      }
+    },
+    "@hello-pangea/dnd>react-redux": {
+      "globals": {
+        "console": true,
+        "document": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "react-redux>hoist-non-react-statics": true,
+        "react": true,
+        "react-dom": true,
+        "@metamask/snap-simple-keyring-site>react-is": true,
+        "@tanstack/react-query>use-sync-external-store": true
       }
     },
     "react-router-dom": {
@@ -6784,7 +6785,7 @@
         "react": true
       }
     },
-    "react-beautiful-dnd>use-memo-one": {
+    "@hello-pangea/dnd>use-memo-one": {
       "packages": {
         "react": true
       }

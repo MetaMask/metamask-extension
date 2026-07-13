@@ -466,6 +466,17 @@
     "message": "$1 민팅",
     "description": "$1 is the NFT token symbol"
   },
+  "activity_nftSell_failed_title": {
+    "message": "판매 실패"
+  },
+  "activity_nftSell_pending_title": {
+    "message": "$1 매도 중",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftSell_success_title": {
+    "message": "$1 매도 완료",
+    "description": "$1 is the NFT token symbol"
+  },
   "activity_perpsAddFunds_failed_description": {
     "message": "펀딩 실패"
   },
@@ -1020,9 +1031,6 @@
   "addAccount": {
     "message": "계정 추가"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask를 이용해 얻은 토큰 추가"
-  },
   "addAlias": {
     "message": "별칭 추가"
   },
@@ -1068,6 +1076,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "신뢰하는 친구 및 주소 추가"
+  },
+  "addFromChainlist": {
+    "message": "Chainlist에서 추가"
   },
   "addFunds": {
     "message": "자금 추가"
@@ -1123,6 +1134,62 @@
   },
   "addWallet": {
     "message": "지갑 추가"
+  },
+  "add_device_success_desc_imported_plural": {
+    "message": "가져온 계정 $1개가 휴대전화에 동기화되었습니다.",
+    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
+  },
+  "add_device_success_desc_imported_singular": {
+    "message": "가져온 계정 1개가 휴대전화에 동기화되었습니다.",
+    "description": "Used when a single imported account was synced"
+  },
+  "add_device_success_desc_wallet_plural": {
+    "message": "지갑 $1개가 휴대전화에 동기화되었습니다.",
+    "description": "$1 is the number of wallets. Used when only wallets were synced"
+  },
+  "add_device_success_desc_wallet_plural_imported_plural": {
+    "message": "지갑 $1개와 가져온 계정 $2개가 휴대전화에 동기화되었습니다.",
+    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
+  },
+  "add_device_success_desc_wallet_plural_imported_singular": {
+    "message": "지갑 $1개와 가져온 계정 1개가 휴대전화에 동기화되었습니다.",
+    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
+  },
+  "add_device_success_desc_wallet_singular": {
+    "message": "지갑 1개가 휴대전화에 동기화되었습니다.",
+    "description": "Used when a single wallet was synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_plural": {
+    "message": "지갑 1개와 가져온 계정 $1개가 휴대전화에 동기화되었습니다.",
+    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_singular": {
+    "message": "지갑 1개와 가져온 계정 1개가 휴대전화에 동기화되었습니다.",
+    "description": "Used when a single wallet and a single imported account were synced"
+  },
+  "add_device_success_title": {
+    "message": "장치 페어링됨"
+  },
+  "add_device_syncing_desc": {
+    "message": "선택한 계정을 휴대전화로 전송하고 있습니다."
+  },
+  "add_device_syncing_title": {
+    "message": "계정 가져오기"
+  },
+  "add_device_validating_desc": {
+    "message": "휴대전화와 안전한 암호화 연결을 설정하고 있습니다."
+  },
+  "add_device_validating_title": {
+    "message": "장치 페어링"
+  },
+  "add_wallets": {
+    "message": "동기화할 항목 선택"
+  },
+  "add_wallets_desc": {
+    "message": "휴대전화에 가져올 지갑과 계정을 선택하세요. 이후에 선택한 항목을 변경할 수 있습니다."
+  },
+  "added": {
+    "message": "추가함"
   },
   "addedProtectionDescription": {
     "message": "알 수 없는 주소에 접근하고 있습니다. 이는 악성 트랜잭션을 방지하는 데 도움이 됩니다."
@@ -1890,6 +1957,12 @@
     "message": "브릿지 세부 정보",
     "description": "Title for the modal showing details about a bridge transaction."
   },
+  "bridgeDiscountBadgeDao": {
+    "message": "DAO"
+  },
+  "bridgeDiscountBadgePromo": {
+    "message": "이벤트"
+  },
   "bridgeEnterAmount": {
     "message": "금액 선택"
   },
@@ -1901,6 +1974,9 @@
   },
   "bridgeFee": {
     "message": "브릿지 수수료"
+  },
+  "bridgeFeeDisclaimer": {
+    "message": "$1% MetaMask 수수료 포함"
   },
   "bridgeFromTo": {
     "message": "$3(으)로 $1 $2 브릿지",
@@ -2355,6 +2431,10 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "이 토큰 심볼이 입력한 네트워크 이름 또는 체인 ID와 일치하지 않습니다. 여러 인기 토큰이 비슷한 심볼을 사용합니다. 사기꾼은 이를 이용해 더 가격이 높은 토큰을 보내도록 속일 수 있습니다. 계속하기 전에 모든 사항을 확인하세요."
+  },
+  "chainlistNetworkDetails": {
+    "message": "심볼: $1 · ID: $2",
+    "description": "$1 is the native currency symbol and $2 is the network chain ID."
   },
   "changeInSettings": {
     "message": "설정에서 변경"
@@ -2970,9 +3050,6 @@
   "customSlippage": {
     "message": "사용자 지정"
   },
-  "customToken": {
-    "message": "맞춤 토큰"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "토큰을 생성하기 전에 해당 토큰을 신뢰할 수 있는지 반드시 확인하세요. $1에 대해 알아보기."
   },
@@ -3066,6 +3143,12 @@
   "decryptRequest": {
     "message": "암호 해독 요청"
   },
+  "deepLinkQrBatchSellDescription": {
+    "message": "일괄 매도는 MetaMask 모바일에서 지원됩니다. 해당 기능을 이용하려면 모바일 장치로 이 코드를 스캔하세요."
+  },
+  "deepLinkQrBatchSellTitle": {
+    "message": "모바일에서 일괄 매도 열기"
+  },
   "deepLinkQrPredictDescription": {
     "message": "MetaMask 예측 시장을 이용하려면 모바일 장치로 QR 코드를 스캔하세요."
   },
@@ -3121,6 +3204,9 @@
   "deepLink_theAssetPage": {
     "message": "자산 페이지"
   },
+  "deepLink_theBatchSellPage": {
+    "message": "일괄 매도 페이지"
+  },
   "deepLink_theBuyPage": {
     "message": "구매 페이지"
   },
@@ -3129,6 +3215,9 @@
   },
   "deepLink_theHomePage": {
     "message": "홈 페이지"
+  },
+  "deepLink_theMoneyPage": {
+    "message": "머니 페이지"
   },
   "deepLink_theMusdEducationPage": {
     "message": "MUSD 전환 교육 페이지"
@@ -3190,6 +3279,10 @@
   "defiReferralCheckboxLabel": {
     "message": "MetaMask가 추천인 코드를 추가하도록 허용하세요. 추가하면 변경할 수 없습니다. 사이트는 약관에 따라 할인을 제공합니다. MetaMask는 수수료를 받습니다.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "간주됩니다",
+    "description": "The text for the partner terms link in the DeFi referral confirmation screen"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3287,6 +3380,9 @@
   },
   "developerTools": {
     "message": "개발자 도구"
+  },
+  "disable": {
+    "message": "비활성화"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
@@ -3502,9 +3598,6 @@
   "enableAutoDetect": {
     "message": " 자동 감지 활성화"
   },
-  "enableFromSettings": {
-    "message": " 설정에서 이를 활성화할 수 있습니다."
-  },
   "enableSmartContractAccount": {
     "message": "스마트 계정 사용"
   },
@@ -3531,9 +3624,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "입력한 RPC URL이 체인 ID($1)와 다릅니다.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "$1에서 향상된 토큰 감지 기능을 사용할 수 있습니다. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask를 사용하면 브라우저의 주소창에서 ENS 도메인을 바로 볼 수 있습니다. 방법은 다음과 같습니다."
@@ -3594,6 +3684,28 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "MetaMask 비밀번호를 입력하세요"
+  },
+  "enter_verification_code": {
+    "message": "인증 코드 입력"
+  },
+  "enter_verification_code_desc": {
+    "message": "보안을 위해 기기의 MetaMask 앱에 표시된 코드를 입력하세요."
+  },
+  "enter_verification_code_error": {
+    "message": "잘못된 코드입니다. 다시 시도하세요."
+  },
+  "enter_verification_code_expired": {
+    "message": "인증 코드 만료됨"
+  },
+  "enter_verification_code_expires_in": {
+    "message": "$1초 후 만료",
+    "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_your_password": {
+    "message": "비밀번호 입력"
+  },
+  "enter_your_password_desc": {
+    "message": "계정 보안을 위해 비밀번호를 입력하여 QR 코드를 확인하세요."
   },
   "enteredMalicious": {
     "message": "입력하신 주소"
@@ -3889,6 +4001,12 @@
   "gasPriceFetchFailed": {
     "message": "네트워크 오류로 인해 가스 가격 견적 추산을 실패했습니다."
   },
+  "gasSponsorshipModalTitle": {
+    "message": "네트워크 수수료"
+  },
+  "gasSponsorshipOptOutTooltip": {
+    "message": "MetaMask는 스마트 계정을 활성화하는 1회성 비용과 이 거래의 네트워크 수수료를 부담합니다."
+  },
   "gasSponsorshipReserveBalanceWarning": {
     "message": "이 특정 네트워크는 계정에 최소 $1 $2의 잔액을 유지해야 합니다.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
@@ -3958,10 +4076,6 @@
     "message": "ERC-20 승인(사용자, 0)",
     "description": "Token approval revocation method for ERC-20 approve reset"
   },
-  "gatorPermissionsErc721ApproveRevocation": {
-    "message": "ERC-721 승인(주소(0), 토큰Id)",
-    "description": "Token approval revocation method for ERC-721 single-token approve reset"
-  },
   "gatorPermissionsExpirationDate": {
     "message": "만료 날짜",
     "description": "Label for the expiration date of a permission"
@@ -3982,17 +4096,8 @@
     "message": "최대 허용량",
     "description": "Label for the max allowance of a permission"
   },
-  "gatorPermissionsPermit2ApproveRevocation": {
-    "message": "Permit2 승인(토큰, 사용자, 0, 0)",
-    "description": "Token approval revocation method for Permit2 approve reset"
-  },
-  "gatorPermissionsPermit2InvalidateNonces": {
-    "message": "Permit2 논스 무효화",
-    "description": "Token approval revocation method for Permit2 nonce invalidation"
-  },
-  "gatorPermissionsPermit2Lockdown": {
-    "message": "Permit2 록다운",
-    "description": "Token approval revocation method for Permit2 lockdown"
+  "gatorPermissionsMetaMaskFacilitator": {
+    "message": "MetaMask x402 중개자"
   },
   "gatorPermissionsRevocationMethods": {
     "message": "철회 방법",
@@ -4046,6 +4151,9 @@
   "generalDescription": {
     "message": "여러 기기의 설정을 동기화하고, 네트워크 환경을 선택하며, 토큰 데이터를 추적하세요"
   },
+  "generateNewQrCode": {
+    "message": "새 QR 코드 생성"
+  },
   "genericExplorerView": {
     "message": "$1에서 계정 보기"
   },
@@ -4088,7 +4196,8 @@
     "message": "계속"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "다시 연결"
+    "message": "다시 연결",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "하드웨어 지갑이 USB를 통해 정상적으로 연결되었는지 확인하세요"
@@ -4303,15 +4412,31 @@
   "holdToRevealUnlockedLabel": {
     "message": "눌러서 잠금해제된 서클 공개"
   },
+  "home": {
+    "message": "홈",
+    "description": "Label for the Home tab in the bottom navigation bar"
+  },
   "honeypotDescription": {
     "message": "이 토큰은 허니팟 위험이 있을 수 있습니다. 상호작용 전에 신중히 조사하여 잠재적인 손실을 예방하세요."
   },
   "honeypotTitle": {
     "message": "허니팟"
   },
+  "hyperliquidReferralCheckboxLabel": {
+    "message": "Hyperliquid의 $1에 따라 향후 모든 거래에 MetaMask 추천인 코드를 적용합니다. MetaMask는 수수료를 받습니다.",
+    "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask 추천인 코드로 거래 시 최대 4% 절약하세요.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "MetaMask 추천인 코드를 사용하면 거래 수수료가 4% 할인됩니다.",
+    "description": "The subtitle of the redesigned Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Hyperliquid에서 4% 절약하기",
+    "description": "The title of the redesigned Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "견적은 다음 기간 전에 만료됨을"
@@ -4381,15 +4506,6 @@
   "importSecretRecoveryPhrase": {
     "message": "비밀복구구문 가져오기"
   },
-  "importTokenQuestion": {
-    "message": "토큰을 가져오시겠습니까?"
-  },
-  "importTokenWarning": {
-    "message": "기존 토큰의 가짜 버전을 포함하여 누구나 어떤 이름으로든 토큰을 만들 수 있습니다. 추가 및 트랜잭션은 사용자의 책임입니다."
-  },
-  "importTokensCamelCase": {
-    "message": "토큰 가져오기"
-  },
   "importTokensError": {
     "message": "토큰을 가져올 수 없습니다. 나중에 다시 시도하세요."
   },
@@ -4400,6 +4516,9 @@
   "imported": {
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "includesSmartAccountActivation": {
+    "message": "스마트 계정 활성화 포함"
   },
   "includesXTransactions": {
     "message": "$1건의 트랜잭션 포함"
@@ -4642,6 +4761,45 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledger 장치를 연결하고 이더리움 앱을 선택하세요."
   },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "계속하려면 Ledger 장치에서 앱을 열어 주세요"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "이더리움 앱이 닫혀 있습니다"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Ledger 장치 찾음"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "계속하려면 Ledger 장치의 잠금을 해제하세요"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger 잠김"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "이더리움 앱을 설치하고 실행하세요"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Ledger 장치를 잠금 해제하세요"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "장치 찾을 수 없음"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "장치를 분리한 후 다시 연결하세요"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger 응답 없음"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "문제가 발생했습니다"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "검색하는 동안 잠시 기다려 주세요..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "장치 찾는 중"
+  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger 장치를 열지 못했습니다. Ledger가 다른 소프트웨어에 연결되어 있을 수 있습니다. Ledger Live 또는 Ledger 장치에 연결된 다른 응용 프로그램을 닫고 다시 연결하세요."
   },
@@ -4687,9 +4845,6 @@
   },
   "lightTheme": {
     "message": "밝게"
-  },
-  "likeToImportToken": {
-    "message": "이 토큰을 가져올까요?"
   },
   "likeToImportTokens": {
     "message": "이 토큰을 추가하시겠습니까?"
@@ -4914,7 +5069,7 @@
     "message": "MetaMask 수수료"
   },
   "metamaskNotificationsAreOff": {
-    "message": "현재 지갑 알림이 꺼져 있습니다."
+    "message": "알림 켜기"
   },
   "metamaskSwap": {
     "message": "MetaMask 스왑"
@@ -4970,7 +5125,7 @@
     "message": "기록에 따르면 제출한 RPC URL 값이 이 체인 ID의 알려진 공급업체와 일치하지 않습니다."
   },
   "mmFee": {
-    "message": "$1% MM 수수료."
+    "message": "$1% MetaMask 수수료"
   },
   "month": {
     "message": "월"
@@ -5261,9 +5416,6 @@
   },
   "musdTermsApply": {
     "message": "약관이 적용됩니다."
-  },
-  "mustSelectOne": {
-    "message": "토큰을 1개 이상 선택해야 합니다."
   },
   "name": {
     "message": "이름"
@@ -5802,6 +5954,9 @@
   "notificationItemUnStakingRequested": {
     "message": "언스테이킹 요청됨"
   },
+  "notificationSettings": {
+    "message": "알림 설정"
+  },
   "notificationTransactionFailedMessage": {
     "message": "$1 트랜잭션에 실패했습니다! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -5831,7 +5986,7 @@
     "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
-    "message": "지갑 사용"
+    "message": "알림"
   },
   "notificationsFeatureToggle": {
     "message": "지갑 알림 활성화",
@@ -5856,11 +6011,65 @@
   "notificationsPageNoNotificationsContent": {
     "message": "아직 알림을 받지 못했습니다."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "Agentic용 CLI 연결 요청, 승인, 세션 업데이트"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Agentic CLI"
+  },
   "notificationsSettingsBoxError": {
     "message": "오류가 발생했습니다. 다시 시도해 주세요."
   },
+  "notificationsSettingsDeselectAll": {
+    "message": "모두 선택 해제"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "앱 내"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "이 설정을 켜면 MetaMask로부터 상품 뉴스 및 마케팅 소식을 수신하는 데 동의하는 것입니다."
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "상품 업데이트, 기능 안내, 신규 출시 소식"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "업데이트 및 보상"
+  },
+  "notificationsSettingsPageAllowNotifications": {
+    "message": "알림 내용 및 알림 수신 방식을 선택하세요."
+  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "방법 확인하기"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "포지션 변동, 청산, 펀딩비, 마진 관련 업데이트"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "거래 활동"
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "푸시"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "계정"
+  },
+  "notificationsSettingsSelectAccountsDescription": {
+    "message": "어느 계정에 대한 알림을 받을지 선택하세요."
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "앱 내"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "비활성화"
+  },
+  "notificationsSettingsStatusPush": {
+    "message": "푸시"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "매수, 매도, 전송, 스왑, 보상"
+  },
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "지갑 활동"
   },
   "numberOfTokens": {
     "message": "토큰 수"
@@ -5927,7 +6136,7 @@
     "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1의 내용을, Solana 계정에 대한 정보는 $2의 내용을 참고하세요."
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
-    "message": "여기를 클릭하세요"
+    "message": "여기를 클릭"
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "네트워크 선택"
@@ -6219,7 +6428,7 @@
     "message": "MetaMask 로그인 상태를 유지하려면 새 비밀번호를 입력하세요."
   },
   "passwordNotLongEnough": {
-    "message": "비밀번호가 짧습니다."
+    "message": "8자 이상이어야 합니다."
   },
   "passwordTermsWarning": {
     "message": "이 비밀번호를 분실하면 MetaMask가 재설정해 드릴 수 없습니다."
@@ -6703,6 +6912,9 @@
   "perpsCrossMarginNotSupportedTitle": {
     "message": "교차 마진 미지원"
   },
+  "perpsCurrentPrice": {
+    "message": "현재가"
+  },
   "perpsDateToday": {
     "message": "오늘"
   },
@@ -6803,6 +7015,9 @@
   },
   "perpsFilterStocks": {
     "message": "주식"
+  },
+  "perpsFundAgain": {
+    "message": "다시 입금하기"
   },
   "perpsFunding": {
     "message": "펀딩"
@@ -6959,6 +7174,10 @@
   "perpsOrders": {
     "message": "주문"
   },
+  "perpsPerpMarketSubtitle": {
+    "message": "$1-$2 무기한 선물",
+    "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
+  },
   "perpsPnl": {
     "message": "손익"
   },
@@ -7039,11 +7258,30 @@
   "perpsSlippageCustom": {
     "message": "맞춤형"
   },
+  "perpsSlippageEditAriaLabel": {
+    "message": "최대 슬리피지 편집"
+  },
   "perpsSlippageExceeded": {
     "message": "슬리피지 허용 범위를 초과했습니다. 슬리피지 허용 범위를 조정한 후 다시 시도해 주세요."
   },
+  "perpsSlippageExceedsMax": {
+    "message": "예상 슬리피지($1%)가 설정된 최대 슬리피지($2%)를 초과합니다. 최대 슬리피지를 높이거나 주문 규모를 줄이세요.",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
   "perpsSlippageInputLabel": {
     "message": "최대 슬리피지 퍼센티지"
+  },
+  "perpsSlippageOutOfRange": {
+    "message": "$1% 이상 $2% 이하의 값 입력",
+    "description": "$1 is min percent, $2 is max percent"
+  },
+  "perpsSlippageRowFormat": {
+    "message": "예상: $1% / 최대: $2%",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageRowFormatPending": {
+    "message": "예상: -- / 최대: $1%",
+    "description": "$1 is max slippage percent"
   },
   "perpsSlippageSet": {
     "message": "설정"
@@ -7714,6 +7952,20 @@
     "message": "카메라 접근 권한 필요",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrCodeExpired": {
+    "message": "QR 코드 만료됨"
+  },
+  "qrCodeExpiresIn": {
+    "message": "$1초 후 만료",
+    "description": "$1 is the number of seconds remaining before the QR code expires"
+  },
+  "qrCodeScanError": {
+    "message": "QR 코드를 스캔하는 중 오류가 발생했습니다. 새 QR 코드를 생성한 후 다시 시도하세요."
+  },
+  "qrErrorMismatchedTransactionBody": {
+    "message": "다른 거래를 위한 QR 코드입니다. 취소한 후 다시 시도해 주세요. 하드웨어 지갑으로 MetaMask에 표시된 QR 코드를 스캔했는지 먼저 확인해 주세요.",
+    "description": "Body text when a signature QR belongs to a previous transaction."
+  },
   "qrErrorMismatchedTransactionTitle": {
     "message": "잘못된 QR 코드",
     "description": "Title shown when a signature QR belongs to a different transaction."
@@ -7824,11 +8076,14 @@
   "redeemer": {
     "message": "상환자"
   },
+  "redeemers": {
+    "message": "상환자"
+  },
   "redeposit": {
     "message": "재입금"
   },
   "refreshList": {
-    "message": "새로 고침 목록"
+    "message": "목록 새로 고침"
   },
   "reject": {
     "message": "거부"
@@ -8174,6 +8429,10 @@
     "message": "로그인 중...",
     "description": "Text shown while the user is signing in to view their rewards points"
   },
+  "rewardsVipReferralTagLabel": {
+    "message": "VIP",
+    "description": "Label on the gold VIP tag shown next to a VIP referral code"
+  },
   "rpcNameOptional": {
     "message": "RPC 이름(선택)"
   },
@@ -8186,11 +8445,23 @@
   "save": {
     "message": "저장"
   },
+  "scamQuestionnaireContinue": {
+    "message": "계속"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "지원팀에 문의"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "현재 사기를 당하고 있을 수 있습니다"
+  },
   "scanInstructions": {
     "message": "QR 코드를 카메라 앞에 놓으세요"
   },
   "scanQrCode": {
     "message": "QR 코드 스캔"
+  },
+  "scan_qr_code_desc": {
+    "message": "추가하려는 기기의 MetaMask 앱으로 이 코드를 스캔하세요."
   },
   "scrollDown": {
     "message": "화면을 아래로 내리세요"
@@ -8203,6 +8474,9 @@
   },
   "searchForAnAssetToSend": {
     "message": "전송할 자산 검색"
+  },
+  "searchNetworkNameOrChainId": {
+    "message": "네트워크 이름 또는 체인 ID 검색"
   },
   "searchNetworks": {
     "message": "네트워크 검색"
@@ -8363,6 +8637,13 @@
   },
   "send": {
     "message": "전송"
+  },
+  "sendAlertNewAddressMessage": {
+    "message": "이 주소로 처음 전송하고 있습니다. 주소가 정확한지 확인한 후 진행하세요. $1",
+    "description": "$1 is the recipient address"
+  },
+  "sendAlertNewAddressTitle": {
+    "message": "새 주소"
   },
   "sendBugReport": {
     "message": "버그 리포트 전송."
@@ -9683,6 +9964,9 @@
   "standardAccountLabel": {
     "message": "일반 계정"
   },
+  "start_with_new_qr_code": {
+    "message": "새 QR 코드로 시작하기"
+  },
   "stateCorruptionAreYouSure": {
     "message": "계속 진행하시겠습니까?"
   },
@@ -10254,9 +10538,6 @@
   "tokenDecimal": {
     "message": "토큰 십진수"
   },
-  "tokenDecimalFetchFailed": {
-    "message": "토큰 십진수가 필요합니다. $1에서 찾아보세요"
-  },
   "tokenDetails": {
     "message": "토큰 상세 정보"
   },
@@ -10416,6 +10697,10 @@
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
+  },
+  "trezorDesktopAppRequiredError": {
+    "message": "Trezor Suite Desktop이 있어야 Trezor를 사용할 수 있습니다. Trezor Suite(suite.trezor.io)를 설치하고 실행하여 다시 시도하세요.",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
     "message": "대역폭 포인트"
@@ -10883,6 +11168,10 @@
   "youSent": {
     "message": "보냄:",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youWithdrew": {
+    "message": "출금 금액",
+    "description": "Label indicating the amount and asset the user withdrew."
   },
   "youllReceive": {
     "message": "받을 금액:",

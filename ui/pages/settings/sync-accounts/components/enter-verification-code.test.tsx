@@ -6,10 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import {
-  MWP_SESSION_REQUEST_EXPIRY_SECONDS,
-  QrSyncErrorCodes,
-} from '../../../../../shared/constants/qr-sync';
+import { QR_SYNC_TIMEOUT_MS, QrSyncErrorCode, QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import EnterVerificationCode from './enter-verification-code';
 
@@ -20,7 +17,7 @@ jest.mock('../../../../store/background-connection', () => ({
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
 type QrSyncError = {
-  code: (typeof QrSyncErrorCodes)[keyof typeof QrSyncErrorCodes];
+  code: QrSyncErrorCode;
   message: string;
 };
 
@@ -136,7 +133,7 @@ describe('EnterVerificationCode', () => {
     renderComponent();
 
     act(() => {
-      jest.advanceTimersByTime(MWP_SESSION_REQUEST_EXPIRY_SECONDS * 1000);
+      jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
     });
 
     expect(

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -39,7 +40,6 @@ type ToastListenerMessenger = RouteMessengerFromCapabilities<
 
 // Flows with custom toasts — excluded for now from generic messenger event toasts.
 const excludedTransactionTypes: TransactionType[] = [
-  TransactionType.musdConversion,
   TransactionType.musdClaim,
   TransactionType.musdRelayDeposit,
   TransactionType.perpsDeposit,
@@ -61,6 +61,25 @@ function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
 }
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
+
+function isPendingToastStatus(
+  transactionMeta: TransactionMeta,
+  status: string,
+) {
+  if (status === TransactionStatus.submitted) {
+    return true;
+  }
+
+  // Ported from MusdConversionToast which included pre-broadcast stage
+  if (transactionMeta.type === TransactionType.musdConversion) {
+    return (
+      status === TransactionStatus.approved ||
+      status === TransactionStatus.signed
+    );
+  }
+
+  return false;
+}
 
 const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
@@ -129,11 +148,14 @@ export function useTransactionEventToasts(): void {
       }
 
       const toastId = generateToastId(id);
+      const props = { transactionId: id };
 
-      if (status === 'submitted' && shouldShowPendingToast(id)) {
-        showPendingToast(toastId);
+      if (isPendingToastStatus(transactionMeta, status)) {
+        if (shouldShowPendingToast(id)) {
+          showPendingToast(toastId, props);
+        }
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
-        showSuccessToast(toastId);
+        showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
           const transactions = store.getState().metamask?.transactions ?? [];
@@ -143,10 +165,10 @@ export function useTransactionEventToasts(): void {
             dismissToast(toastId);
             clearToastPhase(id);
           } else if (shouldShowTerminalToast(id)) {
-            showFailedToast(toastId);
+            showFailedToast(toastId, props);
           }
         } else if (shouldShowTerminalToast(id)) {
-          showFailedToast(toastId);
+          showFailedToast(toastId, props);
         }
       }
     };

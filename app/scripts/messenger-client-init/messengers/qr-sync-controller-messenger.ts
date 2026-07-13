@@ -28,12 +28,7 @@ export function getQrSyncControllerMessenger(
 
   messenger.delegate({
     messenger: qrSyncControllerMessenger,
-    actions: [
-      'KeyringController:getState',
-      'KeyringController:withKeyringV2',
-      'KeyringController:exportSeedPhrase',
-      'KeyringController:exportAccount',
-    ],
+    actions: ['QrSyncDataService:buildWalletExportEntries'],
   });
 
   return qrSyncControllerMessenger;

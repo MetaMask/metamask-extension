@@ -2,6 +2,7 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { useGasFeeModalContext } from '../context/gas-fee-modal';
 import { useConfirmContext } from '../context/confirm';
 import { GasModalType } from '../constants/gas';
@@ -15,8 +16,9 @@ jest.mock('../context/confirm', () => ({
   useConfirmContext: jest.fn(),
 }));
 
-const EXPECTED_BUY_URL =
-  'https://portfolio.test/buy?metamaskEntry=ext_buy_sell_button&chainId=5&metricsEnabled=false';
+jest.mock('../../../hooks/ramps/useRamps/useRamps');
+
+const mockOpenBuyCryptoInPdapp = jest.fn();
 
 function processAlertActionKey(actionKey: string) {
   const { result } = renderHookWithProvider(
@@ -34,7 +36,12 @@ describe('useConfirmationAlertActions', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
+
+    jest.mocked(useRamps).mockReturnValue({
+      openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+      getBuyURI: jest.fn(),
+    } as ReturnType<typeof useRamps>);
 
     useGasFeeModalContextMock.mockReturnValue({
       openGasFeeModal: openGasFeeModalMock,
@@ -53,18 +60,12 @@ describe('useConfirmationAlertActions', () => {
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
     });
-
-    // @ts-expect-error mocking platform
-    global.platform = { openTab: jest.fn() };
   });
 
-  it('opens portfolio tab if action key is Buy', () => {
+  it('opens in-extension buy flow if action key is Buy', () => {
     processAlertActionKey(AlertActionKey.Buy);
 
-    expect(global.platform.openTab).toHaveBeenCalledTimes(1);
-    expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: EXPECTED_BUY_URL,
-    });
+    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
   });
 
   it('opens advanced EIP-1559 gas fee modal if action key is ShowAdvancedGasFeeModal for fee market transactions', () => {

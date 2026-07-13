@@ -466,6 +466,17 @@
     "message": "已铸造 $1",
     "description": "$1 is the NFT token symbol"
   },
+  "activity_nftSell_failed_title": {
+    "message": "出售失败"
+  },
+  "activity_nftSell_pending_title": {
+    "message": "正在出售 $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftSell_success_title": {
+    "message": "已出售 $1",
+    "description": "$1 is the NFT token symbol"
+  },
   "activity_perpsAddFunds_failed_description": {
     "message": "入金失败"
   },
@@ -1020,9 +1031,6 @@
   "addAccount": {
     "message": "添加账户"
   },
-  "addAcquiredTokens": {
-    "message": "添加您通过MetaMask获得的代币"
-  },
   "addAlias": {
     "message": "添加别名"
   },
@@ -1068,6 +1076,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "添加您信任的朋友和地址"
+  },
+  "addFromChainlist": {
+    "message": "从 Chainlist 添加"
   },
   "addFunds": {
     "message": "充值"
@@ -1123,6 +1134,62 @@
   },
   "addWallet": {
     "message": "添加钱包"
+  },
+  "add_device_success_desc_imported_plural": {
+    "message": "已将 $1 个导入账户同步到您的手机。",
+    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
+  },
+  "add_device_success_desc_imported_singular": {
+    "message": "已将 1 个导入账户同步到您的手机。",
+    "description": "Used when a single imported account was synced"
+  },
+  "add_device_success_desc_wallet_plural": {
+    "message": "已将 $1 个钱包同步到您的手机。",
+    "description": "$1 is the number of wallets. Used when only wallets were synced"
+  },
+  "add_device_success_desc_wallet_plural_imported_plural": {
+    "message": "已将 $1 个钱包和 $2 个导入账户同步到您的手机。",
+    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
+  },
+  "add_device_success_desc_wallet_plural_imported_singular": {
+    "message": "已将 $1 个钱包和 1 个导入账户同步到您的手机。",
+    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
+  },
+  "add_device_success_desc_wallet_singular": {
+    "message": "已将 1 个钱包同步到您的手机。",
+    "description": "Used when a single wallet was synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_plural": {
+    "message": "已将 1 个钱包和 $1 个导入账户同步到您的手机。",
+    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_singular": {
+    "message": "已将 1 个钱包和 1 个导入账户同步到您的手机。",
+    "description": "Used when a single wallet and a single imported account were synced"
+  },
+  "add_device_success_title": {
+    "message": "设备已配对"
+  },
+  "add_device_syncing_desc": {
+    "message": "正在将您选择的账户同步到手机。"
+  },
+  "add_device_syncing_title": {
+    "message": "正在导入账户"
+  },
+  "add_device_validating_desc": {
+    "message": "正在与您的手机建立安全的加密连接。"
+  },
+  "add_device_validating_title": {
+    "message": "正在配对设备"
+  },
+  "add_wallets": {
+    "message": "选择要同步的内容"
+  },
+  "add_wallets_desc": {
+    "message": "选择要导入到手机的钱包和账户。您之后可以更改。"
+  },
+  "added": {
+    "message": "已添加"
   },
   "addedProtectionDescription": {
     "message": "您正在与一个未知地址交互。这有助于防止恶意交易。"
@@ -1890,6 +1957,12 @@
     "message": "桥接详情",
     "description": "Title for the modal showing details about a bridge transaction."
   },
+  "bridgeDiscountBadgeDao": {
+    "message": "DAO"
+  },
+  "bridgeDiscountBadgePromo": {
+    "message": "优惠"
+  },
   "bridgeEnterAmount": {
     "message": "选择金额"
   },
@@ -1901,6 +1974,9 @@
   },
   "bridgeFee": {
     "message": "跨链桥费用"
+  },
+  "bridgeFeeDisclaimer": {
+    "message": "包含 $1% MetaMask 费用"
   },
   "bridgeFromTo": {
     "message": "将 $1 $2 桥接到 $3",
@@ -2355,6 +2431,10 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "此代币符号与输入的网络名称或链 ID 不匹配。许多热门代币使用类似的符号，骗子可能会使用这些符号来欺骗您，让您向他们发送更有价值的代币作为回报。在您继续之前请先验证所有信息。"
+  },
+  "chainlistNetworkDetails": {
+    "message": "符号：$1 · ID：$2",
+    "description": "$1 is the native currency symbol and $2 is the network chain ID."
   },
   "changeInSettings": {
     "message": "在设置中更改"
@@ -2970,9 +3050,6 @@
   "customSlippage": {
     "message": "自定义"
   },
-  "customToken": {
-    "message": "自定义代币"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "任何人都可以创建代币，包括创建现有代币的虚假版本。了解 $1"
   },
@@ -3066,6 +3143,12 @@
   "decryptRequest": {
     "message": "解密请求"
   },
+  "deepLinkQrBatchSellDescription": {
+    "message": "MetaMask 移动端支持批量出售。请使用移动设备扫描此代码开始使用。"
+  },
+  "deepLinkQrBatchSellTitle": {
+    "message": "在移动端打开批量出售"
+  },
   "deepLinkQrPredictDescription": {
     "message": "要访问 MetaMask 预测市场，请用您的移动设备扫描二维码。"
   },
@@ -3121,6 +3204,9 @@
   "deepLink_theAssetPage": {
     "message": "资产页面"
   },
+  "deepLink_theBatchSellPage": {
+    "message": "批量出售页面"
+  },
   "deepLink_theBuyPage": {
     "message": "购买页面"
   },
@@ -3129,6 +3215,9 @@
   },
   "deepLink_theHomePage": {
     "message": "主页"
+  },
+  "deepLink_theMoneyPage": {
+    "message": "Money 页面"
   },
   "deepLink_theMusdEducationPage": {
     "message": "MUSD 兑换教育页面"
@@ -3190,6 +3279,10 @@
   "defiReferralCheckboxLabel": {
     "message": "允许 MetaMask 添加推荐码。此设置为永久有效。相关网站将根据其条款提供折扣。MetaMask 将从中收取费用。",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "条款",
+    "description": "The text for the partner terms link in the DeFi referral confirmation screen"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3287,6 +3380,9 @@
   },
   "developerTools": {
     "message": "开发者工具"
+  },
+  "disable": {
+    "message": "禁用"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1”已被禁用，因为它不满足在原来的燃料费用基础上至少增加10%的要求。",
@@ -3502,9 +3598,6 @@
   "enableAutoDetect": {
     "message": " 启用自动检测"
   },
-  "enableFromSettings": {
-    "message": " 从设置中启用它。"
-  },
   "enableSmartContractAccount": {
     "message": "使用智能账户"
   },
@@ -3531,9 +3624,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "您输入的 RPC（远程过程调用）URL 返回了不同的链 ID（$1）。",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "$1. $2目前提供增强型代币检测"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask 让您可以直接在浏览器地址栏中看到 ENS（Ethereum 域名服务）域。其工作原理如下："
@@ -3594,6 +3684,28 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "输入 MetaMask 密码"
+  },
+  "enter_verification_code": {
+    "message": "输入验证码"
+  },
+  "enter_verification_code_desc": {
+    "message": "为了安全起见，请输入您设备上 MetaMask 应用中显示的验证码。"
+  },
+  "enter_verification_code_error": {
+    "message": "验证码错误，请重试。"
+  },
+  "enter_verification_code_expired": {
+    "message": "验证码已过期"
+  },
+  "enter_verification_code_expires_in": {
+    "message": "$1 秒后过期",
+    "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_your_password": {
+    "message": "输入您的密码"
+  },
+  "enter_your_password_desc": {
+    "message": "为了账户安全，请输入密码查看二维码。"
   },
   "enteredMalicious": {
     "message": "你输入的地址"
@@ -3889,6 +4001,12 @@
   "gasPriceFetchFailed": {
     "message": "由于网络错误，燃料价格估算失败。"
   },
+  "gasSponsorshipModalTitle": {
+    "message": "网络费"
+  },
+  "gasSponsorshipOptOutTooltip": {
+    "message": "MetaMask 将承担本次交易的网络费用，其中包括一次性智能账户激活。"
+  },
   "gasSponsorshipReserveBalanceWarning": {
     "message": "此特定网络要求您的账户中保留 $1 $2 的储备金。",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
@@ -3958,10 +4076,6 @@
     "message": "ERC-20 授权(spender, 0)",
     "description": "Token approval revocation method for ERC-20 approve reset"
   },
-  "gatorPermissionsErc721ApproveRevocation": {
-    "message": "ERC-721 授权(address(0), tokenId)",
-    "description": "Token approval revocation method for ERC-721 single-token approve reset"
-  },
   "gatorPermissionsExpirationDate": {
     "message": "到期日",
     "description": "Label for the expiration date of a permission"
@@ -3982,17 +4096,8 @@
     "message": "最高授权额度",
     "description": "Label for the max allowance of a permission"
   },
-  "gatorPermissionsPermit2ApproveRevocation": {
-    "message": "Permit2 授权(token, spender, 0, 0)",
-    "description": "Token approval revocation method for Permit2 approve reset"
-  },
-  "gatorPermissionsPermit2InvalidateNonces": {
-    "message": "Permit2 使 nonce 失效",
-    "description": "Token approval revocation method for Permit2 nonce invalidation"
-  },
-  "gatorPermissionsPermit2Lockdown": {
-    "message": "Permit2 锁定",
-    "description": "Token approval revocation method for Permit2 lockdown"
+  "gatorPermissionsMetaMaskFacilitator": {
+    "message": "MetaMask x402 协调方"
   },
   "gatorPermissionsRevocationMethods": {
     "message": "撤销方法",
@@ -4042,6 +4147,9 @@
   "generalDescription": {
     "message": "跨设备同步设置、选择网络首选项和跟踪代币数据"
   },
+  "generateNewQrCode": {
+    "message": "生成新的二维码"
+  },
   "genericExplorerView": {
     "message": "在$1查看账户"
   },
@@ -4084,7 +4192,8 @@
     "message": "继续"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "重新连接"
+    "message": "重新连接",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "确保您的硬件钱包已通过 USB 正确连接"
@@ -4299,15 +4408,31 @@
   "holdToRevealUnlockedLabel": {
     "message": "按住以显示圆圈解锁"
   },
+  "home": {
+    "message": "主页",
+    "description": "Label for the Home tab in the bottom navigation bar"
+  },
   "honeypotDescription": {
     "message": "该代币可能存在蜜罐风险。建议在进行代币交互前进行审慎调查，以防范潜在资金损失。"
   },
   "honeypotTitle": {
     "message": "蜜罐"
   },
+  "hyperliquidReferralCheckboxLabel": {
+    "message": "根据 Hyperliquid 的 $1，为今后的所有交易应用 MetaMask 推荐码。MetaMask 将收取费用。",
+    "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "使用 MetaMask 推荐码交易费用最高可节省 4%。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "使用 MetaMask 推荐码，交易费用可节省 4%。",
+    "description": "The subtitle of the redesigned Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralTitle": {
+    "message": "在 Hyperliquid 上可节省 4%",
+    "description": "The title of the redesigned Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "我理解"
@@ -4377,15 +4502,6 @@
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
   },
-  "importTokenQuestion": {
-    "message": "导入代币？"
-  },
-  "importTokenWarning": {
-    "message": "任何人都可以用任何名称创建代币，包括现有代币的虚假版本。添加和交易风险自负！"
-  },
-  "importTokensCamelCase": {
-    "message": "添加代币"
-  },
   "importTokensError": {
     "message": "我们无法导入代币。请稍后再试。"
   },
@@ -4396,6 +4512,9 @@
   "imported": {
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "includesSmartAccountActivation": {
+    "message": "包含智能账户激活"
   },
   "includesXTransactions": {
     "message": "包含 $1 笔交易"
@@ -4638,6 +4757,45 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "请确保您的 Ledger 设备已插入并选择以太坊应用程序。"
   },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "请在您的 Ledger 设备上打开它以继续"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "以太坊应用已关闭"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "已发现 Ledger 设备"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "请解锁您的 Ledger 设备以继续"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger已锁定"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "安装并打开以太坊应用程序"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "解锁您的 Ledger 设备"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "未找到设备"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "请断开并重新连接您的设备"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger 无响应"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "出错了"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "请稍候，我们正在搜索……"
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "正在查找您的设备"
+  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger 设备打开失败。您的 Ledger 可能已连接到其他软件。请关闭 Ledger Live 或其他连接到您的 Ledger 设备的应用程序，并尝试再次连接。"
   },
@@ -4683,9 +4841,6 @@
   },
   "lightTheme": {
     "message": "浅色"
-  },
-  "likeToImportToken": {
-    "message": "您想导入此代币吗？"
   },
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
@@ -4910,7 +5065,7 @@
     "message": "MetaMask 费用"
   },
   "metamaskNotificationsAreOff": {
-    "message": "钱包通知目前未开启。"
+    "message": "开启通知"
   },
   "metamaskSwap": {
     "message": "MetaMask Swap"
@@ -4966,7 +5121,7 @@
     "message": "根据我们的记录，所提交的RPC URL值与此链 ID 的已知提供者不匹配。"
   },
   "mmFee": {
-    "message": "$1% MM 手续费。"
+    "message": "$1% MetaMask 费用"
   },
   "month": {
     "message": "月"
@@ -5257,9 +5412,6 @@
   },
   "musdTermsApply": {
     "message": "具体条款适用。"
-  },
-  "mustSelectOne": {
-    "message": "至少选择1种代币。"
   },
   "name": {
     "message": "名称"
@@ -5798,6 +5950,9 @@
   "notificationItemUnStakingRequested": {
     "message": "已请求解除质押"
   },
+  "notificationSettings": {
+    "message": "通知设置"
+  },
   "notificationTransactionFailedMessage": {
     "message": "交易 $1 失败！$2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -5852,11 +6007,65 @@
   "notificationsPageNoNotificationsContent": {
     "message": "您尚未收到任何通知。"
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "智能体 CLI 的连接请求、批准和会话更新"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "智能体 CLI"
+  },
   "notificationsSettingsBoxError": {
     "message": "出错了。请重试。"
   },
+  "notificationsSettingsDeselectAll": {
+    "message": "全部取消选择"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "应用内"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "启用此选项即表示您同意接收来自 MetaMask 的产品新闻和营销更新。"
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "产品更新、功能公告及新版本发布"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "最新动态和奖励"
+  },
+  "notificationsSettingsPageAllowNotifications": {
+    "message": "选择您要接收通知的内容和方式。"
+  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "了解操作方法"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "永续合约仓位变动、清算、资金费率及保证金更新"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "交易活动"
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "推送"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "账户"
+  },
+  "notificationsSettingsSelectAccountsDescription": {
+    "message": "选择您想要接收通知的账户。"
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "应用内"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "关闭"
+  },
+  "notificationsSettingsStatusPush": {
+    "message": "推送"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "买入、卖出、转账、兑换和奖励"
+  },
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "钱包活动"
   },
   "numberOfTokens": {
     "message": "代币数量"
@@ -6699,6 +6908,9 @@
   "perpsCrossMarginNotSupportedTitle": {
     "message": "不支持全仓保证金"
   },
+  "perpsCurrentPrice": {
+    "message": "当前价格"
+  },
   "perpsDateToday": {
     "message": "今天"
   },
@@ -6799,6 +7011,9 @@
   },
   "perpsFilterStocks": {
     "message": "股票"
+  },
+  "perpsFundAgain": {
+    "message": "再次入金"
   },
   "perpsFunding": {
     "message": "资金"
@@ -6955,6 +7170,10 @@
   "perpsOrders": {
     "message": "订单"
   },
+  "perpsPerpMarketSubtitle": {
+    "message": "$1-$2 永续合约",
+    "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
+  },
   "perpsPnl": {
     "message": "损益"
   },
@@ -7035,11 +7254,30 @@
   "perpsSlippageCustom": {
     "message": "自定义"
   },
+  "perpsSlippageEditAriaLabel": {
+    "message": "编辑最大滑移"
+  },
   "perpsSlippageExceeded": {
     "message": "滑移超出限制。请调整您的滑移容差，然后重试。"
   },
+  "perpsSlippageExceedsMax": {
+    "message": "预估滑移（$1%）超过您的最大滑移（$2%）。请提高上限或缩小订单规模。",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
   "perpsSlippageInputLabel": {
     "message": "最大滑移百分比"
+  },
+  "perpsSlippageOutOfRange": {
+    "message": "输入 $1% 至 $2% 之间的值",
+    "description": "$1 is min percent, $2 is max percent"
+  },
+  "perpsSlippageRowFormat": {
+    "message": "预估：$1% / 最大：$2%",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageRowFormatPending": {
+    "message": "预估：-- / 最大：$1%",
+    "description": "$1 is max slippage percent"
   },
   "perpsSlippageSet": {
     "message": "设置"
@@ -7706,6 +7944,20 @@
     "message": "需要访问相机",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrCodeExpired": {
+    "message": "二维码已过期"
+  },
+  "qrCodeExpiresIn": {
+    "message": "$1 秒后过期",
+    "description": "$1 is the number of seconds remaining before the QR code expires"
+  },
+  "qrCodeScanError": {
+    "message": "扫描二维码时出现问题。请生成新的二维码后重试。"
+  },
+  "qrErrorMismatchedTransactionBody": {
+    "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",
+    "description": "Body text when a signature QR belongs to a previous transaction."
+  },
   "qrErrorMismatchedTransactionTitle": {
     "message": "二维码错误",
     "description": "Title shown when a signature QR belongs to a different transaction."
@@ -7814,6 +8066,9 @@
     "message": "保护您的资金"
   },
   "redeemer": {
+    "message": "赎回方"
+  },
+  "redeemers": {
     "message": "赎回方"
   },
   "redeposit": {
@@ -8166,6 +8421,10 @@
     "message": "正在登录……",
     "description": "Text shown while the user is signing in to view their rewards points"
   },
+  "rewardsVipReferralTagLabel": {
+    "message": "VIP",
+    "description": "Label on the gold VIP tag shown next to a VIP referral code"
+  },
   "rpcNameOptional": {
     "message": "RPC（远程过程调用）名称（可选）"
   },
@@ -8178,11 +8437,23 @@
   "save": {
     "message": "保存"
   },
+  "scamQuestionnaireContinue": {
+    "message": "继续"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "联系支持团队"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "你现在可能正在遭遇诈骗"
+  },
   "scanInstructions": {
     "message": "将二维码放在摄像头前"
   },
   "scanQrCode": {
     "message": "扫描二维码"
+  },
+  "scan_qr_code_desc": {
+    "message": "请使用您要添加的设备上的 MetaMask 应用扫描此二维码。"
   },
   "scrollDown": {
     "message": "向下滚动"
@@ -8195,6 +8466,9 @@
   },
   "searchForAnAssetToSend": {
     "message": "搜索要发送的资产"
+  },
+  "searchNetworkNameOrChainId": {
+    "message": "搜索网络名称或链 ID"
   },
   "searchNetworks": {
     "message": "搜索网络"
@@ -8355,6 +8629,13 @@
   },
   "send": {
     "message": "发送"
+  },
+  "sendAlertNewAddressMessage": {
+    "message": "您是首次向此地址付款。继续前，请确认地址正确无误：$1",
+    "description": "$1 is the recipient address"
+  },
+  "sendAlertNewAddressTitle": {
+    "message": "新地址"
   },
   "sendBugReport": {
     "message": "向我们发送错误报告."
@@ -9675,6 +9956,9 @@
   "standardAccountLabel": {
     "message": "标准账户"
   },
+  "start_with_new_qr_code": {
+    "message": "使用新的二维码开始"
+  },
   "stateCorruptionAreYouSure": {
     "message": "您确定要继续吗？"
   },
@@ -10246,9 +10530,6 @@
   "tokenDecimal": {
     "message": "代币小数位"
   },
-  "tokenDecimalFetchFailed": {
-    "message": "需要代币小数位。请在下方查找：$1"
-  },
   "tokenDetails": {
     "message": "代币详情"
   },
@@ -10408,6 +10689,10 @@
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
+  },
+  "trezorDesktopAppRequiredError": {
+    "message": "使用 Trezor 需要 Trezor Suite 桌面版。请安装并打开 Trezor Suite（suite.trezor.io）后重试。",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
     "message": "带宽"
@@ -10875,6 +11160,10 @@
   "youSent": {
     "message": "您发送了",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youWithdrew": {
+    "message": "您已提现",
+    "description": "Label indicating the amount and asset the user withdrew."
   },
   "youllReceive": {
     "message": "您将收到",

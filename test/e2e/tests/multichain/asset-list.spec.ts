@@ -232,7 +232,7 @@ function buildFixturesForSend(title: string) {
     testSpecificMock: mockSetup,
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
   };
