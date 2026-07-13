@@ -1141,6 +1141,15 @@
         "@metamask/base-controller": true
       }
     },
+    "@metamask/client-utils": {
+      "packages": {
+        "@metamask/contract-metadata": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/client-utils>@metamask/transaction-controller": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/compliance-controller": {
       "globals": {
         "URL": true
@@ -2605,6 +2614,40 @@
         "@metamask/utils": true,
         "async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
+        "ethereumjs-util>bn.js": true,
+        "browserify>buffer": true,
+        "eth-method-registry": true,
+        "webpack>events": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
+    "@metamask/client-utils>@metamask/transaction-controller": {
+      "globals": {
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "ethers>@ethersproject/wallet": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/client-utils>@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
@@ -4107,6 +4150,12 @@
       }
     },
     "@metamask/transaction-controller>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/client-utils>@metamask/transaction-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true

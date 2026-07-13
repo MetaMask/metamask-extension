@@ -78,7 +78,19 @@ const BridgeNetworkRow = ({
 export function BridgeDetails({
   item,
 }: {
-  item: Extract<ActivityListItem, { type: 'bridge' }>;
+  item: Extract<
+    ActivityListItem,
+    {
+      type:
+        | 'swap'
+        | 'bridge'
+        | 'convert'
+        | 'lendingDeposit'
+        | 'lendingWithdrawal'
+        | 'wrap'
+        | 'unwrap';
+    }
+  >;
 }) {
   const t = useI18nContext();
   const { formatDateTime } = useFormatters();
