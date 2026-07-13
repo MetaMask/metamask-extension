@@ -62,18 +62,19 @@ describe('Notification Preferences Sections', function () {
 
         const notificationsSettingsPage = new NotificationsSettingsPage(driver);
 
-        // Flip the perps in-app toggle and capture the new expected state.
+        // Flip the trading-activity (perps AUS key) in-app toggle and capture
+        // the new expected state.
         const initialState =
           await notificationsSettingsPage.getSectionInAppNotificationState(
-            'perps',
+            'tradingActivity',
           );
         const expectedState =
           initialState === 'enabled' ? 'disabled' : 'enabled';
         await notificationsSettingsPage.clickSectionInAppNotificationToggle(
-          'perps',
+          'tradingActivity',
         );
         await notificationsSettingsPage.checkSectionInAppNotificationState({
-          section: 'perps',
+          section: 'tradingActivity',
           expectedState,
         });
 
@@ -96,7 +97,7 @@ describe('Notification Preferences Sections', function () {
         await login(driver);
         await goToNotificationsSettingsPage(driver);
         await notificationsSettingsPage.checkSectionInAppNotificationState({
-          section: 'perps',
+          section: 'tradingActivity',
           expectedState,
         });
       },

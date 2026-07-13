@@ -4,14 +4,16 @@ import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 
 export type NotificationPreferenceSection =
   | 'walletActivity'
-  | 'perps'
-  | 'marketing'
+  | 'tradingActivity'
+  | 'tradingSignals'
+  | 'updatesAndRewards'
   | 'agenticCli';
 
 const NOTIFICATION_PREFERENCE_SECTIONS: NotificationPreferenceSection[] = [
   'walletActivity',
-  'perps',
-  'marketing',
+  'tradingActivity',
+  'tradingSignals',
+  'updatesAndRewards',
   'agenticCli',
 ];
 
@@ -220,8 +222,8 @@ class NotificationsSettingsPage {
         selector = this.allowNotificationsInput;
         break;
       case 'product':
-        await this.goToNotificationSection('marketing');
-        selector = this.sectionInAppNotificationsInput('marketing');
+        await this.goToNotificationSection('updatesAndRewards');
+        selector = this.sectionInAppNotificationsInput('updatesAndRewards');
         break;
       case 'address':
         if (!address) {
@@ -330,8 +332,8 @@ class NotificationsSettingsPage {
         console.log('Clicking general notifications toggle');
         break;
       case 'product':
-        await this.goToNotificationSection('marketing');
-        selector = this.sectionInAppNotificationsToggle('marketing');
+        await this.goToNotificationSection('updatesAndRewards');
+        selector = this.sectionInAppNotificationsToggle('updatesAndRewards');
         console.log('Clicking marketing in-app notifications toggle');
         break;
       case 'address':
