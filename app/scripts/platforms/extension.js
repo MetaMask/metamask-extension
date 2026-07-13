@@ -124,14 +124,6 @@ export default class ExtensionPlatform {
   async showTransactionNotification(txMeta, rpcPrefs) {
     const { status, txReceipt: { status: receiptStatus } = {} } = txMeta;
 
-    // Temporary verbose logging for HW QA – remove before merge.
-    // eslint-disable-next-line no-console
-    console.log('[showTransactionNotification] txMeta', txMeta);
-    // eslint-disable-next-line no-console
-    console.log('[showTransactionNotification] status', status);
-    // eslint-disable-next-line no-console
-    console.log('[showTransactionNotification] receiptStatus', receiptStatus);
-
     if (status === TransactionStatus.confirmed) {
       // There was an on-chain failure
       receiptStatus === '0x0'
