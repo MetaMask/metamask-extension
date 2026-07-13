@@ -19,7 +19,11 @@ describe('MobileWalletSimulator', () => {
 
   beforeEach(() => {
     jest.spyOn(console, 'log').mockImplementation(() => undefined);
-    jest.spyOn(crypto, 'randomUUID').mockReturnValue(TEST_SESSION_ID as `${string}-${string}-${string}-${string}-${string}`);
+    jest
+      .spyOn(crypto, 'randomUUID')
+      .mockReturnValue(
+        TEST_SESSION_ID as `${string}-${string}-${string}-${string}-${string}`,
+      );
     jest.useFakeTimers();
     jest.setSystemTime(FIXED_NOW);
 
@@ -67,7 +71,8 @@ describe('MobileWalletSimulator', () => {
 
       simulator.runAction('mobileScanned');
 
-      const expectedDeadline = FIXED_NOW + QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT;
+      const expectedDeadline =
+        FIXED_NOW + QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT;
       expect(simulator.getState()).toMatchObject({
         otp: QR_SYNC_E2E_OTP,
         otpDeadline: expectedDeadline,

@@ -22,10 +22,11 @@ function shouldUseE2eMwpStack(): boolean {
 
 /**
  * Creates the production MWP transport, session store, and dapp client stack.
- * @param options0
- * @param options0.kvStore
- * @param options0.relayUrl
- * @param options0.keyManager
+ *
+ * @param keyStore - The key store to use for the MWP stack.
+ * @param relayUrl - The relay URL to use for the MWP stack.
+ * @param keyManager - The key manager to use for the MWP stack.
+ * @returns The MWP dapp client.
  */
 export async function createProductionMwpStack(
   keyStore: IKVStore,
@@ -62,7 +63,11 @@ export async function createE2eMwpStack(): Promise<DappClient> {
 /**
  * Returns the MWP stack for the current environment.
  * In extension test builds (`IN_TEST`, not Jest), uses the E2E mock client.
- * @param options
+ *
+ * @param keyStore - The key store to use for the MWP stack.
+ * @param relayUrl - The relay URL to use for the MWP stack.
+ * @param keyManager - The key manager to use for the MWP stack.
+ * @returns The MWP dapp client for the current environment.
  */
 export async function getMwpDappClient(
   keyStore: IKVStore,

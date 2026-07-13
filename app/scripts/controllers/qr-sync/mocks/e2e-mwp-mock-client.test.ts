@@ -22,7 +22,11 @@ describe('E2eMwpMockClient', () => {
 
   beforeEach(() => {
     jest.spyOn(console, 'log').mockImplementation(() => undefined);
-    jest.spyOn(crypto, 'randomUUID').mockReturnValue(TEST_SESSION_ID as `${string}-${string}-${string}-${string}-${string}`);
+    jest
+      .spyOn(crypto, 'randomUUID')
+      .mockReturnValue(
+        TEST_SESSION_ID as `${string}-${string}-${string}-${string}-${string}`,
+      );
     jest.useFakeTimers();
     jest.setSystemTime(FIXED_NOW);
 

@@ -1,16 +1,16 @@
-import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
-import { login } from '../../page-objects/flows/login.flow';
-import SettingsPage from 'test/e2e/page-objects/pages/settings/settings-page';
-import SyncAccountsSettingsPage from 'test/e2e/page-objects/pages/settings/sync-accounts-settings-page';
-import HeaderNavbar from 'test/e2e/page-objects/pages/header-navbar';
-import { getServerMochaToBackground } from 'test/e2e/background-socket/server-mocha-to-background';
 import type {
   QrSyncSimulatorAction,
   SimulatorParams,
-} from 'app/scripts/controllers/qr-sync/mocks/mobile-wallet-simulator';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
-import { WALLET_PASSWORD, QR_SYNC_E2E_OTP } from 'test/e2e/constants';
+} from '../../../../app/scripts/controllers/qr-sync/mocks/mobile-wallet-simulator';
+import { getServerMochaToBackground } from '../../background-socket/server-mocha-to-background';
+import { WALLET_PASSWORD, QR_SYNC_E2E_OTP } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import SyncAccountsSettingsPage from '../../page-objects/pages/settings/sync-accounts-settings-page';
+import { Driver } from '../../webdriver/driver';
 
 export function qrSyncSimulate(
   action: QrSyncSimulatorAction,
@@ -22,7 +22,6 @@ export function qrSyncSimulate(
     action,
     params,
   });
-  console.log('QrSyncSimulate', action, params);
 }
 
 /**
