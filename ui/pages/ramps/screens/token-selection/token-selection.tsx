@@ -18,6 +18,7 @@ import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
 import { Asset, type AssetType } from '../../../../components/app/asset-picker';
+import { RAMPS_BUILD_QUOTE_ROUTE } from '../../../../helpers/constants/routes';
 import RampsTokenSelectionHeader from './components/ramps-token-selection-header';
 import {
   filterRampsTokensByEnabledNetworks,
@@ -114,7 +115,7 @@ export function RampsTokenSelectionScreen() {
       }
 
       setSelectedToken(asset.assetId);
-      navigate(-1);
+      navigate(RAMPS_BUILD_QUOTE_ROUTE);
     },
     [navigate, setSelectedToken],
   );

@@ -8303,6 +8303,24 @@
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
   },
+  "rampsBuyToken": {
+    "message": "Buy $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsOnNetwork": {
+    "message": "on $1",
+    "description": "$1 is the network name"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "Buying via $1",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Select payment method"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Failed to fetch quote."
+  },
   "rampsNoTokensAvailable": {
     "message": "No tokens available"
   },

@@ -1,0 +1,383 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-build-quote-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-token-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Buy mUSD
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        on Ethereum
+      </p>
+    </div>
+    <div
+      class="justify-between flex flex-1 flex-col px-4"
+    >
+      <div
+        class="flex flex-1 flex-col items-center justify-center gap-4"
+      >
+        <div
+          class="flex-row flex items-baseline justify-center gap-0.5"
+        >
+          <span
+            class="text-[56px] font-normal leading-none text-error-default"
+          >
+            $
+          </span>
+          <input
+            aria-label="Amount"
+            class="min-w-[2ch] max-w-full border-0 bg-transparent text-center text-[56px] font-normal leading-none outline-none text-error-default"
+            data-testid="ramps-build-quote-amount-input"
+            inputmode="decimal"
+            size="3"
+            type="text"
+            value="100"
+          />
+        </div>
+        <div
+          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+          data-testid="ramps-payment-method-pill"
+        >
+          <svg
+            class="inline-block w-4 h-4 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+            />
+          </svg>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Debit card
+          </p>
+          <svg
+            class="inline-block w-4 h-4 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div
+        class="mb-4"
+      >
+        <div
+          class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+          data-testid="ramps-build-quote-error"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+            style="mask-image: url('./images/icons/danger.svg');"
+          />
+          <div
+            class="mm-box mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              quote failed
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-3 items-center pb-4"
+      >
+        <p
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+          data-testid="ramps-build-quote-provider-label"
+        >
+          Buying via Transak
+        </p>
+        <button
+          aria-disabled="true"
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
+          data-testid="ramps-build-quote-continue"
+          disabled=""
+          role="button"
+          tabindex="-1"
+        >
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Continue
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-build-quote-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-token-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Buy mUSD
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        on Ethereum
+      </p>
+    </div>
+    <div
+      class="justify-between flex flex-1 flex-col px-4"
+    >
+      <div
+        class="flex flex-1 flex-col items-center justify-center gap-4"
+      >
+        <div
+          class="flex-row flex items-baseline justify-center gap-0.5"
+        >
+          <span
+            class="text-[56px] font-normal leading-none text-default"
+          >
+            $
+          </span>
+          <input
+            aria-label="Amount"
+            class="min-w-[2ch] max-w-full border-0 bg-transparent text-center text-[56px] font-normal leading-none outline-none text-default"
+            data-testid="ramps-build-quote-amount-input"
+            inputmode="decimal"
+            size="3"
+            type="text"
+            value="100"
+          />
+        </div>
+        <div
+          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+          data-testid="ramps-payment-method-pill"
+        >
+          <svg
+            class="inline-block w-4 h-4 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+            />
+          </svg>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Debit card
+          </p>
+          <svg
+            class="inline-block w-4 h-4 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-3 items-center pb-4"
+      >
+        <p
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+          data-testid="ramps-build-quote-provider-label"
+        >
+          Buying via Transak
+        </p>
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          data-testid="ramps-build-quote-continue"
+          role="button"
+        >
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Continue
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-build-quote-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-token-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Buy mUSD
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        on Ethereum
+      </p>
+    </div>
+    <div
+      class="justify-between flex flex-1 flex-col px-4"
+    >
+      <div
+        class="flex flex-1 flex-col items-center justify-center gap-4"
+      >
+        <div
+          class="flex-row flex items-baseline justify-center gap-0.5"
+        >
+          <span
+            class="text-[56px] font-normal leading-none text-default"
+          >
+            $
+          </span>
+          <input
+            aria-label="Amount"
+            class="min-w-[2ch] max-w-full border-0 bg-transparent text-center text-[56px] font-normal leading-none outline-none text-default"
+            data-testid="ramps-build-quote-amount-input"
+            inputmode="decimal"
+            size="3"
+            type="text"
+            value="100"
+          />
+        </div>
+        <div
+          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+          data-testid="ramps-payment-method-pill"
+        >
+          <svg
+            class="inline-block w-4 h-4 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+            />
+          </svg>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Debit card
+          </p>
+          <svg
+            class="inline-block w-4 h-4 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-3 items-center pb-4"
+      >
+        <p
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+          data-testid="ramps-build-quote-provider-label"
+        >
+          Loading...
+        </p>
+        <button
+          aria-disabled="true"
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
+          data-testid="ramps-build-quote-continue"
+          disabled=""
+          role="button"
+          tabindex="-1"
+        >
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Continue
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

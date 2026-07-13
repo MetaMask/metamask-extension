@@ -8,6 +8,7 @@ import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { type AssetType } from '../../../../components/app/asset-picker';
+import { RAMPS_BUILD_QUOTE_ROUTE } from '../../../../helpers/constants/routes';
 import { RampsTokenSelectionScreen } from './token-selection';
 
 const mockNavigate = jest.fn();
@@ -192,7 +193,7 @@ describe('RampsTokenSelectionScreen', () => {
     fireEvent.click(screen.getByTestId('mapped-token-eip155:1/slip44:60'));
 
     expect(mockSetSelectedToken).toHaveBeenCalledWith('eip155:1/slip44:60');
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE);
   });
 
   it('expands to all tokens when searching', () => {
