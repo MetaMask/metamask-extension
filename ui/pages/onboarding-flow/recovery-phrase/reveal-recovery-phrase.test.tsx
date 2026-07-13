@@ -16,6 +16,21 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import RevealRecoveryPhrase from './reveal-recovery-phrase';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockPasskeyAuthResponse = { id: 'assertion-id', type: 'public-key' };
 const mockGeneratePasskeyAuthenticationOptions = jest
   .fn()

@@ -1,9 +1,4 @@
-import React, {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -185,11 +180,9 @@ export default function RevealRecoveryPhrase({
           createEventBuilder(MetaMetricsEventName.KeyExportFailed)
             .addCategory(MetaMetricsEventCategory.Keys)
             .addProperties(
-              getSrpExportEventProperties(
-                hdEntropyIndex,
-                verificationMethod,
-                { reason },
-              ),
+              getSrpExportEventProperties(hdEntropyIndex, verificationMethod, {
+                reason,
+              }),
             )
             .build(),
         );

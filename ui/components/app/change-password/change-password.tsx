@@ -1,10 +1,5 @@
 import EventEmitter from 'events';
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
