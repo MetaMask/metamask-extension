@@ -25,7 +25,9 @@ describe('useStateSyncHealth', () => {
     mockDispatch = jest.fn().mockResolvedValue(undefined);
     mockUseDispatch.mockReturnValue(mockDispatch);
     mockForceUpdateMetamaskState.mockResolvedValue(undefined as never);
-    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    jest.spyOn(console, 'warn').mockImplementation(() => {
+      // intentionally suppressed in tests
+    });
   });
 
   afterEach(() => {
@@ -85,6 +87,41 @@ describe('useStateSyncHealth', () => {
     });
 
     expect(mockForceUpdateMetamaskState).not.toHaveBeenCalled();
+  });
+
+  it('does not trigger concurrent recovery calls', async () => {
+    // Make forceUpdateMetamaskState hang so a second interval tick can overlap
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    let resolveRecovery: () => void = () => {};
+    mockForceUpdateMetamaskState.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveRecovery = resolve;
+        }),
+    );
+
+    renderHook(() => useStateSyncHealth(true));
+
+    // Advance to just past threshold (first tick that triggers recovery)
+    await act(async () => {
+      jest.advanceTimersByTime(70_000);
+      await Promise.resolve();
+    });
+
+    // First recovery call is in progress; advance another interval tick
+    await act(async () => {
+      jest.advanceTimersByTime(10_000);
+      await Promise.resolve();
+    });
+
+    // Should still only be called once (second tick skipped due to guard)
+    expect(mockForceUpdateMetamaskState).toHaveBeenCalledTimes(1);
+
+    // Resolve the pending recovery
+    await act(async () => {
+      resolveRecovery();
+      await Promise.resolve();
+    });
   });
 
   it('resets the start time when syncing resumes after recovery', async () => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { forceUpdateMetamaskState } from '../store/actions';
 
@@ -30,6 +30,7 @@ const CHECK_INTERVAL_MS = 10_000; // 10 seconds (reduced overhead)
 export function useStateSyncHealth(isSyncing: boolean): void {
   const dispatch = useDispatch();
   const [syncStartTime, setSyncStartTime] = useState<number | null>(null);
+  const isRecoveringRef = useRef(false);
 
   // Track when syncing started / stopped
   useEffect(() => {
@@ -47,13 +48,23 @@ export function useStateSyncHealth(isSyncing: boolean): void {
     }
 
     const checkStale = async () => {
+      // Skip if a recovery is already in progress to prevent concurrent calls
+      if (isRecoveringRef.current) {
+        return;
+      }
+
       const elapsed = Date.now() - syncStartTime;
       if (elapsed > STALE_THRESHOLD_MS) {
         console.warn('Stale state sync detected, triggering recovery', {
           elapsed,
         });
-        await forceUpdateMetamaskState(dispatch);
-        setSyncStartTime(null);
+        isRecoveringRef.current = true;
+        try {
+          await forceUpdateMetamaskState(dispatch);
+          setSyncStartTime(null);
+        } finally {
+          isRecoveringRef.current = false;
+        }
       }
     };
 
