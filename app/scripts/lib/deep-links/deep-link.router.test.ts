@@ -138,6 +138,57 @@ describe('DeepLinkRouter', () => {
       },
     );
 
+    it.each(['missing', 'invalid'] as const)(
+      'should skip the interstitial for whitelisted routes when signature is %s',
+      async (signature) => {
+        const tabId = 1;
+        const url = `https://example.com/swap?amount=100`;
+        parseMock.mockResolvedValue({
+          signature,
+          route: {
+            pathname: '/swap',
+          },
+          destination: {
+            path: 'internal-route',
+            query: new URLSearchParams([['amount', '100']]),
+          },
+        } as ParsedDeepLink);
+
+        await onBeforeRequest?.({
+          tabId,
+          url,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+          url: 'chrome-extension://extension-id/home.html#internal-route?amount=100',
+        });
+      },
+    );
+
+    it('should show the interstitial for non-whitelisted routes with missing signature', async () => {
+      const tabId = 1;
+      const url = `https://example.com/home?openNetworkSelector=true`;
+      parseMock.mockResolvedValue({
+        signature: 'missing',
+        route: {
+          pathname: '/home',
+        },
+        destination: {
+          path: 'home-route',
+          query: new URLSearchParams([['openNetworkSelector', 'true']]),
+        },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId,
+        url,
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fhome%3FopenNetworkSelector%3Dtrue',
+      });
+    });
+
     describe('trusted origin (metamask.io)', () => {
       const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
 
@@ -338,10 +389,14 @@ describe('DeepLinkRouter', () => {
       expect(mockErrorCallback).toHaveBeenCalledWith(error);
     });
 
-    it('should handle redirecting routes', async function () {
+    it('should handle whitelisted redirecting routes', async function () {
       const tabId = 1;
-      const url = `https://example.com/redirect-route`;
+      const url = `https://example.com/buy`;
       parseMock.mockResolvedValue({
+        signature: 'missing',
+        route: {
+          pathname: '/buy',
+        },
         destination: {
           redirectTo: new URL('https://example.com/internal-route'),
         },
@@ -352,6 +407,29 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'https://example.com/internal-route',
+      });
+    });
+
+    it('should show the interstitial for non-whitelisted redirecting routes with missing signature', async function () {
+      const tabId = 1;
+      const url = `https://example.com/onboarding`;
+      parseMock.mockResolvedValue({
+        signature: 'missing',
+        route: {
+          pathname: '/onboarding',
+        },
+        destination: {
+          redirectTo: new URL('https://example.com/internal-route'),
+        },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId,
+        url,
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fonboarding',
       });
     });
 

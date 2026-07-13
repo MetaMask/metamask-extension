@@ -512,6 +512,26 @@ export function getPnlDisplayColor(pnl: number): TextColor {
 }
 
 /**
+ * Neutralizes a semantic (success/error) text color when the value it's
+ * applied to is currently masked (e.g. by privacy mode). This prevents the
+ * color itself from leaking whether a P&L/return figure is positive or
+ * negative while the value is hidden behind dots.
+ *
+ * @param color - The color to use when the value is visible
+ * @param isHidden - Whether the value is currently masked
+ * @returns `TextColor.TextDefault` when hidden, otherwise the given color
+ * @example
+ * getPrivacyAwareColor(TextColor.SuccessDefault, true) // → TextColor.TextDefault
+ * getPrivacyAwareColor(TextColor.SuccessDefault, false) // → TextColor.SuccessDefault
+ */
+export function getPrivacyAwareColor(
+  color: TextColor,
+  isHidden: boolean | undefined,
+): TextColor {
+  return isHidden ? TextColor.TextDefault : color;
+}
+
+/**
  * Format a RoE% value for display in TP/SL inputs.
  * Always returns the absolute value: integers with no decimal ("25"),
  * non-integers with 2 decimal places ("25.50").
