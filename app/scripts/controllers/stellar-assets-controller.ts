@@ -1,5 +1,4 @@
 import type {
-  AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
   AccountsControllerAccountAssetListUpdatedEvent,
   AccountsControllerListMultichainAccountsAction,
@@ -30,8 +29,11 @@ import {
   string,
   pattern,
   is,
+  record,
+  union,
   type Infer,
 } from '@metamask/superstruct';
+import { Mutex } from 'async-mutex';
 
 /** Stellar pubnet native XLM CAIP-19 asset id. */
 export const StellarNativeAssetIdStruct = pattern(
@@ -54,15 +56,16 @@ export const NativeAssetInfoStruct = type({
   baseReserve: string(),
 });
 
+export const EnrichedAssetInfoStuct = union([
+  record(StellarNativeAssetIdStruct, NativeAssetInfoStruct),
+  record(StellarClassicAssetIdStruct, TrustlineAssetInfoStruct)
+])
+
 export type StellarNativeAssetId = Infer<typeof StellarNativeAssetIdStruct>;
 export type StellarClassicAssetId = Infer<typeof StellarClassicAssetIdStruct>;
 export type NativeAssetInfo = Infer<typeof NativeAssetInfoStruct>;
 export type TrustlineAssetInfo = Infer<typeof TrustlineAssetInfoStruct>;
-
-export type EnrichedAssetInfo = Partial<
-  Record<StellarNativeAssetId, NativeAssetInfo>
-> &
-  Partial<Record<StellarClassicAssetId, TrustlineAssetInfo>>;
+export type EnrichedAssetInfo = Infer<typeof EnrichedAssetInfoStuct>;
 
 /**
  * Returns whether a CAIP-19 asset id is eligible for Stellar enrichment.
@@ -111,9 +114,6 @@ export function getTrustlineAssetInfoForAsset(
   if (!is(assetId, StellarClassicAssetIdStruct)) {
     return undefined;
   }
-
-  console.log('info', is(info, TrustlineAssetInfoStruct) ? info : undefined);
-
   return is(info, TrustlineAssetInfoStruct) ? info : undefined;
 }
 
@@ -150,7 +150,6 @@ type AllowedActions =
   | KeyringControllerGetStateAction;
 
 type AllowedEvents =
-  | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerAccountAssetListUpdatedEvent;
 
@@ -195,6 +194,8 @@ export class StellarAssetsController extends BaseController<
 > {
   readonly #isEnabled: () => boolean;
 
+  readonly #controllerOperationMutex = new Mutex();
+
   constructor({
     messenger,
     state = {},
@@ -212,19 +213,6 @@ export class StellarAssetsController extends BaseController<
 
     this.#isEnabled = isEnabled;
 
-    if (this.#isEnabled() && this.#isKeyringUnlocked()) {
-      for (const account of this.#listStellarAccounts()) {
-        // eslint-disable-next-line no-void
-        void this.#loadAccountAssetInfo(account);
-      }
-    }
-
-    this.messenger.subscribe(
-      'AccountsController:accountAdded',
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async (account) => this.#handleOnAccountAdded(account),
-    );
-
     this.messenger.subscribe('AccountsController:accountRemoved', (accountId) =>
       this.#handleOnAccountRemoved(accountId),
     );
@@ -234,10 +222,6 @@ export class StellarAssetsController extends BaseController<
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (event) => this.#handleOnAccountAssetListUpdated(event),
     );
-  }
-
-  #log(...args: unknown[]): void {
-    console.info(`[StellarAssetsController]`, ...args);
   }
 
   /**
@@ -255,8 +239,10 @@ export class StellarAssetsController extends BaseController<
     for (const [accountId, { added, removed }] of Object.entries(
       event.assets,
     )) {
-      const account = this.#getStellarAccount(accountId);
-      if (!account) {
+      const isStellar = [...added, ...removed]
+        .some((assetId) => isStellarEnrichmentEligibleAssetId(assetId));
+
+      if (!isStellar) {
         continue;
       }
 
@@ -275,29 +261,21 @@ export class StellarAssetsController extends BaseController<
         });
       }
 
-      const assetsToFetch =
-        this.#filterTrustlineEnrichmentEligibleAssets(added);
-      if (assetsToFetch.length > 0) {
-        await this.#fetchAndStoreAccountAssetInfo(account, assetsToFetch);
-      }
+      // Like other non-EVM snaps, the Stellar snap emits accountAssetListUpdated for
+      // the native asset even when no assets actually changed. Rather than trying to
+      // detect no-op updates, refetch enrichment for every asset on the account.
+      // This is cheap: SNAP API `getAccountAssetInfo` already batches assets and reads
+      // from the snap state store, so fetching 1 vs 100 assets costs about the same.
+      // Most accounts have fewer than 100 trustlines; imported accounts with more are rare.
+      await this.#controllerOperationMutex.runExclusive(async () => {
+        await this.#fetchAndStoreAccountAssetInfo(accountId)
+      }).catch(error => {
+        console.error(
+          `[StellarAssetsController] Failed to fetch asset info for account ${accountId}:`,
+          error,
+        );
+      });
     }
-  }
-
-  /**
-   * Handles a newly added Stellar account.
-   *
-   * @param account - The account that was added.
-   */
-  async #handleOnAccountAdded(account: InternalAccount): Promise<void> {
-    if (
-      !this.#isEnabled() ||
-      !this.#isStellarAccount(account) ||
-      !this.#isKeyringUnlocked()
-    ) {
-      return;
-    }
-
-    await this.#loadAccountAssetInfo(account);
   }
 
   /**
@@ -316,70 +294,48 @@ export class StellarAssetsController extends BaseController<
   }
 
   /**
-   * Lists account assets from the snap and fetches enrichment for eligible assets.
+   * Fetches enrichment from the snap and stores results.
    *
-   * @param account - The Stellar account to load.
+   * @param account - Stellar account or account id.
    */
-  async #loadAccountAssetInfo(account: InternalAccount): Promise<void> {
-    const snapId = account.metadata.snap?.id;
-    if (!snapId) {
+  async #fetchAndStoreAccountAssetInfo(
+    account: InternalAccount | string,
+  ): Promise<void> {
+    const internalAccount = typeof account === 'string' ? this.#getStellarAccount(account) : account;
+    if (!internalAccount) {
       return;
     }
 
+    const snapId = internalAccount.metadata.snap?.id;
+    const chainId = this.#getStellarChainId(internalAccount);
+    if (!snapId || !chainId ) {
+      return;
+    }
     try {
-      const assets = await this.#listAccountAssets(account.id, snapId);
+      const assets = await this.#listAccountAssets(internalAccount.id, snapId);
       const assetsToFetch = this.#filterTrustlineEnrichmentEligibleAssets(
         assets as CaipAssetType[],
       );
-      if (assetsToFetch.length === 0) {
-        return;
-      }
-
-      await this.#fetchAndStoreAccountAssetInfo(account, assetsToFetch);
-    } catch (error) {
-      this.#log(
-        `[StellarAssetsController] Failed to list assets for account ${account.id}:`,
-        error,
-      );
-    }
-  }
-
-  /**
-   * Fetches enrichment from the snap and stores results.
-   *
-   * @param account - The Stellar account.
-   * @param assetIds - Eligible asset ids to enrich.
-   */
-  async #fetchAndStoreAccountAssetInfo(
-    account: InternalAccount,
-    assetIds: CaipAssetType[],
-  ): Promise<void> {
-    const snapId = account.metadata.snap?.id;
-    const chainId = this.#getStellarChainId(account);
-    if (!snapId || !chainId || assetIds.length === 0) {
-      return;
-    }
-    try {
       const enrichment = await this.#fetchAccountAssetInfoFromSnap({
-        accountId: account.id,
+        accountId: internalAccount.id,
         snapId: snapId as SnapId,
         chainId,
-        assets: assetIds,
+        assets: assetsToFetch,
       });
 
       if (enrichment) {
         this.update((state: StellarAssetsControllerState) => {
-          state.accountAssets[account.id] ??= {};
-          for (const assetId of assetIds) {
+          state.accountAssets[internalAccount.id] ??= {};
+          for (const assetId of assetsToFetch) {
             // SNAP should guarantee that the asset info is not empty.
             const info = enrichment?.[assetId];
-            state.accountAssets[account.id][assetId] = info;
+            state.accountAssets[internalAccount.id][assetId] = info;
           }
         });
       }
     } catch (error) {
       console.error(
-        `[StellarAssetsController] Failed to fetch asset info for account ${account.id}:`,
+        `[StellarAssetsController] Failed to fetch asset info for account ${internalAccount.id}:`,
         error,
       );
     }

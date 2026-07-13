@@ -28,7 +28,6 @@ export function getStellarAssetsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     events: [
-      'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:accountAssetListUpdated',
     ],

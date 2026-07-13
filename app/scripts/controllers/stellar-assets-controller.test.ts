@@ -90,7 +90,6 @@ function getRestrictedMessenger(
       'KeyringController:getState',
     ],
     events: [
-      'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:accountAssetListUpdated',
     ],
@@ -127,6 +126,24 @@ function buildEnrichmentForAssets(assetIds: string[]) {
 async function waitForAllPromises(): Promise<void> {
   await new Promise((resolve) => {
     setTimeout(resolve, 0);
+  });
+}
+
+function publishAccountAssetListUpdated(
+  messenger: RootMessenger,
+  accountId: string,
+  {
+    added = [],
+    removed = [],
+  }: {
+    added?: CaipAssetType[];
+    removed?: CaipAssetType[];
+  } = {},
+): void {
+  messenger.publish('AccountsController:accountAssetListUpdated', {
+    assets: {
+      [accountId]: { added, removed },
+    },
   });
 }
 
@@ -193,9 +210,9 @@ describe('StellarAssetsController', () => {
     jest.clearAllMocks();
   });
 
-  describe('initial load', () => {
+  describe('AccountsController:accountAssetListUpdated', () => {
     it('stores native and trustline enrichment separately', async () => {
-      const { controller, mockSnapHandleRequest } = setupController({
+      const { controller, messenger, mockSnapHandleRequest } = setupController({
         handleRequestImplementation: (params) => {
           if (isGetAccountAssetInfoCall(params)) {
             const assets = params.request?.params?.assets ?? [];
@@ -208,6 +225,9 @@ describe('StellarAssetsController', () => {
         },
       });
 
+      publishAccountAssetListUpdated(messenger, mockStellarAccount.id, {
+        added: [STELLAR_NATIVE],
+      });
       await waitForAllPromises();
 
       expect(
@@ -238,7 +258,7 @@ describe('StellarAssetsController', () => {
     });
 
     it('only requests enrichment for eligible stellar assets', async () => {
-      const { mockSnapHandleRequest } = setupController({
+      const { messenger, mockSnapHandleRequest } = setupController({
         handleRequestImplementation: (params) => {
           if (isGetAccountAssetInfoCall(params)) {
             const assets = params.request?.params?.assets ?? [];
@@ -254,6 +274,9 @@ describe('StellarAssetsController', () => {
         },
       });
 
+      publishAccountAssetListUpdated(messenger, mockStellarAccount.id, {
+        added: [STELLAR_NATIVE],
+      });
       await waitForAllPromises();
 
       const enrichmentCall = mockSnapHandleRequest.mock.calls.find(([params]) =>
@@ -271,7 +294,7 @@ describe('StellarAssetsController', () => {
         resolveAssetInfo = resolve;
       });
 
-      const { controller } = setupController({
+      const { controller, messenger } = setupController({
         handleRequestImplementation: (params) => {
           if (isGetAccountAssetInfoCall(params)) {
             return assetInfoPromise;
@@ -283,6 +306,9 @@ describe('StellarAssetsController', () => {
         },
       });
 
+      publishAccountAssetListUpdated(messenger, mockStellarAccount.id, {
+        added: [STELLAR_CLASSIC_USDC],
+      });
       await waitForAllPromises();
 
       expect(
@@ -312,7 +338,7 @@ describe('StellarAssetsController', () => {
     });
 
     it('does not store enrichment when the snap returns no data', async () => {
-      const { controller } = setupController({
+      const { controller, messenger } = setupController({
         handleRequestImplementation: (params) => {
           if (isGetAccountAssetInfoCall(params)) {
             return Promise.resolve(undefined);
@@ -324,6 +350,9 @@ describe('StellarAssetsController', () => {
         },
       });
 
+      publishAccountAssetListUpdated(messenger, mockStellarAccount.id, {
+        added: [STELLAR_CLASSIC_USDC],
+      });
       await waitForAllPromises();
 
       expect(
@@ -336,7 +365,7 @@ describe('StellarAssetsController', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
-      const { controller } = setupController({
+      const { controller, messenger } = setupController({
         handleRequestImplementation: (params) => {
           if (isGetAccountAssetInfoCall(params)) {
             return Promise.reject(new Error('snap failure'));
@@ -348,6 +377,9 @@ describe('StellarAssetsController', () => {
         },
       });
 
+      publishAccountAssetListUpdated(messenger, mockStellarAccount.id, {
+        added: [STELLAR_CLASSIC_USDC],
+      });
       await waitForAllPromises();
 
       expect(
@@ -357,26 +389,32 @@ describe('StellarAssetsController', () => {
     });
 
     it('does not fetch when the keyring is locked', async () => {
-      const { mockSnapHandleRequest } = setupController({ isUnlocked: false });
+      const { messenger, mockSnapHandleRequest } = setupController({
+        isUnlocked: false,
+      });
 
+      publishAccountAssetListUpdated(messenger, mockStellarAccount.id, {
+        added: [STELLAR_NATIVE],
+      });
       await waitForAllPromises();
 
       expect(mockSnapHandleRequest).not.toHaveBeenCalled();
     });
 
     it('does not fetch when Stellar is disabled via isEnabled', async () => {
-      const { mockSnapHandleRequest } = setupController({
+      const { messenger, mockSnapHandleRequest } = setupController({
         isEnabled: () => false,
       });
 
+      publishAccountAssetListUpdated(messenger, mockStellarAccount.id, {
+        added: [STELLAR_NATIVE],
+      });
       await waitForAllPromises();
 
       expect(mockSnapHandleRequest).not.toHaveBeenCalled();
     });
-  });
 
-  describe('AccountsController:accountAssetListUpdated', () => {
-    it('fetches info for added assets and removes deleted assets', async () => {
+    it('fetches info for all account assets and removes deleted assets', async () => {
       const { controller, messenger, mockSnapHandleRequest } = setupController({
         state: {
           accountAssets: {
@@ -398,24 +436,16 @@ describe('StellarAssetsController', () => {
             });
           }
           if (isListAccountAssetsCall(params)) {
-            return Promise.resolve([]);
+            return Promise.resolve([STELLAR_CLASSIC_USDC]);
           }
           return Promise.resolve({});
         },
       });
 
-      await waitForAllPromises();
-      mockSnapHandleRequest.mockClear();
-
-      messenger.publish('AccountsController:accountAssetListUpdated', {
-        assets: {
-          [mockStellarAccount.id]: {
-            added: [STELLAR_CLASSIC_USDC],
-            removed: [STELLAR_NATIVE],
-          },
-        },
+      publishAccountAssetListUpdated(messenger, mockStellarAccount.id, {
+        added: [STELLAR_CLASSIC_USDC],
+        removed: [STELLAR_NATIVE],
       });
-
       await waitForAllPromises();
 
       expect(
@@ -430,45 +460,7 @@ describe('StellarAssetsController', () => {
         authorized: true,
         sponsored: false,
       });
-      expect(mockSnapHandleRequest).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('AccountsController:accountAdded', () => {
-    it('loads asset info for a newly added Stellar account', async () => {
-      const { controller, messenger } = setupController({
-        listMultichainAccounts: [],
-        handleRequestImplementation: (params) => {
-          if (isGetAccountAssetInfoCall(params)) {
-            return Promise.resolve({
-              [STELLAR_CLASSIC_USDC]: {
-                limit: '1000',
-                authorized: true,
-                sponsored: false,
-              },
-            });
-          }
-          if (isListAccountAssetsCall(params)) {
-            return Promise.resolve([STELLAR_CLASSIC_USDC]);
-          }
-          return Promise.resolve({});
-        },
-      });
-
-      await waitForAllPromises();
-
-      messenger.publish('AccountsController:accountAdded', mockStellarAccount);
-      await waitForAllPromises();
-
-      expect(
-        controller.state.accountAssets[mockStellarAccount.id][
-          STELLAR_CLASSIC_USDC
-        ],
-      ).toStrictEqual({
-        limit: '1000',
-        authorized: true,
-        sponsored: false,
-      });
+      expect(mockSnapHandleRequest).toHaveBeenCalledTimes(2);
     });
   });
 
