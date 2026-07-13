@@ -1,8 +1,7 @@
 import { QuoteResponse, TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { createProjectLogger } from '@metamask/utils';
 
-const log = createProjectLogger('enforced-simulations-debug');
+const DEBUG_LOG_PREFIX = '[enforced-simulations-debug]';
 
 type TransactionParams = TransactionMeta['txParams'];
 
@@ -163,7 +162,7 @@ export function logConfirmationTransactionDebug(
   transactionMeta?: TransactionMeta,
   details?: Record<string, unknown>,
 ) {
-  log(event, {
+  console.warn(DEBUG_LOG_PREFIX, event, {
     transaction: getConfirmationTransactionDebugInfo(transactionMeta),
     ...details,
   });
