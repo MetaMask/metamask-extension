@@ -72,9 +72,10 @@ describe('StellarAssetsControllerInit', () => {
   });
 
   describe('isEnabled', () => {
-    it('enables stellar when stellarAccounts feature flag is enabled', () => {
+    it('enables stellar when stellarAccounts and assetEnrichment flags are enabled', () => {
       const requestMock = buildInitRequestMock({
         stellarAccounts: { enabled: true, minimumVersion: '0.0.0' },
+        assetEnrichment: { enabled: true, minimumVersion: '0.0.0' },
       });
 
       StellarAssetsControllerInit(requestMock);
@@ -88,6 +89,21 @@ describe('StellarAssetsControllerInit', () => {
     it('disables stellar when stellarAccounts feature flag is disabled', () => {
       const requestMock = buildInitRequestMock({
         stellarAccounts: { enabled: false, minimumVersion: '0.0.0' },
+        assetEnrichment: { enabled: true, minimumVersion: '0.0.0' },
+      });
+
+      StellarAssetsControllerInit(requestMock);
+
+      const constructorCall = stellarAssetsControllerClassMock.mock.calls[0][0];
+      const isEnabled = constructorCall.isEnabled as () => boolean;
+
+      expect(isEnabled()).toBe(false);
+    });
+
+    it('disables stellar when assetEnrichment feature flag is disabled', () => {
+      const requestMock = buildInitRequestMock({
+        stellarAccounts: { enabled: true, minimumVersion: '0.0.0' },
+        assetEnrichment: { enabled: false, minimumVersion: '0.0.0' },
       });
 
       StellarAssetsControllerInit(requestMock);

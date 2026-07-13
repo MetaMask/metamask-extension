@@ -137,7 +137,12 @@ export const useAssetActivation = ({
   ]);
 
   const activateAsset = useCallback(async () => {
-    if (!resolvedAccountId || !chainId || !assetId) {
+    if (
+      !resolvedAccountId ||
+      !chainId ||
+      !assetId ||
+      !isAssetIsTrustlineAsset
+    ) {
       return;
     }
     setErrorMessage(null);
@@ -163,7 +168,7 @@ export const useAssetActivation = ({
     } finally {
       setIsActivating(false);
     }
-  }, [assetId, chainId, dispatch, resolvedAccountId, t]);
+  }, [assetId, chainId, dispatch, isAssetIsTrustlineAsset, resolvedAccountId, t]);
 
   return {
     deactivateAsset,

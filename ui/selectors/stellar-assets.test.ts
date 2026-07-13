@@ -24,8 +24,6 @@ const mockState = {
         },
         [TRUSTLINE_USDC]: {
           limit: '1000',
-          authorized: true,
-          sponsored: false,
         },
       },
     },
@@ -81,8 +79,6 @@ describe('stellar-assets selectors', () => {
         ),
       ).toStrictEqual({
         limit: '1000',
-        authorized: true,
-        sponsored: false,
       });
     });
 
