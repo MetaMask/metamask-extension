@@ -27,7 +27,9 @@ import {
  * the back button is removed on Swap/Bridge pages so tests must accommodate for this.
  * @param options
  */
-function getBridgeFixturesWithBottomNavTreatment(options: Parameters<typeof getBridgeFixtures>[0]) {
+function getBridgeFixturesWithBottomNavTreatment(
+  options: Parameters<typeof getBridgeFixtures>[0],
+) {
   const base = getBridgeFixtures(options);
   return {
     ...base,
@@ -38,14 +40,16 @@ function getBridgeFixturesWithBottomNavTreatment(options: Parameters<typeof getB
         AppStateController: {
           ...base.fixtures.data.AppStateController,
           experimentEligibility: {
-            ...(base.fixtures.data.AppStateController?.experimentEligibility ?? {}),
+            ...(base.fixtures.data.AppStateController?.experimentEligibility ??
+              {}),
             [BOTTOM_NAV_AB_TEST_KEY]: true,
           },
         },
         RemoteFeatureFlagController: {
           ...base.fixtures.data.RemoteFeatureFlagController,
           remoteFeatureFlags: {
-            ...(base.fixtures.data.RemoteFeatureFlagController?.remoteFeatureFlags ?? {}),
+            ...(base.fixtures.data.RemoteFeatureFlagController
+              ?.remoteFeatureFlags ?? {}),
             [BOTTOM_NAV_AB_TEST_KEY]: 'treatment',
           },
         },
@@ -381,14 +385,12 @@ describe('Bridge tests', function (this: Suite) {
         await login(driver, { expectedBalance: '$225,730.11' });
         const networkManager = new NetworkManager(driver);
 
-        // Navigate to Bridge page via bottom nav swaps tab
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
         const bottomNav = new BottomNavBar(driver);
+        await bottomNav.waitForBottomNavBar();
         await bottomNav.clickSwaps();
 
         const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.checkPageIsLoaded();
         await bridgePage.enterBridgeQuote({
           amount: '25',
           tokenFrom: 'ETH',
@@ -424,15 +426,13 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
-        // Navigate to Bridge page via bottom nav swaps tab
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
         const bottomNav = new BottomNavBar(driver);
+        await bottomNav.waitForBottomNavBar();
         const bridgePage = new BridgeQuotePage(driver);
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
         await bottomNav.clickSwaps();
+        await bridgePage.checkPageIsLoaded();
         await bridgePage.searchForAssetAndSelect('DAI');
         console.log('Selected source asset DAI');
 

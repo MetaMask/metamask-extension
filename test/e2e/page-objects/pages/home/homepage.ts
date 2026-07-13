@@ -147,7 +147,6 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.activityTab,
         this.overviewBalanceSection,
         this.tokensTab,
       ]);
