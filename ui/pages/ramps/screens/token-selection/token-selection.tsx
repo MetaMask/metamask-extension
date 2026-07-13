@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -14,8 +14,6 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
-import { getRampsTokens } from '../../../../store/controller-actions/ramps-controller';
-import { selectUserRegion } from '../../../../selectors/rampsController';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
@@ -27,7 +25,6 @@ import {
 } from './utils/mapRampsTokensToSendAssets';
 
 function useRampsTokenSelectionData() {
-  const userRegion = useSelector(selectUserRegion);
   const {
     tokens: controllerTokens,
     tokensLoading,
@@ -38,18 +35,6 @@ function useRampsTokenSelectionData() {
     getAllNetworkConfigurationsByCaipChainId,
   );
 
-  useEffect(() => {
-    const regionCode = userRegion?.regionCode;
-    if (
-      regionCode &&
-      controllerTokens === null &&
-      !tokensLoading &&
-      !tokensError
-    ) {
-      getRampsTokens(regionCode, 'buy');
-    }
-  }, [controllerTokens, tokensError, tokensLoading, userRegion?.regionCode]);
-
   const mappedTokens = useMemo(() => {
     const topTokens = filterRampsTokensByEnabledNetworks(
       controllerTokens?.topTokens,
@@ -59,10 +44,13 @@ function useRampsTokenSelectionData() {
       controllerTokens?.allTokens,
       networksByCaipChainId,
     );
+    // null = not loaded yet (bootstrap fetch pending); [] = genuinely empty.
+    const tokensNotYetLoaded = controllerTokens === null && !tokensError;
+
     return {
       topTokens: mapRampsTokensToSendAssets(topTokens, networksByCaipChainId),
       allTokens: mapRampsTokensToSendAssets(allTokens, networksByCaipChainId),
-      isLoading: tokensLoading,
+      isLoading: tokensLoading || tokensNotYetLoaded,
       error: tokensError,
     };
   }, [controllerTokens, tokensLoading, tokensError, networksByCaipChainId]);
@@ -72,6 +60,9 @@ function useRampsTokenSelectionData() {
 
 /**
  * Ramps buy-flow token selection screen.
+ *
+ * Token catalog hydration is owned by `RampsBootstrap` (same pattern as
+ * mobile). This screen is read-only against controller state.
  *
  * Route registration and entry-point navigation are tracked in TRAM-3711.
  */

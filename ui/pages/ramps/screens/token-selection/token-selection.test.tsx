@@ -117,30 +117,12 @@ const mockAllTokens: RampsToken[] = [
   },
 ];
 
-jest.mock('../../../../store/controller-actions/ramps-controller', () => ({
-  ...jest.requireActual(
-    '../../../../store/controller-actions/ramps-controller',
-  ),
-  getRampsTokens: jest.fn(),
-}));
-
-jest.mock('../../../../selectors/rampsController', () => ({
-  ...jest.requireActual('../../../../selectors/rampsController'),
-  selectUserRegion: jest.fn(() => null),
-}));
-
 jest.mock('../../../../hooks/ramps/useRampsController', () => ({
   useRampsController: jest.fn(),
 }));
 
 const { useRampsController } = jest.requireMock(
   '../../../../hooks/ramps/useRampsController',
-);
-const { getRampsTokens } = jest.requireMock(
-  '../../../../store/controller-actions/ramps-controller',
-);
-const { selectUserRegion } = jest.requireMock(
-  '../../../../selectors/rampsController',
 );
 
 const createStore = () =>
@@ -159,7 +141,6 @@ describe('RampsTokenSelectionScreen', () => {
     mockOnAssetSelectRef.current = undefined;
     mockOnSearchQueryChangeRef.current = undefined;
     mockOnSelectedChainIdChangeRef.current = undefined;
-    selectUserRegion.mockReturnValue(null);
     useRampsController.mockReturnValue({
       tokens: { topTokens: mockTopTokens, allTokens: mockAllTokens },
       tokensLoading: false,
@@ -277,7 +258,7 @@ describe('RampsTokenSelectionScreen', () => {
     expect(screen.queryByTestId('send-asset-picker')).toBeNull();
   });
 
-  it('shows token selection when tokens are unset and there is no error', () => {
+  it('shows loading screen when tokens are unset and there is no error', () => {
     useRampsController.mockReturnValue({
       tokens: null,
       tokensLoading: false,
@@ -291,29 +272,8 @@ describe('RampsTokenSelectionScreen', () => {
       '/ramps/token-selection',
     );
 
-    expect(
-      screen.getByTestId('ramps-token-selection-screen'),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('token-count')).toHaveTextContent('0');
-    expect(getRampsTokens).not.toHaveBeenCalled();
-  });
-
-  it('requests tokens when region is set and catalog is unset', () => {
-    selectUserRegion.mockReturnValue({ regionCode: 'us' });
-    useRampsController.mockReturnValue({
-      tokens: null,
-      tokensLoading: false,
-      tokensError: null,
-      setSelectedToken: mockSetSelectedToken,
-    });
-
-    renderWithProvider(
-      <RampsTokenSelectionScreen />,
-      createStore(),
-      '/ramps/token-selection',
-    );
-
-    expect(getRampsTokens).toHaveBeenCalledWith('us', 'buy');
+    expect(screen.queryByTestId('ramps-token-selection-screen')).toBeNull();
+    expect(screen.queryByTestId('send-asset-picker')).toBeNull();
   });
 
   it('shows error state when tokensError exists', () => {
