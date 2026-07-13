@@ -178,7 +178,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 216,
+      "currentMigrationVersion": 217,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -994,6 +994,7 @@
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1142,6 +1143,18 @@
         ]
       }
     },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "errorKey": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
       "localOverrides": {},
@@ -1185,7 +1198,13 @@
           "subscriptionId": null
         }
       },
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": {
+        "account": "eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+        "lastFreshOptInStatusCheck": 1783610142869,
+        "lastPerpsDiscountRateFetched": null,
+        "perpsFeeDiscount": null,
+        "subscriptionId": null
+      },
       "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
@@ -1295,6 +1314,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 216
+    "version": 217
   }
 }

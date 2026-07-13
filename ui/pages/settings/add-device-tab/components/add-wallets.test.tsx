@@ -1,26 +1,30 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import { AccountWalletType, toAccountWalletId } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import AddWallets from './add-wallets';
 
+const mockWalletId = toAccountWalletId(AccountWalletType.Entropy, 'entropy1');
+const mockGroupId = `${mockWalletId}/0`;
+
 jest.mock('../../../../selectors/multichain-accounts/account-tree', () => {
   const { AccountWalletType: WalletType, toAccountWalletId: toWalletId } =
     jest.requireActual('@metamask/account-api');
-  const mockWalletId = toWalletId(WalletType.Keyring, 'wallet1');
-  const mockGroupId = `${mockWalletId}/0`;
+  const walletId = toWalletId(WalletType.Entropy, 'entropy1');
+  const groupId = `${walletId}/0`;
   return {
     getAccountTree: jest.fn(() => ({
       wallets: {
-        [mockWalletId]: {
-          id: mockWalletId,
-          type: WalletType.Keyring,
-          metadata: { name: 'My Wallet' },
+        [walletId]: {
+          id: walletId,
+          type: WalletType.Entropy,
+          metadata: { name: 'My Wallet', entropy: { id: 'entropy1' } },
           groups: {
-            [mockGroupId]: {
-              id: mockGroupId,
+            [groupId]: {
+              id: groupId,
               metadata: { name: 'Account 1' },
             },
           },
@@ -62,7 +66,7 @@ describe('AddWallets', () => {
     fireEvent.click(screen.getByText(messages.continue.message));
 
     expect(onAddWallets).toHaveBeenCalledWith({
-      entropyIds: ['wallet1'],
+      selectedAccountGroupIds: [mockGroupId],
       syncedAccountCount: 1,
       syncedWalletCount: 1,
     });

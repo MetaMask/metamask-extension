@@ -402,6 +402,7 @@ describe('PerpsMarketDetailPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
@@ -454,6 +455,102 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
+    });
+
+    it('masks position P&L, return, size, and margin when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-return-value'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-position-size-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-margin-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('uses the default text color instead of green/red for P&L and return when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      const pnl = screen.getByTestId('perps-position-pnl-value');
+      const returnValue = screen.getByTestId('perps-position-return-value');
+      expect(pnl).toHaveClass('text-default');
+      expect(pnl).not.toHaveClass('text-success-default');
+      expect(pnl).not.toHaveClass('text-error-default');
+      expect(returnValue).toHaveClass('text-default');
+      expect(returnValue).not.toHaveClass('text-success-default');
+      expect(returnValue).not.toHaveClass('text-error-default');
+    });
+
+    it('uses the success color for a profitable P&L outside of privacy mode', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveClass(
+        'text-success-default',
+      );
+    });
+
+    it('masks entry price, liquidation price, funding payments, and auto close TP/SL when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(
+        screen.getByTestId('perps-position-entry-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-liquidation-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-funding-value'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-auto-close-tp-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(screen.getByTestId('perps-auto-close-sl-value')).toHaveTextContent(
+        '••••••',
+      );
     });
 
     it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
@@ -641,6 +738,23 @@ describe('PerpsMarketDetailPage', () => {
       );
       expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
         'BTC-USDC perp',
+      );
+    });
+
+    it('shows the ticker instead of the full name in the header when the full asset names flag is disabled', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const state = createMockState(true);
+      state.metamask.remoteFeatureFlags.perpsShowFullAssetNames = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      const store = mockStore(state);
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent('BTC');
+      expect(getByTestId('perps-market-detail-name')).not.toHaveTextContent(
+        'Bitcoin',
       );
     });
 
