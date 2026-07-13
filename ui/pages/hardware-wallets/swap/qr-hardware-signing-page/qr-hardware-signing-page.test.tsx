@@ -263,6 +263,20 @@ describe('QrHardwareSigningPage', () => {
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
+  it('accepts Reader error callbacks without throwing', () => {
+    const { getByTestId } = render(
+      <QrHardwareSigningPage
+        {...BASE_PROPS}
+        phase={QrHardwareSigningPhase.ScanSignature}
+      />,
+    );
+
+    expect(() => {
+      fireEvent.click(getByTestId('base-qr-reader__set-error-title'));
+      fireEvent.click(getByTestId('base-qr-reader__set-error-active'));
+    }).not.toThrow();
+  });
+
   it('uses qrHardwareScanSignatureFinal label when isFinalSignature is true', () => {
     const { getByTestId } = render(
       <QrHardwareSigningPage

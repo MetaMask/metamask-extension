@@ -30,7 +30,7 @@ import {
   QrSyncConnectionStatus,
   QrSyncMessageVersion,
 } from './constants';
-import { QrSyncDataServiceBuildWalletExportEntriesAction } from './qr-sync-data-service-method-action-types';
+import { QrSyncDataServiceMethodActions } from './qr-sync-data-service-method-action-types';
 import type { QrSyncController } from './qr-sync-controller';
 
 export type QrSyncConnectionStatusType =
@@ -325,7 +325,7 @@ export type QrSyncControllerActions =
 
 export type QrSyncAllowedActions =
   | QrSyncControllerActions
-  | QrSyncDataServiceBuildWalletExportEntriesAction;
+  | QrSyncDataServiceMethodActions;
 
 export type QrSyncControllerMessenger = Messenger<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -334,7 +334,7 @@ export type QrSyncControllerMessenger = Messenger<
 >;
 
 export type QrSyncDataServiceAllowedActions =
-  | QrSyncDataServiceBuildWalletExportEntriesAction
+  | QrSyncDataServiceMethodActions
   | AccountTreeControllerGetAccountGroupObjectAction
   | AccountTreeControllerGetAccountWalletObjectAction
   | AccountsControllerGetAccountAction

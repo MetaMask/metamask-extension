@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "एक कस्टम टोकन जोड़ें"
   },
-  "addDevice": {
-    "message": "मोबाइल के साथ सिंक करें"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "इस RPC प्रोवाइडर को केवल तभी जोड़ें जब आप निश्चित हैं कि आप इस पर विश्वास कर सकते हैं। $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"

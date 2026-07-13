@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -8,6 +8,7 @@ import {
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -37,7 +38,7 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
-import { MerklClaimToast, MusdConversionToast } from '../musd';
+import { MerklClaimToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
@@ -55,7 +56,6 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -90,7 +90,6 @@ const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
 const MemoizedPermittedNetworkToast = memo(PermittedNetworkToast);
 const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
 const MemoizedMerklClaimToast = memo(MerklClaimToast);
-const MemoizedMusdConversionToast = memo(MusdConversionToast);
 const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
 const MemoizedShieldEndingToast = memo(ShieldEndingToast);
@@ -119,7 +118,6 @@ export function ToastMaster() {
         <MemoizedPermittedNetworkToast />
         <MemoizedInfuraSwitchToast />
         <MemoizedMerklClaimToast />
-        <MemoizedMusdConversionToast />
         <MemoizedPerpsWithdrawToast />
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />
@@ -409,7 +407,7 @@ function ShieldEndingToast() {
 function StorageErrorToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [isDismissed, setIsDismissed] = useState(false);
   const [hasTrackedView, setHasTrackedView] = useState(false);
 
@@ -430,28 +428,33 @@ function StorageErrorToast() {
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
     if (shouldShow && !hasTrackedView) {
-      trackEvent({
-        event: MetaMetricsEventName.StorageErrorToastViewed,
-        category: MetaMetricsEventCategory.Error,
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.StorageErrorToastViewed)
+          .addCategory(MetaMetricsEventCategory.Error)
+          .build(),
+      );
       setHasTrackedView(true);
     }
-  }, [shouldShow, hasTrackedView, trackEvent]);
+  }, [shouldShow, hasTrackedView, trackEvent, createEventBuilder]);
 
   const handleRevealSrpClick = () => {
-    trackEvent({
-      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
-      category: MetaMetricsEventCategory.Error,
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+      )
+        .addCategory(MetaMetricsEventCategory.Error)
+        .build(),
+    );
     setIsDismissed(true);
     navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
   };
 
   const handleClose = () => {
-    trackEvent({
-      event: MetaMetricsEventName.StorageErrorToastDismissed,
-      category: MetaMetricsEventCategory.Error,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.StorageErrorToastDismissed)
+        .addCategory(MetaMetricsEventCategory.Error)
+        .build(),
+    );
     setIsDismissed(true);
   };
 

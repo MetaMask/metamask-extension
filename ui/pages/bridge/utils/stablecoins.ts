@@ -67,6 +67,10 @@ export const STABLECOIN_ASSET_IDS = new Set(
       CHAIN_IDS.MEGAETH_MAINNET,
     ), // USDT0
     toAssetId('0x3600000000000000000000000000000000000000', CHAIN_IDS.ARC), // USDC (ERC20)
+    ...[
+      '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34', // USDe
+      '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168', // USDG
+    ].map((address) => toAssetId(address, CHAIN_IDS.ROBINHOOD_CHAIN)),
   ]
     .filter((assetId) => assetId !== undefined)
     .map((assetId) => assetId.toLowerCase()),
