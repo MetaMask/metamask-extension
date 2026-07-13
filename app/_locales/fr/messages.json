@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Ajouter un jeton personnalisé"
   },
-  "addDevice": {
-    "message": "Synchroniser avec le mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "N’ajoutez ce fournisseur de RPC que si vous lui faites confiance. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Continuer"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Reconnecter"
+    "message": "Reconnecter",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Assurez-vous que votre portefeuille matériel est correctement connecté via USB"

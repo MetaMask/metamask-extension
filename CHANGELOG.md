@@ -59,6 +59,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue where MetaMask would not fail over to another RPC URL when Infura is down (#43682)
 - Empty activity on asset pages after switching network filters when a non-EVM chain was previously selected (#43705)
 
+## [13.38.2]
+
+### Fixed
+
+- Fixed a failed swap when smart account upgrade is required (#44291)
+
 ## [13.38.1]
 
 ### Changed
@@ -2679,7 +2685,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.38.0...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...HEAD
-[13.39.0]: https://github.com/MetaMask/metamask-extension/compare/v13.38.1...v13.39.0
+[13.39.0]: https://github.com/MetaMask/metamask-extension/compare/v13.38.2...v13.39.0
+[13.38.2]: https://github.com/MetaMask/metamask-extension/compare/v13.38.1...v13.38.2
 [13.38.1]: https://github.com/MetaMask/metamask-extension/compare/v13.38.0...v13.38.1
 [13.38.0]: https://github.com/MetaMask/metamask-extension/compare/v13.37.0...v13.38.0
 [13.37.0]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...v13.37.0

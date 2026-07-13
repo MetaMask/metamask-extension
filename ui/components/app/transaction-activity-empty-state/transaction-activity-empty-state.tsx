@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { twMerge } from '@metamask/design-system-react';
@@ -23,7 +23,7 @@ import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/asset
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { FundingMethodModal } from '../../multichain/funding-method-modal/funding-method-modal';
 import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 export type TransactionActivityEmptyStateProps = {
   /**
@@ -39,7 +39,7 @@ export const TransactionActivityEmptyState = ({
   const t = useI18nContext();
   const theme = useTheme();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hasTokens = useSelector(selectAccountGroupBalanceForEmptyState);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const [isFundingModalOpen, setIsFundingModalOpen] = useState(false);
@@ -71,18 +71,19 @@ export const TransactionActivityEmptyState = ({
   }, [openBridgeExperience]);
 
   const handleAddFundsOnClick = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Activity Tab Empty State',
-        text: 'Add funds',
-        chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'Activity Tab Empty State',
+          text: 'Add funds',
+          chainId,
+        })
+        .build(),
+    );
 
     setIsFundingModalOpen(true);
-  }, [chainId, trackEvent]);
+  }, [chainId, trackEvent, createEventBuilder]);
 
   const handleFundingModalClose = useCallback(() => {
     setIsFundingModalOpen(false);

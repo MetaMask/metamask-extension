@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "맞춤형 토큰 추가"
   },
-  "addDevice": {
-    "message": "모바일과 동기화"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "신뢰할 수 있는 경우에만 이 RPC 공급입체를 추가하세요. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4199,7 +4196,8 @@
     "message": "계속"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "다시 연결"
+    "message": "다시 연결",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "하드웨어 지갑이 USB를 통해 정상적으로 연결되었는지 확인하세요"

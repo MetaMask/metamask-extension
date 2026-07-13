@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Özel bir token ekle"
   },
-  "addDevice": {
-    "message": "Mobil ile senkronize et"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Bu RPC sağlayıcısını sadece ona güvenebileceğinizden eminseniz ekleyin. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4199,7 +4196,8 @@
     "message": "Devam Et"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Tekrar Bağla"
+    "message": "Tekrar Bağla",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Donanım cüzdanınızın USB ile düzgün bir şekilde bağlandığından emin olun"

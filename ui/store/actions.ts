@@ -5904,6 +5904,35 @@ export function setSeedPhraseBackedUp(
   };
 }
 
+export function setHasSeenOnboardingCompletionPage(
+  hasSeenOnboardingCompletionPage: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      log.debug(`background.setHasSeenOnboardingCompletionPage`);
+      await submitRequestToBackground('setHasSeenOnboardingCompletionPage', [
+        hasSeenOnboardingCompletionPage,
+      ]);
+      if (hasSeenOnboardingCompletionPage) {
+        dispatch(setHasSeenOnboardingCompletionPageAction());
+      }
+    } catch (error) {
+      console.error(
+        'Failed to mark onboarding completion page as seen:',
+        error,
+      );
+    }
+  };
+}
+
+function setHasSeenOnboardingCompletionPageAction() {
+  return {
+    type: actionConstants.SET_HAS_SEEN_ONBOARDING_COMPLETION_PAGE,
+  };
+}
+
 export function setNextNonce(nextNonce: string): PayloadAction<string> {
   return {
     type: actionConstants.SET_NEXT_NONCE,

@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Προσθήκη προσαρμοσμένου token"
   },
-  "addDevice": {
-    "message": "Συγχρονισμός με κινητό"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Προσθέστε αυτόν τον πάροχο RPC μόνο αν είστε σίγουροι ότι μπορείτε να τον εμπιστευτείτε. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Συνεχίστε"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Επανασύνδεση"
+    "message": "Επανασύνδεση",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Βεβαιωθείτε ότι το πορτοφόλι υλικού σας είναι σωστά συνδεδεμένο μέσω USB"

@@ -274,6 +274,7 @@ env:
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
   - QUICKNODE_ARC_URL: null
+  - QUICKNODE_ROBINHOOD_URL: null
 
   ###
   # API keys to 3rd party services
