@@ -47,6 +47,7 @@ function render({
   nativeFee = '0.001 ETH',
   estimationFailed = false,
   isGaslessSupported = false,
+  showFiatInTestnets = false,
   transactionType,
 }: {
   addedProtectionFeeFiat?: string;
@@ -58,6 +59,7 @@ function render({
   nativeFee?: string;
   estimationFailed?: boolean;
   isGaslessSupported?: boolean;
+  showFiatInTestnets?: boolean;
   transactionType?: TransactionType;
 } = {}) {
   mockUseEstimationFailed.mockReturnValue(estimationFailed);
@@ -78,7 +80,13 @@ function render({
     confirmation.type = transactionType;
   }
 
-  const state = getMockConfirmStateForTransaction(confirmation);
+  const state = getMockConfirmStateForTransaction(confirmation, {
+    metamask: {
+      preferences: {
+        showFiatInTestnets,
+      },
+    },
+  });
 
   const mockStore = configureMockStore()(state);
 
@@ -95,8 +103,14 @@ function render({
 }
 
 describe('<EditGasFeesRow />', () => {
-  it('renders component', () => {
-    const { container } = render();
+  it('does not render added protection network fee when fiat is hidden on testnets', () => {
+    const { container, queryByTestId } = render({
+      chainId: CHAIN_IDS.SEPOLIA,
+      addedProtectionFeeFiat: '$0.07',
+      showAddedProtectionFee: true,
+    });
+
+    expect(queryByTestId('added-protection-network-fee')).toBeNull();
     expect(container).toMatchSnapshot();
   });
 
@@ -129,6 +143,7 @@ describe('<EditGasFeesRow />', () => {
     const { getByTestId, getByText } = render({
       addedProtectionFeeFiat: '$0.07',
       showAddedProtectionFee: true,
+      showFiatInTestnets: true,
     });
 
     expect(getByTestId('added-protection-network-fee')).toBeInTheDocument();
@@ -146,6 +161,7 @@ describe('<EditGasFeesRow />', () => {
     const { getByTestId, getByText } = render({
       fiatFee: '',
       showAddedProtectionFee: true,
+      showFiatInTestnets: true,
     });
 
     expect(getByTestId('added-protection-network-fee')).toBeInTheDocument();
@@ -164,6 +180,7 @@ describe('<EditGasFeesRow />', () => {
       addedProtectionFeeFiat: undefined,
       fiatFee: '$12.34',
       showAddedProtectionFee: true,
+      showFiatInTestnets: true,
     });
 
     expect(getByTestId('added-protection-network-fee')).toBeInTheDocument();
