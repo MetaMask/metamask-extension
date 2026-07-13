@@ -87,6 +87,7 @@ class ChromeDriver {
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
+      'extensions.ui.developer_mode': true,
       'profile.content_settings.exceptions.clipboard': {
         '[*.]': {
           last_modified: Date.now(),

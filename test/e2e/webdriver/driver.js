@@ -1163,16 +1163,49 @@ class Driver {
   /** Reloads the unpacked extension from Chrome's extensions page. */
   async reloadChromeExtension() {
     const extensionId = this.extensionUrl.split('/')[2];
-    await this.executeScript(`
-      chrome.developerPrivate.reload(
-        '${extensionId}',
-        {
+    const reloadError = await this.executeAsyncScript(`
+      const callback = arguments[arguments.length - 1];
+      const extensionId = '${extensionId}';
+
+      (async () => {
+        const previousInfo = await chrome.developerPrivate.getExtensionInfo(
+          extensionId,
+        );
+        const previousViews = new Set(
+          previousInfo.views.map(
+            ({ renderProcessId, renderViewId }) =>
+              String(renderProcessId) + ':' + String(renderViewId),
+          ),
+        );
+
+        void chrome.developerPrivate.reload(extensionId, {
           failQuietly: false,
           populateErrorForUnpacked: true,
-        },
-      );
+        });
+
+        const timeout = Date.now() + 10000;
+        while (Date.now() < timeout) {
+          const extensionInfo =
+            await chrome.developerPrivate.getExtensionInfo(extensionId);
+          const hasNewView = extensionInfo.views.some(
+            ({ renderProcessId, renderViewId }) =>
+              !previousViews.has(
+                String(renderProcessId) + ':' + String(renderViewId),
+              ),
+          );
+          if (extensionInfo.state === 'ENABLED' && hasNewView) {
+            callback();
+            return;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+
+        callback('Timed out waiting for the extension to reload');
+      })().catch((error) => callback(error.message));
     `);
-    await this.delay(1000);
+    if (reloadError) {
+      throw new Error(reloadError);
+    }
   }
 
   /** Reloads the extension while keeping it available to WebDriver. */
