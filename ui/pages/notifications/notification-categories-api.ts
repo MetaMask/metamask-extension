@@ -60,7 +60,7 @@ export async function fetchNotificationCategories(
   return new Promise((resolve) =>
     setTimeout(
       () => resolve(CATEGORIES_BY_LOCALE[language] ?? CATEGORIES_BY_LOCALE.en),
-      13000,
+      3000,
     ),
   );
 }
