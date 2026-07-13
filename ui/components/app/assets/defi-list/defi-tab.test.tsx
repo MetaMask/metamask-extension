@@ -7,6 +7,7 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { DEFI_CONTROLLER_V2_FLAG } from '../../../../../shared/lib/defi-controller-v2/remote-feature-flag';
 import DeFiTab from './defi-tab';
 
 const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -72,6 +73,7 @@ const defiApiError = null;
 
 const render = (
   state: 'with-positions' | 'loading-positions' | 'error' | 'no-open-positions',
+  options?: { defiControllerV2Enabled?: boolean },
 ) => {
   let selectedDeFiPositions;
 
@@ -101,6 +103,11 @@ const render = (
         ETH: {
           conversionRate: 1597.32,
         },
+      },
+      remoteFeatureFlags: {
+        ...(options?.defiControllerV2Enabled
+          ? { [DEFI_CONTROLLER_V2_FLAG]: { enabled: true } }
+          : {}),
       },
     },
   };
@@ -192,6 +199,18 @@ describe('DefiList', () => {
       expect(
         screen.queryByTestId('import-token-button'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  it('renders DefiListV2 when defi-controller-v-2 is enabled', async () => {
+    await act(async () => {
+      render('with-positions', { defiControllerV2Enabled: true });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('defi-list-market-value')).toHaveTextContent(
+        '$20,000.00',
+      );
     });
   });
 });
