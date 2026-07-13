@@ -52,8 +52,10 @@ class BitcoinReviewTxPage {
     console.log(
       `Check if send amount ${amount} is displayed on bitcoin review tx page`,
     );
-    await this.waitForBodyText(`-${amount}`, 30_000);
-    await this.waitForBodyText('BTC', 30_000);
+    await this.driver.waitForSelector({
+      text: `-${amount} BTC`,
+      tag: 'p',
+    });
   }
 
   async checkTotalAmountIsDisplayed(total: string): Promise<void> {
@@ -64,19 +66,6 @@ class BitcoinReviewTxPage {
       text: `${total} USD`,
       tag: 'p',
     });
-  }
-
-  private async waitForBodyText(text: string, timeout: number): Promise<void> {
-    await this.driver.wait(
-      async () =>
-        Boolean(
-          await this.driver.executeScript(
-            'return document.body?.innerText.includes(arguments[0][0]);',
-            text,
-          ),
-        ),
-      timeout,
-    );
   }
 }
 
