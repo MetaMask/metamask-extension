@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 
-// ponytail: stub — final copy/layout pending design sign-off (TRAM-3710 open Q1)
+// Stub — final copy/layout pending design sign-off (TRAM-3710 open Q1).
 export default function RampsInfoModal({
   testId,
   title,
