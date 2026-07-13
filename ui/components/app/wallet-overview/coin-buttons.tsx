@@ -64,6 +64,7 @@ import {
 } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { getIsRampsEnabled } from '../../../selectors/ramps-feature-flags';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { Toast, ToastContainer } from '../../multichain/toast';
@@ -363,6 +364,7 @@ const CoinButtons = ({
   };
 
   const { goToBuy } = useRampsNavigation();
+  const isRampsEnabled = useSelector(getIsRampsEnabled);
 
   const { openBridgeExperience } = useBridging();
 
@@ -426,7 +428,12 @@ const CoinButtons = ({
     if (!opened) {
       return;
     }
-    setShowTabOpenedToast(true);
+    // Only the flag-off path opens a Portfolio browser tab; with the ramps
+    // flow enabled, goToBuy navigates in-app, so the "tab opened" toast would
+    // be misleading.
+    if (!isRampsEnabled) {
+      setShowTabOpenedToast(true);
+    }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -446,7 +453,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, isRampsEnabled]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url

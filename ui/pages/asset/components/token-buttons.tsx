@@ -66,10 +66,15 @@ const TokenButtons = ({
   }, [token.isERC721, token.address, dispatch]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
-    await goToBuy({
+    const opened = await goToBuy({
       assetId: toAssetId(token.address, token.chainId),
       chainId: token.chainId,
     });
+    // The ramps gate can block the buy and show its own modal; don't report a
+    // buy click in that case.
+    if (!opened) {
+      return;
+    }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)

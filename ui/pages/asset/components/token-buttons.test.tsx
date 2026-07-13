@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -22,12 +22,13 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   default: () => ({ openBridgeExperience: jest.fn() }),
 }));
 
+const mockTrackEvent = jest.fn();
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
   );
   return {
-    useAnalytics: () => ({ trackEvent: jest.fn(), createEventBuilder }),
+    useAnalytics: () => ({ trackEvent: mockTrackEvent, createEventBuilder }),
   };
 });
 
@@ -61,5 +62,17 @@ describe('TokenButtons buy wiring', () => {
       assetId: toAssetId(token.address, token.chainId),
       chainId: token.chainId,
     });
+  });
+
+  it('does not track a buy click when the ramps gate blocks the buy', async () => {
+    mockGoToBuy.mockResolvedValueOnce(false);
+    const { getByTestId } = renderWithProvider(
+      <TokenButtons token={token} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('token-overview-buy'));
+    await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 });

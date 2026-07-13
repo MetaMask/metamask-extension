@@ -49,7 +49,13 @@ const AddFundsModal = ({
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
-    await goToBuy();
+    const opened = await goToBuy();
+    // The ramps gate can block the buy (e.g. service disruption, unsupported
+    // region) and show its own modal; don't report a buy click or close this
+    // modal in that case.
+    if (!opened) {
+      return;
+    }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
