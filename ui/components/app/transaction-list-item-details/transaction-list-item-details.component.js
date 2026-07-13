@@ -44,7 +44,6 @@ function TransactionListItemDetails({
   isCustomNetwork,
   navigate,
   blockExplorerLinkText,
-  chainId,
   networkConfiguration,
   isHardwareWalletAccount,
   isProtectedByEnforcedSimulations,
@@ -52,6 +51,14 @@ function TransactionListItemDetails({
   const t = useI18nContext();
   const [justCopied, setJustCopied] = useState(false);
   const copyTimeoutRef = useRef(null);
+
+  const {
+    primaryTransaction,
+    initialTransaction: { type },
+    hasCancelled,
+  } = transactionGroup;
+  const { chainId, hash: txHash } = primaryTransaction;
+  const speedUpLabel = hasCancelled ? 'speedUpCancellation' : 'speedUp';
 
   useEffect(() => {
     if (recipientAddress) {
@@ -69,7 +76,7 @@ function TransactionListItemDetails({
   );
 
   const handleBlockExplorerClick = useCallback(() => {
-    const { primaryTransaction } = transactionGroup;
+    const { primaryTransaction: primaryTx } = transactionGroup;
     const blockExplorerUrl =
       networkConfiguration?.[chainId]?.blockExplorerUrls[
         networkConfiguration?.[chainId]?.defaultBlockExplorerUrlIndex
@@ -81,7 +88,7 @@ function TransactionListItemDetails({
     };
 
     const blockExplorerLink = getBlockExplorerLink(
-      primaryTransaction,
+      primaryTx,
       rpcPrefs,
     );
 
@@ -130,9 +137,6 @@ function TransactionListItemDetails({
   );
 
   const handleCopyTxId = useCallback(() => {
-    const { primaryTransaction: transaction } = transactionGroup;
-    const { hash } = transaction;
-
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: 'Copied Transaction ID',
@@ -143,17 +147,9 @@ function TransactionListItemDetails({
     });
 
     setJustCopied(true);
-    copyToClipboard(hash, COPY_OPTIONS);
+    copyToClipboard(txHash, COPY_OPTIONS);
     copyTimeoutRef.current = setTimeout(() => setJustCopied(false), SECOND);
-  }, [trackEvent, transactionGroup]);
-
-  const {
-    primaryTransaction: transaction,
-    initialTransaction: { type },
-    hasCancelled,
-  } = transactionGroup;
-  const { hash } = transaction;
-  const speedUpLabel = hasCancelled ? 'speedUpCancellation' : 'speedUp';
+  }, [trackEvent, txHash]);
 
   return (
     <Popover title={title} onClose={onClose}>
@@ -210,7 +206,7 @@ function TransactionListItemDetails({
               type="button"
               className="text-primary-default"
               onClick={handleBlockExplorerClick}
-              disabled={!hash}
+              disabled={!txHash}
             >
               {blockExplorerLinkText.firstPart === 'addBlockExplorer'
                 ? t('addBlockExplorer')
@@ -226,7 +222,7 @@ function TransactionListItemDetails({
                 type="button"
                 className="text-primary-default"
                 onClick={handleCopyTxId}
-                disabled={!hash}
+                disabled={!txHash}
               >
                 {t('copyTransactionId')}
               </button>
@@ -257,7 +253,7 @@ function TransactionListItemDetails({
                 type === TransactionType.tokenMethodApprove ||
                 type === TransactionType.tokenMethodSetApprovalForAll
               }
-              transaction={transaction}
+              transaction={primaryTransaction}
               primaryCurrency={primaryCurrency}
               className="transaction-list-item-details__transaction-breakdown"
               chainId={chainId}

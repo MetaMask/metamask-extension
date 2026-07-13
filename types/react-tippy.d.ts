@@ -23,7 +23,7 @@ declare module 'react-tippy' {
 
   export type TooltipProps = {
     children?: React.ReactNode;
-    title?: string;
+    title?: string | null;
     disabled?: boolean;
     open?: boolean;
     useContext?: boolean;
