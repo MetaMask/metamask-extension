@@ -351,6 +351,9 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     databaseUnavailable: false,
   },
   StaticAssetsController: {},
+  StellarAssetsController: {
+    accountAssets: false,
+  },
   SubjectMetadataController: {
     subjectMetadata: false,
   },

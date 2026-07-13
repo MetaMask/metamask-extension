@@ -107,7 +107,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
   );
 
   if (initialStellarEnabled) {
-     xlmProvider.setEnabled(true);
+    xlmProvider.setEnabled(true);
   }
 
   // Subscribe to feature flag changes
