@@ -300,9 +300,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   ]);
 
   const { submitBridgeTransaction: submitBridgeTransactionBase } =
-    useSubmitBridgeTransaction({
-      submitOnHardwareWalletSigningPage: true,
-    });
+    useSubmitBridgeTransaction();
 
   /**
    * Wraps bridge submission so hardware-wallet reject/fail outcomes update the
@@ -316,7 +314,10 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       options?: { rpcTimeoutMs?: number },
     ) => {
       try {
-        await submitBridgeTransactionBase(quoteResponse, options);
+        await submitBridgeTransactionBase(quoteResponse, {
+          ...options,
+          submitOnHardwareWalletSigningPage: true,
+        });
       } catch (error) {
         if (!isRetryingRef.current) {
           if (isUserRejectedHardwareWalletError(error)) {
@@ -376,7 +377,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
     // 1. Reject the old approval (cleanup) — may already be resolved.
     if (currentApprovalRequestId) {
-      await cleanupPendingApproval(dispatch, currentApprovalRequestId);
+      cleanupPendingApproval(dispatch, currentApprovalRequestId);
     }
 
     // 2. Find the network client for this chain.
@@ -811,7 +812,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       // Reject the pending approval so the confirmation is cleaned up and
       // does not linger after navigating back to the send flow.
       if (currentApprovalRequestId) {
-        await cleanupPendingApproval(dispatch, currentApprovalRequestId);
+        cleanupPendingApproval(dispatch, currentApprovalRequestId);
       }
       navigate(sendBundleState?.returnRoute ?? DEFAULT_ROUTE, {
         replace: true,

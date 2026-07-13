@@ -37,6 +37,19 @@ function isSigning(status: HardwareWalletSignatureStatus): boolean {
   );
 }
 
+const SIGNING_OUTCOME_EVENTS: Partial<
+  Record<HardwareWalletSignatureStatus, HardwareWalletSignatureEvent>
+> = {
+  [HardwareWalletSignatureStatus.Submitted]:
+    HardwareWalletSignatureEvent.TransactionSubmitted,
+  [HardwareWalletSignatureStatus.Rejected]:
+    HardwareWalletSignatureEvent.TransactionRejected,
+  [HardwareWalletSignatureStatus.Failed]:
+    HardwareWalletSignatureEvent.TransactionFailed,
+  [HardwareWalletSignatureStatus.Disconnected]:
+    HardwareWalletSignatureEvent.DeviceDisconnected,
+};
+
 function driveToStatus(
   target: HardwareWalletSignatureStatus,
   current: HardwareWalletSignatureStatus,
@@ -47,67 +60,45 @@ function driveToStatus(
     return;
   }
 
-  const reset = (): void =>
+  const reset = (): void => {
     dispatch({
       type: HardwareWalletSignatureEvent.Reset,
       needsTwoConfirmations,
     });
+  };
+
+  const advanceFromFirst =
+    needsTwoConfirmations &&
+    current === HardwareWalletSignatureStatus.AwaitingFirstSignature;
+
+  // Two-confirmation flows step through FirstSignatureSubmitted before a later
+  // effect drives to the final target (AwaitingFinalSignature or Submitted).
+  if (
+    target === HardwareWalletSignatureStatus.AwaitingFinalSignature ||
+    (target === HardwareWalletSignatureStatus.Submitted && advanceFromFirst)
+  ) {
+    if (advanceFromFirst) {
+      dispatch({ type: HardwareWalletSignatureEvent.FirstSignatureSubmitted });
+    } else {
+      reset();
+    }
+    return;
+  }
 
   if (target === HardwareWalletSignatureStatus.AwaitingFirstSignature) {
     reset();
     return;
   }
 
-  if (target === HardwareWalletSignatureStatus.AwaitingFinalSignature) {
-    if (
-      current === HardwareWalletSignatureStatus.AwaitingFirstSignature &&
-      needsTwoConfirmations
-    ) {
-      dispatch({ type: HardwareWalletSignatureEvent.FirstSignatureSubmitted });
-    } else {
-      reset();
-    }
+  const outcomeEvent = SIGNING_OUTCOME_EVENTS[target];
+  if (!outcomeEvent) {
     return;
   }
 
-  if (target === HardwareWalletSignatureStatus.Submitted) {
-    if (
-      needsTwoConfirmations &&
-      current === HardwareWalletSignatureStatus.AwaitingFirstSignature
-    ) {
-      dispatch({ type: HardwareWalletSignatureEvent.FirstSignatureSubmitted });
-    } else if (isSigning(current)) {
-      dispatch({ type: HardwareWalletSignatureEvent.TransactionSubmitted });
-    } else {
-      reset();
-    }
-    return;
-  }
-
-  if (target === HardwareWalletSignatureStatus.Rejected) {
-    if (isSigning(current)) {
-      dispatch({ type: HardwareWalletSignatureEvent.TransactionRejected });
-    } else {
-      reset();
-    }
-    return;
-  }
-
-  if (target === HardwareWalletSignatureStatus.Failed) {
-    if (isSigning(current)) {
-      dispatch({ type: HardwareWalletSignatureEvent.TransactionFailed });
-    } else {
-      reset();
-    }
-    return;
-  }
-
-  if (target === HardwareWalletSignatureStatus.Disconnected) {
-    if (isSigning(current)) {
-      dispatch({ type: HardwareWalletSignatureEvent.DeviceDisconnected });
-    } else {
-      reset();
-    }
+  if (isSigning(current)) {
+    dispatch({ type: outcomeEvent });
+  } else {
+    reset();
   }
 }
 
