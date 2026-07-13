@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
-import { TransactionListItemPendingActions } from './transaction-list-item-pending-actions';
+import { TransactionListItemPendingActions } from './pending-transaction-actions';
 
 jest.mock('../../../hooks/usePendingTransactionActions');
 jest.mock('../../../hooks/bridge/useBridgeTxHistoryData');
@@ -19,7 +19,7 @@ let capturedProps: {
 } | null = null;
 
 jest.mock(
-  '../pending-transaction-action-buttons/pending-transaction-action-buttons',
+  '../../../components/app/pending-transaction-action-buttons/pending-transaction-action-buttons',
   () => ({
     PendingTransactionActionButtons: (props: typeof capturedProps) => {
       capturedProps = props;
@@ -67,9 +67,6 @@ describe('TransactionListItemPendingActions', () => {
     jest.clearAllMocks();
     mockUseBridgeTxHistoryData.mockReturnValue({
       bridgeHistoryItem: undefined,
-      isBridgeComplete: null,
-      isBridgeFailed: null,
-      showBridgeTxDetails: undefined,
     });
     mockActions();
   });

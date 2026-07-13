@@ -2143,19 +2143,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  // Value is enabled despite the flag being disabled in prod, as specs are already updated to use the redesigned activity list.
-  // See https://github.com/MetaMask/metamask-extension/pull/42837
-  extensionUxActivityListRedesign: {
-    name: 'extensionUxActivityListRedesign',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      minimumVersion: '13.36.0',
-      enabled: true,
-    },
-    status: FeatureFlagStatus.Active,
-  },
-
   [ACTIVE_TAB_DOMAIN_METRICS_FLAG]: {
     name: ACTIVE_TAB_DOMAIN_METRICS_FLAG,
     type: FeatureFlagType.Remote,

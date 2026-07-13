@@ -1953,10 +1953,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Será necessário confirmar 2 transações na sua carteira de hardware:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Detalhes da ponte",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -1965,9 +1961,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Selecione o valor"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Visualizar em $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Esta transação ocorre em duas redes. Um link mostra a origem, o outro mostra o destino após a confirmação."
@@ -2240,42 +2233,11 @@
   "bridgeSendLoading": {
     "message": "Enviando da cadeia de origem"
   },
-  "bridgeStatusComplete": {
-    "message": "Concluída",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Falhou",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "Em andamento",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 recebido em $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Recebendo $1 em $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Realizado swap de $1 para $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Realizando swap de $1 para $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Suspeito"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Token suspeito"
-  },
-  "bridgeTo": {
-    "message": "Fazer ponte para"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 é um token malicioso."
@@ -2291,56 +2253,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Nenhum token corresponde a \"$1\""
-  },
-  "bridgeTransactionProgress": {
-    "message": "Transação $1 de 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Ponte realizada"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Realizando ponte"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Entre em contato com"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Suporte da MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Já se passaram mais de 3 horas?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Status"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Troca realizada"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Trocando"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Carimbo de data/hora"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 às $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 em",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Taxa de gás total"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Você recebeu"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Você enviou"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Use o máximo permitido"
@@ -2358,12 +2270,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "É necessário um saldo mínimo de reserva de $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Ponte realizada"
-  },
-  "bridgedToChain": {
-    "message": "Ponte realizada para $1"
   },
   "bridging": {
     "message": "Realizando ponte"
@@ -3370,10 +3276,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Endereço de recebimento"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "ID da transação de destino",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Detalhes"
@@ -5345,10 +5247,6 @@
     "message": "Detalhes do bônus resgatável",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Converter $1 para mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Detalhes do bônus",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5731,14 +5629,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Detecção automática de NFTs ativada"
   },
-  "nftBought": {
-    "message": "Comprou $1"
-  },
   "nftEmptyDescription": {
     "message": "Existe um mundo de NFTs por aí. Comece sua coleção hoje mesmo."
-  },
-  "nftMinted": {
-    "message": "Mintou $1"
   },
   "nftOptions": {
     "message": "Opções de NFT"
@@ -6917,9 +6809,6 @@
   "perpsDateYesterday": {
     "message": "Ontem"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Perps creditados"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Falha na ponte"
   },
@@ -7557,10 +7446,6 @@
   },
   "perpsWithdraw": {
     "message": "Sacar"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Perps sacados",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Tempo estimado"
@@ -8220,9 +8105,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "A operação foi concluída com sucesso."
   },
-  "retryTransaction": {
-    "message": "Tentar transação novamente"
-  },
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."
   },
@@ -8276,10 +8158,6 @@
   },
   "revokePermission": {
     "message": "Revogar permissão"
-  },
-  "revokePermissionTitle": {
-    "message": "Remover permissão de $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Você está removendo a permissão de alguém para gastar tokens de sua conta."
@@ -8656,14 +8534,6 @@
   "sent": {
     "message": "Enviado"
   },
-  "sentSpecifiedTokens": {
-    "message": "Enviou $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Enviou $1 como $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Rede de teste Sepolia"
   },
@@ -8672,10 +8542,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Solicitação de saque"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Aprovar $1 sem limite de gastos",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Configurar",
@@ -9378,9 +9244,6 @@
   },
   "sign": {
     "message": "Assinar"
-  },
-  "signatureRequest": {
-    "message": "Solicitação de assinatura"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "O NFT será refletido em sua carteira quando o lance for aceito."
@@ -10168,10 +10031,6 @@
   "swapDecentralizedExchange": {
     "message": "Corretora descentralizada"
   },
-  "swapDetailsTitle": {
-    "message": "Detalhes da troca",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "Contrato direto"
   },
@@ -10375,10 +10234,6 @@
   },
   "swapTokenNotAvailable": {
     "message": "O token não está disponível para troca nesta região"
-  },
-  "swapTokenToToken": {
-    "message": "Trocar $1 por $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTokens": {
     "message": "Trocar tokens"
@@ -10648,10 +10503,6 @@
   "transactionIncludesTypes": {
     "message": "Esta transação inclui: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Essa transação estava protegida. Nós a cancelamos para evitar a perda inesperada de fundos.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Configurações da transação"
   },
@@ -10660,10 +10511,6 @@
   },
   "transactionSubmitted": {
     "message": "Transação enviada"
-  },
-  "transactionTotalGasFee": {
-    "message": "Taxa de gás total",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transações"
@@ -10989,9 +10836,6 @@
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Ver detalhes"
   },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"

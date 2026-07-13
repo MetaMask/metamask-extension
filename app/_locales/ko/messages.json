@@ -1953,10 +1953,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "하드웨어 지갑에서 2건의 트랜잭션을 컨펌해야 합니다."
   },
-  "bridgeDetailsTitle": {
-    "message": "브릿지 세부 정보",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -1965,9 +1961,6 @@
   },
   "bridgeEnterAmount": {
     "message": "금액 선택"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "$1에서 보기"
   },
   "bridgeExplorerPopupDescription": {
     "message": "이 트랜잭션은 두 개의 네트워크에서 처리됩니다. 한 링크는 출발지 네트워크를, 다른 링크는 컨펌 후 도착지 네트워크를 보여줍니다."
@@ -2240,42 +2233,11 @@
   "bridgeSendLoading": {
     "message": "소스 체인에서 전송"
   },
-  "bridgeStatusComplete": {
-    "message": "완료",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "실패",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "진행 중",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$2에서 $1 받음",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "$2에서 $1 받는 중",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "$1을(를) $2(으)로 스왑 완료",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "$1을(를) $2(으)로 스왑 중",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "의심됨"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "의심스러운 토큰"
-  },
-  "bridgeTo": {
-    "message": "브릿지 대상:"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1은(는) 악성 토큰입니다."
@@ -2291,56 +2253,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "\"$1\"(와)과 일치하는 토큰 없음"
-  },
-  "bridgeTransactionProgress": {
-    "message": "트랜잭션 $1/2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "브릿지 완료"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "브릿징"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "다음으로 연락하기:"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMask 지원"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "3시간 이상 걸렸나요?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "논스"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "상태"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "스왑 완료"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "스왑 중"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "타임스탬프"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$2에 $1",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 위치:",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "총 가스비"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "받음:"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "보냄:"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "최대 허용량 사용"
@@ -2358,12 +2270,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "최소 $1의 예치금이 필요합니다",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "브릿지 완료"
-  },
-  "bridgedToChain": {
-    "message": "$1(으)로 브릿지 완료"
   },
   "bridging": {
     "message": "브릿징"
@@ -3370,10 +3276,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "수신 주소"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "대상 Tx ID",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "세부 정보"
@@ -5349,10 +5251,6 @@
     "message": "수령 가능한 보너스 정보",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "$1을(를) mUSD로 전환",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "보너스 정보",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5735,14 +5633,8 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT 자동 감지 켜짐"
   },
-  "nftBought": {
-    "message": "$1 구매"
-  },
   "nftEmptyDescription": {
     "message": "끝없이 펼쳐지는 NFT의 세계. 나만의 컬렉션을 만들어 보세요."
-  },
-  "nftMinted": {
-    "message": "$1 민팅"
   },
   "nftOptions": {
     "message": "NFT 옵션"
@@ -6921,9 +6813,6 @@
   "perpsDateYesterday": {
     "message": "어제"
   },
-  "perpsDepositActivityTitle": {
-    "message": "무기한 선물 입금 완료"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "브릿지 실패"
   },
@@ -7565,10 +7454,6 @@
   },
   "perpsWithdraw": {
     "message": "출금"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "무기한 선물 출금",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "예상 시간"
@@ -8228,9 +8113,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "작업을 완료했습니다."
   },
-  "retryTransaction": {
-    "message": "트랜잭션 재시도"
-  },
   "reusedTokenNameWarning": {
     "message": "여기에 있는 토큰은 사용자가 주시 중인 다른 토큰의 기호를 재사용하기 때문에 혼동되거나 속기 쉽습니다."
   },
@@ -8284,10 +8166,6 @@
   },
   "revokePermission": {
     "message": "권한 철회"
-  },
-  "revokePermissionTitle": {
-    "message": "$1 권한 제거",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "다른 사람이 내 계정에서 토큰을 사용할 수 있는 권한을 제거합니다."
@@ -8664,14 +8542,6 @@
   "sent": {
     "message": "전송됨"
   },
-  "sentSpecifiedTokens": {
-    "message": "$1 전송됨",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "$1을 $2로 전송함",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
   },
@@ -8680,10 +8550,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "출금 요청"
-  },
-  "setApprovalForAllTitle": {
-    "message": "$1 무제한 지출 승인",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "설정",
@@ -9386,9 +9252,6 @@
   },
   "sign": {
     "message": "서명"
-  },
-  "signatureRequest": {
-    "message": "서명 요청"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "입찰이 수락되면 NFT가 지갑에 반영됩니다."
@@ -10176,10 +10039,6 @@
   "swapDecentralizedExchange": {
     "message": "분산형 교환"
   },
-  "swapDetailsTitle": {
-    "message": "스왑 세부 정보",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "직접 계약"
   },
@@ -10383,10 +10242,6 @@
   },
   "swapTokenNotAvailable": {
     "message": "이 지역에서는 토큰을 스왑할 수 없습니다"
-  },
-  "swapTokenToToken": {
-    "message": "$1에서 $2(으)로 스왑",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTokens": {
     "message": "토큰 스왑"
@@ -10656,10 +10511,6 @@
   "transactionIncludesTypes": {
     "message": "이 트랜잭션에 포함된 사항: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "이 트랜잭션은 보호되었습니다. 예상치 못한 자금 손실을 방지하기 위해 취소했습니다.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "트랜잭션 설정"
   },
@@ -10668,10 +10519,6 @@
   },
   "transactionSubmitted": {
     "message": "트랜잭션 제출 완료"
-  },
-  "transactionTotalGasFee": {
-    "message": "가스비 합계",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "트랜잭션"
@@ -10997,9 +10844,6 @@
   "viewAddressOnExplorer": {
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "세부 정보 보기"
   },
   "viewOnBlockExplorer": {
     "message": "블록 탐색기에서 보기"

@@ -41,7 +41,6 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
@@ -119,7 +118,6 @@ import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -516,10 +514,6 @@ export const routeConfig = [
           {
             path: `${BATCH_SELL_ROOT_ROUTE}/*`,
             element: <BatchSell />,
-          },
-          {
-            path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
-            element: <CrossChainSwapTxDetails />,
           },
           {
             path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,

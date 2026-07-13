@@ -5,7 +5,7 @@ import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
 import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
-import { PendingTransactionActionButtons } from '../pending-transaction-action-buttons/pending-transaction-action-buttons';
+import { PendingTransactionActionButtons } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-action-buttons';
 
 type TransactionMetaWithSmartTransaction = TransactionMeta & {
   isSmartTransaction?: boolean;

@@ -32,15 +32,11 @@ jest.mock('../../app/assets/asset-list', () => ({
   default: () => null,
 }));
 
-jest.mock('../activity-v2/activity-list', () => ({
-  ActivityList: () => null,
-}));
-
 jest.mock('../../../pages/activity/activity-list', () => ({
   ActivityList: () => null,
 }));
 
-jest.mock('../activity-v2/useTransactionsQuery', () => ({
+jest.mock('../../../pages/activity/useTransactionsQuery', () => ({
   usePrefetchTransactions: () => jest.fn(),
 }));
 
@@ -78,12 +74,11 @@ describe('AccountOverviewTabs - event metrics', () => {
     jest.clearAllMocks();
   });
 
-  it('does not fire trackEvent when clicking the Activity tab (V3 mode)', () => {
+  it('does not fire trackEvent when clicking the Activity tab (deferred to ActivityList)', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
         enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
-        remoteFeatureFlags: { extensionUxActivityListRedesign: true },
       },
     });
 
@@ -102,44 +97,9 @@ describe('AccountOverviewTabs - event metrics', () => {
 
     fireEvent.click(getByText(messages.activity.message));
 
-    // ActivityScreenOpened is deferred to ActivityListV3; tab click must not
+    // ActivityScreenOpened is deferred to ActivityList; tab click must not
     // fire any metric.
     expect(mockTrackEvent).not.toHaveBeenCalled();
-  });
-
-  it('fires ActivityScreenOpened when clicking the Activity tab (V2 mode)', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
-        remoteFeatureFlags: { extensionUxActivityListRedesign: false },
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={false}
-          showActivity={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-
-    fireEvent.click(getByText(messages.activity.message));
-
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.ActivityScreenOpened,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          network_filter: ['eip155:1'],
-        }),
-      }),
-    );
   });
 
   it('includes network_filter property with both EVM and non-EVM networks in CAIP format', () => {

@@ -51,10 +51,8 @@ import {
   PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
 } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
-import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
-import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
-import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
-import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
+import { ActivityList } from '../../../pages/activity/activity-list';
+import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 
@@ -101,9 +99,6 @@ export const AccountOverviewTabs = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
-  const isActivityListRedesignEnabled = useSelector(
-    getIsActivityListRedesignEnabled,
-  );
   const prefetchTransactions = usePrefetchTransactions();
 
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
@@ -179,14 +174,12 @@ export const AccountOverviewTabs = ({
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      // For ActivityListV3, ActivityScreenOpened is deferred to the list
-      // component so it can include accurate is_empty / pending_transactions
-      // after all data sources have loaded. For ActivityListV2 there is no
-      // equivalent deferred tracking, so fire immediately on click.
+      // ActivityScreenOpened is deferred to the list component so it can
+      // include accurate is_empty / pending_transactions after all data sources
+      // have loaded.
       if (
         tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
-        (tabName !== AccountOverviewTabKey.Activity ||
-          !isActivityListRedesignEnabled)
+        tabName !== AccountOverviewTabKey.Activity
       ) {
         trackEvent({
           category: MetaMetricsEventCategory.Home,
@@ -208,7 +201,6 @@ export const AccountOverviewTabs = ({
     },
     [
       activeTabKey,
-      isActivityListRedesignEnabled,
       networkFilterForMetrics,
       setActiveTabKey,
       dispatch,
@@ -343,11 +335,7 @@ export const AccountOverviewTabs = ({
             onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              {isActivityListRedesignEnabled ? (
-                <ActivityListV3 />
-              ) : (
-                <ActivityListV2 />
-              )}
+              <ActivityList />
             </ErrorBoundary>
           </Tab>
         )}

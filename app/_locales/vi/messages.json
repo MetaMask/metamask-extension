@@ -1953,10 +1953,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Bạn sẽ cần xác nhận 2 giao dịch trên ví cứng của mình:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Chi tiết cầu nối",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -1965,9 +1961,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Chọn số tiền"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Xem trên $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Giao dịch này tồn tại trên hai mạng. Một liên kết hiển thị nguồn, liên kết còn lại hiển thị đích đến sau khi được xác nhận."
@@ -2240,42 +2233,11 @@
   "bridgeSendLoading": {
     "message": "Đang gửi từ chuỗi nguồn"
   },
-  "bridgeStatusComplete": {
-    "message": "Hoàn tất",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Thất bại",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "Đang xử lý",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "Đã nhận $1 trên $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Đang nhận $1 trên $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Đã hoán đổi $1 thành $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Đang hoán đổi $1 thành $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Đáng ngờ"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Token đáng ngờ"
-  },
-  "bridgeTo": {
-    "message": "Cầu nối đến"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 là token độc hại."
@@ -2291,56 +2253,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Không có token nào khớp với \"$1\""
-  },
-  "bridgeTransactionProgress": {
-    "message": "Giao dịch $1/2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Đã tạo cầu nối"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Cầu nối"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Liên hệ với"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Hỗ trợ MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Đã quá 3 giờ chưa?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Số nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Trạng thái"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Đã hoán đổi"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Đang hoán đổi"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Dấu thời gian"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 lúc $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 trên",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Tổng phí gas"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Bạn đã nhận"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Bạn đã gửi"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Sử dụng mức tối đa được cho phép"
@@ -2358,12 +2270,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Yêu cầu số dư dự trữ tối thiểu $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Đã tạo cầu nối"
-  },
-  "bridgedToChain": {
-    "message": "Đã tạo cầu nối đến $1"
   },
   "bridging": {
     "message": "Cầu nối"
@@ -3370,10 +3276,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Địa chỉ nhận"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "ID giao dịch đích",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Chi tiết"
@@ -5349,10 +5251,6 @@
     "message": "Chi tiết phần thưởng có thể nhận",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Chuyển đổi $1 sang mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Chi tiết phần thưởng",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5735,14 +5633,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Tính năng tự động phát hiện NFT đã được bật"
   },
-  "nftBought": {
-    "message": "Đã mua $1"
-  },
   "nftEmptyDescription": {
     "message": "Có cả một thế giới NFT đang chờ bạn khám phá. Bắt đầu bộ sưu tập của bạn ngay hôm nay."
-  },
-  "nftMinted": {
-    "message": "Đã đúc $1"
   },
   "nftOptions": {
     "message": "Tùy chọn NFT"
@@ -6921,9 +6813,6 @@
   "perpsDateYesterday": {
     "message": "Hôm qua"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Hợp đồng vĩnh cửu đã được nạp tiền"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Cầu nối thất bại"
   },
@@ -7565,10 +7454,6 @@
   },
   "perpsWithdraw": {
     "message": "Rút tiền"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Rút tiền hợp đồng vĩnh cửu",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Thời gian ước tính"
@@ -8228,9 +8113,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Đã hoàn thành thao tác thành công."
   },
-  "retryTransaction": {
-    "message": "Thử lại giao dịch"
-  },
   "reusedTokenNameWarning": {
     "message": "Một token trong đây sử dụng lại ký hiệu của một token khác mà bạn thấy, điều này có thể gây nhầm lẫn hoặc mang tính lừa dối."
   },
@@ -8284,10 +8166,6 @@
   },
   "revokePermission": {
     "message": "Thu hồi quyền"
-  },
-  "revokePermissionTitle": {
-    "message": "Xóa quyền $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Bạn đang xóa quyền chi tiêu token của người khác khỏi tài khoản của bạn."
@@ -8664,14 +8542,6 @@
   "sent": {
     "message": "Đã gửi"
   },
-  "sentSpecifiedTokens": {
-    "message": "Đã gửi $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Đã gửi $1 dưới dạng $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"
   },
@@ -8680,10 +8550,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Yêu cầu rút tiền"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Chấp thuận $1 không có hạn mức chi tiêu",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Thiết lập",
@@ -9386,9 +9252,6 @@
   },
   "sign": {
     "message": "Ký"
-  },
-  "signatureRequest": {
-    "message": "Yêu cầu chữ ký"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "NFT sẽ hiển thị trong ví của bạn khi giá thầu được chấp nhận."
@@ -10176,10 +10039,6 @@
   "swapDecentralizedExchange": {
     "message": "Sàn giao dịch phi tập trung"
   },
-  "swapDetailsTitle": {
-    "message": "Chi tiết hoán đổi",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "Hợp đồng trực tiếp"
   },
@@ -10383,10 +10242,6 @@
   },
   "swapTokenNotAvailable": {
     "message": "Token không có sẵn để hoán đổi trong khu vực này"
-  },
-  "swapTokenToToken": {
-    "message": "Hoán đổi $1 sang $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTokens": {
     "message": "Hoán đổi token"
@@ -10656,10 +10511,6 @@
   "transactionIncludesTypes": {
     "message": "Giao dịch này bao gồm: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Giao dịch này đã được bảo vệ. Chúng tôi đã hủy giao dịch để tránh mất tiền ngoài ý muốn.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Cài đặt giao dịch"
   },
@@ -10668,10 +10519,6 @@
   },
   "transactionSubmitted": {
     "message": "Đã gửi giao dịch"
-  },
-  "transactionTotalGasFee": {
-    "message": "Tổng phí gas",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Giao dịch"
@@ -10997,9 +10844,6 @@
   "viewAddressOnExplorer": {
     "message": "Xem trên $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Xem chi tiết"
   },
   "viewOnBlockExplorer": {
     "message": "Xem trên trình khám phá khối"
