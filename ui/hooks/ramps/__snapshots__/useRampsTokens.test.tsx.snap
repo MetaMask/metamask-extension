@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRampsTokens matches snapshot 1`] = `
+{
+  "error": null,
+  "isLoading": false,
+  "selectedToken": null,
+  "setSelectedToken": [Function],
+  "tokens": {
+    "allTokens": [],
+    "topTokens": [],
+  },
+}
+`;

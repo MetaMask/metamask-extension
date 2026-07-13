@@ -23,6 +23,7 @@ import {
   completeImportSRPOnboardingWithPasskey,
   completeImportSRPOnboardingFlow,
   completeOnboardingWithPasskey,
+  goToOnboardingWelcomeLoginPage,
   handleSidepanelPostOnboarding,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
@@ -109,6 +110,24 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('opens Terms of Use and Privacy notice links from login options', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+          driver,
+        });
+        await startOnboardingPage.clickCreateWalletButton();
+        await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible();
+        await startOnboardingPage.clickTermsOfUseLinkAndVerifyExpectedUrlOpens();
+        await startOnboardingPage.clickPrivacyNoticeLinkAndVerifyExpectedUrlOpens();
       },
     );
   });
@@ -293,10 +312,7 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
         const tokensTab = new TokensTab(driver);
-        await tokensTab.checkNetworkFilterText(networkName);
 
         // Check for network addition toast
         // Note: With sidepanel enabled, appState is lost during page reload,
@@ -309,6 +325,9 @@ describe('MetaMask onboarding', function () {
         } else {
           await homePage.checkAddNetworkMessageIsDisplayed(networkName);
         }
+
+        await homePage.checkPageIsLoaded();
+        await tokensTab.checkNetworkFilterText(networkName);
       },
     );
   });
@@ -359,6 +378,7 @@ describe('MetaMask onboarding', function () {
             completedOnboarding: false,
             firstTimeFlowType: FirstTimeFlowType.restore,
             seedPhraseBackedUp: null,
+            hasSeenOnboardingCompletionPage: false,
           })
           .withMetaMetricsController({
             completedMetaMetricsOnboarding: false,
@@ -527,7 +547,7 @@ describe('MetaMask onboarding', function () {
   it('Shows interstitial warning page for unsigned deferred deep link after onboarding completes', async function () {
     // This deep link is unsigned (no sig parameter)
     const referringLink =
-      'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff';
+      'https://link.metamask.io/home?openNetworkSelector=true';
     const expectedInterstitialPath = '/link';
 
     await withFixtures(
@@ -584,7 +604,7 @@ describe('MetaMask onboarding', function () {
 
   it('Shows interstitial warning page for deferred deep link with invalid signature after onboarding completes', async function () {
     const referringLink =
-      'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=aW52YWxpZC1zaWduYXR1cmU=';
+      'https://link.metamask.io/home?openNetworkSelector=true&sig=aW52YWxpZC1zaWduYXR1cmU=';
     const expectedInterstitialPath = '/link';
 
     await withFixtures(
