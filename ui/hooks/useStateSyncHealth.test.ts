@@ -26,7 +26,8 @@ describe('useStateSyncHealth', () => {
     mockUseDispatch.mockReturnValue(mockDispatch);
     mockForceUpdateMetamaskState.mockResolvedValue(undefined as never);
     jest.spyOn(console, 'warn').mockImplementation(() => {
-      // intentionally suppressed in tests
+      // Suppress console output in tests to keep output clean.
+      // The 'triggers recovery after the stale threshold' test asserts the warning.
     });
   });
 

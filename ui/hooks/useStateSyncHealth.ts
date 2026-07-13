@@ -61,6 +61,9 @@ export function useStateSyncHealth(isSyncing: boolean): void {
         isRecoveringRef.current = true;
         try {
           await forceUpdateMetamaskState(dispatch);
+          // Reset so the interval stops checking until isSyncing toggles again.
+          // forceUpdateMetamaskState should update state, causing isSyncing to
+          // become false. If it stays true the caller can re-mount the hook.
           syncStartTimeRef.current = null;
         } finally {
           isRecoveringRef.current = false;
