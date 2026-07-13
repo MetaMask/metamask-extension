@@ -308,15 +308,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
    * from the old batch during `cancelCurrentBatch` cannot race the new attempt).
    */
   const submitBridgeTransaction = useCallback(
-    async (
-      quoteResponse: QuoteResponse & QuoteMetadata,
-      options?: { rpcTimeoutMs?: number },
-    ) => {
+    async (quoteResponse: QuoteResponse & QuoteMetadata) => {
       try {
-        await submitBridgeTransactionBase(quoteResponse, {
-          ...options,
-          submitOnHardwareWalletSigningPage: true,
-        });
+        await submitBridgeTransactionBase(quoteResponse);
       } catch (error) {
         if (!isRetryingRef.current) {
           if (isUserRejectedHardwareWalletError(error)) {

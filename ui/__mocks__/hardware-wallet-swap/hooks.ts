@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type {
+  HardwareWalletSignatureEventWithoutPayload,
   HardwareWalletSignaturesAction,
   HardwareWalletSignaturesState,
 } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
@@ -38,7 +39,7 @@ function isSigning(status: HardwareWalletSignatureStatus): boolean {
 }
 
 const SIGNING_OUTCOME_EVENTS: Partial<
-  Record<HardwareWalletSignatureStatus, HardwareWalletSignatureEvent>
+  Record<HardwareWalletSignatureStatus, HardwareWalletSignatureEventWithoutPayload>
 > = {
   [HardwareWalletSignatureStatus.Submitted]:
     HardwareWalletSignatureEvent.TransactionSubmitted,

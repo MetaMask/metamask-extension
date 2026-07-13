@@ -415,10 +415,8 @@ describe('HardwareWalletSignatures', () => {
         await jest.advanceTimersByTimeAsync(1_000);
       });
 
-      expect(mockSubmit).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({ rpcTimeoutMs: 120_000 }),
-      );
+      // Bridge submit API is quote-only after the signing-page options revert.
+      expect(mockSubmit).toHaveBeenCalledWith(expect.anything());
     });
 
     it('resets and resubmits on retry after disconnect', async () => {
@@ -673,10 +671,8 @@ describe('HardwareWalletSignatures', () => {
       });
 
       expect(mockSubmit).toHaveBeenCalledTimes(submitCountBeforeRetry + 1);
-      expect(mockSubmit).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({ rpcTimeoutMs: 120_000 }),
-      );
+      // Bridge submit API is quote-only after the signing-page options revert.
+      expect(mockSubmit).toHaveBeenCalledWith(expect.anything());
     });
 
     it('does resubmit on retry after rejection when device is reconnected', async () => {
