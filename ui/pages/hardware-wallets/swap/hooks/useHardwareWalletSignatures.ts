@@ -203,7 +203,8 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   const retryGenerationRef = useRef(0);
   // Guards HW reject/fail dispatches so errors from the OLD submission during
   // cancelCurrentBatch() don't race with the retry and prematurely transition
-  // the state machine. Owned here (not in useHwSwapActions) so
+  // the state machine. Cleared before the new resubmit so that attempt's
+  // reject/fail still update state. Owned here (not in useHwSwapActions) so
   // submitBridgeTransaction — defined earlier in the hook order — can read it.
   const isRetryingRef = useRef(false);
   const [firstSignatureDone, setFirstSignatureDone] = useState(false);
@@ -241,6 +242,12 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
+      // Ignore reject/fail from the aborted batch while cancel-during-retry is
+      // in flight so a late error cannot race the new attempt.
+      if (isRetryingRef.current) {
+        return;
+      }
+
       if (isUserRejectedHardwareWalletError(error)) {
         dispatchSignatureEvent({
           type: HardwareWalletSignatureEvent.TransactionRejected,
@@ -267,8 +274,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   /**
    * Wraps bridge submission so hardware-wallet reject/fail outcomes update the
    * signature state machine. `useSubmitBridgeTransaction` throws on those
-   * outcomes; we translate them here (unless a retry is in flight, so errors
-   * from the old batch during `cancelCurrentBatch` cannot race the new attempt).
+   * outcomes; we translate them here (unless cancel-during-retry is in flight,
+   * so errors from the old batch during `cancelCurrentBatch` cannot race the
+   * new attempt).
    */
   const submitBridgeTransaction = useCallback(
     async (quoteResponse: QuoteResponse & QuoteMetadata) => {
@@ -375,6 +383,13 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
+      // Same cancel-during-retry guard as submitSendBundleTransaction /
+      // submitBridgeTransaction: a late reject from the aborted approve must
+      // not overwrite the fresh attempt's state.
+      if (isRetryingRef.current) {
+        return;
+      }
+
       if (isUserRejectedHardwareWalletError(error)) {
         dispatchSignatureEvent({
           type: HardwareWalletSignatureEvent.TransactionRejected,

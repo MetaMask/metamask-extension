@@ -79,6 +79,9 @@ export function useHwSwapActions({
   // Tracks whether the user has retried at least once. Once true, the
   // "Resend transaction" button becomes eligible after the stuck timeout.
   const hasRetriedRef = useRef(false);
+  // Local re-entrancy guard for handleRetry. Distinct from `isRetryingRef`,
+  // which only suppresses OLD-batch reject/fail while cancelCurrentBatch runs.
+  const isRetryInFlightRef = useRef(false);
   const [isRetrying, setIsRetrying] = useState(false);
 
   /**
@@ -87,7 +90,7 @@ export function useHwSwapActions({
    * and re-submits the bridge transaction.
    */
   const handleRetry = useCallback(async () => {
-    if (isRetryingRef.current) {
+    if (isRetryInFlightRef.current) {
       return;
     }
 
@@ -100,6 +103,9 @@ export function useHwSwapActions({
       }),
     );
 
+    isRetryInFlightRef.current = true;
+    // Suppress reject/fail from the cancelled batch only — cleared before
+    // resubmit so the new attempt can update the signature state machine.
     isRetryingRef.current = true;
     hasRetriedRef.current = true;
     setIsRetrying(true);
@@ -137,9 +143,16 @@ export function useHwSwapActions({
           savedStep = signatureState.disconnectedSignature;
         }
 
-        if (
-          savedStep === HardwareWalletSignatureStatus.AwaitingFinalSignature
-        ) {
+        // Resume at the final step when retrying from a terminal state that
+        // interrupted there, OR when already awaiting the final signature
+        // (stuck "Resend transaction" path). Resetting would rewind the UI to
+        // the approval step while firstSignatureDone still skips approval.
+        const shouldResumeFinalSignature =
+          savedStep === HardwareWalletSignatureStatus.AwaitingFinalSignature ||
+          signatureState.status ===
+            HardwareWalletSignatureStatus.AwaitingFinalSignature;
+
+        if (shouldResumeFinalSignature) {
           dispatchSignatureEvent({
             type: HardwareWalletSignatureEvent.Retry,
           });
@@ -154,6 +167,9 @@ export function useHwSwapActions({
         '[HW-Batch] handleRetry: calling retrySubmission',
         JSON.stringify({ state: signatureState.status }),
       );
+      // Allow the new submission's reject/fail to reach the state machine.
+      // `retrySubmission` swallows the rethrown error after that dispatch.
+      isRetryingRef.current = false;
       if (isSendBundleFlow) {
         hasStartedSendBundleSubmission.current = true;
         await retrySendBundleSubmission();
@@ -163,6 +179,7 @@ export function useHwSwapActions({
       log.debug('[HW-Batch] handleRetry: retrySubmission completed');
     } finally {
       isRetryingRef.current = false;
+      isRetryInFlightRef.current = false;
       setIsRetrying(false);
     }
   }, [

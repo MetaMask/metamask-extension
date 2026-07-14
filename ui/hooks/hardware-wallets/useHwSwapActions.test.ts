@@ -146,6 +146,26 @@ describe('useHwSwapActions', () => {
       });
     });
 
+    it('dispatches Retry when already awaiting the final signature (stuck resend)', async () => {
+      const { result } = renderUseHwSwapActions({
+        signatureState: createSignatureState(
+          HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        ),
+      });
+
+      await act(async () => {
+        await result.current.handleRetry();
+      });
+
+      expect(mockDispatchSignatureEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.Retry,
+      });
+      expect(mockDispatchSignatureEvent).not.toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.Reset,
+        needsTwoConfirmations: true,
+      });
+    });
+
     it('always resets when smart transactions are enabled', async () => {
       const { result } = renderUseHwSwapActions({
         isStxEnabled: true,
@@ -207,6 +227,28 @@ describe('useHwSwapActions', () => {
         resolveCancel?.();
         await firstRetry;
       });
+    });
+
+    it('suppresses old-batch errors only during cancel, not during resubmit', async () => {
+      let isRetryingDuringCancel: boolean | undefined;
+      let isRetryingDuringResubmit: boolean | undefined;
+
+      mockCancelCurrentBatch.mockImplementation(async () => {
+        isRetryingDuringCancel = isRetryingRef.current;
+      });
+      mockRetrySubmission.mockImplementation(async () => {
+        isRetryingDuringResubmit = isRetryingRef.current;
+      });
+
+      const { result } = renderUseHwSwapActions();
+
+      await act(async () => {
+        await result.current.handleRetry();
+      });
+
+      expect(isRetryingDuringCancel).toBe(true);
+      expect(isRetryingDuringResubmit).toBe(false);
+      expect(isRetryingRef.current).toBe(false);
     });
   });
 

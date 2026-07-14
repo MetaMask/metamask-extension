@@ -693,6 +693,53 @@ describe('useHardwareWalletSignatures', () => {
       });
     });
 
+    it('ignores a late sendBundle reject from the cancelled batch during retry', async () => {
+      let rejectFirstApprove: ((error: unknown) => void) | undefined;
+      mockUpdateAndApproveTx
+        .mockReturnValueOnce(
+          (() =>
+            new Promise((_resolve, reject) => {
+              rejectFirstApprove = reject;
+            })) as never,
+        )
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+
+      mockCancelCurrentBatch.mockImplementation(async () => {
+        rejectFirstApprove?.({
+          code: 4001,
+          message: 'User rejected the request.',
+        });
+        // Let the aborted submit's catch run while isRetryingRef is still set.
+        await Promise.resolve();
+      });
+
+      const { result } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await waitFor(() => {
+        expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(1);
+      });
+
+      expect(result.current.signatureStatus).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+
+      await act(async () => {
+        await result.current.footer.handleRetry();
+      });
+
+      expect(result.current.signatureStatus).not.toBe(
+        HardwareWalletSignatureStatus.Rejected,
+      );
+
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+    });
+
     it('resets the state machine when smart transactions are enabled', async () => {
       jest.spyOn(bridgeSelectors, 'getIsStxEnabled').mockReturnValue(true);
       mockUpdateAndApproveTx

@@ -45,9 +45,10 @@ export type UseHwSwapActionsOptions = {
   /** Optional route to return to when cancelling a sendBundle flow. */
   returnRoute?: string;
   /**
-   * Shared guard ref set while a retry is in flight. Owned by the caller so
-   * submission error handlers defined earlier in the hook order can ignore
-   * reject/fail outcomes from the cancelled batch.
+   * Shared guard set only while `cancelCurrentBatch` runs during retry. Owned
+   * by the caller so submission error handlers defined earlier in the hook
+   * order can ignore reject/fail outcomes from the cancelled batch. Cleared
+   * before the new resubmit so that attempt's errors still update state.
    */
   isRetryingRef: MutableRefObject<boolean>;
 };
