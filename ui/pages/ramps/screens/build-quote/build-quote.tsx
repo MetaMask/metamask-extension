@@ -15,13 +15,9 @@ import {
 } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../../../components/component-library';
+import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
@@ -31,27 +27,18 @@ import { RAMPS_TOKEN_SELECTION_ROUTE } from '../../../../helpers/constants/route
 import RampsTokenSelectionHeader from '../token-selection/components/ramps-token-selection-header';
 import RampsPaymentMethodPill from './components/ramps-payment-method-pill';
 
-const DEFAULT_AMOUNT = 100;
+const DEFAULT_AMOUNT = '100';
 const QUOTE_DEBOUNCE_MS = 500;
+const FIAT_AMOUNT_INPUT_PATTERN = /^[0-9]*[.,]?[0-9]*$/u;
 
-function sanitizeFiatAmountInput(value: string): string {
-  const cleaned = value.replace(/[^\d.]/gu, '');
-  const [whole, ...fractionParts] = cleaned.split('.');
-  if (fractionParts.length === 0) {
-    return whole;
-  }
-  return `${whole}.${fractionParts.join('')}`;
-}
-
-function parseAmountAsNumber(amount: string): number {
-  const parsed = Number.parseFloat(amount);
+function parseFiatAmount(amount: string): number {
+  const parsed = Number.parseFloat(amount.replace(',', '.'));
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
 export function RampsBuildQuoteScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { formatCurrency } = useFormatters();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -66,18 +53,12 @@ export function RampsBuildQuoteScreen() {
     paymentMethodsStatus,
   } = useRampsController();
 
-  const [amount, setAmount] = useState(() => String(DEFAULT_AMOUNT));
-  const amountAsNumber = useMemo(() => parseAmountAsNumber(amount), [amount]);
+  const [amount, setAmount] = useState(DEFAULT_AMOUNT);
+  const amountAsNumber = useMemo(() => parseFiatAmount(amount), [amount]);
   const debouncedAmount = useDebouncedValue(amountAsNumber, QUOTE_DEBOUNCE_MS);
 
   const currency = userRegion?.country?.currency ?? 'USD';
-  const currencyPrefix = useMemo(() => {
-    const formatted = formatCurrency(1, currency, {
-      currencyDisplay: 'narrowSymbol',
-    });
-    const match = formatted.match(/^([^\d]*?)[\d.,]+/u);
-    return match?.[1] ?? '$';
-  }, [currency, formatCurrency]);
+  const currencySymbol = getCurrencySymbol(currency);
 
   const walletAddress = selectedAccount?.address ?? '';
   const hasAmount = amountAsNumber > 0;
@@ -140,6 +121,22 @@ export function RampsBuildQuoteScreen() {
     );
   }, [quotesResponse, selectedProvider, selectedPaymentMethod]);
 
+  const hasNoQuotes =
+    hasAmount &&
+    hasSettledQuoteAmount &&
+    !selectedQuoteLoading &&
+    !hasQuoteFetchError &&
+    quotesResponse !== null &&
+    selectedQuote === null;
+
+  const providerQuoteError =
+    hasNoQuotes && quotesResponse?.error?.length
+      ? (quotesResponse.error[0]?.error ?? null)
+      : null;
+
+  const displayedQuoteError =
+    quoteFetchErrorMessage ?? providerQuoteError ?? null;
+
   const networkName = selectedToken?.chainId
     ? networksByCaipChainId[selectedToken.chainId]?.name
     : undefined;
@@ -181,13 +178,20 @@ export function RampsBuildQuoteScreen() {
     selectedQuote !== null &&
     !hasQuoteFetchError;
 
+  const amountTextClassName = `text-[56px] font-normal leading-none ${
+    displayedQuoteError ? 'text-error-default' : 'text-default'
+  }`;
+
   const handleBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
 
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setAmount(sanitizeFiatAmountInput(event.target.value));
+      const { value } = event.target;
+      if (FIAT_AMOUNT_INPUT_PATTERN.test(value)) {
+        setAmount(value);
+      }
     },
     [],
   );
@@ -226,22 +230,14 @@ export function RampsBuildQuoteScreen() {
           alignItems={BoxAlignItems.Center}
         >
           <Box
-            className="flex items-baseline justify-center gap-0.5"
+            className="flex items-baseline justify-center"
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
           >
-            <span
-              className={`text-[56px] font-normal leading-none ${
-                quoteFetchErrorMessage ? 'text-error-default' : 'text-default'
-              }`}
-            >
-              {currencyPrefix}
-            </span>
+            <span className={amountTextClassName}>{currencySymbol}</span>
             <input
               aria-label={t('amount')}
-              className={`min-w-[2ch] max-w-full border-0 bg-transparent text-center text-[56px] font-normal leading-none outline-none ${
-                quoteFetchErrorMessage ? 'text-error-default' : 'text-default'
-              }`}
+              className={`min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none ${amountTextClassName}`}
               data-testid="ramps-build-quote-amount-input"
               inputMode="decimal"
               onChange={handleAmountChange}
@@ -257,15 +253,15 @@ export function RampsBuildQuoteScreen() {
           />
         </Box>
 
-        {quoteFetchErrorMessage ? (
-          <Box className="mb-4">
-            <BannerAlert
-              severity={BannerAlertSeverity.Danger}
-              data-testid="ramps-build-quote-error"
-            >
-              {quoteFetchErrorMessage}
-            </BannerAlert>
-          </Box>
+        {displayedQuoteError ? (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.ErrorDefault}
+            className="mb-4 text-center"
+            data-testid="ramps-build-quote-error"
+          >
+            {displayedQuoteError}
+          </Text>
         ) : null}
 
         <Box

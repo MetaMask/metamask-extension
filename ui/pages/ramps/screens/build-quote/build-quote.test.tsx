@@ -22,12 +22,6 @@ jest.mock('../../../../../shared/lib/selectors/networks', () => ({
   })),
 }));
 
-jest.mock('../../../../hooks/useFormatters', () => ({
-  useFormatters: () => ({
-    formatCurrency: () => '$1.00',
-  }),
-}));
-
 jest.mock('../../../../hooks/ramps/useRampsController', () => ({
   useRampsController: jest.fn(),
 }));
@@ -153,8 +147,29 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
-    expect(screen.getByTestId('ramps-build-quote-provider-label')).toHaveTextContent(
+    expect(
+      screen.getByTestId('ramps-build-quote-provider-label'),
+    ).toHaveTextContent(
       messages.rampsBuyingViaProvider.message.replace('$1', 'Transak'),
     );
+  });
+
+  it('matches snapshot with provider quote error', () => {
+    useRampsQuotes.mockReturnValue({
+      data: {
+        success: [],
+        error: [{ provider: 'transak', error: 'Minimum purchase is $5 USD' }],
+      },
+      loading: false,
+      error: null,
+    });
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
   });
 });
