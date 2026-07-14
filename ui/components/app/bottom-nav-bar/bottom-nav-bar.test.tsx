@@ -33,6 +33,12 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   }),
 }));
 
+const mockResetBridgeController = jest.fn(() => ({ type: 'RESET_BRIDGE' }));
+jest.mock('../../../ducks/bridge/actions', () => ({
+  ...jest.requireActual('../../../ducks/bridge/actions'),
+  resetBridgeController: () => mockResetBridgeController(),
+}));
+
 jest.mock('../../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../../shared/lib/environment'),
   getIsPerpsIncludedInBuild: jest.fn(() => true),
@@ -160,7 +166,9 @@ describe('BottomNavBar', () => {
       const { getByTestId } = renderBottomNavBar(baseState, ACTIVITY_ROUTE);
 
       fireEvent.click(getByTestId('bottom-nav-home'));
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        state: { stayOnHomePage: true },
+      });
     });
 
     it('navigates to the last active tab when Home is clicked and a tab is stored', () => {
@@ -170,14 +178,18 @@ describe('BottomNavBar', () => {
       );
 
       fireEvent.click(getByTestId('bottom-nav-home'));
-      expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`);
+      expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`, {
+        state: { stayOnHomePage: true },
+      });
     });
 
     it('navigates to the perps page when Perps is clicked', () => {
       const { getByTestId } = renderBottomNavBar();
 
       fireEvent.click(getByTestId('bottom-nav-perps'));
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE);
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE, {
+        state: { stayOnHomePage: true },
+      });
     });
 
     it('navigates to the swaps route when Swaps is clicked', () => {
@@ -193,7 +205,46 @@ describe('BottomNavBar', () => {
       const { getByTestId } = renderBottomNavBar();
 
       fireEvent.click(getByTestId('bottom-nav-activity'));
-      expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE);
+      expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
+        state: { stayOnHomePage: true },
+      });
+    });
+
+    it('does not call Swaps when the Swaps tab is already active', () => {
+      const { getByTestId } = renderBottomNavBar(baseState, SWAP_PATH);
+
+      fireEvent.click(getByTestId('bottom-nav-swaps'));
+      expect(mockOpenBridgeExperience).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('bridge reset on navigate away', () => {
+    it('resets the bridge controller when leaving the swaps route', () => {
+      const { getByTestId } = renderBottomNavBar(baseState, SWAP_PATH);
+
+      fireEvent.click(getByTestId('bottom-nav-home'));
+      expect(mockResetBridgeController).toHaveBeenCalledTimes(1);
+    });
+
+    it('resets the bridge controller when navigating to Activity from swaps', () => {
+      const { getByTestId } = renderBottomNavBar(baseState, SWAP_PATH);
+
+      fireEvent.click(getByTestId('bottom-nav-activity'));
+      expect(mockResetBridgeController).toHaveBeenCalledTimes(1);
+    });
+
+    it('resets the bridge controller when navigating to Perps from swaps', () => {
+      const { getByTestId } = renderBottomNavBar(baseState, SWAP_PATH);
+
+      fireEvent.click(getByTestId('bottom-nav-perps'));
+      expect(mockResetBridgeController).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not reset the bridge controller when not on the swaps route', () => {
+      const { getByTestId } = renderBottomNavBar(baseState, ACTIVITY_ROUTE);
+
+      fireEvent.click(getByTestId('bottom-nav-home'));
+      expect(mockResetBridgeController).not.toHaveBeenCalled();
     });
   });
 });
