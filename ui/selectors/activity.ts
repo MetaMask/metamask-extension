@@ -47,6 +47,7 @@ import { selectCurrentAccountNonEvmTransactions } from './multichain-transaction
 import {
   selectOrderedTransactions,
   selectRequiredTransactionHashes,
+  selectRequiredTransactionIds,
 } from './transactionController';
 import type { TokenScanCacheResults } from './token-scan';
 import {
@@ -84,11 +85,13 @@ export const selectLocalTransactions = createSelector(
   selectOrderedTransactions,
   getSelectedInternalAccount,
   smartTransactionsListSelector,
+  selectRequiredTransactionIds,
   selectRequiredTransactionHashes,
   (
     transactions,
     selectedAccount,
     smartTransactions,
+    internalTxIds,
     internalTxHashes,
   ): TransactionGroup[] => {
     if (!selectedAccount?.address) {
@@ -97,18 +100,31 @@ export const selectLocalTransactions = createSelector(
 
     const selectedAddress = selectedAccount.address.toLowerCase();
 
-    const filtered = (transactions ?? []).filter((tx) => {
-      if (!isFromSelectedAccount(tx, selectedAddress)) {
-        return false;
+    const isInternalRequiredTransaction = (
+      tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
+    ) => {
+      if (tx.id && internalTxIds.has(tx.id)) {
+        return true;
       }
-
       if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
-        return false;
+        return true;
       }
-      return true;
-    });
+      return false;
+    };
 
-    const combined = [...filtered, ...smartTransactions];
+    const filtered = (transactions ?? []).filter(
+      (tx) =>
+        isFromSelectedAccount(tx, selectedAddress) &&
+        !isInternalRequiredTransaction(tx),
+    );
+
+    const filteredSmartTransactions = smartTransactions.filter(
+      (tx) =>
+        !(tx.type && EXCLUDED_TRANSACTION_TYPES.has(tx.type)) &&
+        !isInternalRequiredTransaction(tx),
+    );
+
+    const combined = [...filtered, ...filteredSmartTransactions];
 
     if (!combined.length) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];

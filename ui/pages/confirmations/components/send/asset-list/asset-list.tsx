@@ -61,10 +61,9 @@ export const AssetList = ({
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const { goToAmountRecipientPage } = useNavigateSendPage();
-  // Catalog pickers (e.g. ramps) render outside SendContextProvider and must
-  // pass `onAssetSelect`. The send flow assumes a real provider is present;
-  // useContext keeps the catalog path working without a throw.
-  const { updateAsset } = useContext(SendContext);
+  // Use context directly so catalog pickers (e.g. ramps) can reuse this list
+  // outside SendContextProvider when `onAssetSelect` is provided.
+  const sendContext = useContext(SendContext);
   const { captureAssetSelected: captureAssetSelectedFromMetrics } =
     useAssetSelectionMetrics();
   const captureAssetSelected = disableMetrics
@@ -88,11 +87,11 @@ export const AssetList = ({
         return;
       }
 
-      updateAsset(asset);
+      sendContext.updateAsset(asset);
       goToAmountRecipientPage();
       captureAssetSelected(asset);
     },
-    [captureAssetSelected, goToAmountRecipientPage, onAssetSelect, updateAsset],
+    [captureAssetSelected, goToAmountRecipientPage, onAssetSelect, sendContext],
   );
 
   const items: ListItem[] = [];

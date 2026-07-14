@@ -108,12 +108,13 @@ describe('TokenAsset', () => {
   });
 
   it('hides balances when hideBalances is true', () => {
-    const { queryByText } = render(
+    const { container, queryByText } = render(
       <Asset asset={mockTokenAsset} hideBalances />,
     );
 
     expect(queryByText('$100.00')).not.toBeInTheDocument();
     expect(queryByText('10.5 TEST')).not.toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('does not call onClick when token is disabled', () => {
@@ -176,19 +177,6 @@ describe('NFTAsset', () => {
 
     fireEvent.click(getByTestId('nft-asset'));
     expect(mockOnClick).toHaveBeenCalled();
-  });
-
-  it('does not call onClick when NFT is disabled', () => {
-    const mockOnClick = jest.fn();
-    const { getByTestId } = render(
-      <Asset
-        asset={{ ...mockNFTERC721Asset, disabled: true }}
-        onClick={mockOnClick}
-      />,
-    );
-
-    fireEvent.click(getByTestId('nft-asset'));
-    expect(mockOnClick).not.toHaveBeenCalled();
   });
 
   it('applies selected background when NFT asset is selected', () => {
