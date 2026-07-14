@@ -3289,6 +3289,7 @@
         "PerformanceObserver.supportedEntryTypes": true,
         "Request": true,
         "URL": true,
+        "WebAssembly": true,
         "XMLHttpRequest.prototype": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,

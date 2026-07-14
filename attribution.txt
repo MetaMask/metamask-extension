@@ -34507,7 +34507,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @sentry/browser
-8.33.1 <https://github.com/getsentry/sentry-javascript>
+8.37.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2019-2024 Functional Software, Inc. dba Sentry
@@ -34534,7 +34534,7 @@ SOFTWARE.
 ******************************
 
 @sentry/core
-8.33.1 <https://github.com/getsentry/sentry-javascript>
+8.37.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2019-2024 Functional Software, Inc. dba Sentry
@@ -34588,7 +34588,7 @@ SOFTWARE.
 ******************************
 
 @sentry-internal/browser-utils
-8.33.1 <https://github.com/getsentry/sentry-javascript>
+8.37.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2020-2024 Functional Software, Inc. dba Sentry
@@ -34615,7 +34615,7 @@ SOFTWARE.
 ******************************
 
 @sentry-internal/feedback
-8.33.1 <https://github.com/getsentry/sentry-javascript>
+8.37.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2023-2024 Functional Software, Inc. dba Sentry
@@ -34642,7 +34642,7 @@ SOFTWARE.
 ******************************
 
 @sentry-internal/replay
-8.33.1 <https://github.com/getsentry/sentry-javascript>
+8.37.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2022-2024 Functional Software, Inc. dba Sentry
@@ -34669,7 +34669,7 @@ SOFTWARE.
 ******************************
 
 @sentry-internal/replay-canvas
-8.33.1 <https://github.com/getsentry/sentry-javascript>
+8.37.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2024 Functional Software, Inc. dba Sentry
@@ -34696,7 +34696,7 @@ SOFTWARE.
 ******************************
 
 @sentry/types
-8.33.1 <https://github.com/getsentry/sentry-javascript>
+8.37.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2019-2024 Functional Software, Inc. dba Sentry
@@ -34723,7 +34723,7 @@ SOFTWARE.
 ******************************
 
 @sentry/utils
-8.33.1 <https://github.com/getsentry/sentry-javascript>
+8.37.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2019-2024 Functional Software, Inc. dba Sentry
