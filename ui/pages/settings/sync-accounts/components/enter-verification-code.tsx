@@ -11,10 +11,14 @@ import {
   BoxJustifyContent,
   TextButton,
 } from '@metamask/design-system-react';
-import log from 'loglevel';
+import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
+import {
+  QR_SYNC_TIMEOUT_MS,
+  QrSyncErrorCodes,
+} from '../../../../../shared/constants/qr-sync';
+import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
@@ -25,8 +29,15 @@ const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
 const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
   QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
 
-const EnterVerificationCode = () => {
+type EnterVerificationCodeProps = {
+  onRestart: () => void;
+};
+
+const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
+  const qrSyncError = useSelector(selectQrSyncError);
+  const hasMaxedOutAttempts =
+    qrSyncError?.code === QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED;
   const [isError, setIsError] = useState(false);
   const [code, setCode] = useState<string[]>(createEmptyCode);
   const [secondsLeft, setSecondsLeft] = useState(
@@ -46,13 +57,6 @@ const EnterVerificationCode = () => {
 
     return () => clearInterval(intervalId);
   }, [isExpired]);
-
-  const handleRestart = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]);
-  }, []);
 
   const focusInput = useCallback((index: number) => {
     const clampedIndex = Math.max(0, Math.min(index, CODE_LENGTH - 1));
@@ -186,6 +190,15 @@ const EnterVerificationCode = () => {
     [],
   );
 
+  let errorMessage: string | null = null;
+  if (isExpired) {
+    errorMessage = t('enter_verification_code_expired');
+  } else if (hasMaxedOutAttempts) {
+    errorMessage = t('enter_verification_code_max_attempts');
+  } else if (isError) {
+    errorMessage = t('enter_verification_code_error');
+  }
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={6} className="flex-1">
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -227,7 +240,8 @@ const EnterVerificationCode = () => {
             aria-label={`${t('enter_verification_code')} ${index + 1}`}
             maxLength={1}
             autoFocus={index === 0}
-            isDisabled={isExpired}
+            isDisabled={isExpired || hasMaxedOutAttempts}
+            data-testid={`qr-sync-otp-input-${index}`}
             className="w-12 h-[54px] rounded-lg border border-muted bg-default text-center text-l-medium"
           />
         ))}
@@ -237,17 +251,16 @@ const EnterVerificationCode = () => {
         alignItems={BoxAlignItems.Center}
         gap={1}
       >
-        {!isExpired && (
+        {!isExpired && !hasMaxedOutAttempts && (
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('enter_verification_code_expires_in', [secondsLeft])}
           </Text>
         )}
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-          {isError && !isExpired && t('enter_verification_code_error')}
-          {isExpired && t('enter_verification_code_expired')}
+          {errorMessage}
         </Text>
-        {(isExpired || isError) && (
-          <TextButton onClick={handleRestart}>
+        {errorMessage && (
+          <TextButton onClick={onRestart}>
             {t('start_with_new_qr_code')}
           </TextButton>
         )}

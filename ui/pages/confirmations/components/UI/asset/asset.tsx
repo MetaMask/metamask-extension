@@ -29,13 +29,17 @@ import { useFormatters } from '../../../../../hooks/useFormatters';
 import { AccountTypeLabel } from '../account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 
-type AssetProps = {
+type AssetRowProps = {
   asset: AssetType;
   onClick?: () => void;
   isSelected?: boolean;
 };
 
-const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
+type TokenAssetProps = AssetRowProps & {
+  hideBalances?: boolean;
+};
+
+const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
   const nftData = asset;
   const { collection, name, tokenId, image, standard, balance } = nftData;
 
@@ -118,7 +122,12 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
   );
 };
 
-const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
+const TokenAsset = ({
+  asset,
+  onClick,
+  isSelected,
+  hideBalances = false,
+}: TokenAssetProps) => {
   const tokenData = asset;
   const {
     chainId,
@@ -129,6 +138,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
     fiat,
     assetId,
     isNative,
+    disabled,
   } = tokenData;
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -144,6 +154,8 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       })
     : (image ?? '');
 
+  const handleClick = disabled ? undefined : onClick;
+
   return (
     <Box
       alignItems={AlignItems.center}
@@ -155,11 +167,12 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       className="send-asset"
       data-testid={`token-asset-${chainId}-${symbol}`}
       display={Display.Flex}
-      onClick={onClick}
+      onClick={handleClick}
       paddingTop={3}
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
+      style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
     >
       <Box marginRight={4}>
         <BadgeWrapper
@@ -208,32 +221,46 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
           {symbol}
         </Text>
       </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
-        marginLeft={2}
-      >
-        <Text variant={TextVariant.bodyMdMedium}>
-          {formatCurrencyWithMinThreshold(
-            fiat?.balance ?? 0,
-            fiat?.currency || '',
-          )}
-        </Text>
-        <Text
-          variant={TextVariant.bodySmMedium}
-          color={TextColor.textAlternative}
+      {!hideBalances && (
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexEnd}
+          marginLeft={2}
         >
-          {formatTokenQuantity(Number(balance ?? 0), symbol)}
-        </Text>
-      </Box>
+          <Text variant={TextVariant.bodyMdMedium}>
+            {formatCurrencyWithMinThreshold(
+              fiat?.balance ?? 0,
+              fiat?.currency || '',
+            )}
+          </Text>
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={TextColor.textAlternative}
+          >
+            {formatTokenQuantity(Number(balance ?? 0), symbol)}
+          </Text>
+        </Box>
+      )}
     </Box>
   );
 };
 
-export const Asset = ({ asset, onClick, isSelected }: AssetProps) => {
+export const Asset = ({
+  asset,
+  onClick,
+  isSelected,
+  hideBalances,
+}: TokenAssetProps) => {
   if (NFT_STANDARDS.includes(asset.standard as AssetStandard)) {
     return <NftAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
   }
-  return <TokenAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
+  return (
+    <TokenAsset
+      asset={asset}
+      onClick={onClick}
+      isSelected={isSelected}
+      hideBalances={hideBalances}
+    />
+  );
 };

@@ -7951,9 +7951,6 @@
     "message": "Läuft in $1 Sek. ab",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Beim Scannen des QR-Codes ist ein Fehler aufgetreten. Erstellen Sie einen neuen, um es erneut zu versuchen."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Dieser QR-Code ist für eine andere Transaktion. Brechen Sie die Transaktion ab und versuchen Sie es erneut. Scannen Sie den in MetaMask angezeigten QR-Code zunächst mit Ihrer Hardware-Wallet.",
     "description": "Body text when a signature QR belongs to a previous transaction."

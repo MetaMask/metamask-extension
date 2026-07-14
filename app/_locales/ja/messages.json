@@ -7952,9 +7952,6 @@
     "message": "期限切れまであと$1秒",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "QRコードのスキャン中に問題が発生しました。新しいQRコードを生成して、もう一度お試しください。"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "このQRコードは別の取引用です。一度キャンセルし、まずMetaMaskに表示されているQRコードをハードウェアウォレットでスキャンしてからもう一度お試しください。",
     "description": "Body text when a signature QR belongs to a previous transaction."

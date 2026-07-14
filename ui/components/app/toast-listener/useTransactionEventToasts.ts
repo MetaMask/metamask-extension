@@ -40,7 +40,6 @@ type ToastListenerMessenger = RouteMessengerFromCapabilities<
 
 // Flows with custom toasts — excluded for now from generic messenger event toasts.
 const excludedTransactionTypes: TransactionType[] = [
-  TransactionType.musdClaim,
   TransactionType.musdRelayDeposit,
   TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
@@ -48,6 +47,12 @@ const excludedTransactionTypes: TransactionType[] = [
   TransactionType.perpsRelayDeposit,
   TransactionType.shieldSubscriptionApprove,
 ];
+
+// Ported from custom toasts that included pre-broadcast (approved/signed) stage
+const earlyPendingToastTypes = new Set([
+  TransactionType.musdConversion,
+  TransactionType.musdClaim,
+]);
 
 function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
   // Top-level only — nested swapApproval inside batch txs must still toast.
@@ -70,8 +75,10 @@ function isPendingToastStatus(
     return true;
   }
 
-  // Ported from MusdConversionToast which included pre-broadcast stage
-  if (transactionMeta.type === TransactionType.musdConversion) {
+  if (
+    transactionMeta.type &&
+    earlyPendingToastTypes.has(transactionMeta.type)
+  ) {
     return (
       status === TransactionStatus.approved ||
       status === TransactionStatus.signed

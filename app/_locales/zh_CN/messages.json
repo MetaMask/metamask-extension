@@ -7951,9 +7951,6 @@
     "message": "$1 秒后过期",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "扫描二维码时出现问题。请生成新的二维码后重试。"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",
     "description": "Body text when a signature QR belongs to a previous transaction."

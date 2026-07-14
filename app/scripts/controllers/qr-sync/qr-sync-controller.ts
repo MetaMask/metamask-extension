@@ -2,9 +2,6 @@ import { BaseController } from '@metamask/base-controller';
 import {
   type IKVStore,
   type SessionRequest,
-  type ISessionStore,
-  SessionStore,
-  WebSocketTransport,
 } from '@metamask/mobile-wallet-protocol-core';
 import {
   DappClient,
@@ -16,6 +13,7 @@ import log from 'loglevel';
 import {
   QR_SYNC_PHASES,
   QR_SYNC_TIMEOUT_MS,
+  QrSyncErrorCode,
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
 import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
@@ -36,6 +34,7 @@ import {
   canAcceptSyncOffer,
   isQrSyncOffer,
   normalizeQrSyncMessage,
+  resolveQrSyncErrorCode,
 } from './utils';
 import type { KeyManager } from './key-manager';
 import {
@@ -45,7 +44,6 @@ import {
   type QrSyncControllerMessenger,
   type QrSyncControllerState,
   type QrSyncReadyData,
-  type QrSyncError,
   type QrSyncOffer,
 } from './types';
 import {
@@ -54,6 +52,7 @@ import {
   MESSENGER_EXPOSED_METHODS,
 } from './metadata';
 import { InMemoryKvStore } from './kv-store';
+import { getMwpDappClient } from './mwp-dapp-client-factory';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -66,11 +65,7 @@ export class QrSyncController extends BaseController<
 
   readonly #relayUrl: string;
 
-  #transport: WebSocketTransport | null = null;
-
   #mwpDappClient: DappClient | null = null;
-
-  #sessionStore: ISessionStore | null = null;
 
   #otpSubmitCallback: ((otp: string) => Promise<void>) | null = null;
 
@@ -135,11 +130,9 @@ export class QrSyncController extends BaseController<
       });
     } catch (error) {
       this.#setError({
+        error,
         code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message:
-          error instanceof Error
-            ? error.message
-            : QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
+        message: QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
       });
       throw error;
     } finally {
@@ -214,7 +207,7 @@ export class QrSyncController extends BaseController<
   }
 
   async #initialize(): Promise<void> {
-    if (this.#mwpDappClient && this.#transport && this.#sessionStore) {
+    if (this.#mwpDappClient) {
       return;
     }
 
@@ -226,29 +219,19 @@ export class QrSyncController extends BaseController<
     });
 
     try {
-      this.#transport = await WebSocketTransport.create({
-        kvstore: this.#kvStore,
-        url: this.#relayUrl,
-        websocket: typeof WebSocket === 'undefined' ? undefined : WebSocket,
-      });
-
-      this.#sessionStore = await SessionStore.create(this.#kvStore);
-
-      this.#mwpDappClient = new DappClient({
-        transport: this.#transport,
-        sessionstore: this.#sessionStore,
-        keymanager: this.#keyManager,
-      });
+      this.#mwpDappClient = await getMwpDappClient(
+        this.#kvStore,
+        this.#relayUrl,
+        this.#keyManager,
+      );
 
       this.#registerClientEventHandlers(this.#mwpDappClient);
       this.#transitionPhase(this.state.qrSyncPhase, 'connected');
     } catch (error) {
       this.#setError({
+        error,
         code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message:
-          error instanceof Error
-            ? error.message
-            : QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
+        message: QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
       });
       throw error;
     } finally {
@@ -438,11 +421,9 @@ export class QrSyncController extends BaseController<
       log.debug('QrSyncController: OTP required');
       this.#handleOtpRequired(payload).catch((error) => {
         this.#setError({
+          error,
           code: QrSyncErrorCodes.OTP_INVALID,
-          message:
-            error instanceof Error
-              ? error.message
-              : 'Failed to handle OTP requirement',
+          message: 'Failed to handle OTP requirement',
         });
       });
     };
@@ -465,6 +446,7 @@ export class QrSyncController extends BaseController<
     const clientError = (error: Error) => {
       log.error('QrSyncController: error', error);
       this.#setError({
+        error,
         code: QrSyncErrorCodes.UNKNOWN,
         message: error.message,
       });
@@ -624,13 +606,25 @@ export class QrSyncController extends BaseController<
     });
   }
 
-  #setError(error: QrSyncError): void {
+  #setError({
+    error,
+    code,
+    message,
+  }: {
+    error?: unknown;
+    code: QrSyncErrorCode;
+    message?: string;
+  }): void {
+    const resolvedCode = resolveQrSyncErrorCode(error, code);
+    const resolvedMessage =
+      error instanceof Error && error.message ? error.message : (message ?? '');
+
     this.#cleanupSession({ cancelOtp: true });
 
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.FAILED;
       state.qrSyncConnectionStatus = QrSyncConnectionStatus.ERRORED;
-      state.qrSyncError = error;
+      state.qrSyncError = { code: resolvedCode, message: resolvedMessage };
       state.syncOffer = null;
       state.qrSyncQrPayload = null;
       state.qrSyncSelectedAccountGroupIds = [];
@@ -707,9 +701,7 @@ export class QrSyncController extends BaseController<
 
     this.#otpSubmitCallback = null;
     this.#otpCancelCallback = null;
-    this.#transport = null;
     this.#mwpDappClient = null;
-    this.#sessionStore = null;
 
     if (this.#kvStore instanceof InMemoryKvStore) {
       this.#kvStore.clear();

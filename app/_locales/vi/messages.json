@@ -7959,9 +7959,6 @@
     "message": "Hết hạn sau $1 giây",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Đã xảy ra lỗi khi quét mã QR. Hãy tạo mã mới để thử lại."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Mã QR này dành cho một giao dịch khác. Vui lòng hủy và thử lại, đảm bảo quét mã QR được hiển thị trong MetaMask bằng ví cứng của bạn trước.",
     "description": "Body text when a signature QR belongs to a previous transaction."
