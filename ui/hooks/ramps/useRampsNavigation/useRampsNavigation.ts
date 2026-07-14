@@ -3,6 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
+import type {
+  Provider,
+  ResourceState,
+  TokensResponse,
+} from '@metamask/ramps-controller';
 import type { ChainId } from '../../../../shared/constants/network';
 import {
   RAMPS_BUILD_QUOTE_ROUTE,
@@ -30,6 +35,67 @@ export type RampIntent = {
   /** Chain for the flag-off Portfolio fallback deeplink only. */
   chainId?: Hex | CaipChainId;
 };
+
+type ProvidersState = ResourceState<Provider[], Provider | null>;
+type TokensState = ResourceState<TokensResponse | null, unknown>;
+
+// Resolve geolocation on demand; a failed lookup fails closed (undefined).
+async function resolveGeolocation(): Promise<string | undefined> {
+  try {
+    return await submitRequestToBackground<string>('getGeolocation');
+  } catch {
+    return undefined;
+  }
+}
+
+// True once providers/tokens have finished fetching without error.
+function isCatalogSettled(
+  providers: ProvidersState,
+  tokens: TokensState,
+): boolean {
+  return (
+    !providers.isLoading &&
+    !tokens.isLoading &&
+    !providers.error &&
+    !tokens.error
+  );
+}
+
+// True when a settled catalog has no providers or no tokens.
+function isCatalogEmpty(
+  providers: ProvidersState,
+  tokensData: TokensResponse,
+): boolean {
+  const providersEmpty = providers.data.length === 0;
+  const tokensEmpty =
+    (tokensData.topTokens?.length ?? 0) === 0 &&
+    (tokensData.allTokens?.length ?? 0) === 0;
+  return providersEmpty || tokensEmpty;
+}
+
+// True when `assetId` is present in a settled catalog and not flagged off.
+function isAssetSupported(
+  tokensData: TokensResponse,
+  assetId: CaipAssetType,
+): boolean {
+  const catalog = [
+    ...(tokensData.topTokens ?? []),
+    ...(tokensData.allTokens ?? []),
+  ];
+  const match = catalog.find(
+    (token) => token.assetId.toLowerCase() === assetId.toLowerCase(),
+  );
+  return Boolean(match) && match?.tokenSupported !== false;
+}
+
+// Pre-select the token; a failed pre-selection fails open (non-fatal).
+async function preselectToken(assetId: CaipAssetType): Promise<void> {
+  try {
+    await submitRequestToBackground('setRampsSelectedToken', [assetId]);
+  } catch {
+    // Fail open — the build-quote page can re-resolve the token itself.
+  }
+}
 
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
@@ -85,12 +151,7 @@ export default function useRampsNavigation() {
       // (it does not fetch at startup, so reading synced state alone would
       // report UNKNOWN and fail closed). A settled `UNKNOWN`/failed lookup means
       // we cannot verify the user's location → EligibilityFailed.
-      let location: string | undefined;
-      try {
-        location = await submitRequestToBackground<string>('getGeolocation');
-      } catch {
-        location = undefined;
-      }
+      const location = await resolveGeolocation();
       if (!location || location === UNKNOWN_LOCATION) {
         dispatch(showModal({ name: 'RAMPS_ELIGIBILITY_FAILED' }));
         return false;
@@ -107,53 +168,30 @@ export default function useRampsNavigation() {
       // native flow), so fail open and skip this check entirely until then.
       // A fetch error also fails open (mobile parity) — an empty result only
       // counts once the catalog has actually settled, not on a failed fetch.
-      const catalogSettled =
-        !providers.isLoading &&
-        !tokens.isLoading &&
-        !providers.error &&
-        !tokens.error;
-      if (catalogSettled && tokens.data !== null) {
-        const providersEmpty = providers.data.length === 0;
-        const tokensEmpty =
-          (tokens.data.topTokens?.length ?? 0) === 0 &&
-          (tokens.data.allTokens?.length ?? 0) === 0;
-        if (providersEmpty || tokensEmpty) {
-          dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
-          return false;
-        }
+      const catalogSettled = isCatalogSettled(providers, tokens);
+      const catalogData = catalogSettled ? tokens.data : null;
+      if (catalogData && isCatalogEmpty(providers, catalogData)) {
+        dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
+        return false;
       }
 
       // 5. Route into the native buy flow.
       const assetId = intent?.assetId;
-      if (assetId) {
-        // Resolve against the catalog. Only block on a settled catalog that
-        // definitively lacks/unsupports the token — an unsettled catalog fails
-        // open (proceed with it selected, page re-resolves).
-        if (catalogSettled && tokens.data !== null) {
-          const catalog = [
-            ...(tokens.data.topTokens ?? []),
-            ...(tokens.data.allTokens ?? []),
-          ];
-          const match = catalog.find(
-            (token) => token.assetId.toLowerCase() === assetId.toLowerCase(),
-          );
-          if (!match || match.tokenSupported === false) {
-            dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
-            return false;
-          }
-        }
-        try {
-          await submitRequestToBackground('setRampsSelectedToken', [assetId]);
-        } catch {
-          // Fail open — a failed pre-selection is non-fatal; the build-quote
-          // page can re-resolve the token itself.
-        }
-        navigate(RAMPS_BUILD_QUOTE_ROUTE);
+      if (!assetId) {
+        // No specific asset → token selection page.
+        navigate(RAMPS_TOKEN_SELECTION_ROUTE);
         return true;
       }
 
-      // 6. No specific asset → token selection page.
-      navigate(RAMPS_TOKEN_SELECTION_ROUTE);
+      // Resolve against the catalog. Only block on a settled catalog that
+      // definitively lacks/unsupports the token — an unsettled catalog fails
+      // open (proceed with it selected, page re-resolves).
+      if (catalogData && !isAssetSupported(catalogData, assetId)) {
+        dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
+        return false;
+      }
+      await preselectToken(assetId);
+      navigate(RAMPS_BUILD_QUOTE_ROUTE);
       return true;
     },
     [
