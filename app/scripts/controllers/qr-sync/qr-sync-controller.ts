@@ -94,6 +94,8 @@ export class QrSyncController extends BaseController<
 
   #otpTimeoutId: NodeJS.Timeout | null = null;
 
+  #cleanupPromise: Promise<void> | null = null;
+
   #clientEventHandlers: {
     sessionRequest: (request: SessionRequest) => void;
     message: (message: unknown) => void;
@@ -218,6 +220,10 @@ export class QrSyncController extends BaseController<
   }
 
   async #initialize(): Promise<void> {
+    if (this.#cleanupPromise) {
+      await this.#cleanupPromise;
+    }
+
     if (this.#mwpDappClient && this.#transport && this.#sessionStore) {
       return;
     }
@@ -351,12 +357,7 @@ export class QrSyncController extends BaseController<
       return;
     }
 
-    this.#setError(getSyncCompletionFailureError(error)).catch((failError) => {
-      log.error(
-        'QrSyncController: failed to handle sync completion wait failure',
-        failError,
-      );
-    });
+    this.#setError(getSyncCompletionFailureError(error));
   }
 
   async cancelOtp(reason?: string): Promise<void> {
@@ -442,8 +443,8 @@ export class QrSyncController extends BaseController<
 
     const otpRequired = (payload: OtpRequiredPayload) => {
       log.debug('QrSyncController: OTP required');
-      this.#handleOtpRequired(payload).catch(async (error) => {
-        await this.#setError({
+      this.#handleOtpRequired(payload).catch((error) => {
+        this.#setError({
           error,
           code: QrSyncErrorCodes.OTP_INVALID,
           message: 'Failed to handle OTP requirement',
@@ -459,8 +460,8 @@ export class QrSyncController extends BaseController<
       });
     };
 
-    const disconnected = async () => {
-      await this.#setError({
+    const disconnected = () => {
+      this.#setError({
         code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
         message: 'The sync channel disconnected.',
       });
@@ -528,12 +529,12 @@ export class QrSyncController extends BaseController<
   #scheduleOtpTimeout(): void {
     this.#clearOtpTimeout();
 
-    this.#otpTimeoutId = setTimeout(async () => {
+    this.#otpTimeoutId = setTimeout(() => {
       if (this.state.qrSyncPhase !== QR_SYNC_PHASES.AWAITING_OTP_INPUT) {
         return;
       }
 
-      await this.#setError({
+      this.#setError({
         code: QrSyncErrorCodes.OTP_EXPIRED,
         message: QrSyncErrorMessages.OTP_EXPIRED,
       });
@@ -668,7 +669,6 @@ export class QrSyncController extends BaseController<
       error instanceof Error && error.message ? error.message : (message ?? '');
 
     await this.#cleanupSession(true);
-
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.FAILED;
       state.qrSyncConnectionStatus = QrSyncConnectionStatus.ERRORED;
@@ -719,50 +719,71 @@ export class QrSyncController extends BaseController<
   }
 
   async #cleanupSession(cancelOtp = false): Promise<void> {
-    this.#clearOtpTimeout();
-
-    if (this.#syncOfferDeferred) {
-      this.#rejectSyncOffer(
-        new Error(QrSyncErrorMessages.SYNC_SESSION_ENDED_BEFORE_SYNC_OFFER),
-      );
-    } else {
-      this.#clearSyncOfferWait();
+    if (this.#cleanupPromise) {
+      await this.#cleanupPromise;
+      return;
     }
 
-    if (this.#syncCompletionDeferred) {
-      this.#rejectSyncCompletion(
-        new Error(QrSyncErrorMessages.SYNC_SESSION_ENDED_BEFORE_COMPLETION),
-      );
-    } else {
-      this.#clearSyncCompletionWait();
-    }
+    this.#cleanupPromise = this.#performCleanupSession(cancelOtp);
 
-    if (cancelOtp) {
-      try {
-        this.#otpCancelCallback?.();
-      } catch (error) {
-        log.warn('QrSyncController: failed to cancel OTP flow', error);
-      }
+    try {
+      await this.#cleanupPromise;
+    } finally {
+      this.#cleanupPromise = null;
     }
+  }
 
-    if (this.#mwpDappClient) {
-      this.#unregisterClientEventHandlers(this.#mwpDappClient);
-      await this.#mwpDappClient.disconnect().catch((err) => {
-        log.warn(
-          'QrSyncController: failed to disconnect from the sync channel',
-          err,
+  async #performCleanupSession(cancelOtp: boolean): Promise<void> {
+    const mwpDappClient = this.#mwpDappClient;
+
+    try {
+      this.#clearOtpTimeout();
+
+      if (this.#syncOfferDeferred) {
+        this.#rejectSyncOffer(
+          new Error(QrSyncErrorMessages.SYNC_SESSION_ENDED_BEFORE_SYNC_OFFER),
         );
-      });
-    }
+      } else {
+        this.#clearSyncOfferWait();
+      }
 
-    this.#otpSubmitCallback = null;
-    this.#otpCancelCallback = null;
-    this.#transport = null;
-    this.#mwpDappClient = null;
-    this.#sessionStore = null;
+      if (this.#syncCompletionDeferred) {
+        this.#rejectSyncCompletion(
+          new Error(QrSyncErrorMessages.SYNC_SESSION_ENDED_BEFORE_COMPLETION),
+        );
+      } else {
+        this.#clearSyncCompletionWait();
+      }
 
-    if (this.#kvStore instanceof InMemoryKvStore) {
-      this.#kvStore.clear();
+      if (cancelOtp) {
+        try {
+          this.#otpCancelCallback?.();
+        } catch (error) {
+          log.warn('QrSyncController: failed to cancel OTP flow', error);
+        }
+      }
+
+      if (mwpDappClient) {
+        this.#unregisterClientEventHandlers(mwpDappClient);
+        await mwpDappClient.disconnect().catch((err) => {
+          log.warn(
+            'QrSyncController: failed to disconnect from the sync channel',
+            err,
+          );
+        });
+      }
+
+      if (this.#kvStore instanceof InMemoryKvStore) {
+        this.#kvStore.clear();
+      }
+    } catch (error) {
+      log.warn('QrSyncController: failed to clean up sync session', error);
+    } finally {
+      this.#otpSubmitCallback = null;
+      this.#otpCancelCallback = null;
+      this.#transport = null;
+      this.#mwpDappClient = null;
+      this.#sessionStore = null;
     }
   }
 

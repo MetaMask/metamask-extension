@@ -194,9 +194,9 @@ describe('qr-sync utils', () => {
         new Error('Did not receive handshake offer from wallet in time.'),
         { code: MWP_REQUEST_EXPIRED_CODE },
       );
-      expect(
-        resolveQrSyncErrorCode(error, QrSyncErrorCodes.QR_EXPIRED),
-      ).toBe(QrSyncErrorCodes.QR_EXPIRED);
+      expect(resolveQrSyncErrorCode(error, QrSyncErrorCodes.QR_EXPIRED)).toBe(
+        QrSyncErrorCodes.QR_EXPIRED,
+      );
     });
 
     it('falls back to the default code when no detector matches', () => {

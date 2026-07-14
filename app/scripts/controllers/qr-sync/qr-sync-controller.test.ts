@@ -106,6 +106,7 @@ const secondaryEntropyFixture = createEntropyWalletFixture(
 
 const mockMwp = {
   dappClient: null as {
+    disconnect: jest.Mock;
     connect: jest.Mock;
     sendRequest: jest.Mock;
     emit: (event: string, ...args: unknown[]) => void;
@@ -509,6 +510,55 @@ describe('QrSyncController', () => {
         code: QrSyncErrorCodes.QR_EXPIRED,
         message: 'Did not receive handshake offer from wallet in time.',
       });
+    });
+
+    it('waits for in-flight cleanup before reconnecting after a client error', async () => {
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+
+      let resolveDisconnect!: () => void;
+      const disconnectDeferred = new Promise<void>((resolve) => {
+        resolveDisconnect = resolve;
+      });
+      mockMwp.dappClient?.disconnect.mockImplementationOnce(
+        () => disconnectDeferred,
+      );
+
+      mockMwp.dappClient?.emit('error', new Error('channel failed'));
+
+      const { WebSocketTransport } = jest.requireMock(
+        '@metamask/mobile-wallet-protocol-core',
+      ) as {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        WebSocketTransport: {
+          create: jest.Mock;
+        };
+      };
+
+      let transportCreateCalled = false;
+      WebSocketTransport.create.mockImplementationOnce(async () => {
+        transportCreateCalled = true;
+        return {};
+      });
+
+      const retrySessionPromise = controller.createSession();
+      await flushAsyncWork();
+
+      expect(transportCreateCalled).toBe(false);
+
+      resolveDisconnect();
+      mockMwp.connect.mockImplementationOnce(async () => {
+        mockEmitSessionRequest();
+      });
+      await retrySessionPromise;
+
+      expect(transportCreateCalled).toBe(true);
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.DISPLAYING_QR);
+      expect(controller.state.qrSyncConnectionStatus).toBe(
+        QrSyncConnectionStatus.CONNECTING,
+      );
+      expect(controller.state.qrSyncError).toBeNull();
     });
 
     it('resets previous failed session state before reconnecting after OTP expires', async () => {
