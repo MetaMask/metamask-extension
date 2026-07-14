@@ -9,6 +9,7 @@ import { TransactionControllerInitMessenger } from '../../../wallet-init/messeng
 import { enforceSimulations } from './enforced-simulations';
 
 const log = createProjectLogger('transaction-containers');
+const DEBUG_LOG_PREFIX = '[enforced-simulations-debug]';
 
 export async function applyTransactionContainers({
   isApproved,
@@ -60,7 +61,50 @@ export async function applyTransactionContainers({
         },
       );
 
-  log('Estimated gas', gas);
+  log('Estimated gas', { gas, isApproved, simulationFails });
+
+  if (!process.env.IN_TEST) {
+    console.warn(
+      DEBUG_LOG_PREFIX,
+      'container-gas-estimated',
+      JSON.stringify(
+        {
+          phase: isApproved ? 'approved' : 'preview',
+          originalGas,
+          returnedGas: gas,
+          simulationFailure: simulationFails
+            ? {
+                reason: simulationFails.reason,
+                errorKey: simulationFails.errorKey,
+                debug: simulationFails.debug,
+              }
+            : undefined,
+          fallbackDiscarded: Boolean(simulationFails),
+          selectedGas: simulationFails
+            ? (originalGas as Hex | undefined)
+            : (gas as Hex),
+          signedGasLimit:
+            isApproved && !simulationFails ? (gas as Hex) : undefined,
+          transaction: {
+            id: transactionMeta.id,
+            requestId: transactionMeta.requestId,
+            chainId: transactionMeta.chainId,
+            networkClientId: transactionMeta.networkClientId,
+            origin: transactionMeta.origin,
+            status: transactionMeta.status,
+            type: transactionMeta.type,
+            containerTypes: types,
+            delegationAddress: transactionMeta.delegationAddress,
+            txParams: transactionMeta.txParams,
+            txParamsOriginal: transactionMeta.txParamsOriginal,
+            wrappedTxParams: finalMetadata.txParams,
+          },
+        },
+        null,
+        2,
+      ),
+    );
+  }
 
   const newGas = simulationFails
     ? (originalGas as Hex | undefined)

@@ -11,6 +11,10 @@ import { useCallback } from 'react';
 import { deleteDappSwapComparisonData } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapContext } from '../../../context/dapp-swap';
+import {
+  getDappSwapQuoteDebugInfo,
+  logConfirmationTransactionDebug,
+} from '../../../utils/enforced-simulations-debug';
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 export function useDappSwapActions() {
@@ -22,8 +26,26 @@ export function useDappSwapActions() {
     (transactionMeta: TransactionMeta) => {
       captureSwapSubmit();
       if (!isQuotedSwapDisplayedInInfo) {
+        logConfirmationTransactionDebug(
+          'dapp-swap-submit-dapp-transaction',
+          transactionMeta,
+          {
+            isQuotedSwapDisplayedInInfo,
+            selectedQuote: getDappSwapQuoteDebugInfo(selectedQuote),
+          },
+        );
         return;
       }
+
+      logConfirmationTransactionDebug(
+        'dapp-swap-quote-apply-start',
+        transactionMeta,
+        {
+          isQuotedSwapDisplayedInInfo,
+          selectedQuote: getDappSwapQuoteDebugInfo(selectedQuote),
+        },
+      );
+
       const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
       transactionMeta.txParams = {
         ...transactionMeta.txParams,
@@ -55,6 +77,15 @@ export function useDappSwapActions() {
       }
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
+
+      logConfirmationTransactionDebug(
+        'dapp-swap-quote-apply-complete',
+        transactionMeta,
+        {
+          isQuotedSwapDisplayedInInfo,
+          selectedQuote: getDappSwapQuoteDebugInfo(selectedQuote),
+        },
+      );
     },
     [captureSwapSubmit, isQuotedSwapDisplayedInInfo, selectedQuote],
   );
