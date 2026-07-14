@@ -2301,6 +2301,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  perpsShowFullAssetNames: {
+    name: 'perpsShowFullAssetNames',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    // Dark-launched: default OFF in production until rollout.
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.40.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   vipProgramEnabled: {
     name: 'vipProgramEnabled',
     type: FeatureFlagType.Remote,
@@ -2315,6 +2327,25 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'rewardsBitcoinEnabledExtension',
     type: FeatureFlagType.Remote,
     inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  rampsEnabled: {
+    name: 'rampsEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: {
+      minimumVersion: '13.41.0',
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  rampsServiceDisruption: {
+    name: 'rampsServiceDisruption',
+    type: FeatureFlagType.Remote,
+    inProd: false,
     productionDefault: false,
     status: FeatureFlagStatus.Active,
   },
@@ -3040,7 +3071,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'extensionUxTransactionEventToast',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: false,
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '13.36.0',
+    },
     status: FeatureFlagStatus.Active,
   },
 

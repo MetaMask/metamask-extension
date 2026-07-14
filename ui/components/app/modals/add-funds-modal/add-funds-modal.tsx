@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Icon,
@@ -8,7 +8,6 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useSelector } from 'react-redux';
 import { TokenPaymentInfo } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -19,7 +18,6 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getBuyableChains } from '../../../../ducks/ramps';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 import { ReceiveModal } from '../../../multichain/receive-modal';
 import useBridging from '../../../../hooks/bridge/useBridging';
@@ -29,8 +27,6 @@ import {
   MetaMetricsSwapsEventSource,
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
-import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 
 const AddFundsModal = ({
@@ -48,21 +44,9 @@ const AddFundsModal = ({
   const { openBuyCryptoInPdapp } = useRamps();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const buyableChains = useSelector(getBuyableChains);
-
   const { openBridgeExperience } = useBridging();
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
-
-  const isBuyableChain = useMemo(() => {
-    if (!chainId) {
-      return false;
-    }
-    return buyableChains.some(
-      (network: AggregatorNetwork) =>
-        String(network.chainId) === hexToDecimal(chainId),
-    );
-  }, [buyableChains, chainId]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
@@ -169,7 +153,6 @@ const AddFundsModal = ({
             label: t('addFundsModalBuyCrypto'),
             iconName: IconName.Add,
             onClick: handleBuyAndSellOnClick,
-            disabled: !isBuyableChain,
           })}
           {buttonRow({
             id: 'add-funds-modal-receive-crypto-button',

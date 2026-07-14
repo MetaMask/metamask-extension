@@ -16,11 +16,11 @@ import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  PERPS_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
+import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
   isActive: boolean;
@@ -70,11 +70,8 @@ export function BottomNavBar() {
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
 
-  const isHome = pathname === DEFAULT_ROUTE;
-  const isPerps =
-    pathname === PERPS_HOME_PAGE_ROUTE || pathname.startsWith(PERPS_ROUTE);
-  const isSwaps = pathname.startsWith(SWAP_PATH);
-  const isActivity = pathname === ACTIVITY_ROUTE;
+  const { isHome, isPerps, isSwaps, isActivity } =
+    getActiveBottomNavTabs(pathname);
 
   const handleHomeClick = useCallback(
     () =>
@@ -97,7 +94,11 @@ export function BottomNavBar() {
   );
 
   return (
-    <nav className="bottom-nav-bar w-full bg-background-default border-t border-border-muted flex flex-row justify-between p-2 gap-2">
+    <nav
+      data-testid="bottom-nav-bar"
+      className="bottom-nav-bar w-full bg-background-default border-t border-border-muted flex flex-row justify-between p-2 gap-2 z-[100]"
+      style={{ viewTransitionName: 'bottom-nav-bar' }}
+    >
       <NavTab
         isActive={isHome}
         icon={isHome ? IconName.HomeFilled : IconName.Home}
@@ -108,7 +109,7 @@ export function BottomNavBar() {
       {isPerpsAvailable && (
         <NavTab
           isActive={isPerps}
-          icon={IconName.Candlestick}
+          icon={isPerps ? IconName.CandlestickFilled : IconName.Candlestick}
           label={t('perps')}
           onClick={handlePerpsClick}
           data-testid="bottom-nav-perps"
@@ -123,7 +124,7 @@ export function BottomNavBar() {
       />
       <NavTab
         isActive={isActivity}
-        icon={IconName.Activity}
+        icon={isActivity ? IconName.ClockFilled : IconName.Clock}
         label={t('activity')}
         onClick={handleActivityClick}
         data-testid="bottom-nav-activity"

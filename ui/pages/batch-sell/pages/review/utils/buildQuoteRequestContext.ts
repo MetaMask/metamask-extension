@@ -16,7 +16,7 @@ export const computeUsdAmountSource = ({
     return 0;
   }
   return new BigNumber(safeAmountForCalc(asset.balance))
-    .times(sendAmountPercent)
+    .times(String(sendAmountPercent))
     .div(100)
     .times(asset.tokenFiatPrice.toString())
     .toNumber();

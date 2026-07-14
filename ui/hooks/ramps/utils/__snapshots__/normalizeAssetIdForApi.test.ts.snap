@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`normalizeAssetIdForApi matches snapshot for asset id inputs 1`] = `
+{
+  "eip155": "EIP155:1/ERC20:0xABC",
+  "empty": "",
+  "other": "solana:5eykt.../token:ABC",
+  "undefined": "",
+}
+`;

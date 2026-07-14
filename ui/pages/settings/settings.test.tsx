@@ -23,17 +23,10 @@ import Settings from './settings';
 
 const mockNavigate = jest.fn();
 const mockGetEnvironmentType = jest.fn(() => ENVIRONMENT_TYPE_POPUP);
-const mockRunCloseTransition = jest.fn((onComplete: () => void) =>
-  onComplete(),
-);
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-}));
-
-jest.mock('../routes/global-menu-route-transition', () => ({
-  useGlobalMenuRouteTransition: () => mockRunCloseTransition,
 }));
 
 jest.mock('../../../shared/lib/environment-type', () => ({
@@ -95,9 +88,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-item-transaction-shield'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
       expect(
         screen.getByText(messages.securityAndPrivacy.message),
       ).toBeInTheDocument();
@@ -116,9 +107,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-bar-grouped'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
     });
 
     it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
@@ -183,7 +172,6 @@ describe('Settings', () => {
           `${DEFAULT_ROUTE}?drawerOpen=true`,
         );
       });
-      expect(mockRunCloseTransition).toHaveBeenCalledTimes(1);
     });
 
     it('navigates to home with the drawer open when back is clicked at settings root regardless of settings URL query', async () => {
@@ -201,7 +189,6 @@ describe('Settings', () => {
           `${DEFAULT_ROUTE}?drawerOpen=true`,
         );
       });
-      expect(mockRunCloseTransition).toHaveBeenCalledTimes(1);
     });
 
     it('navigates to parent tab without global-menu transition when back is clicked on a sub-page', async () => {
@@ -219,7 +206,6 @@ describe('Settings', () => {
           PREFERENCES_AND_DISPLAY_ROUTE,
         );
       });
-      expect(mockRunCloseTransition).not.toHaveBeenCalled();
     });
 
     it('navigates from a notification section back to the main notifications settings page', async () => {

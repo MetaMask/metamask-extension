@@ -1142,6 +1142,80 @@ describe('Selectors', () => {
       expect(selectors.getTransaction.recomputations()).toBe(2);
     });
 
+    it('returns updated transaction when transaction object is replaced in state', () => {
+      const initialTx = {
+        chainId: CHAIN_IDS.MAINNET,
+        id: 'tx-1',
+        status: TransactionStatus.submitted,
+        txParams: { to: '0x1' },
+      };
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [initialTx],
+        },
+      };
+
+      expect(selectors.getTransaction(mutableState, 'tx-1').txParams.to).toBe(
+        '0x1',
+      );
+
+      const updatedState = {
+        ...mutableState,
+        metamask: {
+          ...mutableState.metamask,
+          transactions: [
+            {
+              ...initialTx,
+              txParams: { to: '0xupdated' },
+            },
+          ],
+        },
+      };
+
+      expect(selectors.getTransaction(updatedState, 'tx-1').txParams.to).toBe(
+        '0xupdated',
+      );
+    });
+
+    it('recomputes unapproved transaction when txParams mutate in place', () => {
+      const mutableState = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-3',
+              status: TransactionStatus.unapproved,
+              txParams: { maxFeePerGas: '0x1', gas: '0x5208' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x1');
+
+      mutableState.metamask.transactions[0].txParams.maxFeePerGas = '0x999';
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x999');
+    });
+
     it('caches full transaction data per transaction ID', () => {
       expect(
         selectors.getFullTxData(
@@ -1295,6 +1369,7 @@ describe('Selectors', () => {
   it('#getAdvancedGasFeeValues', () => {
     const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
+      userFeeLevel: 'custom',
       maxBaseFee: '75',
       priorityFee: '2',
     });
@@ -1307,6 +1382,76 @@ describe('Selectors', () => {
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
+  });
+
+  describe('#getNames', () => {
+    it('returns a stable empty object when names are unavailable', () => {
+      const result1 = selectors.getNames({ metamask: {} });
+      const result2 = selectors.getNames({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the names slice is unchanged', () => {
+      const names = {
+        ethereumAddress: {
+          '0xabc': {
+            '0x1': {
+              name: 'Test Name',
+            },
+          },
+        },
+      };
+      const state = {
+        metamask: {
+          names,
+        },
+      };
+
+      const result1 = selectors.getNames(state);
+      const result2 = selectors.getNames({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(names);
+    });
+  });
+
+  describe('#getNameSources', () => {
+    it('returns a stable empty object when name sources are unavailable', () => {
+      const result1 = selectors.getNameSources({ metamask: {} });
+      const result2 = selectors.getNameSources({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the name sources slice is unchanged', () => {
+      const nameSources = {
+        ens: { label: 'ENS' },
+      };
+      const state = {
+        metamask: {
+          nameSources,
+        },
+      };
+
+      const result1 = selectors.getNameSources(state);
+      const result2 = selectors.getNameSources({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(nameSources);
+    });
   });
 
   it('#getShowOutdatedBrowserWarning returns false if outdatedBrowserWarningLastShown is less than 2 days ago', () => {

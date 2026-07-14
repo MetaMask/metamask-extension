@@ -7,7 +7,6 @@ import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  PERPS_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
 import { BottomNavBar } from './bottom-nav-bar';
@@ -124,18 +123,6 @@ describe('BottomNavBar', () => {
       );
       expect(getByTestId('bottom-nav-home')).not.toHaveAttribute(
         'aria-current',
-      );
-    });
-
-    it('marks Perps as active on /perps/* sub-routes', () => {
-      const { getByTestId } = renderBottomNavBar(
-        baseState,
-        `${PERPS_ROUTE}/market-list`,
-      );
-
-      expect(getByTestId('bottom-nav-perps')).toHaveAttribute(
-        'aria-current',
-        'page',
       );
     });
 
