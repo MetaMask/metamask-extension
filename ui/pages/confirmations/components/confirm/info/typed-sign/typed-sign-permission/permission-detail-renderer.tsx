@@ -1,6 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import type { Rule } from '@metamask/7715-permission-types';
+import type { Rule ,
+  AmountField,
+  I18nFunction,
+  PermissionRenderContext,
+  SchemaElement,
+  SchemaSection,
+  TokenResolution,
+} from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
@@ -39,14 +46,6 @@ import { getPermissionSchemaEntry } from '../../../../../../../../shared/lib/gat
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { extractAddressesFromRuleByType } from '../../../../../../../../shared/lib/gator-permissions';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
-import type {
-  AmountField,
-  I18nFunction,
-  PermissionRenderContext,
-  SchemaElement,
-  SchemaSection,
-  TokenResolution,
-} from '@metamask/7715-permission-types';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';

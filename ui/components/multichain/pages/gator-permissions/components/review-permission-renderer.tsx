@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import type { Rule } from '@metamask/7715-permission-types';
+import type { Rule ,
+  AmountField,
+  ExpiryField,
+  I18nFunction,
+  PermissionRenderContext,
+  ReviewFieldView,
+  SchemaElement,
+  SchemaSection,
+} from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import {
   BoxFlexDirection,
@@ -20,15 +28,6 @@ import {
 import { getPermissionSchemaEntry } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
-import type {
-  AmountField,
-  ExpiryField,
-  I18nFunction,
-  PermissionRenderContext,
-  ReviewFieldView,
-  SchemaElement,
-  SchemaSection,
-} from '@metamask/7715-permission-types';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
