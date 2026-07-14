@@ -13,7 +13,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type RampsTokenSelectionHeaderProps = {
   title: string;

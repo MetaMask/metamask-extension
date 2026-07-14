@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -10,7 +10,7 @@ import {
   Text,
   FontWeight,
 } from '@metamask/design-system-react';
-import Spinner from '../../../../../components/ui/spinner';
+import Spinner from '../../../../components/ui/spinner';
 
 export type RampsPaymentMethodPillProps = {
   label: string;
