@@ -8,12 +8,21 @@ app/scripts/migrations/214.ts
   s_253342669b36b9::t_b4f256022342fd 2-5,6,11,14,16-17,19,27,28-30
 app/scripts/migrations/214.test.ts
   s_253342669b36b9::t_a5dd062e8a056e 1-2,3,4-9,11-13,17,18-19,21,23,32-33,35,37,39,41-42,44-45,51,55,57-58
+app/scripts/migrations/215.ts
+  h_d6a04d82b61d5e 1-65
+app/scripts/migrations/215.test.ts
+  h_d6a04d82b61d5e 1-121
 ---
 {
   "schema_version": "authorship/3.0.0",
   "git_ai_version": "1.5.8",
   "base_commit_sha": "a8994c3f1ffb317c8458095d0240b3bf218409ee",
   "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
   "sessions": {
     "s_09de1b9a587b12": {
       "agent_id": {
