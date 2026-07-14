@@ -1205,6 +1205,85 @@ describe('TokenManagementPage', () => {
     });
   });
 
+  it('keeps a browse result in place when it becomes imported while the view is open', async () => {
+    const aadTokenAddress = '0x00000000000000000000000000000000000000aa';
+    const aadTokenAssetId = `eip155:1/erc20:${aadTokenAddress}`;
+    const aadToken = {
+      accountId: mainnetToken.accountId,
+      accountType: 'eip155:eoa',
+      assetId: aadTokenAssetId,
+      address: aadTokenAddress,
+      chainId: '0x1',
+      image: '',
+      name: 'Aardvark Token',
+      symbol: 'AAD',
+      decimals: 18,
+      isNative: false,
+      rawBalance: '0x0',
+      balance: '0',
+      fiat: {
+        balance: 0,
+        currency: 'usd',
+        conversionRate: 0,
+      },
+    };
+
+    setTokenSearchState({
+      results: [
+        {
+          assetId: aadTokenAssetId,
+          symbol: 'AAD',
+          decimals: 18,
+          name: 'Aardvark Token',
+        },
+      ],
+    });
+
+    const initialState = createState();
+    const { store } = renderPage(initialState);
+
+    const getRows = () =>
+      Array.from(document.querySelectorAll('[data-testid]')).filter((node) => {
+        const testId = node.getAttribute('data-testid') ?? '';
+        return (
+          testId.startsWith('token-management-cell-') &&
+          !testId.endsWith('-network-badge') &&
+          !testId.endsWith('-toggle')
+        );
+      });
+
+    const importedRow = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}`,
+    );
+    const browseRow = screen.getByTestId(
+      `token-management-cell-search-${aadTokenAssetId.toLowerCase()}`,
+    );
+    const initialRows = getRows();
+
+    expect(initialRows.indexOf(browseRow)).toBeGreaterThan(
+      initialRows.indexOf(importedRow),
+    );
+
+    const nextState = createState({
+      accountGroupAssets: {
+        '0x1': [aadToken, mainnetToken, nativeToken],
+      },
+    });
+
+    store.replaceReducer((() => nextState) as never);
+    store.dispatch({ type: 'TEST_TOKEN_IMPORTED' });
+
+    const importedAadRow = await screen.findByTestId(
+      `token-management-cell-0x1:${aadTokenAddress}`,
+    );
+    const updatedRows = getRows();
+
+    expect(importedAadRow).toBe(browseRow);
+    expect(updatedRows.indexOf(importedAadRow)).toBe(
+      initialRows.indexOf(browseRow),
+    );
+  });
+
   it('toggling ON a not-yet-imported non-EVM browse result imports via multichainAddAssets and seeds unified assets', async () => {
     const solanaResultId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
     const solanaTokenReference = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
