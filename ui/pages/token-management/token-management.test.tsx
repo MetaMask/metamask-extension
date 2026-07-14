@@ -130,10 +130,6 @@ const mockTokenSearch = {
   spy: jest.fn(),
 };
 
-jest.mock('../../hooks/useDebouncedValue', () => ({
-  useDebouncedValue: <Value,>(value: Value) => value,
-}));
-
 jest.mock('../../hooks/useTokenSearch', () => ({
   useTokenSearch: (options: {
     query: string;
