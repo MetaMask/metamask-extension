@@ -181,9 +181,7 @@ export function createEsploraTransaction(
     size: transaction.size,
     status: {
       ...(transaction.blockhash ? { block_hash: transaction.blockhash } : {}),
-      ...(blockHeight === undefined
-        ? {}
-        : { block_height: blockHeight }),
+      ...(blockHeight === undefined ? {} : { block_height: blockHeight }),
       ...(transaction.time ? { block_time: transaction.time } : {}),
       confirmed: Boolean(transaction.confirmations),
     },
