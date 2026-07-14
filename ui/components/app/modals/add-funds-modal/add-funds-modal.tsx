@@ -48,7 +48,7 @@ const AddFundsModal = ({
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const handleBuyOnClick = useCallback(() => {
+  const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
@@ -152,7 +152,7 @@ const AddFundsModal = ({
             id: 'add-funds-modal-buy-crypto-button',
             label: t('addFundsModalBuyCrypto'),
             iconName: IconName.Add,
-            onClick: handleBuyOnClick,
+            onClick: handleBuyAndSellOnClick,
           })}
           {buttonRow({
             id: 'add-funds-modal-receive-crypto-button',

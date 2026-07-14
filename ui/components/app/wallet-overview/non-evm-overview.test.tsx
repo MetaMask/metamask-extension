@@ -348,7 +348,7 @@ describe('NonEvmOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton as HTMLElement);
 
-    // handleBuyOnClick awaits the async goToBuy gate before tracking.
+    // handleBuyAndSellOnClick awaits the async goToBuy gate before tracking.
     await waitFor(() => expect(mockTrackEvent).toHaveBeenCalled());
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
