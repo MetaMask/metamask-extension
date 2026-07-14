@@ -2,6 +2,12 @@ import { useMemo } from 'react';
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
 
+export const activityQueryKey = [
+  'accounts',
+  'transactions',
+  'v4MultiAccount',
+] as const;
+
 export function useCachedEvmTransaction({
   chainId,
   txHash,
@@ -21,7 +27,7 @@ export function useCachedEvmTransaction({
     const cachedQueries = queryClient.getQueriesData<
       InfiniteData<V4MultiAccountTransactionsResponse>
     >({
-      queryKey: ['accounts', 'transactions', 'v4MultiAccount'],
+      queryKey: activityQueryKey,
     });
 
     for (const [, cachedData] of cachedQueries) {
