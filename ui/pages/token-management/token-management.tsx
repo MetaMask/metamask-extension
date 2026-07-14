@@ -1367,11 +1367,13 @@ export const TokenManagementPage = () => {
 
     return [...nextTokenListItems].sort((itemA, itemB) => {
       const itemAOrder =
-        tokenListOrderRef.current.get(getTokenManagementListItemOrderKey(itemA)) ??
-        Number.MAX_SAFE_INTEGER;
+        tokenListOrderRef.current.get(
+          getTokenManagementListItemOrderKey(itemA),
+        ) ?? Number.MAX_SAFE_INTEGER;
       const itemBOrder =
-        tokenListOrderRef.current.get(getTokenManagementListItemOrderKey(itemB)) ??
-        Number.MAX_SAFE_INTEGER;
+        tokenListOrderRef.current.get(
+          getTokenManagementListItemOrderKey(itemB),
+        ) ?? Number.MAX_SAFE_INTEGER;
 
       return itemAOrder - itemBOrder;
     });
@@ -1422,8 +1424,7 @@ export const TokenManagementPage = () => {
   );
 
   const getTokenListItemKey = useCallback(
-    (item: TokenManagementListItem) =>
-      getTokenManagementListItemOrderKey(item),
+    (item: TokenManagementListItem) => getTokenManagementListItemOrderKey(item),
     [],
   );
 
