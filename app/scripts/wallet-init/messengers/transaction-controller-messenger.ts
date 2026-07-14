@@ -145,12 +145,23 @@ export type TransactionControllerInitMessengerEvents =
   | TransactionControllerTransactionSubmittedEvent
   | TransactionControllerUnapprovedTransactionAddedEvent;
 
+const transactionControllerInitMessengerCache = new WeakMap<
+  RootMessenger<
+    TransactionControllerInitMessengerActions,
+    TransactionControllerInitMessengerEvents
+  >,
+  ReturnType<typeof getTransactionControllerInitMessenger>
+>();
+
 export function getTransactionControllerInitMessenger(
   messenger: RootMessenger<
     TransactionControllerInitMessengerActions,
     TransactionControllerInitMessengerEvents
   >,
 ) {
+  if (transactionControllerInitMessengerCache.has(messenger)) {
+    return transactionControllerInitMessengerCache.get(messenger)!;
+  }
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
     TransactionControllerInitMessengerActions,
@@ -226,5 +237,9 @@ export function getTransactionControllerInitMessenger(
     ],
   });
 
+  transactionControllerInitMessengerCache.set(
+    messenger,
+    controllerInitMessenger,
+  );
   return controllerInitMessenger;
 }

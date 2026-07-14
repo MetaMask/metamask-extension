@@ -3467,7 +3467,10 @@ describe('LegacyBackgroundApiService', () => {
           '0x1',
         );
 
-        expect(isRelaySupportedMock).toHaveBeenCalledWith('0x1');
+        expect(isRelaySupportedMock).toHaveBeenCalledWith(
+          expect.any(Object),
+          '0x1',
+        );
         expect(result).toBe(true);
       });
     });

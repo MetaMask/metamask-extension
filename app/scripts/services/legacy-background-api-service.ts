@@ -138,7 +138,11 @@ import {
 } from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { cloneDeep } from 'lodash';
-import { SentinelApiServiceGetNetworksAction } from '@metamask-previews/sentinel-api-service';
+import {
+  SentinelApiServiceGetNetworksAction,
+  SentinelApiServiceGetSmartTransactionAction,
+  SentinelApiServiceSubmitRelayTransactionAction,
+} from '@metamask-previews/sentinel-api-service';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -1750,6 +1754,6 @@ export class LegacyBackgroundApiService {
    * @returns `true` if the transaction relay supports the chain, `false` otherwise.
    */
   async isRelaySupported(chainId: Hex): Promise<boolean> {
-    return isRelaySupported(chainId);
+    return isRelaySupported(this.#messenger, chainId);
   }
 }
