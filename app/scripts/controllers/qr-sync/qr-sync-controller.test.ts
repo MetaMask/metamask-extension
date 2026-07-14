@@ -11,6 +11,10 @@
  * 4. Extension sends `sync-ready` with encrypted wallet data
  * 5. Mobile sends `sync-completed` → flow finishes
  */
+import {
+  ErrorCode as MwpCoreErrorCode,
+  SessionError as MwpCoreSessionError,
+} from '@metamask/mobile-wallet-protocol-core';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import {
   AccountGroupType,
@@ -37,7 +41,11 @@ import {
   QrSyncErrorCodes,
 } from '../../../../shared/constants/qr-sync';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
-import { QrSyncActionTypes, QrSyncConnectionStatus, QrSyncErrorMessages } from './constants';
+import {
+  QrSyncActionTypes,
+  QrSyncConnectionStatus,
+  QrSyncErrorMessages,
+} from './constants';
 import { getDefaultQrSyncControllerState } from './metadata';
 import { QrSyncController } from './qr-sync-controller';
 import { QrSyncDataService } from './qr-sync-data-service';
@@ -112,14 +120,19 @@ const mockMwp = {
   connect: jest.fn().mockResolvedValue(undefined),
 };
 
-jest.mock('@metamask/mobile-wallet-protocol-core', () => ({
-  WebSocketTransport: {
-    create: jest.fn().mockResolvedValue({}),
-  },
-  SessionStore: {
-    create: jest.fn().mockResolvedValue({}),
-  },
-}));
+jest.mock('@metamask/mobile-wallet-protocol-core', () => {
+  const actual = jest.requireActual('@metamask/mobile-wallet-protocol-core');
+
+  return {
+    ...actual,
+    WebSocketTransport: {
+      create: jest.fn().mockResolvedValue({}),
+    },
+    SessionStore: {
+      create: jest.fn().mockResolvedValue({}),
+    },
+  };
+});
 
 jest.mock('@metamask/mobile-wallet-protocol-dapp-client', () => {
   class DappClient {
@@ -464,7 +477,7 @@ describe('QrSyncController', () => {
       expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message: 'Relay unavailable',
+        message: QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
       });
     });
 
@@ -488,9 +501,9 @@ describe('QrSyncController', () => {
 
     it('marks the session as QR expired when the handshake request expires', async () => {
       const { controller } = setupController();
-      const expiredError = Object.assign(
-        new Error('Did not receive handshake offer from wallet in time.'),
-        { code: 'REQUEST_EXPIRED', name: 'REQUEST_EXPIRED' },
+      const expiredError = new MwpCoreSessionError(
+        MwpCoreErrorCode.REQUEST_EXPIRED,
+        'Did not receive handshake offer from wallet in time.',
       );
       mockMwp.connect.mockRejectedValueOnce(expiredError);
 
@@ -503,6 +516,69 @@ describe('QrSyncController', () => {
         code: QrSyncErrorCodes.QR_EXPIRED,
         message: 'Did not receive handshake offer from wallet in time.',
       });
+    });
+
+    it('resets previous failed session state before reconnecting after OTP expires', async () => {
+      const cancelOtp = jest.fn();
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+
+      jest.useFakeTimers();
+      try {
+        mockEmitOtpRequired(jest.fn(), cancelOtp);
+
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+        );
+
+        expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+        expect(controller.state.qrSyncError).toStrictEqual({
+          code: QrSyncErrorCodes.OTP_EXPIRED,
+          message: QrSyncErrorMessages.OTP_EXPIRED,
+        });
+      } finally {
+        jest.useRealTimers();
+      }
+
+      const { WebSocketTransport } = jest.requireMock(
+        '@metamask/mobile-wallet-protocol-core',
+      ) as {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        WebSocketTransport: {
+          create: jest.Mock;
+        };
+      };
+
+      let stateDuringInitialize: QrSyncController['state'] | undefined;
+      let resolveTransport!: (value: object) => void;
+      const transportDeferred = new Promise<object>((resolve) => {
+        resolveTransport = resolve;
+      });
+
+      WebSocketTransport.create.mockImplementationOnce(() => {
+        stateDuringInitialize = controller.state;
+        return transportDeferred;
+      });
+
+      const retrySessionPromise = controller.createSession();
+      await flushAsyncWork();
+
+      expect(stateDuringInitialize).toBeDefined();
+      expect(stateDuringInitialize).toMatchObject({
+        qrSyncPhase: QR_SYNC_PHASES.IDLE,
+        qrSyncConnectionStatus: QrSyncConnectionStatus.CONNECTING,
+        qrSyncError: null,
+        qrSyncQrPayload: null,
+      });
+
+      resolveTransport({});
+      mockMwp.connect.mockImplementationOnce(async () => {
+        mockEmitSessionRequest();
+      });
+      await retrySessionPromise;
+
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.DISPLAYING_QR);
     });
   });
 
@@ -594,25 +670,25 @@ describe('QrSyncController', () => {
       }
     });
 
-    it('records an OTP error without advancing the flow when validation fails', async () => {
+    it('fails the session when the client emits OTP_MAX_ATTEMPTS_REACHED during OTP entry', async () => {
       const { controller } = setupController();
-      const submitOtp = jest
-        .fn()
-        .mockRejectedValue(new Error('Incorrect code'));
 
       await mockStartSession(controller);
-      mockEmitOtpRequired(submitOtp);
+      mockEmitOtpRequired(jest.fn().mockResolvedValue(undefined));
 
-      await expect(controller.submitOtp('000000')).rejects.toThrow(
-        'Incorrect code',
+      const maxAttemptsReachedError = new MwpCoreSessionError(
+        MwpCoreErrorCode.OTP_MAX_ATTEMPTS_REACHED,
+        'OTP max attempts reached.',
       );
+      mockMwp.dappClient?.emit('error', maxAttemptsReachedError);
+      await flushAsyncWork();
 
-      expect(controller.state.qrSyncPhase).toBe(
-        QR_SYNC_PHASES.AWAITING_OTP_INPUT,
-      );
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
-        code: QrSyncErrorCodes.OTP_INVALID,
-        message: 'Incorrect code',
+        code: QrSyncErrorCodes.UNKNOWN,
+        message: 'OTP max attempts reached.',
       });
     });
 

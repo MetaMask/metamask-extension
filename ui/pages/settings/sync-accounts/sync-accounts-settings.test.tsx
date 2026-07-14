@@ -159,7 +159,9 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(screen.getByText(messages.add_device_error_title.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.add_device_error_title.message),
+    ).toBeInTheDocument();
   });
 
   it('renders SyncError when the phase is failed', () => {
@@ -171,7 +173,9 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(screen.getByText(messages.add_device_error_title.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.add_device_error_title.message),
+    ).toBeInTheDocument();
   });
 
   it('renders QrCodeScan when the phase is failed with a QR_EXPIRED error', () => {
@@ -188,7 +192,9 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
-    expect(screen.queryByText(messages.add_device_error_title.message)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.add_device_error_title.message),
+    ).not.toBeInTheDocument();
   });
 
   it('renders EnterVerificationCode when the phase is failed with an OTP_EXPIRED error', () => {
@@ -205,7 +211,9 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
-    expect(screen.queryByText(messages.add_device_error_title.message)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.add_device_error_title.message),
+    ).not.toBeInTheDocument();
   });
 
   it('renders EnterVerificationCode when the phase is failed with an OTP_ATTEMPTS_EXCEEDED error', () => {
@@ -222,7 +230,9 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
-    expect(screen.queryByText(messages.add_device_error_title.message)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.add_device_error_title.message),
+    ).not.toBeInTheDocument();
   });
 
   it('renders SyncError when the phase is failed with a non-overridden error', () => {
@@ -238,7 +248,9 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(screen.getByText(messages.add_device_error_title.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.add_device_error_title.message),
+    ).toBeInTheDocument();
     expect(screen.queryByTestId('qr-code-scan')).not.toBeInTheDocument();
   });
 

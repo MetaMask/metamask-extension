@@ -1,4 +1,8 @@
-import type { SessionRequest } from '@metamask/mobile-wallet-protocol-core';
+import {
+  ErrorCode as MwpCoreErrorCode,
+  SessionError as MwpCoreSessionError,
+  type SessionRequest,
+} from '@metamask/mobile-wallet-protocol-core';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 
 import {
@@ -190,6 +194,39 @@ export function getSyncCompletionFailureError(error: unknown): QrSyncError {
       message === QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT
         ? QrSyncErrorCodes.SESSION_EXPIRED
         : QrSyncErrorCodes.SYNC_FAILED,
+    message,
+  };
+}
+
+export function parseSessionError(error: unknown): QrSyncError {
+  let code: QrSyncErrorCodeType = QrSyncErrorCodes.CHANNEL_INIT_FAILED;
+  let message: string = QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION;
+
+  if (error instanceof MwpCoreSessionError) {
+    message = error.message;
+    switch (error.code) {
+      case MwpCoreErrorCode.OTP_MAX_ATTEMPTS_REACHED:
+        code = QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED;
+        break;
+      case MwpCoreErrorCode.OTP_ENTRY_TIMEOUT:
+        code = QrSyncErrorCodes.OTP_EXPIRED;
+        break;
+      case MwpCoreErrorCode.OTP_INCORRECT:
+        code = QrSyncErrorCodes.OTP_INVALID;
+        break;
+      case MwpCoreErrorCode.REQUEST_EXPIRED:
+        code = QrSyncErrorCodes.QR_EXPIRED;
+        break;
+      case MwpCoreErrorCode.SESSION_EXPIRED:
+        code = QrSyncErrorCodes.SESSION_EXPIRED;
+        break;
+      default:
+        break;
+    }
+  }
+
+  return {
+    code,
     message,
   };
 }
