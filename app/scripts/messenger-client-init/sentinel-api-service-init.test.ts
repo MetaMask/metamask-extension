@@ -1,6 +1,4 @@
-import {
-  SentinelApiService,
-} from '@metamask-previews/sentinel-api-service';
+import { SentinelApiService } from '@metamask-previews/sentinel-api-service';
 import { getRootMessenger } from '../lib/messenger';
 import type { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import { getTransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
