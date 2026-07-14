@@ -1,12 +1,12 @@
 /**
- * Optional helpers for wrapping renders in React.StrictMode.
+ * Jest-only helper for exercising React.StrictMode double-mount behavior.
+ *
+ * Import this module as the FIRST import in a test file (before importing
+ * '@testing-library/react' or '@testing-library/react-hooks') to mock their
+ * render/renderHook APIs so they wrap the UI in <React.StrictMode />.
  *
  * Do not register this file in `jest.config.js` setupFilesAfterEnv — enabling
- * StrictMode globally breaks many existing unit tests that assume a single mount
- * (mock call counts, mockReturnValueOnce, memo reference checks, etc.).
- *
- * Import and use `renderInStrictMode` in tests that specifically verify
- * StrictMode-safe behavior instead.
+ * StrictMode globally breaks many existing unit tests that assume a single mount.
  */
 jest.mock('@testing-library/react', () => {
   // eslint-disable-next-line n/global-require -- required inside jest.mock factory
