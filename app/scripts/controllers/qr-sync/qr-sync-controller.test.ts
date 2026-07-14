@@ -37,7 +37,7 @@ import {
   QrSyncErrorCodes,
 } from '../../../../shared/constants/qr-sync';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
-import { QrSyncActionTypes, QrSyncErrorMessages } from './constants';
+import { QrSyncActionTypes, QrSyncConnectionStatus, QrSyncErrorMessages } from './constants';
 import { getDefaultQrSyncControllerState } from './metadata';
 import { QrSyncController } from './qr-sync-controller';
 import { QrSyncDataService } from './qr-sync-data-service';
@@ -126,6 +126,8 @@ jest.mock('@metamask/mobile-wallet-protocol-dapp-client', () => {
     readonly #handlers = new Map<string, Set<(...args: unknown[]) => void>>();
 
     connect = mockMwp.connect;
+
+    disconnect = jest.fn().mockResolvedValue(undefined);
 
     sendRequest = jest.fn().mockResolvedValue(undefined);
 
@@ -336,6 +338,13 @@ function mockEmitOtpRequired(
 
 function mockEmitConnected(): void {
   mockMwp.dappClient?.emit('connected');
+}
+
+async function flushAsyncWork(): Promise<void> {
+  await Promise.resolve();
+  await new Promise<void>((resolve) => {
+    setImmediate(resolve);
+  });
 }
 
 function mockEmitInvalidSyncOffer(): void {
@@ -878,21 +887,39 @@ describe('QrSyncController', () => {
   });
 
   describe('cancelSync and resetState', () => {
-    it('cancels an in-progress session and optionally records a reason', async () => {
+    it('cleans up without notifying mobile when cancelSync is called before the channel is connected', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
-      await controller.cancelSync('User closed the flow');
+      expect(controller.state.qrSyncConnectionStatus).toBe(
+        QrSyncConnectionStatus.CONNECTING,
+      );
+
+      await controller.cancelSync();
+
+      expect(mockMwp.dappClient?.sendRequest).not.toHaveBeenCalledWith({
+        type: QrSyncActionTypes.SYNC_CANCEL,
+        version: '1.0.0',
+      });
+      expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
+    });
+
+    it('notifies mobile and resets state when cancelSync is called after the channel is connected', async () => {
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+      mockEmitConnected();
+      expect(controller.state.qrSyncConnectionStatus).toBe(
+        QrSyncConnectionStatus.CONNECTED,
+      );
+
+      await controller.cancelSync();
 
       expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith({
         type: QrSyncActionTypes.SYNC_CANCEL,
         version: '1.0.0',
       });
-      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.CANCELLED);
-      expect(controller.state.qrSyncError).toStrictEqual({
-        code: QrSyncErrorCodes.SYNC_REJECTED,
-        message: 'User closed the flow',
-      });
+      expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
     });
 
     it('returns to the default idle state', async () => {
@@ -912,6 +939,7 @@ describe('QrSyncController', () => {
 
       await mockStartSession(controller);
       mockMwp.dappClient?.emit('disconnected');
+      await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
@@ -930,6 +958,7 @@ describe('QrSyncController', () => {
         { code: 'REQUEST_EXPIRED', name: 'REQUEST_EXPIRED' },
       );
       mockMwp.dappClient?.emit('error', expiredError);
+      await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
@@ -962,6 +991,7 @@ describe('QrSyncController', () => {
       mockEmitSyncError({
         message: 'Mobile could not complete the sync',
       });
+      await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');

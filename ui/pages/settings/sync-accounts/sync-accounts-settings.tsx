@@ -60,22 +60,18 @@ const SyncAccountsSettings = () => {
     setPassword(undefined);
   }, [qrSyncPhase]);
 
-  const resetQrSyncState = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:resetState',
-      [],
-    ]).catch(() => undefined);
-  }, []);
-
   const handleExit = useCallback(async () => {
     setIsExiting(true);
-    await resetQrSyncState();
-    navigate(DEFAULT_ROUTE);
-  }, [navigate, resetQrSyncState]);
 
-  const handleRetry = useCallback(() => {
-    resetQrSyncState().catch(() => undefined);
-  }, [resetQrSyncState]);
+    // cancel the current sync session
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:cancelSync',
+      [],
+    ]).catch(() => undefined);
+
+    // navigate to the default route
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   const handleAddWallets = useCallback(
     async ({
@@ -108,7 +104,7 @@ const SyncAccountsSettings = () => {
       case QR_SYNC_PHASES.DISPLAYING_QR:
         return <QrCodeScan />;
       case QR_SYNC_PHASES.AWAITING_OTP_INPUT:
-        return <EnterVerificationCode onRestart={handleRetry} />;
+        return <EnterVerificationCode />;
       case QR_SYNC_PHASES.AWAITING_SYNC_OFFER:
         return (
           <LoadingStep
@@ -139,12 +135,7 @@ const SyncAccountsSettings = () => {
         ) : null;
       case QR_SYNC_PHASES.CANCELLED:
       case QR_SYNC_PHASES.FAILED:
-        return (
-          <SyncError
-            onRetry={handleRetry}
-            onCancel={() => handleExit().catch(() => undefined)}
-          />
-        );
+        return <SyncError />;
       default:
         return null;
     }

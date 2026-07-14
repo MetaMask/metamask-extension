@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -19,13 +19,9 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
 import { QrSyncErrorCodes } from '../../../../../shared/constants/qr-sync';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 
 type QrSyncErrorCode = (typeof QrSyncErrorCodes)[keyof typeof QrSyncErrorCodes];
-
-type SyncErrorProps = {
-  onRetry: () => void;
-  onCancel: () => void;
-};
 
 // Codes present in QR_SYNC_ERROR_PHASE_OVERRIDES (e.g. QR_EXPIRED, OTP_EXPIRED)
 // are routed back to an earlier step and never reach this screen, so they are
@@ -40,7 +36,7 @@ const ERROR_CODE_TO_MESSAGE_KEY: Partial<Record<QrSyncErrorCode, string>> = {
   [QrSyncErrorCodes.UNKNOWN]: 'add_device_error_generic',
 };
 
-const SyncError = ({ onRetry, onCancel }: SyncErrorProps) => {
+const SyncError = () => {
   const t = useI18nContext();
   const qrSyncError = useSelector(selectQrSyncError);
 
@@ -48,6 +44,20 @@ const SyncError = ({ onRetry, onCancel }: SyncErrorProps) => {
     ? (ERROR_CODE_TO_MESSAGE_KEY[qrSyncError.code] ??
       'add_device_error_generic')
     : 'add_device_error_generic';
+
+  const onRestart = useCallback(async () => {
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:createSession',
+      [],
+    ]).catch(() => undefined);
+  }, []);
+
+  const onCancel = useCallback(async () => {
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:cancelSync',
+      [],
+    ]).catch(() => undefined);
+  }, []);
 
   return (
     <Box
@@ -90,7 +100,7 @@ const SyncError = ({ onRetry, onCancel }: SyncErrorProps) => {
         gap={2}
         className="w-full mt-auto"
       >
-        <Button className="w-full" onClick={onRetry}>
+        <Button className="w-full" onClick={onRestart}>
           {t('add_device_try_again')}
         </Button>
         <Button
