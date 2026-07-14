@@ -16,6 +16,8 @@ class SyncAccountsSettingsPage {
 
   private readonly otpExpired = '[data-testid="qr-sync-otp-expired"]';
 
+  private readonly otpFirstInput = '[data-testid="qr-sync-otp-input-0"]';
+
   private readonly page = '[data-testid="sync-accounts-page"]';
 
   private readonly passwordContinue =
@@ -31,6 +33,10 @@ class SyncAccountsSettingsPage {
 
   private readonly syncButton = '[data-testid="qr-sync-sync-button"]';
 
+  private readonly qrSyncWalletRowId = (walletId: string) =>
+    `[data-testid="qr-sync-wallet-row-${walletId}"]`;
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -54,13 +60,12 @@ class SyncAccountsSettingsPage {
       );
     }
 
-    const firstOtpInput = '[data-testid="qr-sync-otp-input-0"]';
-    await this.driver.waitForSelector(firstOtpInput);
+    await this.driver.waitForSelector(this.otpFirstInput);
 
     // Paste the full code into the first box so `handlePaste` → `writeDigits`
     // updates all digits in one React commit and triggers `submitOtp`.
     // Per-box `fill()` does not reliably fire controlled `onChange` events.
-    await this.driver.pasteIntoField(firstOtpInput, otp);
+    await this.driver.pasteIntoField(this.otpFirstInput, otp);
   }
 
   async enterPassword(password: string): Promise<void> {
@@ -69,9 +74,7 @@ class SyncAccountsSettingsPage {
   }
 
   async selectWalletRow(walletId: string): Promise<void> {
-    await this.driver.clickElement(
-      `[data-testid="qr-sync-wallet-row-${walletId}"]`,
-    );
+    await this.driver.clickElement(this.qrSyncWalletRowId(walletId));
   }
 
   async waitForLoadingStep(): Promise<void> {
@@ -83,7 +86,7 @@ class SyncAccountsSettingsPage {
   }
 
   async waitForOtpScreen(): Promise<void> {
-    await this.driver.waitForSelector('[data-testid="qr-sync-otp-input-0"]');
+    await this.driver.waitForSelector(this.otpFirstInput);
   }
 
   async waitForPasswordScreen(): Promise<void> {
