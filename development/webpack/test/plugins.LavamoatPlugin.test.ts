@@ -17,21 +17,8 @@ const mockArgs = {
   generatePolicy: false,
 } as unknown as Args;
 
-const mockChunk = ({
-  name,
-  chunkLoading,
-  files = [],
-}: {
-  name?: string;
-  chunkLoading?: string;
-  files?: string[];
-}): Chunk =>
-  ({
-    name,
-    files: new Set(files),
-    getEntryOptions: () =>
-      chunkLoading === undefined ? undefined : { chunkLoading },
-  }) as unknown as Chunk;
+const mockChunk = (name: string | undefined): Chunk =>
+  ({ name }) as unknown as Chunk;
 
 describe('LavamoatPlugin', () => {
   describe('lavamoatPlugin – runtimeConfigurationPerChunk_experimental', () => {
@@ -40,20 +27,15 @@ describe('LavamoatPlugin', () => {
     const plugin = lavamoatPlugin(mockArgs) as unknown as {
       options: {
         runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => unknown;
-        inlineLockdown: { test: (filename: string) => boolean };
+        inlineLockdown: RegExp;
       };
     };
     const runtimeConfig =
       plugin.options.runtimeConfigurationPerChunk_experimental;
     const { inlineLockdown } = plugin.options;
 
-    it('configures manifest-derived import-scripts entries as protected execution roots', () => {
-      const chunk = mockChunk({
-        name: 'renamed-worker.ts',
-        chunkLoading: 'import-scripts',
-        files: ['renamed-worker.js'],
-      });
-      const result = runtimeConfig(chunk) as {
+    it('configures the service worker as a protected execution root', () => {
+      const result = runtimeConfig(mockChunk('service-worker.ts')) as {
         mode: string;
         embeddedOptions?: {
           scuttleGlobalThis?: {
@@ -74,23 +56,18 @@ describe('LavamoatPlugin', () => {
         exceptions.includes('importScripts'),
         'importScripts must remain available to the Webpack chunk loader',
       );
-      assert.ok(inlineLockdown.test('renamed-worker.js'));
-      assert.ok(!inlineLockdown.test('unrelated.js'));
+      assert.ok(inlineLockdown.test('service-worker.js'));
     });
 
     it('inlines SES into content script and shared runtime output files', () => {
-      for (const [name, filename] of [
-        ['scripts/contentscript.js', 'scripts/contentscript.js'],
-        ['runtime', 'runtime.0123456789abcdefghij.js'],
-      ]) {
-        runtimeConfig(mockChunk({ name, files: [filename] }));
-        assert.ok(inlineLockdown.test(filename));
-      }
+      assert.ok(inlineLockdown.test('scripts/contentscript.js'));
+      assert.ok(inlineLockdown.test('runtime.0123456789abcdefghab.js'));
+      assert.ok(!inlineLockdown.test('unrelated.js'));
     });
 
     it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
       for (const name of ['scripts/inpage.js', 'bootstrap']) {
-        const result = runtimeConfig(mockChunk({ name })) as { mode: string };
+        const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(
           result.mode,
           'null_unsafe',
@@ -100,11 +77,7 @@ describe('LavamoatPlugin', () => {
     });
 
     it('uses safe mode for unrecognised chunks', () => {
-      const result = runtimeConfig(
-        mockChunk({
-          name: 'some-other-chunk',
-        }),
-      ) as {
+      const result = runtimeConfig(mockChunk('some-other-chunk')) as {
         mode: string;
       };
       assert.strictEqual(result.mode, 'safe');

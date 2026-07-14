@@ -13,24 +13,8 @@ const rootDir = join(__dirname, '../../../../../');
 // Entries that need to be included in the unsafe layer to run without LavaMoat.
 const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
 
-export const lavamoatPlugin = (args: Args) => {
-  const inlineLockdownChunks = new Set<Chunk>();
-  const inlineLockdown = {
-    test: (filename: string) => {
-      if (!filename.endsWith('.js')) {
-        return false;
-      }
-
-      for (const chunk of inlineLockdownChunks) {
-        if (chunk.files.has(filename)) {
-          return true;
-        }
-      }
-      return false;
-    },
-  };
-
-  return new LavaMoatPlugin({
+export const lavamoatPlugin = (args: Args) =>
+  new LavaMoatPlugin({
     rootDir,
     policyLocation: join(
       'lavamoat',
@@ -43,8 +27,8 @@ export const lavamoatPlugin = (args: Args) => {
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
     // Inline SES into protected self-contained scripts and the shared runtime.
-    // @ts-expect-error LavaMoat types this as RegExp, but only calls `test`.
-    inlineLockdown,
+    inlineLockdown:
+      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -56,13 +40,10 @@ export const lavamoatPlugin = (args: Args) => {
       reporting: 'none',
     },
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
-      const entryOptions = chunk.getEntryOptions();
-
       if (chunk.name && unsafeEntries.has(chunk.name)) {
         // unsafeEntries are running outside of LavaMoat
         return { mode: 'null_unsafe' };
       } else if (chunk.name === 'scripts/contentscript.js') {
-        inlineLockdownChunks.add(chunk);
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -74,7 +55,6 @@ export const lavamoatPlugin = (args: Args) => {
           },
         };
       } else if (chunk.name === 'runtime') {
-        inlineLockdownChunks.add(chunk);
         return {
           mode: 'safe',
           // If snow is enabled, it needs to run before LavaMoat
@@ -85,9 +65,7 @@ export const lavamoatPlugin = (args: Args) => {
               ]
             : [],
         };
-      } else if (entryOptions?.chunkLoading === 'import-scripts') {
-        inlineLockdownChunks.add(chunk);
-
+      } else if (chunk.name === 'service-worker.ts') {
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -180,7 +158,6 @@ export const lavamoatPlugin = (args: Args) => {
       ],
     },
   });
-};
 
 // Unsafe layer that runs code without LavaMoat
 export const lavamoatUnsafeLayerRule = {

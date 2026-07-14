@@ -57,7 +57,6 @@ const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const isDevelopmentWatchMode = isDevelopment && args.watch;
-const useOptimizedModuleGraph = !isDevelopment || args.lavamoat;
 const MANIFEST_VERSION = args.manifestVersion;
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
@@ -599,13 +598,12 @@ const config = {
     global: true,
   },
   optimization: {
-    // Enable tree shaking for production and LavaMoat builds. LavaMoat
-    // policies are generated from the optimized production graph, so LavaMoat
-    // development builds must use the same graph.
-    sideEffects: useOptimizedModuleGraph,
-    providedExports: useOptimizedModuleGraph,
+    // only enable sideEffects, providedExports, removeAvailableModules, and
+    // usedExports for production, as these options slow down the build
+    sideEffects: !isDevelopment,
+    providedExports: !isDevelopment,
     removeAvailableModules: !isDevelopment,
-    usedExports: useOptimizedModuleGraph,
+    usedExports: !isDevelopment,
     // 'deterministic' results in faster recompilations in cases where a child
     // chunk changes, but the parent chunk does not.
     moduleIds: 'deterministic',
