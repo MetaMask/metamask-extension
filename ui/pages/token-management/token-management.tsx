@@ -97,7 +97,6 @@ import {
   type SearchResultImportPayload,
 } from '../../../shared/lib/token-search/convert-search-result';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
-import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../components/ui/app-text-field-search-styles';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -1519,13 +1518,15 @@ export const TokenManagementPage = () => {
         paddingBottom={2}
       >
         <TextFieldSearch
-          className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+          className="app-text-field-search"
           clearButtonOnClick={handleSearchClear}
           clearButtonProps={{ ariaLabel: t('clear') }}
-          inputProps={{
-            'data-testid': 'token-management-search-input',
-            spellCheck: false,
-          }}
+          inputProps={
+            {
+              'data-testid': 'token-management-search-input',
+              spellCheck: false,
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
           onChange={handleSearchChange}
           placeholder={t('enterTokenNameOrAddressManageTokens')}
           size={TextFieldSize.Lg}

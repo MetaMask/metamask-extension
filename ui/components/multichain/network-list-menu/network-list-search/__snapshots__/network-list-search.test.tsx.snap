@@ -6,7 +6,7 @@ exports[`NetworkListSearch renders search list component 1`] = `
     class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
   >
     <div
-      class="inline-flex items-center transition-colors h-12 pl-4 pr-0 rounded-full mm-text-field-search w-full border border-border-muted bg-background-default"
+      class="inline-flex items-center border bg-default transition-colors h-12 pl-4 pr-0 border-default rounded-full app-text-field-search"
       data-testid="search-list"
     >
       <svg
@@ -21,7 +21,6 @@ exports[`NetworkListSearch renders search list component 1`] = `
       </svg>
       <input
         class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-4 truncate"
-        data-testid="network-redesign-modal-search-input"
         placeholder="search"
         type="search"
         value=""

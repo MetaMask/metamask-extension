@@ -24,7 +24,6 @@ import {
   TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
 import { TextVariant } from '../../../helpers/constants/design-system';
-import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../components/ui/app-text-field-search-styles';
 
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -161,7 +160,7 @@ export const AccountList = () => {
           paddingBottom={2}
         >
           <TextFieldSearch
-            className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+            className="app-text-field-search"
             clearButtonOnClick={() => setSearchPattern('')}
             clearButtonProps={{ ariaLabel: t('clear') }}
             data-testid="multichain-account-list-search"

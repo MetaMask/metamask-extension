@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
-import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../../../components/ui/app-text-field-search-styles';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type SearchInputProps = {
@@ -48,15 +47,17 @@ export const SearchInput = ({
   return (
     <TextFieldSearch
       autoFocus={autoFocus}
-      className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+      className="app-text-field-search"
       clearButtonOnClick={onClear}
       clearButtonProps={{ ariaLabel: t('clear') }}
       data-testid="search-input-container"
-      inputProps={{
-        'data-testid': 'search-input',
-        onClick: onInputClick,
-        onKeyDown: handleKeyDown,
-      }}
+      inputProps={
+        {
+          'data-testid': 'search-input',
+          onClick: onInputClick,
+          onKeyDown: handleKeyDown,
+        } as React.ComponentPropsWithoutRef<'input'>
+      }
       onChange={(event) => onChange(event.target.value)}
       placeholder={t('perpsSearchMarkets')}
       size={TextFieldSize.Md}

@@ -11,7 +11,6 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../components/ui/app-text-field-search-styles';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
@@ -121,7 +120,7 @@ export const ChainlistNetworkPicker = ({
     <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
       <Box className="px-4 pb-4">
         <TextFieldSearch
-          className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+          className="app-text-field-search"
           clearButtonOnClick={() => setSearchValue('')}
           clearButtonProps={{ ariaLabel: t('clear') }}
           data-testid="networks-page-chainlist-search"

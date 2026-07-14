@@ -14,7 +14,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../ui/app-text-field-search-styles';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
@@ -161,7 +160,7 @@ export const MultichainAddressRowsList = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <TextFieldSearch
-          className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+          className="app-text-field-search"
           clearButtonOnClick={handleClearSearch}
           clearButtonProps={{ ariaLabel: t('clear') }}
           data-testid="multichain-address-rows-list-search"
