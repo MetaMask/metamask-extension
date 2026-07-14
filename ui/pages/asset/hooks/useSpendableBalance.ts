@@ -1,5 +1,5 @@
 import type { CaipAssetType } from '@metamask/utils';
-import { parseCaipAssetType } from '@metamask/utils';
+import { parseCaipAssetType, isCaipAssetType } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -28,7 +28,10 @@ export const useSpendableBalance = ({
   assetId?: CaipAssetType;
   totalBalance?: string;
 }) => {
-  const chainId = assetId ? parseCaipAssetType(assetId).chainId : undefined;
+  const chainId =
+    assetId && isCaipAssetType(assetId)
+      ? parseCaipAssetType(assetId).chainId
+      : undefined;
   const selectedAccountId = useSelector((state) => {
     if (accountId || !chainId) {
       return undefined;

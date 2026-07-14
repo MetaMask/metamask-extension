@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { errorCodes } from '@metamask/rpc-errors';
 
 import type { CaipAssetType } from '@metamask/utils';
-import { parseCaipAssetType } from '@metamask/utils';
+import { parseCaipAssetType, isCaipAssetType } from '@metamask/utils';
 import {
   isAssetRequireActivate,
   isTrustlineAsset,
@@ -40,7 +40,7 @@ export const useAssetActivation = ({
   const dispatch = useDispatch();
 
   const isAssetIsTrustlineAsset = assetId ? isTrustlineAsset(assetId) : false;
-  const chainId = assetId ? parseCaipAssetType(assetId).chainId : undefined;
+  const chainId = assetId && isCaipAssetType(assetId) ? parseCaipAssetType(assetId).chainId : undefined;
 
   const selectedAccountId = useSelector((state) => {
     if (accountId || !chainId) {
