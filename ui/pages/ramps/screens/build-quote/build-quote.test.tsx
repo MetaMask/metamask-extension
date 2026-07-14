@@ -76,6 +76,8 @@ describe('RampsBuildQuoteScreen', () => {
         country: { currency: 'USD', isoCode: 'US', name: 'United States' },
       },
       selectedToken: mockSelectedToken,
+      setSelectedToken: jest.fn(),
+      tokensLoading: false,
       selectedProvider: { id: 'transak', name: 'Transak' },
       selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
       paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
@@ -162,6 +164,30 @@ describe('RampsBuildQuoteScreen', () => {
       },
       loading: false,
       error: null,
+    });
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot while waiting for goToBuy preloaded token to settle', () => {
+    useRampsController.mockReturnValue({
+      userRegion: {
+        regionCode: 'us-ca',
+        country: { currency: 'USD', isoCode: 'US', name: 'United States' },
+      },
+      selectedToken: null,
+      setSelectedToken: jest.fn(),
+      tokensLoading: true,
+      selectedProvider: { id: 'transak', name: 'Transak' },
+      selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
+      paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
+      paymentMethodsStatus: 'success',
     });
 
     const { container } = renderWithProvider(

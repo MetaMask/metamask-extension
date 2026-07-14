@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -14,11 +15,11 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
+import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
 import { Asset, type AssetType } from '../../../../components/app/asset-picker';
-import { RAMPS_BUILD_QUOTE_ROUTE } from '../../../../helpers/constants/routes';
 import RampsTokenSelectionHeader from './components/ramps-token-selection-header';
 import {
   filterRampsTokensByEnabledNetworks,
@@ -30,7 +31,6 @@ function useRampsTokenSelectionData() {
     tokens: controllerTokens,
     tokensLoading,
     tokensError,
-    setSelectedToken,
   } = useRampsController();
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -56,7 +56,7 @@ function useRampsTokenSelectionData() {
     };
   }, [controllerTokens, tokensLoading, tokensError, networksByCaipChainId]);
 
-  return { ...mappedTokens, setSelectedToken };
+  return mappedTokens;
 }
 
 /**
@@ -65,12 +65,14 @@ function useRampsTokenSelectionData() {
  * Token catalog hydration is owned by `RampsBootstrap` (same pattern as
  * mobile). This screen is read-only against controller state.
  *
- * Route registration and entry-point navigation are tracked in TRAM-3711.
+ * Entry navigation uses `useRampsNavigation.goToBuy` so selection shares the
+ * same buy gate and selected-token preload as other Buy entry points.
  */
 export function RampsTokenSelectionScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { topTokens, allTokens, isLoading, error, setSelectedToken } =
+  const { goToBuy } = useRampsNavigation();
+  const { topTokens, allTokens, isLoading, error } =
     useRampsTokenSelectionData();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -114,10 +116,12 @@ export function RampsTokenSelectionScreen() {
         return;
       }
 
-      setSelectedToken(asset.assetId);
-      navigate(RAMPS_BUILD_QUOTE_ROUTE);
+      goToBuy({
+        assetId: asset.assetId as CaipAssetType,
+        chainId: asset.chainId as Hex | undefined,
+      }).catch(() => undefined);
     },
-    [navigate, setSelectedToken],
+    [goToBuy],
   );
 
   const handleExpandTokens = useCallback(() => {

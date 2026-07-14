@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -24,8 +24,13 @@ import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCal
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
 import { RAMPS_TOKEN_SELECTION_ROUTE } from '../../../../helpers/constants/routes';
+import LoadingScreen from '../../../../components/ui/loading-screen';
 import RampsTokenSelectionHeader from '../token-selection/components/ramps-token-selection-header';
 import RampsPaymentMethodPill from './components/ramps-payment-method-pill';
+
+type BuildQuoteLocationState = {
+  assetId?: string;
+};
 
 const DEFAULT_AMOUNT = '100';
 const QUOTE_DEBOUNCE_MS = 500;
@@ -39,6 +44,7 @@ function parseFiatAmount(amount: string): number {
 export function RampsBuildQuoteScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -47,11 +53,34 @@ export function RampsBuildQuoteScreen() {
   const {
     userRegion,
     selectedToken,
+    setSelectedToken,
+    tokensLoading,
     selectedProvider,
     selectedPaymentMethod,
     paymentMethods,
     paymentMethodsStatus,
   } = useRampsController();
+
+  const intentAssetId = (location.state as BuildQuoteLocationState | null)
+    ?.assetId;
+
+  // Controller state is the source of truth; location state is only used for
+  // bootstrapping when goToBuy races ahead of the tokens catalog (mobile parity).
+  const tokenStateIsSettled =
+    !intentAssetId ||
+    selectedToken?.assetId?.toLowerCase() === intentAssetId.toLowerCase();
+
+  useEffect(() => {
+    if (
+      !intentAssetId ||
+      tokensLoading ||
+      selectedToken?.assetId?.toLowerCase() === intentAssetId.toLowerCase()
+    ) {
+      return;
+    }
+
+    setSelectedToken(intentAssetId).catch(() => undefined);
+  }, [intentAssetId, selectedToken?.assetId, setSelectedToken, tokensLoading]);
 
   const [amount, setAmount] = useState(DEFAULT_AMOUNT);
   const amountAsNumber = useMemo(() => parseFiatAmount(amount), [amount]);
@@ -69,6 +98,7 @@ export function RampsBuildQuoteScreen() {
       selectedPaymentMethod &&
       selectedProvider &&
       selectedToken?.assetId &&
+      tokenStateIsSettled &&
       debouncedAmount > 0,
   );
 
@@ -202,6 +232,10 @@ export function RampsBuildQuoteScreen() {
     }
     return undefined;
   }, [canContinue, selectedQuote]);
+
+  if (!tokenStateIsSettled || (tokensLoading && !selectedToken)) {
+    return <LoadingScreen />;
+  }
 
   if (!selectedToken) {
     return <Navigate to={RAMPS_TOKEN_SELECTION_ROUTE} replace />;

@@ -1,14 +1,12 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+/**
+ * @jest-environment jsdom
+ */
+import ScreenTokenSelection from '../screens/token-selection/token-selection';
 import TokenSelection from './token-selection';
 
-describe('Ramps TokenSelection (stub)', () => {
-  it('renders the placeholder page', () => {
-    const { getByTestId } = renderWithProvider(
-      <TokenSelection />,
-      configureMockStore()({ metamask: {} }),
-    );
-    expect(getByTestId('ramps-token-selection-page')).toBeInTheDocument();
+// Route barrel stays a thin re-export; coverage lives under screens/token-selection.
+describe('Ramps TokenSelection route entry', () => {
+  it('re-exports the token selection screen', () => {
+    expect(TokenSelection).toBe(ScreenTokenSelection);
   });
 });

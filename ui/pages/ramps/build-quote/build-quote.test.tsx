@@ -1,14 +1,12 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+/**
+ * @jest-environment jsdom
+ */
+import ScreenBuildQuote from '../screens/build-quote/build-quote';
 import BuildQuote from './build-quote';
 
-describe('Ramps BuildQuote (stub)', () => {
-  it('renders the placeholder page', () => {
-    const { getByTestId } = renderWithProvider(
-      <BuildQuote />,
-      configureMockStore()({ metamask: {} }),
-    );
-    expect(getByTestId('ramps-build-quote-page')).toBeInTheDocument();
+// Route barrel stays a thin re-export; coverage lives under screens/build-quote.
+describe('Ramps BuildQuote route entry', () => {
+  it('re-exports the build quote screen', () => {
+    expect(BuildQuote).toBe(ScreenBuildQuote);
   });
 });

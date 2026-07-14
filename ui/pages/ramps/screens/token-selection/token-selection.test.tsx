@@ -8,11 +8,10 @@ import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { type AssetType } from '../../../../components/app/asset-picker';
-import { RAMPS_BUILD_QUOTE_ROUTE } from '../../../../helpers/constants/routes';
 import { RampsTokenSelectionScreen } from './token-selection';
 
 const mockNavigate = jest.fn();
-const mockSetSelectedToken = jest.fn();
+const mockGoToBuy = jest.fn();
 const mockOnAssetSelectRef: {
   current?: (asset: AssetType) => void;
 } = {};
@@ -27,6 +26,15 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
+
+jest.mock(
+  '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => ({ goToBuy: mockGoToBuy }),
+  }),
+);
 
 jest.mock('../../../../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../../../../shared/lib/selectors/networks'),
@@ -146,7 +154,6 @@ describe('RampsTokenSelectionScreen', () => {
       tokens: { topTokens: mockTopTokens, allTokens: mockAllTokens },
       tokensLoading: false,
       tokensError: null,
-      setSelectedToken: mockSetSelectedToken,
     });
   });
 
@@ -192,8 +199,10 @@ describe('RampsTokenSelectionScreen', () => {
     expect(screen.getByTestId('token-count')).toHaveTextContent('2');
     fireEvent.click(screen.getByTestId('mapped-token-eip155:1/slip44:60'));
 
-    expect(mockSetSelectedToken).toHaveBeenCalledWith('eip155:1/slip44:60');
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE);
+    expect(mockGoToBuy).toHaveBeenCalledWith({
+      assetId: 'eip155:1/slip44:60',
+      chainId: '0x1',
+    });
   });
 
   it('expands to all tokens when searching', () => {
@@ -246,7 +255,6 @@ describe('RampsTokenSelectionScreen', () => {
       tokens: null,
       tokensLoading: true,
       tokensError: null,
-      setSelectedToken: mockSetSelectedToken,
     });
 
     renderWithProvider(
@@ -264,7 +272,6 @@ describe('RampsTokenSelectionScreen', () => {
       tokens: null,
       tokensLoading: false,
       tokensError: null,
-      setSelectedToken: mockSetSelectedToken,
     });
 
     renderWithProvider(
@@ -282,7 +289,6 @@ describe('RampsTokenSelectionScreen', () => {
       tokens: null,
       tokensLoading: false,
       tokensError: new Error('failed'),
-      setSelectedToken: mockSetSelectedToken,
     });
 
     const { container } = renderWithProvider(
