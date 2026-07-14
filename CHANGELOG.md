@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.39.2]
+
+### Fixed
+
+- Fixed a memory leak on Firefox where closed MetaMask windows were retained in memory, growing extension memory use with every popup open (#44352)
+
 ## [13.39.1]
 
 ### Added
@@ -2689,7 +2695,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.39.2...HEAD
+[13.39.2]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...v13.39.2
 [13.39.1]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...v13.39.1
 [13.39.0]: https://github.com/MetaMask/metamask-extension/compare/v13.38.2...v13.39.0
 [13.38.2]: https://github.com/MetaMask/metamask-extension/compare/v13.38.1...v13.38.2
