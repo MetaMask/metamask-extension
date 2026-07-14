@@ -22,7 +22,7 @@ describe('Hide tokens without balance', function (this: Suite) {
         smartContract,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },

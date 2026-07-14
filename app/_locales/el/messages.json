@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Προσθήκη προσαρμοσμένου token"
   },
-  "addDevice": {
-    "message": "Συγχρονισμός με κινητό"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Προσθέστε αυτόν τον πάροχο RPC μόνο αν είστε σίγουροι ότι μπορείτε να τον εμπιστευτείτε. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Συνεχίστε"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Επανασύνδεση"
+    "message": "Επανασύνδεση",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Βεβαιωθείτε ότι το πορτοφόλι υλικού σας είναι σωστά συνδεδεμένο μέσω USB"
@@ -4409,6 +4407,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "κρατήστε πατημένο για να μην αποκαλύψετε το κυκλάκι με κλειδί"
+  },
+  "home": {
+    "message": "Αρχική σελίδα",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "Αυτό το token μπορεί να αποτελεί κίνδυνο για honeypot. Συνιστάται να διεξάγετε τη δέουσα έρευνα πριν από την αλληλεπίδραση για να αποφύγετε τυχόν οικονομικές απώλειες."
@@ -4754,6 +4756,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Βεβαιωθείτε ότι το Ledger είναι συνδεδεμένο και επιλέξτε την εφαρμογή Ethereum."
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Ανοίξτε την εφαρμογή στη συσκευή Ledger για να συνεχίσετε"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "Η εφαρμογή Ethereum είναι κλειστή"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Βρέθηκε η συσκευή Ledger"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Ξεκλειδώστε τη συσκευή Ledger για να συνεχίσετε"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Το Ledger είναι κλειδωμένο"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Εγκαταστήστε και ανοίξτε την εφαρμογή Ethereum"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Ξεκλειδώστε τη συσκευή σας Ledger"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Η συσκευή δεν βρέθηκε"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Αποσυνδέστε και συνδέστε ξανά τη συσκευή σας"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Η συσκευή Ledger δεν ανταποκρίνεται"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Κάτι πήγε στραβά"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Περιμένετε λίγο όσο αναζητούμε τη συσκευή..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Αναζήτηση της συσκευής σας"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Η συσκευή Ledger απέτυχε να ανοίξει. Το Ledger σας μπορεί να είναι συνδεδεμένο με άλλο λογισμικό. Παρακαλούμε κλείστε το Ledger Live ή άλλες εφαρμογές που είναι συνδεδεμένες με τη συσκευή Ledger και προσπαθήστε να συνδεθείτε ξανά."
@@ -7910,9 +7951,6 @@
     "message": "Λήγει σε $1δ",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Κάτι πήγε στραβά κατά τη σάρωση του κωδικού QR. Δημιουργήστε έναν νέο και προσπαθήστε ξανά."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Αυτός ο κωδικός QR αφορά διαφορετική συναλλαγή. Ακυρώστε και προσπαθήστε ξανά, διασφαλίζοντας ότι πρώτα θα σαρώσετε τον κωδικό QR στο MetaMask με το πορτοφόλι υλικού σας.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8395,6 +8433,15 @@
   },
   "save": {
     "message": "Αποθήκευση"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "Συνεχίστε"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Επικοινωνήστε με την υποστήριξη"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "Υπάρχει πιθανότητα να είστε αυτή τη στιγμή στόχος απάτης"
   },
   "scanInstructions": {
     "message": "Τοποθετήστε τον κώδικα QR μπροστά από την κάμερά σας"

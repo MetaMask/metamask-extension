@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Thêm token tùy chỉnh"
   },
-  "addDevice": {
-    "message": "Đồng bộ với thiết bị di động"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Chỉ thêm nhà cung cấp RPC này nếu bạn chắc chắn bạn có thể tin tưởng. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4199,7 +4196,8 @@
     "message": "Tiếp tục"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Kết nối lại"
+    "message": "Kết nối lại",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Đảm bảo ví cứng của bạn được kết nối đúng cách qua USB"
@@ -4413,6 +4411,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "giữ để hiển thị vòng tròn được mở khóa"
+  },
+  "home": {
+    "message": "Trang chủ",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "Token này có thể tiềm ẩn rủi ro honeypot (bẫy trong bẫy). Bạn nên thẩm định kỹ trước khi tương tác để tránh thiệt hại tài chính."
@@ -4758,6 +4760,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Nhớ cắm thiết bị Ledger và chọn ứng dụng Ethereum."
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Vui lòng mở ứng dụng trên thiết bị Ledger của bạn để tiếp tục"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "Ứng dụng Ethereum đã đóng"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Đã tìm thấy thiết bị Ledger"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Vui lòng mở khóa thiết bị Ledger của bạn để tiếp tục"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger đã khóa"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Cài đặt và mở ứng dụng Ethereum"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Mở khóa thiết bị Ledger của bạn"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Không tìm thấy thiết bị"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Vui lòng ngắt kết nối và kết nối lại với thiết bị của bạn"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Thiết bị Ledger không phản hồi"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Đã xảy ra sự cố"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Vui lòng chờ trong lúc chúng tôi tìm kiếm..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Đang tìm thiết bị của bạn"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Mở thiết bị Ledger không thành công. Ledger của bạn có thể đã được kết nối với phần mềm khác. Vui lòng đóng Ledger Live hoặc các ứng dụng khác được kết nối với thiết bị Ledger của bạn và thử kết nối lại."
@@ -7918,9 +7959,6 @@
     "message": "Hết hạn sau $1 giây",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Đã xảy ra lỗi khi quét mã QR. Hãy tạo mã mới để thử lại."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Mã QR này dành cho một giao dịch khác. Vui lòng hủy và thử lại, đảm bảo quét mã QR được hiển thị trong MetaMask bằng ví cứng của bạn trước.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8403,6 +8441,15 @@
   },
   "save": {
     "message": "Lưu"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "Tiếp tục"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Liên hệ bộ phận hỗ trợ"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "Bạn có thể đang bị lừa đảo ngay lúc này"
   },
   "scanInstructions": {
     "message": "Đặt mã QR vào trước máy ảnh"

@@ -25,8 +25,7 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal from './fade-modal';
-// Metamask Notifications
-import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
+import RampsInfoModal from './ramps/ramps-info-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -114,6 +113,66 @@ const MODALS: Record<string, ModalConfig> = {
     },
   },
 
+  RAMPS_UNSUPPORTED: {
+    contents: (
+      <RampsInfoModal
+        testId="ramps-unsupported-modal"
+        titleKey="rampsUnsupportedTitle"
+        bodyKey="rampsUnsupportedDescription"
+      />
+    ),
+    testId: 'ramps-unsupported-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_ELIGIBILITY_FAILED: {
+    contents: (
+      <RampsInfoModal
+        testId="ramp-eligibility-failed-modal"
+        titleKey="rampsEligibilityFailedTitle"
+        bodyKey="rampsEligibilityFailedDescription"
+      />
+    ),
+    testId: 'ramp-eligibility-failed-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_SERVICE_DISRUPTION: {
+    contents: (
+      <RampsInfoModal
+        testId="ramps-service-disruption-modal"
+        titleKey="rampsServiceDisruptionTitle"
+        bodyKey="rampsServiceDisruptionDescription"
+      />
+    ),
+    testId: 'ramps-service-disruption-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   CONFIRM_DELETE_NETWORK: {
     contents: <ConfirmDeleteNetwork />,
     mobileModalStyle: {
@@ -169,19 +228,6 @@ const MODALS: Record<string, ModalConfig> = {
 
   [TURN_ON_BACKUP_AND_SYNC_MODAL_NAME]: {
     contents: <TurnOnBackupAndSyncModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TURN_ON_METAMASK_NOTIFICATIONS: {
-    contents: <TurnOnMetamaskNotifications />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

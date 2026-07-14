@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -100,7 +99,7 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../components/component-library';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -368,7 +367,7 @@ export const TokenManagementPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pageToast, setPageToast] = useState<{ symbol: string } | null>(null);
@@ -789,15 +788,16 @@ export const TokenManagementPage = () => {
 
   const handleAddCustomToken = useCallback(() => {
     commitStagedHides().catch(() => undefined);
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION,
+        })
+        .build(),
+    );
     navigate(CUSTOM_TOKEN_IMPORT_ROUTE);
-  }, [commitStagedHides, navigate, trackEvent]);
+  }, [commitStagedHides, createEventBuilder, navigate, trackEvent]);
 
   const handleSearchChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -925,15 +925,16 @@ export const TokenManagementPage = () => {
 
       if (nextValue) {
         unstageHide(stagedKey);
-        trackEvent({
-          category: MetaMetricsEventCategory.Wallet,
-          event: MetaMetricsEventName.TokenAdded,
-          sensitiveProperties: {
-            ...tokenMetricsProperties,
-            [METRICS_PROPERTIES.sourceConnectionMethod]:
-              MetaMetricsTokenEventSource.ManageTokens,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenAdded)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              ...tokenMetricsProperties,
+              [METRICS_PROPERTIES.sourceConnectionMethod]:
+                MetaMetricsTokenEventSource.ManageTokens,
+            })
+            .build(),
+        );
         return;
       }
 
@@ -952,14 +953,15 @@ export const TokenManagementPage = () => {
           address: token.address,
           caipAssetId: caipAssetId ?? undefined,
         });
-        trackEvent({
-          category: MetaMetricsEventCategory.Wallet,
-          event: MetaMetricsEventName.TokenHidden,
-          sensitiveProperties: {
-            ...tokenMetricsProperties,
-            location: TOKEN_MANAGEMENT_LOCATION,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenHidden)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              ...tokenMetricsProperties,
+              location: TOKEN_MANAGEMENT_LOCATION,
+            })
+            .build(),
+        );
         return;
       }
 
@@ -968,16 +970,24 @@ export const TokenManagementPage = () => {
         assetId: token.assetId as CaipAssetType,
         accountId: token.accountId,
       });
-      trackEvent({
-        category: MetaMetricsEventCategory.Wallet,
-        event: MetaMetricsEventName.TokenHidden,
-        sensitiveProperties: {
-          ...tokenMetricsProperties,
-          location: TOKEN_MANAGEMENT_LOCATION,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenHidden)
+          .addCategory(MetaMetricsEventCategory.Wallet)
+          .addSensitiveProperties({
+            ...tokenMetricsProperties,
+            location: TOKEN_MANAGEMENT_LOCATION,
+          })
+          .build(),
+      );
     },
-    [getNetworkMeta, getStagedHideKey, stageHide, trackEvent, unstageHide],
+    [
+      createEventBuilder,
+      getNetworkMeta,
+      getStagedHideKey,
+      stageHide,
+      trackEvent,
+      unstageHide,
+    ],
   );
 
   const handleSearchResultToggle = useCallback(
@@ -1339,15 +1349,17 @@ export const TokenManagementPage = () => {
     }
 
     hasTrackedScreenOpenedRef.current = true;
-    trackEvent({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.TokenScreenOpened,
-      properties: {
-        screen: TOKEN_MANAGEMENT_SCREEN,
-        [METRICS_PROPERTIES.viewState]: tokenManagementViewState,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenScreenOpened)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
+          screen: TOKEN_MANAGEMENT_SCREEN,
+          [METRICS_PROPERTIES.viewState]: tokenManagementViewState,
+        })
+        .build(),
+    );
   }, [
+    createEventBuilder,
     isFetchingNextPage,
     isSearchFetching,
     isSearching,

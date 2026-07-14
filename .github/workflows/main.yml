@@ -648,7 +648,6 @@ jobs:
     steps:
       - name: Get token
         id: token
-        continue-on-error: true
         uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
@@ -657,7 +656,6 @@ jobs:
             contents: write
 
       - name: Trigger regression validation in external repo
-        continue-on-error: true
         env:
           DISPATCH_TOKEN: ${{ steps.token.outputs.token }}
           BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}

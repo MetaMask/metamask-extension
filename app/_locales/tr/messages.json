@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Özel bir token ekle"
   },
-  "addDevice": {
-    "message": "Mobil ile senkronize et"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Bu RPC sağlayıcısını sadece ona güvenebileceğinizden eminseniz ekleyin. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4199,7 +4196,8 @@
     "message": "Devam Et"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Tekrar Bağla"
+    "message": "Tekrar Bağla",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Donanım cüzdanınızın USB ile düzgün bir şekilde bağlandığından emin olun"
@@ -4413,6 +4411,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "kilidi açılmış daireyi açığa çıkarmak için tut"
+  },
+  "home": {
+    "message": "Ana Sayfa",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "Bu token bir bal tuzağı riski taşıyor olabilir. Olası mali kayıpları önlemek için etkileşimde bulunmadan önce gerekli özeni göstermeniz tavsiye edilir."
@@ -4758,6 +4760,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledger'ınızın bağlı olduğundan emin olun ve Ethereum uygulamasını seçin."
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Devam etmek için lütfen Ledger cihazınızda açın"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "Ethereum uygulaması kapatıldı"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Ledger cihazı bulundu"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Devam etmek için lütfen Ledger cihazınızın kilidini açın"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger kilitli"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Ethereum uygulamasını yükleyin ve açın"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Ledger cihazınızn kilidini açın"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Cihaz bulunamadı"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Lütfen cihazın bağlantısını kesip yeniden bağlayın"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger yanıt vermiyor"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Bir şeyler ters gitti"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Biz bunu ararken bekleyin..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Cihazınız aranıyor"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger cihazı açılamadı. Ledger'ınız başka bir yazılıma bağlanmış olabilir. Lütfen Ledger Live'ı ya da Ledger cihazınızla bağlantılı diğer uygulamaları kapatıp tekrar bağlanmayı deneyin."
@@ -7918,9 +7959,6 @@
     "message": "Süresinin dolmasına kalan: $1sn",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "QR kodu taranırken bir şeyler ters gitti. Yeni bir tane oluşturup tekrar deneyin."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Bu QR kodu farklı bir işlem içindir. İptal edip tekrar deneyin ve önce donanım cüzdanınızla MetaMask'te gösterilen QR kodunu taradığınızdan emin olun.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8403,6 +8441,15 @@
   },
   "save": {
     "message": "Kaydet"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "Devam Et"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Destek ile iletişime geç"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "Şu anda dolandırılıyor olabilirsiniz"
   },
   "scanInstructions": {
     "message": "QR kodu kameranızın önüne getirin"

@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Magdagdag ng custom na token"
   },
-  "addDevice": {
-    "message": "I-sync sa mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Idagdag lamang ang RPC provider na ito kung sigurado kang mapagkakatiwalaan ito. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Magpatuloy"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Muling ikonekta"
+    "message": "Muling ikonekta",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Tiyaking ang wallet na hardware mo ay maayos na nakakonekta sa USB"
@@ -4409,6 +4407,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "i-hold para ibunyag ang bilog na naka-unlock"
+  },
+  "home": {
+    "message": "Home",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "Puwede may panganib ng honeypot ang token na ito. Ipinapayong magsagawa ng sariling pagsusuri bago gamitin ito para maiwasan ang anumang potensyal na pagkalugi."
@@ -4754,6 +4756,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Tiyaking naka-plug in ang iyong Ledger at piliin ang Ethereum app."
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Buksan ito sa iyong Ledger device para makapagpatuloy"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "Nagsara ang Ethereum app"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Natagpuan ang ledger device"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Paki-unlock ang iyong Ledger device para makapagpatuloy"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Naka-lock ang Ledger"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "I-install at buksan ang Ethereum app"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "I-unlock ang iyong Ledger device"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Hindi nahanap ang device"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Idiskonekta at muling ikonekta ang iyong device"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Hindi tumutugon ang Ledger"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Mayroong nang mali"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Maghintay habang hinahanap namin ito..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Hinahanap ang device mo"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Nabigong mabuksan ang Ledger device. Ang iyong Ledger ay maaaring konektado sa ibang software. Pakisara ang Ledger Live o iba pang mga application na konektado sa iyong Ledger device, at subukan muling ikonekta."
@@ -7910,9 +7951,6 @@
     "message": "Mai-expire pagkalipas ng $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Nagkaproblema sa pag-scan ng QR code. Bumuo ng panibagong QR code at subukang muli."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Ang QR na ito ay para sa ibang transaksyon. Kanselahin at subukan muli, tiyaking i-scan muna ang QR code na ipinapakita sa MetaMask kasama ng iyong wallet na hardware.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8395,6 +8433,15 @@
   },
   "save": {
     "message": "I-save"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "Magpatuloy"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Kontakin ang suporta"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "Baka nai-scam ka na ngayon"
   },
   "scanInstructions": {
     "message": "Itapat ang QR code sa iyong camera"

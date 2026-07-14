@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Adicionar um token personalizado"
   },
-  "addDevice": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Adicione esse provedor de RPC apenas se tiver certeza de que é confiável. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Continuar"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Reconectar"
+    "message": "Reconectar",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Certifique-se de que sua carteira de hardware esteja conectada corretamente via USB"
@@ -4409,6 +4407,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "círculo \"segure para revelar\" desbloqueado"
+  },
+  "home": {
+    "message": "Início",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "Este token pode representar um risco de honeypot (armadilha). É recomendado realizar a devida diligência antes de interagir para evitar possíveis perdas financeiras."
@@ -4754,6 +4756,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Certifique-se de conectar o seu dispositivo Ledger e de selecionar o app Ethereum."
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Abra-o em seu dispositivo Ledger para continuar"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "O app Ethereum está fechado"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Dispositivo Ledge encontrado"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Desbloqueie seu dispositivo Ledger para continuar"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "A Ledger está bloqueada"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Instale e abra o app da Ethereum"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Desbloqueie seu dispositivo Ledger"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Dispositivo não encontrado"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Desconecte e reconecte seu dispositivo"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "O Ledger não está respondendo"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Ocorreu algum erro"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Aguarde enquanto o procuramos..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Procurando seu dispositivo"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ocorreu uma falha ao abrir o dispositivo Ledger. Seu Ledger pode não estar conectado a outros softwares. Feche o Ledger Live ou outros aplicativos conectados ao seu dispositivo Ledger e tente reconectar."
@@ -7910,9 +7951,6 @@
     "message": "Expira em $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Algo deu errado ao escanear o código QR. Gere um novo código para tentar novamente."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Este código QR serve para uma transação diferente. Cancele e tente novamente, certificando-se de escanear primeiro o código QR exibido no MetaMask com sua carteira de hardware.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8395,6 +8433,15 @@
   },
   "save": {
     "message": "Salvar"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "Continuar"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Falar com o suporte"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "Você pode estar sendo vítima de um golpe neste exato momento"
   },
   "scanInstructions": {
     "message": "Posicione o código QR na frente da sua câmera"

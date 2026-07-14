@@ -103,6 +103,9 @@ const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
+const {
+  mockAuthenticatedUserStorageNotificationPreferences,
+} = require('./helpers/authenticated-user-storage/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -1319,12 +1322,15 @@ async function setupMocking(
   // .always() ensures every fetch returns [] (not just the first one).
   // Notification-specific tests re-register this endpoint via testSpecificMock.
   await server
-    .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
     .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Identity APIs
   await mockIdentityServices(server);
+
+  // Authenticated User Storage APIs
+  mockAuthenticatedUserStorageNotificationPreferences(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
@@ -1710,9 +1716,10 @@ async function setupMocking(
       };
     });
 
-  // On Ramp: Geolocation (production and dev environments)
+  // On Ramp: Geolocation (production, staging, and dev environments)
   for (const host of [
     'on-ramp.api.cx.metamask.io',
+    'on-ramp.uat-api.cx.metamask.io',
     'on-ramp.dev-api.cx.metamask.io',
   ]) {
     await server.forGet(`https://${host}/geolocation`).thenCallback(() => {
@@ -1724,6 +1731,22 @@ async function setupMocking(
         },
       };
     });
+  }
+
+  // On Ramp: Countries list (RampsController.init on startup)
+  for (const host of [
+    'on-ramp-cache.api.cx.metamask.io',
+    'on-ramp-cache.uat-api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
+  ]) {
+    await server
+      .forGet(`https://${host}/v2/regions/countries`)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [],
+        };
+      });
   }
 
   // Snaps: Execution environment html

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -62,13 +62,13 @@ import { getNativeTokenInfo } from '../../../selectors';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getTransactions } from '../../../selectors/transactions';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { type TransactionViewModel } from '../../../../shared/lib/multichain/types';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -92,7 +92,8 @@ import BridgeStepList from './bridge-step-list';
 const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const rootState = useSelector((state) => state);
   const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
@@ -281,19 +282,15 @@ const CrossChainSwapTxDetails = () => {
                   href={SUPPORT_LINK}
                   onClick={() => {
                     trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Home,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
+                      createEventBuilder(
+                        MetaMetricsEventName.SupportLinkClicked,
+                      )
+                        .addCategory(MetaMetricsEventCategory.Home)
+                        .addProperties({
                           url: SUPPORT_LINK,
-                          location: 'Bridge Tx Details',
-                        },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
+                          location: segmentContext.page?.title,
+                        })
+                        .build(),
                     );
                   }}
                 >

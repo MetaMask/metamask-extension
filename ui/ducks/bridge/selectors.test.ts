@@ -21,6 +21,7 @@ import {
   MOCK_LEDGER_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
+import { MOCK_ACCOUNT_TRON_MAINNET } from '../../../test/data/mock-accounts';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
@@ -172,6 +173,106 @@ describe('Bridge selectors', () => {
       },
     });
   };
+
+  // The bumped @metamask/bridge-controller derives the src token exchange rate
+  // from the quote's srcAsset (assetExchangeRates/marketData/currencyRates)
+  // instead of the client-provided fromTokenExchangeRate. Seed the bridge
+  // controller's assetExchangeRates so the ERC20 srcAsset in
+  // mockErc20Erc20Quotes resolves to the same rates the old tests assumed.
+  const mockErc20SrcAssetRates = (usdExchangeRate: string) =>
+    ({
+      [(
+        toAssetId(
+          mockErc20Erc20Quotes[0].quote.srcAsset.address,
+          formatChainIdToCaip(mockErc20Erc20Quotes[0].quote.srcChainId),
+        ) as string
+      ).toLowerCase()]: {
+        exchangeRate: '1',
+        usdExchangeRate,
+      },
+    }) as never;
+
+  const createTronBridgeState = ({
+    fromTokenInputValue = '1',
+    fromNativeBalance = '100',
+    nonEvmFeesInNative,
+    srcTokenAmount = '1000000',
+  }: {
+    fromTokenInputValue?: string;
+    fromNativeBalance?: string;
+    nonEvmFeesInNative?: string;
+    srcTokenAmount?: string;
+  } = {}) => {
+    const tronAsset = getNativeAssetForChainId(ChainId.TRON);
+    const ethAsset = getNativeAssetForChainId(ChainId.ETH);
+    const tronQuote =
+      nonEvmFeesInNative === undefined
+        ? undefined
+        : {
+            quote: {
+              requestId: 'tron-quote',
+              bridgeId: 'rango',
+              aggregator: 'rango',
+              srcChainId: ChainId.TRON,
+              srcTokenAmount,
+              srcAsset: tronAsset,
+              destChainId: ChainId.ETH,
+              destTokenAmount: '1000000000000000000',
+              destAsset: ethAsset,
+              minDestTokenAmount: '990000000000000000',
+              feeData: {
+                metabridge: {
+                  amount: '0',
+                  asset: tronAsset,
+                },
+              },
+              bridges: ['rango'],
+              protocols: ['rango'],
+              steps: [],
+            },
+            trade: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              raw_data_hex: 'deadbeef',
+            },
+            estimatedProcessingTimeInSeconds: 120,
+            nonEvmFeesInNative,
+          };
+
+    return createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromTokenInputValue,
+        fromToken: toBridgeToken(tronAsset),
+        toToken: toBridgeToken(ethAsset),
+      },
+      bridgeStateOverrides: {
+        quotesLastFetched: Date.now(),
+        quoteRequest: {
+          srcChainId: ChainId.TRON,
+          srcTokenAmount,
+        },
+        quotes: tronQuote ? ([tronQuote] as unknown as QuoteResponse[]) : [],
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          accounts: {
+            [MOCK_ACCOUNT_TRON_MAINNET.id]: MOCK_ACCOUNT_TRON_MAINNET,
+          },
+          selectedAccount: MOCK_ACCOUNT_TRON_MAINNET.id,
+        },
+        balances: {
+          [MOCK_ACCOUNT_TRON_MAINNET.id]: {
+            [tronAsset.assetId]: {
+              amount: fromNativeBalance,
+              unit: 'TRX',
+            },
+          },
+        },
+      },
+    });
+  };
+
+  const createTronZeroNetworkFeeQuoteState = () =>
+    createTronBridgeState({ nonEvmFeesInNative: '0' });
 
   const createBtcZeroNetworkFeeQuoteState = () =>
     createBtcBridgeState({ nonEvmFeesInNative: '0' });
@@ -950,8 +1051,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('1'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('1'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1030,8 +1131,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1126,8 +1227,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1324,8 +1425,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('1'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('1'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1414,8 +1515,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1518,8 +1619,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1655,8 +1756,8 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          assetExchangeRates: getErc20QuoteAssetExchangeRates('20'),
           quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -2195,6 +2296,27 @@ describe('Bridge selectors', () => {
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should return isNetworkFeeUnavailable=true for a Tron quote with zero network fee', () => {
+      const state = createTronZeroNetworkFeeQuoteState();
+      const result = getValidationErrors(state as never);
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+      ).toStrictEqual('0');
+      expect(result.isNetworkFeeUnavailable).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should return isNetworkFeeUnavailable=false for a Tron quote with a valid network fee', () => {
+      const state = createTronBridgeState({ nonEvmFeesInNative: '1' });
+      const result = getValidationErrors(state as never);
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+      ).toStrictEqual('1');
+      expect(result.isNetworkFeeUnavailable).toBe(false);
     });
 
     it('should return isEstimatedReturnLow=true return value is less than 65% of sent funds', () => {
@@ -4339,6 +4461,13 @@ describe('Bridge selectors', () => {
 
     it('returns network_fee_unavailable when BTC network fee is unavailable', () => {
       const state = createBtcZeroNetworkFeeQuoteState();
+      const result = getWarningLabels(state as never);
+
+      expect(result).toContain('network_fee_unavailable');
+    });
+
+    it('returns network_fee_unavailable when Tron network fee is unavailable', () => {
+      const state = createTronZeroNetworkFeeQuoteState();
       const result = getWarningLabels(state as never);
 
       expect(result).toContain('network_fee_unavailable');

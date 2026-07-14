@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "添加自定义代币"
   },
-  "addDevice": {
-    "message": "与移动设备同步"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "仅当您确定可以信任此 RPC 提供商时才能添加它。$1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "继续"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "重新连接"
+    "message": "重新连接",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "确保您的硬件钱包已通过 USB 正确连接"
@@ -4409,6 +4407,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "按住以显示圆圈解锁"
+  },
+  "home": {
+    "message": "主页",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "该代币可能存在蜜罐风险。建议在进行代币交互前进行审慎调查，以防范潜在资金损失。"
@@ -4754,6 +4756,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "请确保您的 Ledger 设备已插入并选择以太坊应用程序。"
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "请在您的 Ledger 设备上打开它以继续"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "以太坊应用已关闭"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "已发现 Ledger 设备"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "请解锁您的 Ledger 设备以继续"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger已锁定"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "安装并打开以太坊应用程序"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "解锁您的 Ledger 设备"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "未找到设备"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "请断开并重新连接您的设备"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledger 无响应"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "出错了"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "请稍候，我们正在搜索……"
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "正在查找您的设备"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger 设备打开失败。您的 Ledger 可能已连接到其他软件。请关闭 Ledger Live 或其他连接到您的 Ledger 设备的应用程序，并尝试再次连接。"
@@ -7910,9 +7951,6 @@
     "message": "$1 秒后过期",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "扫描二维码时出现问题。请生成新的二维码后重试。"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8395,6 +8433,15 @@
   },
   "save": {
     "message": "保存"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "继续"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "联系支持团队"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "你现在可能正在遭遇诈骗"
   },
   "scanInstructions": {
     "message": "将二维码放在摄像头前"

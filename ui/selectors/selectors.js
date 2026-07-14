@@ -2076,7 +2076,7 @@ const unapprovedTransactionSelectorFactory =
   createParameterizedDeepEqualSelector(20);
 
 export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
-  (state) => getUnapprovedTransactions(state),
+  getUnapprovedTransactions,
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => unapprovedTxs?.[transactionId],
 );
@@ -2807,26 +2807,17 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
  * @param {*} state
- * @returns {{maxBaseFee: string, priorityFee: string} | undefined}
+ * @returns {{userFeeLevel: string, maxBaseFee?: string, priorityFee?: string, gasPrice?: string} | undefined}
  */
 export function getAdvancedGasFeeValues(state) {
-  // This will not work when we switch to supporting multi-chain.
-  // There are four non-test files that use this selector.
-  // advanced-gas-fee-defaults
-  // base-fee-input
-  // priority-fee-input
-  // useGasItemFeeDetails
-  // The first three are part of the AdvancedGasFeePopover
-  // The latter is used by the EditGasPopover
-  // Both of those are used in Confirmations as well as transaction-list-item
-  // All of the call sites have access to the GasFeeContext, which has a
-  // transaction object set on it, but there are currently no guarantees that
-  // the transaction has a chainId associated with it. To have this method
-  // support multichain we'll need a reliable way for the chainId of the
-  // transaction being modified to be available to all callsites and either
-  // pass it in to the selector as a second parameter, or access it at the
-  // callsite.
-  return state.metamask.advancedGasFee[getCurrentChainId(state)];
+  const selectedAccount = getSelectedInternalAccount(state);
+  const account = selectedAccount?.address?.toLowerCase();
+
+  if (!account) {
+    return undefined;
+  }
+
+  return state.metamask.advancedGasFee[getCurrentChainId(state)]?.[account];
 }
 
 /**
@@ -3152,19 +3143,17 @@ export function getBlockExplorerLinkText(
 
   return blockExplorerLinkText;
 }
-export function getUnconnectedAccounts(state, activeTab) {
-  const accounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
-    state,
-    activeTab,
-  );
-  const unConnectedAccounts = accounts.filter((account) => {
-    return !connectedAccounts.some(
-      (connectedAccount) => connectedAccount.address === account.address,
-    );
-  });
-  return unConnectedAccounts;
-}
+export const getUnconnectedAccounts = createSelector(
+  getMetaMaskAccountsOrdered,
+  getOrderedConnectedAccountsForConnectedDapp,
+  (accounts, connectedAccounts) =>
+    accounts.filter(
+      (account) =>
+        !connectedAccounts.some(
+          (connectedAccount) => connectedAccount.address === account.address,
+        ),
+    ),
+);
 
 export const getOrderedConnectedAccountsForActiveTab = createSelector(
   getOriginOfCurrentTab,
@@ -3334,10 +3323,10 @@ export function getUseCurrencyRateCheck(state) {
 }
 
 export function getNames(state) {
-  return state.metamask.names || {};
+  return state.metamask.names ?? EMPTY_OBJECT;
 }
 export function getNameSources(state) {
-  return state.metamask.nameSources || {};
+  return state.metamask.nameSources ?? EMPTY_OBJECT;
 }
 
 export function getMetaMetricsDataDeletionId(state) {

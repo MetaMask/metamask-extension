@@ -701,6 +701,7 @@ export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
 export const TRON_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_NILE_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_SHASTA_IMAGE_URL = './images/tron-logo.svg';
+export const STELLAR_IMAGE_URL = './images/xlm.svg';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
   './images/xrplevm-native.svg';
@@ -1274,6 +1275,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [MultichainNetworks.TRON]: TRON_IMAGE_URL,
   [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
+  [MultichainNetworks.STELLAR]: STELLAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
@@ -1423,6 +1425,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [MultichainNetworks.TRON]: TRON_IMAGE_URL,
   [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
+  [MultichainNetworks.STELLAR]: STELLAR_IMAGE_URL,
 } as const;
 
 /**

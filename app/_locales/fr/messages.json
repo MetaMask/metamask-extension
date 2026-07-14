@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "Ajouter un jeton personnalisé"
   },
-  "addDevice": {
-    "message": "Synchroniser avec le mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "N’ajoutez ce fournisseur de RPC que si vous lui faites confiance. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4195,7 +4192,8 @@
     "message": "Continuer"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Reconnecter"
+    "message": "Reconnecter",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Assurez-vous que votre portefeuille matériel est correctement connecté via USB"
@@ -4409,6 +4407,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "appuyez longuement pour révéler le cercle déverrouillé"
+  },
+  "home": {
+    "message": "Accueil",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "Ce jeton peut présenter un risque d’arnaque au pot de miel. Il est conseillé de faire preuve de diligence raisonnable avant d’interagir ce jeton afin d’éviter toute perte financière potentielle."
@@ -4754,6 +4756,45 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Assurez-vous que votre dispositif Ledger est branché et sélectionnez l'application Ethereum."
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Veuillez l’ouvrir sur votre appareil Ledger pour continuer"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "L’application Ethereum est fermée"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Appareil Ledger trouvé"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Veuillez déverrouiller votre appareil Ledger pour continuer"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger est verrouillé"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Installez et ouvrez l’application Ethereum"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Déverrouillez votre appareil Ledger"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Appareil introuvable"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Veuillez déconnecter puis reconnecter votre appareil"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "L’appareil Ledger ne répond pas"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Une erreur s’est produite"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Veuillez patienter pendant que nous recherchons votre appareil…"
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Recherche de votre appareil"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Le dispositif Ledger n’a pas pu s’ouvrir. Il est peut-être connecté à d’autres logiciels. Veuillez fermer Ledger Live ou toute autre application déjà connectée à celui-ci, puis essayez de vous reconnecter."
@@ -7910,9 +7951,6 @@
     "message": "Expire dans $1 s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Une erreur s’est produite lors de la lecture du code QR. Générez-en un nouveau pour réessayer."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Ce code QR concerne une autre transaction. Annulez l’opération et réessayez, en veillant à scanner d’abord le code QR affiché dans MetaMask avec votre portefeuille matériel.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8395,6 +8433,15 @@
   },
   "save": {
     "message": "Sauvegarder"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "Continuer"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Contacter le service d’assistance"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "Vous pourriez être victime d’une arnaque en ce moment même"
   },
   "scanInstructions": {
     "message": "Placez le code QR devant votre appareil photo"

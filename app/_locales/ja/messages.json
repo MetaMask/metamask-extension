@@ -1049,9 +1049,6 @@
   "addCustomToken": {
     "message": "カスタムトークンを追加"
   },
-  "addDevice": {
-    "message": "モバイルと同期"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "このRPCプロバイダーは、確実に信頼できる場合のみ追加してください。$1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4199,7 +4196,8 @@
     "message": "続行"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "再接続"
+    "message": "再接続",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "ハードウェアウォレットがUSBで正しく接続されていることを確認してください"
@@ -4413,6 +4411,10 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "長押ししてロックが解除された円を表示します"
+  },
+  "home": {
+    "message": "ホーム",
+    "description": "Label for the Home tab in the bottom navigation bar"
   },
   "honeypotDescription": {
     "message": "このトークンはハニーポットの危険性があります。金銭的な損失を防ぐために、やり取りする前にデューディリジェンスを行うことをお勧めします。"
@@ -4758,6 +4760,42 @@
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledgerが接続されていて、イーサリアムアプリを選択していることを確認してください。"
+  },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Ledgerデバイスでアプリを開いてから続行してください"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Ledgerデバイスが見つかりました"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Ledgerデバイスのロックを解除してから続行してください"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledgerがロックされています"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "イーサリアムアプリをインストールして開きます"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Ledgerデバイスのロックを解除します"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "デバイスが見つかりません"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "デバイスの接続を解除して、再接続してください"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledgerが応答しません"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "問題が発生しました"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "検索する間そのままお待ちください..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "デバイスを検索中"
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledgerデバイスを開けませんでした。Ledgerが他のソフトウェアに接続されている可能性があります。Ledger LiveまたはLedgerデバイスに接続されている他のアプリケーションを閉じて、もう一度接続してみてください。"
@@ -7914,9 +7952,6 @@
     "message": "期限切れまであと$1秒",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "QRコードのスキャン中に問題が発生しました。新しいQRコードを生成して、もう一度お試しください。"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "このQRコードは別の取引用です。一度キャンセルし、まずMetaMaskに表示されているQRコードをハードウェアウォレットでスキャンしてからもう一度お試しください。",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8399,6 +8434,15 @@
   },
   "save": {
     "message": "保存"
+  },
+  "scamQuestionnaireContinue": {
+    "message": "続行"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "サポートへのお問い合わせ"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "今騙されている可能性があります"
   },
   "scanInstructions": {
     "message": "QRコードにカメラを向けてください"
