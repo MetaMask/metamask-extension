@@ -37,7 +37,10 @@ export const getAvatarTokenSrc = (
       return getNativeCurrencyForChain(opts.chainId);
     }
 
-    if (!opts.tokenImage && opts.assetId && !opts.isNative) {
+    // Fall back to the static asset image whenever the token image is empty.
+    // This also covers non-EVM native assets (e.g. SOL) whose iconUrl can be
+    // transiently empty after a send, which previously left the logo blank.
+    if (!opts.tokenImage && opts.assetId) {
       return getAssetImageUrl(opts.assetId, opts.chainId) ?? '';
     }
 
