@@ -4,6 +4,7 @@ import React from 'react';
 import {
   SimulationError,
   TransactionContainerType,
+  TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
@@ -50,7 +51,7 @@ function getStore({
     selectedGasFeeToken,
     simulationFails,
     userFeeLevel,
-  });
+  }) as TransactionMeta;
 
   if (isEnforcedSimulations) {
     confirmation.containerTypes = [

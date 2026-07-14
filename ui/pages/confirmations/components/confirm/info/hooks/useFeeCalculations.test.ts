@@ -48,25 +48,48 @@ describe('useFeeCalculations', () => {
   it('returns the correct estimate for a transaction', () => {
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      chainId: CHAIN_IDS.SEPOLIA,
     }) as TransactionMeta;
+
+    transactionMeta.containerTypes = [
+      TransactionContainerType.EnforcedSimulations,
+    ];
+    transactionMeta.txParamsOriginal = { ...transactionMeta.txParams };
+    transactionMeta.txParams.gas = toHex(87790);
+
+    const mockStateWithSepoliaNativeTicker = merge({}, mockState, {
+      metamask: {
+        currencyRates: {
+          SepoliaETH: {
+            conversionRate: 0,
+          },
+        },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.SEPOLIA]: {
+            nativeCurrency: 'SepoliaETH',
+            ticker: 'SepoliaETH',
+          },
+        },
+      },
+    });
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useFeeCalculations(transactionMeta),
-      mockState,
+      mockStateWithSepoliaNativeTicker,
     );
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "addedProtectionFeeFiat": null,
+        "addedProtectionFeeFiat": "$0.07",
         "calculateGasEstimate": [Function],
-        "estimatedFeeFiat": "$0.07",
+        "estimatedFeeFiat": "$0.14",
         "estimatedFeeFiatWith18SignificantDigits": null,
-        "estimatedFeeNative": "0.0001",
-        "estimatedFeeNativeHex": "0x720087dcfc95",
-        "maxFeeFiat": "$0.07",
+        "estimatedFeeNative": "0.0003",
+        "estimatedFeeNativeHex": "0xe4010fb9f92a",
+        "maxFeeFiat": "$0.14",
         "maxFeeFiatWith18SignificantDigits": null,
-        "maxFeeHex": "0x720087dcfc95",
-        "maxFeeNative": "0.0001",
+        "maxFeeHex": "0xe4010fb9f92a",
+        "maxFeeNative": "0.0003",
       }
     `);
 
@@ -221,42 +244,6 @@ describe('useFeeCalculations', () => {
 
     expect(result.current.estimatedFeeNative).toBe('< 0.0001');
     expect(result.current.maxFeeNative).toBe('< 0.0001');
-  });
-
-  it('returns added protection fee fiat for enforced simulations', () => {
-    const transactionMeta = genUnapprovedContractInteractionConfirmation({
-      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
-      chainId: CHAIN_IDS.SEPOLIA,
-    }) as TransactionMeta;
-
-    transactionMeta.containerTypes = [
-      TransactionContainerType.EnforcedSimulations,
-    ];
-    transactionMeta.txParamsOriginal = { ...transactionMeta.txParams };
-    transactionMeta.txParams.gas = toHex(87790);
-
-    const mockStateWithSepoliaNativeTicker = merge({}, mockState, {
-      metamask: {
-        currencyRates: {
-          SepoliaETH: {
-            conversionRate: 0,
-          },
-        },
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.SEPOLIA]: {
-            nativeCurrency: 'SepoliaETH',
-            ticker: 'SepoliaETH',
-          },
-        },
-      },
-    });
-
-    const { result } = renderHookWithConfirmContextProvider(
-      () => useFeeCalculations(transactionMeta),
-      mockStateWithSepoliaNativeTicker,
-    );
-
-    expect(result.current.addedProtectionFeeFiat).toBe('$0.07');
   });
 
   it('returns the correct estimate if quoted swap is displayed in info', () => {
