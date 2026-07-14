@@ -396,7 +396,27 @@ export class BitcoinNode {
       ...this.#broadcastTxIds,
     ];
 
-    return await Promise.all(txIds.map((txId) => this.getTransaction(txId)));
+    const transactions = await Promise.all(
+      txIds.map((txId) => this.getTransaction(txId)),
+    );
+
+    // Sort newest-first (descending block height); unconfirmed txs first.
+    return transactions.sort((a, b) => {
+      const heightA = a.status.block_height;
+      const heightB = b.status.block_height;
+
+      if (heightA === undefined && heightB === undefined) {
+        return 0;
+      }
+      if (heightA === undefined) {
+        return -1;
+      }
+      if (heightB === undefined) {
+        return 1;
+      }
+
+      return heightB - heightA;
+    });
   }
 
   async getScriptHashUtxos(scriptHash: string): Promise<EsploraUtxo[]> {
