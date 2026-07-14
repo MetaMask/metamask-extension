@@ -39,20 +39,24 @@ export type AssetProps = {
   onSelectedChainIdChange?: (selectedChainId: string | null) => void;
 };
 
-export const Asset = ({
+type AssetPickerViewProps = Omit<AssetProps, 'tokens' | 'nfts' | 'includeNoBalance'> & {
+  tokens: AssetType[];
+  nfts: AssetType[];
+};
+
+const AssetPickerView = ({
   hideNfts = false,
-  includeNoBalance = false,
   onAssetSelect,
   tokenFilter,
-  tokens: tokensProp,
-  nfts: nftsProp,
+  tokens,
+  nfts,
   hideBalances = false,
   disableMetrics = false,
   searchPlaceholder,
   emptyStateMessage,
   onSearchQueryChange,
   onSelectedChainIdChange,
-}: AssetProps = {}) => {
+}: AssetPickerViewProps) => {
   const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const {
@@ -68,15 +72,6 @@ export const Asset = ({
     ? noop
     : removeAssetFilterMethodFromMetrics;
   const setAssetListSize = disableMetrics ? noop : setAssetListSizeFromMetrics;
-
-  const sendAssets = useSendAssets({ includeNoBalance });
-  const tokens = tokensProp ?? sendAssets.tokens;
-  const nfts = useMemo(() => {
-    if (tokensProp === undefined) {
-      return sendAssets.nfts;
-    }
-    return nftsProp ?? [];
-  }, [nftsProp, sendAssets.nfts, tokensProp]);
 
   const filteredByCustomFilter = useMemo(() => {
     return tokenFilter ? tokenFilter(tokens) : tokens;
@@ -156,4 +151,54 @@ export const Asset = ({
       />
     </Box>
   );
+};
+
+type SendWalletAssetPickerProps = Omit<AssetProps, 'tokens' | 'nfts'> & {
+  includeNoBalance?: boolean;
+};
+
+const SendWalletAssetPicker = ({
+  includeNoBalance = false,
+  ...props
+}: SendWalletAssetPickerProps) => {
+  const sendAssets = useSendAssets({ includeNoBalance });
+
+  return (
+    <AssetPickerView
+      {...props}
+      tokens={sendAssets.tokens}
+      nfts={sendAssets.nfts}
+    />
+  );
+};
+
+type CatalogAssetPickerProps = Omit<AssetProps, 'tokens' | 'includeNoBalance'> & {
+  tokens: AssetType[];
+};
+
+const CatalogAssetPicker = ({
+  tokens,
+  nfts,
+  ...props
+}: CatalogAssetPickerProps) => {
+  return <AssetPickerView {...props} tokens={tokens} nfts={nfts ?? []} />;
+};
+
+/**
+ * Asset picker used by send and catalog flows (e.g. ramps).
+ * When `tokens` is provided, wallet asset hooks are skipped.
+ * @param props
+ */
+export const Asset = (props: AssetProps = {}) => {
+  if (props.tokens !== undefined) {
+    return (
+      <CatalogAssetPicker
+        {...props}
+        tokens={props.tokens}
+        nfts={props.nfts}
+      />
+    );
+  }
+
+  return <SendWalletAssetPicker {...props} />;
 };
