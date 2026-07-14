@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -55,6 +56,7 @@ function PermissionPageContainerBase({
 }) {
   const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
     useState(false);
+  const hasTrackedTabOpenedRef = useRef(false);
 
   const getDedupedSnapPermissions = useCallback(() => {
     const snapKeys = getDedupedSnaps(request, currentPermissions);
@@ -91,6 +93,10 @@ function PermissionPageContainerBase({
   }, [getDedupedSnapPermissions, request]);
 
   useEffect(() => {
+    if (hasTrackedTabOpenedRef.current) {
+      return;
+    }
+    hasTrackedTabOpenedRef.current = true;
     trackEvent({
       category: MetaMetricsEventCategory.Auth,
       event: 'Tab Opened',
@@ -99,14 +105,16 @@ function PermissionPageContainerBase({
         legacy_event: true,
       },
     });
+  }, [trackEvent]);
 
+  useEffect(() => {
     if (
       request.permissions?.[WALLET_SNAP_PERMISSION_KEY] &&
       snapsInstallPrivacyWarningShown === false
     ) {
       setIsShowingSnapsPrivacyWarning(true);
     }
-  }, [request.permissions, snapsInstallPrivacyWarningShown, trackEvent]);
+  }, [request.permissions, snapsInstallPrivacyWarningShown]);
 
   const goBack = useCallback(() => {
     navigate(connectPath);

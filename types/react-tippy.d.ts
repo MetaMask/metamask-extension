@@ -67,6 +67,7 @@ declare module 'react-tippy' {
     stickyDuration?: boolean;
     beforeShown?: () => void;
     shown?: () => void;
+    onShown?: (instance?: { popper?: Element }) => void;
     beforeHidden?: () => void;
     hidden?: () => void;
     onHidden?: () => void;

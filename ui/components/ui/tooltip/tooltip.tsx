@@ -1,5 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { memo, type CSSProperties, type ReactNode } from 'react';
+import React, {
+  memo,
+  useCallback,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import {
   Tooltip as ReactTippy,
   type Position,
@@ -7,6 +12,26 @@ import {
   type Theme,
   type Trigger,
 } from 'react-tippy';
+
+const resolveTooltipTitle = ({
+  html,
+  disabled,
+  title,
+}: {
+  html: ReactNode;
+  disabled?: boolean;
+  title?: string | null;
+}): string | null => {
+  if (disabled) {
+    return '';
+  }
+
+  if (html) {
+    return title ?? null;
+  }
+
+  return title ?? '';
+};
 
 const Tooltip = ({
   arrow = true,
@@ -31,8 +56,9 @@ const Tooltip = ({
   disabled,
   style,
   tabIndex,
-  tooltipInnerClassName: _tooltipInnerClassName,
-  tooltipArrowClassName: _tooltipArrowClassName,
+  tooltipInnerClassName,
+  tooltipArrowClassName,
+  onShown = null,
 }: {
   arrow?: boolean;
   children?: ReactNode;
@@ -58,13 +84,35 @@ const Tooltip = ({
   tabIndex?: number;
   tooltipInnerClassName?: string;
   tooltipArrowClassName?: string;
+  onShown?: ((...args: unknown[]) => void) | null;
 }) => {
+  const handleShown = useCallback(
+    (instance?: { popper?: Element }) => {
+      if (instance?.popper) {
+        if (tooltipInnerClassName) {
+          instance.popper
+            .querySelector('.tippy-tooltip-content')
+            ?.classList.add(tooltipInnerClassName);
+        }
+
+        if (tooltipArrowClassName) {
+          instance.popper
+            .querySelector('[x-arrow]')
+            ?.classList.add(tooltipArrowClassName);
+        }
+      }
+
+      onShown?.(instance);
+    },
+    [onShown, tooltipArrowClassName, tooltipInnerClassName],
+  );
+
   if (!title && !html) {
     return <div className={wrapperClassName}>{children}</div>;
   }
 
   const Tag = tag as keyof JSX.IntrinsicElements;
-  const resolvedTitle = html ? undefined : disabled ? '' : title;
+  const resolvedTitle = resolveTooltipTitle({ html, disabled, title });
 
   return React.createElement(
     Tag,
@@ -80,11 +128,12 @@ const Tooltip = ({
       html={html as React.ReactElement | undefined}
       interactive={interactive}
       onHidden={onHidden ?? undefined}
+      onShown={handleShown}
       position={position}
       size={size}
       offset={offset}
       style={style}
-      {...(resolvedTitle !== undefined ? { title: resolvedTitle } : {})}
+      title={resolvedTitle}
       trigger={trigger}
       open={open}
       theme={`tippy-tooltip--mm-custom ${theme}` as Theme}
@@ -116,6 +165,7 @@ Tooltip.propTypes = {
   theme: PropTypes.string,
   tabIndex: PropTypes.number,
   tag: PropTypes.string,
+  onShown: PropTypes.func,
   tooltipInnerClassName: PropTypes.string,
   tooltipArrowClassName: PropTypes.string,
 };

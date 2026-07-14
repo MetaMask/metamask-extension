@@ -65,14 +65,14 @@ function Mascot({
       refollowMouse();
     };
 
-    animationEventEmitterRef.current.on('point', lookAt);
-    animationEventEmitterRef.current.on(
-      'setFollowMouse',
-      logo.setFollowMouse.bind(logo),
-    );
+    const emitter = animationEventEmitterRef.current;
+    const setFollowMouseHandler = logo.setFollowMouse.bind(logo);
+
+    emitter.on('point', lookAt);
+    emitter.on('setFollowMouse', setFollowMouseHandler);
 
     return () => {
-      animationEventEmitterRef.current.removeAllListeners();
+      emitter.removeAllListeners();
       logo.container.remove();
       logo.stopAnimation();
     };

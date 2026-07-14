@@ -47,6 +47,7 @@ function TransactionListItemDetails({
   networkConfiguration,
   isHardwareWalletAccount,
   isProtectedByEnforcedSimulations,
+  chainId: chainIdProp,
 }) {
   const t = useI18nContext();
   const [justCopied, setJustCopied] = useState(false);
@@ -57,7 +58,8 @@ function TransactionListItemDetails({
     initialTransaction: { type },
     hasCancelled,
   } = transactionGroup;
-  const { chainId, hash: txHash } = primaryTransaction;
+  const { hash: txHash } = primaryTransaction;
+  const chainId = chainIdProp ?? primaryTransaction.chainId;
   const speedUpLabel = hasCancelled ? 'speedUpCancellation' : 'speedUp';
 
   useEffect(() => {
