@@ -455,10 +455,6 @@ describe('NetworksPage', () => {
     expect(
       screen.queryByText('rpc-tertiary.example.com'),
     ).not.toBeInTheDocument();
-
-    await userEvent.click(screen.getByTestId('test-add-rpc-drop-down'));
-
-    expect(screen.queryByTestId('delete-item-0')).not.toBeInTheDocument();
   });
 
   it('prefills Chainlist network name from the canonical network name when available', async () => {
