@@ -56,12 +56,12 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
 };
 
 /**
- * Compile-time gate (`ADD_DEVICE_SYNC_ENABLED`): when true the
+ * Compile-time gate (`QR_SYNC_ENABLED`): when true the
  * Add Device tab is shown in Settings, allowing users to pair a second device
  * via QR code scan and verification code.
  */
 export const getIsAddDeviceSyncEnabled = (): boolean => {
-  return process.env.ADD_DEVICE_SYNC_ENABLED?.toString() === 'true';
+  return process.env.QR_SYNC_ENABLED?.toString() === 'true';
 };
 
 /**
