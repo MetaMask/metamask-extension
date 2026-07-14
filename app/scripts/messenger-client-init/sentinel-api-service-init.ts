@@ -1,8 +1,8 @@
-import type { MessengerClientInitFunction } from './types';
 import {
   SentinelApiService,
   type SentinelApiServiceMessenger,
-} from '@metamask/sentinel-api-service';
+} from '@metamask-previews/sentinel-api-service';
+import type { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the SentinelApiService.

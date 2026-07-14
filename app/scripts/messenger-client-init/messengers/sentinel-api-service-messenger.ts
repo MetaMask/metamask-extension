@@ -3,8 +3,8 @@ import {
   type MessengerActions,
   type MessengerEvents,
 } from '@metamask/messenger';
+import type { SentinelApiServiceMessenger } from '@metamask-previews/sentinel-api-service';
 import { RootMessenger } from '../../lib/messenger';
-import type { SentinelApiServiceMessenger } from '@metamask/sentinel-api-service';
 
 /**
  * Get the messenger for the SentinelApiService. This is scoped to the actions

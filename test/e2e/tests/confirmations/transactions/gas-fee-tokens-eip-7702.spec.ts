@@ -1,7 +1,7 @@
+import { SentinelSmartTransactionStatus } from '@metamask-previews/sentinel-api-service';
 import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
@@ -332,7 +332,7 @@ async function mockTransactionRelayStatus(
           transactions: [
             {
               hash: TRANSACTION_HASH,
-              status: success ? RelayStatus.Success : 'FAILED',
+              status: success ? SentinelSmartTransactionStatus.Validated : 'FAILED',
             },
           ],
         },

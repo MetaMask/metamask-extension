@@ -50,10 +50,6 @@
       "error: Error: Invalid JSON": 1,
       "error: HttpError: Sentinel networks request failed": 1
     },
-    "app/scripts/lib/transaction/transaction-relay.test.ts": {
-      "error: Error: network error": 1,
-      "error: HttpError: Sentinel relay status request": 1
-    },
     "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },

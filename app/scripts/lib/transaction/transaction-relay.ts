@@ -1,13 +1,14 @@
-import { AuthorizationList } from '@metamask/transaction-controller';
-import { type SentinelMeta } from '@metamask/smart-transactions-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import {
   SentinelChainNotSupportedError,
+  SentinelSmartTransactionStatus,
   type SentinelApiServiceGetNetworksAction,
-  type SentinelApiServiceGetRelayStatusAction,
+  type SentinelApiServiceGetSmartTransactionAction,
   type SentinelApiServiceSubmitRelayTransactionAction,
   type SentinelRelaySubmitRequest,
-} from '@metamask/sentinel-api-service';
+  type SentinelRelaySubmitResponse,
+  type SentinelSmartTransaction,
+} from '@metamask-previews/sentinel-api-service';
 
 const log = createProjectLogger('transaction-relay');
 
@@ -29,17 +30,9 @@ export type SentinelRelayMessenger = {
     >
   ): ReturnType<SentinelApiServiceSubmitRelayTransactionAction['handler']>;
   call(
-    action: SentinelApiServiceGetRelayStatusAction['type'],
-    ...args: Parameters<SentinelApiServiceGetRelayStatusAction['handler']>
-  ): ReturnType<SentinelApiServiceGetRelayStatusAction['handler']>;
-};
-
-export type RelaySubmitRequest = {
-  authorizationList?: AuthorizationList;
-  chainId: Hex;
-  data: Hex;
-  to: Hex;
-  metadata?: SentinelMeta;
+    action: SentinelApiServiceGetSmartTransactionAction['type'],
+    ...args: Parameters<SentinelApiServiceGetSmartTransactionAction['handler']>
+  ): ReturnType<SentinelApiServiceGetSmartTransactionAction['handler']>;
 };
 
 export type RelayWaitRequest = {
@@ -48,32 +41,18 @@ export type RelayWaitRequest = {
   uuid: string;
 };
 
-export type RelaySubmitResponse = {
-  uuid: string;
-};
-
-export type RelayWaitResponse = {
-  transactionHash?: Hex;
-  status: string;
-};
-
-export enum RelayStatus {
-  Pending = 'PENDING',
-  Success = 'VALIDATED',
-}
-
 export const RELAY_RPC_METHOD = 'eth_sendRelayTransaction';
 
 export async function submitRelayTransaction(
   messenger: SentinelRelayMessenger,
-  request: RelaySubmitRequest,
-): Promise<RelaySubmitResponse> {
+  request: SentinelRelaySubmitRequest,
+): Promise<SentinelRelaySubmitResponse> {
   log('Request', request);
 
   try {
     const response = await messenger.call(
       'SentinelApiService:submitRelayTransaction',
-      request as unknown as SentinelRelaySubmitRequest,
+      request,
     );
 
     log('Response', response);
@@ -87,24 +66,29 @@ export async function submitRelayTransaction(
 export async function waitForRelayResult(
   messenger: SentinelRelayMessenger,
   request: RelayWaitRequest,
-): Promise<RelayWaitResponse> {
+): Promise<SentinelSmartTransaction> {
   const { chainId, interval, uuid } = request;
 
-  return new Promise<RelayWaitResponse>((resolve, reject) => {
+  return new Promise<SentinelSmartTransaction>((resolve, reject) => {
     const intervalId = setInterval(async () => {
       try {
         log('Polling request', chainId, uuid);
 
         const result = await messenger.call(
-          'SentinelApiService:getRelayStatus',
+          'SentinelApiService:getSmartTransaction',
           { chainId, uuid },
         );
 
         log('Polling response', result);
 
-        if (result.status !== RelayStatus.Pending) {
+        const [transaction] = result.transactions;
+
+        if (
+          transaction &&
+          transaction.status !== SentinelSmartTransactionStatus.Pending
+        ) {
           clearInterval(intervalId);
-          resolve(result);
+          resolve(transaction);
         }
       } catch (error) {
         clearInterval(intervalId);

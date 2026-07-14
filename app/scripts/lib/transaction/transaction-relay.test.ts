@@ -1,14 +1,16 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import {
+  SentinelChainNotSupportedError,
+  SentinelSmartTransactionStatus,
+  type SentinelRelaySubmitRequest,
+} from '@metamask-previews/sentinel-api-service';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
-  RelayStatus,
-  RelaySubmitRequest,
   type SentinelRelayMessenger,
   isRelaySupported,
   submitRelayTransaction,
   waitForRelayResult,
 } from './transaction-relay';
-import { SentinelChainNotSupportedError } from '@metamask/sentinel-api-service';
 
 jest.useFakeTimers();
 
@@ -16,7 +18,7 @@ const TRANSACTION_HASH_MOCK = '0x123';
 const UUID_MOCK = 'uuid-1';
 const INTERVAL_MOCK = 1000;
 
-const SUBMIT_REQUEST_MOCK: RelaySubmitRequest = {
+const SUBMIT_REQUEST_MOCK: SentinelRelaySubmitRequest = {
   chainId: CHAIN_IDS.MAINNET,
   data: '0x1',
   to: '0x4',
@@ -103,8 +105,12 @@ describe('Transaction Relay Utils', () => {
     it('returns transaction if successful', async () => {
       const { messenger, call } = buildMessengerMock();
       call.mockResolvedValueOnce({
-        status: RelayStatus.Success,
-        transactionHash: TRANSACTION_HASH_MOCK,
+        transactions: [
+          {
+            status: SentinelSmartTransactionStatus.Validated,
+            hash: TRANSACTION_HASH_MOCK,
+          },
+        ],
       });
 
       const resultPromise = waitForRelayResult(messenger, WAIT_REQUEST_MOCK);
@@ -115,14 +121,16 @@ describe('Transaction Relay Utils', () => {
       const result = await resultPromise;
 
       expect(result).toStrictEqual({
-        status: RelayStatus.Success,
-        transactionHash: TRANSACTION_HASH_MOCK,
+        status: SentinelSmartTransactionStatus.Validated,
+        hash: TRANSACTION_HASH_MOCK,
       });
     });
 
     it('returns status if unsuccessful', async () => {
       const { messenger, call } = buildMessengerMock();
-      call.mockResolvedValueOnce({ status: 'TEST_STATUS' });
+      call.mockResolvedValueOnce({
+        transactions: [{ status: 'TEST_STATUS' }],
+      });
 
       const resultPromise = waitForRelayResult(messenger, WAIT_REQUEST_MOCK);
       await flushPromises();
@@ -149,11 +157,19 @@ describe('Transaction Relay Utils', () => {
     it('queries multiple times on interval until status not pending', async () => {
       const { messenger, call } = buildMessengerMock();
       call
-        .mockResolvedValueOnce({ status: RelayStatus.Pending })
-        .mockResolvedValueOnce({ status: RelayStatus.Pending })
         .mockResolvedValueOnce({
-          status: RelayStatus.Success,
-          transactionHash: TRANSACTION_HASH_MOCK,
+          transactions: [{ status: SentinelSmartTransactionStatus.Pending }],
+        })
+        .mockResolvedValueOnce({
+          transactions: [{ status: SentinelSmartTransactionStatus.Pending }],
+        })
+        .mockResolvedValueOnce({
+          transactions: [
+            {
+              status: SentinelSmartTransactionStatus.Validated,
+              hash: TRANSACTION_HASH_MOCK,
+            },
+          ],
         });
 
       const resultPromise = waitForRelayResult(messenger, WAIT_REQUEST_MOCK);

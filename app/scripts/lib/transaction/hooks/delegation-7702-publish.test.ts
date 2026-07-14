@@ -15,11 +15,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SentinelSmartTransactionStatus } from '@metamask-previews/sentinel-api-service';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import {
-  RelayStatus,
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
@@ -183,8 +183,8 @@ describe('Delegation 7702 Publish Hook', () => {
     );
 
     waitForRelayResultMock.mockResolvedValue({
-      status: RelayStatus.Success,
-      transactionHash: TRANSCATION_HASH_MOCK,
+      status: SentinelSmartTransactionStatus.Validated,
+      hash: TRANSCATION_HASH_MOCK,
     });
   });
 

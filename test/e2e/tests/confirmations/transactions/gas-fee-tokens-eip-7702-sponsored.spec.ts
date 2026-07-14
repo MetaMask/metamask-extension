@@ -1,6 +1,6 @@
+import { SentinelSmartTransactionStatus } from '@metamask-previews/sentinel-api-service';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import {
   DEFAULT_FIXTURE_ACCOUNT,
@@ -254,7 +254,7 @@ async function mockTransactionRelayStatus(
           transactions: [
             {
               hash: TRANSACTION_HASH,
-              status: success ? RelayStatus.Success : 'FAILED',
+              status: success ? SentinelSmartTransactionStatus.Validated : 'FAILED',
             },
           ],
         },

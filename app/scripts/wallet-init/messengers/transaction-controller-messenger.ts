@@ -62,10 +62,10 @@ import {
 } from '@metamask/transaction-pay-controller';
 import type {
   SentinelApiServiceGetNetworksAction,
-  SentinelApiServiceGetRelayStatusAction,
+  SentinelApiServiceGetSmartTransactionAction,
   SentinelApiServiceSimulateTransactionsAction,
   SentinelApiServiceSubmitRelayTransactionAction,
-} from '@metamask/sentinel-api-service';
+} from '@metamask-previews/sentinel-api-service';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
@@ -106,7 +106,7 @@ export type TransactionControllerInitMessengerActions =
   | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | SentinelApiServiceGetNetworksAction
-  | SentinelApiServiceGetRelayStatusAction
+  | SentinelApiServiceGetSmartTransactionAction
   | SentinelApiServiceSimulateTransactionsAction
   | SentinelApiServiceSubmitRelayTransactionAction
   | SmartTransactionsControllerGetFeesAction
@@ -199,7 +199,7 @@ export function getTransactionControllerInitMessenger(
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
       'SentinelApiService:getNetworks',
-      'SentinelApiService:getRelayStatus',
+      'SentinelApiService:getSmartTransaction',
       'SentinelApiService:simulateTransactions',
       'SentinelApiService:submitRelayTransaction',
       'SmartTransactionsController:getFees',

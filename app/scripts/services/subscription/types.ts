@@ -22,6 +22,7 @@ import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-trans
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { SentinelApiServiceGetNetworksAction } from '@metamask-previews/sentinel-api-service';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
@@ -38,7 +39,6 @@ import {
   RewardsControllerGetSeasonStatusAction,
 } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { SubscriptionServiceMethodActions } from './subscription-service-method-action-types';
-import { SentinelApiServiceGetNetworksAction } from '@metamask/sentinel-api-service';
 
 export type {
   SubscriptionServiceUpdateSubscriptionCardPaymentMethodAction,

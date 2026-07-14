@@ -138,6 +138,7 @@ import {
 } from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { cloneDeep } from 'lodash';
+import { SentinelApiServiceGetNetworksAction } from '@metamask-previews/sentinel-api-service';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -186,7 +187,6 @@ import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { AppStateControllerSetPasskeyAutoUnlockSuppressedAction } from '../controllers/app-state-controller-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
-import { SentinelApiServiceGetNetworksAction } from '@metamask/sentinel-api-service';
 
 const serviceName = 'LegacyBackgroundApiService';
 
