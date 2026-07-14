@@ -29,7 +29,6 @@ describe('SettingsHeader', () => {
         isPopupOrSidepanel
         isOnSettingsRoot
         searchValue=""
-        onOpenSearch={jest.fn()}
       />,
       createMockStore(),
     );

@@ -6,13 +6,14 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  TextFieldSearch,
-  TextFieldSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Header } from '../../../components/multichain/pages/page';
-import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../components/ui/app-text-field-search-styles';
+import {
+  HeaderSearch,
+  HeaderSearchVariant,
+} from '../../../components/component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type SettingsHeaderProps = {
@@ -46,49 +47,32 @@ export const SettingsHeader = ({
 }: SettingsHeaderProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const showSearchButton =
-    Boolean(onOpenSearch) && (!isPopupOrSidepanel || isOnSettingsRoot);
+  const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
 
   if (isSearchOpen) {
     return (
-      <header
-        className={`mm-header-search w-full ${showSearchBorder ? 'border-b border-border-muted' : ''}`}
-      >
-        <Box
-          alignItems={BoxAlignItems.Center}
-          className="w-full"
-          flexDirection={BoxFlexDirection.Row}
-          gap={2}
-          padding={3}
-          paddingHorizontal={4}
-        >
-          <Box className="flex min-w-0 flex-1 items-center">
-            <TextFieldSearch
-              autoFocus
-              className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
-              clearButtonOnClick={() => onSearchClear?.()}
-              clearButtonProps={{ ariaLabel: t('clear') }}
-              inputProps={{
-                'data-testid': 'settings-header-search-input',
-              }}
-              onChange={(event) => onSearchChange?.(event.target.value)}
-              placeholder={searchPlaceholder ?? t('search')}
-              size={TextFieldSize.Lg}
-              value={searchValue}
-            />
-          </Box>
-          <ButtonIcon
-            ariaLabel={t('close')}
-            data-testid="settings-header-search-close-button"
-            iconName={IconName.Close}
-            onClick={() => {
-              onCloseSearch?.();
-              onSearchClear?.();
-            }}
-            size={ButtonIconSize.Md}
-          />
-        </Box>
-      </header>
+      <HeaderSearch
+        variant={HeaderSearchVariant.Inline}
+        className={showSearchBorder ? 'border-b border-border-muted' : ''}
+        padding={3}
+        paddingHorizontal={4}
+        onClickCancelButton={() => {
+          onCloseSearch?.();
+          onSearchClear?.();
+        }}
+        textFieldSearchProps={{
+          value: searchValue,
+          placeholder: searchPlaceholder ?? t('search'),
+          className: 'rounded-full border border-border-muted',
+          onChangeText: onSearchChange,
+          onClickClearButton: onSearchClear,
+          showClearButton: false,
+          autoFocus: true,
+          inputProps: {
+            'data-testid': 'settings-header-search-input',
+          },
+        }}
+      />
     );
   }
 

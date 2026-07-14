@@ -25,11 +25,8 @@ import {
   IconName,
   Text,
   TextColor,
-  TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../components/ui/app-text-field-search-styles';
 import { AdditionalNetworksInfo } from '../../components/multichain/network-manager/components/additional-networks-info';
 import { useNetworkItemCallbacks } from '../../components/multichain/network-manager/hooks/useNetworkItemCallbacks';
 import { NetworkListItem } from '../../components/multichain/network-list-item';
@@ -164,14 +161,12 @@ const SectionDivider = () => <Box className="mx-4 border-t border-muted" />;
 
 type NetworksPageListProps = {
   searchQuery: string;
-  onSearchQueryChange: (value: string) => void;
   onAddCustomNetwork: () => void;
   footerContent?: React.ReactNode;
 };
 
 export const NetworksPageList = ({
   searchQuery,
-  onSearchQueryChange,
   onAddCustomNetwork,
   footerContent,
 }: NetworksPageListProps) => {
@@ -318,18 +313,6 @@ export const NetworksPageList = ({
       data-testid="networks-page-list"
     >
       <Box className="flex-1 overflow-y-auto">
-        <Box className="px-4 pb-4">
-          <TextFieldSearch
-            className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
-            clearButtonOnClick={() => onSearchQueryChange('')}
-            clearButtonProps={{ ariaLabel: t('clear') }}
-            data-testid="networks-page-search"
-            onChange={(event) => onSearchQueryChange(event.target.value)}
-            placeholder={t('searchNetworkNameOrChainId')}
-            size={TextFieldSize.Lg}
-            value={searchQuery}
-          />
-        </Box>
         {showNoSearchResults ? <NoSearchResult /> : null}
 
         {defaultNetworks.length > 0 ? (
