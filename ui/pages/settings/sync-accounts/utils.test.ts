@@ -2,7 +2,11 @@ import { AccountWalletType, toAccountWalletId } from '@metamask/account-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 
 import type { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
-import { filterSyncableWallets, getSyncSummaryCounts, isSyncableWallet } from './utils';
+import {
+  filterSyncableWallets,
+  getSyncSummaryCounts,
+  isSyncableWallet,
+} from './utils';
 
 const entropyWalletId = toAccountWalletId(
   AccountWalletType.Entropy,

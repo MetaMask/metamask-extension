@@ -145,7 +145,10 @@ describe('QrSync', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { password: WALLET_PASSWORD, validateBalance: false });
+        await login(driver, {
+          password: WALLET_PASSWORD,
+          validateBalance: false,
+        });
         await importPrivateKeyAccount(driver, { accountListTimeout: 30000 });
         await completeQrSyncFlow(driver, 2, 1);
       },

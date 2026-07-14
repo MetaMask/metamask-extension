@@ -1,7 +1,4 @@
-import {
-  AccountWalletType,
-  type AccountGroupId,
-} from '@metamask/account-api';
+import { AccountWalletType, type AccountGroupId } from '@metamask/account-api';
 import type { AccountWalletObject } from '@metamask/account-tree-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
 
