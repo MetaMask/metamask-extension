@@ -2,7 +2,7 @@ import { AccountWalletType, toAccountWalletId } from '@metamask/account-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 
 import type { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
-import { filterSyncableWallets, isSyncableWallet } from './utils';
+import { filterSyncableWallets, getSyncSummaryCounts, isSyncableWallet } from './utils';
 
 const entropyWalletId = toAccountWalletId(
   AccountWalletType.Entropy,
@@ -90,6 +90,97 @@ describe('add-device-tab utils', () => {
         [entropyWalletId]: mockWallets[entropyWalletId],
         [importedWalletId]: mockWallets[importedWalletId],
         [hdKeyringWalletId]: mockWallets[hdKeyringWalletId],
+      });
+    });
+  });
+
+  describe('getSyncSummaryCounts', () => {
+    const entropyGroupId = `${entropyWalletId}/0` as const;
+    const importedGroupId = `${importedWalletId}/0` as const;
+    const hdKeyringGroupId = `${hdKeyringWalletId}/0` as const;
+
+    const walletsWithGroups = {
+      [entropyWalletId]: {
+        ...mockWallets[entropyWalletId],
+        groups: {
+          [entropyGroupId]: {
+            id: entropyGroupId,
+            metadata: { name: 'Account 1' },
+          },
+        },
+      },
+      [importedWalletId]: {
+        ...mockWallets[importedWalletId],
+        groups: {
+          [importedGroupId]: {
+            id: importedGroupId,
+            metadata: { name: 'Imported Account 1' },
+          },
+        },
+      },
+      [hdKeyringWalletId]: {
+        ...mockWallets[hdKeyringWalletId],
+        groups: {
+          [hdKeyringGroupId]: {
+            id: hdKeyringGroupId,
+            metadata: { name: 'HD Account 1' },
+          },
+        },
+      },
+    } as unknown as AccountTreeWallets;
+
+    it('counts entropy wallets and imported account groups separately', () => {
+      expect(
+        getSyncSummaryCounts(walletsWithGroups, [
+          entropyGroupId,
+          importedGroupId,
+        ]),
+      ).toEqual({
+        syncedWalletCount: 1,
+        syncedAccountCount: 1,
+      });
+    });
+
+    it('counts HD keyring wallets as wallets', () => {
+      expect(
+        getSyncSummaryCounts(walletsWithGroups, [hdKeyringGroupId]),
+      ).toEqual({
+        syncedWalletCount: 1,
+        syncedAccountCount: 0,
+      });
+    });
+
+    it('counts multiple entropy wallets and one imported account', () => {
+      const secondEntropyWalletId = toAccountWalletId(
+        AccountWalletType.Entropy,
+        'entropy2',
+      );
+      const secondEntropyGroupId = `${secondEntropyWalletId}/0` as const;
+
+      const multiWalletState = {
+        ...walletsWithGroups,
+        [secondEntropyWalletId]: {
+          id: secondEntropyWalletId,
+          type: AccountWalletType.Entropy,
+          metadata: { name: 'Wallet 2', entropy: { id: 'entropy2' } },
+          groups: {
+            [secondEntropyGroupId]: {
+              id: secondEntropyGroupId,
+              metadata: { name: 'Account 1' },
+            },
+          },
+        },
+      } as unknown as AccountTreeWallets;
+
+      expect(
+        getSyncSummaryCounts(multiWalletState, [
+          entropyGroupId,
+          secondEntropyGroupId,
+          importedGroupId,
+        ]),
+      ).toEqual({
+        syncedWalletCount: 2,
+        syncedAccountCount: 1,
       });
     });
   });

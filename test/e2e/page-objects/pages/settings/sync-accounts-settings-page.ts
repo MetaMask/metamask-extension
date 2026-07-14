@@ -41,6 +41,31 @@ class SyncAccountsSettingsPage {
     this.driver = driver;
   }
 
+  async assertSuccessSyncedCounts(
+    walletCount: number,
+    accountCount: number,
+  ): Promise<void> {
+    await this.waitForSuccess();
+    const successElement = await this.driver.findElement(this.success);
+
+    await this.driver.waitUntil(
+      async () => {
+        const syncedWalletCount = await successElement.getAttribute(
+          'data-synced-wallet-count',
+        );
+        const syncedAccountCount = await successElement.getAttribute(
+          'data-synced-account-count',
+        );
+
+        return (
+          syncedWalletCount === String(walletCount) &&
+          syncedAccountCount === String(accountCount)
+        );
+      },
+      { timeout: this.driver.timeout, interval: 100 },
+    );
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForSelector(this.page);
   }
