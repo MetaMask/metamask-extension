@@ -25,13 +25,16 @@ export async function applyTransactionContainers({
   updateTransaction: (transaction: TransactionMeta) => void;
 }> {
   const { txParamsOriginal } = transactionMeta;
+  const hasEnforcedSimulations = types.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
   const finalMetadata = cloneDeep(transactionMeta);
 
   if (txParamsOriginal) {
     finalMetadata.txParams = cloneDeep(txParamsOriginal);
   }
 
-  if (types.includes(TransactionContainerType.EnforcedSimulations)) {
+  if (hasEnforcedSimulations) {
     const { updateTransaction } = await enforceSimulations({
       messenger,
       transactionMeta: finalMetadata,
@@ -106,13 +109,15 @@ export async function applyTransactionContainers({
     );
   }
 
+  if (simulationFails && hasEnforcedSimulations) {
+    throw new Error(
+      `Failed to estimate gas for transaction containers: ${simulationFails.reason}`,
+    );
+  }
+
   const newGas = simulationFails
     ? (originalGas as Hex | undefined)
     : (gas as Hex);
-
-  if (isApproved && simulationFails) {
-    throw new Error('Failed to estimate gas for transaction containers');
-  }
 
   return {
     updateTransaction: (transaction: TransactionMeta) => {

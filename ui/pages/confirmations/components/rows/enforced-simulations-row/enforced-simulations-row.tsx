@@ -36,6 +36,7 @@ export function EnforcedSimulationsRow() {
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
 
   const isEligible = useIsEnforcedSimulationsEligible();
+  const [isUnavailable, setIsUnavailable] = useState(false);
 
   const hasAutoEnabled = containerTypes !== undefined;
 
@@ -44,7 +45,16 @@ export function EnforcedSimulationsRow() {
   );
 
   useEffect(() => {
-    if (!isEligible || hasAutoEnabled || !transactionId) {
+    setIsUnavailable(false);
+  }, [transactionId]);
+
+  useEffect(() => {
+    if (
+      isUnavailable ||
+      !isEligible ||
+      hasAutoEnabled ||
+      !transactionId
+    ) {
       return;
     }
 
@@ -68,11 +78,21 @@ export function EnforcedSimulationsRow() {
         currentConfirmation,
         { error: String(error) },
       );
-      console.error(error);
+      setIsUnavailable(true);
+      if (!process.env.IN_TEST) {
+        console.error(error);
+      }
     });
-  }, [currentConfirmation, isEligible, hasAutoEnabled, transactionId, containerTypes]);
+  }, [
+    currentConfirmation,
+    isEligible,
+    hasAutoEnabled,
+    transactionId,
+    containerTypes,
+    isUnavailable,
+  ]);
 
-  if (!isEligible && !hasAutoEnabled) {
+  if (isUnavailable || (!isEligible && !hasAutoEnabled)) {
     return null;
   }
 
@@ -97,6 +117,7 @@ export function EnforcedSimulationsRow() {
           isInitializing={!hasAutoEnabled}
           containerTypes={containerTypes}
           transactionId={transactionId as string}
+          onUnavailable={() => setIsUnavailable(true)}
         />
       </Box>
 
@@ -110,11 +131,13 @@ function EnforcedSimulationsCheckbox({
   isInitializing,
   containerTypes,
   transactionId,
+  onUnavailable,
 }: {
   isEnabled: boolean;
   isInitializing: boolean;
   containerTypes?: TransactionContainerType[];
   transactionId: string;
+  onUnavailable: () => void;
 }) {
   const [pendingEnabled, setPendingEnabled] = useState<boolean | null>(null);
 
@@ -174,9 +197,10 @@ function EnforcedSimulationsCheckbox({
         targetEnabled,
         error: String(error),
       });
+      onUnavailable();
       setPendingEnabled(null);
     }
-  }, [containerTypes, isEnabled, transactionId]);
+  }, [containerTypes, isEnabled, onUnavailable, transactionId]);
 
   if (isInitializing || isToggling) {
     return (

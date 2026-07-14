@@ -2916,20 +2916,17 @@ describe('LegacyBackgroundApiService', () => {
           updateEditableParamsMock,
         );
 
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:applyTransactionContainersExisting',
-          TRANSACTION_ID_MOCK,
-          [TransactionContainerType.EnforcedSimulations],
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow(
+          'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
         );
 
-        expect(updateEditableParamsMock).toHaveBeenCalledWith(
-          TRANSACTION_ID_MOCK,
-          expect.objectContaining({
-            containerTypes: [TransactionContainerType.EnforcedSimulations],
-            data: NEW_DATA_MOCK,
-            gas: '0x554af',
-          }),
-        );
+        expect(updateEditableParamsMock).not.toHaveBeenCalled();
       });
     });
   });

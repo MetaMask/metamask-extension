@@ -121,11 +121,11 @@ describe('Container Utils', () => {
       );
     });
 
-    it('restores original gas when the preview estimate uses a failure fallback', async () => {
+    it('rejects preview when the estimate uses a failure fallback', async () => {
       estimateGasMock.mockResolvedValue({
         gas: '0x29b92700',
         simulationFails: {
-          reason: 'Failed to simulate wrapped transaction',
+          reason: 'No simulated gas returned',
           debug: { blockGasLimit: '0x77359400' },
         },
       });
@@ -136,20 +136,16 @@ describe('Container Utils', () => {
         txParamsOriginal: { gas: '0x554af' },
       } as TransactionMeta;
 
-      const { updateTransaction } = await applyTransactionContainers({
-        isApproved: false,
-        messenger,
-        transactionMeta,
-        types: [TransactionContainerType.EnforcedSimulations],
-      });
-
-      const transactionToUpdate = cloneDeep(transactionMeta);
-      updateTransaction(transactionToUpdate);
-
-      expect(transactionToUpdate.txParams.gas).toBe('0x554af');
-      expect(transactionToUpdate.containerTypes).toStrictEqual([
-        TransactionContainerType.EnforcedSimulations,
-      ]);
+      await expect(
+        applyTransactionContainers({
+          isApproved: false,
+          messenger,
+          transactionMeta,
+          types: [TransactionContainerType.EnforcedSimulations],
+        }),
+      ).rejects.toThrow(
+        'Failed to estimate gas for transaction containers: No simulated gas returned',
+      );
     });
 
     it('re-estimates gas with the real signature when approved', async () => {

@@ -88,6 +88,18 @@ describe('EnforcedSimulationsRow', () => {
     });
   });
 
+  it('hides the component when the simulation estimate fails', async () => {
+    jest
+      .mocked(applyTransactionContainersExisting)
+      .mockRejectedValueOnce(new Error('No simulated gas returned'));
+
+    const { container } = render();
+
+    await waitFor(() => {
+      expect(container).toBeEmptyDOMElement();
+    });
+  });
+
   it('renders the optional badge', async () => {
     const { getByTestId, getByText } = render();
 
