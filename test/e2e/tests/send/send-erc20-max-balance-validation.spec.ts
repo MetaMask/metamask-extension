@@ -119,10 +119,8 @@ describe('Send ERC20 - Max Balance Validation', function () {
   // AssetsController.assetsBalance, but the WebSocket balance update only
   // reaches TokenBalancesController. Until AssetsController subscribes to
   // AccountActivityService:balanceUpdated, the Tokens list and Send "Max"
-  // stay stale — which is exactly the ASSETS-3385 regression. Un-skip when the
-  // unified balance path receives WebSocket updates.
-  // eslint-disable-next-line mocha/no-skipped-tests -- blocked until unified balance path receives WS updates
-  it.skip('reflects a WebSocket balance update in the Tokens list and Send "Max"', async function () {
+  // stay stale — which is exactly the ASSETS-3385 regression.
+  it('reflects a WebSocket balance update in the Tokens list and Send "Max"', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const tstBalanceHolder = { value: '10' };
 
@@ -235,7 +233,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
               asset: {
                 fungible: true,
                 type: `eip155:${CHAIN_ID}/erc20:${TOKEN_ADDRESS}`,
-                unit: TOKEN_ADDRESS,
+                unit: SYMBOL,
                 decimals: TOKEN_DECIMALS,
               },
               postBalance: { amount: POST_SEND_RAW_BALANCE }, // 5 TST remaining
@@ -261,7 +259,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
         // (5 TST). If the bug is present, "Max" fills the stale 10 TST.
         await tokensTab.openTokenDetails(SYMBOL);
         await tokensTab.startSendFlow();
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
 
         await sendPage.clickMaxButton();
         const maxAfterUpdate = await sendPage.getAmountInputValue();
