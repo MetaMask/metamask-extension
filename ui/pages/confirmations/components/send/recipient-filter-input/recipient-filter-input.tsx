@@ -1,7 +1,8 @@
 import React from 'react';
+import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
 import { Box } from '../../../../../components/component-library';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../../../components/ui/app-text-field-search-styles';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { PillTextFieldSearch } from '../../../../../components/ui/pill-text-field-search';
 
 type RecipientFilterInputProps = {
   searchQuery: string;
@@ -16,13 +17,16 @@ export const RecipientFilterInput = ({
 
   return (
     <Box paddingInline={4} paddingBottom={4}>
-      <PillTextFieldSearch
+      <TextFieldSearch
+        className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+        clearButtonOnClick={() => onChange('')}
+        clearButtonProps={{ ariaLabel: t('clear') }}
         inputProps={{
           'data-testid': 'recipient-filter-search-input',
         }}
         onChange={(event) => onChange(event.target.value)}
-        onClear={() => onChange('')}
         placeholder={t('searchAnAcccountOrContact')}
+        size={TextFieldSize.Lg}
         value={searchQuery}
       />
     </Box>

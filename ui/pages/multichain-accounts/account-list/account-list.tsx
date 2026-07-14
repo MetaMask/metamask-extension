@@ -19,9 +19,12 @@ import {
   IconSize,
   Text,
   TextColor,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
 import { TextVariant } from '../../../helpers/constants/design-system';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../components/ui/app-text-field-search-styles';
 
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -42,7 +45,6 @@ import {
   CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
-import { PillTextFieldSearch } from '../../../components/ui/pill-text-field-search';
 import {
   Footer,
   Header,
@@ -158,11 +160,14 @@ export const AccountList = () => {
           paddingRight={4}
           paddingBottom={2}
         >
-          <PillTextFieldSearch
+          <TextFieldSearch
+            className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+            clearButtonOnClick={() => setSearchPattern('')}
+            clearButtonProps={{ ariaLabel: t('clear') }}
             data-testid="multichain-account-list-search"
             onChange={onSearchBarChange}
-            onClear={() => setSearchPattern('')}
             placeholder={t('searchYourAccounts')}
+            size={TextFieldSize.Lg}
             value={searchPattern}
           />
         </Box>

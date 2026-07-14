@@ -6,11 +6,13 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  TextFieldSearch,
+  TextFieldSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Header } from '../../../components/multichain/pages/page';
-import { PillTextFieldSearch } from '../../../components/ui/pill-text-field-search';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../components/ui/app-text-field-search-styles';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type SettingsHeaderProps = {
@@ -61,14 +63,17 @@ export const SettingsHeader = ({
           paddingHorizontal={4}
         >
           <Box className="flex min-w-0 flex-1 items-center">
-            <PillTextFieldSearch
+            <TextFieldSearch
               autoFocus
+              className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+              clearButtonOnClick={() => onSearchClear?.()}
+              clearButtonProps={{ ariaLabel: t('clear') }}
               inputProps={{
                 'data-testid': 'settings-header-search-input',
               }}
               onChange={(event) => onSearchChange?.(event.target.value)}
-              onClear={() => onSearchClear?.()}
               placeholder={searchPlaceholder ?? t('search')}
+              size={TextFieldSize.Lg}
               value={searchValue}
             />
           </Box>

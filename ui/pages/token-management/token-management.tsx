@@ -25,6 +25,8 @@ import {
   Text,
   TextAlign,
   TextColor,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -95,7 +97,7 @@ import {
   type SearchResultImportPayload,
 } from '../../../shared/lib/token-search/convert-search-result';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
-import { PillTextFieldSearch } from '../../components/ui/pill-text-field-search';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../components/ui/app-text-field-search-styles';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -1516,14 +1518,17 @@ export const TokenManagementPage = () => {
         paddingTop={2}
         paddingBottom={2}
       >
-        <PillTextFieldSearch
+        <TextFieldSearch
+          className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+          clearButtonOnClick={handleSearchClear}
+          clearButtonProps={{ ariaLabel: t('clear') }}
           inputProps={{
             'data-testid': 'token-management-search-input',
             spellCheck: false,
           }}
           onChange={handleSearchChange}
-          onClear={handleSearchClear}
           placeholder={t('enterTokenNameOrAddressManageTokens')}
+          size={TextFieldSize.Lg}
           value={searchQuery}
         />
       </Box>

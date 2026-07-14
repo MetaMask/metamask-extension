@@ -25,9 +25,11 @@ import {
   IconName,
   Text,
   TextColor,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PillTextFieldSearch } from '../../components/ui/pill-text-field-search';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../components/ui/app-text-field-search-styles';
 import { AdditionalNetworksInfo } from '../../components/multichain/network-manager/components/additional-networks-info';
 import { useNetworkItemCallbacks } from '../../components/multichain/network-manager/hooks/useNetworkItemCallbacks';
 import { NetworkListItem } from '../../components/multichain/network-list-item';
@@ -317,11 +319,14 @@ export const NetworksPageList = ({
     >
       <Box className="flex-1 overflow-y-auto">
         <Box className="px-4 pb-4">
-          <PillTextFieldSearch
+          <TextFieldSearch
+            className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+            clearButtonOnClick={() => onSearchQueryChange('')}
+            clearButtonProps={{ ariaLabel: t('clear') }}
             data-testid="networks-page-search"
             onChange={(event) => onSearchQueryChange(event.target.value)}
-            onClear={() => onSearchQueryChange('')}
             placeholder={t('searchNetworkNameOrChainId')}
+            size={TextFieldSize.Lg}
             value={searchQuery}
           />
         </Box>

@@ -1,7 +1,8 @@
 import React from 'react';
+import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
 import { Box } from '../../../component-library';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../ui/app-text-field-search-styles';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { PillTextFieldSearch } from '../../../ui/pill-text-field-search';
 
 /**
  * Renders a search component for the asset picker modal.
@@ -40,18 +41,20 @@ export const Search = ({
       paddingBottom={2}
       {...props}
     >
-      <PillTextFieldSearch
+      <TextFieldSearch
         autoFocus={autoFocus}
-        className="asset-picker-modal__search-list"
+        className={`${APP_TEXT_FIELD_SEARCH_CLASSNAME} asset-picker-modal__search-list`}
+        clearButtonOnClick={() => onChange('')}
+        clearButtonProps={{ ariaLabel: t('clear') }}
         inputProps={{
           'data-testid': 'asset-picker-modal-search-input',
         }}
         onChange={(event) => onChange(event.target.value)}
-        onClear={() => onChange('')}
         placeholder={
           placeholder ??
           t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
         }
+        size={TextFieldSize.Lg}
         value={searchQuery}
       />
     </Box>

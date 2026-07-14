@@ -1,7 +1,8 @@
 import React from 'react';
+import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box } from '../../../component-library';
-import { PillTextFieldSearch } from '../../../ui/pill-text-field-search';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../ui/app-text-field-search-styles';
 
 const NetworkListSearch = ({
   searchQuery,
@@ -16,8 +17,11 @@ const NetworkListSearch = ({
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={0}>
-      <PillTextFieldSearch
+      <TextFieldSearch
         autoFocus
+        className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+        clearButtonOnClick={() => setSearchQuery('')}
+        clearButtonProps={{ ariaLabel: t('clear') }}
         data-testid="search-list"
         inputProps={{
           'data-testid': 'network-redesign-modal-search-input',
@@ -25,8 +29,8 @@ const NetworkListSearch = ({
           onFocus: () => setFocusSearch(true),
         }}
         onChange={(event) => setSearchQuery(event.target.value)}
-        onClear={() => setSearchQuery('')}
         placeholder={t('search')}
+        size={TextFieldSize.Lg}
         value={searchQuery}
       />
     </Box>

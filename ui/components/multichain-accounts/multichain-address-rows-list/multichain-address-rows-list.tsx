@@ -9,10 +9,12 @@ import {
   Text,
   TextAlign,
   TextColor,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { PillTextFieldSearch } from '../../ui/pill-text-field-search';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../ui/app-text-field-search-styles';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
@@ -158,11 +160,14 @@ export const MultichainAddressRowsList = ({
       data-testid="multichain-address-rows-list"
     >
       <Box paddingLeft={4} paddingRight={4}>
-        <PillTextFieldSearch
+        <TextFieldSearch
+          className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+          clearButtonOnClick={handleClearSearch}
+          clearButtonProps={{ ariaLabel: t('clear') }}
           data-testid="multichain-address-rows-list-search"
           onChange={handleSearchChange}
-          onClear={handleClearSearch}
           placeholder={t('searchNetworks')}
+          size={TextFieldSize.Lg}
           value={searchPattern}
         />
       </Box>

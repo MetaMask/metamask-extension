@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { TextFieldSize } from '@metamask/design-system-react';
+import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
+import { APP_TEXT_FIELD_SEARCH_CLASSNAME } from '../../../../../components/ui/app-text-field-search-styles';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { PillTextFieldSearch } from '../../../../../components/ui/pill-text-field-search';
 
 export type SearchInputProps = {
   /** Current search value */
@@ -46,8 +46,11 @@ export const SearchInput = ({
   );
 
   return (
-    <PillTextFieldSearch
+    <TextFieldSearch
       autoFocus={autoFocus}
+      className={APP_TEXT_FIELD_SEARCH_CLASSNAME}
+      clearButtonOnClick={onClear}
+      clearButtonProps={{ ariaLabel: t('clear') }}
       data-testid="search-input-container"
       inputProps={{
         'data-testid': 'search-input',
@@ -55,7 +58,6 @@ export const SearchInput = ({
         onKeyDown: handleKeyDown,
       }}
       onChange={(event) => onChange(event.target.value)}
-      onClear={onClear}
       placeholder={t('perpsSearchMarkets')}
       size={TextFieldSize.Md}
       value={value}
