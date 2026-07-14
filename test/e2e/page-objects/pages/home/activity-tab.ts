@@ -41,6 +41,9 @@ class ActivityTab extends HomePage {
 
   private readonly tooltip = '.tippy-tooltip-content';
 
+  private readonly toastCloseButton =
+    '.toast-container button[aria-label="Close"]';
+
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
@@ -570,6 +573,7 @@ class ActivityTab extends HomePage {
   }
 
   async clickSpeedUpTransaction() {
+    await this.driver.clickElementSafe(this.toastCloseButton);
     await this.driver.clickElement(this.speedupInlineButton);
   }
 

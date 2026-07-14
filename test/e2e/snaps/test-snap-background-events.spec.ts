@@ -176,7 +176,7 @@ describe('Test Snap Background Events', function () {
           'Reconnect to Background Events Snap',
         );
 
-        const futureDate = new Date(Date.now() + 5000).toISOString();
+        const futureDate = new Date(Date.now() + 30000).toISOString();
 
         await testSnaps.fillMessage('backgroundEventDateInput', futureDate);
 
