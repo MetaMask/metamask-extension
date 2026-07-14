@@ -117,8 +117,8 @@ const MODALS: Record<string, ModalConfig> = {
     contents: (
       <RampsInfoModal
         testId="ramps-unsupported-modal"
-        title="Buying isn’t available here"
-        body="Buying crypto isn’t supported in your region yet."
+        titleKey="rampsUnsupportedTitle"
+        bodyKey="rampsUnsupportedDescription"
       />
     ),
     testId: 'ramps-unsupported-modal',
@@ -137,8 +137,8 @@ const MODALS: Record<string, ModalConfig> = {
     contents: (
       <RampsInfoModal
         testId="ramp-eligibility-failed-modal"
-        title="We couldn’t verify your region"
-        body="Please try again, or contact support if this keeps happening."
+        titleKey="rampsEligibilityFailedTitle"
+        bodyKey="rampsEligibilityFailedDescription"
       />
     ),
     testId: 'ramp-eligibility-failed-modal',
@@ -157,8 +157,8 @@ const MODALS: Record<string, ModalConfig> = {
     contents: (
       <RampsInfoModal
         testId="ramps-service-disruption-modal"
-        title="Buying is temporarily unavailable"
-        body="We’re experiencing a service disruption. Please try again later."
+        titleKey="rampsServiceDisruptionTitle"
+        bodyKey="rampsServiceDisruptionDescription"
       />
     ),
     testId: 'ramps-service-disruption-modal',
