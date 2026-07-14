@@ -28,7 +28,6 @@ import {
   BadgeWrapper,
 } from '../../component-library';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import type { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -45,7 +44,7 @@ import {
   getImageForChainId,
 } from '../../../selectors/multichain';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { ASSET_CELL_HEIGHT } from '../assets/constants';
 import {
   MUSD_CONVERSION_APY,
@@ -92,7 +91,7 @@ export const MusdBuyGetCta = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { startConversionFlow, educationSeen } = useMusdConversion();
   const { defaultPaymentToken } = useMusdConversionTokens();
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
 
   // Get network configuration for icon
   const networkConfigurationsByChainId = useSelector(
@@ -161,7 +160,7 @@ export const MusdBuyGetCta = ({
     );
 
     if (variant === BuyGetMusdCtaVariant.BUY) {
-      openBuyCryptoInPdapp((selectedChainId as ChainId) ?? undefined);
+      goToBuy({ chainId: selectedChainId ?? undefined });
     } else if (variant === BuyGetMusdCtaVariant.GET) {
       if (!defaultPaymentToken) {
         console.error(
@@ -185,7 +184,7 @@ export const MusdBuyGetCta = ({
     educationSeen,
     createEventBuilder,
     trackEvent,
-    openBuyCryptoInPdapp,
+    goToBuy,
     startConversionFlow,
     defaultPaymentToken,
   ]);

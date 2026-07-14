@@ -7,7 +7,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Text,
@@ -49,7 +49,8 @@ import {
   useMusdConversionTokens,
   useCanBuyMusd,
 } from '../../../hooks/musd';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { getIsRampsEnabled } from '../../../selectors/ramps-feature-flags';
 import {
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
@@ -108,7 +109,8 @@ const MusdEducationScreen = () => {
   const { tokens: conversionTokens, defaultPaymentToken } =
     useMusdConversionTokens();
   const { canBuyMusdInRegion } = useCanBuyMusd();
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
+  const isRampsEnabled = useSelector(getIsRampsEnabled);
   const [isLoading, setIsLoading] = useState(false);
 
   const hasEligibleConversionTokens = conversionTokens.length > 0;
@@ -184,8 +186,13 @@ const MusdEducationScreen = () => {
     dispatch(setMusdConversionEducationSeen(true));
 
     if (isDeeplinkNoTokensGoToBuy) {
-      openBuyCryptoInPdapp(MUSD_CONVERSION_DEFAULT_CHAIN_ID);
-      navigate(DEFAULT_ROUTE);
+      await goToBuy({ chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID });
+      // Flag off opens Portfolio in a new tab, so send the user home; flag on
+      // navigates in-app (build-quote, or a blocking modal on the education
+      // screen), so leave routing to goToBuy.
+      if (!isRampsEnabled) {
+        navigate(DEFAULT_ROUTE);
+      }
       return;
     }
 
@@ -226,7 +233,8 @@ const MusdEducationScreen = () => {
     isDeeplinkNoTokensContinueHome,
     isDeeplink,
     isGeoBlocked,
-    openBuyCryptoInPdapp,
+    goToBuy,
+    isRampsEnabled,
     startConversionFlow,
     defaultPaymentToken,
     createEventBuilder,

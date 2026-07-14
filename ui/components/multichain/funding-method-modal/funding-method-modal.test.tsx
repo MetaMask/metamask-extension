@@ -5,26 +5,26 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { FundingMethodModal } from './funding-method-modal';
 
-jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: jest.fn(),
-}));
+const mockGoToBuy = jest.fn().mockResolvedValue(true);
+jest.mock(
+  '../../../hooks/ramps/useRampsNavigation/useRampsNavigation',
+  () => ({
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => ({ goToBuy: mockGoToBuy }),
+  }),
+);
 
 const mockStore = configureMockStore([thunk]);
 
 describe('FundingMethodModal', () => {
   let store = configureMockStore([thunk])(mockState);
-  let openBuyCryptoInPdapp: jest.Mock<() => void>;
 
   beforeEach(() => {
     store = mockStore(mockState);
-    openBuyCryptoInPdapp = jest.fn();
-    (useRamps as jest.Mock).mockReturnValue({ openBuyCryptoInPdapp });
   });
 
   afterEach(() => {
@@ -62,7 +62,7 @@ describe('FundingMethodModal', () => {
     expect(queryByTestId('funding-method-modal')).toBeNull();
   });
 
-  it('should call openBuyCryptoInPdapp when the Token Marketplace item is clicked', () => {
+  it('routes the Token Marketplace item through goToBuy with the current chain', () => {
     const { getByText } = renderWithProvider(
       <FundingMethodModal
         isOpen={true}
@@ -75,7 +75,9 @@ describe('FundingMethodModal', () => {
     );
 
     fireEvent.click(getByText(messages.tokenMarketplace.message));
-    expect(openBuyCryptoInPdapp).toHaveBeenCalled();
+    // Preserves the chain context it passed to the Portfolio deeplink today;
+    // goToBuy handles the flag-off Portfolio fallback internally.
+    expect(mockGoToBuy).toHaveBeenCalledWith({ chainId: '0x5' });
   });
 
   it('should call onClickReceive when the Receive Crypto item is clicked', () => {

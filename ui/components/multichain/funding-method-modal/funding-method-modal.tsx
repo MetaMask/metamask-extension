@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   Modal,
@@ -19,9 +19,8 @@ import {
   getMultichainCurrentNetwork,
   getMultichainDefaultToken,
 } from '../../../selectors/multichain';
-import useRamps, {
-  RampsMetaMaskEntry,
-} from '../../../hooks/ramps/useRamps/useRamps';
+import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getAnalyticsId,
@@ -31,7 +30,6 @@ import {
   getSelectedAccount,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -54,7 +52,7 @@ export const FundingMethodModal = ({
 }: FundingMethodModalProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
   const { address: accountAddress } = useSelector(getSelectedAccount);
   const { chainId } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);
@@ -120,8 +118,8 @@ export const FundingMethodModal = ({
         })
         .build(),
     );
-    openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);
-  }, [chainId, symbol, trackEvent, createEventBuilder, openBuyCryptoInPdapp]);
+    goToBuy({ chainId: chainId as Hex | CaipChainId });
+  }, [chainId, symbol, trackEvent, createEventBuilder, goToBuy]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>
