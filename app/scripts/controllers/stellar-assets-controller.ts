@@ -58,8 +58,8 @@ export const NativeAssetInfoStruct = type({
 
 export const EnrichedAssetInfoStuct = union([
   record(StellarNativeAssetIdStruct, NativeAssetInfoStruct),
-  record(StellarClassicAssetIdStruct, TrustlineAssetInfoStruct)
-])
+  record(StellarClassicAssetIdStruct, TrustlineAssetInfoStruct),
+]);
 
 export type StellarNativeAssetId = Infer<typeof StellarNativeAssetIdStruct>;
 export type StellarClassicAssetId = Infer<typeof StellarClassicAssetIdStruct>;
@@ -241,8 +241,9 @@ export class StellarAssetsController extends BaseController<
     for (const [accountId, { added, removed }] of Object.entries(
       event.assets,
     )) {
-      const isStellar = [...added, ...removed]
-        .some((assetId) => isStellarEnrichmentEligibleAssetId(assetId));
+      const isStellar = [...added, ...removed].some((assetId) =>
+        isStellarEnrichmentEligibleAssetId(assetId),
+      );
 
       if (!isStellar) {
         continue;
@@ -269,14 +270,16 @@ export class StellarAssetsController extends BaseController<
       // This is cheap: SNAP API `getAccountAssetInfo` already batches assets and reads
       // from the snap state store, so fetching 1 vs 100 assets costs about the same.
       // Most accounts have fewer than 100 trustlines; imported accounts with more are rare.
-      await this.#controllerOperationMutex.runExclusive(async () => {
-        await this.#fetchAndStoreAccountAssetInfo(accountId)
-      }).catch(error => {
-        console.error(
-          `[StellarAssetsController] Failed to fetch asset info for account ${accountId}:`,
-          error,
-        );
-      });
+      await this.#controllerOperationMutex
+        .runExclusive(async () => {
+          await this.#fetchAndStoreAccountAssetInfo(accountId);
+        })
+        .catch((error) => {
+          console.error(
+            `[StellarAssetsController] Failed to fetch asset info for account ${accountId}:`,
+            error,
+          );
+        });
     }
   }
 
@@ -303,14 +306,15 @@ export class StellarAssetsController extends BaseController<
   async #fetchAndStoreAccountAssetInfo(
     account: InternalAccount | string,
   ): Promise<void> {
-    const internalAccount = typeof account === 'string' ? this.#getStellarAccount(account) : account;
+    const internalAccount =
+      typeof account === 'string' ? this.#getStellarAccount(account) : account;
     if (!internalAccount) {
       return;
     }
 
     const snapId = internalAccount.metadata.snap?.id;
     const chainId = this.#getStellarChainId(internalAccount);
-    if (!snapId || !chainId ) {
+    if (!snapId || !chainId) {
       return;
     }
     try {

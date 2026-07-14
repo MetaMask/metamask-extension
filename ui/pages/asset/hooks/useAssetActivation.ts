@@ -168,7 +168,14 @@ export const useAssetActivation = ({
     } finally {
       setIsActivating(false);
     }
-  }, [assetId, chainId, dispatch, isAssetIsTrustlineAsset, resolvedAccountId, t]);
+  }, [
+    assetId,
+    chainId,
+    dispatch,
+    isAssetIsTrustlineAsset,
+    resolvedAccountId,
+    t,
+  ]);
 
   return {
     deactivateAsset,
