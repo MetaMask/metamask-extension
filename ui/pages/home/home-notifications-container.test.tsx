@@ -92,4 +92,30 @@ describe('HomeNotificationsContainer', () => {
     expect(setActiveNetwork).toHaveBeenCalledTimes(1);
     expect(setNewNetworkAdded).toHaveBeenCalledTimes(2);
   });
+
+  it('reactivates the same network after the pending add was cleared', () => {
+    render(
+      <Provider store={mockStore(buildState('network-config-1'))}>
+        <HomeNotificationsContainer />
+      </Provider>,
+    );
+
+    expect(setActiveNetwork).toHaveBeenCalledTimes(1);
+
+    const { unmount: unmountClearedState } = render(
+      <Provider store={mockStore(buildState(''))}>
+        <HomeNotificationsContainer />
+      </Provider>,
+    );
+    unmountClearedState();
+
+    render(
+      <Provider store={mockStore(buildState('network-config-1'))}>
+        <HomeNotificationsContainer />
+      </Provider>,
+    );
+
+    expect(setActiveNetwork).toHaveBeenCalledTimes(2);
+    expect(setActiveNetwork).toHaveBeenLastCalledWith('network-config-1');
+  });
 });

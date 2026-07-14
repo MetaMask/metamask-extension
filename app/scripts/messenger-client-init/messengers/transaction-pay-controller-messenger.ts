@@ -36,8 +36,6 @@ export function getTransactionPayControllerMessenger(
     actions: [
       'AccountTrackerController:getState',
       'AssetsController:getStateForTransactionPay',
-      'BridgeController:fetchQuotes',
-      'BridgeStatusController:submitTx',
       'CurrencyRateController:getState',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
@@ -59,7 +57,6 @@ export function getTransactionPayControllerMessenger(
     ],
     events: [
       'AssetsController:stateChange',
-      'BridgeStatusController:stateChange',
       'CurrencyRateController:stateChange',
       'TokenRatesController:stateChange',
       'TokensController:stateChange',

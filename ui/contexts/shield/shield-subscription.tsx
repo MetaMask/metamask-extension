@@ -320,7 +320,7 @@ export const ShieldSubscriptionProvider = ({
   usePolling({
     startPolling: subscriptionsStartPolling,
     stopPollingByPollingToken: (pollingToken: string) => {
-      void subscriptionsStopPolling(pollingToken).catch((error) => {
+      subscriptionsStopPolling(pollingToken).catch((error) => {
         log.warn('[subscriptionsStopPolling] error', error);
       });
     },
