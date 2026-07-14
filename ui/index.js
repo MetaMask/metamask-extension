@@ -1,6 +1,8 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
+// TODO: https://github.com/MetaMask/MetaMask-planning/issues/6925
+// eslint-disable-next-line react/no-deprecated
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';

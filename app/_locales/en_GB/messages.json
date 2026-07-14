@@ -385,7 +385,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "Converted $1",
+    "message": "Converted to $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -1143,9 +1143,6 @@
   "addCustomToken": {
     "message": "Add a custom token"
   },
-  "addDevice": {
-    "message": "Sync with mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1232,6 +1229,27 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "add_device_error_connection": {
+    "message": "We couldn't keep a secure connection with your phone. Check your internet connection and try again."
+  },
+  "add_device_error_expired": {
+    "message": "This sync session expired. Start again to generate a new QR code."
+  },
+  "add_device_error_generic": {
+    "message": "Something went wrong while syncing with your phone. Please try again."
+  },
+  "add_device_error_invalid_code": {
+    "message": "The verification code was incorrect. Start again to try syncing your phone."
+  },
+  "add_device_error_rejected": {
+    "message": "The sync was cancelled on your phone. Start again to try syncing."
+  },
+  "add_device_error_sync_failed": {
+    "message": "We couldn't finish syncing your accounts to your phone. Please try again."
+  },
+  "add_device_error_title": {
+    "message": "Sync couldn't be completed"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 imported accounts were synced to your phone.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1273,6 +1291,9 @@
   "add_device_syncing_title": {
     "message": "Importing accounts"
   },
+  "add_device_try_again": {
+    "message": "Try again"
+  },
   "add_device_validating_desc": {
     "message": "Establishing a secure, encrypted connection with your phone."
   },
@@ -1290,6 +1311,10 @@
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "Includes $1 for added protection",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Optional"
@@ -3028,6 +3053,9 @@
   "contractInteraction": {
     "message": "Contract interaction"
   },
+  "convertAgain": {
+    "message": "Convert again"
+  },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
   },
@@ -3838,6 +3866,9 @@
   "enter_verification_code_expires_in": {
     "message": "Expires in $1s",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Too many incorrect attempts. Start with a new QR code."
   },
   "enter_your_password": {
     "message": "Enter your password"
@@ -8198,9 +8229,6 @@
     "message": "Expires in $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Something went wrong scanning the QR code. Generate a new one to try again."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8265,6 +8293,15 @@
   },
   "quotedTotalCost": {
     "message": "Total cost: $1"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Error loading tokens"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "No tokens available"
+  },
+  "rampsShowAllTokens": {
+    "message": "Show all tokens"
   },
   "rank": {
     "message": "Rank"
@@ -10820,6 +10857,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
+  },
+  "syncAccounts": {
+    "message": "Sync with mobile"
   },
   "syncing": {
     "message": "Syncing..."
