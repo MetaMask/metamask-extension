@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -53,7 +53,6 @@ export function RampsBuildQuoteScreen() {
   const {
     userRegion,
     selectedToken,
-    setSelectedToken,
     tokensLoading,
     selectedProvider,
     selectedPaymentMethod,
@@ -64,23 +63,11 @@ export function RampsBuildQuoteScreen() {
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
     ?.assetId;
 
-  // Controller state is the source of truth; location state is only used for
-  // bootstrapping when goToBuy races ahead of the tokens catalog (mobile parity).
+  // Controller state is the source of truth for the active token; location
+  // state is only used as bootstrapping input from goToBuy.
   const tokenStateIsSettled =
     !intentAssetId ||
     selectedToken?.assetId?.toLowerCase() === intentAssetId.toLowerCase();
-
-  useEffect(() => {
-    if (
-      !intentAssetId ||
-      tokensLoading ||
-      selectedToken?.assetId?.toLowerCase() === intentAssetId.toLowerCase()
-    ) {
-      return;
-    }
-
-    setSelectedToken(intentAssetId).catch(() => undefined);
-  }, [intentAssetId, selectedToken?.assetId, setSelectedToken, tokensLoading]);
 
   const [amount, setAmount] = useState(DEFAULT_AMOUNT);
   const amountAsNumber = useMemo(() => parseFiatAmount(amount), [amount]);

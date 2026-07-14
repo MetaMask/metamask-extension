@@ -93,7 +93,7 @@ async function preselectToken(assetId: CaipAssetType): Promise<void> {
   try {
     await submitRequestToBackground('setRampsSelectedToken', [assetId]);
   } catch {
-    // Fail open — BuildQuote re-resolves from location state when needed.
+    // Fail open — the build-quote page can re-resolve the token itself.
   }
 }
 
@@ -103,11 +103,10 @@ async function preselectToken(assetId: CaipAssetType): Promise<void> {
  * Runs a fixed geo-block gate (service disruption, geolocation unknown, region
  * unsupported, providers/tokens fetched-but-empty) and then routes into the
  * native buy flow: an intent with a supported `assetId` pre-selects the token
- * (via `setRampsSelectedToken` and build-quote location state) and opens the
- * build-quote page; without one it opens the token-selection page; an
- * unsupported `assetId` raises the unsupported modal. The gate is skipped
- * entirely when the `rampsEnabled` rollout flag is off (unchanged Portfolio
- * redirect).
+ * and opens the build-quote page; without one it opens the token-selection
+ * page; an unsupported `assetId` raises the unsupported modal. The gate is
+ * skipped entirely when the `rampsEnabled` rollout flag is off (unchanged
+ * Portfolio redirect).
  *
  * Geolocation is resolved on demand via the background `GeolocationController`
  * (mobile parity — it does not fetch at startup, so reading synced state alone
@@ -192,9 +191,6 @@ export default function useRampsNavigation() {
         return false;
       }
       await preselectToken(assetId);
-      // Pass assetId in location state so BuildQuote can finish preloading if
-      // the controller write raced ahead of the tokens catalog (mobile parity
-      // for route-param bootstrapping).
       navigate(RAMPS_BUILD_QUOTE_ROUTE, { state: { assetId } });
       return true;
     },
