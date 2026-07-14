@@ -378,8 +378,16 @@ const ensureHomeReady = async (driver: Driver) => {
  * @returns Result object from the executed script.
  */
 const reloadExtension = async (driver: Driver) => {
+  const extensionWindow = await driver.driver.getWindowHandle();
+  const blankWindow = await driver.openNewPage('about:blank');
+
+  await driver.switchToWindow(extensionWindow);
   await pausePersistence(driver);
-  await driver.reloadExtension();
+  await driver.executeScript(
+    `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+  );
+
+  await driver.switchToWindow(blankWindow);
 
   // get a new tab ready to use (required for Firefox)
   await driver.openNewPage('about:blank');

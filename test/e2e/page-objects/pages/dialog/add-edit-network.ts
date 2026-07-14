@@ -149,14 +149,6 @@ class AddEditNetworkModal {
 
   async saveEditedNetwork(): Promise<void> {
     console.log('Save and close edit network modal');
-    if (
-      await this.driver.isElementPresentAndVisible(
-        this.editModalRpcDropDownItem,
-        500,
-      )
-    ) {
-      await this.driver.clickElement(this.editModalRpcDropDownButton);
-    }
     await this.driver.clickElementAndWaitToDisappear(this.editModalSaveButton);
   }
 
@@ -241,7 +233,15 @@ class AddEditNetworkModal {
         shouldBeDisplayed ? '' : 'not '
       } displayed on edit network modal`,
     );
-    await this.driver.clickElement(this.editModalRpcDropDownButton);
+    if (
+      !(await this.driver.isElementPresentAndVisible(
+        this.editModalRpcDropDownItem,
+        100,
+      ))
+    ) {
+      await this.driver.clickElement(this.editModalRpcDropDownButton);
+      await this.driver.waitForSelector(this.editModalRpcDropDownItem);
+    }
     if (shouldBeDisplayed) {
       await this.driver.waitForSelector({
         text: rpcName,
@@ -254,6 +254,17 @@ class AddEditNetworkModal {
       });
     }
     await this.driver.clickElement(this.editModalRpcDropDownButton);
+    await this.driver.waitUntil(
+      async () =>
+        !(await this.driver.isElementPresentAndVisible(
+          this.editModalRpcDropDownItem,
+          100,
+        )),
+      {
+        interval: 100,
+        timeout: 3000,
+      },
+    );
   }
 
   async checkSaveButtonIsEnabled(): Promise<boolean> {

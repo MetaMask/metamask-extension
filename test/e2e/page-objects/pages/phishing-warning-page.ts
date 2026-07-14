@@ -16,6 +16,10 @@ class PhishingWarningPage {
     text: 'This website might be harmful',
   };
 
+  private readonly proceedAnywayButton = {
+    testId: 'unsafe-continue-loaded',
+  };
+
   private readonly reportDetectionProblemLink = {
     text: 'report a detection problem.',
   };
@@ -62,9 +66,7 @@ class PhishingWarningPage {
 
   async clickProceedAnywayButton(): Promise<void> {
     console.log('Clicking proceed anyway button on phishing warning page');
-    await this.driver.executeScript(
-      'document.querySelector("[data-testid=unsafe-continue-loaded]").click()',
-    );
+    await this.driver.clickElement(this.proceedAnywayButton);
   }
 
   async clickReportDetectionProblemLink(): Promise<void> {
