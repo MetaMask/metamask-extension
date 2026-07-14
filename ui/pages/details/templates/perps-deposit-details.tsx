@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   Button,
@@ -12,6 +11,7 @@ import { TransactionStatus as TransactionMetaStatus } from '@metamask/transactio
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
+import { usePerpsDepositConfirmation } from '../../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { selectLocalTransactionsByHash } from '../../../selectors/activity';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context';
@@ -43,7 +43,7 @@ function useTransactionMeta(hash: string | undefined) {
 
 export function PerpsDepositDetails({ item }: Props) {
   const t = useI18nContext();
-  const navigate = useNavigate();
+  const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const { formatDateTime, formatCurrencyWithMinThreshold } = useFormatters();
   const transactionMeta = useTransactionMeta(item.hash);
 
@@ -117,7 +117,7 @@ export function PerpsDepositDetails({ item }: Props) {
             className="w-full"
             size={ButtonSize.Lg}
             variant={ButtonVariant.Primary}
-            onClick={() => navigate({ pathname: '/', search: 'tab=perps' })}
+            onClick={() => triggerDeposit()}
           >
             {t('perpsFundAgain')}
           </Button>
