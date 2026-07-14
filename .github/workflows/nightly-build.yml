@@ -11,38 +11,6 @@ permissions:
   id-token: write # required for s3 uploads
 
 jobs:
-  build-dist-browserify:
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-browserify
-      build-command: yarn build dist
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-dist-mv2-browserify:
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-mv2-browserify
-      build-command: yarn build dist
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-experimental-browserify:
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-experimental-browserify
-      build-command: yarn build --build-type experimental dist
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-experimental-mv2-browserify:
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-experimental-mv2-browserify
-      build-command: yarn build --build-type experimental dist
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
   build-dist-webpack:
     uses: ./.github/workflows/run-build.yml
     with:
@@ -77,10 +45,6 @@ jobs:
 
   post-nightly-builds:
     needs:
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-experimental-browserify
-      - build-experimental-mv2-browserify
       - build-dist-webpack
       - build-dist-mv2-webpack
       - build-experimental-webpack
@@ -95,7 +59,7 @@ jobs:
       BRANCH: ${{ github.ref_name || 'main' }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       SLACK_NIGHTLY_BUILDS_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL }}
-      BUILD_STATUS: ${{ needs.build-dist-browserify.result == 'success' && needs.build-dist-mv2-browserify.result == 'success' && needs.build-experimental-browserify.result == 'success' && needs.build-experimental-mv2-browserify.result == 'success' && needs.build-dist-webpack.result == 'success' && needs.build-dist-mv2-webpack.result == 'success' && needs.build-experimental-webpack.result == 'success' && needs.build-experimental-mv2-webpack.result == 'success' && 'success' || 'failure' }}
+      BUILD_STATUS: ${{ needs.build-dist-webpack.result == 'success' && needs.build-dist-mv2-webpack.result == 'success' && needs.build-experimental-webpack.result == 'success' && needs.build-experimental-mv2-webpack.result == 'success' && 'success' || 'failure' }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3

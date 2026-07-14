@@ -4916,7 +4916,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:^7.0.18, @lavamoat/lavapack@npm:^7.0.22":
+"@lavamoat/lavapack@npm:^7.0.22":
   version: 7.0.22
   resolution: "@lavamoat/lavapack@npm:7.0.22"
   dependencies:
@@ -4950,17 +4950,6 @@ __metadata:
   version: 2.0.4
   resolution: "@lavamoat/snow@patch:@lavamoat/snow@npm%3A2.0.4#~/.yarn/patches/@lavamoat-snow-npm-2.0.4-6af84c19b4.patch::version=2.0.4&hash=ac5e99"
   checksum: 10/742598fbdf2e583643a0ea34ed5c42ec2e382c3ad657de45dbcfe03a465a60d38207790ace9c14762baca91f8713a5a545210c80ea93a6e484fc47b57fdb344a
-  languageName: node
-  linkType: hard
-
-"@lavamoat/sourcemap-validator@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@lavamoat/sourcemap-validator@npm:2.1.1"
-  dependencies:
-    jsesc: "npm:~0.3.x"
-    lodash: "npm:^4.17.21"
-    source-map: "npm:~0.1.x"
-  checksum: 10/a4b11acd50be05be60504c9f6db3d681e6d3bbf186a9fbc04a7597a28a1bd26d95c7fdee4d060ff02e58159060bb0dc921887a2831f03a2fcad48ef12237ac7c
   languageName: node
   linkType: hard
 
@@ -18715,13 +18704,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amdefine@npm:>=0.0.4":
-  version: 1.0.1
-  resolution: "amdefine@npm:1.0.1"
-  checksum: 10/517df65fc33d3ff14fe5c0057e041b03d603a2254dea7968b05dfbfa3041eb8430ea6729e305bc428c03fad03f162de91a4b256692d27d7b81d3ee691312cffe
-  languageName: node
-  linkType: hard
-
 "ansi-align@npm:^2.0.0":
   version: 2.0.0
   resolution: "ansi-align@npm:2.0.0"
@@ -19941,16 +19923,6 @@ __metadata:
   dependencies:
     open: "npm:^8.0.4"
   checksum: 10/24668e5a837d0d2c0edf17ad5ebcfeb00a8a5578a5eb09f7a409e1a60617cdfea40b8ebfc95e5f12d9568157930d033e6805788fcf0780413ac982c95d3745d1
-  languageName: node
-  linkType: hard
-
-"bify-module-groups@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "bify-module-groups@npm:2.0.0"
-  dependencies:
-    pump: "npm:^3.0.0"
-    through2: "npm:^3.0.1"
-  checksum: 10/333906339e00dfee43ba8009d8553050ceee85d1b125bc36975c2d4493cb69c0f03283003f774712f54149490c76268854aa157368e3402f8a01ff2b8c09a359
   languageName: node
   linkType: hard
 
@@ -21857,18 +21829,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concat-stream@npm:2.0.0, concat-stream@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "concat-stream@npm:2.0.0"
-  dependencies:
-    buffer-from: "npm:^1.0.0"
-    inherits: "npm:^2.0.3"
-    readable-stream: "npm:^3.0.2"
-    typedarray: "npm:^0.0.6"
-  checksum: 10/250e576d0617e7c58e1c4b2dd6fe69560f316d2c962a409f9f3aac794018499ddb31948b1e4296f217008e124cd5d526432097745157fe504b5d9f3dc469eadb
-  languageName: node
-  linkType: hard
-
 "concat-stream@npm:^1.6.0, concat-stream@npm:^1.6.1, concat-stream@npm:^1.6.2, concat-stream@npm:~1.6.0":
   version: 1.6.2
   resolution: "concat-stream@npm:1.6.2"
@@ -21878,6 +21838,18 @@ __metadata:
     readable-stream: "npm:^2.2.2"
     typedarray: "npm:^0.0.6"
   checksum: 10/71db903c84fc073ca35a274074e8d26c4330713d299f8623e993c448c1f6bf8b967806dd1d1a7b0f8add6f15ab1af7435df21fe79b4fe7efd78420c89e054e28
+  languageName: node
+  linkType: hard
+
+"concat-stream@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "concat-stream@npm:2.0.0"
+  dependencies:
+    buffer-from: "npm:^1.0.0"
+    inherits: "npm:^2.0.3"
+    readable-stream: "npm:^3.0.2"
+    typedarray: "npm:^0.0.6"
+  checksum: 10/250e576d0617e7c58e1c4b2dd6fe69560f316d2c962a409f9f3aac794018499ddb31948b1e4296f217008e124cd5d526432097745157fe504b5d9f3dc469eadb
   languageName: node
   linkType: hard
 
@@ -22008,7 +21980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"convert-source-map@npm:2.0.0, convert-source-map@npm:^2.0.0":
+"convert-source-map@npm:^2.0.0":
   version: 2.0.0
   resolution: "convert-source-map@npm:2.0.0"
   checksum: 10/c987be3ec061348cdb3c2bfb924bec86dea1eacad10550a85ca23edb0fe3556c3a61c7399114f3331ccb3499d7fd0285ab24566e5745929412983494c3926e15
@@ -23838,18 +23810,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"duplexify@npm:4.1.3, duplexify@npm:^4.1.1, duplexify@npm:^4.1.2":
-  version: 4.1.3
-  resolution: "duplexify@npm:4.1.3"
-  dependencies:
-    end-of-stream: "npm:^1.4.1"
-    inherits: "npm:^2.0.3"
-    readable-stream: "npm:^3.1.1"
-    stream-shift: "npm:^1.0.2"
-  checksum: 10/b44b98ba0ffac3a658b4b1bf877219e996db288c5ae6f3dc55ca9b2cbef7df60c10eabfdd947f3d73a623eb9975a74a66d6d61e6f26bff90155315adb362aa77
-  languageName: node
-  linkType: hard
-
 "duplexify@npm:^3.1.2, duplexify@npm:^3.5.0, duplexify@npm:^3.5.1":
   version: 3.7.1
   resolution: "duplexify@npm:3.7.1"
@@ -23859,6 +23819,18 @@ __metadata:
     readable-stream: "npm:^2.0.0"
     stream-shift: "npm:^1.0.0"
   checksum: 10/7799984d178fb57e11c43f5f172a10f795322ec85ff664c2a98d2c2de6deeb9d7a30b810f83923dcd7ebe0f1786724b8aee2b62ca4577522141f93d6d48fb31c
+  languageName: node
+  linkType: hard
+
+"duplexify@npm:^4.1.1, duplexify@npm:^4.1.2":
+  version: 4.1.3
+  resolution: "duplexify@npm:4.1.3"
+  dependencies:
+    end-of-stream: "npm:^1.4.1"
+    inherits: "npm:^2.0.3"
+    readable-stream: "npm:^3.1.1"
+    stream-shift: "npm:^1.0.2"
+  checksum: 10/b44b98ba0ffac3a658b4b1bf877219e996db288c5ae6f3dc55ca9b2cbef7df60c10eabfdd947f3d73a623eb9975a74a66d6d61e6f26bff90155315adb362aa77
   languageName: node
   linkType: hard
 
@@ -31231,15 +31203,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsesc@npm:~0.3.x":
-  version: 0.3.0
-  resolution: "jsesc@npm:0.3.0"
-  bin:
-    jsesc: bin/jsesc
-  checksum: 10/381917c354b54025e3821f5cd724faf1b0ffa6c6e7b95a9ad1768146aea44175541832e2c5b6f9ec71f88d58968a22ab1f47fccbc35d171dc09234afd21b28e9
-  languageName: node
-  linkType: hard
-
 "json-bigint@npm:^1.0.0":
   version: 1.0.0
   resolution: "json-bigint@npm:1.0.0"
@@ -31769,27 +31732,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:^19.0.2":
-  version: 19.0.2
-  resolution: "lavamoat-browserify@npm:19.0.2"
-  dependencies:
-    "@lavamoat/aa": "npm:^4.3.4"
-    "@lavamoat/lavapack": "npm:^7.0.18"
-    "@lavamoat/sourcemap-validator": "npm:2.1.1"
-    browser-resolve: "npm:2.0.0"
-    concat-stream: "npm:2.0.0"
-    convert-source-map: "npm:2.0.0"
-    duplexify: "npm:4.1.3"
-    lavamoat-core: "npm:^17.0.1"
-    pify: "npm:5.0.0"
-    readable-stream: "npm:4.7.0"
-    source-map: "npm:0.7.4"
-    through2: "npm:4.0.2"
-  checksum: 10/6d2cac266ceb627650a88b08b46fd3771bc6861a305ab952362af2d1f23bd35d874aec85b945116de1c8749216558771cac24d9c03b86fcae33c15c641444e57
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@npm:^17.0.1, lavamoat-core@npm:^17.1.2, lavamoat-core@npm:^17.1.3":
+"lavamoat-core@npm:^17.1.2, lavamoat-core@npm:^17.1.3":
   version: 17.1.3
   resolution: "lavamoat-core@npm:17.1.3"
   dependencies:
@@ -33226,7 +33169,6 @@ __metadata:
     babelify: "npm:^10.0.0"
     base32-encode: "npm:^1.2.0"
     base64-js: "npm:^1.5.1"
-    bify-module-groups: "npm:^2.0.0"
     bignumber.js: "npm:^4.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
     bowser: "npm:^2.11.0"
@@ -33324,7 +33266,6 @@ __metadata:
     koa: "npm:^3.1.1"
     labeled-stream-splicer: "npm:^2.0.2"
     lavamoat: "npm:10.0.5"
-    lavamoat-browserify: "npm:^19.0.2"
     level: "npm:^8.0.1"
     lightweight-charts: "npm:^5.1.0"
     localforage: "npm:^1.9.0"
@@ -35953,13 +35894,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pify@npm:5.0.0, pify@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "pify@npm:5.0.0"
-  checksum: 10/443e3e198ad6bfa8c0c533764cf75c9d5bc976387a163792fb553ffe6ce923887cf14eebf5aea9b7caa8eab930da8c33612990ae85bd8c2bc18bedb9eae94ecb
-  languageName: node
-  linkType: hard
-
 "pify@npm:^2.0.0, pify@npm:^2.3.0":
   version: 2.3.0
   resolution: "pify@npm:2.3.0"
@@ -35978,6 +35912,13 @@ __metadata:
   version: 4.0.1
   resolution: "pify@npm:4.0.1"
   checksum: 10/8b97cbf9dc6d4c1320cc238a2db0fc67547f9dc77011729ff353faf34f1936ea1a4d7f3c63b2f4980b253be77bcc72ea1e9e76ee3fd53cce2aafb6a8854d07ec
+  languageName: node
+  linkType: hard
+
+"pify@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "pify@npm:5.0.0"
+  checksum: 10/443e3e198ad6bfa8c0c533764cf75c9d5bc976387a163792fb553ffe6ce923887cf14eebf5aea9b7caa8eab930da8c33612990ae85bd8c2bc18bedb9eae94ecb
   languageName: node
   linkType: hard
 
@@ -40527,13 +40468,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:0.7.4, source-map@npm:^0.7.3, source-map@npm:^0.7.4":
-  version: 0.7.4
-  resolution: "source-map@npm:0.7.4"
-  checksum: 10/a0f7c9b797eda93139842fd28648e868a9a03ea0ad0d9fa6602a0c1f17b7fb6a7dcca00c144476cccaeaae5042e99a285723b1a201e844ad67221bf5d428f1dc
-  languageName: node
-  linkType: hard
-
 "source-map@npm:^0.5.1, source-map@npm:^0.5.7, source-map@npm:~0.5.3":
   version: 0.5.7
   resolution: "source-map@npm:0.5.7"
@@ -40541,12 +40475,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:~0.1.x":
-  version: 0.1.43
-  resolution: "source-map@npm:0.1.43"
-  dependencies:
-    amdefine: "npm:>=0.0.4"
-  checksum: 10/6fe101dc2745bd75700636144a71ef4d2819f37cfa0a3ee9c8f2b1c3f6799f5c2f8f8d64e5e2ba3af4db447bf72eaf09b3964da9804d58b06cf6fe1fb9f093f5
+"source-map@npm:^0.7.3, source-map@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "source-map@npm:0.7.4"
+  checksum: 10/a0f7c9b797eda93139842fd28648e868a9a03ea0ad0d9fa6602a0c1f17b7fb6a7dcca00c144476cccaeaae5042e99a285723b1a201e844ad67221bf5d428f1dc
   languageName: node
   linkType: hard
 
