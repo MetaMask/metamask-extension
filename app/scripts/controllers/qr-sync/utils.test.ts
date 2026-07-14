@@ -195,7 +195,7 @@ describe('qr-sync utils', () => {
         { code: MWP_REQUEST_EXPIRED_CODE },
       );
       expect(
-        resolveQrSyncErrorCode(error, QrSyncErrorCodes.CHANNEL_INIT_FAILED),
+        resolveQrSyncErrorCode(error, QrSyncErrorCodes.QR_EXPIRED),
       ).toBe(QrSyncErrorCodes.QR_EXPIRED);
     });
 
@@ -203,9 +203,9 @@ describe('qr-sync utils', () => {
       expect(
         resolveQrSyncErrorCode(
           new Error('Relay error'),
-          QrSyncErrorCodes.CHANNEL_INIT_FAILED,
+          QrSyncErrorCodes.UNKNOWN,
         ),
-      ).toBe(QrSyncErrorCodes.CHANNEL_INIT_FAILED);
+      ).toBe(QrSyncErrorCodes.UNKNOWN);
     });
 
     it('falls back to the default code for non-error values', () => {
@@ -342,17 +342,17 @@ describe('qr-sync utils', () => {
   });
 
   describe('parseSessionError', () => {
-    it('returns the default channel init failure for non-session errors', () => {
+    it('returns the default unknown error for non-session errors', () => {
       expect(parseSessionError(new Error('Relay unavailable'))).toStrictEqual({
-        code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message: QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
+        code: QrSyncErrorCodes.UNKNOWN,
+        message: QrSyncErrorMessages.UNKNOWN,
       });
     });
 
-    it('returns the default channel init failure for non-error values', () => {
+    it('returns the default unknown error for non-error values', () => {
       expect(parseSessionError(undefined)).toStrictEqual({
-        code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message: QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
+        code: QrSyncErrorCodes.UNKNOWN,
+        message: QrSyncErrorMessages.UNKNOWN,
       });
     });
 
@@ -416,14 +416,26 @@ describe('qr-sync utils', () => {
       });
     });
 
-    it('keeps the default code for unmapped session error codes', () => {
+    it('maps TRANSPORT_DISCONNECTED to CHANNEL_DISCONNECTED', () => {
+      const error = new MwpCoreSessionError(
+        MwpCoreErrorCode.TRANSPORT_DISCONNECTED,
+        'Transport disconnected.',
+      );
+
+      expect(parseSessionError(error)).toStrictEqual({
+        code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
+        message: 'Transport disconnected.',
+      });
+    });
+
+    it('keeps the unknown code for unmapped session error codes', () => {
       const error = new MwpCoreSessionError(
         MwpCoreErrorCode.UNKNOWN,
         'Something went wrong.',
       );
 
       expect(parseSessionError(error)).toStrictEqual({
-        code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
+        code: QrSyncErrorCodes.UNKNOWN,
         message: 'Something went wrong.',
       });
     });

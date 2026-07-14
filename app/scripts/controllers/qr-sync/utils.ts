@@ -199,8 +199,8 @@ export function getSyncCompletionFailureError(error: unknown): QrSyncError {
 }
 
 export function parseSessionError(error: unknown): QrSyncError {
-  let code: QrSyncErrorCodeType = QrSyncErrorCodes.CHANNEL_INIT_FAILED;
-  let message: string = QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION;
+  let code: QrSyncErrorCodeType = QrSyncErrorCodes.UNKNOWN;
+  let message: string = QrSyncErrorMessages.UNKNOWN;
 
   if (error instanceof MwpCoreSessionError) {
     message = error.message;
@@ -220,7 +220,12 @@ export function parseSessionError(error: unknown): QrSyncError {
       case MwpCoreErrorCode.SESSION_EXPIRED:
         code = QrSyncErrorCodes.SESSION_EXPIRED;
         break;
+      case MwpCoreErrorCode.TRANSPORT_DISCONNECTED:
+        code = QrSyncErrorCodes.CHANNEL_DISCONNECTED;
+        break;
       default:
+        code = QrSyncErrorCodes.UNKNOWN;
+        message = error.message;
         break;
     }
   }

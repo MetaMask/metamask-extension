@@ -187,6 +187,7 @@ export class QrSyncController extends BaseController<
         };
         state.qrSyncUpdatedAt = Date.now();
       });
+      throw error;
     } finally {
       this.#finishSubmission();
     }
@@ -230,33 +231,23 @@ export class QrSyncController extends BaseController<
       state.qrSyncUpdatedAt = Date.now();
     });
 
-    try {
-      this.#transport = await WebSocketTransport.create({
-        kvstore: this.#kvStore,
-        url: this.#relayUrl,
-        websocket: typeof WebSocket === 'undefined' ? undefined : WebSocket,
-      });
+    this.#transport = await WebSocketTransport.create({
+      kvstore: this.#kvStore,
+      url: this.#relayUrl,
+      websocket: typeof WebSocket === 'undefined' ? undefined : WebSocket,
+    });
 
-      this.#sessionStore = await SessionStore.create(this.#kvStore);
+    this.#sessionStore = await SessionStore.create(this.#kvStore);
 
-      this.#mwpDappClient = new DappClient({
-        transport: this.#transport,
-        sessionstore: this.#sessionStore,
-        keymanager: this.#keyManager,
-      });
+    this.#mwpDappClient = new DappClient({
+      transport: this.#transport,
+      sessionstore: this.#sessionStore,
+      keymanager: this.#keyManager,
+    });
 
-      this.#registerClientEventHandlers(this.#mwpDappClient);
-      this.#transitionPhase(this.state.qrSyncPhase, 'connected');
-    } catch (error) {
-      await this.#setError({
-        error,
-        code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message: QrSyncErrorMessages.SYNC_FAILED_TO_INITIALIZE,
-      });
-      throw error;
-    } finally {
-      this.#finishSubmission();
-    }
+    this.#registerClientEventHandlers(this.#mwpDappClient);
+    this.#transitionPhase(this.state.qrSyncPhase, 'connected');
+    this.#finishSubmission();
   }
 
   async #sendSyncData(syncPayload: {
@@ -468,8 +459,8 @@ export class QrSyncController extends BaseController<
       });
     };
 
-    const disconnected = () => {
-      this.#setError({
+    const disconnected = async () => {
+      await this.#setError({
         code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
         message: 'The sync channel disconnected.',
       });
@@ -477,10 +468,11 @@ export class QrSyncController extends BaseController<
 
     const clientError = (error: Error) => {
       log.error('QrSyncController: error', error);
+      const sessionError = parseSessionError(error);
       this.#setError({
-        error,
+        error: sessionError,
         code: QrSyncErrorCodes.UNKNOWN,
-        message: error.message,
+        message: sessionError.message,
       });
     };
 

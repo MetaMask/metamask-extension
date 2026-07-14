@@ -89,8 +89,6 @@ export const QrSyncConnectionStatus = {
 } as const;
 
 export const QrSyncErrorMessages = {
-  SYNC_FAILED_TO_INITIALIZE: 'Failed to initialize the sync session',
-  SYNC_FAILED_TO_CREATE_SESSION: 'Failed to create the sync session',
   SYNC_COMPLETION_TIMED_OUT: 'Sync completion timed out',
   SYNC_COMPLETION_FAILED: 'Sync completion failed',
   SYNC_OFFER_TIMED_OUT: 'Sync offer timed out',
@@ -103,4 +101,5 @@ export const QrSyncErrorMessages = {
   SYNC_SESSION_CANCELLED_BY_PEER: 'Sync session cancelled by peer',
   SYNC_FAILED_TO_SEND_MESSAGE: 'Failed to send message to mobile wallet client',
   PREMATURE_SYNC_OFFER_RECEIVED: 'Premature sync offer received',
+  UNKNOWN: 'Unknown error',
 } as const;

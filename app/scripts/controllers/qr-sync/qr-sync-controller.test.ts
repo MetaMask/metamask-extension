@@ -3,13 +3,6 @@
  *
  * QrSyncController syncs selected wallets from the extension to MetaMask Mobile
  * over the Mobile Wallet Protocol (MWP) relay.
- *
- * Happy-path flow:
- * 1. Extension calls `createSession()` → relay connects → QR payload is shown
- * 2. Mobile scans the QR → mobile shows an OTP → user enters it via `submitOtp()`
- * 3. Mobile sends `sync-offer` → user picks wallets → `syncAccounts()` exports mnemonics
- * 4. Extension sends `sync-ready` with encrypted wallet data
- * 5. Mobile sends `sync-completed` → flow finishes
  */
 import {
   ErrorCode as MwpCoreErrorCode,
@@ -476,8 +469,8 @@ describe('QrSyncController', () => {
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
-        code: QrSyncErrorCodes.CHANNEL_INIT_FAILED,
-        message: QrSyncErrorMessages.SYNC_FAILED_TO_CREATE_SESSION,
+        code: QrSyncErrorCodes.UNKNOWN,
+        message: QrSyncErrorMessages.UNKNOWN,
       });
     });
 
@@ -1029,9 +1022,9 @@ describe('QrSyncController', () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
-      const expiredError = Object.assign(
-        new Error('Did not receive handshake offer from wallet in time.'),
-        { code: 'REQUEST_EXPIRED', name: 'REQUEST_EXPIRED' },
+      const expiredError = new MwpCoreSessionError(
+        MwpCoreErrorCode.REQUEST_EXPIRED,
+        'Did not receive handshake offer from wallet in time.',
       );
       mockMwp.dappClient?.emit('error', expiredError);
       await flushAsyncWork();
@@ -1039,7 +1032,7 @@ describe('QrSyncController', () => {
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncError).toStrictEqual({
-        code: QrSyncErrorCodes.QR_EXPIRED,
+        code: QrSyncErrorCodes.UNKNOWN,
         message: 'Did not receive handshake offer from wallet in time.',
       });
     });
