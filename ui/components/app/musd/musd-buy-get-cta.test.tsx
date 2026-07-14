@@ -56,15 +56,12 @@ jest.mock('../../../hooks/musd', () => ({
 }));
 
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
-jest.mock(
-  '../../../hooks/ramps/useRampsNavigation/useRampsNavigation',
-  () => ({
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    default: () => ({ goToBuy: mockGoToBuy }),
-  }),
-);
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => ({ goToBuy: mockGoToBuy }),
+}));
 
 const createMockStore = (overrides = {}) => {
   return configureStore({

@@ -8,15 +8,12 @@ import mockState from '../../../../test/data/mock-state.json';
 import { FundingMethodModal } from './funding-method-modal';
 
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
-jest.mock(
-  '../../../hooks/ramps/useRampsNavigation/useRampsNavigation',
-  () => ({
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    default: () => ({ goToBuy: mockGoToBuy }),
-  }),
-);
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => ({ goToBuy: mockGoToBuy }),
+}));
 
 const mockStore = configureMockStore([thunk]);
 
