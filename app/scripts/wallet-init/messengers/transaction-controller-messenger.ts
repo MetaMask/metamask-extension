@@ -159,8 +159,9 @@ export function getTransactionControllerInitMessenger(
     TransactionControllerInitMessengerEvents
   >,
 ) {
-  if (transactionControllerInitMessengerCache.has(messenger)) {
-    return transactionControllerInitMessengerCache.get(messenger)!;
+  const cached = transactionControllerInitMessengerCache.get(messenger);
+  if (cached) {
+    return cached;
   }
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
