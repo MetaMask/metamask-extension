@@ -159,9 +159,7 @@ const QrCodeScan = () => {
               </Box>
             </>
           ) : (
-            <Box padding={4}>
-              <Skeleton width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
-            </Box>
+            <Skeleton width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
           )}
         </Box>
         {statusContent}
