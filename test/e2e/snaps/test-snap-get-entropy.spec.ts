@@ -82,8 +82,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
 
         const snapInstall = new SnapInstall(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.clickApproveButtonAndWaitForWindowToClose();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+        await snapInstall.clickApproveButton();
 
         await driver.waitForBrowserAlert({
           text: 'Entropy source with ID "invalid" not found.',
