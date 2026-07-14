@@ -115,11 +115,6 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
 }
 
 describe('Send ERC20 - Max Balance Validation', function () {
-  // Under unified state (assetsUnifyState), the UI reads token balances from
-  // AssetsController.assetsBalance, but the WebSocket balance update only
-  // reaches TokenBalancesController. Until AssetsController subscribes to
-  // AccountActivityService:balanceUpdated, the Tokens list and Send "Max"
-  // stay stale — which is exactly the ASSETS-3385 regression.
   it('reflects a WebSocket balance update in the Tokens list and Send "Max"', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const tstBalanceHolder = { value: '10' };
