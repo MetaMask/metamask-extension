@@ -39,7 +39,10 @@ export type AssetProps = {
   onSelectedChainIdChange?: (selectedChainId: string | null) => void;
 };
 
-type AssetPickerViewProps = Omit<AssetProps, 'tokens' | 'nfts' | 'includeNoBalance'> & {
+type AssetPickerViewProps = Omit<
+  AssetProps,
+  'tokens' | 'nfts' | 'includeNoBalance'
+> & {
   tokens: AssetType[];
   nfts: AssetType[];
 };
@@ -172,7 +175,10 @@ const SendWalletAssetPicker = ({
   );
 };
 
-type CatalogAssetPickerProps = Omit<AssetProps, 'tokens' | 'includeNoBalance'> & {
+type CatalogAssetPickerProps = Omit<
+  AssetProps,
+  'tokens' | 'includeNoBalance'
+> & {
   tokens: AssetType[];
 };
 
@@ -192,11 +198,7 @@ const CatalogAssetPicker = ({
 export const Asset = (props: AssetProps = {}) => {
   if (props.tokens !== undefined) {
     return (
-      <CatalogAssetPicker
-        {...props}
-        tokens={props.tokens}
-        nfts={props.nfts}
-      />
+      <CatalogAssetPicker {...props} tokens={props.tokens} nfts={props.nfts} />
     );
   }
 

@@ -431,7 +431,9 @@ describe('NetworkFilter', () => {
         />,
       );
 
-      expect(getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.networkNameEthereum.message),
+      ).toBeInTheDocument();
       expect(queryByText('Token Supplied Name')).not.toBeInTheDocument();
     });
   });
