@@ -7959,9 +7959,6 @@
     "message": "Süresinin dolmasına kalan: $1sn",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "QR kodu taranırken bir şeyler ters gitti. Yeni bir tane oluşturup tekrar deneyin."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Bu QR kodu farklı bir işlem içindir. İptal edip tekrar deneyin ve önce donanım cüzdanınızla MetaMask'te gösterilen QR kodunu taradığınızdan emin olun.",
     "description": "Body text when a signature QR belongs to a previous transaction."

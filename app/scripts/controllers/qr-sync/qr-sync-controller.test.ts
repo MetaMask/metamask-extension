@@ -458,6 +458,25 @@ describe('QrSyncController', () => {
         message: 'Relay unavailable',
       });
     });
+
+    it('marks the session as QR expired when the handshake request expires', async () => {
+      const { controller } = setupController();
+      const expiredError = Object.assign(
+        new Error('Did not receive handshake offer from wallet in time.'),
+        { code: 'REQUEST_EXPIRED', name: 'REQUEST_EXPIRED' },
+      );
+      mockMwp.connect.mockRejectedValueOnce(expiredError);
+
+      await expect(controller.createSession()).rejects.toThrow(
+        'Did not receive handshake offer from wallet in time.',
+      );
+
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncError).toStrictEqual({
+        code: QrSyncErrorCodes.QR_EXPIRED,
+        message: 'Did not receive handshake offer from wallet in time.',
+      });
+    });
   });
 
   describe('submitOtp', () => {
@@ -854,6 +873,24 @@ describe('QrSyncController', () => {
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
         message: 'The sync channel disconnected.',
+      });
+    });
+
+    it('fails with QR expired when the client emits a REQUEST_EXPIRED error', async () => {
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+      const expiredError = Object.assign(
+        new Error('Did not receive handshake offer from wallet in time.'),
+        { code: 'REQUEST_EXPIRED', name: 'REQUEST_EXPIRED' },
+      );
+      mockMwp.dappClient?.emit('error', expiredError);
+
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncError).toStrictEqual({
+        code: QrSyncErrorCodes.QR_EXPIRED,
+        message: 'Did not receive handshake offer from wallet in time.',
       });
     });
   });
