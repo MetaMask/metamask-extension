@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
@@ -105,7 +100,9 @@ export const ActivityList = ({ filter }: Props) => {
       PENDING_STATUS_HASH,
     ).filter((group) => {
       const chainId = group.initialTransaction?.chainId;
-      return !chainId || deferredEnabledNetworks.includes(toEvmCaipChainId(chainId));
+      return (
+        !chainId || deferredEnabledNetworks.includes(toEvmCaipChainId(chainId))
+      );
     });
 
     let filteredNonEvmTransactions = nonEvmTransactions.filter((tx) =>
@@ -138,7 +135,13 @@ export const ActivityList = ({ filter }: Props) => {
       filteredLocalTransactions,
       filteredNonEvmTransactions,
     };
-  }, [data, nonEvmTransactions, localTransactions, deferredEnabledNetworks, filter]);
+  }, [
+    data,
+    nonEvmTransactions,
+    localTransactions,
+    deferredEnabledNetworks,
+    filter,
+  ]);
 
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {

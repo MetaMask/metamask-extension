@@ -75,7 +75,9 @@ function useTransactionParams(caipChainId?: CaipChainId) {
     if (caipChainId) {
       return caipChainId.startsWith('eip155:') ? [caipChainId] : [];
     }
-    return deferredEnabledNetworks.filter((id: string) => id.startsWith('eip155:'));
+    return deferredEnabledNetworks.filter((id: string) =>
+      id.startsWith('eip155:'),
+    );
   }, [deferredEnabledNetworks, caipChainId]);
 
   const accountAddresses = useMemo(

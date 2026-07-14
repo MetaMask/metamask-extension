@@ -118,7 +118,12 @@ export const Asset = ({
       setSearchQuery(value);
       onSearchQueryChange?.(value);
     },
-    [addAssetFilterMethod, onSearchQueryChange, removeAssetFilterMethod, setSearchQuery],
+    [
+      addAssetFilterMethod,
+      onSearchQueryChange,
+      removeAssetFilterMethod,
+      setSearchQuery,
+    ],
   );
 
   const handleSelectedChainIdChange = useCallback(
