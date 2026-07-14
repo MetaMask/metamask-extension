@@ -105,6 +105,7 @@ export function useHwSwapActions({
     setIsRetrying(true);
 
     try {
+      // Invalidate the in-flight attempt so abort events during cancel are ignored.
       retryGenerationRef.current += 1;
 
       await cancelCurrentBatch();
@@ -118,6 +119,7 @@ export function useHwSwapActions({
         return;
       }
 
+      // Fresh generation for the resubmit (skips anything tracked during cancel).
       retryGenerationRef.current += 1;
       resetConnectionError();
       if (isStxEnabled) {
