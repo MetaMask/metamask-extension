@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -70,8 +70,17 @@ export function RampsBuildQuoteScreen() {
     selectedToken?.assetId?.toLowerCase() === intentAssetId.toLowerCase();
 
   const [amount, setAmount] = useState(DEFAULT_AMOUNT);
+  const [userHasEnteredAmount, setUserHasEnteredAmount] = useState(false);
   const amountAsNumber = useMemo(() => parseFiatAmount(amount), [amount]);
   const debouncedAmount = useDebouncedValue(amountAsNumber, QUOTE_DEBOUNCE_MS);
+
+  // Prefer the region-specific default from the countries API once available.
+  useEffect(() => {
+    if (!userHasEnteredAmount && userRegion?.country?.defaultAmount != null) {
+      setAmount(String(userRegion.country.defaultAmount));
+      setUserHasEnteredAmount(true);
+    }
+  }, [userRegion?.country?.defaultAmount, userHasEnteredAmount]);
 
   const currency = userRegion?.country?.currency ?? 'USD';
   const currencySymbol = getCurrencySymbol(currency);
@@ -208,6 +217,7 @@ export function RampsBuildQuoteScreen() {
       const { value } = event.target;
       if (FIAT_AMOUNT_INPUT_PATTERN.test(value)) {
         setAmount(value);
+        setUserHasEnteredAmount(true);
       }
     },
     [],

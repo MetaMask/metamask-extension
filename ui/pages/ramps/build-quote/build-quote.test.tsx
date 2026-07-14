@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -67,21 +67,32 @@ const mockSelectedToken = {
   tokenSupported: true,
 };
 
+const mockControllerState = ({
+  userRegion = {
+    regionCode: 'us-ca',
+    country: {
+      currency: 'USD',
+      isoCode: 'US',
+      name: 'United States',
+      defaultAmount: 100,
+    },
+  },
+  selectedToken = mockSelectedToken,
+  tokensLoading = false,
+} = {}) => ({
+  userRegion,
+  selectedToken,
+  tokensLoading,
+  selectedProvider: { id: 'transak', name: 'Transak' },
+  selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
+  paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
+  paymentMethodsStatus: 'success',
+});
+
 describe('RampsBuildQuoteScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useRampsController.mockReturnValue({
-      userRegion: {
-        regionCode: 'us-ca',
-        country: { currency: 'USD', isoCode: 'US', name: 'United States' },
-      },
-      selectedToken: mockSelectedToken,
-      tokensLoading: false,
-      selectedProvider: { id: 'transak', name: 'Transak' },
-      selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
-      paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
-      paymentMethodsStatus: 'success',
-    });
+    useRampsController.mockReturnValue(mockControllerState());
     useRampsQuotes.mockReturnValue({
       data: {
         success: [{ provider: 'transak', id: 'quote-1' }],
@@ -175,24 +186,108 @@ describe('RampsBuildQuoteScreen', () => {
   });
 
   it('matches snapshot while waiting for goToBuy preloaded token to settle', () => {
-    useRampsController.mockReturnValue({
-      userRegion: {
-        regionCode: 'us-ca',
-        country: { currency: 'USD', isoCode: 'US', name: 'United States' },
-      },
-      selectedToken: null,
-      tokensLoading: true,
-      selectedProvider: { id: 'transak', name: 'Transak' },
-      selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
-      paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
-      paymentMethodsStatus: 'success',
-    });
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        selectedToken: null,
+        tokensLoading: true,
+      }),
+    );
 
     const { container } = renderWithProvider(
       <RampsBuildQuoteScreen />,
       createStore(),
       '/ramps/build-quote',
     );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot with regional default amount', () => {
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        userRegion: {
+          regionCode: 'gb',
+          country: {
+            currency: 'GBP',
+            isoCode: 'GB',
+            name: 'United Kingdom',
+            defaultAmount: 50,
+          },
+        },
+      }),
+    );
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot when falling back without regional default amount', () => {
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        userRegion: {
+          regionCode: 'us-ca',
+          country: {
+            currency: 'USD',
+            isoCode: 'US',
+            name: 'United States',
+          },
+        },
+      }),
+    );
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot after user edits amount before regional default applies', () => {
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        userRegion: {
+          regionCode: 'us-ca',
+          country: {
+            currency: 'USD',
+            isoCode: 'US',
+            name: 'United States',
+          },
+        },
+      }),
+    );
+
+    const { container, rerender } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    fireEvent.change(screen.getByTestId('ramps-build-quote-amount-input'), {
+      target: { value: '25' },
+    });
+
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        userRegion: {
+          regionCode: 'gb',
+          country: {
+            currency: 'GBP',
+            isoCode: 'GB',
+            name: 'United Kingdom',
+            defaultAmount: 50,
+          },
+        },
+      }),
+    );
+
+    rerender(<RampsBuildQuoteScreen />);
 
     expect(container).toMatchSnapshot();
   });
