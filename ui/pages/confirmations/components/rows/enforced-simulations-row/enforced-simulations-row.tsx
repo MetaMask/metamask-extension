@@ -25,9 +25,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
-
-const ADDED_PROTECTION_LEARN_MORE_URL =
-  'https://support.metamask.io/privacy-and-security/staying-safe-in-web3/what-are-enforced-simulations/';
+import { TRANSACTION_SIMULATIONS_LEARN_MORE_LINK } from '../../../../../../shared/lib/ui-utils';
 
 export function EnforcedSimulationsRow() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -223,7 +221,7 @@ function Description() {
     <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
       {t('addedProtectionDescription')}{' '}
       <a
-        href={ADDED_PROTECTION_LEARN_MORE_URL}
+        href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
         target="_blank"
         rel="noopener noreferrer"
         data-testid="enforced-simulations-learn-more"
