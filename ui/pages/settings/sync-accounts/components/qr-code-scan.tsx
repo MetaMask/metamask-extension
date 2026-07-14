@@ -132,6 +132,7 @@ const QrCodeScan = () => {
             opacity: shouldDimQr ? 0.3 : 1,
             filter: shouldDimQr ? 'blur(4px)' : 'none',
           }}
+          data-testid={qrPayload ? 'qr-sync-qr-code' : 'qr-sync-qr-loading'}
         >
           {qrDataUrl ? (
             <>
