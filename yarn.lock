@@ -5367,7 +5367,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/sentinel-api-service@npm:0.0.0-preview-d34fa10c8, @metamask/sentinel-api-service@npm:@metamask-previews/sentinel-api-service@0.0.0-preview-d34fa10c8":
+"@metamask-previews/sentinel-api-service@npm:0.0.0-preview-d34fa10c8":
   version: 0.0.0-preview-d34fa10c8
   resolution: "@metamask-previews/sentinel-api-service@npm:0.0.0-preview-d34fa10c8"
   dependencies:
@@ -7193,7 +7193,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^5.3.0, @metamask/network-enablement-controller@npm:^5.4.1":
+"@metamask/network-enablement-controller@npm:5.4.1, @metamask/network-enablement-controller@npm:^5.3.0":
   version: 5.4.1
   resolution: "@metamask/network-enablement-controller@npm:5.4.1"
   dependencies:
@@ -7208,6 +7208,24 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
   checksum: 10/376bf51243e0976b1003690cc883112493650f44126f1be925ad4c31016929da8680d6b5b4b47e92db738c54513016bce3c5fe26db1993b32e53b0fd0f59c999
+  languageName: node
+  linkType: hard
+
+"@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch":
+  version: 5.4.1
+  resolution: "@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch::version=5.4.1&hash=5aaf57"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-api": "npm:^23.3.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/multichain-network-controller": "npm:^3.2.1"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/slip44": "npm:^4.3.0"
+    "@metamask/transaction-controller": "npm:^68.2.2"
+    "@metamask/utils": "npm:^11.11.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/c273ef51fd19dd0fabef41bd53b5473e92dceebb98ee3107f0af4ad8f8d60e8a7b9d6a8b7cc24d9ea8af28f27e01c046542aa8d5c86e151f298f7c3eb2aa8c93
   languageName: node
   linkType: hard
 
@@ -8165,45 +8183,6 @@ __metadata:
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.2"
   checksum: 10/2714a70eae53a1f46d293980c71a1ed2f59708247019444154e71fc15328e78ec95287ffc2d954a29f903224a1a9fe4d69fb17724e9039bcefd240752f1df26c
-  languageName: node
-  linkType: hard
-
-"@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller::locator=metamask-crx%40workspace%3A.":
-  version: 68.3.0
-  resolution: "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller#.yalc/@metamask/transaction-controller::hash=4c4eed&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@ethereumjs/common": "npm:^4.4.0"
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@ethersproject/wallet": "npm:^5.7.0"
-    "@metamask/accounts-controller": "npm:^39.0.4"
-    "@metamask/approval-controller": "npm:^9.0.2"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^6.5.0"
-    "@metamask/gas-fee-controller": "npm:^26.2.4"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/sentinel-api-service": "npm:^0.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    async-mutex: "npm:^0.5.0"
-    bignumber.js: "npm:^9.1.2"
-    bn.js: "npm:^5.2.1"
-    eth-method-registry: "npm:^4.0.0"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-    "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/851756e45d6cf8de5194b34653d0ed3acc6a7e88dc0f8f41957b5e0e48f1aa833e5e9f7ccf5844635320892acddad2fb05bca266d58e1d0fbdad473333c1e0b2
   languageName: node
   linkType: hard
 
@@ -33139,7 +33118,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.5.2"
-    "@metamask/transaction-controller": "file:.yalc/@metamask/transaction-controller"
+    "@metamask/transaction-controller": "npm:^68.2.2"
     "@metamask/transaction-pay-controller": "npm:^23.17.2"
     "@metamask/tron-wallet-snap": "npm:^1.29.1"
     "@metamask/user-operation-controller": "npm:^41.2.5"
