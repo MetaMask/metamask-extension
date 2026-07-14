@@ -47,7 +47,8 @@ export const SettingsHeader = ({
 }: SettingsHeaderProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
+  const showSearchButton =
+    Boolean(onOpenSearch) && (!isPopupOrSidepanel || isOnSettingsRoot);
 
   if (isSearchOpen) {
     return (

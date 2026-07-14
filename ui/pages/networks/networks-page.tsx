@@ -127,7 +127,6 @@ export const NetworksPage = () => {
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const view = searchParams.get('view') ?? '';
 
@@ -416,16 +415,10 @@ export const NetworksPage = () => {
           <SettingsHeader
             title={t('manageNetworksMenuHeading')}
             onClose={handleRootBack}
-            isSearchOpen={isSearchOpen}
-            onOpenSearch={() => setIsSearchOpen(true)}
-            onCloseSearch={() => setIsSearchOpen(false)}
-            searchValue={searchValue}
-            onSearchChange={setSearchValue}
-            onSearchClear={() => setSearchValue('')}
-            showSearchBorder={false}
           />
           <NetworksPageList
             searchQuery={searchValue}
+            onSearchQueryChange={setSearchValue}
             onAddCustomNetwork={handleNewNetwork}
             footerContent={
               pageToast ? (

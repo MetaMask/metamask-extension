@@ -256,6 +256,10 @@ describe('NetworksPage', () => {
     expect(
       screen.getByText(messages.addACustomNetwork.message),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('networks-page-search')).toBeVisible();
+    expect(
+      screen.queryByTestId('settings-header-search-button'),
+    ).not.toBeInTheDocument();
 
     const testnetToggle = screen.getByTestId(
       'networks-page-show-test-networks',
@@ -264,9 +268,8 @@ describe('NetworksPage', () => {
     expect(testnetToggle).toBeChecked();
     expect(testnetToggle).toBeDisabled();
 
-    await userEvent.click(screen.getByTestId('settings-header-search-button'));
     await userEvent.type(
-      screen.getByTestId('settings-header-search-input'),
+      screen.getByTestId('networks-page-search'),
       'ugtfvh',
     );
 
