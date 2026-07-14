@@ -9,6 +9,7 @@ import { TransactionControllerInitMessenger } from '../../../wallet-init/messeng
 import { enforceSimulations } from './enforced-simulations';
 
 const log = createProjectLogger('transaction-containers');
+const DEBUG_LOG_PREFIX = '[enforced-simulations-debug]';
 
 export async function applyTransactionContainers({
   isApproved,
@@ -40,21 +41,58 @@ export async function applyTransactionContainers({
     updateTransaction(finalMetadata);
   }
 
-  let newGas: Hex | undefined;
+  const originalGas = finalMetadata.txParams.gas;
+  const estimationParams = cloneDeep(finalMetadata.txParams);
+  delete estimationParams.gas;
+  delete estimationParams.gasLimit;
 
-  if (!isApproved) {
-    const { gas } = await messenger.call(
-      'TransactionController:estimateGas',
-      finalMetadata.txParams,
-      finalMetadata.networkClientId,
+  const { gas, simulationFails } = isApproved
+    ? await messenger.call(
+        'TransactionController:estimateGas',
+        estimationParams,
+        finalMetadata.networkClientId,
+      )
+    : await messenger.call(
+        'TransactionController:estimateGas',
+        estimationParams,
+        finalMetadata.networkClientId,
+        {
+          ignoreDelegationSignatures: true,
+        },
+      );
+
+  log('Estimated gas', { gas, isApproved, simulationFails });
+
+  const newGas = simulationFails
+    ? (originalGas as Hex | undefined)
+    : (gas as Hex);
+
+  console.warn(
+    DEBUG_LOG_PREFIX,
+    'container-gas-estimated',
+    JSON.stringify(
       {
-        ignoreDelegationSignatures: true,
+        phase: isApproved ? 'approved' : 'preview',
+        originalGas,
+        returnedGas: gas,
+        simulationFailure: simulationFails
+          ? {
+              reason: simulationFails.reason,
+              errorKey: simulationFails.errorKey,
+              debug: simulationFails.debug,
+            }
+          : undefined,
+        fallbackDiscarded: Boolean(simulationFails),
+        selectedGas: newGas,
+        signedGasLimit: isApproved && !simulationFails ? newGas : undefined,
       },
-    );
+      null,
+      2,
+    ),
+  );
 
-    log('Estimated gas', gas);
-
-    newGas = gas as Hex;
+  if (isApproved && simulationFails) {
+    throw new Error('Failed to estimate gas for transaction containers');
   }
 
   return {
@@ -62,7 +100,7 @@ export async function applyTransactionContainers({
       transaction.containerTypes = types;
 
       // Only update the fields modified by container wrapping.
-      // Preserves gas fees, nonce, gasLimit, chainId,
+      // Preserves gas fees, nonce, chainId,
       // and other fields set by the approval flow.
       transaction.txParams.data = finalMetadata.txParams.data;
       transaction.txParams.to = finalMetadata.txParams.to;
@@ -79,6 +117,10 @@ export async function applyTransactionContainers({
 
       if (newGas) {
         transaction.txParams.gas = newGas;
+
+        if (isApproved) {
+          transaction.txParams.gasLimit = newGas;
+        }
       }
     },
   };

@@ -2812,6 +2812,16 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('applyTransactionContainersExisting', () => {
+    let consoleWarnMock: jest.SpiedFunction<typeof console.warn>;
+
+    beforeEach(() => {
+      consoleWarnMock = jest.spyOn(console, 'warn').mockImplementation();
+    });
+
+    afterEach(() => {
+      consoleWarnMock.mockRestore();
+    });
+
     const TRANSACTION_ID_MOCK = '123-456';
     const ESTIMATE_GAS_MOCK = '0x456';
     const NEW_DATA_MOCK = '0x789';
@@ -2875,6 +2885,59 @@ describe('LegacyBackgroundApiService', () => {
             containerTypes: [TransactionContainerType.EnforcedSimulations],
             data: NEW_DATA_MOCK,
             gas: ESTIMATE_GAS_MOCK,
+          }),
+        );
+      });
+    });
+
+    it('does not persist a gas fallback when container estimation fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          txParams: { gas: '0x29b92700' },
+          txParamsOriginal: { gas: '0x554af' },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({
+            gas: '0x29b92700',
+            simulationFails: {
+              reason: 'Failed to simulate wrapped transaction',
+              debug: { blockGasLimit: '0x77359400' },
+            },
+          }),
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:applyTransactionContainersExisting',
+          TRANSACTION_ID_MOCK,
+          [TransactionContainerType.EnforcedSimulations],
+        );
+
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          TRANSACTION_ID_MOCK,
+          expect.objectContaining({
+            containerTypes: [TransactionContainerType.EnforcedSimulations],
+            data: NEW_DATA_MOCK,
+            gas: '0x554af',
           }),
         );
       });
