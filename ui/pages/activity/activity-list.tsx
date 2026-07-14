@@ -145,7 +145,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
               flexDirection={BoxFlexDirection.Column}
               alignItems={BoxAlignItems.Center}
               justifyContent={BoxJustifyContent.Center}
-              className="flex h-full min-h-[50vh]"
+              paddingTop={8}
             >
               <Box className="w-10 h-10">
                 <Spinner />
