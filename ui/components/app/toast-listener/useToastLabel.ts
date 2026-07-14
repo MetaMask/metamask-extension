@@ -37,6 +37,18 @@ function useGetToastContent(
       return { title: t('musdConversionToastFailed') };
     }
 
+    case 'claimMusdBonus': {
+      if (status === 'pending') {
+        return { title: t('merklRewardsToastInProgress') };
+      }
+
+      if (status === 'success') {
+        return { title: t('merklRewardsToastSuccess') };
+      }
+
+      return { title: t('merklRewardsToastFailed') };
+    }
+
     default:
       return { title: t(genericToastLabels[status]) };
   }
