@@ -4,7 +4,10 @@ import { Box, Skeleton } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useNotificationCategories } from '../../hooks/metamask-notifications/useNotificationCategories';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
-import { FilterTabBar, type FilterTab } from '../../components/ui/filter-tab-bar';
+import {
+  FilterTabBar,
+  type FilterTab,
+} from '../../components/ui/filter-tab-bar';
 import { ALL_NOTIFICATIONS_CATEGORY_ID } from './notification-categories-types';
 
 export const NOTIFICATIONS_CATEGORY_TEST_IDS = {

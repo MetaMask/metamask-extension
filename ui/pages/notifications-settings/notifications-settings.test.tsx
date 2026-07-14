@@ -31,9 +31,12 @@ jest.mock(
   }),
 );
 
-jest.mock('../../hooks/metamask-notifications/useNotificationCategories', () => ({
-  useNotificationCategories: jest.fn(),
-}));
+jest.mock(
+  '../../hooks/metamask-notifications/useNotificationCategories',
+  () => ({
+    useNotificationCategories: jest.fn(),
+  }),
+);
 
 const mockStore = configureMockStore([thunk]);
 

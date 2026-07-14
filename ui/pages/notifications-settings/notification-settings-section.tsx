@@ -393,7 +393,9 @@ export function NotificationSettingsSection({
         // A category can back multiple AUS preferences - toggling it means
         // writing the same value to all of them at once.
         await Promise.all(
-          targetAusKeys.map((ausKey) => updatePreference(ausKey, key, newValue)),
+          targetAusKeys.map((ausKey) =>
+            updatePreference(ausKey, key, newValue),
+          ),
         );
         trackEvent(
           createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)

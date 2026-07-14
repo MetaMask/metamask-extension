@@ -16,32 +16,35 @@ const mockFetchNotificationCategories = jest.mocked(
   fetchNotificationCategories,
 );
 
+// Labels are deliberately distinct from any real locale copy - these are
+// synthetic BE catalog fixtures, not i18n-driven strings (the component
+// renders `category.label` verbatim from the fetched catalog).
 const MOCK_CATEGORIES: NotificationCategoryMetadata[] = [
   {
     categoryId: 'walletActivity',
     ausKeys: ['walletActivity'],
-    label: 'Wallet activity',
+    label: 'Wallet Activity Category',
     description: 'Buys, sells, transfers, and swaps',
     icon: 'Clock',
   },
   {
     categoryId: 'tradingActivity',
     ausKeys: ['perps'],
-    label: 'Trading activity',
+    label: 'Trading Activity Category',
     description: 'Perps position changes',
     icon: 'Candlestick',
   },
   {
     categoryId: 'tradingSignals',
     ausKeys: ['socialAI'],
-    label: 'Trading signals',
+    label: 'Trading Signals Category',
     description: 'Updates from traders you follow',
     icon: 'Flash',
   },
   {
     categoryId: 'updatesAndRewards',
     ausKeys: ['marketing'],
-    label: 'Updates and rewards',
+    label: 'Updates And Rewards Category',
     description: 'Product updates and rewards campaigns',
     icon: 'Megaphone',
   },
@@ -74,7 +77,7 @@ describe('NotificationsCategory', () => {
     expect(
       queryByTestId(NOTIFICATIONS_CATEGORY_TEST_IDS.ALL),
     ).not.toBeInTheDocument();
-    expect(queryByText('Wallet activity')).not.toBeInTheDocument();
+    expect(queryByText('Wallet Activity Category')).not.toBeInTheDocument();
   });
 
   it('renders BE-driven category tabs when notifications are enabled', async () => {
@@ -84,10 +87,12 @@ describe('NotificationsCategory', () => {
       store,
     );
 
-    expect(await findByText('Wallet activity')).toBeInTheDocument();
-    expect(await findByText('Trading activity')).toBeInTheDocument();
-    expect(await findByText('Trading signals')).toBeInTheDocument();
-    expect(await findByText('Updates and rewards')).toBeInTheDocument();
+    expect(await findByText('Wallet Activity Category')).toBeInTheDocument();
+    expect(await findByText('Trading Activity Category')).toBeInTheDocument();
+    expect(await findByText('Trading Signals Category')).toBeInTheDocument();
+    expect(
+      await findByText('Updates And Rewards Category'),
+    ).toBeInTheDocument();
   });
 
   it('calls onSelect with the tapped category id', async () => {
@@ -98,7 +103,7 @@ describe('NotificationsCategory', () => {
       store,
     );
 
-    fireEvent.click(await findByText('Trading activity'));
+    fireEvent.click(await findByText('Trading Activity Category'));
 
     expect(onSelect).toHaveBeenCalledWith('tradingActivity');
   });

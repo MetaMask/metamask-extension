@@ -131,9 +131,7 @@ describe('settings-registry', () => {
         }),
       );
 
-      expect(
-        getSettingsRouteMeta('/settings/notifications/marketing'),
-      ).toEqual(
+      expect(getSettingsRouteMeta('/settings/notifications/marketing')).toEqual(
         expect.objectContaining({
           labelKey: 'notifications',
           parentPath: NOTIFICATIONS_SETTINGS_ROUTE,

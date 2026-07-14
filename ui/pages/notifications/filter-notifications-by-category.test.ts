@@ -19,7 +19,9 @@ describe('filterNotificationsByCategory', () => {
     'marketing-notification',
     'updatesAndRewards',
   );
-  const uncategorizedNotification = buildNotification('uncategorized-notification');
+  const uncategorizedNotification = buildNotification(
+    'uncategorized-notification',
+  );
   const notifications = [
     walletActivityNotification,
     marketingNotification,

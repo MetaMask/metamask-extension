@@ -80,8 +80,7 @@ export const isChannelEnabledForAusKeys = (
 ): boolean => {
   const entries = getAusKeyPreferences(preferences, ausKeys);
   return (
-    entries.length > 0 &&
-    entries.every((entry) => Boolean(entry?.[channelKey]))
+    entries.length > 0 && entries.every((entry) => Boolean(entry?.[channelKey]))
   );
 };
 
@@ -95,11 +94,17 @@ const getStatusText = (
   ausKeys: string[],
 ) => {
   const active = [];
-  if (isChannelEnabledForAusKeys(preferences, ausKeys, 'pushNotificationsEnabled')) {
+  if (
+    isChannelEnabledForAusKeys(preferences, ausKeys, 'pushNotificationsEnabled')
+  ) {
     active.push(t('notificationsSettingsStatusPush'));
   }
   if (
-    isChannelEnabledForAusKeys(preferences, ausKeys, 'inAppNotificationsEnabled')
+    isChannelEnabledForAusKeys(
+      preferences,
+      ausKeys,
+      'inAppNotificationsEnabled',
+    )
   ) {
     active.push(t('notificationsSettingsStatusInApp'));
   }

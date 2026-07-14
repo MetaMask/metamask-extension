@@ -92,7 +92,10 @@ export const NotificationSectionSubPage = () => {
   // to redirect).
   if (
     isLoadingSectionData ||
-    (section && isMetamaskNotificationsEnabled && isLoadingPreferences && !preferences)
+    (section &&
+      isMetamaskNotificationsEnabled &&
+      isLoadingPreferences &&
+      !preferences)
   ) {
     return (
       <Box
@@ -125,7 +128,11 @@ export const NotificationSectionSubPage = () => {
       paddingHorizontal={4}
       gap={6}
     >
-      <Box flexDirection={BoxFlexDirection.Column} alignItems={BoxAlignItems.Stretch} gap={1}>
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Stretch}
+        gap={1}
+      >
         <Text variant={TextVariant.HeadingSm}>{section.title}</Text>
         <Text
           variant={TextVariant.BodyMd}

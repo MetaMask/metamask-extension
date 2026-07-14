@@ -616,9 +616,7 @@ describe('NotificationSectionSubPage', () => {
         const updatePreference = renderSection(categoryId, preferences);
 
         fireEvent.click(
-          screen.getByTestId(
-            `${categoryId}-in-app-notifications-toggle-input`,
-          ),
+          screen.getByTestId(`${categoryId}-in-app-notifications-toggle-input`),
         );
         expect(updatePreference).toHaveBeenCalledWith(
           ausKey,
