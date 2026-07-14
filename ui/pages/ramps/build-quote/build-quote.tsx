@@ -76,7 +76,10 @@ export function RampsBuildQuoteScreen() {
 
   // Prefer the region-specific default from the countries API once available.
   useEffect(() => {
-    if (!userHasEnteredAmount && userRegion?.country?.defaultAmount != null) {
+    if (
+      !userHasEnteredAmount &&
+      userRegion?.country?.defaultAmount !== undefined
+    ) {
       setAmount(String(userRegion.country.defaultAmount));
       setUserHasEnteredAmount(true);
     }
