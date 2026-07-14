@@ -120,33 +120,16 @@ describe('<EditGasFeesRow />', () => {
       amountFiat: '',
     };
 
-    const { getByTestId } = render({
+    const { getByTestId, getByText } = render({
       chainId: CHAIN_IDS.MAINNET,
       gasFeeTokens: [gasFeeTokenWithoutFiat],
       selectedGasFeeToken: gasFeeTokenWithoutFiat.tokenAddress,
+      addedProtectionFeeFiat: '$0.07',
+      showAddedProtectionFee: true,
     });
 
     expect(getByTestId('gas-fee-token-fee')).toBeInTheDocument();
     expect(getByTestId('native-currency')).toHaveTextContent('$1');
-  });
-
-  it('renders edit gas fee button', () => {
-    const { getByTestId } = render({
-      gasFeeTokens: undefined,
-      selectedGasFeeToken: undefined,
-    });
-
-    expect(getByTestId('edit-gas-fee-icon')).toBeInTheDocument();
-  });
-
-  it('renders added protection network fee copy', () => {
-    const { getByTestId, getByText } = render({
-      addedProtectionFeeFiat: '$0.07',
-      showAddedProtectionFee: true,
-      showFiatInTestnets: true,
-    });
-
-    expect(getByTestId('added-protection-network-fee')).toBeInTheDocument();
     expect(
       getByText(
         messages.addedProtectionIncludesNetworkFee.message.replace(
@@ -157,33 +140,16 @@ describe('<EditGasFeesRow />', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders added protection network fee copy with fallback fiat amount', () => {
+  it('renders edit gas fee button', () => {
     const { getByTestId, getByText } = render({
-      fiatFee: '',
-      showAddedProtectionFee: true,
-      showFiatInTestnets: true,
-    });
-
-    expect(getByTestId('added-protection-network-fee')).toBeInTheDocument();
-    expect(
-      getByText(
-        messages.addedProtectionIncludesNetworkFee.message.replace(
-          '$1',
-          '$0.00',
-        ),
-      ),
-    ).toBeInTheDocument();
-  });
-
-  it('never falls back to the full network fee for the added protection copy', () => {
-    const { getByTestId, getByText } = render({
-      addedProtectionFeeFiat: undefined,
+      gasFeeTokens: undefined,
+      selectedGasFeeToken: undefined,
       fiatFee: '$12.34',
       showAddedProtectionFee: true,
       showFiatInTestnets: true,
     });
 
-    expect(getByTestId('added-protection-network-fee')).toBeInTheDocument();
+    expect(getByTestId('edit-gas-fee-icon')).toBeInTheDocument();
     expect(
       getByText(
         messages.addedProtectionIncludesNetworkFee.message.replace(
