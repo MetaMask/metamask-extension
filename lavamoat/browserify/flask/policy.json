@@ -985,7 +985,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
+        "@metamask/assets-controllers>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -1047,7 +1047,7 @@
         "@metamask/controller-utils": true,
         "@metamask/messenger": true,
         "@metamask/utils": true,
-        "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "eslint>fast-deep-equal": true
       }
     },
@@ -2312,7 +2312,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@metamask/react-data-query>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "@tanstack/react-query": true
       }
     },
@@ -2661,9 +2661,11 @@
     },
     "@metamask/phishing-controller>@metamask/transaction-controller": {
       "globals": {
+        "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
         "fetch": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
@@ -3579,8 +3581,47 @@
     },
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
+        "AbortController": true,
+        "CancelledError": true,
+        "InfiniteQueryObserver": true,
+        "Mutation": true,
+        "MutationCache": true,
+        "MutationObserver": true,
+        "QueriesObserver": true,
+        "Query": true,
+        "QueryCache": true,
+        "QueryClient": true,
+        "QueryObserver": true,
         "addEventListener": false,
-        "document": false
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "defaultScheduler": true,
+        "defaultShouldDehydrateMutation": true,
+        "defaultShouldDehydrateQuery": true,
+        "dehydrate": true,
+        "document": false,
+        "experimental_streamedQuery": true,
+        "focusManager": true,
+        "hashKey": true,
+        "hydrate": true,
+        "isCancelledError": true,
+        "isServer": true,
+        "keepPreviousData": true,
+        "matchMutation": true,
+        "matchQuery": true,
+        "noop": true,
+        "notifyManager": true,
+        "onlineManager": true,
+        "partialMatchKey": true,
+        "removeEventListener": true,
+        "replaceEqualDeep": true,
+        "setInterval": true,
+        "setTimeout": true,
+        "shouldThrowError": true,
+        "skipToken": true,
+        "timeoutManager": true
       }
     },
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
@@ -3591,16 +3632,8 @@
     },
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
-        "AbortController": true,
         "addEventListener": false,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": false,
-        "navigator": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
+        "document": false
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
@@ -3646,20 +3679,6 @@
         "shouldThrowError": true,
         "skipToken": true,
         "timeoutManager": true
-      }
-    },
-    "@metamask/react-data-query>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "navigator": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
