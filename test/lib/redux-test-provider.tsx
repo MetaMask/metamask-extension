@@ -11,5 +11,9 @@ export function MetaMaskTestReduxProvider({
   store,
   children,
 }: MetaMaskTestReduxProviderProps) {
-  return <Provider store={store}>{children}</Provider>;
+  return (
+    <Provider store={store} stabilityCheck={false} noopCheck={false}>
+      {children}
+    </Provider>
+  );
 }

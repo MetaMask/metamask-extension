@@ -1,5 +1,9 @@
 import { Reducer, StoreEnhancer } from 'redux';
-import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import {
+  type TypedUseSelectorHook,
+  useDispatch,
+  useSelector,
+} from 'react-redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
