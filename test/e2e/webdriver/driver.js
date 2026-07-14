@@ -782,16 +782,35 @@ class Driver {
    * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
    */
   async isElementMoving(rawLocator) {
-    const element = await this.findElement(rawLocator);
-    const initialPosition = await element.getRect();
+    let initialPosition;
+    try {
+      const element = await this.findElement(rawLocator);
+      initialPosition = await element.getRect();
+    } catch (error) {
+      if (error.name === 'StaleElementReferenceError') {
+        // React replaced the DOM node immediately after findElement — treat as still moving.
+        return true;
+      }
+      throw error;
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
 
-    const newPosition = await element.getRect();
+    try {
+      const freshElement = await this.findElement(rawLocator);
+      const newPosition = await freshElement.getRect();
 
-    return (
-      initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
-    );
+      return (
+        initialPosition.x !== newPosition.x ||
+        initialPosition.y !== newPosition.y
+      );
+    } catch (error) {
+      if (error.name === 'StaleElementReferenceError') {
+        // React re-rendered during the animation window — treat as still moving.
+        return true;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -848,7 +867,10 @@ class Driver {
   async clickElementAndWaitToDisappear(rawLocator, timeout = 3000) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
-    await element.waitForElementState('hidden', timeout);
+    // Wait for staleness on the clicked node reference. Do not re-find by locator
+    // here: after route navigation the element is already gone and findElement
+    // would wait for it to appear again (default driver timeout).
+    await this.driver.wait(until.stalenessOf(element), timeout);
   }
 
   /**
@@ -891,15 +913,38 @@ class Driver {
    * Can fix instances where a normal click produces ElementClickInterceptedError
    *
    * @param rawLocator
+   * @param retries
    */
-  async clickElementUsingMouseMove(rawLocator) {
-    const element = await this.findClickableElement(rawLocator);
-    await this.scrollToElement(element);
-    await this.driver
-      .actions()
-      .move({ origin: element, x: 1, y: 1 })
-      .click()
-      .perform();
+  async clickElementUsingMouseMove(rawLocator, retries = 3) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const element = await this.findClickableElement(rawLocator);
+        await this.scrollToElement(element);
+        await this.driver
+          .actions()
+          .move({ origin: element, x: 1, y: 1 })
+          .click()
+          .perform();
+        return;
+      } catch (error) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying mouse-move click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
+          await this.delay(1000);
+        } else {
+          throw error;
+        }
+      }
+    }
   }
 
   /**

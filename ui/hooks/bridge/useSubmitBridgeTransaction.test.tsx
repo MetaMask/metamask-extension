@@ -423,7 +423,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       const store = makeMockStore();
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
-        .mockImplementationOnce(() => jest.fn());
+        .mockImplementation(() => undefined);
       submitIntentSpy.mockImplementationOnce((async () => {
         throw new Error('submit failed');
       }) as never);
@@ -460,10 +460,14 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
               [
                 [
+                  "Warning: ReactDOM.render is no longer supported in React 18. Use createRoot instead. Until you switch to the new API, your app will behave as if it's running React 17. Learn more: https://reactjs.org/link/switch-to-createroot",
+                ],
+                [
                   [Error: submit failed],
                 ],
               ]
           `);
+      consoleErrorSpy.mockRestore();
     });
 
     it('routes hardware-wallet intent quotes to default route after submit', async () => {
