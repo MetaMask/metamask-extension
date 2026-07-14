@@ -13,7 +13,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import * as storeActions from '../../../store/actions';
 import * as stellarSnapRequests from '../utils/stellar-snap-client-requests';
 import type { Asset } from '../types/asset';
-import { AssetActivateCard } from './asset-activation-card';
+import TokenButtons from './token-buttons';
 
 const PUBNET_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
@@ -25,6 +25,11 @@ const STELLAR_TOKEN = {
   symbol: 'USDC',
   decimals: 7,
   image: '',
+  balance: {
+    value: '0',
+    display: '0.00',
+    fiat: '0.00',
+  },
 } as Asset & { type: typeof AssetType.token };
 
 const STELLAR_WALLET_ID = 'entropy:stellar-test';
@@ -71,16 +76,25 @@ const stellarMockState = {
       },
     },
     selectedAccountGroup: STELLAR_GROUP_ID,
+    accountAssets: {
+      [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+        [PUBNET_USDC_ASSET]: {
+          limit: '10',
+          authorized: true,
+          sponsored: false,
+        },
+      },
+    },
   },
 };
 
-describe('AssetActivateCard', () => {
+describe('TokenButtons', () => {
   const mockStore = configureMockStore([thunk])(stellarMockState);
 
   beforeEach(() => {
     jest
-      .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptAdd')
-      .mockResolvedValue({ status: true });
+      .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
+      .mockResolvedValue(undefined);
     jest
       .spyOn(storeActions, 'forceUpdateMetamaskState')
       .mockResolvedValue(undefined as never);
@@ -90,33 +104,46 @@ describe('AssetActivateCard', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders the activate card with asset and chain details', () => {
+  it('omits remove trustline when the token is not a trustline asset', () => {
     renderWithProvider(
-      <AssetActivateCard asset={STELLAR_TOKEN} chainName="Stellar" />,
+      <TokenButtons
+        token={{
+          ...STELLAR_TOKEN,
+          address:
+            'stellar:pubnet/sep41:CBIJBDNZNF4X35BJ4FFZWCDBSCKOP5NB4PLG4SNENRMLAPYG4P5FM6VN' as CaipAssetType,
+        }}
+        disableSendForNonEvm
+      />,
       mockStore,
     );
 
-    expect(screen.getByTestId('asset-activate-card')).toBeInTheDocument();
-    expect(screen.getByTestId('asset-activate-button')).toBeInTheDocument();
-    expect(screen.getByText(/USDC/u)).toBeInTheDocument();
-    expect(screen.getByText(/Stellar/u)).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('token-overview-deactivate-asset'),
+    ).not.toBeInTheDocument();
   });
 
-  it('submits changeTrustOpt add when the user taps Activate', async () => {
+  it('renders remove trustline for a trustline asset', () => {
     renderWithProvider(
-      <AssetActivateCard asset={STELLAR_TOKEN} chainName="Stellar" />,
+      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
       mockStore,
     );
 
-    await waitFor(() => {
-      expect(screen.getByTestId('asset-activate-button')).toBeInTheDocument();
-    });
+    expect(
+      screen.getByTestId('token-overview-deactivate-asset'),
+    ).toBeInTheDocument();
+  });
 
-    fireEvent.click(screen.getByTestId('asset-activate-button'));
+  it('submits remove trustline when tapped', async () => {
+    renderWithProvider(
+      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
+      mockStore,
+    );
+
+    fireEvent.click(screen.getByTestId('token-overview-deactivate-asset'));
 
     await waitFor(() => {
       expect(
-        stellarSnapRequests.requestStellarChangeTrustOptAdd,
+        stellarSnapRequests.requestStellarChangeTrustOptDelete,
       ).toHaveBeenCalledWith({
         accountId: MOCK_ACCOUNT_STELLAR_PUBNET.id,
         assetId: PUBNET_USDC_ASSET,
@@ -130,41 +157,17 @@ describe('AssetActivateCard', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('does not refresh state or show error toast when snap returns status false after funding prompt', async () => {
+  it('shows a dismissible error toast when remove trustline fails', async () => {
     jest
-      .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptAdd')
-      .mockResolvedValue({ status: false });
-
-    renderWithProvider(
-      <AssetActivateCard asset={STELLAR_TOKEN} chainName="Stellar" />,
-      mockStore,
-    );
-
-    fireEvent.click(screen.getByTestId('asset-activate-button'));
-
-    await waitFor(() => {
-      expect(
-        stellarSnapRequests.requestStellarChangeTrustOptAdd,
-      ).toHaveBeenCalled();
-    });
-
-    expect(storeActions.forceUpdateMetamaskState).not.toHaveBeenCalled();
-    expect(
-      screen.queryByTestId('asset-activation-error-container'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('shows a dismissible error toast when changeTrustOpt fails for a reason other than user cancel', async () => {
-    jest
-      .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptAdd')
+      .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
       .mockRejectedValue(new Error('network failure'));
 
     renderWithProvider(
-      <AssetActivateCard asset={STELLAR_TOKEN} chainName="Stellar" />,
+      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
       mockStore,
     );
 
-    fireEvent.click(screen.getByTestId('asset-activate-button'));
+    fireEvent.click(screen.getByTestId('token-overview-deactivate-asset'));
 
     await waitFor(() => {
       expect(
@@ -173,5 +176,41 @@ describe('AssetActivateCard', () => {
     });
 
     expect(storeActions.forceUpdateMetamaskState).not.toHaveBeenCalled();
+  });
+
+  it('shows a non-zero balance error when remove trustline fails with a token balance', async () => {
+    jest
+      .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptDelete')
+      .mockRejectedValue(new Error('balance must be zero'));
+
+    const storeWithBalance = configureMockStore([thunk])({
+      ...stellarMockState,
+      metamask: {
+        ...stellarMockState.metamask,
+        balances: {
+          [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+            [PUBNET_USDC_ASSET]: {
+              amount: '25.50',
+              unit: 'USDC',
+            },
+          },
+        },
+      },
+    });
+
+    renderWithProvider(
+      <TokenButtons token={STELLAR_TOKEN} disableSendForNonEvm />,
+      storeWithBalance,
+    );
+
+    fireEvent.click(screen.getByTestId('token-overview-deactivate-asset'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('asset-activation-error-container'),
+      ).toHaveTextContent(
+        'You still have 25.50 USDC in this wallet. You must send or swap it all before deactivating this asset on Stellar.',
+      );
+    });
   });
 });

@@ -87,6 +87,8 @@ import {
 } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
+import { isSupportBaseReserve } from '../../../../shared/lib/multichain/spendable-balance';
+import { useAssetActivation } from '../hooks/useAssetActivation';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
@@ -97,10 +99,13 @@ import {
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
+import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
+import { AssetActivateCard } from './asset-activation-card';
+import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
@@ -251,6 +256,13 @@ const AssetPage = ({
     },
   };
 
+  const resolvedAssetId = (bip44Asset?.assetId ?? assetId) as CaipAssetType;
+
+  const { requiresActivate: isAssetInactive } = useAssetActivation({
+    accountId: selectedAccount?.id,
+    assetId: resolvedAssetId,
+  });
+
   const tokenWithFiatAmount = {
     address: isEvm ? address : assetId,
     chainId,
@@ -269,6 +281,9 @@ const AssetPage = ({
     assetId: bip44Asset?.assetId ?? assetId,
     rwaData,
   };
+
+  const showSpendableBalance = isSupportBaseReserve(resolvedAssetId);
+
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
@@ -332,11 +347,25 @@ const AssetPage = ({
         </Box>
         {optionsButton}
       </Box>
+      {isAssetInactive && (
+        <AssetActivateCard
+          asset={tokenAsset as Asset}
+          accountId={selectedAccount?.id}
+          chainName={networkName}
+        />
+      )}
       <Box paddingLeft={4}>
-        {isStockToken ? (
+        {isStockToken || isAssetInactive ? (
           <Box alignItems={BoxAlignItems.Center} gap={2}>
             {assetNameElement}
-            <StockBadge isMarketClosed={isMarketClosed} />
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+              {isAssetInactive && <AssetInactiveBadge />}
+            </Box>
           </Box>
         ) : (
           assetNameElement
@@ -432,7 +461,17 @@ const AssetPage = ({
               className="asset-page__divider"
             />
           </>
-        ) : (
+        ) : null}
+        {!isMusdAssetPage && showSpendableBalance ? (
+          <SpendableBalanceSection
+            accountId={selectedAccount?.id}
+            assetId={resolvedAssetId}
+            totalBalance={String(balance)}
+            symbol={symbol}
+            fiatValue={tokenFiatAmount}
+          />
+        ) : null}
+        {!isMusdAssetPage && !showSpendableBalance ? (
           <>
             <Text
               variant={TextVariant.HeadingSm}
@@ -449,7 +488,7 @@ const AssetPage = ({
               />
             )}
           </>
-        )}
+        ) : null}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}
         {!isNativeAsset(updatedAsset) &&
           type === AssetType.token &&
