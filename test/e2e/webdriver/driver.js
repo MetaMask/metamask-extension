@@ -1669,7 +1669,7 @@ class Driver {
             const alertText = await alert.getText();
             if (alertText !== text) {
               throw new Error(
-                `Expected alert text to be "${text}", but got "${alertText}".`,
+                `Expected alert text to be "${text}" on window "${windowTitle}", but got "${alertText}".`,
               );
             }
             return true;
@@ -1701,7 +1701,7 @@ class Driver {
               const alertText = await alert.getText();
               if (alertText !== text) {
                 throw new Error(
-                  `Expected alert text to be "${text}", but got "${alertText}".`,
+                  `Expected alert text to be "${text}" on window "${windowTitle}", but got "${alertText}".`,
                 );
               }
               return true;
