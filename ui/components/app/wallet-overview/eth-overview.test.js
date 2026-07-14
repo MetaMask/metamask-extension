@@ -239,6 +239,9 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_SWAP = 'eth-overview-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
+  const ETH_OVERVIEW_BALANCE_EMPTY_STATE =
+    'coin-overview-balance-empty-state';
+  const ETH_OVERVIEW_BALANCE_SKELETON = 'coin-overview-balance-skeleton';
 
   afterEach(() => {
     store.clearActions();
@@ -287,6 +290,60 @@ describe('EthOverview', () => {
       expect(primaryBalance).toBeInTheDocument();
       expect(primaryBalance).toHaveTextContent('0 ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
+    });
+
+    it('should show a balance skeleton instead of the empty state while balance records are loading', async () => {
+      const mockedStoreWithLoadingBalance = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          accountsByChainId: {},
+          tokenBalances: {},
+          balances: {},
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithLoadingBalance,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show the empty state when mainnet balance records loaded and confirm zero balance', async () => {
+      const mockedStoreWithZeroBalance = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          accountsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              '0x1': { address: mockEvmAccount1.address, balance: '0x0' },
+            },
+          },
+          tokenBalances: {},
+          balances: {},
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(mockedStoreWithZeroBalance);
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON),
+      ).not.toBeInTheDocument();
     });
 
     it('should show the cached primary balance', async () => {
