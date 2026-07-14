@@ -206,6 +206,11 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   // the state machine. Cleared before the new resubmit so that attempt's
   // reject/fail still update state. Owned here (not in useHwSwapActions) so
   // submitBridgeTransaction — defined earlier in the hook order — can read it.
+  //
+  // Generation checks in the catch handlers cover the remaining race: a late
+  // reject that settles after cancel finishes and after this flag is cleared,
+  // while the new attempt is still starting. `retryGenerationRef` is bumped
+  // before resubmit, so those stale catches see a mismatched generation.
   const isRetryingRef = useRef(false);
   const [firstSignatureDone, setFirstSignatureDone] = useState(false);
   // Set to true when the device has been in an awaiting-signature state for
@@ -236,15 +241,21 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       return;
     }
 
+    const submissionGeneration = retryGenerationRef.current;
+
     try {
       await dispatch(updateAndApproveTx(sendBundleTxMeta, true, ''));
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
-      // Ignore reject/fail from the aborted batch while cancel-during-retry is
-      // in flight so a late error cannot race the new attempt.
-      if (isRetryingRef.current) {
+      // Ignore reject/fail from an aborted batch: during cancel-during-retry
+      // (`isRetryingRef`), or after retry advanced the generation so this
+      // catch is stale relative to the in-flight attempt.
+      if (
+        isRetryingRef.current ||
+        submissionGeneration !== retryGenerationRef.current
+      ) {
         return;
       }
 
@@ -274,16 +285,22 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   /**
    * Wraps bridge submission so hardware-wallet reject/fail outcomes update the
    * signature state machine. `useSubmitBridgeTransaction` throws on those
-   * outcomes; we translate them here (unless cancel-during-retry is in flight,
-   * so errors from the old batch during `cancelCurrentBatch` cannot race the
-   * new attempt).
+   * outcomes; we translate them here unless the attempt is stale (cancel-
+   * during-retry in flight, or retry advanced `retryGenerationRef` after this
+   * submission started).
    */
   const submitBridgeTransaction = useCallback(
     async (quoteResponse: QuoteResponse & QuoteMetadata) => {
+      const submissionGeneration = retryGenerationRef.current;
+
       try {
         await submitBridgeTransactionBase(quoteResponse);
       } catch (error) {
-        if (!isRetryingRef.current) {
+        const isStaleAttempt =
+          isRetryingRef.current ||
+          submissionGeneration !== retryGenerationRef.current;
+
+        if (!isStaleAttempt) {
           if (isUserRejectedHardwareWalletError(error)) {
             log.debug(
               '[HW-Batch] submitBridgeTransaction rejected, current state:',
@@ -377,16 +394,22 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     // `Submitted` (which marks all steps complete and triggers navigation
     // to the activity list). Without it, the state gets stuck at
     // `AwaitingFinalSignature` if the tracker misses the gas-tx event.
+    const submissionGeneration = retryGenerationRef.current;
+
     try {
       await dispatch(updateAndApproveTx(newTxMetaWithBatch, true, ''));
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
-      // Same cancel-during-retry guard as submitSendBundleTransaction /
-      // submitBridgeTransaction: a late reject from the aborted approve must
-      // not overwrite the fresh attempt's state.
-      if (isRetryingRef.current) {
+      // Same stale-attempt guards as submitSendBundleTransaction /
+      // submitBridgeTransaction: a late reject from an aborted approve, or
+      // from a superseded retry generation, must not overwrite the fresh
+      // attempt's state.
+      if (
+        isRetryingRef.current ||
+        submissionGeneration !== retryGenerationRef.current
+      ) {
         return;
       }
 

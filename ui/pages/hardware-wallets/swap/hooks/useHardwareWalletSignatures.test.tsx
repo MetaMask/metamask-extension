@@ -740,6 +740,68 @@ describe('useHardwareWalletSignatures', () => {
       });
     });
 
+    it('ignores a late sendBundle reject that arrives after cancel while retry is starting', async () => {
+      let rejectFirstApprove: ((error: unknown) => void) | undefined;
+      mockUpdateAndApproveTx
+        .mockReturnValueOnce(
+          (() =>
+            new Promise((_resolve, reject) => {
+              rejectFirstApprove = reject;
+            })) as never,
+        )
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+
+      // Cancel finishes cleanly; the aborted approve rejects only once the
+      // retry has cleared isRetryingRef and begun recreating the tx — the
+      // generation mismatch must still suppress Rejected/Failed.
+      mockCancelCurrentBatch.mockResolvedValue(undefined);
+      mockAddTransaction.mockImplementation(async () => {
+        rejectFirstApprove?.({
+          code: 4001,
+          message: 'User rejected the request.',
+        });
+        await Promise.resolve();
+        return {
+          id: 'new-tx-id',
+          chainId: '0x1',
+          type: TransactionType.simpleSend,
+          status: 'unapproved',
+          time: Date.now(),
+          txParams: {
+            from: FROM_ADDRESS,
+            to: TO_ADDRESS,
+            value: '0x1',
+          },
+        } as never;
+      });
+
+      const { result } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await waitFor(() => {
+        expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(1);
+      });
+
+      expect(result.current.signatureStatus).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+
+      await act(async () => {
+        await result.current.footer.handleRetry();
+      });
+
+      expect(result.current.signatureStatus).not.toBe(
+        HardwareWalletSignatureStatus.Rejected,
+      );
+
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+    });
+
     it('resets the state machine when smart transactions are enabled', async () => {
       jest.spyOn(bridgeSelectors, 'getIsStxEnabled').mockReturnValue(true);
       mockUpdateAndApproveTx

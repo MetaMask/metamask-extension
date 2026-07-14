@@ -167,7 +167,10 @@ export function useHwSwapActions({
         '[HW-Batch] handleRetry: calling retrySubmission',
         JSON.stringify({ state: signatureState.status }),
       );
-      // Allow the new submission's reject/fail to reach the state machine.
+      // Allow the new submission's reject/fail to reach the state machine via
+      // `isRetryingRef`. Stale rejects from the aborted batch that settle after
+      // this clear are ignored by the submission catch handlers when their
+      // captured `retryGenerationRef` no longer matches (bumped above).
       // `retrySubmission` swallows the rethrown error after that dispatch.
       isRetryingRef.current = false;
       if (isSendBundleFlow) {

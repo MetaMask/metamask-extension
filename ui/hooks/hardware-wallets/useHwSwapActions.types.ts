@@ -49,6 +49,8 @@ export type UseHwSwapActionsOptions = {
    * by the caller so submission error handlers defined earlier in the hook
    * order can ignore reject/fail outcomes from the cancelled batch. Cleared
    * before the new resubmit so that attempt's errors still update state.
+   * Post-cancel late rejects are ignored via `retryGenerationRef` mismatch in
+   * those same catch handlers.
    */
   isRetryingRef: MutableRefObject<boolean>;
 };
