@@ -1,9 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import { Box, Text } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
 import { SectionHeader } from '../../components/ui/section-header';
+import Spinner from '../../components/ui/spinner';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { useFormatters } from '../../hooks/useFormatters';
@@ -135,8 +141,15 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         itemRef={itemRef}
         listEmptyComponent={
           isInitialLoading ? (
-            <Box className="p-4">
-              <Text>{t('loading')}</Text>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
+              className="flex h-full min-h-[50vh]"
+            >
+              <Box className="w-10 h-10">
+                <Spinner />
+              </Box>
             </Box>
           ) : (
             <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
