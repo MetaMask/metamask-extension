@@ -6,6 +6,19 @@ import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/ext
 
 const { chrome } = globalThis;
 
+const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+function saveTimestamp() {
+  const timestamp = new Date().toISOString();
+
+  chrome.storage.session.set({ timestamp });
+}
+
+// Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL_MS`.
+// This keeps the service worker alive.
+saveTimestamp();
+setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+
 // this needs to be run early so we can begin listening to these browser events
 // as soon as possible
 const lazyListener = new ExtensionLazyListener(chrome, {
