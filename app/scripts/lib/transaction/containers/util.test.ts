@@ -29,12 +29,10 @@ describe('Container Utils', () => {
   const enforceSimulationsMock = jest.mocked(enforceSimulations);
   const estimateGasMock = jest.fn();
   const getTransactionControllerStateMock = jest.fn();
-  let consoleWarnMock: jest.SpiedFunction<typeof console.warn>;
   let messenger: TransactionControllerInitMessenger;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    consoleWarnMock = jest.spyOn(console, 'warn').mockImplementation();
 
     estimateGasMock.mockResolvedValue({
       gas: ESTIMATE_GAS_MOCK,
@@ -87,10 +85,6 @@ describe('Container Utils', () => {
     getTransactionControllerStateMock.mockReturnValue({
       transactions: [],
     });
-  });
-
-  afterEach(() => {
-    consoleWarnMock.mockRestore();
   });
 
   describe('applyTransactionContainers', () => {
@@ -156,11 +150,6 @@ describe('Container Utils', () => {
       expect(transactionToUpdate.containerTypes).toStrictEqual([
         TransactionContainerType.EnforcedSimulations,
       ]);
-      expect(consoleWarnMock).toHaveBeenCalledWith(
-        '[enforced-simulations-debug]',
-        'container-gas-estimated',
-        expect.stringContaining('"fallbackDiscarded": true'),
-      );
     });
 
     it('re-estimates gas with the real signature when approved', async () => {

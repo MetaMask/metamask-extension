@@ -2812,16 +2812,6 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('applyTransactionContainersExisting', () => {
-    let consoleWarnMock: jest.SpiedFunction<typeof console.warn>;
-
-    beforeEach(() => {
-      consoleWarnMock = jest.spyOn(console, 'warn').mockImplementation();
-    });
-
-    afterEach(() => {
-      consoleWarnMock.mockRestore();
-    });
-
     const TRANSACTION_ID_MOCK = '123-456';
     const ESTIMATE_GAS_MOCK = '0x456';
     const NEW_DATA_MOCK = '0x789';

@@ -20,7 +20,6 @@ import {
 } from '../../../../contexts/hardware-wallets';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
-import { logConfirmationTransactionDebug } from '../../utils/enforced-simulations-debug';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -113,23 +112,6 @@ export function useTransactionConfirm() {
       handleGasless7702();
     }
 
-    logConfirmationTransactionDebug(
-      'transaction-submit-request',
-      newTransactionMeta,
-      {
-        isGaslessSupported,
-        isGaslessSupportedSTX,
-        isSponsorshipOptedOut,
-        selectedGasFeeToken: selectedGasFeeToken
-          ? {
-              gas: selectedGasFeeToken.gas,
-              maxFeePerGas: selectedGasFeeToken.maxFeePerGas,
-              maxPriorityFeePerGas: selectedGasFeeToken.maxPriorityFeePerGas,
-            }
-          : undefined,
-      },
-    );
-
     // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
     // navigate to shield settings page first before approving transaction to wait for subscription creation there
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
@@ -138,14 +120,6 @@ export function useTransactionConfirm() {
       onDappSwapCompleted();
       return true;
     } catch (error) {
-      logConfirmationTransactionDebug(
-        'transaction-submit-failed',
-        newTransactionMeta,
-        {
-          error,
-        },
-      );
-
       handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
         newTransactionMeta,
       );

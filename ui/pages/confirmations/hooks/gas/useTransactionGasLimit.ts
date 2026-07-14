@@ -5,10 +5,6 @@ import { Hex } from '@metamask/utils';
 import { toHex } from '../../../../../shared/lib/delegation/utils';
 import { useDappSwapContextOptional } from '../../context/dapp-swap';
 import { HEX_ZERO } from '../../components/confirm/info/shared/constants';
-import {
-  getDappSwapQuoteDebugInfo,
-  logConfirmationTransactionDebug,
-} from '../../utils/enforced-simulations-debug';
 
 /**
  * Returns the gas limit that should be used when computing or displaying
@@ -60,35 +56,6 @@ export function useTransactionGasLimit(transactionMeta: TransactionMeta): {
         transactionMeta?.txParams?.gas ||
         HEX_ZERO
   ) as Hex;
-
-  const gasLimitSource = hasContainerTypes
-    ? transactionMeta?.txParams?.gas
-      ? 'txParams.gas'
-      : 'zero'
-    : quotedGasLimit
-      ? 'quotedGasLimit'
-      : transactionMeta?.gasUsed
-        ? 'gasUsed'
-        : transactionMeta?.gasLimitNoBuffer
-          ? 'gasLimitNoBuffer'
-          : transactionMeta?.txParams?.gas
-            ? 'txParams.gas'
-            : 'zero';
-
-  logConfirmationTransactionDebug('gas-limit-calculated', transactionMeta, {
-    hasContainerTypes,
-    isQuotedSwapDisplayedInInfo,
-    gasLimitSource,
-    selectedGasLimit: gasLimit,
-    quotedGasLimit,
-    gasCandidates: {
-      txParamsGas: transactionMeta?.txParams?.gas,
-      gasUsed: transactionMeta?.gasUsed,
-      gasLimitNoBuffer: transactionMeta?.gasLimitNoBuffer,
-      txParamsOriginalGas: transactionMeta?.txParamsOriginal?.gas,
-    },
-    selectedQuote: getDappSwapQuoteDebugInfo(selectedQuote),
-  });
 
   return { gasLimit, quotedGasLimit };
 }

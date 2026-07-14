@@ -9,7 +9,6 @@ import { TransactionControllerInitMessenger } from '../../../wallet-init/messeng
 import { enforceSimulations } from './enforced-simulations';
 
 const log = createProjectLogger('transaction-containers');
-const DEBUG_LOG_PREFIX = '[enforced-simulations-debug]';
 
 export async function applyTransactionContainers({
   isApproved,
@@ -61,35 +60,11 @@ export async function applyTransactionContainers({
         },
       );
 
-  log('Estimated gas', { gas, isApproved, simulationFails });
+  log('Estimated gas', gas);
 
   const newGas = simulationFails
     ? (originalGas as Hex | undefined)
     : (gas as Hex);
-
-  console.warn(
-    DEBUG_LOG_PREFIX,
-    'container-gas-estimated',
-    JSON.stringify(
-      {
-        phase: isApproved ? 'approved' : 'preview',
-        originalGas,
-        returnedGas: gas,
-        simulationFailure: simulationFails
-          ? {
-              reason: simulationFails.reason,
-              errorKey: simulationFails.errorKey,
-              debug: simulationFails.debug,
-            }
-          : undefined,
-        fallbackDiscarded: Boolean(simulationFails),
-        selectedGas: newGas,
-        signedGasLimit: isApproved && !simulationFails ? newGas : undefined,
-      },
-      null,
-      2,
-    ),
-  );
 
   if (isApproved && simulationFails) {
     throw new Error('Failed to estimate gas for transaction containers');
