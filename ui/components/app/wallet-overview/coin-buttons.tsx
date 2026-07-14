@@ -62,7 +62,7 @@ import {
   TagProps,
 } from '../../component-library';
 import IconButton from '../../ui/icon-button';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { Toast, ToastContainer } from '../../multichain/toast';
@@ -355,7 +355,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -411,9 +411,12 @@ const CoinButtons = ({
     transitionForward(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const opened = await goToBuy(getChainId());
+    if (!opened) {
+      return;
+    }
     setShowTabOpenedToast(true);
-    openBuyCryptoInPdapp(getChainId());
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -433,7 +436,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken]);
+  }, [chainId, defaultSwapsToken, goToBuy]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
