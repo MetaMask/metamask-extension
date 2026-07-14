@@ -349,7 +349,7 @@
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
     "@metamask/assets-controller": "^10.2.0",
-    "@metamask/assets-controllers": "^109.4.0",
+    "@metamask/assets-controllers": "file:../metamask-core/packages/assets-controllers",
     "@metamask/authenticated-user-storage": "^3.0.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.14.2",

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
@@ -14,11 +15,10 @@ import {
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from '../../token-cell/cells';
-import type { DefiProtocolDetailsPosition } from '../utils/group-defi-protocol-details';
 import { mapDefiProtocolDetailsPositionV2ToToken } from '../utils/map-defi-protocol-details-position-v2';
 
 type DefiDetailsPositionCellV2Props = {
-  position: DefiProtocolDetailsPosition;
+  position: DeFiUnderlyingPosition;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

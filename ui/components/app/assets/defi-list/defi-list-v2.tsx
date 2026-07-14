@@ -15,15 +15,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import { ASSET_CELL_HEIGHT } from '../constants';
-import { useMultiAccountDefiBalances } from './hooks/useMultiAccountDefiBalances';
+import { useDeFiPositionsV2 } from './hooks/useDeFiPositionsV2';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DeFiProtocolCellV2 from './cells/defi-protocol-cell-v2';
-import {
-  filterGroupedDefiProtocolPositions,
-  groupDefiProtocolPositions,
-  isDefiBalancesProcessing,
-} from './utils/group-defi-protocol-positions';
 import type { DeFiProtocolListItem } from './types';
 
 type DefiListV2Props = {
@@ -38,18 +33,16 @@ export default function DefiListV2({ onClick }: DefiListV2Props) {
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedCurrency = useSelector(getSelectedCurrency);
   const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
-  const { data, isLoading, isError } = useMultiAccountDefiBalances();
 
-  const groupedPositions = useMemo(
-    () => groupDefiProtocolPositions(data),
-    [data],
-  );
+  // Dispatches the fetch when the user enters the DeFi tab and reads the
+  // resulting positions straight from the controller state.
+  const { positions, isLoading, isError } = useDeFiPositionsV2();
 
   const sortedFilteredDefi = useMemo(():
     | DeFiProtocolListItem[]
     | null
     | undefined => {
-    if (isLoading || isDefiBalancesProcessing(data)) {
+    if (isLoading) {
       return undefined;
     }
 
@@ -57,25 +50,34 @@ export default function DefiListV2({ onClick }: DefiListV2Props) {
       return null;
     }
 
-    const filteredPositions = filterGroupedDefiProtocolPositions(
-      groupedPositions,
-      enabledCaipChainIds,
-    );
+    const enabledChainIds = new Set(enabledCaipChainIds);
 
-    const listItems: DeFiProtocolListItem[] = filteredPositions.map(
-      (position) => ({
-        ...position,
-        marketValue: formatCurrencyWithMinThreshold(
-          position.tokenFiatAmount,
-          selectedCurrency,
-        ),
-      }),
-    );
+    const listItems: DeFiProtocolListItem[] = positions
+      .filter((position) => enabledChainIds.has(position.chainId))
+      .map((position) => {
+        const iconGroup = position.iconGroup.map((icon) => ({
+          symbol: icon.symbol,
+          avatarValue: icon.avatarValue ?? '',
+        }));
+
+        return {
+          chainId: position.chainId,
+          protocolId: position.protocolId,
+          title: position.protocolName,
+          tokenImage: position.protocolIconUrl,
+          iconGroup,
+          underlyingSymbols: iconGroup.map(({ symbol }) => symbol),
+          tokenFiatAmount: position.marketValue,
+          marketValue: formatCurrencyWithMinThreshold(
+            position.marketValue,
+            selectedCurrency,
+          ),
+        };
+      });
 
     return sortAssets(listItems, tokenSortConfig);
   }, [
-    data,
-    groupedPositions,
+    positions,
     enabledCaipChainIds,
     formatCurrencyWithMinThreshold,
     isError,

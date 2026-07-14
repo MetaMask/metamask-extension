@@ -66,6 +66,10 @@ import {
 } from './notifications';
 import { getDeFiPositionsControllerMessenger } from './defi-positions';
 import { getDeFiPositionsControllerInitMessenger } from './defi-positions/defi-positions-controller-messenger';
+import {
+  getDeFiPositionsControllerV2Messenger,
+  getDeFiPositionsControllerV2InitMessenger,
+} from './defi-positions/defi-positions-controller-v2-messenger';
 import { getDelegationControllerMessenger } from './delegation/delegation-controller-messenger';
 import {
   getAccountTreeControllerMessenger,
@@ -437,6 +441,10 @@ export const MESSENGER_FACTORIES = {
   DeFiPositionsController: {
     getMessenger: getDeFiPositionsControllerMessenger,
     getInitMessenger: getDeFiPositionsControllerInitMessenger,
+  },
+  DeFiPositionsControllerV2: {
+    getMessenger: getDeFiPositionsControllerV2Messenger,
+    getInitMessenger: getDeFiPositionsControllerV2InitMessenger,
   },
   DelegationController: {
     getMessenger: getDelegationControllerMessenger,

@@ -1,15 +1,15 @@
 import React from 'react';
 import { Box } from '@metamask/design-system-react';
+import type { DeFiPositionDetailsSection } from '@metamask/assets-controllers';
 import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Text } from "../../../component-library";
-import type { DefiProtocolDetailsSection } from '../utils/group-defi-protocol-details';
+import { Text } from '../../../component-library';
 import DefiDetailsPositionCellV2 from './cells/defi-details-position-cell-v2';
 
 type DefiDetailsListV2Props = {
-  sections: DefiProtocolDetailsSection[];
+  sections: DeFiPositionDetailsSection[];
 };
 
 const separatorStyle = {
@@ -32,20 +32,11 @@ export default function DefiDetailsListV2({ sections }: DefiDetailsListV2Props) 
           >
             {section.protocolName}
           </Text>
-          {section.poolGroups.map((poolGroup, poolGroupIndex) => (
-            <Box key={`${section.protocolName}-${poolGroup.poolAddress}`}>
-              {poolGroup.positions.map((position) => (
-                <DefiDetailsPositionCellV2
-                  key={`${position.assetId}-${position.positionType}`}
-                  position={position}
-                />
-              ))}
-              {poolGroupIndex !== section.poolGroups.length - 1 && (
-                <Box paddingLeft={4} paddingBottom={4} paddingRight={4}>
-                  <hr style={separatorStyle} />
-                </Box>
-              )}
-            </Box>
+          {section.positions.map((position) => (
+            <DefiDetailsPositionCellV2
+              key={`${position.assetId}-${position.positionType}`}
+              position={position}
+            />
           ))}
           {sectionIndex !== sections.length - 1 && (
             <Box

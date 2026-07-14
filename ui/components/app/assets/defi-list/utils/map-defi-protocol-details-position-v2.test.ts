@@ -1,16 +1,15 @@
+import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
 import { mapDefiProtocolDetailsPositionV2ToToken } from './map-defi-protocol-details-position-v2';
-import type { DefiProtocolDetailsPosition } from './group-defi-protocol-details';
 
 describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
-  const position: DefiProtocolDetailsPosition = {
+  const position: DeFiUnderlyingPosition = {
     assetId: 'eip155:59144/erc20:0xmusd',
     chainId: 'eip155:59144',
     symbol: 'mUSD',
     name: 'MetaMask USD',
-    balance: '1000000000000000000',
-    normalizedBalance: 0.00001,
+    balance: '0.00001',
     decimals: 18,
-    tokenFiatAmount: 0.00001,
+    marketValue: 0.00001,
     positionType: 'supply',
     poolAddress: '0xpool',
     tokenImage: 'musd.png',
@@ -29,19 +28,32 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
   });
 
   it('marks native assets and keeps symbol separate from name', () => {
-    const nativePosition: DefiProtocolDetailsPosition = {
+    const nativePosition: DeFiUnderlyingPosition = {
       ...position,
       assetId: 'eip155:59144/slip44:60',
       symbol: 'ETH',
       name: 'Ethereum',
     };
 
-    expect(mapDefiProtocolDetailsPositionV2ToToken(nativePosition)).toMatchObject(
-      {
-        title: 'Ethereum',
-        symbol: 'ETH',
-        isNative: true,
-      },
-    );
+    expect(
+      mapDefiProtocolDetailsPositionV2ToToken(nativePosition),
+    ).toMatchObject({
+      title: 'Ethereum',
+      symbol: 'ETH',
+      isNative: true,
+    });
+  });
+
+  it('defaults fiat amount to 0 when market value is unavailable', () => {
+    const positionWithoutPrice: DeFiUnderlyingPosition = {
+      ...position,
+      marketValue: undefined,
+    };
+
+    expect(
+      mapDefiProtocolDetailsPositionV2ToToken(positionWithoutPrice),
+    ).toMatchObject({
+      tokenFiatAmount: 0,
+    });
   });
 });

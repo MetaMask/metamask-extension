@@ -6,7 +6,6 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import type { CaipChainId } from '@metamask/utils';
 import { decodeDefiRouteParam } from '../../../../shared/lib/defi-route';
 import {
   IconColor,
@@ -28,9 +27,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import DefiDetailsListV2 from '../../../components/app/assets/defi-list/defi-details-list-v2';
-import { useMultiAccountDefiBalances } from '../../../components/app/assets/defi-list/hooks/useMultiAccountDefiBalances';
-import { isDefiBalancesProcessing } from '../../../components/app/assets/defi-list/utils/group-defi-protocol-positions';
-import { groupDefiProtocolDetails } from '../../../components/app/assets/defi-list/utils/group-defi-protocol-details';
+import { useDeFiPositionsV2 } from '../../../components/app/assets/defi-list/hooks/useDeFiPositionsV2';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -41,29 +38,24 @@ export default function DeFiDetailsPageV2() {
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
   const selectedCurrency = useSelector(getSelectedCurrency);
-  const { data, isLoading, isError, isPending, isFetching } =
-    useMultiAccountDefiBalances();
+  const { positions, isLoading, isError } = useDeFiPositionsV2();
 
   const protocolDetails = useMemo(() => {
     if (!chainId || !protocolId) {
       return undefined;
     }
 
-    return groupDefiProtocolDetails(
-      data,
-      decodeDefiRouteParam(chainId) as CaipChainId,
-      decodeDefiRouteParam(protocolId),
+    const decodedChainId = decodeDefiRouteParam(chainId);
+    const decodedProtocolId = decodeDefiRouteParam(protocolId);
+
+    return positions.find(
+      (position) =>
+        position.chainId === decodedChainId &&
+        position.protocolId === decodedProtocolId,
     );
-  }, [chainId, data, protocolId]);
+  }, [chainId, positions, protocolId]);
 
-  const isResolvingDetails =
-    isLoading ||
-    isPending ||
-    isFetching ||
-    isDefiBalancesProcessing(data) ||
-    (!protocolDetails && !isError && data === undefined);
-
-  if (isResolvingDetails) {
+  if (isLoading) {
     return (
       <Box className="main-container asset__container flex justify-center pt-4">
         <PulseLoader />
@@ -124,7 +116,7 @@ export default function DeFiDetailsPageV2() {
           length={SensitiveTextLength.Medium}
         >
           {formatCurrencyWithMinThreshold(
-            protocolDetails.aggregatedMarketValue,
+            protocolDetails.marketValue,
             selectedCurrency,
           )}
         </SensitiveText>
