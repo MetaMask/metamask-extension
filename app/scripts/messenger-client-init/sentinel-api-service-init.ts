@@ -1,38 +1,32 @@
-import { Messenger } from '@metamask/messenger';
 import {
   SentinelApiService,
   type SentinelApiServiceMessenger,
 } from '@metamask-previews/sentinel-api-service';
-import type { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import type { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the SentinelApiService.
  *
- * The service messenger is derived from the `transactionControllerInitMessenger`
- * rather than a dedicated sentinel messenger, since the transaction controller
- * init messenger already has all required `SentinelApiService:*` actions
- * delegated to it.
+ * The `controllerMessenger` is the pre-built `SentinelApiServiceMessenger`
+ * returned by `getSentinelApiServiceMessenger`. It is a direct child of the
+ * root messenger so that `registerActionHandler` calls propagate to root,
+ * avoiding duplicate-registration conflicts with the TC init messenger
+ * delegation list.
  *
  * The `environment` option is intentionally omitted so the service defaults to
  * production (its default). The extension does not expose a Sentinel
  * environment toggle, so this preserves the previous behaviour.
  *
  * @param request - The request object.
- * @param request.controllerMessenger - The transaction controller init messenger.
+ * @param request.controllerMessenger - The SentinelApiService messenger.
  * @returns The initialized service.
  */
 export const SentinelApiServiceInit: MessengerClientInitFunction<
   SentinelApiService,
-  TransactionControllerInitMessenger
+  SentinelApiServiceMessenger
 > = ({ controllerMessenger }) => {
-  const serviceMessenger: SentinelApiServiceMessenger = new Messenger({
-    namespace: 'SentinelApiService',
-    parent: controllerMessenger,
-  });
-
   const messengerClient = new SentinelApiService({
-    messenger: serviceMessenger,
+    messenger: controllerMessenger,
     fetch: fetch.bind(globalThis),
     clientId: 'extension',
     clientVersion: process.env.METAMASK_VERSION,

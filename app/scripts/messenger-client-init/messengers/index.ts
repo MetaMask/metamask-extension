@@ -1,5 +1,6 @@
 import { noop } from 'lodash';
 import { getTransactionControllerInitMessenger } from '../../wallet-init/messengers/transaction-controller-messenger';
+import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 import {
   getAnalyticsControllerInitMessenger,
   getAnalyticsControllerMessenger,
@@ -576,7 +577,7 @@ export const MESSENGER_FACTORIES = {
     getInitMessenger: noop,
   },
   SentinelApiService: {
-    getMessenger: getTransactionControllerInitMessenger,
+    getMessenger: getSentinelApiServiceMessenger,
     getInitMessenger: noop,
   },
   ShieldController: {
