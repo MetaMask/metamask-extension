@@ -523,6 +523,7 @@ export class QrSyncController extends BaseController<
       this.#setError({
         code: QrSyncErrorCodes.OTP_EXPIRED,
         message: QrSyncErrorMessages.OTP_EXPIRED,
+        cancelOtp: false, // we don't need to invoke the OTP cancel callback here because the OTP has already expired
       });
     }, QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
   }
@@ -645,16 +646,18 @@ export class QrSyncController extends BaseController<
     error,
     code,
     message,
+    cancelOtp = true,
   }: {
     error?: unknown;
     code: QrSyncErrorCode;
     message?: string;
+    cancelOtp?: boolean;
   }): Promise<void> {
     const resolvedCode = resolveQrSyncErrorCode(error, code);
     const resolvedMessage =
       error instanceof Error && error.message ? error.message : (message ?? '');
 
-    await this.#cleanupSession(true);
+    await this.#cleanupSession(cancelOtp);
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.FAILED;
       state.qrSyncConnectionStatus = QrSyncConnectionStatus.ERRORED;

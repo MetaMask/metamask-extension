@@ -700,7 +700,6 @@ describe('QrSyncController', () => {
           QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
         );
 
-        expect(cancelOtp).toHaveBeenCalledTimes(1);
         expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
         expect(controller.state.qrSyncConnectionStatus).toBe('errored');
         expect(controller.state.qrSyncQrPayload).toBeNull();
