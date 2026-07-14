@@ -61,8 +61,11 @@ import {
   TransactionPayControllerGetStrategyAction,
 } from '@metamask/transaction-pay-controller';
 import type {
+  SentinelApiServiceCacheUpdatedEvent,
+  SentinelApiServiceGranularCacheUpdatedEvent,
   SentinelApiServiceGetNetworksAction,
   SentinelApiServiceGetSmartTransactionAction,
+  SentinelApiServiceInvalidateQueriesAction,
   SentinelApiServiceSimulateTransactionsAction,
   SentinelApiServiceSubmitRelayTransactionAction,
 } from '@metamask-previews/sentinel-api-service';
@@ -107,6 +110,7 @@ export type TransactionControllerInitMessengerActions =
   | RemoteFeatureFlagControllerGetStateAction
   | SentinelApiServiceGetNetworksAction
   | SentinelApiServiceGetSmartTransactionAction
+  | SentinelApiServiceInvalidateQueriesAction
   | SentinelApiServiceSimulateTransactionsAction
   | SentinelApiServiceSubmitRelayTransactionAction
   | SmartTransactionsControllerGetFeesAction
@@ -126,6 +130,8 @@ export type TransactionControllerInitMessengerActions =
 
 export type TransactionControllerInitMessengerEvents =
   | BridgeStatusControllerStateChangeEvent
+  | SentinelApiServiceCacheUpdatedEvent
+  | SentinelApiServiceGranularCacheUpdatedEvent
   | SmartTransactionsControllerSmartTransactionEvent
   | TransactionControllerPostTransactionBalanceUpdatedEvent
   | TransactionControllerStateChangeEvent
@@ -200,6 +206,7 @@ export function getTransactionControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'SentinelApiService:getNetworks',
       'SentinelApiService:getSmartTransaction',
+      'SentinelApiService:invalidateQueries',
       'SentinelApiService:simulateTransactions',
       'SentinelApiService:submitRelayTransaction',
       'SmartTransactionsController:getFees',

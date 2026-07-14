@@ -332,7 +332,7 @@ async function mockTransactionRelayStatus(
           transactions: [
             {
               hash: TRANSACTION_HASH,
-              status: success ? SentinelSmartTransactionStatus.Validated : 'FAILED',
+              status: success ? SentinelSmartTransactionStatus.Validated : SentinelSmartTransactionStatus.Failed,
             },
           ],
         },

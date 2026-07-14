@@ -1,23 +1,23 @@
 import {
   SentinelApiService,
-  SentinelApiServiceMessenger,
 } from '@metamask-previews/sentinel-api-service';
 import { getRootMessenger } from '../lib/messenger';
+import type { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
+import { getTransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getSentinelApiServiceMessenger } from './messengers/sentinel-api-service-messenger';
 import { SentinelApiServiceInit } from './sentinel-api-service-init';
 
 jest.mock('@metamask-previews/sentinel-api-service');
 
 function getInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<SentinelApiServiceMessenger>
+  MessengerClientInitRequest<TransactionControllerInitMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getSentinelApiServiceMessenger(baseMessenger),
+    controllerMessenger: getTransactionControllerInitMessenger(baseMessenger),
     initMessenger: undefined,
   };
 

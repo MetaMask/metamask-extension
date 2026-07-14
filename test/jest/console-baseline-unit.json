@@ -44,12 +44,6 @@
       "error: Failed to record sentinel_relay metrics": 1,
       "error: Failed to record sentinel_stx metrics": 1
     },
-    "app/scripts/lib/transaction/sentinel-api.test.ts": {
-      "error: Error: API connection error": 2,
-      "error: Error: API error!": 1,
-      "error: Error: Invalid JSON": 1,
-      "error: HttpError: Sentinel networks request failed": 1
-    },
     "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },
@@ -59,8 +53,8 @@
     "app/scripts/metamask-controller.actions.test.js": {
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "\u00b5WebSockets: Compatibility warnings": 1,
+      "\u00b5WebSockets: Fallback to Node implementation": 1
     },
     "app/scripts/metamask-controller.test.js": {
       "MetaMask: MetaMetrics invalid trait types": 1,
@@ -176,13 +170,13 @@
     },
     "shared/lib/contract-utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "\u00b5WebSockets: Compatibility warnings": 1,
+      "\u00b5WebSockets: Fallback to Node implementation": 1
     },
     "shared/lib/metametrics.test.ts": {
       "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "\u00b5WebSockets: Compatibility warnings": 1,
+      "\u00b5WebSockets: Fallback to Node implementation": 1
     },
     "shared/lib/selectors/index.test.ts": {
       "Reselect: Identity function warnings": 2
@@ -202,8 +196,8 @@
     },
     "shared/lib/transaction.utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "\u00b5WebSockets: Compatibility warnings": 1,
+      "\u00b5WebSockets: Fallback to Node implementation": 1
     },
     "ui/components/app/alert-system/contexts/alertActionHandler.test.ts": {
       "Test errors: Uncaught Errors": 1
@@ -486,7 +480,7 @@
       "Test errors: Uncaught Errors": 4
     },
     "ui/contexts/metametrics.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 1
+      "warn: \u26a0\ufe0f React Router Future Flag": 1
     },
     "ui/ducks/bridge/asset-selectors.test.ts": {
       "Reselect: Input stability warnings": 1
@@ -646,8 +640,8 @@
     "ui/pages/bridge/prepare/components/bridge-alert-banner-list.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "\u00b5WebSockets: Compatibility warnings": 1,
+      "\u00b5WebSockets: Fallback to Node implementation": 1
     },
     "ui/pages/bridge/prepare/components/destination-account-picker-modal.test.tsx": {
       "Reselect: Input stability warnings": 1
@@ -655,15 +649,15 @@
     "ui/pages/bridge/prepare/prepare-bridge-page-ensure-network.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "\u00b5WebSockets: Compatibility warnings": 1,
+      "\u00b5WebSockets: Fallback to Node implementation": 1
     },
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: Warning: A component is changing": 2,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "\u00b5WebSockets: Compatibility warnings": 1,
+      "\u00b5WebSockets: Fallback to Node implementation": 1
     },
     "ui/pages/bridge/quotes/multichain-bridge-quote-card.test.tsx": {
       "Reselect: Identity function warnings": 1
