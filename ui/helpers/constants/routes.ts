@@ -38,7 +38,7 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
-export const ADD_DEVICE_ROUTE = '/settings/add-device';
+export const SYNC_ACCOUNTS_ROUTE = '/sync-accounts';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -180,6 +180,11 @@ export const DEEP_LINK_ROUTE = '/link';
 export const BASIC_FUNCTIONALITY_OFF_ROUTE = '/basic-functionality-off';
 
 export const DEFI_ROUTE = '/defi';
+
+// Ramps (native buy) routes
+export const RAMPS_ROUTE = '/ramps';
+export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
+export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';

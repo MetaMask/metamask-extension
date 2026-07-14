@@ -8,9 +8,9 @@ import {
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
+import { useCachedEvmTransaction } from '../../hooks/activity/useCachedEvmTransaction';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
-import { useCachedEvmTransaction } from './useCachedEvmTransaction';
 import { useTransactionQuery } from './useTransactionQuery';
 
 type Props = {

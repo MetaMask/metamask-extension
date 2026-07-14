@@ -324,6 +324,9 @@ export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
 /* The password for the wallet used in e2e tests*/
 export const WALLET_PASSWORD = 'correct horse battery staple';
 
+/** Default OTP for QrSync E2E scenarios (matches mobile simulator). */
+export const QR_SYNC_E2E_OTP = '123456';
+
 export const MOCK_AUTH_CONNECTION_ID = 'torus-test-health';
 export const MOCK_GROUPED_AUTH_CONNECTION_ID = 'torus-test-health-aggregate';
 
