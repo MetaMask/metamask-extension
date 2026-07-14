@@ -1,15 +1,7 @@
 import React from 'react';
-import {
-  Box,
-  ButtonIconSize,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
+import { Box } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { PillTextFieldSearch } from '../../../ui/pill-text-field-search';
 
 /**
  * Renders a search component for the asset picker modal.
@@ -48,31 +40,19 @@ export const Search = ({
       paddingBottom={2}
       {...props}
     >
-      <TextFieldSearch
-        borderRadius={BorderRadius.LG}
+      <PillTextFieldSearch
+        autoFocus={autoFocus}
+        className="asset-picker-modal__search-list"
+        inputProps={{
+          'data-testid': 'asset-picker-modal-search-input',
+        }}
+        onChange={(event) => onChange(event.target.value)}
+        onClear={() => onChange('')}
         placeholder={
           placeholder ??
           t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
         }
         value={searchQuery}
-        onChange={(e) => onChange(e.target.value)}
-        error={false}
-        autoFocus={autoFocus}
-        autoComplete={false}
-        width={BlockSize.Full}
-        clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{
-          size: ButtonIconSize.Sm,
-        }}
-        style={{ paddingInline: 12 }}
-        showClearButton
-        className="asset-picker-modal__search-list"
-        inputProps={{
-          'data-testid': 'asset-picker-modal-search-input',
-          marginRight: 0,
-        }}
-        endAccessory={null}
-        size={TextFieldSearchSize.Lg}
       />
     </Box>
   );

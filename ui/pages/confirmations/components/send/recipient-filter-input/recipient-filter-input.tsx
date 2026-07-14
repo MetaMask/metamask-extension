@@ -1,15 +1,7 @@
 import React from 'react';
-import {
-  Box,
-  ButtonIconSize,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../../../components/component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../../helpers/constants/design-system';
+import { Box } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { PillTextFieldSearch } from '../../../../../components/ui/pill-text-field-search';
 
 type RecipientFilterInputProps = {
   searchQuery: string;
@@ -24,25 +16,14 @@ export const RecipientFilterInput = ({
 
   return (
     <Box paddingInline={4} paddingBottom={4}>
-      <TextFieldSearch
-        borderRadius={BorderRadius.LG}
-        placeholder={t('searchAnAcccountOrContact')}
-        value={searchQuery}
-        onChange={(e) => onChange(e.target.value)}
-        error={false}
-        autoComplete={false}
-        width={BlockSize.Full}
-        clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{
-          size: ButtonIconSize.Sm,
-        }}
-        style={{ paddingInline: 12 }}
-        showClearButton
+      <PillTextFieldSearch
         inputProps={{
           'data-testid': 'recipient-filter-search-input',
         }}
-        endAccessory={null}
-        size={TextFieldSearchSize.Lg}
+        onChange={(event) => onChange(event.target.value)}
+        onClear={() => onChange('')}
+        placeholder={t('searchAnAcccountOrContact')}
+        value={searchQuery}
       />
     </Box>
   );

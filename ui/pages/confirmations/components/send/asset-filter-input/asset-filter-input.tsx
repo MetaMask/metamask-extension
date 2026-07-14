@@ -1,15 +1,7 @@
 import React from 'react';
-import {
-  Box,
-  ButtonIconSize,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../../../components/component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../../helpers/constants/design-system';
+import { Box } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { PillTextFieldSearch } from '../../../../../components/ui/pill-text-field-search';
 
 type AssetFilterInputProps = {
   searchQuery: string;
@@ -26,26 +18,15 @@ export const AssetFilterInput = ({
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
-      <TextFieldSearch
-        borderRadius={BorderRadius.LG}
-        placeholder={placeholder ?? t('searchForAnAssetToSend')}
-        value={searchQuery}
-        onChange={(e) => onChange(e.target.value)}
-        error={false}
+      <PillTextFieldSearch
         autoFocus
-        autoComplete={false}
-        width={BlockSize.Full}
-        clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{
-          size: ButtonIconSize.Sm,
-        }}
-        style={{ paddingInline: 12 }}
-        showClearButton
         inputProps={{
           'data-testid': 'asset-filter-search-input',
         }}
-        endAccessory={null}
-        size={TextFieldSearchSize.Lg}
+        onChange={(event) => onChange(event.target.value)}
+        onClear={() => onChange('')}
+        placeholder={placeholder ?? t('searchForAnAssetToSend')}
+        value={searchQuery}
       />
     </Box>
   );

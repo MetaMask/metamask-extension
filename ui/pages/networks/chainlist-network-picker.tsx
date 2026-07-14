@@ -7,10 +7,9 @@ import {
   FontWeight,
   Text,
   TextButton,
-  TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
+import { PillTextFieldSearch } from '../../components/ui/pill-text-field-search';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
@@ -119,14 +118,11 @@ export const ChainlistNetworkPicker = ({
   return (
     <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
       <Box className="px-4 pb-4">
-        <TextFieldSearch
-          clearButtonOnClick={() => setSearchValue('')}
-          clearButtonProps={{ ariaLabel: t('clear') }}
-          className="mm-text-field-search w-full rounded-full border border-border-muted bg-background-default"
+        <PillTextFieldSearch
           data-testid="networks-page-chainlist-search"
           onChange={(event) => setSearchValue(event.target.value)}
+          onClear={() => setSearchValue('')}
           placeholder={t('searchNetworkNameOrChainId')}
-          size={TextFieldSize.Lg}
           value={searchValue}
         />
         <BannerAlert

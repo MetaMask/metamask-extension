@@ -6,4 +6,8 @@
   ::-webkit-search-results-decoration {
     display: none;
   }
+
+  input:focus {
+    outline: none;
+  }
 }

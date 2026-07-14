@@ -1,10 +1,7 @@
 import React, { useCallback } from 'react';
-import {
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../../../components/component-library';
-import { BorderRadius } from '../../../../../helpers/constants/design-system';
+import { TextFieldSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { PillTextFieldSearch } from '../../../../../components/ui/pill-text-field-search';
 
 export type SearchInputProps = {
   /** Current search value */
@@ -49,20 +46,19 @@ export const SearchInput = ({
   );
 
   return (
-    <TextFieldSearch
-      size={TextFieldSearchSize.Md}
-      placeholder={t('perpsSearchMarkets')}
+    <PillTextFieldSearch
       autoFocus={autoFocus}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      clearButtonOnClick={onClear}
-      borderRadius={BorderRadius.MD}
       data-testid="search-input-container"
       inputProps={{
         'data-testid': 'search-input',
-        onKeyDown: handleKeyDown,
         onClick: onInputClick,
+        onKeyDown: handleKeyDown,
       }}
+      onChange={(event) => onChange(event.target.value)}
+      onClear={onClear}
+      placeholder={t('perpsSearchMarkets')}
+      size={TextFieldSize.Md}
+      value={value}
     />
   );
 };

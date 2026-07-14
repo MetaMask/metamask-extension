@@ -1,15 +1,7 @@
 import React from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  Box,
-  ButtonIconSize,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
+import { Box } from '../../../component-library';
+import { PillTextFieldSearch } from '../../../ui/pill-text-field-search';
 
 const NetworkListSearch = ({
   searchQuery,
@@ -24,22 +16,18 @@ const NetworkListSearch = ({
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={0}>
-      <TextFieldSearch
-        size={TextFieldSearchSize.Lg}
-        width={BlockSize.Full}
-        placeholder={t('search')}
+      <PillTextFieldSearch
         autoFocus
-        value={searchQuery}
-        onFocus={() => setFocusSearch(true)}
-        onBlur={() => setFocusSearch(false)}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        clearButtonOnClick={() => setSearchQuery('')}
-        clearButtonProps={{
-          size: ButtonIconSize.Sm,
-        }}
-        inputProps={{ 'data-testid': 'network-redesign-modal-search-input' }}
-        borderRadius={BorderRadius.MD}
         data-testid="search-list"
+        inputProps={{
+          'data-testid': 'network-redesign-modal-search-input',
+          onBlur: () => setFocusSearch(false),
+          onFocus: () => setFocusSearch(true),
+        }}
+        onChange={(event) => setSearchQuery(event.target.value)}
+        onClear={() => setSearchQuery('')}
+        placeholder={t('search')}
+        value={searchQuery}
       />
     </Box>
   );

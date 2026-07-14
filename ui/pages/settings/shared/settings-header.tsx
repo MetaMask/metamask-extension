@@ -10,10 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Header } from '../../../components/multichain/pages/page';
-import {
-  HeaderSearch,
-  HeaderSearchVariant,
-} from '../../../components/component-library';
+import { PillTextFieldSearch } from '../../../components/ui/pill-text-field-search';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type SettingsHeaderProps = {
@@ -52,28 +49,41 @@ export const SettingsHeader = ({
 
   if (isSearchOpen) {
     return (
-      <HeaderSearch
-        variant={HeaderSearchVariant.Inline}
-        className={showSearchBorder ? 'border-b border-border-muted' : ''}
-        padding={3}
-        paddingHorizontal={4}
-        onClickCancelButton={() => {
-          onCloseSearch?.();
-          onSearchClear?.();
-        }}
-        textFieldSearchProps={{
-          value: searchValue,
-          placeholder: searchPlaceholder ?? t('search'),
-          className: 'rounded-full border border-border-muted',
-          onChangeText: onSearchChange,
-          onClickClearButton: onSearchClear,
-          showClearButton: false,
-          autoFocus: true,
-          inputProps: {
-            'data-testid': 'settings-header-search-input',
-          },
-        }}
-      />
+      <header
+        className={`mm-header-search w-full ${showSearchBorder ? 'border-b border-border-muted' : ''}`}
+      >
+        <Box
+          alignItems={BoxAlignItems.Center}
+          className="w-full"
+          flexDirection={BoxFlexDirection.Row}
+          gap={2}
+          padding={3}
+          paddingHorizontal={4}
+        >
+          <Box className="flex min-w-0 flex-1 items-center">
+            <PillTextFieldSearch
+              autoFocus
+              inputProps={{
+                'data-testid': 'settings-header-search-input',
+              }}
+              onChange={(event) => onSearchChange?.(event.target.value)}
+              onClear={() => onSearchClear?.()}
+              placeholder={searchPlaceholder ?? t('search')}
+              value={searchValue}
+            />
+          </Box>
+          <ButtonIcon
+            ariaLabel={t('close')}
+            data-testid="settings-header-search-close-button"
+            iconName={IconName.Close}
+            onClick={() => {
+              onCloseSearch?.();
+              onSearchClear?.();
+            }}
+            size={ButtonIconSize.Md}
+          />
+        </Box>
+      </header>
     );
   }
 

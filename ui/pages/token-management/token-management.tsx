@@ -95,10 +95,7 @@ import {
   type SearchResultImportPayload,
 } from '../../../shared/lib/token-search/convert-search-result';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
-import {
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../components/component-library';
+import { PillTextFieldSearch } from '../../components/ui/pill-text-field-search';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -1519,17 +1516,15 @@ export const TokenManagementPage = () => {
         paddingTop={2}
         paddingBottom={2}
       >
-        <TextFieldSearch
-          value={searchQuery}
-          placeholder={t('enterTokenNameOrAddressManageTokens')}
-          onChange={handleSearchChange}
-          clearButtonOnClick={handleSearchClear}
-          size={TextFieldSearchSize.Lg}
-          className="w-full"
+        <PillTextFieldSearch
           inputProps={{
             'data-testid': 'token-management-search-input',
             spellCheck: false,
           }}
+          onChange={handleSearchChange}
+          onClear={handleSearchClear}
+          placeholder={t('enterTokenNameOrAddressManageTokens')}
+          value={searchQuery}
         />
       </Box>
 
