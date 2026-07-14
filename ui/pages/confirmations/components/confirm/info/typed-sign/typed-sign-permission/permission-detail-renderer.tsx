@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import type { Rule ,
+import type {
+  Rule,
   AmountField,
   I18nFunction,
   PermissionRenderContext,

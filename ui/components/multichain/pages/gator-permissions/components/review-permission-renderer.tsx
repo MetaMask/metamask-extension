@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import type { Rule ,
+import type {
+  Rule,
   AmountField,
   ExpiryField,
   I18nFunction,
