@@ -82,6 +82,9 @@ module.exports = {
       '../../../../hooks/hardware-wallets/useHwSwapNavigation$'
     ] = hwSwapHooksMock;
     config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapActions$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
       '../../../../hooks/hardware-wallets/useHwSignTracker$'
     ] = hwSwapHooksMock;
     config.resolve.alias[

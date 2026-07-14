@@ -210,6 +210,15 @@ export function useHwSwapNavigation() {
   // Intentionally a no-op so the Submitted story stays mounted.
 }
 
+export function useHwSwapActions() {
+  return {
+    handleRetry: async () => undefined,
+    handleCancel: async () => undefined,
+    isRetrying: false,
+    hasRetriedRef: { current: false },
+  };
+}
+
 export function useHwSignTracker() {
   return {
     cancelCurrentBatch: async () => undefined,
