@@ -1,4 +1,5 @@
 import {
+  TransactionContainerType,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -37,6 +38,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
   const {
+    addedProtectionFeeFiat,
     estimatedFeeFiat,
     estimatedFeeFiatWith18SignificantDigits,
     estimatedFeeNative,
@@ -62,6 +64,11 @@ export const GasFeesDetails = (): JSX.Element | null => {
     transactionMeta?.type !== TransactionType.revokeDelegation;
 
   const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;
+  const showAddedProtectionFee = Boolean(
+    transactionMeta?.containerTypes?.includes(
+      TransactionContainerType.EnforcedSimulations,
+    ),
+  );
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -70,6 +77,8 @@ export const GasFeesDetails = (): JSX.Element | null => {
   return (
     <>
       <EditGasFeesRow
+        addedProtectionFeeFiat={addedProtectionFeeFiat}
+        showAddedProtectionFee={showAddedProtectionFee}
         fiatFee={estimatedFeeFiat}
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
