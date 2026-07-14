@@ -8290,6 +8290,15 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsErrorLoadingTokens": {
+    "message": "Error loading tokens"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "No tokens available"
+  },
+  "rampsShowAllTokens": {
+    "message": "Show all tokens"
+  },
   "rank": {
     "message": "Rank"
   },
