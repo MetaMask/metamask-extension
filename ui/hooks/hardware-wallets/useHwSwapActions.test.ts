@@ -10,12 +10,15 @@ import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useHwSwapActions } from './useHwSwapActions';
 
-jest.mock('../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils', () => ({
-  ...jest.requireActual(
-    '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
-  ),
-  cleanupPendingApproval: jest.fn(),
-}));
+jest.mock(
+  '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+  () => ({
+    ...jest.requireActual(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ),
+    cleanupPendingApproval: jest.fn(),
+  }),
+);
 
 const mockNavigate = jest.fn();
 const mockNavigateToBridgePage = jest.fn();
@@ -37,9 +40,8 @@ jest.mock('../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 
-const mockCleanupPendingApproval = cleanupPendingApproval as jest.MockedFunction<
-  typeof cleanupPendingApproval
->;
+const mockCleanupPendingApproval =
+  cleanupPendingApproval as jest.MockedFunction<typeof cleanupPendingApproval>;
 
 describe('useHwSwapActions', () => {
   const mockDispatchSignatureEvent = jest.fn();
