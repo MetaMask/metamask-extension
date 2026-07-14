@@ -10811,9 +10811,6 @@
     "message": "$1에 주의하세요.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "web3": {
-    "message": "웹3"
-  },
   "web3ShimUsageNotification": {
     "message": "현재의 웹사이트가 제거된 window.web3 API를 이용하려고 합니다. 이 사이트가 제대로 작동하지 않는 경우, $1을(를) 클릭해 자세히 알아보세요.",
     "description": "$1 is a clickable link."

@@ -10803,9 +10803,6 @@
     "message": "$1 से सावधान रहें।",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "web3": {
-    "message": "Web3"
-  },
   "web3ShimUsageNotification": {
     "message": "हमने देखा है कि वर्तमान वेबसाइट ने हटाए गए window.web3 API का इस्तेमाल करने की कोशिश की। यदि साइट में गड़बड़ी लगती है, तो कृपया अधिक जानकारी के लिए $1 पर क्लिक करें।",
     "description": "$1 is a clickable link."
