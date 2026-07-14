@@ -159,8 +159,12 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * Test-only state shared across startup and later port handling (hang simulations).
  * `null` in production builds so we do not keep loose mutable test globals.
  */
+/* istanbul ignore next: test-only E2E fixture reset state */
 const inTestState = inTest
-  ? { restoreInProgress: false, hasVaultAtStartup: null }
+  ? {
+      restoreInProgress: false,
+      hasVaultAtStartup: null,
+    }
   : null;
 
 const { safePersist, requestSafeReload, evacuate } =
@@ -2662,12 +2666,25 @@ initOrRestoreBackground().catch((error) => {
   log.error('initOrRestoreBackground failed', error);
 });
 
+/* istanbul ignore next: test-only E2E control path */
+async function resetFixtureStateForTest() {
+  await evacuate();
+  await persistenceManager.reset({ initializeStore: false });
+}
+
+/* istanbul ignore next: test-only E2E control path */
 if (inTest) {
+  const { setFixtureStateResetHandler } =
+    // Use `require` to make it easier to exclude this test code from the Browserify build.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+    require('../../test/e2e/background-socket/socket-background-to-mocha');
+  setFixtureStateResetHandler(resetFixtureStateForTest);
+
   // listen for test messages from the background
-  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
-  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
   browser.runtime.onMessage.addListener(async (message, _sender) => {
     if (message.type === 'STOP_PERSISTENCE') {
+      // Maintenance note: if no tests contain 'STOP_PERSISTENCE',
+      // remove this message branch. Only remove `evacuate` if it is otherwise unused.
       await evacuate();
       return { status: 'PERSISTENCE_STOPPED' };
     }

@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import { Mockttp } from 'mockttp';
-import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { PAGES, type Driver } from '../../webdriver/driver';
+import type { Driver } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 
@@ -87,7 +87,7 @@ const getFixtureOptions = (
   testContext: Mocha.Context,
   manifestTestingOverrides: Record<string, unknown> = {},
 ) => ({
-  ignoredConsoleErrors: [/getSubscriptions/u],
+  ignoredConsoleErrors: ['getSubscriptions'],
   title: testContext.test?.title,
   manifestFlags: {
     testing: {
@@ -337,28 +337,6 @@ const expectDataStateStorage = async (driver: Driver) =>
   waitForStorage<DataStorage>(driver, assertDataStateStorage, 'data storage');
 
 /**
- * Waits for the extension to reload and the home screen to appear.
- *
- * @param driver - WebDriver instance.
- */
-async function waitForRestart(driver: Driver) {
-  await driver.waitUntil(
-    async () => {
-      await driver.navigate(PAGES.HOME, { waitForControllers: false });
-      const title = await driver.driver.getTitle();
-      // the browser will return an error message for our UI's HOME page until
-      // the extension has restarted
-      return title === WINDOW_TITLES.ExtensionInFullScreenView;
-    },
-    // reload and check title as quickly a possible
-    { interval: 100, timeout: 10000 },
-  );
-
-  await driver.waitForControllersLoaded();
-  await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
-}
-
-/**
  * Ensures the home page is rendered and idle.
  *
  * @param driver - WebDriver instance.
@@ -392,7 +370,7 @@ const reloadExtension = async (driver: Driver) => {
   // get a new tab ready to use (required for Firefox)
   await driver.openNewPage('about:blank');
 
-  await waitForRestart(driver);
+  await driver.waitForExtensionStart();
 };
 
 /**

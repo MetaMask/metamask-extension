@@ -27,6 +27,10 @@ jest.mock('webextension-polyfill', () => {
       this.#state = value;
     }
 
+    async remove() {
+      this.#state = null;
+    }
+
     async clear() {
       this.#state = null;
     }
@@ -185,6 +189,7 @@ describe('FixtureExtensionStore', () => {
 
   describe('set', () => {
     it('sets the state', async () => {
+      setMockFixtureServerReply(MOCK_STATE);
       const store = new FixtureExtensionStore({ initialize: true });
 
       await store.set({
@@ -197,6 +202,37 @@ describe('FixtureExtensionStore', () => {
         data: { appState: { test: true } },
         meta: { version: 10 },
       });
+    });
+  });
+
+  describe('reset', () => {
+    it('reinitializes fixture state by default', async () => {
+      const nextState = {
+        data: { config: { hello: 'world' } },
+        meta: { version: 2 },
+      };
+      setMockFixtureServerReply(MOCK_STATE);
+      const store = new FixtureExtensionStore({ initialize: true });
+      await store.get();
+      setMockFixtureServerReply(nextState);
+
+      await store.reset();
+      const result = await store.get();
+
+      expect(result).toStrictEqual(nextState);
+    });
+
+    it('can reset storage without reinitializing fixture state', async () => {
+      setMockFixtureServerReply(MOCK_STATE);
+      const store = new FixtureExtensionStore({ initialize: true });
+      await store.get();
+      const interceptor = mockFixtureServerInterceptor().reply(200, MOCK_STATE);
+
+      await store.reset({ initialize: false });
+      const result = await store.get();
+
+      expect(result).toBe(null);
+      expect(interceptor.isDone()).toBe(false);
     });
   });
 
