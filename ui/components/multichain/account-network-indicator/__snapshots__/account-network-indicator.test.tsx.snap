@@ -10,7 +10,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
       <div
         aria-describedby="tippy-tooltip-1"
         class=""
-        data-original-title="This can be changed in "Settings > Alerts""
+        data-original-title="undefined"
         data-tooltipped=""
         style="display: inline;"
         tabindex="0"

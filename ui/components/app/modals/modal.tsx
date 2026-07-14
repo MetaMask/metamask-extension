@@ -25,6 +25,7 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal, { type FadeModalRef } from './fade-modal';
+import RampsInfoModal from './ramps/ramps-info-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -96,6 +97,66 @@ const MODALS: Record<string, ModalConfig> = {
 
   CONVERT_TOKEN_TO_NFT: {
     contents: <ConvertTokenToNftModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_UNSUPPORTED: {
+    contents: (
+      <RampsInfoModal
+        testId="ramps-unsupported-modal"
+        titleKey="rampsUnsupportedTitle"
+        bodyKey="rampsUnsupportedDescription"
+      />
+    ),
+    testId: 'ramps-unsupported-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_ELIGIBILITY_FAILED: {
+    contents: (
+      <RampsInfoModal
+        testId="ramp-eligibility-failed-modal"
+        titleKey="rampsEligibilityFailedTitle"
+        bodyKey="rampsEligibilityFailedDescription"
+      />
+    ),
+    testId: 'ramp-eligibility-failed-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_SERVICE_DISRUPTION: {
+    contents: (
+      <RampsInfoModal
+        testId="ramps-service-disruption-modal"
+        titleKey="rampsServiceDisruptionTitle"
+        bodyKey="rampsServiceDisruptionDescription"
+      />
+    ),
+    testId: 'ramps-service-disruption-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

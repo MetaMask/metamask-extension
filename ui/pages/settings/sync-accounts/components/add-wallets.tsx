@@ -101,6 +101,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           className="w-full"
           onClick={handleSyncWallets}
           isDisabled={selectedAccountGroups.length === 0}
+          data-testid="qr-sync-sync-button"
         >
           {t('continue')}
         </Button>

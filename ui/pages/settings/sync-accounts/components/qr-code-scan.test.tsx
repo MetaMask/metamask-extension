@@ -11,12 +11,11 @@ import { submitRequestToBackground } from '../../../../store/background-connecti
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import QrCodeScan from './qr-code-scan';
 
-jest.mock(
-  '../../../../components/app/deeplink-qr-code/deeplink-qr-code',
-  () => ({
-    QRCodeImage: () => <div data-testid="qr-code-image" />,
-  }),
-);
+jest.mock('qrcode-generator', () => () => ({
+  addData: jest.fn(),
+  make: jest.fn(),
+  createDataURL: jest.fn(() => 'data:image/gif;base64,mock-qr'),
+}));
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),

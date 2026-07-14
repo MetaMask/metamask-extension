@@ -309,6 +309,41 @@ describe('useTransactionEventToasts', () => {
         transactionId: 'musd-id1',
       });
     });
+
+    it('shows a pending toast for musdClaim transactions', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'claim-id1',
+          status: TransactionStatus.submitted,
+          type: TransactionType.musdClaim,
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith('tx-claim-id1', {
+        transactionId: 'claim-id1',
+      });
+    });
+
+    it('shows a pending toast for musdClaim transactions on approved', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'claim-approved-id1',
+          status: TransactionStatus.approved,
+          type: TransactionType.musdClaim,
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-claim-approved-id1',
+        {
+          transactionId: 'claim-approved-id1',
+        },
+      );
+    });
   });
 
   describe('non-EVM via AccountsController', () => {

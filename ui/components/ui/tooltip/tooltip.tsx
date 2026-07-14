@@ -64,6 +64,7 @@ const Tooltip = ({
   }
 
   const Tag = tag as keyof JSX.IntrinsicElements;
+  const resolvedTitle = html ? undefined : disabled ? '' : title;
 
   return React.createElement(
     Tag,
@@ -83,7 +84,7 @@ const Tooltip = ({
       size={size}
       offset={offset}
       style={style}
-      title={disabled ? '' : title}
+      {...(resolvedTitle !== undefined ? { title: resolvedTitle } : {})}
       trigger={trigger}
       open={open}
       theme={`tippy-tooltip--mm-custom ${theme}` as Theme}
