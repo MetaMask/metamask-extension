@@ -40,6 +40,18 @@ import MigrateToSplitStateTest from './migrate-to-split-state-test';
 const PAGE_CRASH_ERROR_MESSAGE =
   'Unable to find value of key "debug" for locale "en"';
 
+type PageCrashTriggerProps = {
+  shouldCrash: boolean;
+};
+
+const PageCrashTrigger = ({ shouldCrash }: PageCrashTriggerProps) => {
+  if (shouldCrash) {
+    throw new Error(PAGE_CRASH_ERROR_MESSAGE);
+  }
+
+  return null;
+};
+
 const DebugContent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,10 +60,6 @@ const DebugContent = () => {
   const triggerPageCrash = useCallback(() => {
     setShouldCrashPage(true);
   }, []);
-
-  if (shouldCrashPage) {
-    throw new Error(PAGE_CRASH_ERROR_MESSAGE);
-  }
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
@@ -218,6 +226,7 @@ const DebugContent = () => {
 
   return (
     <div className="settings-page__body">
+      <PageCrashTrigger shouldCrash={shouldCrashPage} />
       <Text className="settings-page__security-tab-sub-header__bold">
         States
       </Text>

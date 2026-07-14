@@ -84,7 +84,7 @@ function filterDiffLineAdditions(diff: string): string {
     return isAdditionLine;
   });
 
-  return diffAdditionLines.join('\n');
+  return diffAdditionLines.join('/n');
 }
 
 // This function returns all lines that are additions to new files that are being

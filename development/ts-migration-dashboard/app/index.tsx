@@ -4,7 +4,9 @@ import App from './components/App';
 
 const appElement = document.querySelector('#app');
 
-if (appElement) {
-  const root = createRoot(appElement);
-  root.render(<App />);
+if (!appElement) {
+  throw new Error('TS migration dashboard mount node "#app" not found');
 }
+
+const root = createRoot(appElement);
+root.render(<App />);
