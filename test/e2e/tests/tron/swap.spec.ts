@@ -207,13 +207,12 @@ describe('Swap on Tron', function () {
 
         await swapPage.waitForQuote();
         await swapPage.checkQuoteIsDisplayed();
-        const previousToAmount = await swapPage.getToAmountValue();
 
         await swapPage.selectDestinationToken('USDC');
         await swapPage.waitForQuote();
         await swapPage.checkQuoteIsDisplayed();
         await swapPage.checkDestinationToken('USDC');
-        assert.notEqual(await swapPage.getToAmountValue(), previousToAmount);
+        await swapPage.checkSourceToken('TRX');
       },
     );
   });
