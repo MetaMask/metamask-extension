@@ -145,12 +145,18 @@ export type TransactionControllerInitMessengerEvents =
   | TransactionControllerTransactionSubmittedEvent
   | TransactionControllerUnapprovedTransactionAddedEvent;
 
+type TransactionControllerInitMessengerInstance = Messenger<
+  'TransactionControllerInit',
+  TransactionControllerInitMessengerActions,
+  TransactionControllerInitMessengerEvents
+>;
+
 const transactionControllerInitMessengerCache = new WeakMap<
   RootMessenger<
     TransactionControllerInitMessengerActions,
     TransactionControllerInitMessengerEvents
   >,
-  ReturnType<typeof getTransactionControllerInitMessenger>
+  TransactionControllerInitMessengerInstance
 >();
 
 export function getTransactionControllerInitMessenger(
@@ -158,7 +164,7 @@ export function getTransactionControllerInitMessenger(
     TransactionControllerInitMessengerActions,
     TransactionControllerInitMessengerEvents
   >,
-) {
+): TransactionControllerInitMessengerInstance {
   const cached = transactionControllerInitMessengerCache.get(messenger);
   if (cached) {
     return cached;

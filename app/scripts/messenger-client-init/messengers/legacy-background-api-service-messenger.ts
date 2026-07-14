@@ -113,6 +113,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'ShieldController:start',
       'ShieldController:stop',
       'SentinelApiService:getNetworks',
+      'SentinelApiService:getSmartTransaction',
+      'SentinelApiService:submitRelayTransaction',
     ],
   });
 

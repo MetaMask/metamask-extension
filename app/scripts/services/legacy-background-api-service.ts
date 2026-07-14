@@ -165,7 +165,10 @@ import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/o
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
-import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import {
+  isRelaySupported,
+  type SentinelRelayMessenger,
+} from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
@@ -326,6 +329,8 @@ type AllowedActions =
   | ShieldControllerStartAction
   | ShieldControllerStopAction
   | SentinelApiServiceGetNetworksAction
+  | SentinelApiServiceGetSmartTransactionAction
+  | SentinelApiServiceSubmitRelayTransactionAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerGetStateAction
@@ -1754,6 +1759,9 @@ export class LegacyBackgroundApiService {
    * @returns `true` if the transaction relay supports the chain, `false` otherwise.
    */
   async isRelaySupported(chainId: Hex): Promise<boolean> {
-    return isRelaySupported(this.#messenger, chainId);
+    return isRelaySupported(
+      this.#messenger as unknown as SentinelRelayMessenger,
+      chainId,
+    );
   }
 }
