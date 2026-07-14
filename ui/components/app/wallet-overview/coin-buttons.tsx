@@ -64,7 +64,6 @@ import {
 } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { getIsRampsEnabled } from '../../../selectors/ramps-feature-flags';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { Toast, ToastContainer } from '../../multichain/toast';
@@ -363,8 +362,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { goToBuy } = useRampsNavigation();
-  const isRampsEnabled = useSelector(getIsRampsEnabled);
+  const { goToBuy, isRampsEnabled } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 

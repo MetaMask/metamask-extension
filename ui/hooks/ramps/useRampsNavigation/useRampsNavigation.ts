@@ -206,5 +206,7 @@ export default function useRampsNavigation() {
     ],
   );
 
-  return { goToBuy };
+  // Expose the rollout flag so callers can gate follow-up UI (e.g. the flag-off
+  // "tab opened" toast) without re-reading the selector themselves.
+  return { goToBuy, isRampsEnabled: isEnabled };
 }
