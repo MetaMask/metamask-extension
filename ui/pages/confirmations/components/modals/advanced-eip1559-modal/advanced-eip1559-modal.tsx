@@ -70,11 +70,11 @@ export const AdvancedEIP1559Modal = ({
     errors.gas || errors.maxFeePerGas || errors.maxPriorityFeePerGas,
   );
 
-  const handleSaveClick = useCallback(() => {
+  const handleSaveClick = useCallback(async () => {
     if (!transactionMeta?.id) {
       return;
     }
-    dispatch(
+    await dispatch(
       updateTransactionGasFees(transactionMeta.id, {
         userFeeLevel: UserFeeLevel.CUSTOM,
         ...pickBy(gasParams, Boolean),

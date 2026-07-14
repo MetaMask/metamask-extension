@@ -328,11 +328,6 @@ export type PreferencesControllerSetManageInstitutionalWalletsAction = {
   handler: PreferencesController['setManageInstitutionalWallets'];
 };
 
-export type PreferencesControllerSetServiceWorkerKeepAlivePreferenceAction = {
-  type: `PreferencesController:setServiceWorkerKeepAlivePreference`;
-  handler: PreferencesController['setServiceWorkerKeepAlivePreference'];
-};
-
 export type PreferencesControllerSetUseSidePanelAsDefaultAction = {
   type: `PreferencesController:setUseSidePanelAsDefault`;
   handler: PreferencesController['setUseSidePanelAsDefault'];
@@ -422,7 +417,6 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerSetDismissSeedBackUpReminderAction
   | PreferencesControllerSetOverrideContentSecurityPolicyHeaderAction
   | PreferencesControllerSetManageInstitutionalWalletsAction
-  | PreferencesControllerSetServiceWorkerKeepAlivePreferenceAction
   | PreferencesControllerSetUseSidePanelAsDefaultAction
   | PreferencesControllerSetShowDefaultAddressAction
   | PreferencesControllerSetDefaultAddressScopeAction

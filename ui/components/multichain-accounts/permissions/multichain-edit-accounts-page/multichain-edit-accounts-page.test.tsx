@@ -22,6 +22,21 @@ import {
   SnapsPermissionsRequestType,
 } from './multichain-edit-accounts-page';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const { Initial, Existing, None } = SnapsPermissionsRequestType;
 
 jest.mock('../../../../store/actions', () => ({
