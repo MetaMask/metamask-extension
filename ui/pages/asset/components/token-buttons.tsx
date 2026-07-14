@@ -65,7 +65,7 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
+  const handleBuyOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
@@ -139,7 +139,7 @@ const TokenButtons = ({
         }
         label={t('buy')}
         data-testid="token-overview-buy"
-        onClick={handleBuyAndSellOnClick}
+        onClick={handleBuyOnClick}
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={token.isERC721}

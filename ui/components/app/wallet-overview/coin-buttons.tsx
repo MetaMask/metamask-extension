@@ -411,7 +411,7 @@ const CoinButtons = ({
     transitionForward(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
-  const handleBuyAndSellOnClick = useCallback(async () => {
+  const handleBuyOnClick = useCallback(async () => {
     const opened = await goToBuy(getChainId());
     if (!opened) {
       return;
@@ -530,7 +530,7 @@ const CoinButtons = ({
         }
         data-testid={`${classPrefix}-overview-buy`}
         label={t('buy')}
-        onClick={handleBuyAndSellOnClick}
+        onClick={handleBuyOnClick}
         width={BlockSize.Full}
       />
       <IconButton
