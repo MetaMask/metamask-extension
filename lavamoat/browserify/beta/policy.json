@@ -985,7 +985,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
+        "@metamask/assets-controllers>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -1047,7 +1047,7 @@
         "@metamask/controller-utils": true,
         "@metamask/messenger": true,
         "@metamask/utils": true,
-        "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "eslint>fast-deep-equal": true
       }
     },
@@ -2317,7 +2317,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@metamask/react-data-query>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "@tanstack/react-query": true
       }
     },
@@ -2729,40 +2729,6 @@
         "uuid": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/transaction-controller": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/gas-fee-controller": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/transaction-pay-controller>bignumber.js": true,
-        "ethereumjs-util>bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
     "@metamask/transaction-pay-controller": {
       "globals": {
         "AbortController": true,
@@ -2774,12 +2740,13 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
+        "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
         "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
         "lodash": true
@@ -3585,8 +3552,47 @@
     },
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
+        "AbortController": true,
+        "CancelledError": true,
+        "InfiniteQueryObserver": true,
+        "Mutation": true,
+        "MutationCache": true,
+        "MutationObserver": true,
+        "QueriesObserver": true,
+        "Query": true,
+        "QueryCache": true,
+        "QueryClient": true,
+        "QueryObserver": true,
         "addEventListener": false,
-        "document": false
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "defaultScheduler": true,
+        "defaultShouldDehydrateMutation": true,
+        "defaultShouldDehydrateQuery": true,
+        "dehydrate": true,
+        "document": false,
+        "experimental_streamedQuery": true,
+        "focusManager": true,
+        "hashKey": true,
+        "hydrate": true,
+        "isCancelledError": true,
+        "isServer": true,
+        "keepPreviousData": true,
+        "matchMutation": true,
+        "matchQuery": true,
+        "noop": true,
+        "notifyManager": true,
+        "onlineManager": true,
+        "partialMatchKey": true,
+        "removeEventListener": true,
+        "replaceEqualDeep": true,
+        "setInterval": true,
+        "setTimeout": true,
+        "shouldThrowError": true,
+        "skipToken": true,
+        "timeoutManager": true
       }
     },
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
@@ -3597,16 +3603,8 @@
     },
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
-        "AbortController": true,
         "addEventListener": false,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": false,
-        "navigator": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
+        "document": false
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
@@ -3652,20 +3650,6 @@
         "shouldThrowError": true,
         "skipToken": true,
         "timeoutManager": true
-      }
-    },
-    "@metamask/react-data-query>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "navigator": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
