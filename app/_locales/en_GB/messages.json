@@ -8290,14 +8290,32 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsEligibilityFailedDescription": {
+    "message": "Please try again, or contact support if this keeps happening."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "We couldn’t verify your region"
+  },
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
   },
   "rampsNoTokensAvailable": {
     "message": "No tokens available"
   },
+  "rampsServiceDisruptionDescription": {
+    "message": "We’re experiencing a service disruption. Please try again later."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "Buying is temporarily unavailable"
+  },
   "rampsShowAllTokens": {
     "message": "Show all tokens"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "Buying crypto isn’t supported in your region yet."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "Buying isn’t available here"
   },
   "rank": {
     "message": "Rank"
