@@ -1,5 +1,5 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { SolanaNode, SOLANA_LOCAL_NODE_URL } from '../../../seeder/solana/node';
+import { SolanaNode } from '../../../seeder/solana/node';
 
 const SOLANA_PROVIDER_URL_REGEX =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
@@ -44,10 +44,4 @@ export async function proxySolanaBlockchainCalls(
         proxyPost(localNodeUrl, await req.body.getText()),
       ),
   ];
-}
-
-export async function proxyDefaultSolanaBlockchainCalls(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  return proxySolanaBlockchainCalls(mockServer, SOLANA_LOCAL_NODE_URL);
 }
