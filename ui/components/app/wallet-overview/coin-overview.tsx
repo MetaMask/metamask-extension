@@ -310,13 +310,7 @@ export const CoinOverview = ({
         getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
       );
     }
-  }, [
-    selectedAccountGroup,
-    navigate,
-    trackEvent,
-    chainId,
-    createEventBuilder,
-  ]);
+  }, [selectedAccountGroup, navigate, trackEvent, chainId, createEventBuilder]);
 
   const renderPercentageAndAmountChange = () => {
     const renderPercentageAndAmountChangeTrail = () => {

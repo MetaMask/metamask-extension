@@ -239,8 +239,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_SWAP = 'eth-overview-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
-  const ETH_OVERVIEW_BALANCE_EMPTY_STATE =
-    'coin-overview-balance-empty-state';
+  const ETH_OVERVIEW_BALANCE_EMPTY_STATE = 'coin-overview-balance-empty-state';
   const ETH_OVERVIEW_BALANCE_SKELETON = 'coin-overview-balance-skeleton';
 
   afterEach(() => {
@@ -331,7 +330,9 @@ describe('EthOverview', () => {
           balances: {},
         },
       };
-      const mockedStore = configureMockStore([thunk])(mockedStoreWithZeroBalance);
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithZeroBalance,
+      );
 
       const { queryByTestId } = renderWithProvider(
         <EthOverview />,
