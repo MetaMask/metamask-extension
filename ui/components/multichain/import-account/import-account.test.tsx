@@ -5,6 +5,12 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
+import {
+  MetaMetricsEventAccountImportType,
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ImportAccount } from './import-account';
 
@@ -20,11 +26,17 @@ const mockStore = configureMockStore(middlewares);
 
 const mockOnActionComplete = jest.fn();
 
-const renderImportAccount = (storeState: typeof mockState = mockState) => {
+const renderImportAccount = (
+  storeState: typeof mockState = mockState,
+  getMockTrackEvent?: () => jest.Mock,
+) => {
   const store = mockStore(storeState);
   return renderWithProvider(
     <ImportAccount onActionComplete={mockOnActionComplete} />,
     store,
+    '/',
+    undefined,
+    getMockTrackEvent,
   );
 };
 
@@ -197,6 +209,92 @@ describe('ImportAccount', () => {
       await waitFor(() => {
         expect(queryByText('Invalid private key')).toBeInTheDocument();
       });
+    });
+
+    it('tracks a failed private key import with the private key import type', async () => {
+      const mockTrackEvent = jest.fn();
+      mockedActions.importNewAccount.mockReturnValue(() =>
+        Promise.reject(new Error('Invalid private key')),
+      );
+
+      const { getByLabelText, getByText } = renderImportAccount(
+        mockState,
+        () => mockTrackEvent,
+      );
+
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      fireEvent.change(privateKeyInput, {
+        target: { value: 'invalid-key' },
+      });
+
+      fireEvent.click(getByText(messages.import.message));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      });
+
+      const trackedEvent = mockTrackEvent.mock.calls[0]?.[0];
+
+      expect(trackedEvent).toMatchObject({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAddFailed,
+      });
+      expect(trackedEvent.properties.account_type).toBe(
+        MetaMetricsEventAccountType.Imported,
+      );
+      expect(trackedEvent.properties.account_import_type).toBe(
+        MetaMetricsEventAccountImportType.PrivateKey,
+      );
+      expect(trackedEvent.properties.hd_entropy_index).toBe(0);
+      expect(trackedEvent.properties.is_suggested_name).toBe(true);
+    });
+
+    it('tracks a failed json import with the json import type', async () => {
+      const mockTrackEvent = jest.fn();
+      mockedActions.importNewAccount.mockReturnValue(() =>
+        Promise.reject(new Error('Invalid JSON file')),
+      );
+
+      const { getByRole, getByTestId, getByText } = renderImportAccount(
+        mockState,
+        () => mockTrackEvent,
+      );
+
+      fireEvent.change(getByRole('combobox'), {
+        target: { value: 'JSON File' },
+      });
+
+      const fileInput = getByTestId('file-input');
+      const mockFile = new File(['0'], 'test.json');
+
+      fireEvent.change(fileInput, {
+        target: { files: [mockFile] },
+      });
+
+      await waitFor(() => {
+        expect(getByText(messages.import.message)).not.toBeDisabled();
+      });
+
+      fireEvent.click(getByText(messages.import.message));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      });
+
+      const trackedEvent = mockTrackEvent.mock.calls[0]?.[0];
+
+      expect(trackedEvent).toMatchObject({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAddFailed,
+      });
+      expect(trackedEvent.properties.account_type).toBe(
+        MetaMetricsEventAccountType.Imported,
+      );
+      expect(trackedEvent.properties.account_import_type).toBe(
+        MetaMetricsEventAccountImportType.Json,
+      );
+      expect(trackedEvent.properties.hd_entropy_index).toBe(0);
+      expect(trackedEvent.properties.is_suggested_name).toBe(true);
     });
 
     it('disables import button when private key input is empty', () => {
