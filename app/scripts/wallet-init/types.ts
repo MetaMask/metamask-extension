@@ -39,6 +39,7 @@ export type InitializeWalletRequest = {
   getPermittedAccounts: (origin?: string) => string[] | Promise<string[]>;
   getTransactionMetricsRequest: () => TransactionMetricsRequest;
   infuraProjectId: string;
+  initLangCode?: string;
   messenger: WalletInitMessenger;
   showApprovalRequest?: ShowApprovalRequest;
   state: Record<string, Record<string, Json>>;

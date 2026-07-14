@@ -1149,7 +1149,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/connectivity-controller": {
+    "@metamask/wallet>@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
       }
@@ -2183,6 +2183,11 @@
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
+    "@metamask/wallet>@metamask/preferences-controller": {
+      "packages": {
+        "@metamask/base-controller": true
+      }
+    },
     "@metamask/profile-metrics-controller": {
       "globals": {
         "URL": true,
@@ -2600,6 +2605,41 @@
         "uuid": true
       }
     },
+    "@metamask/wallet>@metamask/transaction-controller": {
+      "globals": {
+        "Buffer.from": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "ethers>@ethersproject/wallet": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/wallet>@metamask/transaction-controller>bignumber.js": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-method-registry": true,
+        "webpack>events": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
     "@metamask/transaction-pay-controller": {
       "globals": {
         "AbortController": true,
@@ -2727,14 +2767,15 @@
         "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
-        "@metamask/connectivity-controller": true,
+        "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
         "@metamask/network-controller": true,
+        "@metamask/wallet>@metamask/preferences-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/storage-service": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/wallet>@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -4032,6 +4073,11 @@
       }
     },
     "@metamask/transaction-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/wallet>@metamask/transaction-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }

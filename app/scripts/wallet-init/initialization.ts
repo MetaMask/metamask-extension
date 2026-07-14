@@ -14,6 +14,7 @@ import {
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { preferencesControllerConfiguration } from './instance-options/preferences-controller';
 import type { InitializeWalletRequest } from './types';
 
 /**
@@ -32,6 +33,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
     getPermittedAccounts,
     getTransactionMetricsRequest,
     infuraProjectId,
+    initLangCode,
     messenger,
     showApprovalRequest,
     state,
@@ -41,6 +43,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
     getTransactionControllerInitMessenger(messenger);
 
   const wallet = new Wallet({
+    initializationConfigurations: [preferencesControllerConfiguration],
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
@@ -64,12 +67,18 @@ export function initializeWallet(request: InitializeWalletRequest) {
       }),
     },
     messenger,
-    state,
+    state: {
+      ...state,
+      PreferencesController: {
+        currentLocale: initLangCode ?? '',
+        ...state.PreferencesController,
+      },
+    },
   });
 
   // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
   // and the external-services preference, seeded from the same persisted state
-  // as the initial `disabled` value above. The controller is driven over the
+  // as the initial `disabled` value. The controller is driven over the
   // shared messenger, so no instance reference is needed.
   setupRemoteFeatureFlagToggle({
     messenger,

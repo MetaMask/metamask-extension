@@ -1285,6 +1285,29 @@ describe('MetaMaskController', () => {
         expect(secondVaultAccounts[0].metadata.name).toBe('');
       });
 
+      it('routes PreferencesController.setAccountLabel through the wallet-delegated AccountsController actions', async () => {
+        // The superset PreferencesController is built by @metamask/wallet via the
+        // override config; this exercises its getMessenger delegation of
+        // AccountsController:getAccountByAddress / :setAccountName end-to-end.
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+        await metamaskController.createNewVaultAndRestore(
+          'foobar1337',
+          TEST_SEED,
+        );
+
+        const label = metamaskController.preferencesController.setAccountLabel(
+          TEST_ADDRESS,
+          'Account Foo',
+        );
+
+        expect(label).toBe('Account Foo');
+        expect(
+          metamaskController.accountsController.getAccountByAddress(
+            TEST_ADDRESS,
+          ).metadata.name,
+        ).toBe('Account Foo');
+      });
+
       it('should restore any consecutive accounts with balances without extra zero balance accounts', async () => {
         // Give account 1 a balance
         jest
