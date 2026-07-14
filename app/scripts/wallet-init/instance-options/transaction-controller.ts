@@ -77,7 +77,6 @@ export function getTransactionControllerInstanceOptions({
     disableSwaps: false,
     getPermittedAccounts: async (origin?: string) =>
       getPermittedAccounts(origin),
-    // @ts-expect-error -- pre-existing type mismatch, TC API changed
     getSavedGasFees: getSavedGasFees.bind(null, {
       messenger: initMessenger,
     }),
@@ -266,7 +265,6 @@ function getSavedGasFees(
   }
 
   const savedGasFees: SavedGasFees = {
-    // @ts-expect-error -- pre-existing type mismatch, TC API changed
     level: savedGasFeeLevel,
   };
 
@@ -279,7 +277,6 @@ function getSavedGasFees(
   }
 
   if (savedGasFeePreference.gasPrice) {
-    // @ts-expect-error -- pre-existing type mismatch, TC API changed
     savedGasFees.gasPrice = savedGasFeePreference.gasPrice;
   }
 
@@ -373,7 +370,6 @@ function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
 
 function getSavedGasFeeLevel(
   userFeeLevel: string,
-  // @ts-expect-error -- pre-existing type mismatch, TC API changed
 ): SavedGasFees['level'] | undefined {
   const savedGasFeeLevels = [
     GasFeeEstimateLevel.Low,
