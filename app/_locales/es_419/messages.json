@@ -7959,9 +7959,6 @@
     "message": "Expira en $1 s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Se produjo un error al escanear el código QR. Genera uno nuevo para volver a intentarlo."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Este código QR corresponde a otra transacción. Cancélala e inténtalo de nuevo, asegurándote de escanear primero el código QR que aparece en MetaMask con tu billetera física.",
     "description": "Body text when a signature QR belongs to a previous transaction."

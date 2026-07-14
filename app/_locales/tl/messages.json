@@ -7951,9 +7951,6 @@
     "message": "Mai-expire pagkalipas ng $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Nagkaproblema sa pag-scan ng QR code. Bumuo ng panibagong QR code at subukang muli."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Ang QR na ito ay para sa ibang transaksyon. Kanselahin at subukan muli, tiyaking i-scan muna ang QR code na ipinapakita sa MetaMask kasama ng iyong wallet na hardware.",
     "description": "Body text when a signature QR belongs to a previous transaction."
