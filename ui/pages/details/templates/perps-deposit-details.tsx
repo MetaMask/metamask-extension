@@ -41,17 +41,12 @@ function useTransactionMeta(hash: string | undefined) {
   return localTransactions.get(hash || '')?.initialTransaction;
 }
 
-export function PerpsDepositDetails({ item }: Props) {
+export function PerpsDepositDetails({ item }: Readonly<Props>) {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { formatDateTime, formatCurrencyWithMinThreshold } = useFormatters();
   const transactionMeta = useTransactionMeta(item.hash);
-
-  if (!transactionMeta) {
-    return null;
-  }
-
-  const { metamaskPay } = transactionMeta;
+  const { metamaskPay } = transactionMeta ?? {};
   const { targetFiat, networkFeeFiat, bridgeFeeFiat, totalFiat } =
     metamaskPay || {};
 
@@ -71,7 +66,7 @@ export function PerpsDepositDetails({ item }: Props) {
         >
           <ActivityAvatar tokens={[PERPS_USDC_ASSET_ID]} />
           <Text variant="heading-lg" color="text-success-default">
-            +{formattedTargetFiat}
+            {formattedTargetFiat ? `+${formattedTargetFiat}` : null}
           </Text>
         </div>
 
@@ -104,15 +99,17 @@ export function PerpsDepositDetails({ item }: Props) {
           />
         </Section>
 
-        <Section>
-          <TransactionDetailsProvider transactionMeta={transactionMeta}>
-            <TransactionDetailsSummary />
-          </TransactionDetailsProvider>
-        </Section>
+        {transactionMeta ? (
+          <Section>
+            <TransactionDetailsProvider transactionMeta={transactionMeta}>
+              <TransactionDetailsSummary />
+            </TransactionDetailsProvider>
+          </Section>
+        ) : null}
       </div>
 
       <Footer>
-        {transactionMeta.status === TransactionMetaStatus.confirmed && (
+        {transactionMeta?.status === TransactionMetaStatus.confirmed && (
           <Button
             className="w-full"
             size={ButtonSize.Lg}
