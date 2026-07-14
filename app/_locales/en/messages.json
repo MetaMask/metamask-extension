@@ -1312,6 +1312,10 @@
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
   },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "Includes $1 for added protection",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
+  },
   "addedProtectionOptionalBadge": {
     "message": "Optional"
   },
@@ -8289,6 +8293,15 @@
   },
   "quotedTotalCost": {
     "message": "Total cost: $1"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Error loading tokens"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "No tokens available"
+  },
+  "rampsShowAllTokens": {
+    "message": "Show all tokens"
   },
   "rank": {
     "message": "Rank"
