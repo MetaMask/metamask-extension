@@ -7202,6 +7202,7 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
         this.getSecurityAlertsConfig.bind(this),
+        sender?.url,
       ),
     );
 
@@ -7706,6 +7707,7 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
         this.getSecurityAlertsConfig.bind(this),
+        sender?.url,
       ),
     );
 

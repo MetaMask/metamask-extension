@@ -56,6 +56,11 @@ const SECURITY_ALERT_RESPONSE_ERROR = {
 type PPOMRequest = JsonRpcRequest & {
   delegationMock?: Hex;
   origin?: string;
+  // Full sender URL (including path). Substituted for `origin` ONLY in the
+  // outbound Security Alerts API payload via `normalizePPOMRequest`. Never
+  // use to replace `origin` upstream: `origin` is the subject identity for
+  // permissions, snap targeting, network selection, and phishing detection.
+  originPath?: string;
 };
 
 export async function validateRequestWithPPOM({
@@ -197,7 +202,7 @@ function normalizePPOMRequest(
     controllerObject as TransactionMeta,
   );
 
-  const { delegationMock, id, jsonrpc, method, origin, params } =
+  const { delegationMock, id, jsonrpc, method, origin, originPath, params } =
     normalizedRequest;
 
   return {
@@ -205,7 +210,7 @@ function normalizePPOMRequest(
     id,
     jsonrpc,
     method,
-    origin,
+    origin: originPath ?? origin,
     params,
   };
 }
