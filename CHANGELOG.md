@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated transaction id copied text on activity details (#44313)
+- Bumped `@metamask/notification-services-controller` to support the v4 notifications API (#44263)
+- Updated min-height for login-option (#44265)
+- Changed the native asset icon (RBTC) for Rootstock (#44115)
 - Warning banner for add from chainlist (#44309)
 - Certain deeplink paths open directly without an interstitial (#43639)
 - Disabled CTA swap button for Tron when no network fees retrieved (#44107)
@@ -46,6 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed long asset names wrapping to two lines in the perps market list; they now truncate with an ellipsis on a single line (#44214)
 - Fixed MM Pay initial page to show the "Pay with" row at the bottom from the start instead of a centered pill (#44190)
 - Fixed bridge asset picker search not updating after changing the network filter while a search query is active (#44194)
+
+## [13.39.2]
+
+### Fixed
+
+- Fixed a memory leak on Firefox where closed MetaMask windows were retained in memory, growing extension memory use with every popup open (#44352)
 
 ## [13.39.1]
 
@@ -2730,7 +2740,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...HEAD
-[13.40.0]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...v13.40.0
+[13.40.0]: https://github.com/MetaMask/metamask-extension/compare/v13.39.2...v13.40.0
+[13.39.2]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...v13.39.2
 [13.39.1]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...v13.39.1
 [13.39.0]: https://github.com/MetaMask/metamask-extension/compare/v13.38.2...v13.39.0
 [13.38.2]: https://github.com/MetaMask/metamask-extension/compare/v13.38.1...v13.38.2
