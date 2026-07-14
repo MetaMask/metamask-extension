@@ -7951,9 +7951,6 @@
     "message": "$1सेकंड में एक्स्पायर होगा",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "QR कोड स्कैन करते समय कुछ गड़बड़ हो गई। दोबारा कोशिश करने के लिए नया QR कोड जेनरेट करें।"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "यह QR कोड किसी दूसरे ट्रांसेक्शन के लिए है। इसे कैंसिल करें और दोबारा कोशिश करें, और दोबारा कोशिश करने से पहले सुनिश्चित करें कि आप अपने हार्डवेयर वॉलेट से MetaMask में दिखाए गए QR कोड को पहले स्कैन करें।",
     "description": "Body text when a signature QR belongs to a previous transaction."
