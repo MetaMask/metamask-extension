@@ -24,7 +24,6 @@ const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
 const QrCodeScan = () => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
-  console.log('QR Payload', qrPayload);
   const lastQrPayloadRef = useRef<string | null>(null);
   if (qrPayload) {
     lastQrPayloadRef.current = qrPayload;

@@ -4,7 +4,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import {
   QR_SYNC_PHASES,
   QrSyncErrorCodes,
@@ -23,42 +24,31 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('./components', () => ({
-  QrCodeScan: () => <div data-testid="qr-code-scan" />,
-  EnterVerificationCode: () => <div data-testid="enter-verification-code" />,
-  EnterPassword: ({
-    onPasswordChange,
-  }: {
-    onPasswordChange: (password: string) => void;
-  }) => (
-    <button
-      data-testid="enter-password"
-      type="button"
-      onClick={() => onPasswordChange('test-password')}
-    >
-      password
-    </button>
-  ),
-  AddWallets: () => <div data-testid="add-wallets" />,
-  LoadingStep: () => <div data-testid="loading-step" />,
-  Success: () => <div data-testid="success" />,
-  SyncError: ({
-    onRetry,
-    onCancel,
-  }: {
-    onRetry: () => void;
-    onCancel: () => void;
-  }) => (
-    <div data-testid="sync-error">
-      <button type="button" data-testid="sync-error-retry" onClick={onRetry}>
-        retry
+jest.mock('./components', () => {
+  const actual = jest.requireActual('./components');
+
+  return {
+    ...actual,
+    QrCodeScan: () => <div data-testid="qr-code-scan" />,
+    EnterVerificationCode: () => <div data-testid="enter-verification-code" />,
+    EnterPassword: ({
+      onPasswordChange,
+    }: {
+      onPasswordChange: (password: string) => void;
+    }) => (
+      <button
+        data-testid="enter-password"
+        type="button"
+        onClick={() => onPasswordChange('test-password')}
+      >
+        password
       </button>
-      <button type="button" data-testid="sync-error-cancel" onClick={onCancel}>
-        cancel
-      </button>
-    </div>
-  ),
-}));
+    ),
+    AddWallets: () => <div data-testid="add-wallets" />,
+    LoadingStep: () => <div data-testid="loading-step" />,
+    Success: () => <div data-testid="success" />,
+  };
+});
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
@@ -169,7 +159,7 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+    expect(screen.getByText(messages.add_device_error_title.message)).toBeInTheDocument();
   });
 
   it('renders SyncError when the phase is failed', () => {
@@ -181,7 +171,7 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+    expect(screen.getByText(messages.add_device_error_title.message)).toBeInTheDocument();
   });
 
   it('renders QrCodeScan when the phase is failed with a QR_EXPIRED error', () => {
@@ -198,7 +188,7 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
-    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.add_device_error_title.message)).not.toBeInTheDocument();
   });
 
   it('renders EnterVerificationCode when the phase is failed with an OTP_EXPIRED error', () => {
@@ -215,7 +205,7 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
-    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.add_device_error_title.message)).not.toBeInTheDocument();
   });
 
   it('renders EnterVerificationCode when the phase is failed with an OTP_ATTEMPTS_EXCEEDED error', () => {
@@ -232,7 +222,7 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
-    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.add_device_error_title.message)).not.toBeInTheDocument();
   });
 
   it('renders SyncError when the phase is failed with a non-overridden error', () => {
@@ -248,11 +238,11 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
+    expect(screen.getByText(messages.add_device_error_title.message)).toBeInTheDocument();
     expect(screen.queryByTestId('qr-code-scan')).not.toBeInTheDocument();
   });
 
-  it('resets the session when retry is clicked on the error step', async () => {
+  it('creates a new session when retry is clicked on the error step', async () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -262,18 +252,18 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
 
-    fireEvent.click(screen.getByTestId('sync-error-retry'));
+    fireEvent.click(screen.getByText(messages.add_device_try_again.message));
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'messengerCall',
-        ['QrSyncController:resetState', []],
+        ['QrSyncController:createSession', []],
       );
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('resets and navigates away when cancel is clicked on the error step', async () => {
+  it('cancels the sync session when cancel is clicked on the error step', async () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -283,14 +273,14 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
 
-    fireEvent.click(screen.getByTestId('sync-error-cancel'));
+    fireEvent.click(screen.getByText(messages.cancel.message));
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'messengerCall',
-        ['QrSyncController:resetState', []],
+        ['QrSyncController:cancelSync', []],
       );
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });
