@@ -5,8 +5,12 @@ import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../helpers/constants/routes';
-import { createMockNotificationPreferences } from '../../hooks/metamask-notifications/mocks';
+import {
+  createMockNotificationCategories,
+  createMockNotificationPreferences,
+} from '../../hooks/metamask-notifications/mocks';
 import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
+import { useNotificationCategories } from '../../hooks/metamask-notifications/useNotificationCategories';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsContent } from './notifications-settings';
 
@@ -24,6 +28,13 @@ jest.mock(
   '../../hooks/metamask-notifications/useNotificationPreferences',
   () => ({
     useNotificationPreferences: jest.fn(),
+  }),
+);
+
+jest.mock(
+  '../../hooks/metamask-notifications/useNotificationCategories',
+  () => ({
+    useNotificationCategories: jest.fn(),
   }),
 );
 
@@ -47,6 +58,10 @@ describe('NotificationsSettingsContent', () => {
       refetchPreferences: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
+    });
+    jest.mocked(useNotificationCategories).mockReturnValue({
+      categories: createMockNotificationCategories(),
+      isLoading: false,
     });
   });
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -13,9 +13,7 @@ import {
   IconSize,
   ButtonIcon,
   ButtonIconSize,
-  Box,
 } from '../../components/component-library';
-import { Tabs, Tab } from '../../components/ui/tabs';
 import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
@@ -25,23 +23,19 @@ import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
 import { useSafeState } from '../../hooks/metamask-notifications/useNotifications';
-import { getNotifySnaps } from '../../selectors';
 import {
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
-import {
   deleteExpiredNotifications,
   getNotificationPreferences,
 } from '../../store/actions';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { ALL_NOTIFICATIONS_CATEGORY_ID } from './notification-categories-types';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
-import { NewFeatureTag } from './NewFeatureTag';
+import { NotificationsCategory } from './notifications-category';
+import { getNotificationCategoryId } from './get-notification-category-id';
 
 const useFeatureAnnouncementsEnabled = () => {
   const dispatch = useDispatch();
@@ -163,6 +157,19 @@ export const filterNotifications = (
   return notifications;
 };
 
+export const filterNotificationsByCategory = (
+  category: string,
+  notifications: INotification[],
+) => {
+  if (category === ALL_NOTIFICATIONS_CATEGORY_ID) {
+    return notifications;
+  }
+
+  return notifications.filter(
+    (notification) => getNotificationCategoryId(notification) === category,
+  );
+};
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
@@ -184,16 +191,20 @@ export default function Notifications() {
 
   const { isLoading, error } = useMetamaskNotificationsContext();
 
-  const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
+  const activeTab = TAB_KEYS.ALL;
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    ALL_NOTIFICATIONS_CATEGORY_ID,
+  );
   const combinedNotifications = useCombinedNotifications();
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
-    () => filterNotifications(activeTab, combinedNotifications),
-    [activeTab, combinedNotifications],
+    () =>
+      filterNotificationsByCategory(
+        selectedCategory,
+        filterNotifications(activeTab, combinedNotifications),
+      ),
+    [activeTab, selectedCategory, combinedNotifications],
   );
-
-  let hasNotifySnaps = false;
-  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
 
   useEffect(() => {
     dispatch(deleteExpiredNotifications());
@@ -231,39 +242,7 @@ export default function Notifications() {
         {t('notifications')}
       </Header>
       <Content padding={0}>
-        {hasNotifySnaps && (
-          <Tabs
-            activeTab={activeTab}
-            onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
-            tabListProps={{ className: 'px-4' }}
-          >
-            <Tab
-              data-testid={TAB_KEYS.ALL}
-              name={t('all')}
-              tabKey={TAB_KEYS.ALL}
-            />
-            <Tab
-              data-testid={TAB_KEYS.WALLET}
-              name={
-                <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                  gap={2}
-                >
-                  {t('wallet')}
-                  <NewFeatureTag />
-                </Box>
-              }
-              tabKey={TAB_KEYS.WALLET}
-            ></Tab>
-            <Tab
-              data-testid={TAB_KEYS.WEB3}
-              name={t('web3')}
-              tabKey={TAB_KEYS.WEB3}
-            />
-          </Tabs>
-        )}
+        <NotificationsCategory onSelect={setSelectedCategory} />
 
         <NotificationsList
           activeTab={activeTab}

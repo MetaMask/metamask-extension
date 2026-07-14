@@ -2,21 +2,28 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { useParams } from 'react-router-dom';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
-import { NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
-import { createMockNotificationPreferences } from '../../../hooks/metamask-notifications/mocks';
+import {
+  createMockNotificationCategories,
+  createMockNotificationPreferences,
+} from '../../../hooks/metamask-notifications/mocks';
 import {
   useNotificationPreferences,
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
+import { useNotificationCategories } from '../../../hooks/metamask-notifications/useNotificationCategories';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getNotificationsSettingsSectionRoute } from '../../notifications-settings/notifications-settings-routes';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn(),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -81,6 +88,13 @@ jest.mock(
 );
 
 jest.mock(
+  '../../../hooks/metamask-notifications/useNotificationCategories',
+  () => ({
+    useNotificationCategories: jest.fn(),
+  }),
+);
+
+jest.mock(
   '../../../contexts/metamask-notifications/metamask-notifications',
   () => ({
     useMetamaskNotificationsContext: () => ({
@@ -90,6 +104,9 @@ jest.mock(
 );
 
 const mockStore = configureMockStore([thunk]);
+
+const setCategoryId = (categoryId: string) =>
+  jest.mocked(useParams).mockReturnValue({ categoryId });
 
 const createInternalAccount = ({
   id,
@@ -122,6 +139,7 @@ describe('NotificationSectionSubPage', () => {
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
       .mockImplementation(() => undefined);
+    setCategoryId('walletActivity');
     jest.mocked(useAccountSettingsProps).mockReturnValue({
       data: {},
       initialLoading: false,
@@ -138,6 +156,10 @@ describe('NotificationSectionSubPage', () => {
       refetchPreferences: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
+    });
+    jest.mocked(useNotificationCategories).mockReturnValue({
+      categories: createMockNotificationCategories(),
+      isLoading: false,
     });
   });
 
@@ -169,9 +191,9 @@ describe('NotificationSectionSubPage', () => {
     });
 
     renderWithProvider(
-      <NotificationSectionSubPage sectionType="walletActivity" />,
+      <NotificationSectionSubPage />,
       store,
-      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      getNotificationsSettingsSectionRoute('walletActivity'),
     );
 
     expect(
@@ -290,9 +312,9 @@ describe('NotificationSectionSubPage', () => {
     });
 
     renderWithProvider(
-      <NotificationSectionSubPage sectionType="walletActivity" />,
+      <NotificationSectionSubPage />,
       store,
-      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      getNotificationsSettingsSectionRoute('walletActivity'),
     );
 
     expect(
@@ -392,9 +414,9 @@ describe('NotificationSectionSubPage', () => {
     );
 
     renderWithProvider(
-      <NotificationSectionSubPage sectionType="walletActivity" />,
+      <NotificationSectionSubPage />,
       store,
-      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      getNotificationsSettingsSectionRoute('walletActivity'),
     );
 
     fireEvent.click(
@@ -494,9 +516,9 @@ describe('NotificationSectionSubPage', () => {
     });
 
     renderWithProvider(
-      <NotificationSectionSubPage sectionType="walletActivity" />,
+      <NotificationSectionSubPage />,
       store,
-      NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      getNotificationsSettingsSectionRoute('walletActivity'),
     );
 
     expect(
@@ -524,10 +546,11 @@ describe('NotificationSectionSubPage', () => {
       });
 
     const renderSection = (
-      section: NotificationsSettingsSectionType,
+      categoryId: string,
       preferences: NotificationPreferences,
     ) => {
       const updatePreference = jest.fn();
+      setCategoryId(categoryId);
       jest.mocked(useNotificationPreferences).mockReturnValue({
         preferences,
         hasNotificationPreferences: true,
@@ -539,27 +562,34 @@ describe('NotificationSectionSubPage', () => {
         updatePreferencesSection: jest.fn(),
       });
       renderWithProvider(
-        <NotificationSectionSubPage sectionType={section} />,
+        <NotificationSectionSubPage />,
         buildStore(),
-        getNotificationsSettingsSectionRoute(section),
+        getNotificationsSettingsSectionRoute(categoryId),
       );
       return updatePreference;
     };
 
+    // `categoryId` intentionally differs from `ausKey` for a couple of
+    // these (per `createMockNotificationCategories`) to prove the write
+    // targets the AUS key, not the free-form category id.
     const cases: {
-      section: NotificationsSettingsSectionType;
+      categoryId: string;
+      ausKey: string;
       preferences: NotificationPreferences;
     }[] = [
       {
-        section: 'walletActivity',
+        categoryId: 'walletActivity',
+        ausKey: 'walletActivity',
         preferences: createMockNotificationPreferences(),
       },
       {
-        section: 'marketing',
+        categoryId: 'updatesAndRewards',
+        ausKey: 'marketing',
         preferences: createMockNotificationPreferences(),
       },
       {
-        section: 'agenticCli',
+        categoryId: 'agenticCli',
+        ausKey: 'agenticCli',
         preferences: {
           ...createMockNotificationPreferences(),
           agenticCli: {
@@ -571,7 +601,8 @@ describe('NotificationSectionSubPage', () => {
       ...(getIsPerpsIncludedInBuild()
         ? [
             {
-              section: 'perps' as const,
+              categoryId: 'tradingActivity',
+              ausKey: 'perps',
               preferences: createMockNotificationPreferences(),
             },
           ]
@@ -580,24 +611,24 @@ describe('NotificationSectionSubPage', () => {
 
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each(cases)(
-      'writes the $section in-app and push toggles to their own preference fields',
-      ({ section, preferences }: (typeof cases)[number]) => {
-        const updatePreference = renderSection(section, preferences);
+      'writes the $categoryId category toggles to its $ausKey AUS key',
+      ({ categoryId, ausKey, preferences }: (typeof cases)[number]) => {
+        const updatePreference = renderSection(categoryId, preferences);
 
         fireEvent.click(
-          screen.getByTestId(`${section}-in-app-notifications-toggle-input`),
+          screen.getByTestId(`${categoryId}-in-app-notifications-toggle-input`),
         );
         expect(updatePreference).toHaveBeenCalledWith(
-          section,
+          ausKey,
           'inAppNotificationsEnabled',
           false,
         );
 
         fireEvent.click(
-          screen.getByTestId(`${section}-push-notifications-toggle-input`),
+          screen.getByTestId(`${categoryId}-push-notifications-toggle-input`),
         );
         expect(updatePreference).toHaveBeenCalledWith(
-          section,
+          ausKey,
           'pushNotificationsEnabled',
           false,
         );

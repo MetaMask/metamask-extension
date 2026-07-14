@@ -10803,9 +10803,6 @@
     "message": "Προσοχή στο $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "web3": {
-    "message": "Web3"
-  },
   "web3ShimUsageNotification": {
     "message": "Παρατηρήσαμε ότι ο τρέχων ιστότοπος προσπάθησε να χρησιμοποιήσει το καταργημένο API window.web3. Εάν ο ιστότοπος φαίνεται να έχει παραβιαστεί, κάντε κλικ στο $1 για περισσότερες πληροφορίες.",
     "description": "$1 is a clickable link."

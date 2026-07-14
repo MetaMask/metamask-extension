@@ -1,17 +1,21 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
+  Text,
+  FontWeight,
+  TextVariant,
+  TextColor,
 } from '@metamask/design-system-react';
 import Preloader from '../../../components/ui/icon/preloader/preloader-icon.component';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
+import { useNotificationCategories } from '../../../hooks/metamask-notifications/useNotificationCategories';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { NotificationSettingsSection } from '../../notifications-settings/notification-settings-section';
@@ -19,18 +23,10 @@ import { NotificationSettingsSection } from '../../notifications-settings/notifi
 import { useNotificationAccountGroups } from '../../notifications-settings/notifications-settings-helpers';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getNotificationsSettingsSectionConfigs } from '../../notifications-settings/notifications-settings-types';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
 
-type NotificationSectionSubPageProps = {
-  sectionType: NotificationsSettingsSectionType;
-};
-
-export const NotificationSectionSubPage = ({
-  sectionType,
-}: NotificationSectionSubPageProps) => {
+export const NotificationSectionSubPage = () => {
   const navigate = useNavigate();
-  const t = useI18nContext();
+  const { categoryId } = useParams<{ categoryId: string }>();
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -42,13 +38,22 @@ export const NotificationSectionSubPage = ({
     refetchPreferences,
   } = useNotificationPreferences();
 
+  const { categories, isLoading: isLoadingCategories } =
+    useNotificationCategories();
+
   const section = useMemo(
     () =>
-      getNotificationsSettingsSectionConfigs(t).find(
-        (config) => config.type === sectionType,
+      getNotificationsSettingsSectionConfigs(categories).find(
+        (config) => config.categoryId === categoryId,
       ),
-    [sectionType, t],
+    [categories, categoryId],
   );
+
+  // Every section is sourced from the BE category catalog - without this, a
+  // direct navigation to e.g. the wallet-activity sub-page would find no
+  // matching `section` before the categories query resolves and incorrectly
+  // redirect away as if the section didn't exist.
+  const isLoadingSectionData = isLoadingCategories && !section;
 
   const notificationAccountGroups = useNotificationAccountGroups();
   const accountAddresses = useMemo(
@@ -61,6 +66,9 @@ export const NotificationSectionSubPage = ({
   const accountSettingsProps = useAccountSettingsProps(accountAddresses);
 
   useEffect(() => {
+    if (isLoadingSectionData) {
+      return;
+    }
     if (
       !section ||
       !isMetamaskNotificationsEnabled ||
@@ -71,20 +79,23 @@ export const NotificationSectionSubPage = ({
   }, [
     hasNotificationPreferences,
     isLoadingPreferences,
+    isLoadingSectionData,
     isMetamaskNotificationsEnabled,
     navigate,
     section,
   ]);
 
-  // Valid section with notifications enabled, but preferences are still being
-  // fetched from authenticated user storage. Show a loading indicator rather
-  // than a blank page (the redirect effect above intentionally waits for the
-  // fetch to settle before deciding whether to redirect).
+  // Valid section with notifications enabled, but preferences (or the BE
+  // category catalog backing this section) are still being fetched. Show a
+  // loading indicator rather than a blank page (the redirect effect above
+  // intentionally waits for both fetches to settle before deciding whether
+  // to redirect).
   if (
-    section &&
-    isMetamaskNotificationsEnabled &&
-    isLoadingPreferences &&
-    !preferences
+    isLoadingSectionData ||
+    (section &&
+      isMetamaskNotificationsEnabled &&
+      isLoadingPreferences &&
+      !preferences)
   ) {
     return (
       <Box
@@ -117,6 +128,20 @@ export const NotificationSectionSubPage = ({
       paddingHorizontal={4}
       gap={6}
     >
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Stretch}
+        gap={1}
+      >
+        <Text variant={TextVariant.HeadingSm}>{section.title}</Text>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Regular}
+          color={TextColor.TextAlternative}
+        >
+          {section.description}
+        </Text>
+      </Box>
       <NotificationSettingsSection
         section={section}
         preferences={preferences}
@@ -128,3 +153,5 @@ export const NotificationSectionSubPage = ({
     </Box>
   );
 };
+
+export default NotificationSectionSubPage;

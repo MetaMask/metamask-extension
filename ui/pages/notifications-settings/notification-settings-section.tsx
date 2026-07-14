@@ -24,12 +24,16 @@ import { useSafeState } from '../../hooks/metamask-notifications/useNotification
 import type {
   NotificationPreferenceChannelKey,
   NotificationPreferences,
+  NotificationPreferenceSection,
 } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 import type { NotificationWalletGroup } from './notifications-settings-helpers';
-import type { NotificationsSettingsSectionConfig } from './notifications-settings-types';
+import {
+  isChannelEnabledForAusKeys,
+  type NotificationsSettingsSectionConfig,
+} from './notifications-settings-types';
 
 type WalletActivityAccount =
   NotificationPreferences['walletActivity']['accounts'][number];
@@ -54,7 +58,7 @@ type NotificationSettingsSectionProps = {
   notificationAccountGroups: NotificationWalletGroup[];
   accountSettingsProps: AccountSettingsProps;
   updatePreference: (
-    type: NotificationsSettingsSectionConfig['type'],
+    ausKey: NotificationPreferenceSection,
     key: NotificationPreferenceChannelKey,
     value: boolean,
   ) => Promise<void>;
@@ -332,15 +336,22 @@ const MarketingSectionContent = () => {
   );
 };
 
-const SECTION_CONTENT_BY_TYPE: Partial<
-  Record<
-    NotificationsSettingsSectionConfig['type'],
-    React.FC<SectionContentProps>
-  >
-> = {
-  walletActivity: WalletActivitySectionContent,
-  marketing: MarketingSectionContent,
-};
+// Which extra widget (if any) a section mounts is keyed off the presence of
+// a specific AUS key in `ausKeys` - the accounts list is intrinsically tied
+// to the `walletActivity` preference (it edits `accounts` on that exact
+// preference object), not to whatever free-form category id the BE groups
+// it under.
+function getSectionContent(
+  ausKeys: string[],
+): React.FC<SectionContentProps> | null {
+  if (ausKeys.includes('walletActivity')) {
+    return WalletActivitySectionContent;
+  }
+  if (ausKeys.includes('marketing')) {
+    return MarketingSectionContent;
+  }
+  return null;
+}
 
 export function NotificationSettingsSection({
   section,
@@ -357,29 +368,42 @@ export function NotificationSettingsSection({
     null,
   );
 
-  // TODO: type casting until agentic cli preferences are not optional (next release)
-  const sectionPreferences =
-    section.type === 'agenticCli'
-      ? (preferences[section.type] as NonNullable<
-          (typeof preferences)['agenticCli']
-        >)
-      : preferences[section.type];
-  const SectionContent = SECTION_CONTENT_BY_TYPE[section.type];
+  // Only write to AUS keys this client's NotificationPreferences shape
+  // actually recognizes, in case the BE adds one before the client does.
+  const targetAusKeys = useMemo(
+    () =>
+      section.ausKeys.filter(
+        (ausKey): ausKey is NotificationPreferenceSection =>
+          ausKey in preferences,
+      ),
+    [preferences, section.ausKeys],
+  );
+  const SectionContent = getSectionContent(section.ausKeys);
 
   const handleTogglePreference = useCallback(
     async (key: NotificationPreferenceChannelKey) => {
       setPreferenceError(null);
-      const oldValue = Boolean(sectionPreferences[key]);
+      const oldValue = isChannelEnabledForAusKeys(
+        preferences,
+        section.ausKeys,
+        key,
+      );
       const newValue = !oldValue;
       try {
-        await updatePreference(section.type, key, newValue);
+        // A category can back multiple AUS preferences - toggling it means
+        // writing the same value to all of them at once.
+        await Promise.all(
+          targetAusKeys.map((ausKey) =>
+            updatePreference(ausKey, key, newValue),
+          ),
+        );
         trackEvent(
           createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
             .addCategory(MetaMetricsEventCategory.NotificationSettings)
             .addProperties({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              settings_type: `${section.type}_${key}`,
+              settings_type: `${section.categoryId}_${key}`,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               old_value: oldValue,
@@ -401,10 +425,12 @@ export function NotificationSettingsSection({
     [
       createEventBuilder,
       listNotifications,
-      section.type,
-      sectionPreferences,
+      preferences,
+      section.ausKeys,
+      section.categoryId,
       setPreferenceError,
       t,
+      targetAusKeys,
       trackEvent,
       updatePreference,
     ],
@@ -416,7 +442,7 @@ export function NotificationSettingsSection({
       alignItems={BoxAlignItems.Stretch}
       className="min-h-0 flex-1"
       gap={6}
-      data-testid={`notifications-settings-section-content-${section.type}`}
+      data-testid={`notifications-settings-section-content-${section.categoryId}`}
     >
       <Box
         flexDirection={BoxFlexDirection.Column}
@@ -424,20 +450,28 @@ export function NotificationSettingsSection({
         gap={4}
       >
         <NotificationsSettingsBox
-          value={sectionPreferences.pushNotificationsEnabled}
+          value={isChannelEnabledForAusKeys(
+            preferences,
+            section.ausKeys,
+            'pushNotificationsEnabled',
+          )}
           onToggle={() => handleTogglePreference('pushNotificationsEnabled')}
           error={preferenceError}
-          dataTestId={`${section.type}-push-notifications`}
+          dataTestId={`${section.categoryId}-push-notifications`}
         >
           <NotificationsSettingsType
             title={t('notificationsSettingsPushNotifications')}
           />
         </NotificationsSettingsBox>
         <NotificationsSettingsBox
-          value={sectionPreferences.inAppNotificationsEnabled}
+          value={isChannelEnabledForAusKeys(
+            preferences,
+            section.ausKeys,
+            'inAppNotificationsEnabled',
+          )}
           onToggle={() => handleTogglePreference('inAppNotificationsEnabled')}
           error={preferenceError}
-          dataTestId={`${section.type}-in-app-notifications`}
+          dataTestId={`${section.categoryId}-in-app-notifications`}
         >
           <NotificationsSettingsType
             title={t('notificationsSettingsInAppNotifications')}

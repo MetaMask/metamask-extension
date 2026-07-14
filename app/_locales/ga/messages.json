@@ -6384,9 +6384,6 @@
     "message": "Bí cúramach le $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "web3": {
-    "message": "Web3"
-  },
   "web3ShimUsageNotification": {
     "message": "Thugamar faoi deara gur thriail an suíomh Gréasáin reatha an API window.web3 a baineadh a úsáid. Más cosúil go bhfuil an suíomh briste, cliceáil ar $1 le haghaidh tuilleadh eolais.",
     "description": "$1 is a clickable link."

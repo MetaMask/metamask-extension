@@ -1,5 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
+import type { NotificationCategoryMetadata } from '../../pages/notifications/notification-categories-types';
 
 export const createMockNotificationPreferences = (
   overrides: Partial<NotificationPreferences> = {},
@@ -40,3 +41,46 @@ export const createMockNotificationPreferences = (
     ...overrides.socialAI,
   },
 });
+
+export const createMockNotificationCategories =
+  (): NotificationCategoryMetadata[] => [
+    {
+      categoryId: 'walletActivity',
+      ausKeys: ['walletActivity'],
+      label: 'Wallet activity',
+      description: 'Buys, sells, transfers, and swaps',
+      icon: 'Clock',
+    },
+    {
+      categoryId: 'tradingActivity',
+      ausKeys: ['perps'],
+      label: 'Trading activity',
+      description:
+        'Perps position changes, liquidations, funding rates, and margin updates',
+      icon: 'Candlestick',
+    },
+    {
+      categoryId: 'tradingSignals',
+      ausKeys: ['socialAI'],
+      label: 'Trading signals',
+      description:
+        'Updates from traders and assets you follow, plus curated market news',
+      icon: 'Flash',
+    },
+    {
+      categoryId: 'updatesAndRewards',
+      ausKeys: ['marketing'],
+      label: 'Updates and rewards',
+      description:
+        'Product updates, feature announcements, and new rewards campaigns',
+      icon: 'Megaphone',
+    },
+    {
+      categoryId: 'agenticCli',
+      ausKeys: ['agenticCli'],
+      label: 'Agentic CLI',
+      description:
+        'CLI connection requests, approvals, and session updates for Agentic',
+      icon: 'Code',
+    },
+  ];

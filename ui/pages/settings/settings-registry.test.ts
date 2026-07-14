@@ -3,10 +3,8 @@ import {
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
-  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
-  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTE,
   PRIVACY_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
@@ -123,21 +121,19 @@ describe('settings-registry', () => {
       );
     });
 
-    it('matches notification section sub-pages', () => {
+    it('matches any notification section sub-page via the dynamic route', () => {
       expect(
-        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE),
+        getSettingsRouteMeta('/settings/notifications/walletActivity'),
       ).toEqual(
         expect.objectContaining({
-          labelKey: 'notificationsSettingsWalletActivityTitle',
+          labelKey: 'notifications',
           parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
         }),
       );
 
-      expect(
-        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE),
-      ).toEqual(
+      expect(getSettingsRouteMeta('/settings/notifications/marketing')).toEqual(
         expect.objectContaining({
-          labelKey: 'notificationsSettingsMarketingTitle',
+          labelKey: 'notifications',
           parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
         }),
       );
@@ -182,9 +178,7 @@ describe('settings-registry', () => {
       expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
       expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE);
       expect(paths).toContain(`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`);
-      expect(paths).toContain(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE);
-      expect(paths).toContain(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE);
-      expect(paths).toContain(NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_SECTION_ROUTE);
     });
 
     it('does not include settings root', () => {

@@ -6113,12 +6113,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
   },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "CLI connection requests, approvals, and session updates for Agentic"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
-  },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
   },
@@ -6131,23 +6125,11 @@
   "notificationsSettingsMarketingConsent": {
     "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
   },
-  "notificationsSettingsMarketingDescription": {
-    "message": "Product updates, feature announcements, and new releases"
-  },
-  "notificationsSettingsMarketingTitle": {
-    "message": "Updates and rewards"
-  },
   "notificationsSettingsPageAllowNotifications": {
     "message": "Choose what you're notified about and how."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
-  },
-  "notificationsSettingsPerpsDescription": {
-    "message": "Perps position changes, liquidations, funding rates, and margin updates"
-  },
-  "notificationsSettingsPerpsTitle": {
-    "message": "Trading activity"
   },
   "notificationsSettingsPushNotifications": {
     "message": "Push"
@@ -6166,9 +6148,6 @@
   },
   "notificationsSettingsStatusPush": {
     "message": "Push"
-  },
-  "notificationsSettingsWalletActivityDescription": {
-    "message": "Buys, sells, transfers, swaps and rewards"
   },
   "notificationsSettingsWalletActivityTitle": {
     "message": "Wallet activity"
@@ -11191,9 +11170,6 @@
   "watchOutMessage": {
     "message": "Beware of $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "web3": {
-    "message": "Web3"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
