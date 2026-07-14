@@ -145,6 +145,8 @@ async function defineAndRunBuildTasks() {
       'Window',
       'Node',
       'self',
+      'global',
+      'se_exportedFunctionSymbol',
       // globals sentry needs to function
       '__SENTRY__',
       'appState',
