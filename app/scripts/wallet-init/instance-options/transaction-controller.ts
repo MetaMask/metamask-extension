@@ -373,7 +373,7 @@ function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
 
 function getSavedGasFeeLevel(
   userFeeLevel: string,
-// @ts-expect-error -- pre-existing type mismatch, TC API changed
+  // @ts-expect-error -- pre-existing type mismatch, TC API changed
 ): SavedGasFees['level'] | undefined {
   const savedGasFeeLevels = [
     GasFeeEstimateLevel.Low,
