@@ -9,8 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.40.0]
 
+### Uncategorized
+
+- Added order summary tooltips for Margin, Liquidation price, and Fees labels (#44290)
+- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6500 (#44110)
+- perf(6916): refactor core UX selectors to remove deep-equality subscriptions (#44235)
+- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6411 (#44109)
+- chore: setup codeownership of `metamask-controller` (#44131)
+
 ### Added
 
+- Added Stellar Asset Activation UI component (#44193)
+- Added a QR code prompt when opening a trending/explore deeplink on Extension, so users can continue on MetaMask mobile. (#44170)
 - Added Robinhood Chain as a featured network (#44310)
 - Added trustline support in transaction history v3 (#44200)
 - Added transition to settings page (#44074)
@@ -42,6 +52,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed an issue where the VIP badge could be missing on a fresh install even when VIP fee discounts were applied. (#44282)
+- Fixed misaligned warning icon in estimated changes section on malicious approval confirmations (#44207)
+- Ux changes (#44268)
 - Fixed an issue where users who closed the extension on the wallet-ready screen without tapping Done were shown the celebration screen again on reopen (#44232)
 - Fixed a bug where the Perps balance, P&L, and position details remained visible when the wallet balance privacy mode was enabled (#44262)
 - Fixed missing prices in Arc Swap asset picker (#44073)
