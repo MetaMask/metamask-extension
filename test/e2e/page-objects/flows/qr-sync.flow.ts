@@ -86,8 +86,6 @@ export async function completeQrSyncFromSyncPage({
   await syncAccountsPage.enterOtp(QR_SYNC_E2E_OTP);
   await syncAccountsPage.waitForLoadingStep();
 
-  await driver.delay(500);
-
   qrSyncSimulate('deliverSyncOffer');
   await syncAccountsPage.waitForPasswordScreen();
   await syncAccountsPage.enterPassword(WALLET_PASSWORD);
@@ -95,8 +93,6 @@ export async function completeQrSyncFromSyncPage({
   await syncAccountsPage.waitForSyncButton();
   await syncAccountsPage.confirmSync();
   await syncAccountsPage.waitForLoadingStep();
-
-  await driver.delay(500);
 
   qrSyncSimulate('deliverSyncCompleted');
   await syncAccountsPage.assertSuccessSyncedCounts(
@@ -108,15 +104,20 @@ export async function completeQrSyncFromSyncPage({
 /**
  * Runs the QrSync flow from Settings navigation through success.
  *
- * @param driver - The WebDriver instance.
- * @param expectedWalletCount - Expected synced entropy/HD wallet count.
- * @param expectedImportedAccountCount - Expected synced imported account count.
+ * @param options
+ * @param options.driver - The WebDriver instance.
+ * @param options.expectedWalletCount - Expected synced entropy/HD wallet count.
+ * @param options.expectedImportedAccountCount - Expected synced imported account count.
  */
-export async function completeQrSyncFlow(
-  driver: Driver,
-  expectedWalletCount: number,
-  expectedImportedAccountCount: number,
-): Promise<void> {
+export async function completeQrSyncFlow({
+  driver,
+  expectedWalletCount,
+  expectedImportedAccountCount,
+}: {
+  driver: Driver;
+  expectedWalletCount: number;
+  expectedImportedAccountCount: number;
+}): Promise<void> {
   const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
   await completeQrSyncFromSyncPage({
     syncAccountsPage,

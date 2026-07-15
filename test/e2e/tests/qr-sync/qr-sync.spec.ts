@@ -39,7 +39,11 @@ describe('QrSync', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { password: WALLET_PASSWORD });
-        await completeQrSyncFlow(driver, 1, 0);
+        await completeQrSyncFlow({
+          driver,
+          expectedWalletCount: 1,
+          expectedImportedAccountCount: 0,
+        });
       },
     );
   });
@@ -53,7 +57,11 @@ describe('QrSync', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { password: WALLET_PASSWORD });
         await importPrivateKeyAccount(driver);
-        await completeQrSyncFlow(driver, 1, 1);
+        await completeQrSyncFlow({
+          driver,
+          expectedWalletCount: 1,
+          expectedImportedAccountCount: 1,
+        });
       },
     );
   });
@@ -72,7 +80,11 @@ describe('QrSync', function () {
           validateBalance: false,
         });
         await importPrivateKeyAccount(driver, { accountListTimeout: 30000 });
-        await completeQrSyncFlow(driver, 2, 1);
+        await completeQrSyncFlow({
+          driver,
+          expectedWalletCount: 2,
+          expectedImportedAccountCount: 1,
+        });
       },
     );
   });

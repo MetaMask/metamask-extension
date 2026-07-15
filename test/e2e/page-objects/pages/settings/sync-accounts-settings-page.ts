@@ -74,7 +74,7 @@ class SyncAccountsSettingsPage {
   }
 
   async clickBack(): Promise<void> {
-    await this.driver.clickElement(this.backButton);
+    await this.driver.clickElementAndWaitToDisappear(this.backButton);
   }
 
   async clickDone(): Promise<void> {
@@ -82,11 +82,15 @@ class SyncAccountsSettingsPage {
   }
 
   async clickGenerateNewQrCode(): Promise<void> {
-    await this.driver.clickElement(this.generateNewQrCodeButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.generateNewQrCodeButton,
+    );
   }
 
   async clickStartWithNewQrCode(): Promise<void> {
-    await this.driver.clickElement(this.startWithNewQrCodeButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.startWithNewQrCodeButton,
+    );
   }
 
   async confirmSync(): Promise<void> {
