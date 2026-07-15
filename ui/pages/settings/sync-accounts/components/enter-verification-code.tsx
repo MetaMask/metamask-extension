@@ -260,7 +260,10 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
           {errorMessage}
         </Text>
         {errorMessage && (
-          <TextButton onClick={onRestart}>
+          <TextButton
+            data-testid="qr-sync-start-with-new-qr-code"
+            onClick={onRestart}
+          >
             {t('start_with_new_qr_code')}
           </TextButton>
         )}
