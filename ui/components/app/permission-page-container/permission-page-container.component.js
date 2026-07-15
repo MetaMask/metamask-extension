@@ -1,5 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { Component, useCallback, useContext } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
@@ -17,10 +24,8 @@ import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
-
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
-
 import {
   getCaip25CaveatValueFromPermissions,
   getCaip25PermissionsResponse,
@@ -30,76 +35,31 @@ import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/p
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
 import PermissionPageContainerContent from './permission-page-container-content';
 
-class PermissionPageContainerBase extends Component {
-  static propTypes = {
-    approvePermissionsRequest: PropTypes.func.isRequired,
-    rejectPermissionsRequest: PropTypes.func.isRequired,
-    t: PropTypes.func.isRequired,
-    trackEvent: PropTypes.func.isRequired,
-    selectedAccounts: PropTypes.array,
-    requestedChainIds: PropTypes.array,
-    /**
-     * Full CAIP account IDs for chain-agnostic permission approval.
-     * When provided, these are used instead of selectedAccounts for building
-     * the CAIP-25 permission response. This supports non-EVM chains like Solana.
-     */
-    selectedCaipAccountIds: PropTypes.arrayOf(PropTypes.string),
-    /**
-     * Full CAIP chain IDs for chain-agnostic permission approval.
-     * When provided, these are used instead of requestedChainIds.
-     */
-    selectedCaipChainIds: PropTypes.arrayOf(PropTypes.string),
-    allAccountsSelected: PropTypes.bool,
-    currentPermissions: PropTypes.object,
-    snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
-    setSnapsInstallPrivacyWarningShownStatus: PropTypes.func,
-    request: PropTypes.object,
-    requestMetadata: PropTypes.object,
-    targetSubjectMetadata: PropTypes.shape({
-      name: PropTypes.string,
-      origin: PropTypes.string.isRequired,
-      subjectType: PropTypes.string.isRequired,
-      extensionId: PropTypes.string,
-      iconUrl: PropTypes.string,
-    }),
-    navigate: PropTypes.func.isRequired,
-    connectPath: PropTypes.string.isRequired,
-  };
+function PermissionPageContainerBase({
+  approvePermissionsRequest,
+  rejectPermissionsRequest,
+  t,
+  trackEvent,
+  selectedAccounts = [],
+  requestedChainIds,
+  selectedCaipAccountIds = null,
+  selectedCaipChainIds = null,
+  allAccountsSelected = false,
+  currentPermissions = {},
+  snapsInstallPrivacyWarningShown,
+  setSnapsInstallPrivacyWarningShownStatus,
+  request = {},
+  requestMetadata = {},
+  targetSubjectMetadata,
+  navigate,
+  connectPath,
+}) {
+  const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
+    useState(false);
+  const hasTrackedTabOpenedRef = useRef(false);
+  const hasHandledSnapsPrivacyWarningRef = useRef(false);
 
-  static defaultProps = {
-    request: {},
-    requestMetadata: {},
-    selectedAccounts: [],
-    selectedCaipAccountIds: null,
-    selectedCaipChainIds: null,
-    allAccountsSelected: false,
-    currentPermissions: {},
-  };
-
-  state = {};
-
-  getRequestedPermissions() {
-    const { request } = this.props;
-
-    // if the request contains a diff this means its an incremental permission request
-    const permissions =
-      request?.diff?.permissionDiffMap ?? request.permissions ?? {};
-
-    return Object.entries(permissions).reduce(
-      (acc, [permissionName, permissionValue]) => {
-        if (permissionName === RestrictedMethods.wallet_snap) {
-          acc[permissionName] = this.getDedupedSnapPermissions();
-          return acc;
-        }
-        acc[permissionName] = permissionValue;
-        return acc;
-      },
-      {},
-    );
-  }
-
-  getDedupedSnapPermissions() {
-    const { request, currentPermissions } = this.props;
+  const getDedupedSnapPermissions = useCallback(() => {
     const snapKeys = getDedupedSnaps(request, currentPermissions);
     const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY] || {};
     return {
@@ -114,16 +74,31 @@ class PermissionPageContainerBase extends Component {
         },
       ],
     };
-  }
+  }, [currentPermissions, request]);
 
-  showSnapsPrivacyWarning() {
-    this.setState({
-      isShowingSnapsPrivacyWarning: true,
-    });
-  }
+  const requestedPermissions = useMemo(() => {
+    const permissions =
+      request?.diff?.permissionDiffMap ?? request.permissions ?? {};
 
-  componentDidMount() {
-    this.props.trackEvent({
+    return Object.entries(permissions).reduce(
+      (acc, [permissionName, permissionValue]) => {
+        if (permissionName === RestrictedMethods.wallet_snap) {
+          acc[permissionName] = getDedupedSnapPermissions();
+          return acc;
+        }
+        acc[permissionName] = permissionValue;
+        return acc;
+      },
+      {},
+    );
+  }, [getDedupedSnapPermissions, request]);
+
+  useEffect(() => {
+    if (hasTrackedTabOpenedRef.current) {
+      return;
+    }
+    hasTrackedTabOpenedRef.current = true;
+    trackEvent({
       category: MetaMetricsEventCategory.Auth,
       event: 'Tab Opened',
       properties: {
@@ -131,37 +106,35 @@ class PermissionPageContainerBase extends Component {
         legacy_event: true,
       },
     });
+  }, [trackEvent]);
 
-    if (this.props.request.permissions[WALLET_SNAP_PERMISSION_KEY]) {
-      if (this.props.snapsInstallPrivacyWarningShown === false) {
-        this.showSnapsPrivacyWarning();
-      }
+  useEffect(() => {
+    if (hasHandledSnapsPrivacyWarningRef.current) {
+      return;
     }
-  }
 
-  goBack() {
-    const { navigate, connectPath } = this.props;
+    if (!request.permissions?.[WALLET_SNAP_PERMISSION_KEY]) {
+      return;
+    }
+
+    hasHandledSnapsPrivacyWarningRef.current = true;
+
+    if (snapsInstallPrivacyWarningShown === false) {
+      setIsShowingSnapsPrivacyWarning(true);
+    }
+  }, [request.permissions, snapsInstallPrivacyWarningShown]);
+
+  const goBack = useCallback(() => {
     navigate(connectPath);
-  }
+  }, [connectPath, navigate]);
 
-  onCancel = () => {
-    const { request, rejectPermissionsRequest } = this.props;
+  const onCancel = useCallback(() => {
     rejectPermissionsRequest(request?.metadata?.id);
-  };
+  }, [rejectPermissionsRequest, request?.metadata?.id]);
 
-  onSubmit = () => {
-    const {
-      request: _request,
-      approvePermissionsRequest,
-      rejectPermissionsRequest,
-      selectedAccounts,
-      requestedChainIds,
-      selectedCaipAccountIds,
-      selectedCaipChainIds,
-    } = this.props;
-
+  const onSubmit = useCallback(() => {
     const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
-      _request.permissions,
+      request.permissions,
     );
 
     let permissionsResponse;
@@ -170,29 +143,18 @@ class PermissionPageContainerBase extends Component {
       selectedCaipAccountIds?.length > 0 &&
       selectedCaipChainIds?.length > 0
     ) {
-      // Use chain-agnostic approach when CAIP account IDs are provided
-      // This supports non-EVM chains like Solana, Bitcoin, etc.
       permissionsResponse = generateCaip25Caveat(
         requestedCaip25CaveatValue,
         selectedCaipAccountIds,
         selectedCaipChainIds,
       );
     } else if (selectedAccounts?.length > 0) {
-      // Fallback to EVM-only approach when accounts are selected (e.g., snaps flow)
       permissionsResponse = getCaip25PermissionsResponse(
         requestedCaip25CaveatValue,
         selectedAccounts.map((account) => account.address),
         requestedChainIds,
       );
     } else {
-      // No user selection occurred (no selectedCaipAccountIds and no selectedAccounts).
-      // This happens in scenarios like:
-      // - Network-only permission changes (adding a new chain without changing accounts)
-      // - Incremental permission requests that don't involve account selection UI
-      //
-      // Extract the account/chain IDs already embedded in the request's CAIP-25 caveat.
-      // We must preserve these values rather than passing empty arrays, which would
-      // effectively deny the permission or create an invalid state.
       const originalCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
         requestedCaip25CaveatValue,
       );
@@ -207,99 +169,113 @@ class PermissionPageContainerBase extends Component {
       );
     }
 
-    const request = {
-      ..._request,
+    const nextRequest = {
+      ...request,
       permissions: {
-        ..._request.permissions,
+        ...request.permissions,
         ...permissionsResponse,
       },
     };
 
-    if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(request);
+    if (Object.keys(nextRequest.permissions).length > 0) {
+      approvePermissionsRequest(nextRequest);
     } else {
       rejectPermissionsRequest(request?.metadata?.id);
     }
-  };
+  }, [
+    approvePermissionsRequest,
+    rejectPermissionsRequest,
+    request,
+    requestedChainIds,
+    selectedAccounts,
+    selectedCaipAccountIds,
+    selectedCaipChainIds,
+  ]);
 
-  onLeftFooterClick = () => {
-    const requestedPermissions = this.getRequestedPermissions();
+  const onLeftFooterClick = useCallback(() => {
     if (requestedPermissions[Caip25EndowmentPermissionName] === undefined) {
-      this.goBack();
+      goBack();
     } else {
-      this.onCancel();
+      onCancel();
     }
-  };
+  }, [goBack, onCancel, requestedPermissions]);
 
-  render() {
-    const {
-      request,
-      requestMetadata,
-      targetSubjectMetadata,
-      selectedAccounts,
-      allAccountsSelected,
-      requestedChainIds,
-      selectedCaipChainIds,
-    } = this.props;
+  const confirmSnapsPrivacyWarning = useCallback(() => {
+    hasHandledSnapsPrivacyWarningRef.current = true;
+    setIsShowingSnapsPrivacyWarning(false);
+    setSnapsInstallPrivacyWarningShownStatus(true);
+  }, [setSnapsInstallPrivacyWarningShownStatus]);
 
-    const requestedPermissions = this.getRequestedPermissions();
+  const footerLeftActionText = requestedPermissions[
+    Caip25EndowmentPermissionName
+  ]
+    ? t('cancel')
+    : t('back');
 
-    const setIsShowingSnapsPrivacyWarning = (value) => {
-      this.setState({
-        isShowingSnapsPrivacyWarning: value,
-      });
-    };
-
-    const confirmSnapsPrivacyWarning = () => {
-      setIsShowingSnapsPrivacyWarning(false);
-      this.props.setSnapsInstallPrivacyWarningShownStatus(true);
-    };
-
-    const footerLeftActionText = requestedPermissions[
-      Caip25EndowmentPermissionName
-    ]
-      ? this.props.t('cancel')
-      : this.props.t('back');
-
-    return (
-      <TemplateAlertContextProvider
-        onSubmit={() => this.onSubmit()}
-        confirmationId={request?.metadata?.id}
-      >
-        {this.state.isShowingSnapsPrivacyWarning && (
-          <SnapPrivacyWarning
-            onAccepted={() => confirmSnapsPrivacyWarning()}
-            onCanceled={() => this.onCancel()}
-          />
-        )}
-        <PermissionPageContainerContent
-          request={request}
-          requestMetadata={requestMetadata}
-          subjectMetadata={targetSubjectMetadata}
-          selectedPermissions={requestedPermissions}
-          requestedChainIds={requestedChainIds}
-          selectedCaipChainIds={selectedCaipChainIds}
-          selectedAccounts={selectedAccounts}
-          allAccountsSelected={allAccountsSelected}
+  return (
+    <TemplateAlertContextProvider
+      onSubmit={onSubmit}
+      confirmationId={request?.metadata?.id}
+    >
+      {isShowingSnapsPrivacyWarning && (
+        <SnapPrivacyWarning
+          onAccepted={confirmSnapsPrivacyWarning}
+          onCanceled={onCancel}
         />
-        <Box className="flex flex-col">
-          {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
-            <PermissionsConnectFooter />
+      )}
+      <PermissionPageContainerContent
+        request={request}
+        requestMetadata={requestMetadata}
+        subjectMetadata={targetSubjectMetadata}
+        selectedPermissions={requestedPermissions}
+        requestedChainIds={requestedChainIds}
+        selectedCaipChainIds={selectedCaipChainIds}
+        selectedAccounts={selectedAccounts}
+        allAccountsSelected={allAccountsSelected}
+      />
+      <Box className="flex flex-col">
+        {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
+          <PermissionsConnectFooter />
+        )}
+        <PermissionPageContainerFooter
+          onCancel={onLeftFooterClick}
+          cancelText={footerLeftActionText}
+          onSubmit={onSubmit}
+          disabled={containsEthPermissionsAndNonEvmAccount(
+            selectedAccounts,
+            requestedPermissions,
           )}
-          <PermissionPageContainerFooter
-            onCancel={() => this.onLeftFooterClick()}
-            cancelText={footerLeftActionText}
-            onSubmit={() => this.onSubmit()}
-            disabled={containsEthPermissionsAndNonEvmAccount(
-              selectedAccounts,
-              requestedPermissions,
-            )}
-          />
-        </Box>
-      </TemplateAlertContextProvider>
-    );
-  }
+        />
+      </Box>
+    </TemplateAlertContextProvider>
+  );
 }
+
+PermissionPageContainerBase.propTypes = {
+  approvePermissionsRequest: PropTypes.func.isRequired,
+  rejectPermissionsRequest: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired,
+  selectedAccounts: PropTypes.array,
+  requestedChainIds: PropTypes.array,
+  selectedCaipAccountIds: PropTypes.arrayOf(PropTypes.string),
+  selectedCaipChainIds: PropTypes.arrayOf(PropTypes.string),
+  allAccountsSelected: PropTypes.bool,
+  currentPermissions: PropTypes.object,
+  snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
+  setSnapsInstallPrivacyWarningShownStatus: PropTypes.func,
+  request: PropTypes.object,
+  requestMetadata: PropTypes.object,
+  targetSubjectMetadata: PropTypes.shape({
+    name: PropTypes.string,
+    origin: PropTypes.string.isRequired,
+    subjectType: PropTypes.string.isRequired,
+    extensionId: PropTypes.string,
+    iconUrl: PropTypes.string,
+  }),
+  navigate: PropTypes.func.isRequired,
+  connectPath: PropTypes.string.isRequired,
+};
 
 function PermissionPageContainer(props) {
   const t = useContext(I18nContext);

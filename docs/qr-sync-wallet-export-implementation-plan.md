@@ -29,8 +29,8 @@ syncAccounts()   ──sync-ready──────►  imports wallets
                    ◄──sync-completed─  done
 ```
 
-**Controller:** `app/scripts/controllers/qr-sync/qr-sync-controller.ts`  
-**UI:** `ui/pages/settings/add-device-tab/`  
+**Controller:** `app/scripts/controllers/qr-sync/qr-sync-controller.ts`
+**UI:** `ui/pages/settings/add-device-tab/`
 **Phases constant:** `shared/constants/qr-sync.ts` → `QR_SYNC_PHASES`
 
 ---
@@ -266,7 +266,7 @@ Require `deadline` to be a positive number (matches `QrSyncOffer` type). This fi
 
 #### Manual test steps
 
-1. Enable `ADD_DEVICE_SYNC_ENABLED=true` in `.metamaskrc` and rebuild.
+1. Enable `QR_SYNC_ENABLED=true` in `.metamaskrc` and rebuild.
 2. Settings → Sync with mobile.
 3. Complete QR + OTP flow with MetaMask Mobile.
 4. Select wallets with mixed account types; enter password.
@@ -346,6 +346,6 @@ When picking this up after a break:
 
 ## 11. Related PR / feature context
 
-- Feature flag: `ADD_DEVICE_SYNC_ENABLED` in `.metamaskrc.dist`
+- Feature flag: `QR_SYNC_ENABLED` in `.metamaskrc.dist`
 - Locale strings under `add_device_*`, `add_wallets_*`, `enter_verification_code_*`, `qrCode*` in `app/_locales/en/messages.json`
 - Dependencies: `@metamask/mobile-wallet-protocol-core`, `@metamask/mobile-wallet-protocol-dapp-client`, `eciesjs` (encrypted transport)
