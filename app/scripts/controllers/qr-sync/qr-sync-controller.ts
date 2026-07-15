@@ -583,14 +583,26 @@ export class QrSyncController extends BaseController<
         const syncErrorMessage =
           (parsedMessage.data as { message?: string })?.message ??
           QrSyncErrorMessages.SYNC_SESSION_ENCOUNTERED_ERROR;
-        const qrSyncError: QrSyncError = {
-          code: QrSyncErrorCodes.SYNC_FAILED,
-          message: syncErrorMessage,
-        };
-        this.#rejectSyncCompletion(new Error(syncErrorMessage));
+        const syncError = new Error(syncErrorMessage);
+
+        if (
+          this.state.qrSyncPhase === QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION
+        ) {
+          // Rejecting the `completion wait` routes failure through
+          // #failAwaitingSyncCompletion, which is the only path that should call
+          // #setError there.
+          // hence, skipping the #setError call here to avoid reporting the same
+          // SYNC_FAILED error to Sentry twice before the phase changes.
+          this.#rejectSyncCompletion(syncError);
+          return;
+        }
+
         this.#setError({
-          error: new Error(syncErrorMessage),
-          qrSyncError,
+          error: syncError,
+          qrSyncError: {
+            code: QrSyncErrorCodes.SYNC_FAILED,
+            message: syncErrorMessage,
+          },
         });
         return;
       }

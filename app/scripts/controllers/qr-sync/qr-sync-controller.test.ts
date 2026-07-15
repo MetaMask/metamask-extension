@@ -1119,6 +1119,26 @@ describe('QrSyncController', () => {
       });
     });
 
+    it('fails the session when mobile sends sync-error during sync completion', async () => {
+      const { controller, primaryGroupId } = setupController();
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+      await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
+
+      mockEmitSyncError({
+        message: 'Mobile could not complete the sync',
+      });
+      await flushAsyncWork();
+
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncError).toStrictEqual({
+        code: QrSyncErrorCodes.SYNC_FAILED,
+        message: 'Mobile could not complete the sync',
+      });
+    });
+
     it('ignores duplicate peer cancel messages after the session has ended', async () => {
       const { controller } = setupController();
 
@@ -1189,6 +1209,33 @@ describe('QrSyncController', () => {
         `QR sync session failed (${QrSyncErrorCodes.SYNC_FAILED})`,
       );
       expect(sentryError.cause).toBeInstanceOf(Error);
+      expect((sentryError.cause as Error).message).toBe(
+        'Mobile could not complete the sync',
+      );
+    });
+
+    it('reports sync-error during completion wait to Sentry only once', async () => {
+      const captureException = jest.fn();
+      const { controller, qrSyncMessenger, primaryGroupId } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+      await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
+
+      mockEmitSyncError({
+        message: 'Mobile could not complete the sync',
+      });
+      await flushAsyncWork();
+
+      expect(captureException).toHaveBeenCalledTimes(1);
+      const sentryError = captureException.mock.calls[0][0] as Error & {
+        cause: unknown;
+      };
+      expect(sentryError.message).toBe(
+        `QR sync session failed (${QrSyncErrorCodes.SYNC_FAILED})`,
+      );
       expect((sentryError.cause as Error).message).toBe(
         'Mobile could not complete the sync',
       );
