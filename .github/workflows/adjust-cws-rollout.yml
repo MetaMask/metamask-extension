@@ -109,8 +109,8 @@ jobs:
             EXTENSION_ID="${EXTENSION_ID_DEV}"
             PUBLISHER_ID="${PUBLISHER_ID_DEV}"
           elif [[ "${TARGET}" == "production" ]]; then
-            if [[ "${GITHUB_REF}" != "refs/heads/main" && ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
-              echo "::error::Production rollout must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+              echo "::error::Production rollout must run from refs/heads/main (current: ${GITHUB_REF})"
               exit 1
             fi
             WIF_PROVIDER="${WIF_PROVIDER_PROD}"
@@ -118,8 +118,8 @@ jobs:
             EXTENSION_ID="${EXTENSION_ID_PROD}"
             PUBLISHER_ID="${PUBLISHER_ID_PROD}"
           elif [[ "${TARGET}" == "flask" ]]; then
-            if [[ "${GITHUB_REF}" != "refs/heads/main" && ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
-              echo "::error::Flask rollout must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+              echo "::error::Flask rollout must run from refs/heads/main (current: ${GITHUB_REF})"
               exit 1
             fi
             WIF_PROVIDER="${WIF_PROVIDER_PROD}"
