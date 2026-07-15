@@ -67,6 +67,7 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'RegExp',
   // globals sentry needs to function
   '__SENTRY__',
+  'WebAssembly',
   'appState',
   'extra',
   'stateHooks',
