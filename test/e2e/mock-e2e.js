@@ -534,12 +534,13 @@ async function setupMocking(
       };
     });
 
-  // SENTRY_DSN_PERFORMANCE
-  // Intercept with a canned 200 rather than passing through to real sentry.io.
-  // Tracing emits hundreds of performance envelopes per test (~800 in a
-  // heavy multichain run); the real-network round-trips starve startup and
-  // flake the non-EVM account render, and consume the metamask-performance
-  // quota from CI. The log is kept for request accounting.
+  // `SENTRY_DSN_PERFORMANCE`
+  // Intercept with a canned 200 rather than passing through to real
+  // `sentry.io`. Tracing emits hundreds of performance envelopes per test
+  // (~800 in a heavy multichain run); the real-network round-trips starve
+  // startup and flake the non-EVM account render, and consume the
+  // `metamask-performance` quota from CI. The log is kept for request
+  // accounting.
   await server
     .forPost('https://sentry.io/api/4510302346608640/envelope/')
     .thenCallback((req) => {
