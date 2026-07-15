@@ -143,12 +143,8 @@ function mapDispatchToProps(dispatch: MetaMaskReduxDispatch) {
       } else {
         await dispatch(
           actions.ignoreTokens({
-            tokensToIgnore: address,
+            tokensToIgnore: [address],
             networkClientId,
-            chainId,
-          } as Parameters<typeof actions.ignoreTokens>[0] & {
-            chainId: string;
-            tokensToIgnore: string;
           }),
         );
       }

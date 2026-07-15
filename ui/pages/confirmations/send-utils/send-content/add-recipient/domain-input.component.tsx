@@ -169,7 +169,7 @@ export default function DomainInput({
               onChange={handleChange}
               onPaste={handlePaste}
               spellCheck="false"
-              value={selectedAddress || userInput}
+              value={userInput ?? ''}
               autoFocus
               data-testid="ens-input"
             />

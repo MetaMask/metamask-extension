@@ -42,7 +42,7 @@ export default function PageContainerFooter({
               'page-container__footer-button__cancel',
               footerButtonClassName,
             )}
-            onClick={(e) => onCancel(e)}
+            onClick={onCancel ? (e) => onCancel(e) : undefined}
             data-testid="page-container-footer-cancel"
             block
           >
@@ -58,7 +58,7 @@ export default function PageContainerFooter({
             footerButtonClassName,
           )}
           disabled={disabled}
-          onClick={(e) => onSubmit(e)}
+          onClick={onSubmit ? (e) => onSubmit(e) : undefined}
           data-testid="page-container-footer-next"
           startIconName={submitButtonIcon}
           block
