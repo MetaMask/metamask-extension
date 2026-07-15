@@ -452,7 +452,7 @@
     "@metamask/snaps-rpc-methods": "^17.1.0",
     "@metamask/snaps-sdk": "^11.2.0",
     "@metamask/snaps-utils": "^12.4.0",
-    "@metamask/solana-wallet-snap": "npm:@metamask-previews/solana-wallet-snap@2.10.0-preview-adbfe18",
+    "@metamask/solana-wallet-snap": "^2.10.0",
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.2.0",
