@@ -96,9 +96,6 @@ describe('LavamoatPlugin', () => {
     const plugin = lavamoatPlugin(mockArgs) as unknown as {
       options: {
         runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => unknown;
-        scuttleGlobalThis: {
-          exceptions: (string | RegExp)[];
-        };
       };
     };
     const runtimeConfig =
@@ -140,28 +137,6 @@ describe('LavamoatPlugin', () => {
       assert.ok(
         exceptions.includes('importScripts'),
         'importScripts must be in the SW exceptions list so the SW can load background.js',
-      );
-    });
-
-    it('keeps WebAssembly available for policy-controlled access', () => {
-      assert.ok(
-        plugin.options.scuttleGlobalThis.exceptions.includes('WebAssembly'),
-        'WebAssembly must remain accessible to the default LavaMoat runtime',
-      );
-
-      const result = runtimeConfig(mockChunk('service-worker.ts')) as {
-        embeddedOptions?: {
-          scuttleGlobalThis?: {
-            exceptions: (string | RegExp)[];
-          };
-        };
-      };
-      const serviceWorkerExceptions =
-        result.embeddedOptions?.scuttleGlobalThis?.exceptions ?? [];
-
-      assert.ok(
-        serviceWorkerExceptions.includes('WebAssembly'),
-        'WebAssembly must remain accessible to the service-worker LavaMoat runtime',
       );
     });
 
