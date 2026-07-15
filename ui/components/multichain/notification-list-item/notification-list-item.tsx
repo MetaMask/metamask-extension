@@ -1,9 +1,6 @@
 import React from 'react';
 
 import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
   Icon,
   IconName,
   IconColor,
@@ -49,25 +46,6 @@ export type NotificationListItemProps =
   | NotificationToken
   | NotificationPlatform;
 
-const CTAButton = (props: {
-  content: string;
-  link: string;
-  onClick: () => void;
-}) => (
-  <Button
-    variant={ButtonVariant.Secondary}
-    size={ButtonSize.Md}
-    onClick={() => {
-      props.onClick();
-      global.platform.openTab({ url: props.link });
-    }}
-    isFullWidth
-    endIconName={IconName.Arrow2UpRight}
-  >
-    {props.content}
-  </Button>
-);
-
 /**
  * `NotificationListItem` is a component that displays a single notification item.
  *
@@ -94,6 +72,9 @@ export const NotificationListItem = ({
 }: NotificationListItemProps) => {
   const handleClick = () => {
     onClick();
+    if ('cta' in restProps && restProps.cta) {
+      global.platform.openTab({ url: restProps.cta.link });
+    }
   };
 
   return (
@@ -194,15 +175,6 @@ export const NotificationListItem = ({
           )}
         </Box>
       </Box>
-
-      {/* CTA Button */}
-      {'cta' in restProps && restProps.cta && (
-        <CTAButton
-          content={restProps.cta.content}
-          link={restProps.cta.link}
-          onClick={handleClick}
-        />
-      )}
     </Box>
   );
 };

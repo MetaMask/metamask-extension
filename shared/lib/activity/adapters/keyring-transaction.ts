@@ -22,6 +22,28 @@ type FungibleAsset = Extract<
   { fungible: true }
 >;
 
+/**
+ * Custom labels for non-EVM transactions.
+ *
+ * The labels are used to map the transaction type to the title in the activity list and dialog.
+ * The labels are defined in the `transaction.details.typeLabel` property.
+ * For details: {@link https://github.com/MetaMask/metamask-extension/pull/38040}
+ */
+export enum CustomTransactionTypeLabel {
+  // Token requires one off approve to receive
+  TrustlineApprove = 'trustline-approve',
+  // Token requires revoke the approve to stop receiving
+  TrustlineDisapprove = 'trustline-disapprove',
+}
+
+function hasTrustlineTypeLabel(details: Transaction['details']): boolean {
+  // A flag to indicate if the transaction is a trustline type.
+  return [
+    String(CustomTransactionTypeLabel.TrustlineApprove),
+    String(CustomTransactionTypeLabel.TrustlineDisapprove),
+  ].includes(details?.typeLabel ?? '');
+}
+
 function mapStatus(status: Transaction['status']): Status {
   switch (status) {
     case KeyringTransactionStatus.Confirmed:
@@ -89,6 +111,10 @@ function getFees(transaction: Transaction) {
     return mappedFee ? [mappedFee] : [];
   });
 }
+
+// Amounts with more integer digits than this are treated as "unlimited" and hidden.
+// Mirrors TOKEN_VALUE_UNLIMITED_THRESHOLD = 10^15 used on EVM confirmation screens.
+const APPROVE_AMOUNT_MAX_INTEGER_DIGITS = 15;
 
 function mapBridgeStatus(bridgeStatus: BridgeStatusTypes): Status {
   switch (bridgeStatus) {
@@ -223,6 +249,66 @@ export function mapKeyringTransaction({
         fees,
       },
     };
+  }
+
+  if (transaction.type === KeyringTransactionType.TokenApprove) {
+    const rawToken = getToken(transaction.from, 'out');
+
+    if (hasTrustlineTypeLabel(transaction.details)) {
+      return {
+        type: 'assetActivation',
+        chainId,
+        status,
+        timestamp,
+        hash: transaction.id,
+        data: {
+          from,
+          token: rawToken ? { ...rawToken, amount: undefined } : rawToken,
+          fees,
+        },
+      };
+    }
+
+    // Hide the approved amount when its integer part exceeds 15 digits (~1 quadrillion),
+    // matching the EVM API confirmed path which never exposes the approved amount.
+    // This also prevents uint256.max (78 digits) from collapsing the title column.
+    const isUnlimited =
+      rawToken?.amount !== undefined &&
+      rawToken.amount.split('.')[0].length > APPROVE_AMOUNT_MAX_INTEGER_DIGITS;
+
+    return {
+      type: 'approveSpendingCap',
+      chainId,
+      status,
+      timestamp,
+      hash: transaction.id,
+      data: {
+        from,
+        token: rawToken
+          ? { ...rawToken, amount: isUnlimited ? undefined : rawToken.amount }
+          : rawToken,
+        fees,
+      },
+    };
+  }
+
+  if (transaction.type === KeyringTransactionType.TokenDisapprove) {
+    const rawToken = getToken(transaction.from, 'out');
+
+    if (hasTrustlineTypeLabel(transaction.details)) {
+      return {
+        type: 'assetDeactivation',
+        chainId,
+        status,
+        timestamp,
+        hash: transaction.id,
+        data: {
+          from,
+          token: rawToken ? { ...rawToken, amount: undefined } : rawToken,
+          fees,
+        },
+      };
+    }
   }
 
   return {

@@ -142,17 +142,13 @@ export async function waitForBackupVault(
  * @param driver - The WebDriver instance.
  * @param script - The script to run (e.g. corruption script, or simpleReloadScript).
  * @param options - Additional options.
- * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
- * @param options.optedIn
+ * @param options.optedIn - Whether the user has opted in to MetaMetrics. Defaults to false.
  * @returns The initial first account's address (before the script ran).
  */
 export async function onboardThenExecuteScript(
   driver: Driver,
   script: string,
-  {
-    participateInMetaMetrics = false,
-    optedIn,
-  }: OnboardingMetricsFlowOptions = {},
+  { optedIn = false }: OnboardingMetricsFlowOptions = {},
 ): Promise<string> {
   const initialWindow = await driver.driver.getWindowHandle();
 
@@ -164,7 +160,6 @@ export async function onboardThenExecuteScript(
   await completeCreateNewWalletOnboardingFlow({
     driver,
     password: WALLET_PASSWORD,
-    participateInMetaMetrics,
     optedIn,
     skipSRPBackup: true,
   });
@@ -207,7 +202,7 @@ export async function onboardThenExecuteScript(
  * @param driver - The WebDriver instance.
  * @param script - The script to break the DB (or simpleReloadScript when manifest flags handle it).
  * @param options - Additional options.
- * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.optedIn - Whether the user has opted in to MetaMetrics. Defaults to false.
  * @returns The initial first account's address (before corruption).
  */
 export async function onboardThenTriggerCorruptionFlow(

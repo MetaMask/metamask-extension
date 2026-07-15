@@ -49,7 +49,6 @@ ignores:
   - 'playwright'
   - 'wait-on'
   - 'tsx' # used in .devcontainer
-  - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
   - 'tweetnacl' # used by solana-wallet-standard
   - 'bs58' # used by solana-wallet-standard
   - '@metamask/design-system-shared' # scanned by Tailwind JIT to generate utility classes; dev dependency not imported directly

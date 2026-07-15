@@ -1,5 +1,5 @@
 /* eslint-disable import-x/no-duplicates */
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
@@ -36,7 +37,6 @@ import {
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import { PendingTransactionActionButtons } from '../pending-transaction-action-buttons/pending-transaction-action-buttons';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import {
   useBridgeTxHistoryData,
@@ -89,7 +89,7 @@ function TransactionListItemInner({
 
   const senderAddress = txParams?.from;
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const {
     showCancel: showCancelButton,
@@ -158,18 +158,21 @@ function TransactionListItemInner({
       return;
     }
     setShowDetails((prev) => {
-      trackEvent({
-        event: prev
-          ? MetaMetricsEventName.ActivityDetailsClosed
-          : MetaMetricsEventName.ActivityDetailsOpened,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          activity_type: category,
-        },
-      });
+      trackEvent(
+        createEventBuilder(
+          prev
+            ? MetaMetricsEventName.ActivityDetailsClosed
+            : MetaMetricsEventName.ActivityDetailsOpened,
+        )
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            activity_type: category,
+          })
+          .build(),
+      );
       return !prev;
     });
-  }, [isUnapproved, navigate, id, trackEvent, category]);
+  }, [isUnapproved, navigate, id, trackEvent, createEventBuilder, category]);
 
   return (
     <>
@@ -243,7 +246,6 @@ function TransactionListItemInner({
           showCancel={showCancelButton}
           onCancel={cancelTransaction}
           speedUp={speedUp}
-          primaryTransaction={transactionGroup.primaryTransaction}
         />
       </ActivityListItem>
       {showDetails &&

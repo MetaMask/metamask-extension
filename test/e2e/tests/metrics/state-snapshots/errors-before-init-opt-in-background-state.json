@@ -51,8 +51,9 @@
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "outdatedBrowserWarningLastShown": "object",
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "string",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -67,11 +68,21 @@
     },
     "AssetsController": "object",
     "AuthenticationController": {},
-    "BridgeStatusController": { "txHistory": "object" },
+    "BridgeController": { "inputPrimaryDenomination": "string" },
+    "BridgeStatusController": {
+      "quoteUpdateStatusStore": "object",
+      "txHistory": "object"
+    },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,
       "walletComplianceStatusMap": "object"
+    },
+    "ConfigRegistryController": {
+      "configs": "object",
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -138,6 +149,7 @@
         "bip122": "object",
         "eip155": "object",
         "solana": "object",
+        "stellar": "object",
         "tron": "object"
       },
       "nativeAssetIdentifiers": "object"
@@ -163,6 +175,7 @@
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": { "storageMetadata": "object" },
@@ -180,7 +193,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "string",
@@ -195,7 +207,9 @@
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
+        "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
@@ -232,6 +246,12 @@
       "watchEthereumAccountEnabled": "boolean"
     },
     "ProfileMetricsController": "object",
+    "RampsController": {
+      "countries": "object",
+      "orders": "object",
+      "providerAutoSelected": "boolean",
+      "userRegion": null
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
       "localOverrides": "object",
@@ -243,7 +263,7 @@
     },
     "RewardsController": {
       "rewardsAccounts": "object",
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": "object",
       "rewardsPointsEstimateHistory": "object",
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",

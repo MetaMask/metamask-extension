@@ -546,6 +546,22 @@
         "mockttp>@peculiar/x509>tsyringe": true
       }
     },
+    "@pmmmwh/react-refresh-webpack-plugin": {
+      "builtin": {
+        "path.dirname": true,
+        "path.join": true,
+        "querystring.stringify": true
+      },
+      "globals": {
+        "URL": true,
+        "__dirname": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "@pmmmwh/react-refresh-webpack-plugin>schema-utils": true,
+        "webpack": true
+      }
+    },
     "jest-preview>sirv>@polka/url": {
       "builtin": {
         "querystring.parse": true
@@ -611,11 +627,16 @@
     "@swc/core>@swc/core-win32-x64-msvc": {
       "native": true
     },
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false
+      }
+    },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "webpack>@webassemblyjs/ast": {
@@ -733,6 +754,24 @@
       "packages": {
         "schema-utils>ajv": true,
         "eslint>fast-deep-equal": true
+      }
+    },
+    "style-loader>schema-utils>ajv-keywords": {
+      "globals": {
+        "Buffer": true,
+        "console.error": true,
+        "console.warn": true
+      }
+    },
+    "eslint>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "eslint>fast-deep-equal": true,
+        "fast-json-stable-stringify": true,
+        "eslint>ajv>json-schema-traverse": true,
+        "uri-js": true
       }
     },
     "schema-utils>ajv": {
@@ -1829,26 +1868,23 @@
     },
     "webpack-dev-server>http-proxy-middleware": {
       "builtin": {
-        "querystring.stringify": true,
-        "url.parse": true,
-        "util.format": true,
-        "zlib.createBrotliDecompress": true,
-        "zlib.createGunzip": true,
-        "zlib.createInflate": true
+        "node:querystring.stringify": true,
+        "node:url.URL": true,
+        "node:url.parse": true,
+        "node:zlib.createBrotliDecompress": true,
+        "node:zlib.createGunzip": true,
+        "node:zlib.createInflate": true
       },
       "globals": {
         "Buffer.byteLength": true,
         "Buffer.concat": true,
-        "Buffer.from": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true
+        "Buffer.from": true
       },
       "packages": {
+        "nock>debug": true,
         "@viem/anvil>http-proxy": true,
         "del>is-glob": true,
-        "webpack-dev-server>http-proxy-middleware>is-plain-obj": true,
+        "webpack-dev-server>http-proxy-middleware>is-plain-object": true,
         "micromatch": true
       }
     },
@@ -2612,6 +2648,15 @@
         "schema-utils>ajv": true
       }
     },
+    "@pmmmwh/react-refresh-webpack-plugin>schema-utils": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "style-loader>schema-utils>ajv-keywords": true,
+        "eslint>ajv": true
+      }
+    },
     "webpack-dev-server>selfsigned": {
       "builtin": {
         "crypto.createPrivateKey": true,
@@ -3111,6 +3156,11 @@
         "AST_Node": true,
         "OutputStream": true,
         "process.env": true
+      }
+    },
+    "uri-js": {
+      "globals": {
+        "define": true
       }
     },
     "ws>utf-8-validate": {

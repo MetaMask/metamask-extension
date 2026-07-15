@@ -39,6 +39,7 @@ import {
   getAggregatedGatorPermissionsCountAcrossAllChains,
   getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
+import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
 import { PermissionListItem } from './components/permission-list-item';
 
 export const GatorPermissionsPage = () => {
@@ -46,12 +47,13 @@ export const GatorPermissionsPage = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
 
   const fromPath = searchParams.get('from') ?? undefined;
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(DEFAULT_ROUTE);
     }

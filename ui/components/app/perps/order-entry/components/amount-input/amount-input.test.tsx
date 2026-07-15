@@ -6,12 +6,18 @@ import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import { AmountInput } from './amount-input';
+import { resetSizeDenominations } from './size-denomination-store';
 
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
   },
 });
+
+/** Switch the single size input into asset (token) denomination. */
+const toggleToAsset = () => {
+  fireEvent.click(screen.getByTestId('toggle-denomination'));
+};
 
 describe('AmountInput', () => {
   const defaultProps = {
@@ -27,6 +33,9 @@ describe('AmountInput', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // The denomination store is module-level and persists across renders; reset
+    // it so each test starts from the default USD denomination.
+    resetSizeDenominations();
   });
 
   describe('rendering', () => {
@@ -62,30 +71,26 @@ describe('AmountInput', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('renders the amount input field', () => {
+    it('renders a single amount input field', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
+      // The previous dual-field layout is gone.
+      expect(
+        screen.queryByTestId('amount-input-token-field'),
+      ).not.toBeInTheDocument();
     });
 
-    it('renders the token amount input field', () => {
+    it('renders the denomination toggle', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
-      expect(
-        screen.getByTestId('amount-input-token-field'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('toggle-denomination')).toBeInTheDocument();
     });
 
     it('renders the slider', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('amount-slider')).toBeInTheDocument();
-    });
-
-    it('displays the $ prefix', () => {
-      renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
-
-      expect(screen.getByText('$')).toBeInTheDocument();
     });
 
     it('displays percentage pill', () => {
@@ -99,9 +104,78 @@ describe('AmountInput', () => {
       expect(input).toHaveValue('25');
       expect(screen.getByText('%')).toBeInTheDocument();
     });
+
+    it('masks the available-to-trade balance when privacy mode is enabled', () => {
+      const privacyStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          preferences: {
+            ...mockState.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      renderWithProvider(<AmountInput {...defaultProps} />, privacyStore);
+
+      expect(screen.getByText('••••••')).toBeInTheDocument();
+    });
   });
 
-  describe('amount input', () => {
+  describe('denomination toggle', () => {
+    it('defaults to USD denomination', () => {
+      renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
+
+      expect(
+        screen.getByTestId('amount-input-denomination-unit'),
+      ).toHaveTextContent('USD');
+      const input = screen
+        .getByTestId('amount-input-field')
+        .querySelector('input');
+      expect(input).toHaveAttribute('placeholder', '0.00');
+    });
+
+    it('switches to the asset denomination on toggle and shows the equivalent value', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="9000" currentPrice={45000} />,
+        mockStore,
+      );
+
+      const input = screen
+        .getByTestId('amount-input-field')
+        .querySelector('input');
+      // USD mode shows the USD amount.
+      expect(input).toHaveValue('9000');
+
+      toggleToAsset();
+
+      // Asset mode shows the equivalent token amount ($9000 / $45000 = 0.2 BTC).
+      expect(
+        screen.getByTestId('amount-input-denomination-unit'),
+      ).toHaveTextContent('BTC');
+      expect(input).toHaveValue('0.2');
+    });
+
+    it('switches back to USD on a second toggle keeping the equivalent value', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="9000" currentPrice={45000} />,
+        mockStore,
+      );
+
+      toggleToAsset();
+      fireEvent.click(screen.getByTestId('toggle-denomination'));
+
+      expect(
+        screen.getByTestId('amount-input-denomination-unit'),
+      ).toHaveTextContent('USD');
+      const input = screen
+        .getByTestId('amount-input-field')
+        .querySelector('input');
+      expect(input).toHaveValue('9000');
+    });
+  });
+
+  describe('USD denomination input', () => {
     it('displays entered amount', () => {
       renderWithProvider(
         <AmountInput {...defaultProps} amount="1000" />,
@@ -249,11 +323,13 @@ describe('AmountInput', () => {
   });
 
   describe('HIP-3 symbol display', () => {
-    it('strips the dex prefix from HIP-3 asset symbols in the token input label', () => {
+    it('strips the dex prefix from HIP-3 asset symbols in the denomination unit', () => {
       renderWithProvider(
         <AmountInput {...defaultProps} asset="xyz:BRENTOIL" />,
         mockStore,
       );
+
+      toggleToAsset();
 
       expect(screen.getByText('BRENTOIL')).toBeInTheDocument();
       expect(screen.queryByText('xyz:BRENTOIL')).not.toBeInTheDocument();
@@ -272,7 +348,9 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('amount-input-token-field');
+      toggleToAsset();
+
+      const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
       // Size $9000 / price $45000 = 0.2 BTC (not 0.2 × 10 = 2)
       expect(input).toHaveValue('0.2');
@@ -392,7 +470,7 @@ describe('AmountInput', () => {
     });
   });
 
-  describe('token input', () => {
+  describe('asset denomination input', () => {
     it('converts token amount to USD size and updates percent', () => {
       const onAmountChange = jest.fn();
       const onBalancePercentChange = jest.fn();
@@ -408,14 +486,16 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('amount-input-token-field');
+      toggleToAsset();
+
+      const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
       // 0.1 BTC × $50000 = $5000 size
       fireEvent.change(input as HTMLInputElement, {
         target: { value: '0.1' },
       });
 
-      // USD = tokens × price = $5000
+      // USD = tokens × price = $5000 (tracked internally for margin/fees)
       expect(onAmountChange).toHaveBeenCalledWith('5000.00');
       // Percent = $5000 / ($1000 × 5) = 100%
       expect(onBalancePercentChange).toHaveBeenCalledWith(100);
@@ -428,7 +508,9 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('amount-input-token-field');
+      toggleToAsset();
+
+      const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
       fireEvent.change(input as HTMLInputElement, {
         target: { value: 'abc' },
@@ -448,7 +530,9 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('amount-input-token-field');
+      toggleToAsset();
+
+      const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input') as HTMLInputElement;
 
       fireEvent.focus(input);
@@ -480,7 +564,9 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('amount-input-token-field');
+      toggleToAsset();
+
+      const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input') as HTMLInputElement;
 
       fireEvent.focus(input);
@@ -502,7 +588,9 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('amount-input-token-field');
+      toggleToAsset();
+
+      const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
       // Must not contain a comma — value must be plain digits
       expect(input?.value).not.toContain(',');
@@ -515,7 +603,9 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('amount-input-token-field');
+      toggleToAsset();
+
+      const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
       expect(input).toHaveValue('');
 
@@ -547,6 +637,32 @@ describe('AmountInput', () => {
       const container = screen.getByTestId('balance-percent-input');
       const input = container.querySelector('input');
       // 50% of ($1000 × 8) = 50% of $8000 = $4000
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '50' },
+      });
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(50);
+      expect(onAmountChange).toHaveBeenCalledWith('4000.00');
+    });
+
+    it('works the same while the asset denomination is active', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1000}
+          leverage={8}
+        />,
+        mockStore,
+      );
+
+      toggleToAsset();
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
       fireEvent.change(input as HTMLInputElement, {
         target: { value: '50' },
       });
@@ -609,10 +725,72 @@ describe('AmountInput', () => {
 
       expect(screen.getByTestId('amount-slider')).toBeInTheDocument();
     });
+
+    it('updates amount from the slider while the asset denomination is active', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          availableBalance={1000}
+          leverage={5}
+        />,
+        mockStore,
+      );
+
+      toggleToAsset();
+
+      const slider = screen
+        .getByTestId('amount-slider')
+        .querySelector('input[type="range"]');
+      // 50% of ($1000 × 5) = $2500
+      fireEvent.change(slider as HTMLInputElement, {
+        target: { value: '50' },
+      });
+
+      expect(onAmountChange).toHaveBeenCalledWith('2500.00');
+    });
+  });
+
+  describe('session persistence', () => {
+    it('keeps the toggled denomination when remounting the same market', () => {
+      const { unmount } = renderWithProvider(
+        <AmountInput {...defaultProps} />,
+        mockStore,
+      );
+
+      toggleToAsset();
+      expect(
+        screen.getByTestId('amount-input-denomination-unit'),
+      ).toHaveTextContent('BTC');
+
+      unmount();
+
+      renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
+
+      // Remounting the same market restores the asset denomination.
+      expect(
+        screen.getByTestId('amount-input-denomination-unit'),
+      ).toHaveTextContent('BTC');
+    });
+
+    it('defaults a different market to USD', () => {
+      renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
+      toggleToAsset();
+
+      renderWithProvider(
+        <AmountInput {...defaultProps} asset="ETH" currentPrice={3000} />,
+        mockStore,
+      );
+
+      // The ETH input (rendered second) defaults to USD even though BTC was toggled.
+      const ethUnit = screen.getAllByTestId('amount-input-denomination-unit');
+      expect(ethUnit.at(-1)).toHaveTextContent('USD');
+    });
   });
 
   describe('auto-focus and select-all', () => {
-    it('auto-focuses the USD input when autoFocus is true', () => {
+    it('auto-focuses the input when autoFocus is true', () => {
       renderWithProvider(
         <AmountInput {...defaultProps} autoFocus />,
         mockStore,
@@ -623,7 +801,7 @@ describe('AmountInput', () => {
       expect(input).toHaveFocus();
     });
 
-    it('does not auto-focus the USD input when autoFocus is false', () => {
+    it('does not auto-focus the input when autoFocus is false', () => {
       renderWithProvider(
         <AmountInput {...defaultProps} autoFocus={false} />,
         mockStore,
@@ -653,7 +831,9 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      const container = screen.getByTestId('amount-input-token-field');
+      toggleToAsset();
+
+      const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input') as HTMLInputElement;
       const selectSpy = jest.spyOn(input, 'select');
       fireEvent.focus(input);
@@ -686,7 +866,7 @@ describe('AmountInput', () => {
       expect(input).toHaveAttribute('placeholder', 'min $10');
     });
 
-    it('exposes the USD input through usdInputRef', () => {
+    it('exposes the input through usdInputRef', () => {
       const ref: { current: HTMLInputElement | null } = { current: null };
       renderWithProvider(
         <AmountInput {...defaultProps} usdInputRef={ref} />,

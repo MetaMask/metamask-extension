@@ -95,6 +95,10 @@ BLOCKAID_PUBLIC_KEY=
 ; This variable is required to run performance tests
 TEST_SRP_2=
 
+; Set to `true` to enable the QR Sync Sync tab in Settings
+; (device pairing, QR code scan and verification flow)
+; QR_SYNC_ENABLED='false'
+
 ; Set to `true` to enable the new hardware wallet onboarding flow
 ; (device discovery, error handling, account selection).
 ; Entry points to connecting remain unchanged regardless of this flag.

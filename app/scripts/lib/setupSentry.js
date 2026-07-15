@@ -101,8 +101,11 @@ function getClientOptions() {
     // which would otherwise make the next error look like a different stack (background timers
     // usually run after beforeSend finished; rapid UI captures often dedupe first).
     beforeSend: (report) => rewriteReport(safeCloneReport(report)),
-    beforeSendTransaction: (report) =>
-      rewriteTransactionReport(safeCloneReport(report)),
+    beforeSendTransaction: (report) => {
+      const transaction = rewriteTransactionReport(safeCloneReport(report));
+      dropLowValueMarkSpans(transaction);
+      return transaction;
+    },
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -181,7 +184,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.0075;
+  return 0.005;
 }
 
 /**
@@ -400,6 +403,28 @@ export function sanitizeBreadcrumbsInReport(report) {
   for (let i = 0; i < report.breadcrumbs.length; i++) {
     removeUrlsFromBreadCrumb(report.breadcrumbs[i]);
   }
+}
+
+// `op: 'mark'` span names with no Sentry-side consumer, dropped from transactions.
+const LOW_VALUE_TRACE_MARKS = new Set([
+  'sentry-tracing-init',
+  'mm-hero-painted',
+]);
+
+/**
+ * Removes the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'` child spans from a
+ * transaction event in place. Measures and all other spans are kept.
+ *
+ * @param {object} report - A Sentry transaction event object.
+ */
+export function dropLowValueMarkSpans(report) {
+  if (!Array.isArray(report.spans)) {
+    return;
+  }
+  report.spans = report.spans.filter((span) => {
+    const markName = span?.description ?? span?.name;
+    return !(span?.op === 'mark' && LOW_VALUE_TRACE_MARKS.has(markName));
+  });
 }
 
 /**

@@ -18,9 +18,9 @@ describe('createEvent', () => {
       const result = createEvent({ signature, url });
 
       expect(result).toEqual({
-        category: MetaMetricsEventCategory.DeepLink,
-        event: MetaMetricsEventName.DeepLinkUsed,
+        name: MetaMetricsEventName.DeepLinkUsed,
         properties: {
+          category: MetaMetricsEventCategory.DeepLink,
           route: '/test-route',
           signature: MISSING,
         },
@@ -142,6 +142,7 @@ describe('createEvent', () => {
       const result = createEvent({ signature, url });
 
       expect(result.properties).toEqual({
+        category: MetaMetricsEventCategory.DeepLink,
         route: '/deep-link',
         signature: VALID,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -185,6 +186,7 @@ describe('createEvent', () => {
       const result = createEvent({ signature, url });
 
       expect(result.properties).toEqual({
+        category: MetaMetricsEventCategory.DeepLink,
         route: '/test',
         signature: VALID,
       });
@@ -222,13 +224,14 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result).toHaveProperty('category');
-      expect(result).toHaveProperty('event');
+      expect(result).toHaveProperty('name');
       expect(result).toHaveProperty('properties');
       expect(result).toHaveProperty('sensitiveProperties');
 
-      expect(result.category).toBe(MetaMetricsEventCategory.DeepLink);
-      expect(result.event).toBe(MetaMetricsEventName.DeepLinkUsed);
+      expect(result.name).toBe(MetaMetricsEventName.DeepLinkUsed);
+      expect(result.properties.category).toBe(
+        MetaMetricsEventCategory.DeepLink,
+      );
       expect(typeof result.properties).toBe('object');
       expect(typeof result.sensitiveProperties).toBe('object');
     });

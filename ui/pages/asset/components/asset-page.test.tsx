@@ -24,6 +24,19 @@ import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AssetPage from './asset-page';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
   ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
   useMusdGeoBlocking: () => ({
@@ -103,6 +116,16 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
+}));
+
 jest.mock('../../../components/app/musd/hooks/useMerklRewards', () => ({
   useMerklRewards: jest.fn(() => ({
     hasClaimableReward: false,
@@ -167,9 +190,7 @@ function mockGetDefaultAssetsBySelectedAccountGroup() {
 
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
-  getAssetsBySelectedAccountGroup: jest.fn(() =>
-    mockGetDefaultAssetsBySelectedAccountGroup(),
-  ),
+  getAssetsBySelectedAccountGroup: jest.fn(),
 }));
 
 describe('AssetPage', () => {
@@ -179,6 +200,9 @@ describe('AssetPage', () => {
     },
     appState: {
       confirmationExchangeRates: {},
+    },
+    confirmTransaction: {
+      txData: {},
     },
     metamask: {
       ...mockMultichainNetworkState(),
@@ -329,6 +353,12 @@ describe('AssetPage', () => {
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
 
+    // Return a stable (same-reference) default so Reselect's input stability
+    // check does not trigger a warning when getAsset calls this selector twice.
+    (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+      mockGetDefaultAssetsBySelectedAccountGroup(),
+    );
+
     // Mock implementation for useMultiPolling
     (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
       // Mock startPolling and stopPollingByPollingToken for each input
@@ -409,7 +439,7 @@ describe('AssetPage', () => {
     expect(buyButton).toBeEnabled();
   });
 
-  it('should disable the buy button on unsupported chains', () => {
+  it('keeps the buy button enabled on unsupported chains', () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -422,10 +452,10 @@ describe('AssetPage', () => {
     );
     const buyButton = queryByTestId('token-overview-buy');
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
+    expect(buyButton).toBeEnabled();
   });
 
-  it('should open the buy crypto URL for a buyable chain ID', async () => {
+  it('opens the in-extension buy flow when clicking the buy button', async () => {
     const mockedStoreWithBuyableChainId = {
       ...mockStore,
       metamask: {
@@ -446,13 +476,7 @@ describe('AssetPage', () => {
     expect(buyButton).not.toBeDisabled();
 
     fireEvent.click(buyButton as HTMLElement);
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-    await waitFor(() =>
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_sell_button`),
-      }),
-    );
+    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
   });
 
   it('hides the Send button when token balance is zero', () => {
@@ -465,9 +489,10 @@ describe('AssetPage', () => {
   });
 
   it('shows the Send button when token balance is greater than zero', () => {
-    (
-      getAssetsBySelectedAccountGroup as unknown as jest.Mock
-    ).mockReturnValueOnce({
+    // Use mockReturnValue (not mockReturnValueOnce) so that Reselect's input
+    // stability check — which calls the selector twice — always gets the same
+    // reference.  The outer beforeEach will reset this for the next test.
+    (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue({
       '0x1': [
         {
           assetId: '0x0000000000000000000000000000000000000000',
@@ -486,6 +511,38 @@ describe('AssetPage', () => {
 
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
+      store,
+    );
+
+    expect(queryByTestId('eth-overview-send')).toBeInTheDocument();
+  });
+
+  it('uses the Arc native balance on the ERC20 USDC token page', () => {
+    (
+      getAssetsBySelectedAccountGroup as unknown as jest.Mock
+    ).mockReturnValueOnce({
+      [CHAIN_IDS.ARC]: [
+        {
+          assetId: '0x0000000000000000000000000000000000000000',
+          isNative: true,
+          rawBalance: '0x75bcd15',
+          balance: '123.456789',
+          fiat: { balance: 123.456789 },
+        },
+      ],
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage
+        asset={{
+          ...token,
+          chainId: CHAIN_IDS.ARC,
+          address: '0x3600000000000000000000000000000000000000',
+          symbol: 'USDC',
+          decimals: 6,
+        }}
+        optionsButton={null}
+      />,
       store,
     );
 
@@ -761,9 +818,10 @@ describe('AssetPage', () => {
     };
 
     afterEach(() => {
-      (
-        getAssetsBySelectedAccountGroup as unknown as jest.Mock
-      ).mockImplementation(() => mockGetDefaultAssetsBySelectedAccountGroup());
+      // Return a stable reference so subsequent tests don't see stale overrides.
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+        mockGetDefaultAssetsBySelectedAccountGroup(),
+      );
     });
 
     it('shows estimated annual bonus as 3% of combined Mainnet and Linea fiat when viewing Mainnet mUSD', () => {

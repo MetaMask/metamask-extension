@@ -38,7 +38,8 @@ describe('Wallet Created Events - Imported Account', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);

@@ -70,9 +70,6 @@
   "addANickname": {
     "message": "Adicionar um apelido"
   },
-  "addAcquiredTokens": {
-    "message": "Adicione os tokens que você adquiriu usando a MetaMask"
-  },
   "addAlias": {
     "message": "Adicionar pseudônimo"
   },
@@ -367,9 +364,6 @@
   "custom": {
     "message": "Avançado"
   },
-  "customToken": {
-    "message": "Token personalizado"
-  },
   "dappSuggested": {
     "message": "Site sugerido"
   },
@@ -502,9 +496,6 @@
   },
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
-  },
-  "enableFromSettings": {
-    "message": " Ative nas Configurações."
   },
   "enableToken": {
     "message": "ativar $1",
@@ -701,15 +692,6 @@
   "importAccountMsg": {
     "message": "As contas importadas não estarão associadas à Frase de Recuperação Secreta da conta da MetaMask criada originalmente. Saiba mais sobre as contas importadas"
   },
-  "importTokenQuestion": {
-    "message": "Importar token?"
-  },
-  "importTokenWarning": {
-    "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
-  },
-  "importTokensCamelCase": {
-    "message": "Importar tokens"
-  },
   "imported": {
     "message": "Importada",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -897,9 +879,6 @@
     "message": "verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mustSelectOne": {
-    "message": "Selecione pelo menos 1 token."
-  },
   "name": {
     "message": "Nome"
   },
@@ -1003,9 +982,6 @@
   },
   "notCurrentAccount": {
     "message": "Essa é a conta correta? É diferente da conta atualmente selecionada na sua carteira"
-  },
-  "notEnoughGas": {
-    "message": "Não há gás suficiente"
   },
   "ofTextNofM": {
     "message": "de"
@@ -1523,9 +1499,6 @@
   },
   "tokenContractAddress": {
     "message": "Endereço de contrato do token"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "A casa decimal do token é necessária."
   },
   "tokenId": {
     "message": "ID do token"

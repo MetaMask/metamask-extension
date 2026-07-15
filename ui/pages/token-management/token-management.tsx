@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -47,17 +46,18 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,
-  getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
   selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
+import { useNetworkFilterButtonLabel } from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addCustomAsset,
   addImportedTokens,
   hideAsset,
   ignoreTokens as ignoreTokensAction,
+  importCustomAssetsBatch,
   multichainAddAssets,
   multichainIgnoreAssets,
   showModal,
@@ -99,7 +99,7 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../components/component-library';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -186,6 +186,11 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   return assetReference || assetId;
 };
 
+const hasValidAssetId = (
+  result: TokenSearchResult,
+): result is TokenSearchResult & { assetId: CaipAssetType } =>
+  typeof result.assetId === 'string';
+
 const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
   const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
   const address =
@@ -210,6 +215,23 @@ const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
 
   return properties;
 };
+
+const importEvmSearchResultToUnifiedAssets = (
+  accountId: string,
+  payload: SearchResultImportPayload,
+) =>
+  importCustomAssetsBatch(
+    accountId,
+    [{ assetId: payload.assetId, isHidden: false }],
+    {
+      [payload.assetId]: {
+        address: payload.assetReference,
+        symbol: payload.symbol,
+        name: payload.name,
+        decimals: payload.decimals,
+      },
+    },
+  );
 
 const normalizeToHexChainId = (chainId: string): string => {
   if (!chainId.startsWith('eip155:')) {
@@ -345,7 +367,7 @@ export const TokenManagementPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pageToast, setPageToast] = useState<{ symbol: string } | null>(null);
@@ -479,15 +501,6 @@ export const TokenManagementPage = () => {
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
-  const enabledNetworksByNamespace = useSelector((state: unknown) => {
-    try {
-      return getEnabledNetworksByNamespace(
-        state as Parameters<typeof getEnabledNetworksByNamespace>[0],
-      );
-    } catch {
-      return {} as Record<string, boolean>;
-    }
-  });
   const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allMultichainNetworkConfigurations = useSelector(
@@ -515,14 +528,6 @@ export const TokenManagementPage = () => {
         caipChainId,
       ),
     [store],
-  );
-
-  const enabledChainIds = useMemo(
-    () =>
-      Object.entries(enabledNetworksByNamespace ?? {})
-        .filter(([, enabled]) => Boolean(enabled))
-        .map(([chainId]) => chainId as Hex),
-    [enabledNetworksByNamespace],
   );
 
   const getNetworkMeta = useCallback(
@@ -659,7 +664,9 @@ export const TokenManagementPage = () => {
       return EMPTY_TOKEN_SEARCH_RESULTS;
     }
 
-    const results = searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS;
+    const results = (searchResponse?.data ?? EMPTY_TOKEN_SEARCH_RESULTS).filter(
+      hasValidAssetId,
+    );
 
     // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
     // display duplicate. Drop it from search/browse results too.
@@ -781,15 +788,16 @@ export const TokenManagementPage = () => {
 
   const handleAddCustomToken = useCallback(() => {
     commitStagedHides().catch(() => undefined);
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION,
+        })
+        .build(),
+    );
     navigate(CUSTOM_TOKEN_IMPORT_ROUTE);
-  }, [commitStagedHides, navigate, trackEvent]);
+  }, [commitStagedHides, createEventBuilder, navigate, trackEvent]);
 
   const handleSearchChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -804,28 +812,7 @@ export const TokenManagementPage = () => {
     setSearchQuery('');
   }, [commitStagedHides]);
 
-  const networkFilterLabel = useMemo(() => {
-    const enabledCount = enabledChainIds.length;
-    if (enabledCount === 0) {
-      return t('noNetworksSelected');
-    }
-    if (enabledCount === 1) {
-      const onlyChain = enabledChainIds[0];
-      const evmName = networkConfigurations?.[onlyChain]?.name;
-      const multichainName =
-        allMultichainNetworkConfigurations?.[onlyChain as CaipChainId]?.name;
-      return (
-        evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork')
-      );
-    }
-    return t('allDefaultNetworks');
-  }, [
-    allMultichainNetworkConfigurations,
-    currentNetwork?.name,
-    enabledChainIds,
-    networkConfigurations,
-    t,
-  ]);
+  const networkFilterLabel = useNetworkFilterButtonLabel();
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -938,15 +925,16 @@ export const TokenManagementPage = () => {
 
       if (nextValue) {
         unstageHide(stagedKey);
-        trackEvent({
-          category: MetaMetricsEventCategory.Wallet,
-          event: MetaMetricsEventName.TokenAdded,
-          sensitiveProperties: {
-            ...tokenMetricsProperties,
-            [METRICS_PROPERTIES.sourceConnectionMethod]:
-              MetaMetricsTokenEventSource.ManageTokens,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenAdded)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              ...tokenMetricsProperties,
+              [METRICS_PROPERTIES.sourceConnectionMethod]:
+                MetaMetricsTokenEventSource.ManageTokens,
+            })
+            .build(),
+        );
         return;
       }
 
@@ -965,14 +953,15 @@ export const TokenManagementPage = () => {
           address: token.address,
           caipAssetId: caipAssetId ?? undefined,
         });
-        trackEvent({
-          category: MetaMetricsEventCategory.Wallet,
-          event: MetaMetricsEventName.TokenHidden,
-          sensitiveProperties: {
-            ...tokenMetricsProperties,
-            location: TOKEN_MANAGEMENT_LOCATION,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenHidden)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              ...tokenMetricsProperties,
+              location: TOKEN_MANAGEMENT_LOCATION,
+            })
+            .build(),
+        );
         return;
       }
 
@@ -981,16 +970,24 @@ export const TokenManagementPage = () => {
         assetId: token.assetId as CaipAssetType,
         accountId: token.accountId,
       });
-      trackEvent({
-        category: MetaMetricsEventCategory.Wallet,
-        event: MetaMetricsEventName.TokenHidden,
-        sensitiveProperties: {
-          ...tokenMetricsProperties,
-          location: TOKEN_MANAGEMENT_LOCATION,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenHidden)
+          .addCategory(MetaMetricsEventCategory.Wallet)
+          .addSensitiveProperties({
+            ...tokenMetricsProperties,
+            location: TOKEN_MANAGEMENT_LOCATION,
+          })
+          .build(),
+      );
     },
-    [getNetworkMeta, getStagedHideKey, stageHide, trackEvent, unstageHide],
+    [
+      createEventBuilder,
+      getNetworkMeta,
+      getStagedHideKey,
+      stageHide,
+      trackEvent,
+      unstageHide,
+    ],
   );
 
   const handleSearchResultToggle = useCallback(
@@ -1067,7 +1064,14 @@ export const TokenManagementPage = () => {
               ),
             ),
             ...(isAssetsUnifiedStateInBuild
-              ? [dispatch(addCustomAsset(evmAccount.id, payload.assetId))]
+              ? [
+                  dispatch(
+                    importEvmSearchResultToUnifiedAssets(
+                      evmAccount.id,
+                      payload,
+                    ),
+                  ),
+                ]
               : []),
           ]);
 
@@ -1082,7 +1086,11 @@ export const TokenManagementPage = () => {
         await Promise.all([
           dispatch(multichainAddAssets([payload.assetId], account.id)),
           ...(isAssetsUnifiedStateInBuild
-            ? [dispatch(addCustomAsset(account.id, payload.assetId))]
+            ? [
+                dispatch(
+                  importEvmSearchResultToUnifiedAssets(account.id, payload),
+                ),
+              ]
             : []),
         ]);
       } finally {
@@ -1341,15 +1349,17 @@ export const TokenManagementPage = () => {
     }
 
     hasTrackedScreenOpenedRef.current = true;
-    trackEvent({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.TokenScreenOpened,
-      properties: {
-        screen: TOKEN_MANAGEMENT_SCREEN,
-        [METRICS_PROPERTIES.viewState]: tokenManagementViewState,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenScreenOpened)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
+          screen: TOKEN_MANAGEMENT_SCREEN,
+          [METRICS_PROPERTIES.viewState]: tokenManagementViewState,
+        })
+        .build(),
+    );
   }, [
+    createEventBuilder,
     isFetchingNextPage,
     isSearchFetching,
     isSearching,

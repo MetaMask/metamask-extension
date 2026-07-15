@@ -14,6 +14,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
 import {
   CustomTokenImportPage,
@@ -30,6 +31,23 @@ const METRICS_PROPERTIES = {
   tokenSymbol: 'token_symbol',
   viewState: 'view_state',
 } as const;
+
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: jest.fn(() => ({})),
+}));
+
+const trackAnalyticsEventMock = jest.fn().mockResolvedValue(undefined);
+const backgroundConnectionMock = new Proxy(
+  {
+    trackAnalyticsEvent: trackAnalyticsEventMock,
+  },
+  {
+    get: (target, prop) =>
+      prop in target
+        ? target[prop as keyof typeof target]
+        : jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const mockNavigate = jest.fn();
 
@@ -157,6 +175,8 @@ describe('mergeCustomTokenMetadataForImport', () => {
 
 describe('CustomTokenImportPage', () => {
   beforeEach(() => {
+    trackAnalyticsEventMock.mockClear();
+    setBackgroundConnection(backgroundConnectionMock as never);
     mockNavigate.mockClear();
     const actions = getMockedActions();
     actions.addImportedTokens.mockClear();
@@ -174,6 +194,9 @@ describe('CustomTokenImportPage', () => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      analyticsId: 'test-analytics-id',
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
       selectedNetworkClientId: 'mainnet',
       selectedMultichainNetworkChainId: 'eip155:1',
       networkConfigurationsByChainId: {
@@ -195,10 +218,7 @@ describe('CustomTokenImportPage', () => {
     },
   });
 
-  const renderPage = (
-    trackEvent = jest.fn(),
-    metamaskOverrides: Record<string, unknown> = {},
-  ) => {
+  const renderPage = (metamaskOverrides: Record<string, unknown> = {}) => {
     const store = configureStore(buildState(metamaskOverrides));
     return {
       store,
@@ -206,8 +226,6 @@ describe('CustomTokenImportPage', () => {
         <CustomTokenImportPage />,
         store,
         CUSTOM_TOKEN_IMPORT_ROUTE,
-        undefined,
-        () => trackEvent,
       ),
     };
   };
@@ -215,8 +233,7 @@ describe('CustomTokenImportPage', () => {
   const submitCustomToken = async (
     metamaskOverrides: Record<string, unknown> = {},
   ) => {
-    const trackEvent = jest.fn();
-    const rendered = renderPage(trackEvent, metamaskOverrides);
+    const rendered = renderPage(metamaskOverrides);
 
     fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
       target: { value: '0x1111111111111111111111111111111111111111' },
@@ -231,7 +248,7 @@ describe('CustomTokenImportPage', () => {
 
     fireEvent.click(screen.getByTestId('custom-token-import-submit-button'));
 
-    return { trackEvent, ...rendered };
+    return { ...rendered };
   };
 
   it('renders the form scaffolding without crashing', () => {
@@ -251,17 +268,20 @@ describe('CustomTokenImportPage', () => {
   });
 
   it('tracks the custom token import default view state on page open', async () => {
-    const trackEvent = jest.fn();
-    renderPage(trackEvent);
+    renderPage();
 
     await waitFor(() =>
-      expect(trackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Wallet,
-        event: MetaMetricsEventName.ImportCustomTokenViewed,
-        properties: {
-          [METRICS_PROPERTIES.viewState]: 'default',
-        },
-      }),
+      expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.ImportCustomTokenViewed,
+          properties: {
+            category: MetaMetricsEventCategory.Wallet,
+            [METRICS_PROPERTIES.viewState]: 'default',
+          },
+          sensitiveProperties: {},
+        }),
+        expect.anything(),
+      ),
     );
   });
 
@@ -327,7 +347,7 @@ describe('CustomTokenImportPage', () => {
 
   it('returns to token management with success toast state after submitting a custom token', async () => {
     const actions = getMockedActions();
-    const { trackEvent } = await submitCustomToken();
+    await submitCustomToken();
 
     await waitFor(() =>
       expect(actions.addImportedTokens).toHaveBeenCalledWith(
@@ -353,20 +373,25 @@ describe('CustomTokenImportPage', () => {
       }),
     );
     await waitFor(() =>
-      expect(trackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Wallet,
-        event: MetaMetricsEventName.ImportCustomTokenInteracted,
-        sensitiveProperties: {
-          [METRICS_PROPERTIES.addedToken]: 1,
-          [METRICS_PROPERTIES.assetType]: AssetType.token,
-          [METRICS_PROPERTIES.chainId]: '0x1',
-          [METRICS_PROPERTIES.clickedSecurityLink]: false,
-          [METRICS_PROPERTIES.tokenContractAddress]:
-            '0x1111111111111111111111111111111111111111',
-          [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
-          [METRICS_PROPERTIES.tokenSymbol]: 'APE',
-        },
-      }),
+      expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.ImportCustomTokenInteracted,
+          properties: {
+            category: MetaMetricsEventCategory.Wallet,
+          },
+          sensitiveProperties: {
+            [METRICS_PROPERTIES.addedToken]: 1,
+            [METRICS_PROPERTIES.assetType]: AssetType.token,
+            [METRICS_PROPERTIES.chainId]: '0x1',
+            [METRICS_PROPERTIES.clickedSecurityLink]: false,
+            [METRICS_PROPERTIES.tokenContractAddress]:
+              '0x1111111111111111111111111111111111111111',
+            [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
+            [METRICS_PROPERTIES.tokenSymbol]: 'APE',
+          },
+        }),
+        expect.anything(),
+      ),
     );
   });
 
@@ -460,7 +485,7 @@ describe('CustomTokenImportPage', () => {
       const assetId = `eip155:1/erc20:${tokenAddress}`;
       const accountId = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
-      renderPage(jest.fn(), {
+      renderPage({
         remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
         // Simulate state after the user hid the token from the manage tokens
         // list when assets-unify-state is on: the token remains in
@@ -518,7 +543,7 @@ describe('CustomTokenImportPage', () => {
     const assetId = `eip155:1/erc20:${tokenAddress}`;
     const accountId = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
-    renderPage(jest.fn(), {
+    renderPage({
       remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
       // Token is present in `customAssets` but NOT hidden: the unified
       // selector should still return it, so the "already added" guard

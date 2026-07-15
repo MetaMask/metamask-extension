@@ -14,6 +14,7 @@ const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
+  LOCAL_NODE_ACCOUNT,
 } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
@@ -96,11 +97,15 @@ const blocklistedHosts = [
   'sei-mainnet.infura.io',
   'sepolia.infura.io',
   'testnet-rpc.monad.xyz',
+  'monad-mainnet.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
+const {
+  mockAuthenticatedUserStorageNotificationPreferences,
+} = require('./helpers/authenticated-user-storage/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -113,6 +118,122 @@ const emptyHtmlPage = () => `<!DOCTYPE html>
     Empty page by MetaMask
   </body>
 </html>`;
+
+const BITCOIN_DISCOVERY_BLOCKS = [
+  {
+    id: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
+    height: 932936,
+    version: 1073676288,
+    timestamp: 1768825157,
+    tx_count: 1104,
+    size: 2006326,
+    weight: 3993304,
+    merkle_root:
+      '68b04e69caac6a24c585e8a357fd9a5de8b084bda8b043690efaafcd11343c2a',
+    previousblockhash:
+      '000000000000000000013d73c3bd23225714f2fd8b801ed076818f2971897748',
+    mediantime: 1768823212,
+    nonce: 1426240500,
+    bits: 386001906,
+    difficulty: 146472570619930.78,
+  },
+];
+
+const BITCOIN_DISCOVERY_CHAIN_TIP_HASH =
+  '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
+
+const BITCOIN_DISCOVERY_FEE_ESTIMATES = {
+  1: 1,
+  2: 1,
+  3: 1,
+  6: 1,
+  144: 1,
+};
+
+/**
+ * Registers default non-EVM discovery mocks for the shared E2E environment.
+ *
+ * These handlers keep Bitcoin esplora discovery and Solana signature lookups
+ * from falling through to the generic empty-200 catch-all, which otherwise
+ * causes provider retries and slow non-EVM icon rendering in multichain flows.
+ *
+ * @param {Mockttp} server - The mock server used for E2E network mocks.
+ * @returns {Promise<void>}
+ */
+async function setupDefaultNonEvmDiscoveryMocks(server) {
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: BITCOIN_DISCOVERY_BLOCKS,
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks\/tip\/height$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: String(BITCOIN_DISCOVERY_BLOCKS[0].height),
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks\/tip\/hash$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/utxo$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/fee-estimates$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: BITCOIN_DISCOVERY_FEE_ESTIMATES,
+    }));
+
+  await server
+    .forPost(/^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u)
+    .withBodyIncluding('getSignaturesForAddress')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        id: '1337',
+        jsonrpc: '2.0',
+        result: [],
+      },
+    }));
+}
 
 /**
  * The browser makes requests to domains within its own namespace for
@@ -213,6 +334,8 @@ async function setupMocking(
 
   // Snaps execution ACL registry
   await setupSnapRegistryMocks(server);
+
+  await setupDefaultNonEvmDiscoveryMocks(server);
 
   // remote feature flags — production-accurate defaults from the registry
   // FF will apply to all environments: rc, prod and dev
@@ -1199,12 +1322,15 @@ async function setupMocking(
   // .always() ensures every fetch returns [] (not just the first one).
   // Notification-specific tests re-register this endpoint via testSpecificMock.
   await server
-    .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
     .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Identity APIs
   await mockIdentityServices(server);
+
+  // Authenticated User Storage APIs
+  mockAuthenticatedUserStorageNotificationPreferences(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
@@ -1418,7 +1544,7 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
-          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
+          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
           partialSupport: {
             balances: [42220, 43114],
           },
@@ -1465,15 +1591,27 @@ async function setupMocking(
 
       const balances = [];
       for (const id of accountIds) {
-        if (!id.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) {
+        const parts = id.split(':');
+        if (parts[0] !== 'eip155' || parts.length < 3) {
           continue;
         }
-        const parts = id.split(':');
         const chainRef = parts[1];
-        let nativeBalance = '25';
-        if (chainRef === '1' && mainnetNativeOverride !== null) {
+        const accountAddress = parts.slice(2).join(':').toLowerCase();
+        const isKnownFundedTestAccount =
+          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
+          accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
+        // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
+        // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
+        let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
+        if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
+          nativeBalance = '0';
+        } else if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
-        } else if (chainRef === '1337' && localhostNativeOverride !== null) {
+        } else if (
+          chainRef === '1337' &&
+          localhostNativeOverride !== null &&
+          isKnownFundedTestAccount
+        ) {
           nativeBalance = localhostNativeOverride;
         } else if (defaultNativeOverride !== null) {
           nativeBalance = defaultNativeOverride;
@@ -1578,9 +1716,10 @@ async function setupMocking(
       };
     });
 
-  // On Ramp: Geolocation (production and dev environments)
+  // On Ramp: Geolocation (production, staging, and dev environments)
   for (const host of [
     'on-ramp.api.cx.metamask.io',
+    'on-ramp.uat-api.cx.metamask.io',
     'on-ramp.dev-api.cx.metamask.io',
   ]) {
     await server.forGet(`https://${host}/geolocation`).thenCallback(() => {
@@ -1592,6 +1731,22 @@ async function setupMocking(
         },
       };
     });
+  }
+
+  // On Ramp: Countries list (RampsController.init on startup)
+  for (const host of [
+    'on-ramp-cache.api.cx.metamask.io',
+    'on-ramp-cache.uat-api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
+  ]) {
+    await server
+      .forGet(`https://${host}/v2/regions/countries`)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [],
+        };
+      });
   }
 
   // Snaps: Execution environment html
@@ -1924,7 +2079,12 @@ async function setupMocking(
    * @returns {string[]} privacy report for the current test suite.
    */
   function getPrivacyReport() {
-    return [...privacyReport].sort();
+    return [...privacyReport]
+      .filter(
+        (host) =>
+          typeof host === 'string' && host.length > 0 && host !== 'null',
+      )
+      .sort();
   }
 
   /**
@@ -1947,7 +2107,7 @@ async function setupMocking(
     const privateHosts = new Set();
 
     for (const { pattern, host: privateHost } of privateHostMatchers) {
-      if (request.headers.host.match(pattern)) {
+      if (privateHost && request.headers.host?.match(pattern)) {
         privateHosts.add(privateHost);
       }
     }
@@ -1977,6 +2137,7 @@ async function setupMocking(
     }
 
     if (
+      request.headers.host &&
       request.headers.host.match(browserAPIRequestDomains) === null &&
       !portfolioRequestsMatcher(request)
     ) {

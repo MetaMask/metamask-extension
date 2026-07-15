@@ -420,6 +420,50 @@ describe('mapLocalTransaction', () => {
     });
   });
 
+  it('omits the approved amount for a token approve (mirrors the API path)', () => {
+    const spender = '0x80181d3ba89220cdb80234fc7aa19d5cc56229cc';
+    const transaction = {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      id: 'approve-amount-id',
+      hash: '0xapproveamount',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      type: TransactionType.tokenMethodApprove,
+      txParams: {
+        from,
+        to: lineaMusd,
+        data: buildApproveTransactionData(spender, 1000),
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x8',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction({
+      ...transactionGroup,
+      contractTokenMetadata: { symbol: 'mUSD', decimals: 18 },
+    });
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      data: {
+        token: {
+          direction: 'out',
+          symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
+        },
+      },
+    });
+    expect(
+      item.type === 'approveSpendingCap' ? item.data.token?.amount : 'unset',
+    ).toBeUndefined();
+  });
+
   it('maps an mUSD conversion to a Convert activity', () => {
     const transaction = {
       chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -591,13 +635,6 @@ describe('mapLocalTransaction', () => {
       hash: '0x093844dd6200984f0e27d3c3a76b7a63b360bfb2136213237d693afd2cd69740',
       data: {
         from,
-        sourceToken: {
-          amount: '100000',
-          assetId: toAssetId(baseUsdc, 'eip155:8453'),
-          decimals: 6,
-          direction: 'out',
-          symbol: 'USDC',
-        },
       },
     });
   });
