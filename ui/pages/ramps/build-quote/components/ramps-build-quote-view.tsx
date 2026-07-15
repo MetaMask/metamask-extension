@@ -44,6 +44,7 @@ export default function RampsBuildQuoteView({
         title={pageTitle}
         subtitle={pageSubtitle}
         onBack={handleBack}
+        backButtonTestId="ramps-build-quote-back"
       />
 
       <Box

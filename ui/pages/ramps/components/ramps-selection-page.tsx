@@ -14,6 +14,7 @@ type RampsSelectionPageProps = {
   title: string;
   onBack: () => void;
   testId: string;
+  backButtonTestId?: string;
   children: React.ReactNode;
 };
 
@@ -23,12 +24,14 @@ type RampsSelectionPageProps = {
  * @param options0.title
  * @param options0.onBack
  * @param options0.testId
+ * @param options0.backButtonTestId
  * @param options0.children
  */
 export function RampsSelectionPage({
   title,
   onBack,
   testId,
+  backButtonTestId,
   children,
 }: RampsSelectionPageProps) {
   return (
@@ -37,7 +40,11 @@ export function RampsSelectionPage({
       flexDirection={BoxFlexDirection.Column}
       data-testid={testId}
     >
-      <RampsTokenSelectionHeader title={title} onBack={onBack} />
+      <RampsTokenSelectionHeader
+        title={title}
+        onBack={onBack}
+        backButtonTestId={backButtonTestId}
+      />
       {children}
     </Box>
   );

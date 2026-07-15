@@ -12,7 +12,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -139,7 +139,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -262,7 +262,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -394,7 +394,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -517,7 +517,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -926,7 +926,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -1058,7 +1058,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg

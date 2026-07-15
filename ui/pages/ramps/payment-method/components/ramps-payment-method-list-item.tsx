@@ -23,6 +23,7 @@ import { getPaymentMethodIconName } from '../utils/get-payment-method-icon';
 export type RampsPaymentMethodListItemProps = {
   paymentMethod: PaymentMethod;
   isSelected?: boolean;
+  isDisabled?: boolean;
   /** Buy limits label when published by the selected provider. */
   limitText?: string | null;
   onClick: () => void;
@@ -34,12 +35,14 @@ export type RampsPaymentMethodListItemProps = {
  * @param options0
  * @param options0.paymentMethod
  * @param options0.isSelected
+ * @param options0.isDisabled
  * @param options0.limitText
  * @param options0.onClick
  */
 export default function RampsPaymentMethodListItem({
   paymentMethod,
   isSelected = false,
+  isDisabled = false,
   limitText = null,
   onClick,
 }: RampsPaymentMethodListItemProps) {
@@ -53,6 +56,7 @@ export default function RampsPaymentMethodListItem({
   return (
     <ButtonBase
       onClick={onClick}
+      isDisabled={isDisabled}
       className="w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
       data-testid={`ramps-payment-method-item-${paymentMethod.id}`}
     >

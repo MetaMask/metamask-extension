@@ -133,6 +133,7 @@ export function RampsTokenSelectionScreen() {
         title={title}
         onBack={handleBack}
         testId="ramps-token-selection-error"
+        backButtonTestId="ramps-token-selection-back"
       >
         <RampsSelectionCenteredMessage message={t('rampsErrorLoadingTokens')} />
       </RampsSelectionPage>
@@ -144,6 +145,7 @@ export function RampsTokenSelectionScreen() {
       title={title}
       onBack={handleBack}
       testId="ramps-token-selection-screen"
+      backButtonTestId="ramps-token-selection-back"
     >
       <ScrollContainer className="flex-1 overflow-y-auto">
         <Asset

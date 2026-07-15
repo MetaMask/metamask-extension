@@ -63,20 +63,24 @@ const bankTransfer: PaymentMethod = {
   delay: [0, 0],
 };
 
+const defaultControllerState = {
+  paymentMethods: [debitCard, bankTransfer],
+  paymentMethodsLoading: false,
+  paymentMethodsStatus: 'success',
+  paymentMethodsError: null,
+  selectedPaymentMethod: debitCard,
+  selectedProvider: null,
+  userRegion: {
+    country: { currency: 'USD' },
+  },
+  setSelectedPaymentMethod: mockSetSelectedPaymentMethod,
+};
+
 describe('RampsPaymentMethodScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useRampsController.mockReturnValue({
-      paymentMethods: [debitCard, bankTransfer],
-      paymentMethodsStatus: 'success',
-      paymentMethodsError: null,
-      selectedPaymentMethod: debitCard,
-      selectedProvider: null,
-      userRegion: {
-        country: { currency: 'USD' },
-      },
-      setSelectedPaymentMethod: mockSetSelectedPaymentMethod,
-    });
+    mockSetSelectedPaymentMethod.mockResolvedValue(undefined);
+    useRampsController.mockReturnValue(defaultControllerState);
   });
 
   it('matches snapshot with payment methods', () => {
@@ -91,13 +95,12 @@ describe('RampsPaymentMethodScreen', () => {
 
   it('matches snapshot while loading', () => {
     useRampsController.mockReturnValue({
+      ...defaultControllerState,
       paymentMethods: [],
+      paymentMethodsLoading: true,
       paymentMethodsStatus: 'loading',
-      paymentMethodsError: null,
       selectedPaymentMethod: null,
-      selectedProvider: null,
       userRegion: null,
-      setSelectedPaymentMethod: mockSetSelectedPaymentMethod,
     });
 
     const { container } = renderWithProvider(
@@ -111,13 +114,12 @@ describe('RampsPaymentMethodScreen', () => {
 
   it('matches snapshot when payment methods fail to load', () => {
     useRampsController.mockReturnValue({
+      ...defaultControllerState,
       paymentMethods: [],
       paymentMethodsStatus: 'error',
       paymentMethodsError: 'Failed to load payment methods',
       selectedPaymentMethod: null,
-      selectedProvider: null,
       userRegion: null,
-      setSelectedPaymentMethod: mockSetSelectedPaymentMethod,
     });
 
     const { container } = renderWithProvider(
@@ -131,13 +133,10 @@ describe('RampsPaymentMethodScreen', () => {
 
   it('matches snapshot when no payment methods are available', () => {
     useRampsController.mockReturnValue({
+      ...defaultControllerState,
       paymentMethods: [],
-      paymentMethodsStatus: 'success',
-      paymentMethodsError: null,
       selectedPaymentMethod: null,
-      selectedProvider: null,
       userRegion: null,
-      setSelectedPaymentMethod: mockSetSelectedPaymentMethod,
     });
 
     const { container } = renderWithProvider(
@@ -147,6 +146,52 @@ describe('RampsPaymentMethodScreen', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('keeps cached methods visible when a refetch errors', () => {
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      paymentMethodsStatus: 'error',
+      paymentMethodsError: 'Failed to load payment methods',
+    });
+
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(
+      screen.getByTestId('ramps-payment-method-screen'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('ramps-payment-method-error'),
+    ).not.toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('shows loading while payment methods query is idle', () => {
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      paymentMethods: [],
+      paymentMethodsLoading: false,
+      paymentMethodsStatus: 'idle',
+      selectedPaymentMethod: null,
+      userRegion: null,
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(
+      screen.queryByTestId('ramps-payment-method-empty'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('ramps-payment-method-screen'),
+    ).not.toBeInTheDocument();
   });
 
   it('selects a payment method and navigates back', async () => {
@@ -164,5 +209,55 @@ describe('RampsPaymentMethodScreen', () => {
 
     expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
     expect(mockNavigate).toHaveBeenCalledWith(-1);
+  });
+
+  it('ignores a second tap while selection is in flight', async () => {
+    let resolveSelect: (() => void) | undefined;
+    mockSetSelectedPaymentMethod.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveSelect = resolve;
+        }),
+    );
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    fireEvent.click(
+      screen.getByTestId('ramps-payment-method-item-bank-transfer'),
+    );
+    fireEvent.click(
+      screen.getByTestId('ramps-payment-method-item-debit-credit-card'),
+    );
+
+    expect(mockSetSelectedPaymentMethod).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolveSelect?.();
+    });
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not navigate back when selection fails', async () => {
+    mockSetSelectedPaymentMethod.mockRejectedValue(new Error('failed'));
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('ramps-payment-method-item-bank-transfer'),
+      );
+    });
+
+    expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { PaymentMethod } from '@metamask/ramps-controller';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
@@ -28,6 +28,7 @@ export function RampsPaymentMethodScreen() {
   const navigate = useNavigate();
   const {
     paymentMethods,
+    paymentMethodsLoading,
     paymentMethodsStatus,
     paymentMethodsError,
     selectedPaymentMethod,
@@ -37,9 +38,13 @@ export function RampsPaymentMethodScreen() {
   } = useRampsController();
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
+  const [isSelecting, setIsSelecting] = useState(false);
+  const isSelectingRef = useRef(false);
 
-  const isLoading =
-    paymentMethodsStatus === 'loading' && paymentMethods.length === 0;
+  // Idle = query not ready yet; loading includes initial fetch + auto-select.
+  const isLoading = paymentMethodsLoading || paymentMethodsStatus === 'idle';
+  // Keep cached methods visible if a background refetch fails.
+  const showError = Boolean(paymentMethodsError) && paymentMethods.length === 0;
 
   const handleBack = useCallback(() => {
     navigate(-1);
@@ -47,8 +52,20 @@ export function RampsPaymentMethodScreen() {
 
   const handlePaymentMethodSelect = useCallback(
     async (paymentMethod: PaymentMethod) => {
-      await setSelectedPaymentMethod(paymentMethod);
-      navigate(-1);
+      if (isSelectingRef.current) {
+        return;
+      }
+
+      isSelectingRef.current = true;
+      setIsSelecting(true);
+
+      try {
+        await setSelectedPaymentMethod(paymentMethod);
+        navigate(-1);
+      } catch {
+        isSelectingRef.current = false;
+        setIsSelecting(false);
+      }
     },
     [navigate, setSelectedPaymentMethod],
   );
@@ -58,13 +75,15 @@ export function RampsPaymentMethodScreen() {
   }
 
   const title = t('rampsSelectPaymentMethod');
+  const backButtonTestId = 'ramps-payment-method-back';
 
-  if (paymentMethodsError) {
+  if (showError) {
     return (
       <RampsSelectionPage
         title={title}
         onBack={handleBack}
         testId="ramps-payment-method-error"
+        backButtonTestId={backButtonTestId}
       >
         <RampsSelectionCenteredMessage
           message={t('rampsErrorLoadingPaymentMethods')}
@@ -79,6 +98,7 @@ export function RampsPaymentMethodScreen() {
         title={title}
         onBack={handleBack}
         testId="ramps-payment-method-empty"
+        backButtonTestId={backButtonTestId}
       >
         <RampsSelectionCenteredMessage
           message={t('rampsNoPaymentMethodsAvailable')}
@@ -92,6 +112,7 @@ export function RampsPaymentMethodScreen() {
       title={title}
       onBack={handleBack}
       testId="ramps-payment-method-screen"
+      backButtonTestId={backButtonTestId}
     >
       <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
@@ -100,6 +121,7 @@ export function RampsPaymentMethodScreen() {
               key={paymentMethod.id}
               paymentMethod={paymentMethod}
               isSelected={selectedPaymentMethod?.id === paymentMethod.id}
+              isDisabled={isSelecting}
               limitText={formatPaymentMethodLimits(
                 getProviderBuyLimit(
                   selectedProvider,
@@ -110,7 +132,7 @@ export function RampsPaymentMethodScreen() {
                 t,
               )}
               onClick={() => {
-                handlePaymentMethodSelect(paymentMethod);
+                handlePaymentMethodSelect(paymentMethod).catch(() => undefined);
               }}
             />
           ))}
