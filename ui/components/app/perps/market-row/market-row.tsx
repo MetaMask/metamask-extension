@@ -1,23 +1,37 @@
 import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
+  twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  ButtonBase,
   Text,
   TextVariant,
   TextColor,
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import { PerpsTokenLogo } from '../../../../../components/app/perps/perps-token-logo';
+import { PerpsTokenLogo } from '../perps-token-logo';
 import {
   getDisplaySymbol,
   getChangeColor,
   formatSignedChangePercent,
-} from '../../../../../components/app/perps/utils';
-import { useFormatters } from '../../../../../hooks/useFormatters';
-import type { PerpsMarketData } from '../../../../../components/app/perps/types';
-import type { SortField } from '../../../utils/sortMarkets';
+} from '../utils';
+import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import type { PerpsMarketData } from '../types';
+
+/**
+ * Which metric to display below the symbol. Mirrors `SortField` from
+ * `ui/pages/perps/utils/sortMarkets` (kept as a local structural type so this
+ * shared component doesn't depend on a page-scoped module).
+ */
+export type MarketRowDisplayMetric =
+  | 'volume'
+  | 'priceChange'
+  | 'fundingRate'
+  | 'openInterest';
 
 export type MarketRowProps = {
   /** Market data to display */
@@ -25,8 +39,23 @@ export type MarketRowProps = {
   /** Callback when row is pressed */
   onPress?: (market: PerpsMarketData) => void;
   /** Which metric to display below the symbol */
-  displayMetric?: SortField;
+  displayMetric?: MarketRowDisplayMetric;
+  /**
+   * Optional test id override. Defaults to
+   * `market-row-${symbol with ':' replaced by '-'}` for callers (e.g. the
+   * Market List page) that don't need a custom convention.
+   */
+  'data-testid'?: string;
 };
+
+// `min-h-[72px]` is a deliberate safety net (matching the pattern used by
+// PositionCard/OrderCard's `h-auto min-h-[Npx]`), not just a `h-auto`
+// override of ButtonBase's default `h-12`: this row's two stacked text lines
+// plus `py-3` padding need ~72px, and ButtonBase's `overflow-hidden` would
+// otherwise silently clip/overlap adjacent rows if the height override were
+// ever the losing side of a class conflict.
+const ROW_STYLES =
+  'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
 
 /**
  * Get the metric value to display based on the sort field
@@ -38,7 +67,7 @@ export type MarketRowProps = {
  */
 const getMetricValue = (
   market: PerpsMarketData,
-  metric: SortField,
+  metric: MarketRowDisplayMetric,
   formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
 ): string => {
   switch (metric) {
@@ -62,33 +91,41 @@ const getMetricValue = (
 };
 
 /**
- * MarketRow component displays individual market information
- * Shows token logo, symbol, leverage, metric, price, and 24h change
+ * MarketRow displays individual market information: token logo, symbol,
+ * leverage, a metric (volume/price change/funding rate/open interest),
+ * price, and 24h change. Shared by the Market List page as well as the
+ * Perps Home tab's Explore Markets and Watchlist sections.
  *
  * @param options0 - Component props
  * @param options0.market - The market data to display
  * @param options0.onPress - Callback when row is pressed
  * @param options0.displayMetric - Which metric to display below the symbol
+ * @param options0.'data-testid' - Optional test id override
  */
 export const MarketRow = ({
   market,
   onPress,
   displayMetric = 'volume',
+  'data-testid': testIdOverride,
 }: MarketRowProps) => {
   const { formatNumber } = useFormatters();
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const displaySymbol = useMemo(
-    () => market.name || getDisplaySymbol(market.symbol),
-    [market.name, market.symbol],
+    () =>
+      getDisplaySymbol(
+        showFullAssetNames ? market.name || market.symbol : market.symbol,
+      ),
+    [showFullAssetNames, market.name, market.symbol],
   );
   const displayTicker = useMemo(
     () => getDisplaySymbol(market.symbol),
     [market.symbol],
   );
-  // The title above already falls back to the ticker when there's no name,
-  // so the suffix is only needed when a full name is actually being shown.
-  // This also guards HIP-3 markets where the resolved name is the bare
-  // ticker (e.g. symbol "xyz:AAPL", name "AAPL"), which would otherwise
-  // duplicate the ticker.
+  // The title above already falls back to the ticker when there's no name
+  // (or the flag is off), so the suffix is only needed when a full name is
+  // actually being shown. This also guards HIP-3 markets where the resolved
+  // name is the bare ticker (e.g. symbol "xyz:AAPL", name "AAPL"), which
+  // would otherwise duplicate the ticker.
   const showTickerSuffix = displaySymbol !== displayTicker;
   const metricValue = useMemo(
     () => getMetricValue(market, displayMetric, formatNumber),
@@ -110,13 +147,14 @@ export const MarketRow = ({
     }
   }, [onPress, market]);
 
+  const testId =
+    testIdOverride ?? `market-row-${market.symbol.replace(/:/gu, '-')}`;
+
   return (
-    <Box
-      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={3}
-      data-testid={`market-row-${market.symbol.replace(/:/gu, '-')}`}
+    <ButtonBase
+      className={twMerge(ROW_STYLES)}
+      isFullWidth
+      data-testid={testId}
       onClick={handleClick}
     >
       {/* Token Logo */}
@@ -141,14 +179,16 @@ export const MarketRow = ({
           <Text fontWeight={FontWeight.Medium} className="min-w-0 truncate">
             {displaySymbol}
           </Text>
-          <span className="shrink-0 rounded-md bg-background-muted px-1.5">
-            <Text
-              variant={TextVariant.BodyXs}
-              color={TextColor.TextAlternative}
-            >
-              {market.maxLeverage}
-            </Text>
-          </span>
+          {market.maxLeverage && (
+            <span className="shrink-0 rounded-md bg-background-muted px-1.5">
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+              >
+                {market.maxLeverage}
+              </Text>
+            </span>
+          )}
         </Box>
         <Box
           className="min-w-0 max-w-full"
@@ -192,7 +232,7 @@ export const MarketRow = ({
           {formatSignedChangePercent(market.change24hPercent)}
         </Text>
       </Box>
-    </Box>
+    </ButtonBase>
   );
 };
 

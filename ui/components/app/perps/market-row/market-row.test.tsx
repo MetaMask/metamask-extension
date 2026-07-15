@@ -1,15 +1,26 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../../../store/store';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import type { PerpsMarketData } from '../../../../../components/app/perps/types';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import type { PerpsMarketData } from '../types';
 import { MarketRow } from './market-row';
 
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
+  },
+});
+
+// Store with the perpsShowFullAssetNames flag enabled so full asset names render.
+const mockStoreWithFullNames = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
+    },
   },
 });
 
@@ -48,17 +59,32 @@ describe('MarketRow', () => {
       expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
     });
 
-    it('displays the full asset name', () => {
-      renderWithProvider(<MarketRow {...defaultProps} />, mockStore);
+    it('displays the full asset name when the flag is enabled', () => {
+      renderWithProvider(
+        <MarketRow {...defaultProps} />,
+        mockStoreWithFullNames,
+      );
 
       expect(
         screen.getByText(messages.networkNameBitcoin.message),
       ).toBeInTheDocument();
     });
 
+    it('shows only the ticker when the full asset names flag is disabled', () => {
+      renderWithProvider(<MarketRow {...defaultProps} />, mockStore);
+
+      expect(screen.getByText('BTC')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.networkNameBitcoin.message),
+      ).not.toBeInTheDocument();
+    });
+
     it('falls back to the ticker when the asset has no name', () => {
       const market = createMockMarket({ name: '' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
+      renderWithProvider(
+        <MarketRow market={market} />,
+        mockStoreWithFullNames,
+      );
 
       expect(screen.getByText('BTC')).toBeInTheDocument();
     });
@@ -87,12 +113,22 @@ describe('MarketRow', () => {
 
       expect(screen.getByText('50x')).toBeInTheDocument();
     });
+
+    it('does not render a leverage badge when maxLeverage is missing', () => {
+      const market = createMockMarket({ maxLeverage: '' });
+      renderWithProvider(<MarketRow market={market} />, mockStore);
+
+      expect(screen.queryByText('50x')).not.toBeInTheDocument();
+    });
   });
 
   describe('HIP-3 symbols', () => {
     it('handles HIP-3 symbols with colon', () => {
       const market = createMockMarket({ symbol: 'xyz:TSLA', name: 'Tesla' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
+      renderWithProvider(
+        <MarketRow market={market} />,
+        mockStoreWithFullNames,
+      );
 
       // Test ID should have colon replaced with dash
       expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
@@ -102,7 +138,10 @@ describe('MarketRow', () => {
 
     it('falls back to the stripped ticker when a HIP-3 asset has no name', () => {
       const market = createMockMarket({ symbol: 'xyz:TSLA', name: '' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
+      renderWithProvider(
+        <MarketRow market={market} />,
+        mockStoreWithFullNames,
+      );
 
       expect(screen.getByText('TSLA')).toBeInTheDocument();
     });
@@ -110,7 +149,10 @@ describe('MarketRow', () => {
 
   describe('ticker suffix next to the metric', () => {
     it('shows the ticker next to the metric when a full name is displayed', () => {
-      renderWithProvider(<MarketRow {...defaultProps} />, mockStore);
+      renderWithProvider(
+        <MarketRow {...defaultProps} />,
+        mockStoreWithFullNames,
+      );
 
       expect(screen.getByTestId('market-row-ticker-BTC')).toHaveTextContent(
         'BTC',
@@ -118,9 +160,20 @@ describe('MarketRow', () => {
       expect(screen.getByText(/\$1\.2B Vol/u)).toBeInTheDocument();
     });
 
+    it('does not show a ticker suffix when the full asset names flag is disabled', () => {
+      renderWithProvider(<MarketRow {...defaultProps} />, mockStore);
+
+      expect(
+        screen.queryByTestId('market-row-ticker-BTC'),
+      ).not.toBeInTheDocument();
+    });
+
     it('strips the provider prefix from the ticker suffix for HIP-3 markets', () => {
       const market = createMockMarket({ symbol: 'xyz:TSLA', name: 'Tesla' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
+      renderWithProvider(
+        <MarketRow market={market} />,
+        mockStoreWithFullNames,
+      );
 
       expect(
         screen.getByTestId('market-row-ticker-xyz-TSLA'),
@@ -129,7 +182,10 @@ describe('MarketRow', () => {
 
     it('does not show a ticker suffix when the row already shows the ticker', () => {
       const market = createMockMarket({ name: '' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
+      renderWithProvider(
+        <MarketRow market={market} />,
+        mockStoreWithFullNames,
+      );
 
       expect(
         screen.queryByTestId('market-row-ticker-BTC'),
@@ -138,7 +194,10 @@ describe('MarketRow', () => {
 
     it('does not show a duplicate ticker suffix when the name equals the raw symbol', () => {
       const market = createMockMarket({ name: 'BTC', symbol: 'BTC' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
+      renderWithProvider(
+        <MarketRow market={market} />,
+        mockStoreWithFullNames,
+      );
 
       expect(
         screen.queryByTestId('market-row-ticker-BTC'),
@@ -147,7 +206,10 @@ describe('MarketRow', () => {
 
     it('does not show a duplicate ticker suffix for HIP-3 bare symbol names', () => {
       const market = createMockMarket({ symbol: 'xyz:AAPL', name: 'AAPL' });
-      renderWithProvider(<MarketRow market={market} />, mockStore);
+      renderWithProvider(
+        <MarketRow market={market} />,
+        mockStoreWithFullNames,
+      );
 
       expect(
         screen.queryByTestId('market-row-ticker-xyz-AAPL'),
@@ -249,6 +311,18 @@ describe('MarketRow', () => {
 
       const row = screen.getByTestId('market-row-BTC');
       expect(() => fireEvent.click(row)).not.toThrow();
+    });
+  });
+
+  describe('data-testid override', () => {
+    it('uses the provided data-testid override instead of the default convention', () => {
+      renderWithProvider(
+        <MarketRow {...defaultProps} data-testid="explore-markets-BTC" />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('explore-markets-BTC')).toBeInTheDocument();
+      expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
     });
   });
 });
