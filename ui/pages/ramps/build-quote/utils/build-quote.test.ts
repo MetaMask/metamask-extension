@@ -22,8 +22,14 @@ describe('build-quote utils', () => {
     it('matches snapshot for settle cases', () => {
       expect({
         noIntent: isTokenStateSettled(undefined, undefined),
-        matching: isTokenStateSettled('eip155:1/slip44:60', 'EIP155:1/slip44:60'),
-        mismatch: isTokenStateSettled('eip155:1/slip44:60', 'eip155:1/erc20:0x1'),
+        matching: isTokenStateSettled(
+          'eip155:1/slip44:60',
+          'EIP155:1/slip44:60',
+        ),
+        mismatch: isTokenStateSettled(
+          'eip155:1/slip44:60',
+          'eip155:1/erc20:0x1',
+        ),
       }).toMatchSnapshot();
     });
   });

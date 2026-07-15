@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useState, type ChangeEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ChangeEvent,
+} from 'react';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { parseFiatAmount } from '../utils/build-quote';
 

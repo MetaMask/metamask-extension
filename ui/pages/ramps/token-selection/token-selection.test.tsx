@@ -27,14 +27,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock(
-  '../../../hooks/ramps/useRampsNavigation/useRampsNavigation',
-  () => ({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    default: () => ({ goToBuy: mockGoToBuy }),
-  }),
-);
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => ({ goToBuy: mockGoToBuy }),
+}));
 
 jest.mock('../../../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../../../shared/lib/selectors/networks'),

@@ -81,11 +81,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
   const quoteFetchEnabled = Boolean(
     walletAddress &&
-      selectedPaymentMethod &&
-      selectedProvider &&
-      selectedToken?.assetId &&
-      tokenStateIsSettled &&
-      debouncedAmount > 0,
+    selectedPaymentMethod &&
+    selectedProvider &&
+    selectedToken?.assetId &&
+    tokenStateIsSettled &&
+    debouncedAmount > 0,
   );
 
   const quoteFetchParams = useMemo(
@@ -189,9 +189,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     pageTitle: selectedToken.symbol
       ? t('rampsBuyToken', [selectedToken.symbol])
       : t('buy'),
-    pageSubtitle: networkName
-      ? t('rampsOnNetwork', [networkName])
-      : undefined,
+    pageSubtitle: networkName ? t('rampsOnNetwork', [networkName]) : undefined,
     currencySymbol,
     amount,
     amountTextClassName: `text-[56px] font-normal leading-none ${
