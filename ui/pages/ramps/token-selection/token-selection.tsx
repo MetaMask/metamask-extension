@@ -2,17 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType, Hex } from '@metamask/utils';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  Text,
-  TextColor,
-  TextVariant,
-  TextButton,
-  TextButtonSize,
-} from '@metamask/design-system-react';
+import { Box, TextButton, TextButtonSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
@@ -20,7 +10,10 @@ import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib
 import LoadingScreen from '../../../components/ui/loading-screen';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { Asset, type AssetType } from '../../../components/app/asset-picker';
-import RampsTokenSelectionHeader from './components/ramps-token-selection-header';
+import {
+  RampsSelectionCenteredMessage,
+  RampsSelectionPage,
+} from '../components/ramps-selection-page';
 import {
   filterRampsTokensByEnabledNetworks,
   mapRampsTokensToSendAssets,
@@ -132,43 +125,26 @@ export function RampsTokenSelectionScreen() {
     return <LoadingScreen />;
   }
 
+  const title = t('swapSelectToken');
+
   if (error) {
     return (
-      <Box
-        className="flex h-full flex-col bg-background-default"
-        flexDirection={BoxFlexDirection.Column}
-        data-testid="ramps-token-selection-error"
+      <RampsSelectionPage
+        title={title}
+        onBack={handleBack}
+        testId="ramps-token-selection-error"
       >
-        <RampsTokenSelectionHeader
-          title={t('swapSelectToken')}
-          onBack={handleBack}
-        />
-        <Box
-          className="flex-1 px-4 py-8"
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          gap={2}
-        >
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('rampsErrorLoadingTokens')}
-          </Text>
-        </Box>
-      </Box>
+        <RampsSelectionCenteredMessage message={t('rampsErrorLoadingTokens')} />
+      </RampsSelectionPage>
     );
   }
 
   return (
-    <Box
-      className="flex h-full flex-col bg-background-default"
-      flexDirection={BoxFlexDirection.Column}
-      data-testid="ramps-token-selection-screen"
+    <RampsSelectionPage
+      title={title}
+      onBack={handleBack}
+      testId="ramps-token-selection-screen"
     >
-      <RampsTokenSelectionHeader
-        title={t('swapSelectToken')}
-        onBack={handleBack}
-      />
-
       <ScrollContainer className="flex-1 overflow-y-auto">
         <Asset
           tokens={sourceTokens}
@@ -195,7 +171,7 @@ export function RampsTokenSelectionScreen() {
           </TextButton>
         </Box>
       )}
-    </Box>
+    </RampsSelectionPage>
   );
 }
 

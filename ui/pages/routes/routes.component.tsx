@@ -48,6 +48,7 @@ import {
   DEFI_ROUTE,
   RAMPS_BUILD_QUOTE_ROUTE,
   RAMPS_TOKEN_SELECTION_ROUTE,
+  RAMPS_PAYMENT_METHOD_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -207,6 +208,9 @@ const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
+);
+const RampsPaymentMethod = mmLazy(
+  () => import('../ramps/payment-method/index.ts'),
 );
 const PermissionsPage = mmLazy(
   () =>
@@ -542,6 +546,10 @@ export const routeConfig = [
           {
             path: RAMPS_TOKEN_SELECTION_ROUTE,
             element: <RampsTokenSelection />,
+          },
+          {
+            path: RAMPS_PAYMENT_METHOD_ROUTE,
+            element: <RampsPaymentMethod />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,

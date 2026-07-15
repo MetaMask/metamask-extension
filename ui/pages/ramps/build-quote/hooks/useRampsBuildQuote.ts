@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { RAMPS_PAYMENT_METHOD_ROUTE } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
@@ -37,6 +38,7 @@ export type RampsBuildQuoteReadyViewModel = {
   providerStatusLabel: string;
   canContinue: boolean;
   handleBack: () => void;
+  handlePaymentMethodPress: () => void;
   handleAmountChange: (event: ChangeEvent<HTMLInputElement>) => void;
   handleContinue: () => void;
 };
@@ -157,6 +159,10 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     navigate(-1);
   }, [navigate]);
 
+  const handlePaymentMethodPress = useCallback(() => {
+    navigate(RAMPS_PAYMENT_METHOD_ROUTE);
+  }, [navigate]);
+
   const canContinue = resolveCanContinue({
     hasAmount,
     hasSettledQuoteAmount,
@@ -217,6 +223,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         : providerLabel,
     canContinue,
     handleBack,
+    handlePaymentMethodPress,
     handleAmountChange,
     handleContinue,
   };

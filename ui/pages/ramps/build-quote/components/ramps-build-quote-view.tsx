@@ -28,6 +28,7 @@ export default function RampsBuildQuoteView({
   providerStatusLabel,
   canContinue,
   handleBack,
+  handlePaymentMethodPress,
   handleAmountChange,
   handleContinue,
 }: RampsBuildQuoteReadyViewModel) {
@@ -76,6 +77,7 @@ export default function RampsBuildQuoteView({
           <RampsPaymentMethodPill
             label={paymentMethodLabel}
             isLoading={showPaymentMethodSpinner}
+            onClick={handlePaymentMethodPress}
           />
         </Box>
 
