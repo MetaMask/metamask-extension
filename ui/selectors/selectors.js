@@ -495,7 +495,7 @@ export const getMetaMaskCachedBalances = createSelector(
  */
 const createChainIdSelector = createParameterizedShallowEqualSelector(10);
 // Cache recent per-chain NFT lookups for views that switch among a small set of
-// networks during a render cycle. Ten entries accommodates the current
+// networks during a render cycle. Ten entries accommodate the current
 // multichain asset-view network fanout without expanding the LRU unnecessarily.
 const NFT_CHAIN_ID_SELECTOR_CACHE_SIZE = 10;
 // Cache recent chainId + address-list combinations for token trust signal lookups
