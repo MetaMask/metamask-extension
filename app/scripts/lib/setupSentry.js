@@ -145,6 +145,8 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
+    // MetaMask initializes Sentry only in extension-owned contexts, not content scripts.
+    skipBrowserExtensionCheck: true,
     tracesSampleRate: getTracesSampleRate(sentryTarget),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
@@ -248,14 +250,6 @@ function getSentryTarget() {
 function setSentryClient() {
   const clientOptions = getClientOptions();
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
-
-  /**
-   * Sentry throws on initialization as it wants to avoid polluting the global namespace and
-   * potentially clashing with a website also using Sentry, but this could only happen in the content script.
-   * This emulates NW.js which disables these validations.
-   * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
-   */
-  globalThis.nw = {};
 
   /**
    * Sentry checks session tracking support by looking for global history object and functions inside it.

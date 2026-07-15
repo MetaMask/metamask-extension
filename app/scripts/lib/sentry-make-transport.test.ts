@@ -293,7 +293,6 @@ describe('sentry-make-transport', () => {
     });
 
     it('does not call fetch after init when opted out', async () => {
-      (globalThis as typeof globalThis & { nw?: object }).nw = {};
       globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
@@ -321,6 +320,7 @@ describe('sentry-make-transport', () => {
       Sentry.init({
         dsn: 'https://public@fake.ingest.sentry.io/1',
         release: 'setup-sentry-unit-test',
+        skipBrowserExtensionCheck: true,
         transport: makeTransport,
         tracesSampleRate: 0,
       });
@@ -333,7 +333,6 @@ describe('sentry-make-transport', () => {
     });
 
     it('calls fetch after init when opted in', async () => {
-      (globalThis as typeof globalThis & { nw?: object }).nw = {};
       globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
@@ -361,6 +360,7 @@ describe('sentry-make-transport', () => {
       Sentry.init({
         dsn: 'https://public@fake.ingest.sentry.io/1',
         release: 'setup-sentry-unit-test',
+        skipBrowserExtensionCheck: true,
         transport: makeTransport,
         tracesSampleRate: 0,
       });
