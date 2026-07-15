@@ -38,6 +38,10 @@ const TRON_BLOCK_RESPONSE = {
   },
 };
 
+// Feature flags URL
+export const FEATURE_FLAGS_URL =
+  'https://client-config.api.cx.metamask.io/v1/flags';
+
 // Tron Infura API base URL pattern (matches any project ID)
 const TRON_INFURA_BASE_URL = 'https://tron-mainnet\\.infura\\.io/v3/[^/]+';
 
@@ -49,6 +53,45 @@ const TRON_INFURA_BASE_URL = 'https://tron-mainnet\\.infura\\.io/v3/[^/]+';
  */
 function tronInfuraUrl(path: string): RegExp {
   return new RegExp(`^${TRON_INFURA_BASE_URL}${path}$`, 'u');
+}
+
+// BIP44 Stage 2 feature flags - enables automatic multichain account creation
+export const BIP44_STAGE_TWO = {
+  enableMultichainAccountsState2: {
+    enabled: true,
+    featureVersion: '2',
+    minimumVersion: '12.19.0',
+  },
+  bitcoinAccounts: {
+    enabled: true,
+    minimumVersion: '13.6.0',
+  },
+  tronAccounts: {
+    enabled: true,
+    minimumVersion: '13.6.0',
+  },
+};
+
+/**
+ * Mocks the feature flags endpoint with BIP44 Stage 2 configuration
+ * This enables automatic Tron account creation
+ *
+ * @param mockServer
+ */
+export async function mockTronFeatureFlags(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [BIP44_STAGE_TWO],
+    }));
 }
 
 export async function mockBroadTransaction(
@@ -1321,6 +1364,7 @@ export async function mockTronApis(
     await mockTokensV3Assets(mockServer),
     await mockAccountsApiV2WithTron(mockServer),
     await mockAccountsApiV5WithTron(mockServer, mockZeroBalance),
+    await mockTronFeatureFlags(mockServer),
     await mockTronGetReward(mockServer),
     await mockTronGetBlock(mockServer),
     await mockTronGetNowBlock(mockServer),
