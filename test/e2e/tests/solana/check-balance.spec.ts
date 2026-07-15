@@ -21,8 +21,7 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        // The Snap balance can lag a single refresh, so retry the refresh + assert cycle.
+        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
         await homePage.refreshUntilExpectedBalanceIsDisplayed({
           expectedBalance: '0 SOL',
         });
@@ -43,8 +42,7 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        // The Snap balance can lag a single refresh, so retry the refresh + assert cycle.
+        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
         await homePage.refreshUntilExpectedBalanceIsDisplayed({
           expectedBalance: '$0',
         });
@@ -65,8 +63,7 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        // The Snap balance can lag a single refresh, so retry the refresh + assert cycle.
+        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
         await homePage.refreshUntilExpectedBalanceIsDisplayed({
           expectedBalance: '$5,643.50',
         });
@@ -85,8 +82,7 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        // The Snap balance can lag a single refresh, so retry the refresh + assert cycle.
+        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
         await homePage.refreshUntilExpectedBalanceIsDisplayed({
           expectedBalance: '50 SOL',
         });

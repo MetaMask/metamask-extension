@@ -464,14 +464,9 @@ class HomePage {
 
   /**
    * Refreshes the page and asserts the expected balance, retrying the whole
-   * refresh + assert cycle.
-   *
-   * Non-EVM (Snap) balances hydrate asynchronously after a page refresh: the
-   * Snap repopulates `AssetsController` state (balance amount + asset metadata)
-   * some time after the UI re-renders. A single refresh can therefore race the
-   * hydration and leave the balance at 0 within the assertion window. Re-running
-   * the refresh gives the Snap another chance to converge, which is much more
-   * reliable on slow CI than a single long passive wait.
+   * refresh + assert cycle. Non-EVM (Snap) balances hydrate asynchronously and
+   * can lag a single refresh, so each retry gives the Snap another chance to
+   * converge.
    *
    * @param options - Balance assertion options (see checkExpectedBalanceIsDisplayed).
    * @param retryOptions - Retry configuration.

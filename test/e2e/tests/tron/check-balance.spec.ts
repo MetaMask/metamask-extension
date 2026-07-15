@@ -23,8 +23,7 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        // The Snap balance can lag a single refresh, so retry the refresh + assert cycle.
+        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
         await homePage.refreshUntilExpectedBalanceIsDisplayed({
           expectedBalance: '0 TRX',
         });
@@ -49,8 +48,7 @@ describe('Check balance', function (this: Suite) {
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        // The Snap balance can lag a single refresh, so retry the refresh + assert cycle.
+        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
         // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
         // Total Fiat = TRX $31.26, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $39.65
         await homePage.refreshUntilExpectedBalanceIsDisplayed({
@@ -74,8 +72,7 @@ describe('Check balance', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
-        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
-        // The Snap balance can lag a single refresh, so retry the refresh + assert cycle.
+        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
         // TRX_BALANCE = 106072392 SUN = ~106.07 TRX
         await homePage.refreshUntilExpectedBalanceIsDisplayed({
           expectedBalance: '106.072 TRX',
