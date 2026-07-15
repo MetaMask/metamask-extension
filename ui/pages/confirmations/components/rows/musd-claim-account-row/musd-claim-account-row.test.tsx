@@ -1,5 +1,5 @@
 import React from 'react';
-import { act } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import {
   TransactionMeta,
@@ -106,14 +106,12 @@ describe('MusdClaimAccountRow', () => {
     });
     const mockStore = configureMockStore()(state);
 
-    let result: ReturnType<typeof renderWithConfirmContextProvider>;
-    await act(async () => {
-      result = renderWithConfirmContextProvider(
-        <MusdClaimAccountRow />,
-        mockStore,
-      );
+    renderWithConfirmContextProvider(<MusdClaimAccountRow />, mockStore);
 
-      expect(result.getByTestId('musd-claim-account-address')).toBeDefined();
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('musd-claim-account-address'),
+      ).toBeInTheDocument();
     });
   });
 });

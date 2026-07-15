@@ -304,7 +304,9 @@ describe('NetworksPage', () => {
       screen.getByTestId('networks-page-add-custom-network-button'),
     );
 
-    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the Chainlist entry point when the remote feature flag is enabled', () => {
@@ -574,6 +576,8 @@ describe('NetworksPage', () => {
     );
     await userEvent.click(screen.getByTestId('page-container-footer-next'));
 
-    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.editNetwork.message),
+    ).toBeInTheDocument();
   });
 });

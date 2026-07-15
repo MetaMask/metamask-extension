@@ -1,5 +1,5 @@
 import { AssetSelector, Box, Field } from '@metamask/snaps-sdk/jsx';
-import { fireEvent } from '@testing-library/dom';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
 
 describe('SnapUIAssetSelector', () => {
@@ -160,7 +160,7 @@ describe('SnapUIAssetSelector', () => {
     expect(assetSelector).toBeDisabled();
   });
 
-  it('can switch assets', () => {
+  it('can switch assets', async () => {
     const { container, getAllByTestId, getByText } = renderInterface(
       Box({
         children: AssetSelector({
@@ -182,9 +182,11 @@ describe('SnapUIAssetSelector', () => {
 
     fireEvent.click(assetSelector);
 
-    const assetOptions = getAllByTestId('snap-ui-renderer__selector-item');
+    await waitFor(() =>
+      expect(getAllByTestId('snap-ui-renderer__selector-item')).toHaveLength(2),
+    );
 
-    expect(assetOptions).toHaveLength(2);
+    const assetOptions = getAllByTestId('snap-ui-renderer__selector-item');
 
     fireEvent.click(assetOptions[1]);
 

@@ -25,16 +25,19 @@ jest.mock('../selectors', () => ({
   getEnabledChainIds: jest.fn(() => mockEnabledChainIds),
 }));
 
-jest.mock('../selectors/multichain-accounts/account-tree', () => ({
-  getSelectedAccountGroup: jest.fn(() => 'mock-group-id'),
-  getInternalAccountsFromGroupById: jest.fn(() => [
+jest.mock('../selectors/multichain-accounts/account-tree', () => {
+  const mockGroupAccounts = [
     {
-      id: mockSelectedAccountId,
-      address: mockSelectedAccountAddress,
+      id: 'mock-account-uuid',
+      address: '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63',
       type: 'eip155:eoa',
     },
-  ]),
-}));
+  ];
+  return {
+    getSelectedAccountGroup: jest.fn(() => 'mock-group-id'),
+    getInternalAccountsFromGroupById: jest.fn(() => mockGroupAccounts),
+  };
+});
 
 const state = {
   metamask: {

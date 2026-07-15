@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { merge } from 'lodash';
 import copyToClipboard from 'copy-to-clipboard';
+import { fireEvent, waitFor } from '@testing-library/react';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { flushPromises } from '../../../test/lib/timer-helpers';
@@ -127,12 +128,25 @@ describe('ConfirmDecryptMessage Component', () => {
     mockUseScrollRequired.mockReturnValue(mockUseScrollRequiredResult);
   });
 
-  const renderAndUnlockMessage = async () => {
+  const renderAndUnlockMessage = async ({ expectError } = {}) => {
     const result = renderWithProvider(<ConfirmDecryptMessage />, store);
 
     const unlockButton = result.getByTestId('message-lock');
-    unlockButton.click();
+    fireEvent.click(unlockButton);
     await flushPromises();
+
+    if (expectError) {
+      await waitFor(() => {
+        expect(
+          result.getByText(new RegExp(expectError, 'u')),
+        ).toBeInTheDocument();
+      });
+    } else {
+      await waitFor(() => {
+        expect(result.getByTestId('message-copy')).toBeInTheDocument();
+      });
+    }
+
     return result;
   };
 
@@ -163,7 +177,9 @@ describe('ConfirmDecryptMessage Component', () => {
       type: 'DECRYPT_MESSAGE_INLINE',
     });
 
-    const { container } = await renderAndUnlockMessage();
+    const { container } = await renderAndUnlockMessage({
+      expectError: 'Decrypt inline error',
+    });
 
     expect(container).toMatchSnapshot();
   });

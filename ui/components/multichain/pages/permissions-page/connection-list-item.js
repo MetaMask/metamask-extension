@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -31,8 +31,9 @@ import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multi
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const permittedChains = useSelector((state) =>
-    getAllPermittedChainsForSelectedTab(state, connection.origin),
+  const permittedChains = useSelector(
+    (state) => getAllPermittedChainsForSelectedTab(state, connection.origin),
+    shallowEqual,
   );
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 

@@ -366,6 +366,7 @@ function getNonEvmCachedBalance(
   const balancesForAccount = balances?.[selectedAccount.id];
   if (!balancesForAccount) {
     console.warn('Could not find balances for account:', selectedAccount);
+    return 0;
   }
 
   const balanceOfAsset = balancesForAccount?.[asset];

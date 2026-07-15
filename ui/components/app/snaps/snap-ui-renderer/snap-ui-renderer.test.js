@@ -6,7 +6,7 @@ import {
   Button,
   Input,
 } from '@metamask/snaps-sdk/jsx';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import * as backgroundConnection from '../../../../store/background-connection';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
@@ -183,13 +183,19 @@ describe('SnapUIRenderer', () => {
     input.focus();
     expect(input).toHaveFocus();
 
-    updateInterface(
-      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
-    );
+    await act(async () => {
+      updateInterface(
+        Box({
+          children: [Input({ name: 'input' }), Input({ name: 'input2' })],
+        }),
+      );
+    });
+
+    await waitFor(() => {
+      expect(getAllByRole('textbox')).toHaveLength(2);
+    });
 
     const inputs = getAllByRole('textbox');
-    expect(inputs).toHaveLength(2);
-
     await waitFor(() => expect(inputs[0]).toHaveFocus());
 
     expect(getRenderCount()).toBe(2);
@@ -197,37 +203,49 @@ describe('SnapUIRenderer', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('re-renders when the interface changes', () => {
+  it('re-renders when the interface changes', async () => {
     const { container, getAllByRole, updateInterface, getRenderCount } =
       renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     const inputs = getAllByRole('textbox');
     expect(inputs).toHaveLength(1);
 
-    updateInterface(
-      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
-    );
+    await act(async () => {
+      updateInterface(
+        Box({
+          children: [Input({ name: 'input' }), Input({ name: 'input2' })],
+        }),
+      );
+    });
 
-    const inputsAfterRerender = getAllByRole('textbox');
-    expect(inputsAfterRerender).toHaveLength(2);
+    await waitFor(() => {
+      expect(getAllByRole('textbox')).toHaveLength(2);
+    });
 
     expect(getRenderCount()).toBe(2);
 
     expect(container).toMatchSnapshot();
   });
 
-  it('re-syncs state when the interface changes', () => {
+  it('re-syncs state when the interface changes', async () => {
     const { container, getAllByRole, getRenderCount, updateInterface } =
       renderInterface(Box({ children: Input({ name: 'input' }) }));
 
-    updateInterface(
-      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
-      { input: 'bar', input2: 'foo' },
-    );
+    await act(async () => {
+      updateInterface(
+        Box({
+          children: [Input({ name: 'input' }), Input({ name: 'input2' })],
+        }),
+        { input: 'bar', input2: 'foo' },
+      );
+    });
 
-    const inputsAfterRerender = getAllByRole('textbox');
-    expect(inputsAfterRerender[0].value).toStrictEqual('bar');
-    expect(inputsAfterRerender[1].value).toStrictEqual('foo');
+    await waitFor(() => {
+      const inputsAfterRerender = getAllByRole('textbox');
+      expect(inputsAfterRerender).toHaveLength(2);
+      expect(inputsAfterRerender[0].value).toStrictEqual('bar');
+      expect(inputsAfterRerender[1].value).toStrictEqual('foo');
+    });
 
     expect(getRenderCount()).toBe(2);
 
