@@ -729,7 +729,7 @@ describe('QrSyncController', () => {
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
-        code: QrSyncErrorCodes.UNKNOWN,
+        code: QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
         message: 'OTP max attempts reached.',
       });
     });
@@ -1081,7 +1081,7 @@ describe('QrSyncController', () => {
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncError).toStrictEqual({
-        code: QrSyncErrorCodes.UNKNOWN,
+        code: QrSyncErrorCodes.QR_EXPIRED,
         message: 'Did not receive handshake offer from wallet in time.',
       });
     });
