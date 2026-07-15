@@ -84,13 +84,53 @@ export function BridgeDetails({
   const { formatDateTime } = useFormatters();
 
   const sourceChainId = item.chainId;
-  const destinationChainId = item.data.destinationToken?.assetId?.split('/')[0];
+  const sourceTxHash = item.hash;
+
+  // The activity item may not always carry destination-side data (e.g. when it
+  // is sourced from the API adapter, which only sees the source-chain tx).
+  // Fall back to the local bridge-status history entry, which mirrors what
+  // the local/keyring adapters use for enrichment via `quote.destAsset`.
+  const bridgeHistoryItem = useSelector((state) =>
+    sourceTxHash
+      ? selectBridgeHistoryItemByHash(
+          state as MetaMaskReduxState,
+          sourceTxHash,
+        )
+      : undefined,
+  );
+
+  const sourceToken =
+    item.data.sourceToken ??
+    (bridgeHistoryItem
+      ? {
+          direction: 'out' as const,
+          amount: bridgeHistoryItem.quote.srcTokenAmount,
+          assetId: bridgeHistoryItem.quote.srcAsset.assetId,
+          decimals: bridgeHistoryItem.quote.srcAsset.decimals,
+          symbol: bridgeHistoryItem.quote.srcAsset.symbol,
+        }
+      : undefined);
+
+  const destinationToken =
+    item.data.destinationToken ??
+    (bridgeHistoryItem
+      ? {
+          direction: 'in' as const,
+          amount:
+            bridgeHistoryItem.status.destChain?.amount ??
+            bridgeHistoryItem.quote.destTokenAmount,
+          assetId: bridgeHistoryItem.quote.destAsset.assetId,
+          decimals: bridgeHistoryItem.quote.destAsset.decimals,
+          symbol: bridgeHistoryItem.quote.destAsset.symbol,
+        }
+      : undefined);
+
+  const destinationChainId = destinationToken?.assetId?.split('/')[0];
 
   const showFromTo = Boolean(
     destinationChainId && destinationChainId !== sourceChainId,
   );
 
-  const sourceTxHash = item.hash;
   const txId =
     sourceTxHash &&
     (!sourceChainId.startsWith('eip155:') ||
@@ -100,13 +140,6 @@ export function BridgeDetails({
 
   const { destTxHash, destinationAccountAddress, fromAddress } = useSelector(
     (state) => {
-      const bridgeHistoryItem = sourceTxHash
-        ? selectBridgeHistoryItemByHash(
-            state as MetaMaskReduxState,
-            sourceTxHash,
-          )
-        : undefined;
-
       const resolvedFromAddress =
         item.data.from || bridgeHistoryItem?.account || undefined;
       let toAddress: string | undefined;
@@ -141,20 +174,17 @@ export function BridgeDetails({
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
         <div className="flex flex-col gap-2 pb-4">
-          {item.data.sourceToken && (
+          {sourceToken && (
             <div>
               <p className="text-alternative mb-1">{t('youSent')}</p>
-              <TokenRow
-                token={item.data.sourceToken}
-                showNetworkBadge={showFromTo}
-              />
+              <TokenRow token={sourceToken} showNetworkBadge={showFromTo} />
             </div>
           )}
-          {item.data.destinationToken && (
+          {destinationToken && (
             <div>
               <p className="text-alternative mb-1">{t('youReceived')}</p>
               <TokenRow
-                token={item.data.destinationToken}
+                token={destinationToken}
                 showNetworkBadge={showFromTo}
               />
             </div>
@@ -205,7 +235,7 @@ export function BridgeDetails({
 
         <Section>
           <FeesRows item={item} />
-          <TotalAmountRow token={item.data.sourceToken} />
+          <TotalAmountRow token={sourceToken} />
         </Section>
       </div>
       <Footer>
@@ -216,8 +246,8 @@ export function BridgeDetails({
           destTxHash={destTxHash}
         />
         <SwapAgainButton
-          sourceToken={item.data.sourceToken}
-          destinationToken={item.data.destinationToken}
+          sourceToken={sourceToken}
+          destinationToken={destinationToken}
         />
       </Footer>
     </div>
