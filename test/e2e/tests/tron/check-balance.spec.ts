@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -8,7 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { mockTronApis } from './mocks/common-tron';
 import { buildTronFixtures } from './unified-tron-assets';
 
-describe('Check balance', function (this: Suite) {
+describe('Check balance TESST', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
     await withFixtures(
       {
@@ -23,9 +24,11 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
-        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 TRX',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -48,11 +51,14 @@ describe('Check balance', function (this: Suite) {
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
-        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+
         // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
         // Total Fiat = TRX $31.26, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $39.65
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$39.65',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -72,10 +78,13 @@ describe('Check balance', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
-        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+
         // TRX_BALANCE = 106072392 SUN = ~106.07 TRX
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '106.072 TRX',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );

@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
@@ -7,7 +8,7 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import { buildSolanaTestSpecificMock } from './common-solana';
 import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
-describe('Check balance', function (this: Suite) {
+describe('Check balance TEST', function (this: Suite) {
   this.timeout(300000);
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
     await withFixtures(
@@ -21,9 +22,11 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 SOL',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -42,9 +45,11 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$0',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -63,9 +68,11 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$5,643.50',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -82,9 +89,11 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        // Snap balance hydrates asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '50 SOL',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );

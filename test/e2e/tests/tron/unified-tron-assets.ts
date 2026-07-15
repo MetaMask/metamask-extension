@@ -1,9 +1,6 @@
 import { merge } from 'lodash';
-import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { TRON_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/tron-wallet-snap';
 import {
-  TRON_ACCOUNT_ADDRESS,
   TRON_CHAIN_ID,
   TRX_BALANCE,
   TRX_TO_USD_RATE,
@@ -12,9 +9,6 @@ import {
 /** Deterministic Tron snap account id for the default E2E SRP (BIP44 /195). */
 export const TRON_ACCOUNT_ID = 'c8f3a2e1-4d5b-6c7a-8e9f-0a1b2c3d4e5f';
 
-const TRON_ENTROPY_SOURCE = '01KGPGYE2JJGMXDJPEVXKPJ1JG';
-const TRON_DERIVATION_PATH = "m/44'/195'/0'/0/0";
-
 const TRON_NATIVE_CAIP_ASSET_ID = `${TRON_CHAIN_ID}/slip44:195`;
 const TRON_HTX_CAIP_ASSET_ID =
   'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6';
@@ -22,13 +16,6 @@ const TRON_USDT_CAIP_ASSET_ID =
   'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 const TRON_USDD_CAIP_ASSET_ID =
   'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz';
-
-const TRON_ACCOUNT_METHODS = [
-  'signTransaction',
-  'signMessage',
-  'getAccount',
-  'getBalance',
-] as const;
 
 const TRON_ASSETS_INFO = {
   [TRON_NATIVE_CAIP_ASSET_ID]: {
@@ -81,44 +68,6 @@ const TRON_ZERO_ASSETS_BALANCE = {
     amount: '0',
   },
 };
-
-const tronSnapState = JSON.stringify({
-  keyringAccounts: {
-    [TRON_ACCOUNT_ID]: {
-      id: TRON_ACCOUNT_ID,
-      entropySource: TRON_ENTROPY_SOURCE,
-      derivationPath: TRON_DERIVATION_PATH,
-      type: 'tron:eoa',
-      address: TRON_ACCOUNT_ADDRESS,
-      scopes: [TRON_CHAIN_ID],
-      options: {
-        entropy: {
-          derivationPath: TRON_DERIVATION_PATH,
-          groupIndex: 0,
-          id: TRON_ENTROPY_SOURCE,
-          type: 'mnemonic',
-        },
-        entropySource: TRON_ENTROPY_SOURCE,
-        exportable: false,
-      },
-      methods: [...TRON_ACCOUNT_METHODS],
-    },
-  },
-  mapInterfaceNameToId: {},
-  transactions: {},
-  signatures: {},
-  assetEntities: {},
-  tokenPrices: {},
-  subscriptions: {},
-  webSocketConnections: {
-    closeWebSocketConnectionsBackgroundEventId: null,
-  },
-});
-
-const DEFAULT_ACCOUNT_GROUP_ID = 'entropy:01KMMTZZ3ZEF3008S2RXXR2CXS/0';
-const DEFAULT_ENTROPY_WALLET_ID = 'entropy:01KMMTZZ3ZEF3008S2RXXR2CXS';
-const DEFAULT_EVM_ACCOUNT_ID = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
-const DEFAULT_SOLANA_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 
 const TRON_MULTICHAIN_ASSETS_PATCH = {
   MultichainAssetsController: {
@@ -215,88 +164,6 @@ export function buildTronFixtures(
   }: BuildTronFixturesOptions = {},
 ) {
   let builder = new FixtureBuilderV2()
-    .withEnabledNetworks({
-      eip155: {
-        '0x539': true,
-      },
-      tron: {
-        [TRON_CHAIN_ID]: true,
-      },
-    })
-    .withAccountTreeController({
-      selectedAccountGroup: DEFAULT_ACCOUNT_GROUP_ID,
-      accountTree: {
-        wallets: {
-          [DEFAULT_ENTROPY_WALLET_ID]: {
-            id: DEFAULT_ENTROPY_WALLET_ID,
-            type: AccountWalletType.Entropy,
-            status: 'ready',
-            groups: {
-              [DEFAULT_ACCOUNT_GROUP_ID]: {
-                id: DEFAULT_ACCOUNT_GROUP_ID,
-                type: AccountGroupType.MultichainAccount,
-                accounts: [
-                  DEFAULT_EVM_ACCOUNT_ID,
-                  DEFAULT_SOLANA_ACCOUNT_ID,
-                  TRON_ACCOUNT_ID,
-                ],
-                metadata: {
-                  name: 'Account 1',
-                  entropy: { groupIndex: 0 },
-                  hidden: false,
-                  pinned: false,
-                  lastSelected: 1665507600000,
-                },
-              },
-            },
-            metadata: {
-              name: 'SRP 1',
-              entropy: { id: TRON_ENTROPY_SOURCE },
-            },
-          },
-        },
-      },
-    })
-    .withAccountsController({
-      internalAccounts: {
-        selectedAccount: DEFAULT_EVM_ACCOUNT_ID,
-        accounts: {
-          [TRON_ACCOUNT_ID]: {
-            address: TRON_ACCOUNT_ADDRESS,
-            id: TRON_ACCOUNT_ID,
-            metadata: {
-              importTime: 0,
-              keyring: {
-                type: 'Snap Keyring',
-              },
-              lastSelected: 0,
-              name: '',
-              snap: {
-                id: TRON_WALLET_SNAP_ID,
-              },
-            },
-            methods: [...TRON_ACCOUNT_METHODS],
-            options: {
-              entropy: {
-                derivationPath: TRON_DERIVATION_PATH,
-                groupIndex: 0,
-                id: TRON_ENTROPY_SOURCE,
-                type: 'mnemonic',
-              },
-              entropySource: TRON_ENTROPY_SOURCE,
-              exportable: false,
-            },
-            scopes: [TRON_CHAIN_ID],
-            type: 'tron:eoa',
-          },
-        },
-      },
-    })
-    .withSnapController({
-      unencryptedSnapStates: {
-        [TRON_WALLET_SNAP_ID]: tronSnapState,
-      },
-    })
     .withAssetsController(buildTronAssetsControllerFixture(zeroBalance));
 
   if (showNativeTokenAsMainBalanceDisabled) {
