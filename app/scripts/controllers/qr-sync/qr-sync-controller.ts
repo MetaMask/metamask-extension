@@ -369,12 +369,20 @@ export class QrSyncController extends BaseController<
   async cancelSync(): Promise<void> {
     const shouldNotifyPeer =
       this.state.qrSyncConnectionStatus === QrSyncConnectionStatus.CONNECTED;
+    const mwpDappClient = this.#mwpDappClient;
 
-    // Reset UI-visible state immediately so stale QR/phase data cannot flash
-    // while async transport cleanup is still in flight.
+    // Detach inbound listeners before resetting state. While the MWP client stays
+    // connected until #cleanupSession disconnects it, relay events (disconnect,
+    // peer cancel, late sync messages) would otherwise mutate phase/qrSyncError
+    // after reset and violate the idle snapshot callers expect when cancelSync
+    // resolves. Once handlers are removed, a single resetState is sufficient.
+    if (mwpDappClient) {
+      this.#unregisterClientEventHandlers(mwpDappClient);
+    }
+
     this.resetState();
 
-    if (shouldNotifyPeer && this.#mwpDappClient) {
+    if (shouldNotifyPeer && mwpDappClient) {
       await this.#notifyPeerCancel().catch((error) => {
         log.error(
           'QrSyncController: failed to notify peer of sync cancellation',
