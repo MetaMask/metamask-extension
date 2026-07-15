@@ -6668,18 +6668,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-snap@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@metamask/gator-permissions-snap@npm:2.3.0"
+"@metamask/gator-permissions-snap@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@metamask/gator-permissions-snap@npm:2.4.0"
   dependencies:
     "@metamask/abi-utils": "npm:3.0.0"
     "@metamask/delegation-core": "npm:^2.2.1"
     "@metamask/delegation-deployments": "npm:^1.4.0"
-    "@metamask/profile-sync-controller": "npm:28.1.0"
-    "@metamask/snaps-sdk": "npm:11.1.0"
+    "@metamask/profile-sync-controller": "npm:28.2.0"
+    "@metamask/snaps-sdk": "npm:11.1.1"
     "@metamask/utils": "npm:11.11.0"
     zod: "npm:3.25.76"
-  checksum: 10/bf217362f4386f96a2481cd56ef27468e31673dbd28d9ed34ca371c1a31dffb28a66915df573d90f6aff9269b74c912fb0560d05fdc953aaafacb0a6d4809132
+  checksum: 10/8d0b43c5904ed2acf86f3738f19daf2605e10181c87b04ce82c100eed93bb96849f9c64cb35875332f599cd970ce593a117d68ea67c04be9246263bbfac3b8f2
   languageName: node
   linkType: hard
 
@@ -6814,7 +6814,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^25.2.0, @metamask/keyring-controller@npm:^25.5.0":
+"@metamask/keyring-controller@npm:^25.2.0":
   version: 25.5.0
   resolution: "@metamask/keyring-controller@npm:25.5.0"
   dependencies:
@@ -7555,18 +7555,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:28.1.0":
-  version: 28.1.0
-  resolution: "@metamask/profile-sync-controller@npm:28.1.0"
+"@metamask/profile-sync-controller@npm:28.2.0":
+  version: 28.2.0
+  resolution: "@metamask/profile-sync-controller@npm:28.2.0"
   dependencies:
     "@metamask/address-book-controller": "npm:^7.1.2"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/keyring-controller": "npm:^25.5.0"
+    "@metamask/keyring-controller": "npm:^27.0.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/utils": "npm:^11.11.0"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/hashes": "npm:^1.8.0"
     immer: "npm:^9.0.6"
@@ -7575,7 +7575,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/33c318fe005e55b38b4d0d603806c9303b8deaddf8f98fc04f89ecb49cf26da2189ceea20ac6a4b1be5da49060a928d6788cb465b4451aa199c8e51172366213
+  checksum: 10/49f9a69a205613dc1dab9d122048601713561c385e21cbb0d9f501925e888d3f5681f3a4a7cebdc1b3d2488f76ab6a8b2a7b9ae47ffe567245819415444f678c
   languageName: node
   linkType: hard
 
@@ -33154,7 +33154,7 @@ __metadata:
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^26.1.0"
     "@metamask/gator-permissions-controller": "npm:^4.2.1"
-    "@metamask/gator-permissions-snap": "npm:^2.3.0"
+    "@metamask/gator-permissions-snap": "npm:^2.4.0"
     "@metamask/geolocation-controller": "npm:^0.1.1"
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"
     "@metamask/institutional-wallet-snap": "npm:1.5.0"
