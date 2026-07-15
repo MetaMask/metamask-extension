@@ -463,6 +463,62 @@ class HomePage {
   }
 
   /**
+   * Refreshes the page and asserts the expected balance, retrying the whole
+   * refresh + assert cycle.
+   *
+   * Non-EVM (Snap) balances hydrate asynchronously after a page refresh: the
+   * Snap repopulates `AssetsController` state (balance amount + asset metadata)
+   * some time after the UI re-renders. A single refresh can therefore race the
+   * hydration and leave the balance at 0 within the assertion window. Re-running
+   * the refresh gives the Snap another chance to converge, which is much more
+   * reliable on slow CI than a single long passive wait.
+   *
+   * @param options - Balance assertion options (see checkExpectedBalanceIsDisplayed).
+   * @param retryOptions - Retry configuration.
+   * @param retryOptions.attempts - Max number of refresh + assert cycles.
+   * @param retryOptions.timeoutPerAttempt - Max ms to wait for the balance per attempt.
+   */
+  async refreshUntilExpectedBalanceIsDisplayed(
+    options: CheckExpectedBalanceOptions,
+    {
+      attempts = 3,
+      timeoutPerAttempt = 10_000,
+    }: { attempts?: number; timeoutPerAttempt?: number } = {},
+  ): Promise<void> {
+    const { expectedBalance = '25', symbol = 'ETH' } = options;
+
+    for (let attempt = 1; attempt <= attempts; attempt++) {
+      await this.driver.refresh();
+
+      try {
+        await this.driver.waitForSelector(
+          { css: this.balance, text: expectedBalance },
+          { timeout: timeoutPerAttempt },
+        );
+        console.log(
+          `Expected balance ${expectedBalance} ${symbol} is displayed on homepage (refresh attempt ${attempt}/${attempts})`,
+        );
+        return;
+      } catch (e) {
+        if (attempt === attempts) {
+          const balance = await this.driver.waitForSelector(this.balance, {
+            timeout: timeoutPerAttempt,
+          });
+          const currentBalance = await balance.getText();
+          console.log(
+            `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} after ${attempts} refresh attempts`,
+            e,
+          );
+          throw e;
+        }
+        console.log(
+          `Balance ${expectedBalance} ${symbol} not displayed after refresh attempt ${attempt}/${attempts}; retrying`,
+        );
+      }
+    }
+  }
+
+  /**
    * Checks if the balance empty state is displayed on homepage.
    * Criteria:
    * - The account group has a zero balance across all aggregated mainnet networks.
