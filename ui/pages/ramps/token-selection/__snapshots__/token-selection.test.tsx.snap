@@ -7,11 +7,11 @@ exports[`RampsTokenSelectionScreen matches snapshot with send asset picker 1`] =
     data-testid="ramps-token-selection-screen"
   >
     <div
-      class="flex-row relative flex min-h-16 items-center justify-center px-4 py-3"
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
     >
       <button
         aria-label="Back"
-        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
         data-testid="ramps-token-selection-back"
         role="button"
       >
@@ -96,11 +96,11 @@ exports[`RampsTokenSelectionScreen shows error state when tokensError exists 1`]
     data-testid="ramps-token-selection-error"
   >
     <div
-      class="flex-row relative flex min-h-16 items-center justify-center px-4 py-3"
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
     >
       <button
         aria-label="Back"
-        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
         data-testid="ramps-token-selection-back"
         role="button"
       >
