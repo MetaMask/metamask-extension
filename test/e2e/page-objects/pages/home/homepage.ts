@@ -19,10 +19,9 @@ export type CheckExpectedBalanceOptions = {
 
 // The global non-EVM snap-discovery mocks are incomplete: the Solana snap calls
 // 15 discovery RPC methods but `setupDefaultNonEvmDiscoveryMocks` only mocks
-// `getSignaturesForAddress`, so the other 14 (incl. the `getGenesisHash`
-// network-identity check) fall through to the empty-200 catch-all and drive a
-// retry storm that delays the Solana icon past the default 10s wait. Widen the
-// wait until #43958 globalizes the Solana discovery mocks.
+// `getSignaturesForAddress`, so the rest fall through to the empty-200 catch-all
+// and drive a retry storm that delays the Solana icon past the default 10s wait.
+// Widened wait until #43958 globalizes the Solana discovery mocks.
 const NON_EVM_ICON_TIMEOUT = 20_000;
 
 class HomePage {

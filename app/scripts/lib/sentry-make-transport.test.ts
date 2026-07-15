@@ -133,9 +133,8 @@ describe('sentry-make-transport', () => {
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
-      // In Sentry v10, this opted-out path can short-circuit before the
-      // default fetch transport is instantiated, so the behavior we care about
-      // here is the absence of any outbound network request.
+      // The opted-out path can short-circuit before the fetch transport is
+      // instantiated; what matters is the absence of any outbound request.
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();
@@ -326,8 +325,8 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
-      // Sentry v10 no longer sends a session envelope eagerly here, so capture an
-      // explicit event to exercise the transport path under the opted-out state.
+      // No session envelope is sent eagerly during init; capture an event to
+      // exercise the transport path under the opted-out state.
       Sentry.captureMessage('opted-out transport test');
 
       await tick();
@@ -369,8 +368,8 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
-      // Sentry v10 no longer emits a session envelope eagerly during init, so
-      // capture an event to verify the transport path when opted in.
+      // No session envelope is sent eagerly during init; capture an event to
+      // verify the transport path when opted in.
       Sentry.captureMessage('opted-in transport test');
 
       await tick();
@@ -396,8 +395,6 @@ describe('sentry-make-transport', () => {
       const hasEventItem = envelopes.some((parsedEnvelope) =>
         forEachEnvelopeItem(
           parsedEnvelope,
-          // v10 captures an explicit event here instead of the eager session item
-          // the previous test version relied on.
           (_item: unknown, type: string) => type === 'event',
         ),
       );

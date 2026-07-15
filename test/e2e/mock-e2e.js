@@ -197,14 +197,12 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
     }));
 
   // Esplora `GET /block-height/:height` returns the block hash at that height as
-  // plain text. The Bitcoin snap requests `/block-height/0` during discovery;
-  // leaving it unmocked drops it to the empty-200 catch-all, whose malformed body
-  // throws in the snap and restarts the whole discovery cycle — a retry storm
-  // that delays the non-EVM account icons past the default wait (worse under the
-  // v10 SDK's heavier startup). The response must be the hash that actually
-  // belongs to the requested height: height 0 is the genesis block, so returning
-  // the chain-tip hash there fails the snap's chain check and crashes it during
-  // account creation. Return the real mainnet genesis hash for 0, tip otherwise.
+  // plain text. Left unmocked, the Bitcoin snap's discovery request falls to the
+  // empty-200 catch-all, whose malformed body throws in the snap and restarts
+  // discovery in a retry storm that delays the non-EVM account icons past the
+  // default wait. The hash must match the requested height: height 0 is the
+  // genesis block, and returning the chain-tip hash there fails the snap's chain
+  // check and crashes account creation. Real genesis hash for 0, tip otherwise.
   await server
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/(?<height>\d+)$/u,
@@ -538,8 +536,8 @@ async function setupMocking(
 
   // SENTRY_DSN_PERFORMANCE
   // Intercept with a canned 200 rather than passing through to real sentry.io.
-  // v10 tracing emits hundreds of performance envelopes per test (~800 in a
-  // failing multichain run); the real-network round-trips starve startup and
+  // Tracing emits hundreds of performance envelopes per test (~800 in a
+  // heavy multichain run); the real-network round-trips starve startup and
   // flake the non-EVM account render, and consume the metamask-performance
   // quota from CI. The log is kept for request accounting.
   await server

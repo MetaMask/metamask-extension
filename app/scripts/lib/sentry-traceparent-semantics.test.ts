@@ -7,20 +7,13 @@ import {
 } from '@sentry/browser';
 
 /**
- * Pins the v10 SDK `traceparent` semantics this upgrade relies on, against the
- * real (unmocked) SDK. Complements #44053 (flag-gating + target-scoping of the
- * outbound headers); these tests cover the header *contents*:
- *
- * - A deferred sampling decision (no active span — the common case for
- * background service-worker fetches) must propagate trace-flags `00`, not
- * `01`. The pre-v10 manual injection propagated `01` here, which made OTLP
- * backends record subtrees whose advertised parent span never existed —
- * measured at 69% of backend `http.server` entry spans orphaned
- * (MetaMask-planning#7354).
- * - A recorded request span must propagate its *own* span id as the
- * traceparent parent, so backend spans nest under the `http.client` span
- * rather than beside it (the pre-v10 injection used the enclosing root,
- * producing sibling mis-nesting — the other 31%).
+ * Pins the SDK `traceparent` semantics trace propagation relies on, against
+ * the real (unmocked) SDK: a deferred or negative sampling decision propagates
+ * trace-flags `00` — a `01` would make OTLP backends record subtrees whose
+ * advertised parent span never exists — and a recorded request span propagates
+ * its *own* span id, so backend spans nest under the `http.client` span rather
+ * than beside it. Complements #44053 (flag-gating + target-scoping of header
+ * attachment); these tests cover the header contents.
  */
 
 const W3C_TRACEPARENT_UNSAMPLED = /^00-[0-9a-f]{32}-[0-9a-f]{16}-00$/u;

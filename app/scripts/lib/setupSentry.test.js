@@ -525,9 +525,8 @@ describe('Setup Sentry', () => {
     });
 
     it('never filters a backend trace-propagation target', () => {
-      // Constraint (MetaMask-planning#7354): the SDK propagates the request
-      // span's id as the W3C `traceparent` parent on these hosts; filtering
-      // the span client-side orphans the backend's subtree of the trace.
+      // Filtering these spans client-side orphans the backend's subtree of
+      // the trace — see the constraint note on `shouldCreateSpanForRequest`.
       const backendUrls = [
         'https://price.api.cx.metamask.io/v3/spot-prices?assetIds=abc',
         'https://bridge.api.cx.metamask.io/getQuoteStream?walletAddress=0x0',
