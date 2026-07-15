@@ -1306,15 +1306,16 @@ export const selectConversionRateByChainId = createSelector(
   },
 );
 
-export const selectNftsByChainId =
-  createParameterizedSelector(NFT_SELECTOR_CACHE_SIZE)(
+export const selectNftsByChainId = createParameterizedSelector(
+  NFT_SELECTOR_CACHE_SIZE,
+)(
   getSelectedInternalAccount,
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
   (selectedAccount, nfts, chainId) => {
     return nfts?.[selectedAccount.address]?.[chainId] ?? EMPTY_ARRAY;
   },
-  );
+);
 
 export const selectNetworkIdentifierByChainId = createSelector(
   selectNetworkConfigurationByChainId,
@@ -3017,26 +3018,26 @@ export const getTokenScanResultsForAddresses =
   createParameterizedShallowEqualSelector(
     TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE,
   )(
-  getTokenScanCache,
-  (_state, chainId) => chainId,
-  (_state, _chainId, tokenAddresses) => tokenAddresses,
-  (tokenScanCache, chainId, tokenAddresses) => {
-    if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
-      return {};
-    }
-
-    const results = {};
-    tokenAddresses.forEach((tokenAddress) => {
-      if (tokenAddress) {
-        const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
-        if (tokenScanCache?.[cacheKey]) {
-          results[cacheKey] = tokenScanCache[cacheKey];
-        }
+    getTokenScanCache,
+    (_state, chainId) => chainId,
+    (_state, _chainId, tokenAddresses) => tokenAddresses,
+    (tokenScanCache, chainId, tokenAddresses) => {
+      if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
+        return {};
       }
-    });
 
-    return results;
-  },
+      const results = {};
+      tokenAddresses.forEach((tokenAddress) => {
+        if (tokenAddress) {
+          const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
+          if (tokenScanCache?.[cacheKey]) {
+            results[cacheKey] = tokenScanCache[cacheKey];
+          }
+        }
+      });
+
+      return results;
+    },
   );
 
 /**

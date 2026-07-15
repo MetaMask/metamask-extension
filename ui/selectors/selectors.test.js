@@ -1376,7 +1376,9 @@ describe('Selectors', () => {
       const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
       const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
 
-      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(0);
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        0,
+      );
 
       expect(
         selectors.getTokenScanResultsForAddresses(
@@ -1430,7 +1432,9 @@ describe('Selectors', () => {
         },
       });
 
-      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(2);
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        2,
+      );
     });
   });
 
