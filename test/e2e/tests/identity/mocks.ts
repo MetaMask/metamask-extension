@@ -102,15 +102,20 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
     ]);
     const requestBody = requestBodyJson ?? requestBodyText;
 
-    const json = (
-      response.response as (
-        requestBody: object | string | undefined,
-        path: string,
-        getE2ESrpIdentifierForPublicKey: (
-          publicKey: string,
-        ) => string | undefined,
-      ) => void
-    )(requestBody, path, getE2ESrpIdentifierForPublicKey);
+    // Some auth mocks return a static JSON body, others return a factory
+    // function that builds the body from the request (e.g. login / nonce).
+    const json =
+      typeof response.response === 'function'
+        ? (
+            response.response as (
+              requestBody: object | string | undefined,
+              path: string,
+              getE2ESrpIdentifierForPublicKey: (
+                publicKey: string,
+              ) => string | undefined,
+            ) => unknown
+          )(requestBody, path, getE2ESrpIdentifierForPublicKey)
+        : response.response;
 
     return {
       statusCode: 200,
