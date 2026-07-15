@@ -8,13 +8,15 @@ const OTP_LENGTH = 6;
  * Selectors match `data-testid` values on sync-accounts components.
  */
 class SyncAccountsSettingsPage {
+  private readonly backButton = '[data-testid="sync-accounts-back-button"]';
+
   private readonly doneButton = '[data-testid="qr-sync-done-button"]';
 
   private readonly driver: Driver;
 
   private readonly loading = '[data-testid="qr-sync-loading"]';
 
-  private readonly otpExpired = '[data-testid="qr-sync-otp-expired"]';
+  private readonly otpExpiredMessage = { text: 'Verification code expired' };
 
   private readonly otpFirstInput = '[data-testid="qr-sync-otp-input-0"]';
 
@@ -27,7 +29,17 @@ class SyncAccountsSettingsPage {
 
   private readonly qrCode = '[data-testid="qr-sync-qr-code"]';
 
+  private readonly qrExpiredMessage = { text: 'QR code expired' };
+
   private readonly qrLoading = '[data-testid="qr-sync-qr-loading"]';
+
+  private readonly sessionExpiredErrorMessage = {
+    text: 'This sync session expired. Start again to generate a new QR code.',
+  };
+
+  private readonly startWithNewQrCodeButton = {
+    text: 'Start with a new QR code',
+  };
 
   private readonly success = '[data-testid="qr-sync-success"]';
 
@@ -70,8 +82,16 @@ class SyncAccountsSettingsPage {
     await this.driver.waitForSelector(this.page);
   }
 
+  async clickBack(): Promise<void> {
+    await this.driver.clickElement(this.backButton);
+  }
+
   async clickDone(): Promise<void> {
     await this.driver.clickElement(this.doneButton);
+  }
+
+  async clickStartWithNewQrCode(): Promise<void> {
+    await this.driver.clickElement(this.startWithNewQrCodeButton);
   }
 
   async confirmSync(): Promise<void> {
@@ -107,7 +127,7 @@ class SyncAccountsSettingsPage {
   }
 
   async waitForOtpExpired(): Promise<void> {
-    await this.driver.waitForSelector(this.otpExpired);
+    await this.driver.waitForSelector(this.otpExpiredMessage);
   }
 
   async waitForOtpScreen(): Promise<void> {
@@ -123,8 +143,16 @@ class SyncAccountsSettingsPage {
     await this.driver.waitForSelector(this.qrCode);
   }
 
+  async waitForQrExpiredMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.qrExpiredMessage);
+  }
+
   async waitForQrLoading(): Promise<void> {
     await this.driver.waitForSelector(this.qrLoading);
+  }
+
+  async waitForSessionExpiredError(): Promise<void> {
+    await this.driver.waitForSelector(this.sessionExpiredErrorMessage);
   }
 
   async waitForSuccess(): Promise<void> {
