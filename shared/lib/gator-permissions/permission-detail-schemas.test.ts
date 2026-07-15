@@ -6,6 +6,7 @@ import type {
   SchemaElement,
   PermissionRenderContext,
 } from '@metamask/7715-permission-types';
+// eslint-disable-next-line import-x/no-restricted-paths
 import enMessages from '../../../app/_locales/en/messages.json';
 import { captureMessage } from '../sentry';
 import { getPermissionSchemaEntry } from './permission-detail-schemas';
