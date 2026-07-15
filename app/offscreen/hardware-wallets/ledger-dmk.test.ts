@@ -4,7 +4,7 @@ import { of, Subject } from 'rxjs';
 
 import { LedgerAction } from '../../../shared/constants/offscreen-communication';
 
-import { LedgerDMKBridgeHandler } from './ledger-dmk';
+import { LedgerDmkBridgeHandler } from './ledger-dmk';
 
 // Mock the transport factory (virtual: ESM-only package has no CJS export for Jest)
 jest.mock(
@@ -23,7 +23,6 @@ const mockBridgeGetPublicKey = jest.fn();
 const mockBridgeDeviceSignTransaction = jest.fn();
 const mockBridgeDeviceSignMessage = jest.fn();
 const mockBridgeDeviceSignTypedData = jest.fn();
-const mockBridgeDeviceSignDelegationAuthorization = jest.fn();
 const mockBridgeConnect = jest.fn();
 const mockBridgeDmkGetDeviceSessionState = jest.fn();
 const mockBridgeDmkListenToAvailableDevices = jest.fn();
@@ -41,8 +40,6 @@ const createMockBridge = () => ({
   deviceSignTransaction: mockBridgeDeviceSignTransaction,
   deviceSignMessage: mockBridgeDeviceSignMessage,
   deviceSignTypedData: mockBridgeDeviceSignTypedData,
-  deviceSignDelegationAuthorization:
-    mockBridgeDeviceSignDelegationAuthorization,
   connect: mockBridgeConnect,
   onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
   dmk: {
@@ -117,10 +114,10 @@ describe('LedgerDMKBridgeHandler', () => {
   });
 
   describe('handleAction', () => {
-    let handler: LedgerDMKBridgeHandler;
+    let handler: LedgerDmkBridgeHandler;
 
     beforeEach(async () => {
-      handler = new LedgerDMKBridgeHandler();
+      handler = new LedgerDmkBridgeHandler();
       // Emit a ready session state so ensureBridge() resolves
       setTimeout(() => {
         mockSessionStateSubject.next({
@@ -296,56 +293,11 @@ describe('LedgerDMKBridgeHandler', () => {
         ).rejects.toThrow('Missing hdPath or message parameter');
       });
     });
-
-    describe('signEip7702Authorization', () => {
-      it('calls bridge.deviceSignDelegationAuthorization with delegation params', async () => {
-        const authorizationHandler = new LedgerDMKBridgeHandler();
-        setTimeout(() => {
-          mockSessionStateSubject.next({
-            sessionStateType: 1,
-            currentApp: { name: 'Ethereum', version: '1.0.0' },
-          });
-        }, 0);
-
-        const expectedResult = { v: '0x1c', r: '0xabc', s: '0xdef' };
-        mockBridgeDeviceSignDelegationAuthorization.mockResolvedValue(
-          expectedResult,
-        );
-
-        const result = await authorizationHandler.handleAction(
-          LedgerAction.signEip7702Authorization,
-          {
-            hdPath: "m/44'/60'/0'/0/0",
-            chainId: 1,
-            contractAddress: '0x0000000000000000000000000000000000000001',
-            nonce: 0,
-          },
-        );
-
-        expect(
-          mockBridgeDeviceSignDelegationAuthorization,
-        ).toHaveBeenCalledWith({
-          hdPath: "m/44'/60'/0'/0/0",
-          chainId: 1,
-          contractAddress: '0x0000000000000000000000000000000000000001',
-          nonce: 0,
-        });
-        expect(result).toStrictEqual(expectedResult);
-      });
-
-      it('throws when required params are missing', async () => {
-        await expect(
-          handler.handleAction(LedgerAction.signEip7702Authorization, {
-            hdPath: "m/44'/60'/0'/0/0",
-          }),
-        ).rejects.toThrow('Missing required parameters');
-      });
-    });
   });
 
   describe('bridge lifecycle (state machine)', () => {
     it('caches the bridge across multiple actions', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
       setTimeout(() => {
         mockSessionStateSubject.next({
           sessionStateType: 1,
@@ -363,7 +315,7 @@ describe('LedgerDMKBridgeHandler', () => {
     });
 
     it('deduplicates concurrent bridge constructions', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
       setTimeout(() => {
         mockSessionStateSubject.next({
           sessionStateType: 1,
@@ -381,7 +333,7 @@ describe('LedgerDMKBridgeHandler', () => {
     });
 
     it('destroys the bridge on device disconnect', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
       setTimeout(() => {
         mockSessionStateSubject.next({
           sessionStateType: 1,
@@ -413,7 +365,7 @@ describe('LedgerDMKBridgeHandler', () => {
     });
 
     it('retries bridge construction after a failure', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
 
       // First construction fails
       mockBridgeConnect.mockRejectedValueOnce(new Error('Connection failed'));
@@ -436,7 +388,7 @@ describe('LedgerDMKBridgeHandler', () => {
     });
 
     it('destroy() is safe to call multiple times', async () => {
-      const handler = new LedgerDMKBridgeHandler();
+      const handler = new LedgerDmkBridgeHandler();
       await handler.destroy();
       await handler.destroy();
       // No error thrown, no crash

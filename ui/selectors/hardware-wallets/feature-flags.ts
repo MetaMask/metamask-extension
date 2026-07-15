@@ -12,13 +12,12 @@
 
 import { createSelector } from 'reselect';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
-import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { ENABLE_DMK_FEATURE_FLAG } from '../../../shared/lib/hardware-wallets/feature-flags';
+import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 
 /**
  * Select whether the Ledger DMK (Device Management Key) rollout is enabled.
  *
- * Resolves the `enableDmk` remote flag with `getBooleanFeatureFlag`, which:
+ * Resolves the `ledgerDmk` remote flag with `isDmkFeatureEnabled`, which:
  * Returns `false` for the disabled variant
  * `{ enabled: false, featureVersion: null, minimumVersion: null }`.
  * Returns `true` only when `enabled: true` AND the current extension
@@ -27,9 +26,5 @@ import { ENABLE_DMK_FEATURE_FLAG } from '../../../shared/lib/hardware-wallets/fe
  */
 export const getIsDmkEnabled = createSelector(
   getRemoteFeatureFlags,
-  (remoteFeatureFlags): boolean =>
-    getBooleanFeatureFlag(
-      remoteFeatureFlags[ENABLE_DMK_FEATURE_FLAG],
-      false,
-    ),
+  (remoteFeatureFlags): boolean => isDmkFeatureEnabled(remoteFeatureFlags),
 );

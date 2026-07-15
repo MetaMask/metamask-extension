@@ -29,6 +29,7 @@ import {
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 
 const DEVICE_DISCOVERY_TIMEOUT_MS = 15_000;
+const SESSION_READY_TIMEOUT_MS = 15_000;
 
 function isWebHIDSupported(): boolean {
   return (
@@ -181,6 +182,23 @@ function normalizeDiscoveryError(reason: unknown): Error {
 }
 
 /**
+ * Normalizes an error thrown while waiting for the DMK session to become
+ * ready. Timeouts become an explicit session-ready error so callers are not
+ * left hanging indefinitely.
+ *
+ * @param reason - The value thrown by the session-state observable pipeline.
+ */
+function normalizeSessionReadyError(reason: unknown): Error {
+  if (reason instanceof TimeoutError) {
+    return new Error('Ledger device session timed out waiting for ready state');
+  }
+  if (reason instanceof Error) {
+    return reason;
+  }
+  return new Error(JSON.stringify(reason));
+}
+
+/**
  * Ledger handler backed by `LedgerDMKBridge` from `@metamask/eth-ledger-bridge-keyring`.
  *
  * Caches a single bridge instance for the lifetime of the offscreen document.
@@ -190,7 +208,7 @@ function normalizeDiscoveryError(reason: unknown): Error {
  * Selection between this handler and the legacy `LedgerLegacyHandler` is
  * driven by the `ledgerDmkBridge` remote feature flag. See `initLedger(mode)`.
  */
-export class LedgerDMKBridgeHandler {
+export class LedgerDmkBridgeHandler {
   private bridge: LedgerDMKBridge | null = null;
 
   private bridgePromise: Promise<LedgerDMKBridge> | null = null;
@@ -215,18 +233,25 @@ export class LedgerDMKBridgeHandler {
    */
   private async ensureBridge(): Promise<LedgerDMKBridge> {
     if (this.bridge) {
+      console.log('[LedgerDMK] ensureBridge: reusing cached bridge');
       return this.bridge;
     }
     if (this.bridgePromise) {
+      console.log('[LedgerDMK] ensureBridge: awaiting in-flight bridge connect');
       return this.bridgePromise;
     }
 
+    console.log('[LedgerDMK] ensureBridge: constructing new bridge');
     this.bridgePromise = this.constructBridge();
     try {
       const b = await this.bridgePromise;
       this.bridge = b;
+      console.log('[LedgerDMK] ensureBridge: bridge ready', {
+        sessionId: this.sessionId,
+      });
       return b;
     } catch (error) {
+      console.error('[LedgerDMK] ensureBridge: connect failed', error);
       this.bridgePromise = null;
       this.sessionId = null;
       throw error;
@@ -240,21 +265,27 @@ export class LedgerDMKBridgeHandler {
    * @returns A connected `LedgerDMKBridge`.
    */
   private async constructBridge(): Promise<LedgerDMKBridge> {
+    console.log('[LedgerDMK] constructBridge: creating LedgerDMKBridge');
     const bridge = new LedgerDMKBridge({
       transportFactory: webHidTransportFactory,
     });
 
+    console.log('[LedgerDMK] constructBridge: finding permitted device');
     const device = await this.findPermittedDevice(bridge.dmk);
+    console.log('[LedgerDMK] constructBridge: connecting to device');
     this.sessionId = await bridge.connect({ device });
 
     // Wait for the session to reach a ready state (current app reported)
     // before handing the session off to callers. Without this, connect()
     // resolves before the device has completed app discovery and subsequent
     // bridge commands can race against session initialization.
+    console.log('[LedgerDMK] constructBridge: waiting for session ready', {
+      sessionId: this.sessionId,
+    });
     const state$ = bridge.dmk.getDeviceSessionState({
       sessionId: this.sessionId,
     });
-    const sessionState = await firstValueFrom(
+    await firstValueFrom(
       state$.pipe(
         filter(
           (s) =>
@@ -264,8 +295,14 @@ export class LedgerDMKBridgeHandler {
                 DeviceSessionStateType.ReadyWithSecureChannel) &&
             s.currentApp,
         ),
+        timeoutOperator(SESSION_READY_TIMEOUT_MS),
+        catchError((reason: unknown) =>
+          throwError(() => normalizeSessionReadyError(reason)),
+        ),
       ),
     );
+
+    console.log('[LedgerDMK] constructBridge: session ready');
 
     // Subscribe to disconnect events so we tear down the bridge when the
     // device is unplugged.
@@ -406,6 +443,7 @@ export class LedgerDMKBridgeHandler {
     action: LedgerAction,
     params?: Record<string, unknown>,
   ): Promise<unknown> {
+    console.log('[LedgerDMK] handleAction', action);
     const bridge = await this.ensureBridge();
 
     switch (action) {
@@ -442,10 +480,26 @@ export class LedgerDMKBridgeHandler {
         ) {
           throw new Error('Missing hdPath or tx parameter');
         }
-        return bridge.deviceSignTransaction({
-          tx: params.tx,
+        console.log('[LedgerDMK] signTransaction start', {
           hdPath: params.hdPath,
+          txLength: params.tx.length,
         });
+        try {
+          const result = await bridge.deviceSignTransaction({
+            tx: params.tx,
+            hdPath: params.hdPath,
+          });
+          console.log('[LedgerDMK] signTransaction success', {
+            hdPath: params.hdPath,
+          });
+          return result;
+        } catch (error) {
+          console.error('[LedgerDMK] signTransaction failed', {
+            hdPath: params.hdPath,
+            error,
+          });
+          throw error;
+        }
       }
 
       case LedgerAction.signPersonalMessage: {
@@ -457,10 +511,26 @@ export class LedgerDMKBridgeHandler {
         ) {
           throw new Error('Missing hdPath or message parameter');
         }
-        return bridge.deviceSignMessage({
+        console.log('[LedgerDMK] signPersonalMessage start', {
           hdPath: params.hdPath,
-          message: params.message,
+          messageLength: params.message.length,
         });
+        try {
+          const result = await bridge.deviceSignMessage({
+            hdPath: params.hdPath,
+            message: params.message,
+          });
+          console.log('[LedgerDMK] signPersonalMessage success', {
+            hdPath: params.hdPath,
+          });
+          return result;
+        } catch (error) {
+          console.error('[LedgerDMK] signPersonalMessage failed', {
+            hdPath: params.hdPath,
+            error,
+          });
+          throw error;
+        }
       }
 
       case LedgerAction.signTypedData: {
@@ -472,30 +542,31 @@ export class LedgerDMKBridgeHandler {
         ) {
           throw new Error('Missing hdPath or message parameter');
         }
-        return bridge.deviceSignTypedData({
+        const typedMessage = params.message as {
+          primaryType?: unknown;
+        };
+        console.log('[LedgerDMK] signTypedData start', {
           hdPath: params.hdPath,
-          message: params.message,
+          primaryType: typedMessage.primaryType,
         });
-      }
-
-      case LedgerAction.signEip7702Authorization: {
-        if (
-          !params?.hdPath ||
-          typeof params.chainId !== 'number' ||
-          !params.contractAddress ||
-          typeof params.nonce !== 'number'
-        ) {
-          throw new Error(
-            'Missing required parameters: hdPath, chainId, contractAddress, nonce',
-          );
+        try {
+          const result = await bridge.deviceSignTypedData({
+            hdPath: params.hdPath,
+            message: params.message,
+          });
+          console.log('[LedgerDMK] signTypedData success', {
+            hdPath: params.hdPath,
+            primaryType: typedMessage.primaryType,
+          });
+          return result;
+        } catch (error) {
+          console.error('[LedgerDMK] signTypedData failed', {
+            hdPath: params.hdPath,
+            primaryType: typedMessage.primaryType,
+            error,
+          });
+          throw error;
         }
-        const signedBridge = await this.ensureBridge();
-        return signedBridge.deviceSignDelegationAuthorization({
-          hdPath: params.hdPath,
-          chainId: params.chainId,
-          contractAddress: params.contractAddress,
-          nonce: params.nonce,
-        });
       }
 
       default:

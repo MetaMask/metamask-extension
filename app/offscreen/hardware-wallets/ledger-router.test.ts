@@ -1,6 +1,7 @@
 import {
   LedgerHandlerMode,
   LedgerAction,
+  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 
@@ -161,6 +162,7 @@ describe('LedgerRouter', () => {
 
       expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
       expect(mockDmkInit).toHaveBeenCalledTimes(1);
+      expect(mockDmkInit).toHaveBeenCalledWith(true);
       expect(mockedLegacyCtor).not.toHaveBeenCalled();
     });
 
@@ -292,6 +294,7 @@ describe('LedgerRouter', () => {
       expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
       expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
       expect(mockDmkInit).toHaveBeenCalledTimes(1);
+      expect(mockDmkInit).toHaveBeenCalledWith(true);
     });
 
     it('switches from DMK to Legacy', async () => {
@@ -312,6 +315,40 @@ describe('LedgerRouter', () => {
 
       expect(mockDmkDestroy).not.toHaveBeenCalled();
       expect(mockedDmkCtor).not.toHaveBeenCalled();
+    });
+
+    it('bootstraps Legacy first when called before any init', async () => {
+      await switchLedgerHandler(LedgerHandlerMode.DMK);
+
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
+      expect(mockLegacyInit).toHaveBeenCalledTimes(1);
+      expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
+      expect(mockDmkInit).toHaveBeenCalledWith(true);
+      expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('waits for an in-flight initLedger before switching', async () => {
+      let resolveLegacyInit: (() => void) | undefined;
+      mockLegacyInit.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveLegacyInit = resolve;
+          }),
+      );
+
+      const initPromise = initLedger(LedgerHandlerMode.Legacy);
+      const switchPromise = switchLedgerHandler(LedgerHandlerMode.DMK);
+
+      // Switch must not create DMK until Legacy init finishes.
+      expect(mockedDmkCtor).not.toHaveBeenCalled();
+
+      resolveLegacyInit?.();
+      await initPromise;
+      await switchPromise;
+
+      expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
+      expect(mockDmkInit).toHaveBeenCalledWith(true);
+      expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
     });
 
     it('routes incoming messages to the new handler after a switch (same listener)', async () => {
@@ -370,6 +407,101 @@ describe('LedgerRouter', () => {
       expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
       expect(mockLegacyInit).toHaveBeenCalledWith();
       expect(mockedDmkCtor).not.toHaveBeenCalled();
+    });
+
+    it('registers a listener that switches modes on switchLedgerMode events', async () => {
+      await bootstrapLedger();
+      jest.clearAllMocks();
+      mockDmkInit.mockResolvedValue(undefined);
+
+      for (const listener of capturedListeners) {
+        listener(
+          {
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.switchLedgerMode,
+            mode: LedgerHandlerMode.DMK,
+          },
+          {},
+          jest.fn(),
+        );
+      }
+
+      await flushAsync();
+      await flushAsync();
+
+      expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
+      expect(mockDmkInit).toHaveBeenCalledWith(true);
+    });
+
+    it('ignores switchLedgerMode events with an invalid mode', async () => {
+      await bootstrapLedger();
+      jest.clearAllMocks();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      for (const listener of capturedListeners) {
+        listener(
+          {
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.switchLedgerMode,
+            mode: 'not-a-mode',
+          },
+          {},
+          jest.fn(),
+        );
+      }
+
+      await flushAsync();
+
+      expect(mockedDmkCtor).not.toHaveBeenCalled();
+      expect(mockedLegacyCtor).not.toHaveBeenCalled();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[ledger-router] ignore switchLedgerMode with invalid mode:',
+        'not-a-mode',
+      );
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('is a no-op when switchLedgerMode requests the already-active mode', async () => {
+      await bootstrapLedger();
+      jest.clearAllMocks();
+
+      for (const listener of capturedListeners) {
+        listener(
+          {
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.switchLedgerMode,
+            mode: LedgerHandlerMode.Legacy,
+          },
+          {},
+          jest.fn(),
+        );
+      }
+
+      await flushAsync();
+      await flushAsync();
+
+      expect(mockedDmkCtor).not.toHaveBeenCalled();
+      expect(mockedLegacyCtor).not.toHaveBeenCalled();
+      expect(mockLegacyDestroy).not.toHaveBeenCalled();
+    });
+
+    it('logs and continues when bootstrap init fails', async () => {
+      mockLegacyInit.mockRejectedValueOnce(new Error('legacy-boot-failed'));
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      await bootstrapLedger();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[ledger-router] bootstrapLedger failed:',
+        expect.any(Error),
+      );
+
+      consoleErrorSpy.mockRestore();
     });
   });
 

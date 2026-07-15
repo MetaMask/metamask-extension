@@ -3,8 +3,6 @@ import {
   GetAppNameAndVersionResponse,
   isKnownLedgerError,
   LedgerBridge,
-  LedgerSignDelegationAuthorizationParams,
-  LedgerSignDelegationAuthorizationResponse,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
@@ -144,15 +142,6 @@ export class LedgerOffscreenBridge implements Omit<
   ): Promise<LedgerSignTypedDataResponse> {
     return this.#sendMessage({
       action: LedgerAction.signTypedData,
-      params,
-    });
-  }
-
-  deviceSignDelegationAuthorization(
-    params: LedgerSignDelegationAuthorizationParams,
-  ): Promise<LedgerSignDelegationAuthorizationResponse> {
-    return this.#sendMessage({
-      action: LedgerAction.signEip7702Authorization,
       params,
     });
   }

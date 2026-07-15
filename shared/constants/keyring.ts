@@ -31,10 +31,9 @@ export const KeyringType = {
 
 /**
  * Keyring types that support EIP-7702 (Setup Smart Account).
- * HD (entropy), simple (private key), and Ledger hardware accounts.
+ * Only HD (entropy) and simple (private key) accounts support this; hardware and snap do not.
  */
 export const KEYRING_TYPES_SUPPORTING_7702 = [
   KeyringTypes.hd,
   KeyringTypes.simple,
-  HardwareKeyringType.ledger,
 ];

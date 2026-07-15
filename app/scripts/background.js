@@ -52,7 +52,6 @@ import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
-  LedgerHandlerMode,
 } from '../../shared/constants/offscreen-communication';
 import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
@@ -866,41 +865,47 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  // Push the initial Ledger handler mode to the offscreen document.
-  // The offscreen boots as Legacy by default; if DMK is enabled via the
-  // remote feature flag we send a switchLedgerMode event to hot-swap.
+  // Push Ledger handler mode to the offscreen document after it has booted.
+  // The offscreen boots as Legacy by default; without waiting for
+  // `offscreenPromise`, the initial `switchLedgerMode` can be sent before
+  // `listenForModeSwitches` is registered and is lost. If the cached
+  // `ledgerDmk` value never changes after that, no further push arrives and
+  // the router stays on Legacy forever.
   if (isManifestV3) {
-    try {
-      const initialMode = controller.getLedgerMode();
-      browser.runtime.sendMessage({
-        target: OffscreenCommunicationTarget.extension,
-        event: OffscreenCommunicationEvents.switchLedgerMode,
-        mode: initialMode,
-      });
-    } catch {
-      // noop
-    }
-  }
+    const pushLedgerMode = (reason) => {
+      try {
+        const mode = controller.getLedgerMode();
+        log.info(
+          `[ledger-router] pushing switchLedgerMode (${reason})`,
+          mode,
+        );
+        browser.runtime.sendMessage({
+          target: OffscreenCommunicationTarget.extension,
+          event: OffscreenCommunicationEvents.switchLedgerMode,
+          mode,
+        });
+      } catch (error) {
+        log.error(
+          `[ledger-router] failed to push switchLedgerMode (${reason})`,
+          error,
+        );
+      }
+    };
 
-  // Subscribe to remote feature flag changes for the Ledger DMK bridge.
-  // When the `ledgerDmk` flag toggles, push a `switchLedgerMode` event to
-  // the offscreen document so it can hot-swap the active Ledger handler.
-  if (isManifestV3) {
+    Promise.resolve(offscreenPromise)
+      .then(() => pushLedgerMode('initial-after-offscreen-ready'))
+      .catch((error) => {
+        log.error(
+          '[ledger-router] offscreen not ready; skipping initial switchLedgerMode',
+          error,
+        );
+      });
+
+    // When the `ledgerDmk` flag toggles, hot-swap the active Ledger handler.
     controller.controllerMessenger.subscribe(
       'RemoteFeatureFlagController:stateChange',
-      (isDmkEnabled) => {
-        const mode = isDmkEnabled
-          ? LedgerHandlerMode.DMK
-          : LedgerHandlerMode.Legacy;
-        try {
-          browser.runtime.sendMessage({
-            target: OffscreenCommunicationTarget.extension,
-            event: OffscreenCommunicationEvents.switchLedgerMode,
-            mode,
-          });
-        } catch {
-          // noop
-        }
+      () => {
+        pushLedgerMode('flag-change');
       },
       (state) =>
         getBooleanFeatureFlag(
@@ -1806,7 +1811,30 @@ export function setupController(
       }
 
       // lazily update the remote feature flags every time the UI is opened.
-      updateRemoteFeatureFlags(controller);
+      // Re-sync Ledger mode afterwards so a cache refresh that enables
+      // `ledgerDmk` (or a race-missed initial push) still reaches offscreen.
+      updateRemoteFeatureFlags(controller).then(() => {
+        if (!isManifestV3) {
+          return;
+        }
+        try {
+          const mode = controller.getLedgerMode();
+          log.info(
+            '[ledger-router] pushing switchLedgerMode (flags-refreshed)',
+            mode,
+          );
+          browser.runtime.sendMessage({
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.switchLedgerMode,
+            mode,
+          });
+        } catch (error) {
+          log.error(
+            '[ledger-router] failed to push switchLedgerMode after flags refresh',
+            error,
+          );
+        }
+      });
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         clearFailedTxBadge();

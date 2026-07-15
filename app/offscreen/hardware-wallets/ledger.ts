@@ -595,7 +595,7 @@ export class LedgerLegacyHandler {
    * dispatches actions to `handleAction`, so this method does not register
    * any message listener itself.
    */
-  async init(skipMessageListener = false): Promise<void> {
+  async init(): Promise<void> {
     this.setupDeviceEventListeners();
 
     // Check if there's already a permitted device connected
