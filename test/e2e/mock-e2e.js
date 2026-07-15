@@ -1716,9 +1716,10 @@ async function setupMocking(
       };
     });
 
-  // On Ramp: Geolocation (production and dev environments)
+  // On Ramp: Geolocation (production, staging, and dev environments)
   for (const host of [
     'on-ramp.api.cx.metamask.io',
+    'on-ramp.uat-api.cx.metamask.io',
     'on-ramp.dev-api.cx.metamask.io',
   ]) {
     await server.forGet(`https://${host}/geolocation`).thenCallback(() => {
@@ -1730,6 +1731,22 @@ async function setupMocking(
         },
       };
     });
+  }
+
+  // On Ramp: Countries list (RampsController.init on startup)
+  for (const host of [
+    'on-ramp-cache.api.cx.metamask.io',
+    'on-ramp-cache.uat-api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
+  ]) {
+    await server
+      .forGet(`https://${host}/v2/regions/countries`)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [],
+        };
+      });
   }
 
   // Snaps: Execution environment html

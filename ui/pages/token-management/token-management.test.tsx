@@ -14,6 +14,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -26,6 +27,7 @@ const METRICS_PROPERTIES = {
   tokenDecimalPrecision: 'token_decimal_precision',
   tokenStandard: 'token_standard',
   tokenSymbol: 'token_symbol',
+  sourceConnectionMethod: 'source_connection_method',
   viewState: 'view_state',
 } as const;
 
@@ -130,10 +132,6 @@ const mockTokenSearch = {
   spy: jest.fn(),
 };
 
-jest.mock('../../hooks/useDebouncedValue', () => ({
-  useDebouncedValue: <Value,>(value: Value) => value,
-}));
-
 jest.mock('../../hooks/useTokenSearch', () => ({
   useTokenSearch: (options: {
     query: string;
@@ -230,6 +228,46 @@ const expectEvmApiResultImport = async ({
       },
     ),
   );
+};
+
+const expectNonEvmApiResultImport = async ({
+  accountId,
+  actions,
+  address,
+  assetId,
+  decimals,
+  name,
+  symbol,
+}: {
+  accountId: string;
+  actions: MockedTokenManagementActions;
+  address: string;
+  assetId: string;
+  decimals: number;
+  name: string;
+  symbol: string;
+}) => {
+  await waitFor(() =>
+    expect(actions.multichainAddAssets).toHaveBeenCalledWith(
+      [assetId],
+      accountId,
+    ),
+  );
+  await waitFor(() =>
+    expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+      accountId,
+      [{ assetId, isHidden: false }],
+      {
+        [assetId]: {
+          address,
+          symbol,
+          name,
+          decimals,
+        },
+      },
+    ),
+  );
+  expect(actions.addCustomAsset).not.toHaveBeenCalled();
 };
 
 describe('TokenManagementPage', () => {
@@ -421,6 +459,67 @@ describe('TokenManagementPage', () => {
         store,
         TOKEN_MANAGEMENT_ROUTE,
       ),
+    };
+  };
+
+  const solanaAccountId = 'solana-internal-account';
+
+  const createStateWithSolanaAccount = (
+    overrides: Parameters<typeof createState>[0] = {},
+  ) => {
+    const baseState = createState({
+      enabledNetworkMap: {
+        eip155: { '0x1': true },
+        solana: { [solanaChainId]: true },
+      },
+      accountGroupAssets: {
+        [solanaChainId]: [],
+      },
+      ...overrides,
+    });
+    const selectedWallet =
+      baseState.metamask.accountTree.wallets[
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+      ];
+    const selectedGroup =
+      selectedWallet.groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'];
+
+    return {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        internalAccounts: {
+          ...baseState.metamask.internalAccounts,
+          accounts: {
+            ...baseState.metamask.internalAccounts.accounts,
+            [solanaAccountId]: {
+              id: solanaAccountId,
+              address: 'SolanaAddress',
+              type: 'solana:data-account',
+              scopes: [solanaChainId],
+              options: {},
+              methods: [],
+              metadata: { name: 'Solana 1', keyring: { type: 'Snap Keyring' } },
+            },
+          },
+        },
+        accountTree: {
+          ...baseState.metamask.accountTree,
+          wallets: {
+            ...baseState.metamask.accountTree.wallets,
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+              ...selectedWallet,
+              groups: {
+                ...selectedWallet.groups,
+                'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                  ...selectedGroup,
+                  accounts: [...selectedGroup.accounts, solanaAccountId],
+                },
+              },
+            },
+          },
+        },
+      },
     };
   };
 
@@ -1067,6 +1166,18 @@ describe('TokenManagementPage', () => {
       name: 'USD Coin',
       symbol: 'USDC',
     });
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenAdded,
+        sensitiveProperties: expect.objectContaining({
+          [METRICS_PROPERTIES.sourceConnectionMethod]:
+            MetaMetricsTokenEventSource.ManageTokens,
+          [METRICS_PROPERTIES.tokenContractAddress]: usdcAddress,
+          [METRICS_PROPERTIES.tokenSymbol]: 'USDC',
+        }),
+      }),
+      expect.anything(),
+    );
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
@@ -1098,6 +1209,120 @@ describe('TokenManagementPage', () => {
       actions,
       address: usdcAddress,
       assetId: usdcAssetId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
+  });
+
+  it('keeps a browse result in place when it becomes imported while the view is open', async () => {
+    const aadTokenAddress = '0x00000000000000000000000000000000000000aa';
+    const aadTokenAssetId = `eip155:1/erc20:${aadTokenAddress}`;
+    const aadToken = {
+      accountId: mainnetToken.accountId,
+      accountType: 'eip155:eoa',
+      assetId: aadTokenAssetId,
+      address: aadTokenAddress,
+      chainId: '0x1',
+      image: '',
+      name: 'Aardvark Token',
+      symbol: 'AAD',
+      decimals: 18,
+      isNative: false,
+      rawBalance: '0x0',
+      balance: '0',
+      fiat: {
+        balance: 0,
+        currency: 'usd',
+        conversionRate: 0,
+      },
+    };
+
+    setTokenSearchState({
+      results: [
+        {
+          assetId: aadTokenAssetId,
+          symbol: 'AAD',
+          decimals: 18,
+          name: 'Aardvark Token',
+        },
+      ],
+    });
+
+    const initialState = createState();
+    const { store } = renderPage(initialState);
+
+    const getRows = () =>
+      Array.from(document.querySelectorAll('[data-testid]')).filter((node) => {
+        const testId = node.getAttribute('data-testid') ?? '';
+        return (
+          testId.startsWith('token-management-cell-') &&
+          !testId.endsWith('-network-badge') &&
+          !testId.endsWith('-toggle')
+        );
+      });
+
+    const importedRow = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}`,
+    );
+    const browseRow = screen.getByTestId(
+      `token-management-cell-search-${aadTokenAssetId.toLowerCase()}`,
+    );
+    const initialRows = getRows();
+
+    expect(initialRows.indexOf(browseRow)).toBeGreaterThan(
+      initialRows.indexOf(importedRow),
+    );
+
+    const nextState = createState({
+      accountGroupAssets: {
+        '0x1': [aadToken, mainnetToken, nativeToken],
+      },
+    });
+
+    store.replaceReducer((() => nextState) as never);
+    store.dispatch({ type: 'TEST_TOKEN_IMPORTED' });
+
+    const importedAadRow = await screen.findByTestId(
+      `token-management-cell-0x1:${aadTokenAddress}`,
+    );
+    const updatedRows = getRows();
+
+    expect(importedAadRow).toBe(browseRow);
+    expect(updatedRows.indexOf(importedAadRow)).toBe(
+      initialRows.indexOf(browseRow),
+    );
+  });
+
+  it('toggling ON a not-yet-imported non-EVM browse result imports via multichainAddAssets and seeds unified assets', async () => {
+    const solanaResultId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
+    const solanaTokenReference = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+    setTokenSearchState({
+      results: [
+        {
+          assetId: solanaResultId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+
+    renderPage(createStateWithSolanaAccount());
+
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${solanaResultId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await expectNonEvmApiResultImport({
+      accountId: solanaAccountId,
+      actions,
+      address: solanaTokenReference,
+      assetId: solanaResultId,
       decimals: 6,
       name: 'USD Coin',
       symbol: 'USDC',

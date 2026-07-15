@@ -280,6 +280,34 @@ describe('Deep link utils', () => {
           signature: MISSING,
         });
       });
+
+      it('returns navigate route for unsigned whitelisted asset link', async () => {
+        const createdAt = 1000000;
+        jest.setSystemTime(createdAt + 60 * 1000);
+        const assetLink =
+          'https://link.metamask.io/asset?assetId=eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f';
+
+        mockParse.mockResolvedValue({
+          destination: {
+            path: '/asset/eip155:1/eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
+            query: new URLSearchParams(),
+          },
+          signature: MISSING,
+          route: { pathname: '/asset' } as never,
+        });
+
+        const result = await getDeferredDeepLinkRoute({
+          createdAt,
+          referringLink: assetLink,
+        });
+
+        expect(result).toStrictEqual({
+          type: DeferredDeepLinkRouteType.Navigate,
+          route:
+            '/asset/eip155:1/eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
+          signature: MISSING,
+        });
+      });
     });
 
     describe('when referringLink is missing or invalid', () => {

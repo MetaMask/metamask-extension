@@ -402,6 +402,7 @@ describe('PerpsMarketDetailPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
@@ -737,6 +738,23 @@ describe('PerpsMarketDetailPage', () => {
       );
       expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
         'BTC-USDC perp',
+      );
+    });
+
+    it('shows the ticker instead of the full name in the header when the full asset names flag is disabled', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const state = createMockState(true);
+      state.metamask.remoteFeatureFlags.perpsShowFullAssetNames = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      const store = mockStore(state);
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent('BTC');
+      expect(getByTestId('perps-market-detail-name')).not.toHaveTextContent(
+        'Bitcoin',
       );
     });
 

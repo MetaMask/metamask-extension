@@ -17,8 +17,120 @@ import {
 } from '@metamask/design-system-react';
 import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { Popover, PopoverPosition } from '../../../../../component-library';
+import { formatPerpsFeeRate } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';
+
+const TOOLTIP_POPOVER_STYLE = {
+  zIndex: 1051,
+  backgroundColor: 'var(--color-text-default)',
+  paddingTop: '12px',
+  paddingBottom: '12px',
+  paddingLeft: '16px',
+  paddingRight: '16px',
+  maxWidth: 250,
+} as const;
+
+type TooltipLabelProps = {
+  label: string;
+  tooltip: React.ReactNode;
+  testId: string;
+};
+
+const TooltipLabel = ({ label, tooltip, testId }: TooltipLabelProps) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+
+  const handleOpen = React.useCallback(() => setIsOpen(true), []);
+  const handleClose = React.useCallback(() => setIsOpen(false), []);
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={1}
+      data-testid={testId}
+    >
+      <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        {label}
+      </Text>
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-label={`${label} info`}
+        data-testid={`${testId}-trigger`}
+        onMouseEnter={handleOpen}
+        onMouseLeave={handleClose}
+        onFocus={handleOpen}
+        onBlur={handleClose}
+        className="inline-flex cursor-help border-0 bg-transparent p-0"
+      >
+        <Icon
+          name={IconName.Info}
+          size={IconSize.Sm}
+          color={IconColor.IconAlternative}
+        />
+      </button>
+      <Popover
+        isOpen={isOpen}
+        position={PopoverPosition.TopStart}
+        referenceElement={triggerRef.current}
+        hasArrow
+        flip
+        preventOverflow
+        isPortal
+        offset={[-32, 8]}
+        onPressEscKey={handleClose}
+        onClickOutside={handleClose}
+        style={TOOLTIP_POPOVER_STYLE}
+      >
+        {tooltip}
+      </Popover>
+    </Box>
+  );
+};
+
+type TooltipBodyProps = {
+  children: React.ReactNode;
+  testId: string;
+};
+
+const TooltipBody = ({ children, testId }: TooltipBodyProps) => (
+  <Box
+    role="tooltip"
+    data-testid={testId}
+    flexDirection={BoxFlexDirection.Column}
+    gap={2}
+    className="w-full max-w-full"
+  >
+    {children}
+  </Box>
+);
+
+type FeeTooltipRowProps = {
+  label: string;
+  value: string;
+};
+
+const FeeTooltipRow = ({ label, value }: FeeTooltipRowProps) => (
+  <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-4">
+    <Text
+      variant={TextVariant.BodySm}
+      color={TextColor.InfoInverse}
+      className="leading-5"
+    >
+      {label}
+    </Text>
+    <Text
+      variant={TextVariant.BodySm}
+      color={TextColor.InfoInverse}
+      className="text-right leading-5"
+    >
+      {value}
+    </Text>
+  </div>
+);
 
 /**
  * OrderSummary - Displays calculated order values (margin, fees, liquidation price)
@@ -29,6 +141,9 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  * @param props.originalEstimatedFees - Estimated trading fees before discount
  * @param props.liquidationPrice - Estimated liquidation price
  * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount percentage (whole numbers)
+ * @param props.metamaskFeeRate - Live MetaMask fee rate for the fees tooltip
+ * @param props.protocolFeeRate - Live protocol/provider fee rate for the fees tooltip
+ * @param props.protocolFeeLabel - Label for the protocol/provider fee row
  * @param props.showSlippageRow
  * @param props.slippageDisplay
  * @param props.exceedsMaxSlippage
@@ -41,6 +156,9 @@ export const OrderSummary = ({
   originalEstimatedFees,
   liquidationPrice,
   metamaskFeeRateDiscountPercentage,
+  metamaskFeeRate,
+  protocolFeeRate,
+  protocolFeeLabel,
   showSlippageRow = false,
   slippageDisplay,
   exceedsMaxSlippage = false,
@@ -58,9 +176,21 @@ export const OrderSummary = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsLiquidationPrice')}
-        </Text>
+        <TooltipLabel
+          label={t('perpsLiquidationPrice')}
+          testId="perps-order-summary-liquidation-price-tooltip-label"
+          tooltip={
+            <TooltipBody testId="perps-order-summary-liquidation-price-tooltip">
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.InfoInverse}
+                className="leading-5"
+              >
+                {t('perpsLiquidationPriceTooltip')}
+              </Text>
+            </TooltipBody>
+          }
+        />
         <SensitiveText
           variant={TextVariant.BodySm}
           color={TextColor.TextDefault}
@@ -128,9 +258,21 @@ export const OrderSummary = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsMargin')}
-        </Text>
+        <TooltipLabel
+          label={t('perpsMargin')}
+          testId="perps-order-summary-margin-tooltip-label"
+          tooltip={
+            <TooltipBody testId="perps-order-summary-margin-tooltip">
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.InfoInverse}
+                className="leading-5"
+              >
+                {t('perpsMarginTooltip')}
+              </Text>
+            </TooltipBody>
+          }
+        />
         <SensitiveText
           variant={TextVariant.BodySm}
           color={TextColor.TextDefault}
@@ -147,9 +289,22 @@ export const OrderSummary = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsFees')}
-        </Text>
+        <TooltipLabel
+          label={t('perpsFees')}
+          testId="perps-order-summary-fees-tooltip-label"
+          tooltip={
+            <TooltipBody testId="perps-order-summary-fees-tooltip">
+              <FeeTooltipRow
+                label={t('perpsFeesTooltipMetamaskFee')}
+                value={formatPerpsFeeRate(metamaskFeeRate)}
+              />
+              <FeeTooltipRow
+                label={protocolFeeLabel ?? t('perpsFeesTooltipProviderFee')}
+                value={formatPerpsFeeRate(protocolFeeRate)}
+              />
+            </TooltipBody>
+          }
+        />
         <PerpsFeesDisplay
           metamaskFeeRateDiscountPercentage={
             estimatedFees === null
