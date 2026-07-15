@@ -126,7 +126,11 @@ describe('useHistoryTokens', () => {
         buildHistoryItem({
           quote: {
             srcTokenAmount: '5',
-            srcAsset: { assetId: 'eip155:1/slip44:60', decimals: 18, symbol: 'ETH' },
+            srcAsset: {
+              assetId: 'eip155:1/slip44:60',
+              decimals: 18,
+              symbol: 'ETH',
+            },
             destTokenAmount: '9',
             destAsset: {
               assetId: 'eip155:10/erc20:0xusdc',
