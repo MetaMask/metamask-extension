@@ -1049,6 +1049,22 @@ describe('QrSyncController', () => {
 
       expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
     });
+
+    it('resets to idle when the relay disconnects during cancelSync teardown', async () => {
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+      mockEmitConnected();
+
+      mockMwp.dappClient?.disconnect.mockImplementation(async () => {
+        mockMwp.dappClient?.emit('disconnected');
+      });
+
+      await controller.cancelSync();
+      await flushAsyncWork();
+
+      expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
+    });
   });
 
   describe('channel errors', () => {

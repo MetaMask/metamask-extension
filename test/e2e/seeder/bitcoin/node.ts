@@ -30,6 +30,8 @@ export const BITCOIN_LOCAL_NODE_HOST = '127.0.0.1';
 const BITCOIN_WALLET_NAME = 'metamask-e2e';
 const DEFAULT_BTC_SCRIPT_PUBKEY =
   '0014469d76e8387e11cbe9010c72ee4b748dd9152fa5';
+const MAINNET_GENESIS_BLOCK_HASH =
+  '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
 const PROCESS_OUTPUT_LIMIT = 8_000;
 
 export type BitcoinLocalNodeOptions = {
@@ -324,6 +326,12 @@ export class BitcoinNode {
   }
 
   async getBlockHash(height: number): Promise<string> {
+    // The Snap syncs a mainnet Bitcoin account and verifies its genesis hash.
+    // Keep the regtest funding chain behind a mainnet-shaped Esplora response.
+    if (height === 0) {
+      return MAINNET_GENESIS_BLOCK_HASH;
+    }
+
     return await this.rpc<string>('getblockhash', [height]);
   }
 
