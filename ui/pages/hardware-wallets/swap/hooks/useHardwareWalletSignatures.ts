@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { useAppSelector } from '../../../../store/store';
 
 import { getIsStxEnabled } from '../../../../ducks/bridge/selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -137,12 +138,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   // to sign. `null` here means the approval is no longer pending — the submit
   // guard refuses to call `updateAndApproveTx` in that case to prevent
   // signing a stale txMeta.
-  const expectedSendBundleApproval = useSelector((state) =>
+  const expectedSendBundleApproval = useAppSelector((state) =>
     currentApprovalRequestId
-      ? internalSelectPendingApproval(
-          state as ApprovalsMetaMaskState,
-          currentApprovalRequestId,
-        )
+      ? internalSelectPendingApproval(state, currentApprovalRequestId)
       : undefined,
   );
   const { trackEvent } = useContext(MetaMetricsContext);
