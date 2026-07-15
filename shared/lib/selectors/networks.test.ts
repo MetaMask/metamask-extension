@@ -87,12 +87,12 @@ describe('Network Selectors', () => {
         '0x5',
       );
 
-      expect(selectNetworkConfigurationByChainId(extendedMockState, '0x1')).toBe(
-        mainnetNetwork,
-      );
-      expect(selectNetworkConfigurationByChainId(extendedMockState, '0x5')).toBe(
-        goerliNetwork,
-      );
+      expect(
+        selectNetworkConfigurationByChainId(extendedMockState, '0x1'),
+      ).toBe(mainnetNetwork);
+      expect(
+        selectNetworkConfigurationByChainId(extendedMockState, '0x5'),
+      ).toBe(goerliNetwork);
       expect(selectNetworkConfigurationByChainId.recomputations()).toBe(2);
     });
   });
