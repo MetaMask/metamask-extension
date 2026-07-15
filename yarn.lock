@@ -11751,7 +11751,7 @@ __metadata:
 
 "@sentry/browser@patch:@sentry/browser@npm%3A8.37.0#~/.yarn/patches/@sentry-browser-npm-8.37.0-f34229b451.patch":
   version: 8.37.0
-  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A8.37.0#~/.yarn/patches/@sentry-browser-npm-8.37.0-f34229b451.patch::version=8.37.0&hash=867957"
+  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A8.37.0#~/.yarn/patches/@sentry-browser-npm-8.37.0-f34229b451.patch::version=8.37.0&hash=af515f"
   dependencies:
     "@sentry-internal/browser-utils": "npm:8.37.0"
     "@sentry-internal/feedback": "npm:8.37.0"
@@ -11760,7 +11760,7 @@ __metadata:
     "@sentry/core": "npm:8.37.0"
     "@sentry/types": "npm:8.37.0"
     "@sentry/utils": "npm:8.37.0"
-  checksum: 10/807e7828eb06756f31a33391049b9d7a8c77d4604490dc20b155b15c410a6a555099db7bc362e3cf4400dcd00e2020cb3229da52d2aac2540b767cec35faa129
+  checksum: 10/75984cc0fb82a3b45a323223b6dac46de0391d37259b27cb2c66b1b76660a4da6229b4d0e99c4813150b3b58589fbfe45408cd90d2c2fde91ca28c5c97fe266f
   languageName: node
   linkType: hard
 
