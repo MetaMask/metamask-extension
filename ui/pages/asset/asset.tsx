@@ -1,6 +1,6 @@
 import { Nft } from '@metamask/assets-controllers';
 import { CaipChainId, Hex } from '@metamask/utils';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useParams, useLocation } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
@@ -58,7 +58,7 @@ const Asset = () => {
     el?.scroll(0, 0);
   }, []);
 
-  const content = (() => {
+  const renderContent = useCallback(() => {
     if (nft) {
       return <NftDetails nft={nft} nftChainId={chainId} />;
     }
@@ -79,11 +79,11 @@ const Asset = () => {
     }
 
     return <TokenAsset chainId={displayChainId} token={token} />;
-  })();
+  }, [chainId, hasError, isLoading, nft, token]);
 
   return (
     <ScrollContainer className="main-container asset__container">
-      {content}
+      {renderContent()}
     </ScrollContainer>
   );
 };
