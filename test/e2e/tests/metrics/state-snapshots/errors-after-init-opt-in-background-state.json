@@ -68,7 +68,6 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
