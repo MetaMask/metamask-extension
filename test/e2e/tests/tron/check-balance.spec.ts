@@ -9,7 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { mockTronApis } from './mocks/common-tron';
 import { buildTronFixtures } from './unified-tron-assets';
 
-describe('Check balance', function (this: Suite) {
+describe('Check balance TEST', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
     await withFixtures(
       {
