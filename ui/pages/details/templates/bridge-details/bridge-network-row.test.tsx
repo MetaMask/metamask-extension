@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import messages from '../../../../../app/_locales/en/messages.json';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { BridgeNetworkRow } from './bridge-network-row';
@@ -40,16 +41,16 @@ describe('BridgeNetworkRow', () => {
 
   it('renders the configured network names for both chains', () => {
     mockGetAllNetworkConfigurationsByCaipChainId.mockReturnValue({
-      'eip155:1': { name: 'Ethereum' },
-      'eip155:137': { name: 'Polygon' },
+      'eip155:1': { name: messages.networkNameEthereum.message },
+      'eip155:137': { name: messages.networkNamePolygon.message },
     });
 
     const { getByText } = render(
       <BridgeNetworkRow fromChainId="eip155:1" toChainId="eip155:137" />,
     );
 
-    expect(getByText('Ethereum')).toBeInTheDocument();
-    expect(getByText('Polygon')).toBeInTheDocument();
+    expect(getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
+    expect(getByText(messages.networkNamePolygon.message)).toBeInTheDocument();
     expect(getByText('→')).toBeInTheDocument();
   });
 
