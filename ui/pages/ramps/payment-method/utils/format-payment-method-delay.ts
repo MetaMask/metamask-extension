@@ -1,3 +1,5 @@
+import type { useI18nContext } from '../../../../hooks/useI18nContext';
+
 /**
  * Converts a payment-method delay range (minutes) into description tokens.
  *
@@ -68,7 +70,7 @@ export function timeToDescription(timeArr: number[]): DelayDescriptionToken[] {
   return [lower.toString(), 'separator', upper.toString(), 'minutes'];
 }
 
-type TranslateFn = (key: string, ...args: string[]) => string;
+type TranslateFn = ReturnType<typeof useI18nContext>;
 
 function translateDelayToken(
   token: DelayDescriptionToken,

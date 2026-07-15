@@ -1,4 +1,5 @@
 import type { Provider } from '@metamask/ramps-controller';
+import type { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type ProviderBuyLimit = {
   minAmount: number;
@@ -27,7 +28,7 @@ export function getProviderBuyLimit(
   return provider.limits?.fiat?.[fiatCurrency.toLowerCase()]?.[paymentMethodId];
 }
 
-type TranslateFn = (key: string, substitutions?: string[]) => string;
+type TranslateFn = ReturnType<typeof useI18nContext>;
 
 /**
  * Formats a provider min/max buy limit for payment method list display.

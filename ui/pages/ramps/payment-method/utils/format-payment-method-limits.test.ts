@@ -35,7 +35,7 @@ describe('getProviderBuyLimit', () => {
           },
         },
       },
-    } as Provider;
+    } as unknown as Provider;
 
     expect(
       getProviderBuyLimit(provider, 'USD', 'debit-credit-card'),
