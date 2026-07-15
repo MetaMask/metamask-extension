@@ -130,7 +130,7 @@ You can start a development build with a preloaded wallet state, by adding `TEST
 
 `yarn start` is backed by Webpack. You can also call `yarn webpack` directly for advanced build-system debugging; see the [Webpack README](./development/webpack/README.md) for more information.
 
-`yarn start:lavamoat` is not currently supported because Webpack watch mode does not support LavaMoat. For production-like LavaMoat verification, use `yarn webpack:lavamoat:build` or `yarn build:test:webpack`.
+`yarn start:lavamoat` is not currently supported because Webpack watch mode does not support LavaMoat. For production-like LavaMoat verification, use `yarn webpack:lavamoat:build` or `yarn build:test`.
 
 #### React and Redux DevTools
 
@@ -170,15 +170,15 @@ Before running e2e tests, ensure you've run `yarn install` to download dependenc
 
 1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
 2. Create a custom production-like Webpack test build. This command allows you to generate test builds for various types, including:
-   - `yarn build:test:webpack` for main build
-   - `yarn build:test:flask:webpack` for flask build
-   - `yarn build:test:webpack:mv2` for mv2 build
+   - `yarn build:test` for main build
+   - `yarn build:test:flask` for flask build
+   - `yarn build:test:mv2` for mv2 build
 3. Start a Webpack test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build
    - `yarn start:test:mv2` for mv2 build
 
-Note: The `yarn start:test` command has LavaMoat and Snow disabled for faster iteration. Use `yarn build:test:webpack` for production-like LavaMoat verification.
+Note: The `yarn start:test` command has LavaMoat and Snow disabled for faster iteration. Use `yarn build:test` for production-like LavaMoat verification.
 
 #### Running Tests
 
@@ -229,7 +229,7 @@ For code examples and detailed guidelines, see [Feature flags in E2E tests](http
 
 ##### Build-time feature flags (compile-time)
 
-Build-time flags are set before running tests and require creating a test build with the flag enabled. Set the flag either in your local `.metamaskrc` file or as an environment variable prefix (e.g. `MULTICHAIN=1 yarn build:test:webpack`), then follow the steps in [Preparing a Test Build](#preparing-a-test-build) to create and run the build.
+Build-time flags are set before running tests and require creating a test build with the flag enabled. Set the flag either in your local `.metamaskrc` file or as an environment variable prefix (e.g. `MULTICHAIN=1 yarn build:test`), then follow the steps in [Preparing a Test Build](#preparing-a-test-build) to create and run the build.
 
 #### Feature Flag Registry
 
