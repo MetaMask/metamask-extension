@@ -1,6 +1,10 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { getCleanAppState, getEventPayloads, withFixtures } from '../../helpers';
+import {
+  getCleanAppState,
+  getEventPayloads,
+  withFixtures,
+} from '../../helpers';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ErrorPage from '../../page-objects/pages/error-page';
