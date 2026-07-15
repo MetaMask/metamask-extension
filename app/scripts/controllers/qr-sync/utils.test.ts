@@ -1,4 +1,8 @@
-import { SessionRequest } from '@metamask/mobile-wallet-protocol-core';
+import {
+  ErrorCode as MwpCoreErrorCode,
+  SessionError as MwpCoreSessionError,
+  SessionRequest,
+} from '@metamask/mobile-wallet-protocol-core';
 import {
   QR_SYNC_PHASES,
   QrSyncErrorCodes,
@@ -12,9 +16,13 @@ import {
   getSyncCompletionTimeoutMs,
   getSyncOfferFailureError,
   canAcceptSyncOffer,
+  isQrExpiredError,
   isQrSyncOffer,
+  MWP_REQUEST_EXPIRED_CODE,
   normalizeQrSyncMessage,
   parseJsonMessage,
+  parseSessionError,
+  resolveQrSyncErrorCode,
 } from './utils';
 import { QrSyncOffer } from './types';
 
@@ -152,6 +160,61 @@ describe('qr-sync utils', () => {
     });
   });
 
+  describe('isQrExpiredError', () => {
+    it('returns true when the error code is REQUEST_EXPIRED', () => {
+      const error = Object.assign(
+        new Error('Did not receive handshake offer from wallet in time.'),
+        { code: MWP_REQUEST_EXPIRED_CODE },
+      );
+      expect(isQrExpiredError(error)).toBe(true);
+    });
+
+    it('returns true when the error name is REQUEST_EXPIRED', () => {
+      const error = new Error(
+        'Did not receive handshake offer from wallet in time.',
+      );
+      error.name = MWP_REQUEST_EXPIRED_CODE;
+      expect(isQrExpiredError(error)).toBe(true);
+    });
+
+    it('returns false for unrelated errors', () => {
+      expect(isQrExpiredError(new Error('Relay error'))).toBe(false);
+      expect(isQrExpiredError({ code: 'SESSION_EXPIRED' })).toBe(false);
+    });
+
+    it('returns false for non-object values', () => {
+      expect(isQrExpiredError(null)).toBe(false);
+      expect(isQrExpiredError('REQUEST_EXPIRED')).toBe(false);
+    });
+  });
+
+  describe('resolveQrSyncErrorCode', () => {
+    it('resolves REQUEST_EXPIRED errors to QR_EXPIRED', () => {
+      const error = Object.assign(
+        new Error('Did not receive handshake offer from wallet in time.'),
+        { code: MWP_REQUEST_EXPIRED_CODE },
+      );
+      expect(resolveQrSyncErrorCode(error, QrSyncErrorCodes.QR_EXPIRED)).toBe(
+        QrSyncErrorCodes.QR_EXPIRED,
+      );
+    });
+
+    it('falls back to the default code when no detector matches', () => {
+      expect(
+        resolveQrSyncErrorCode(
+          new Error('Relay error'),
+          QrSyncErrorCodes.UNKNOWN,
+        ),
+      ).toBe(QrSyncErrorCodes.UNKNOWN);
+    });
+
+    it('falls back to the default code for non-error values', () => {
+      expect(resolveQrSyncErrorCode(undefined, QrSyncErrorCodes.UNKNOWN)).toBe(
+        QrSyncErrorCodes.UNKNOWN,
+      );
+    });
+  });
+
   describe('canAcceptSyncOffer', () => {
     it('returns true when the extension can accept a sync offer', () => {
       expect(
@@ -274,6 +337,106 @@ describe('qr-sync utils', () => {
       ).toStrictEqual({
         code: QrSyncErrorCodes.SYNC_FAILED,
         message: 'Mobile error',
+      });
+    });
+  });
+
+  describe('parseSessionError', () => {
+    it('returns the default unknown error for non-session errors', () => {
+      expect(parseSessionError(new Error('Relay unavailable'))).toStrictEqual({
+        code: QrSyncErrorCodes.UNKNOWN,
+        message: QrSyncErrorMessages.UNKNOWN,
+      });
+    });
+
+    it('returns the default unknown error for non-error values', () => {
+      expect(parseSessionError(undefined)).toStrictEqual({
+        code: QrSyncErrorCodes.UNKNOWN,
+        message: QrSyncErrorMessages.UNKNOWN,
+      });
+    });
+
+    it('maps OTP_MAX_ATTEMPTS_REACHED to OTP_ATTEMPTS_EXCEEDED', () => {
+      const error = new MwpCoreSessionError(
+        MwpCoreErrorCode.OTP_MAX_ATTEMPTS_REACHED,
+        'Too many attempts.',
+      );
+
+      expect(parseSessionError(error)).toStrictEqual({
+        code: QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
+        message: 'Too many attempts.',
+      });
+    });
+
+    it('maps OTP_ENTRY_TIMEOUT to OTP_EXPIRED', () => {
+      const error = new MwpCoreSessionError(
+        MwpCoreErrorCode.OTP_ENTRY_TIMEOUT,
+        'OTP entry timed out.',
+      );
+
+      expect(parseSessionError(error)).toStrictEqual({
+        code: QrSyncErrorCodes.OTP_EXPIRED,
+        message: 'OTP entry timed out.',
+      });
+    });
+
+    it('maps OTP_INCORRECT to OTP_INVALID', () => {
+      const error = new MwpCoreSessionError(
+        MwpCoreErrorCode.OTP_INCORRECT,
+        'Incorrect code',
+      );
+
+      expect(parseSessionError(error)).toStrictEqual({
+        code: QrSyncErrorCodes.OTP_INVALID,
+        message: 'Incorrect code',
+      });
+    });
+
+    it('maps REQUEST_EXPIRED to QR_EXPIRED', () => {
+      const error = new MwpCoreSessionError(
+        MwpCoreErrorCode.REQUEST_EXPIRED,
+        'Did not receive handshake offer from wallet in time.',
+      );
+
+      expect(parseSessionError(error)).toStrictEqual({
+        code: QrSyncErrorCodes.QR_EXPIRED,
+        message: 'Did not receive handshake offer from wallet in time.',
+      });
+    });
+
+    it('maps SESSION_EXPIRED to SESSION_EXPIRED', () => {
+      const error = new MwpCoreSessionError(
+        MwpCoreErrorCode.SESSION_EXPIRED,
+        'Session expired.',
+      );
+
+      expect(parseSessionError(error)).toStrictEqual({
+        code: QrSyncErrorCodes.SESSION_EXPIRED,
+        message: 'Session expired.',
+      });
+    });
+
+    it('maps TRANSPORT_DISCONNECTED to CHANNEL_DISCONNECTED', () => {
+      const error = new MwpCoreSessionError(
+        MwpCoreErrorCode.TRANSPORT_DISCONNECTED,
+        'Transport disconnected.',
+      );
+
+      expect(parseSessionError(error)).toStrictEqual({
+        code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
+        message: 'Transport disconnected.',
+      });
+    });
+
+    it('keeps the unknown code for unmapped session error codes', () => {
+      const error = new MwpCoreSessionError(
+        MwpCoreErrorCode.UNKNOWN,
+        'Something went wrong.',
+      );
+
+      expect(parseSessionError(error)).toStrictEqual({
+        code: QrSyncErrorCodes.UNKNOWN,
+        message: 'Something went wrong.',
       });
     });
   });
