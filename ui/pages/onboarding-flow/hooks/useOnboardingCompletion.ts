@@ -23,7 +23,6 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
@@ -58,8 +57,7 @@ import type { MetaMaskReduxDispatch } from '../../../store/store';
 export function useOnboardingCompletion() {
   const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { trackEvent: trackAnalyticsEvent, createEventBuilder } = useAnalytics();
-  const { trackEvent: trackMetaMetricsEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const isSidePanelEnabled = useSidePanelEnabled();
 
   const externalServicesOnboardingToggleState = useSelector(
@@ -94,7 +92,7 @@ export function useOnboardingCompletion() {
       }
 
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
-        await trackMetaMetricsEvent(
+        await trackEvent(
           createEvent({
             signature: deferredDeepLinkResult.signature,
             url: new URL(deferredDeepLinkToUse.referringLink),
@@ -131,7 +129,7 @@ export function useOnboardingCompletion() {
         navigate(DEFAULT_ROUTE);
       }
     },
-    [dispatch, navigate, trackMetaMetricsEvent],
+    [dispatch, navigate, trackAnalyticsEvent],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
@@ -235,7 +233,7 @@ export function useOnboardingCompletion() {
             firstTimeFlowType === FirstTimeFlowType.create ||
             firstTimeFlowType === FirstTimeFlowType.socialCreate;
 
-          trackAnalyticsEvent(
+          trackEvent(
             createEventBuilder(MetaMetricsEventName.OnboardingCompleted)
               .addCategory(MetaMetricsEventCategory.Onboarding)
               .addProperties({
@@ -280,7 +278,7 @@ export function useOnboardingCompletion() {
         // Since we will track the `Metrics Opt In/Out` event even when optedIn is false,
         // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
         if (!isOnboardingCompleted) {
-          trackAnalyticsEvent(
+          trackEvent(
             createEventBuilder(
               isOptedIn
                 ? MetaMetricsEventName.MetricsOptIn
@@ -327,7 +325,7 @@ export function useOnboardingCompletion() {
       isOptedIn,
       isSidePanelEnabled,
       isUnlocked,
-      trackAnalyticsEvent,
+      trackEvent,
     ],
   );
 

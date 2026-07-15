@@ -1,24 +1,12 @@
+import { createEventBuilder } from '../analytics/create-event-builder';
+import type { AnalyticsEvent } from '../analytics/create-event-builder';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   type MetaMetricsEventPayload,
 } from '../../constants/metametrics';
-import type { SignatureStatus } from './verify';
-
-type UTMParameter =
-  | 'utm_campaign'
-  | 'utm_content'
-  | 'utm_medium'
-  | 'utm_source'
-  | 'utm_term';
-
-const UTM_PARAMETERS = new Set([
-  'utm_campaign',
-  'utm_content',
-  'utm_medium',
-  'utm_source',
-  'utm_term',
-]) as Set<UTMParameter> & { has: (key: string) => key is UTMParameter };
+import { UTM_PARAMETERS, type UTMParameter } from '../../types/metametrics';
+import { SignatureStatus } from './verify';
 
 export type Properties = {
   route: string;
@@ -34,7 +22,7 @@ export type EventDetails = {
 };
 
 /**
- * Creates a trackable Event Payload representing deep link usage.
+ * Creates a trackable analytics event representing deep link usage.
  *
  * If the route has query params, and the query params have duplicate keys,
  * only the last value will be used in the properties.
@@ -44,7 +32,7 @@ export type EventDetails = {
  * @param route.signature - Whether the deep link has a signature, and if it is
  * valid.
  */
-export function createEvent({ signature, url }: EventDetails) {
+export function createEvent({ signature, url }: EventDetails): AnalyticsEvent {
   const properties: Properties = {
     route: url.pathname,
     signature,
@@ -67,10 +55,9 @@ export function createEvent({ signature, url }: EventDetails) {
     }
   }
 
-  return {
-    category: MetaMetricsEventCategory.DeepLink as const,
-    event: MetaMetricsEventName.DeepLinkUsed as const,
-    properties,
-    sensitiveProperties,
-  } satisfies MetaMetricsEventPayload;
+  return createEventBuilder(MetaMetricsEventName.DeepLinkUsed)
+    .addCategory(MetaMetricsEventCategory.DeepLink)
+    .addProperties(properties)
+    .addSensitiveProperties(sensitiveProperties)
+    .build();
 }
