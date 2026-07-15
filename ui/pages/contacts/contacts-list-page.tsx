@@ -32,7 +32,7 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   BannerAlert,
   BannerAlertSeverity,
-} from '../../components/component-library';
+} from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
