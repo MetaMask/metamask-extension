@@ -496,12 +496,8 @@ class HomePage {
         return;
       } catch (e) {
         if (attempt === attempts) {
-          const balance = await this.driver.waitForSelector(this.balance, {
-            timeout: timeoutPerAttempt,
-          });
-          const currentBalance = await balance.getText();
           console.log(
-            `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} after ${attempts} refresh attempts`,
+            `Expected balance ${expectedBalance} ${symbol} not displayed after ${attempts} refresh attempts`,
             e,
           );
           throw e;
