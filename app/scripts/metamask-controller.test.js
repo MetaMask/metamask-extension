@@ -94,6 +94,7 @@ import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-c
 import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
+import { trackEvent } from './controllers/analytics';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // and provide the pure flag-evaluation logic without the IN_TEST bypass
@@ -111,6 +112,11 @@ jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
   ),
 }));
 
+jest.mock('./controllers/analytics', () => ({
+  ...jest.requireActual('./controllers/analytics'),
+  trackEvent: jest.fn(),
+}));
+
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockImplementation(() => ({
     messengerClient: {
@@ -120,6 +126,33 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
     api: {
       perpsDisconnect: jest.fn().mockResolvedValue(undefined),
       perpsGetConnectionState: jest.fn().mockReturnValue('disconnected'),
+    },
+  })),
+}));
+
+jest.mock('./messenger-client-init/ramps-controller-init', () => ({
+  RampsControllerInit: jest.fn().mockImplementation(() => ({
+    messengerClient: {
+      state: {},
+      name: 'RampsController',
+      init: jest.fn().mockResolvedValue(undefined),
+      startOrderPolling: jest.fn(),
+    },
+    api: {
+      setRampsUserRegion: jest.fn(),
+      setRampsSelectedToken: jest.fn(),
+      setRampsSelectedProvider: jest.fn(),
+      setRampsSelectedPaymentMethod: jest.fn(),
+      getRampsTokens: jest.fn(),
+      getRampsProviders: jest.fn(),
+      getRampsPaymentMethods: jest.fn(),
+      getRampsQuotes: jest.fn(),
+      getRampsBuyWidgetData: jest.fn(),
+      addRampsPrecreatedOrder: jest.fn(),
+      addRampsOrder: jest.fn(),
+      removeRampsOrder: jest.fn(),
+      refreshRampsOrder: jest.fn(),
+      getRampsOrderFromCallback: jest.fn(),
     },
   })),
 }));
@@ -322,6 +355,10 @@ jest.mock('@metamask/core-backend', () => ({
 
 jest.mock('../../shared/lib/environment', () => ({
   ...jest.requireActual('../../shared/lib/environment'),
+}));
+
+jest.mock('../../shared/lib/manifestFlags', () => ({
+  getManifestFlags: jest.fn(() => ({})),
 }));
 
 jest.mock('../../shared/lib/gator-permissions/feature-flags', () => ({
@@ -1308,6 +1345,23 @@ describe('MetaMaskController', () => {
           .mockReturnValue({
             useExternalServices: true,
           });
+
+        // IA-assisted solution: Stub required since @metamask/account-tree-controller@7.5.4 (core#9343):
+        // the sync body is no longer wrapped in traceFn (which this suite's trace
+        // mock swallowed), so it now runs for real and hangs in tests.
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorageAtLeastOnce',
+          )
+          .mockResolvedValue();
+
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorageAtLeastOnce',
+          )
+          .mockResolvedValue(undefined);
 
         jest
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
@@ -4362,6 +4416,46 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('RampsController wiring', () => {
+      it('always assigns rampsController and background API', () => {
+        const controller = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: cloneDeep(firstTimeState),
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          getRequestAccountTabIds: () => ({}),
+          getOpenMetamaskTabsIds: () => ({}),
+          notificationManager: { markAsAutomaticallyClosed: jest.fn() },
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
+        });
+
+        expect(controller.rampsController).toBeDefined();
+        expect(
+          Object.keys(controller.messengerClientApi)
+            .filter(
+              (key) =>
+                key.startsWith('getRamps') ||
+                key.startsWith('setRamps') ||
+                key.startsWith('addRamps') ||
+                key.startsWith('removeRamps') ||
+                key.startsWith('refreshRamps'),
+            )
+            .sort(),
+        ).toMatchSnapshot();
+      });
+    });
+
     describe('NetworkController state', () => {
       it('fixes selectedNetworkClientId from network controller state if it is invalid', () => {
         metamaskController = new MetaMaskController({
@@ -5081,7 +5175,7 @@ describe('MetaMaskController', () => {
       beforeEach(async () => {
         jest.spyOn(metamaskController, '_handleDefiReferralApprovedAccount');
         jest.spyOn(metamaskController, '_handleDefiReferralRedirect');
-        jest.spyOn(metamaskController.metaMetricsController, 'trackEvent');
+        trackEvent.mockClear();
         jest
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
@@ -5415,9 +5509,7 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).not.toHaveBeenCalled();
+        expect(trackEvent).not.toHaveBeenCalled();
       });
 
       it('emits a "Referral Viewed" event when user is shown the approval screen on new connection', async () => {
@@ -5433,16 +5525,16 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).toHaveBeenCalledWith({
-          event: 'Referral Viewed',
-          category: 'Referrals',
-          properties: {
-            url: HYPERLIQUID_ORIGIN,
-            trigger_type: mockNewConnectionTriggerType,
-          },
-        });
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Referral Viewed',
+            properties: expect.objectContaining({
+              category: 'Referrals',
+              url: HYPERLIQUID_ORIGIN,
+              trigger_type: mockNewConnectionTriggerType,
+            }),
+          }),
+        );
       });
 
       it('emits a "Referral Viewed" event when user is shown the approval screen on navigate to connected tab', async () => {
@@ -5458,16 +5550,16 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockOnNavigateTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).toHaveBeenCalledWith({
-          event: 'Referral Viewed',
-          category: 'Referrals',
-          properties: {
-            url: HYPERLIQUID_ORIGIN,
-            trigger_type: mockOnNavigateTriggerType,
-          },
-        });
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Referral Viewed',
+            properties: expect.objectContaining({
+              category: 'Referrals',
+              url: HYPERLIQUID_ORIGIN,
+              trigger_type: mockOnNavigateTriggerType,
+            }),
+          }),
+        );
       });
 
       it('emits a "Referral Confirm Button Clicked" event when user confirms the approval', async () => {
@@ -5483,16 +5575,16 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).toHaveBeenCalledWith({
-          event: 'Referral Confirm Button Clicked',
-          category: 'Referrals',
-          properties: {
-            opt_in: true,
-            url: HYPERLIQUID_ORIGIN,
-          },
-        });
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Referral Confirm Button Clicked',
+            properties: expect.objectContaining({
+              category: 'Referrals',
+              opt_in: true,
+              url: HYPERLIQUID_ORIGIN,
+            }),
+          }),
+        );
       });
 
       it('emits a "Referral Confirm Button Clicked" event when user declines the approval', async () => {
@@ -5508,16 +5600,16 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
-        expect(
-          metamaskController.metaMetricsController.trackEvent,
-        ).toHaveBeenCalledWith({
-          event: 'Referral Confirm Button Clicked',
-          category: 'Referrals',
-          properties: {
-            opt_in: false,
-            url: HYPERLIQUID_ORIGIN,
-          },
-        });
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Referral Confirm Button Clicked',
+            properties: expect.objectContaining({
+              category: 'Referrals',
+              opt_in: false,
+              url: HYPERLIQUID_ORIGIN,
+            }),
+          }),
+        );
       });
 
       it('redirects if account is approved only', async () => {

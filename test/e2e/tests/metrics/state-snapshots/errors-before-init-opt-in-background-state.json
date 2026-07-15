@@ -51,6 +51,7 @@
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "outdatedBrowserWarningLastShown": "object",
+      "pendingShieldCohort": "string",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
@@ -68,7 +69,10 @@
     "AssetsController": "object",
     "AuthenticationController": {},
     "BridgeController": { "inputPrimaryDenomination": "string" },
-    "BridgeStatusController": { "txHistory": "object" },
+    "BridgeStatusController": {
+      "quoteUpdateStatusStore": "object",
+      "txHistory": "object"
+    },
     "ClaimsController": "object",
     "ComplianceController": {
       "lastCheckedAt": null,
@@ -171,6 +175,7 @@
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": { "storageMetadata": "object" },
@@ -188,7 +193,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "string",
@@ -205,6 +209,7 @@
         "featureNotificationsEnabled": "boolean",
         "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
@@ -241,6 +246,12 @@
       "watchEthereumAccountEnabled": "boolean"
     },
     "ProfileMetricsController": "object",
+    "RampsController": {
+      "countries": "object",
+      "orders": "object",
+      "providerAutoSelected": "boolean",
+      "userRegion": null
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
       "localOverrides": "object",
@@ -252,7 +263,7 @@
     },
     "RewardsController": {
       "rewardsAccounts": "object",
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": "object",
       "rewardsPointsEstimateHistory": "object",
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",

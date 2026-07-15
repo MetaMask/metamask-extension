@@ -23,7 +23,7 @@
         "clearTimeout": true
       }
     },
-    "react-beautiful-dnd": {
+    "@hello-pangea/dnd": {
       "globals": {
         "addEventListener": true,
         "removeEventListener": true
@@ -79,21 +79,21 @@
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "document": false,
-        "document.visibilityState": true,
+        "document.visibilityState": false,
         "addEventListener": false
       }
     },
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
         "document": false,
-        "document.visibilityState": true,
+        "document.visibilityState": false,
         "addEventListener": false
       }
     },
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "document": false,
-        "document.visibilityState": true,
+        "document.visibilityState": false,
         "addEventListener": false
       }
     },
@@ -161,8 +161,27 @@
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "document": false,
-        "document.visibilityState": true,
+        "document.visibilityState": false,
         "addEventListener": false
+      }
+    },
+    "@metamask/mobile-wallet-protocol-core>centrifuge": {
+      "globals": {
+        "AbortController": false,
+        "Event": false,
+        "EventSource": false,
+        "EventTarget": false,
+        "MessageEvent": false,
+        "ReadableStream": false,
+        "SockJS": false,
+        "SuppressedError": false,
+        "URL": false,
+        "WebTransport": false,
+        "console": false,
+        "console.warn": true,
+        "document": false,
+        "fetch": false,
+        "localStorage": false
       }
     }
   }

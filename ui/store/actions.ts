@@ -12,11 +12,13 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
+  bytesToString,
   CaipAccountId,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
+  stringToBytes,
 } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -50,7 +52,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
@@ -162,9 +164,10 @@ import {
   MetaMetricsUserTraits,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
-import type {
-  AnalyticsEvent,
-  AnalyticsEventBuildOptions,
+import {
+  createEventBuilder,
+  type AnalyticsEvent,
+  type AnalyticsEventBuildOptions,
 } from '../../shared/lib/analytics/create-event-builder';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
@@ -174,7 +177,10 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../../shared/lib/i18n';
 import { decimalToHex } from '../../shared/lib/conversion.utils';
-import { PriorityLevels } from '../../shared/constants/gas';
+import {
+  type AdvancedGasFeePreferences,
+  PriorityLevels,
+} from '../../shared/constants/gas';
 import {
   getErrorMessage,
   isErrorWithMessage,
@@ -385,6 +391,72 @@ export function resetOAuthLoginState() {
 }
 
 /**
+ * Encodes a seed phrase as an array of UTF-8 byte values for JSON-RPC
+ * serialization to the background.
+ * @param seedPhrase
+ */
+export function encodeSeedPhraseForBackground(seedPhrase: string): number[] {
+  return Array.from(stringToBytes(seedPhrase));
+}
+
+/**
+ * Node `Buffer` JSON representation produced when extension-port-stream
+ * serializes background RPC responses.
+ */
+export type SerializedBuffer = {
+  type: 'Buffer';
+  data: number[];
+};
+
+/**
+ * Seed phrase bytes as returned by background RPC. Background methods return a
+ * Node `Buffer`, but the UI may receive either a JSON-serialized Buffer after
+ * chunked port-stream transport, or a live `Uint8Array` after structured-clone
+ * transport (common on Firefox MV2).
+ */
+export type SeedPhraseBytesFromBackground = SerializedBuffer | Uint8Array;
+
+/**
+ * Decodes a seed phrase from a background `Buffer` RPC response into a UTF-8
+ * string.
+ * @param encodedSeedPhrase
+ */
+export function decodeSeedPhraseFromBackground(
+  encodedSeedPhrase: SeedPhraseBytesFromBackground,
+): string {
+  if (encodedSeedPhrase instanceof Uint8Array) {
+    return bytesToString(encodedSeedPhrase);
+  }
+
+  return bytesToString(new Uint8Array(encodedSeedPhrase.data));
+}
+
+type SeedPhraseBackgroundMethod =
+  | 'createNewVaultAndGetSeedPhrase'
+  | 'unlockAndGetSeedPhrase'
+  | 'getSeedPhrase'
+  | 'exportSeedPhraseWithPasskey';
+
+/**
+ * Fetches and decodes a seed phrase from a background RPC method.
+ *
+ * @param method - Background method that returns encoded seed phrase bytes.
+ * @param args - Arguments passed to the background method.
+ * @returns The decoded seed phrase.
+ */
+async function fetchSeedPhraseFromBackground(
+  method: SeedPhraseBackgroundMethod,
+  args: unknown[],
+): Promise<string> {
+  const encodedSeedPhrase =
+    await submitRequestToBackground<SeedPhraseBytesFromBackground>(
+      method,
+      args,
+    );
+  return decodeSeedPhraseFromBackground(encodedSeedPhrase);
+}
+
+/**
  * Creates a new vault and backups/syncs the seed phrase with social login.
  *
  * @param password - The password.
@@ -393,21 +465,29 @@ export function resetOAuthLoginState() {
 export function createNewVaultAndSyncWithSocial(
   password: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     try {
-      const primaryKeyring = await createNewVault(password);
-      if (!primaryKeyring) {
+      const seedPhrase = await fetchSeedPhraseFromBackground(
+        'createNewVaultAndGetSeedPhrase',
+        [password],
+      );
+
+      await forceUpdateMetamaskState(dispatch);
+
+      const primaryKeyring = getState().metamask.keyrings?.[0];
+      if (!primaryKeyring?.metadata?.id) {
         throw new Error('No keyring found');
       }
 
-      const seedPhrase = await getSeedPhrase(password);
       await createSeedPhraseBackup(
         password,
         seedPhrase,
         primaryKeyring.metadata.id,
       );
 
-      // force update the state after creating the vault
       await forceUpdateMetamaskState(dispatch);
 
       return seedPhrase;
@@ -1072,11 +1152,7 @@ export function createNewVaultAndRestore(
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
 
-    // Encode the secret recovery phrase as an array of integers so that it is
-    // serialized as JSON properly.
-    const encodedSeedPhrase = Array.from(
-      Buffer.from(seedPhrase, 'utf8').values(),
-    );
+    const encodedSeedPhrase = encodeSeedPhraseForBackground(seedPhrase);
 
     return submitRequestToBackground('createNewVaultAndRestore', [
       password,
@@ -1119,8 +1195,10 @@ export function createNewVaultAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await createNewVault(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const seedPhrase = await fetchSeedPhraseFromBackground(
+        'createNewVaultAndGetSeedPhrase',
+        [password],
+      );
 
       // force update the state after creating the vault
       await forceUpdateMetamaskState(dispatch);
@@ -1143,8 +1221,10 @@ export function unlockAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitPassword(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const seedPhrase = await fetchSeedPhraseFromBackground(
+        'unlockAndGetSeedPhrase',
+        [password],
+      );
       await forceUpdateMetamaskState(dispatch);
       return seedPhrase;
     } catch (error) {
@@ -1279,19 +1359,11 @@ export async function createSeedPhraseBackup(
   seedPhrase: string,
   keyringId: string,
 ): Promise<void> {
-  const encodedSeedPhrase = Array.from(
-    Buffer.from(seedPhrase, 'utf8').values(),
-  );
+  const encodedSeedPhrase = encodeSeedPhraseForBackground(seedPhrase);
   await submitRequestToBackground('createSeedPhraseBackup', [
     password,
     encodedSeedPhrase,
     keyringId,
-  ]);
-}
-
-function createNewVault(password: string): Promise<KeyringObject> {
-  return submitRequestToBackground<KeyringObject>('createNewVaultAndKeychain', [
-    password,
   ]);
 }
 
@@ -1302,11 +1374,7 @@ export async function verifyPassword(password: string): Promise<boolean> {
 }
 
 export async function getSeedPhrase(password: string, keyringId?: string) {
-  const encodedSeedPhrase = await submitRequestToBackground<string>(
-    'getSeedPhrase',
-    [password, keyringId],
-  );
-  return Buffer.from(encodedSeedPhrase).toString('utf8');
+  return fetchSeedPhraseFromBackground('getSeedPhrase', [password, keyringId]);
 }
 
 export function requestRevealSeedWords(
@@ -1344,11 +1412,10 @@ export function getSeedPhraseWithPasskey(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
-      const encodedSeedPhrase = await submitRequestToBackground(
-        'exportSeedPhraseWithPasskey',
-        [authenticationResponse, keyringId],
-      );
-      return Buffer.from(encodedSeedPhrase).toString('utf8');
+      return fetchSeedPhraseFromBackground('exportSeedPhraseWithPasskey', [
+        authenticationResponse,
+        keyringId,
+      ]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -2589,7 +2656,7 @@ export function createNextMultichainAccountGroup(
       const walletIdWithoutTypePrefix =
         stripWalletTypePrefixFromWalletId(walletId);
       await submitRequestToBackground('createNextMultichainAccountGroup', [
-        walletIdWithoutTypePrefix,
+        { entropySource: walletIdWithoutTypePrefix },
       ]);
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
@@ -3797,18 +3864,6 @@ export function removeFromAddressBook(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-export function showImportTokensModal(): Action {
-  return {
-    type: actionConstants.IMPORT_TOKENS_POPOVER_OPEN,
-  };
-}
-
-export function hideImportTokensModal(): Action {
-  return {
-    type: actionConstants.IMPORT_TOKENS_POPOVER_CLOSE,
-  };
-}
-
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModalPayload = { name: string } & Record<string, any>;
@@ -4278,19 +4333,20 @@ export function setDismissSmartAccountSuggestionEnabled(
   return async (dispatch, getState) => {
     const prevDismissSmartAccountSuggestionEnabled =
       getDismissSmartAccountSuggestionEnabled(getState());
-    trackMetaMetricsEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        dismiss_smt_acc_suggestion_enabled: value,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        prev_dismiss_smt_acc_suggestion_enabled:
-          prevDismissSmartAccountSuggestionEnabled,
-      },
-    });
+    trackAnalyticsEvent(
+      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          dismiss_smt_acc_suggestion_enabled: value,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          prev_dismiss_smt_acc_suggestion_enabled:
+            prevDismissSmartAccountSuggestionEnabled,
+        })
+        .build(),
+    );
     await dispatch(
       setPreference('dismissSmartAccountSuggestionEnabled', value),
     );
@@ -4318,18 +4374,19 @@ export function setSmartTransactionsPreferenceEnabled(
   return async (dispatch, getState) => {
     const smartTransactionsOptInStatus =
       getSmartTransactionsOptInStatusInternal(getState());
-    trackMetaMetricsEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        stx_opt_in: value,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        prev_stx_opt_in: smartTransactionsOptInStatus,
-      },
-    });
+    trackAnalyticsEvent(
+      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          stx_opt_in: value,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          prev_stx_opt_in: smartTransactionsOptInStatus,
+        })
+        .build(),
+    );
     await dispatch(setPreference('smartTransactionsOptInStatus', value));
     await forceUpdateMetamaskState(dispatch);
   };
@@ -4544,26 +4601,6 @@ export function resetWallet(restoreOnly = false) {
     } catch (error) {
       log.error('resetWallet error', error);
       throw error;
-    }
-  };
-}
-
-export function setServiceWorkerKeepAlivePreference(
-  value: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setServiceWorkerKeepAlivePreference`);
-    try {
-      await submitRequestToBackground('setServiceWorkerKeepAlivePreference', [
-        value,
-      ]);
-    } catch {
-      // TODO: Stop suppressing this error (either log or re-throw)
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -4859,9 +4896,11 @@ export function detectNfts(
   };
 }
 
-export function setAdvancedGasFee(
-  val: { chainId: Hex; maxBaseFee?: string; priorityFee?: string } | null,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setAdvancedGasFee(val: {
+  account: Hex;
+  chainId: Hex;
+  gasFeePreferences?: AdvancedGasFeePreferences;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setAdvancedGasFee`);
@@ -4913,6 +4952,27 @@ export function toggleExternalServices(
     log.debug(`background.toggleExternalServices`);
     try {
       await submitRequestToBackground('toggleExternalServices', [val]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (err) {
+      // TODO: Stop suppressing this error (either log or re-throw)
+    }
+  };
+}
+
+export function toggleBasicFunctionality(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.toggleBasicFunctionality`);
+    try {
+      await submitRequestToBackground('toggleExternalServices', [val]);
+      await Promise.all([
+        submitRequestToBackground('setUseMultiAccountBalanceChecker', [val]),
+        submitRequestToBackground('setUseTransactionSimulations', [val]),
+        submitRequestToBackground('setSecurityAlertsEnabled', [val]),
+        submitRequestToBackground('setUse4ByteResolution', [val]),
+        submitRequestToBackground('setUseExternalNameSources', [val]),
+      ]);
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
@@ -5892,6 +5952,35 @@ export function setSeedPhraseBackedUp(
       seedPhraseBackupState,
     ]);
     await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setHasSeenOnboardingCompletionPage(
+  hasSeenOnboardingCompletionPage: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      log.debug(`background.setHasSeenOnboardingCompletionPage`);
+      await submitRequestToBackground('setHasSeenOnboardingCompletionPage', [
+        hasSeenOnboardingCompletionPage,
+      ]);
+      if (hasSeenOnboardingCompletionPage) {
+        dispatch(setHasSeenOnboardingCompletionPageAction());
+      }
+    } catch (error) {
+      console.error(
+        'Failed to mark onboarding completion page as seen:',
+        error,
+      );
+    }
+  };
+}
+
+function setHasSeenOnboardingCompletionPageAction() {
+  return {
+    type: actionConstants.SET_HAS_SEEN_ONBOARDING_COMPLETION_PAGE,
   };
 }
 

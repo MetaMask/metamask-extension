@@ -42,7 +42,7 @@ describe('Send ERC20 - Contract Warning', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },

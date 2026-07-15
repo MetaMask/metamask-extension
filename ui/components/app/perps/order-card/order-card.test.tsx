@@ -13,6 +13,17 @@ const mockStore = configureStore({
   },
 });
 
+// Store with the perpsShowFullAssetNames flag enabled so full asset names render.
+const mockStoreWithFullNames = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
+    },
+  },
+});
+
 const createMockOrder = (overrides: Partial<Order> = {}): Order => ({
   orderId: 'test-order-001',
   symbol: 'ETH',
@@ -50,11 +61,11 @@ describe('OrderCard', () => {
     expect(screen.getByText('TSLA')).toBeInTheDocument();
   });
 
-  it('displays the full asset name as the title while keeping the ticker next to the size', () => {
+  it('displays the full asset name as the title while keeping the ticker next to the size when the flag is enabled', () => {
     const order = createMockOrder({ symbol: 'BTC', size: '2.5' });
     renderWithProvider(
       <OrderCard order={order} assetName="Bitcoin" />,
-      mockStore,
+      mockStoreWithFullNames,
     );
 
     // Title shows the full name
@@ -62,6 +73,22 @@ describe('OrderCard', () => {
       screen.getByText(messages.networkNameBitcoin.message),
     ).toBeInTheDocument();
     // Size line keeps the ticker as its unit
+    expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
+  });
+
+  it('shows only the ticker as the title when the full asset names flag is disabled', () => {
+    const order = createMockOrder({ symbol: 'BTC', size: '2.5' });
+    renderWithProvider(
+      <OrderCard order={order} assetName="Bitcoin" />,
+      mockStore,
+    );
+
+    // Full name is not rendered when the flag is off
+    expect(
+      screen.queryByText(messages.networkNameBitcoin.message),
+    ).not.toBeInTheDocument();
+    // Ticker is used as the title instead
+    expect(screen.getByText('BTC')).toBeInTheDocument();
     expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
   });
 
@@ -287,5 +314,62 @@ describe('OrderCard', () => {
 
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(onClick).toHaveBeenCalledWith(order);
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks the order size when privacy mode is enabled', () => {
+      const order = createMockOrder({ symbol: 'ETH', size: '2.5' });
+      renderWithProvider(<OrderCard order={order} />, privacyStore);
+
+      expect(screen.queryByText('2.5 ETH')).not.toBeInTheDocument();
+      expect(screen.getAllByText('••••••').length).toBeGreaterThan(0);
+    });
+
+    it('masks the order USD value when privacy mode is enabled', () => {
+      const order = createMockOrder({
+        orderType: 'limit',
+        size: '1.0',
+        price: '3500.00',
+      });
+      renderWithProvider(<OrderCard order={order} />, privacyStore);
+
+      expect(screen.queryByText('$3,500')).not.toBeInTheDocument();
+    });
+
+    it('does not mask the "Market" label when the order has no price (privacy mode enabled)', () => {
+      const order = createMockOrder({
+        orderType: 'market',
+        price: '0',
+        size: '1.0',
+      });
+      renderWithProvider(<OrderCard order={order} />, privacyStore);
+
+      expect(
+        screen.getByText(messages.perpsMarket.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the order size and USD value when privacy mode is disabled', () => {
+      const order = createMockOrder({
+        symbol: 'ETH',
+        size: '2.5',
+        orderType: 'limit',
+        price: '3500.00',
+      });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
+      expect(screen.getByText('$3,500')).toBeInTheDocument();
+    });
   });
 });

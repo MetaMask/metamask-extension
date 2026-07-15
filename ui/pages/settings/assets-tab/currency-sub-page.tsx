@@ -1,6 +1,4 @@
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -14,8 +12,10 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { setCurrentCurrency } from '../../../store/actions';
 import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -23,6 +23,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { transitionBack } from '../../../components/ui/transition';
 
 const sortedCurrencies = [...availableCurrencies].sort((a, b) =>
   a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase()),
@@ -36,21 +37,22 @@ const currencyOptions = sortedCurrencies.map(({ code, name }) => ({
 const CurrencySubPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const currentCurrency = useSelector(getCurrentCurrency).toLowerCase();
 
   const handleSelect = (value: string) => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.CurrentCurrency,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        current_currency: value,
-        location: 'settings-page',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.CurrentCurrency)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          current_currency: value,
+          location: 'settings-page',
+        })
+        .build(),
+    );
     dispatch(setCurrentCurrency(value));
-    navigate(PREFERENCES_AND_DISPLAY_ROUTE);
+    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
   };
 
   return (

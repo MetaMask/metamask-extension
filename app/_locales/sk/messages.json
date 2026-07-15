@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Musíte si vybrať účet!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
-  },
   "addAlias": {
     "message": "Pridať alias"
   },
@@ -175,9 +172,6 @@
   "custom": {
     "message": "Rozšírené"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
   },
@@ -322,9 +316,6 @@
   },
   "metamaskVersion": {
     "message": "Verzia MetaMask"
-  },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",

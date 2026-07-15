@@ -19,6 +19,12 @@ import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';
 
+jest.mock('../../controllers/analytics', () => ({
+  createEventBuilder: jest.requireActual('../../controllers/analytics')
+    .createEventBuilder,
+  trackEvent: jest.fn(),
+}));
+
 type Actions = MessengerActions<OAuthServiceMessenger>;
 
 type Events = MessengerEvents<OAuthServiceMessenger>;
@@ -113,7 +119,6 @@ const mockWebAuthenticator: WebAuthenticator = {
 
 const mockBufferedTrace = jest.fn();
 const mockBufferedEndTrace = jest.fn();
-const mockTrackEvent = jest.fn();
 const mockAddEventBeforeMetricsOptIn = jest.fn();
 const mockGetCompletedMetaMetricsOnboarding = jest.fn().mockReturnValue(true);
 const mockGetOptedIn = jest.fn().mockReturnValue(true);
@@ -163,7 +168,6 @@ describe('OAuthService - startOAuthLogin', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -194,7 +198,6 @@ describe('OAuthService - startOAuthLogin', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -279,7 +282,6 @@ describe('OAuthService - startOAuthLogin', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -375,7 +377,6 @@ describe('OAuthService - startOAuthLogin', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -412,7 +413,6 @@ describe('OAuthService - startOAuthLogin', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -439,7 +439,6 @@ describe('OAuthService - startOAuthLogin', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -484,7 +483,6 @@ describe('OAuthService - startOAuthLogin', () => {
       },
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -526,7 +524,6 @@ describe('OAuthService - startOAuthLogin', () => {
       },
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -566,7 +563,6 @@ describe('OAuthService - startOAuthLogin', () => {
       },
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -598,7 +594,6 @@ describe('OAuthService - startOAuthLogin', () => {
         platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
-        trackEvent: mockTrackEvent,
         addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
         getCompletedMetaMetricsOnboarding:
           mockGetCompletedMetaMetricsOnboarding,
@@ -657,7 +652,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -720,7 +714,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -761,7 +754,6 @@ describe('OAuthService - getNewRefreshToken', () => {
         platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
-        trackEvent: mockTrackEvent,
         addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
         getCompletedMetaMetricsOnboarding:
           mockGetCompletedMetaMetricsOnboarding,
@@ -808,7 +800,6 @@ describe('OAuthService - renewRefreshToken', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -863,7 +854,6 @@ describe('OAuthService - renewRefreshToken', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -900,7 +890,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -950,7 +939,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       platform: mockPlatform,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
-      trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getCompletedMetaMetricsOnboarding: mockGetCompletedMetaMetricsOnboarding,
       getOptedIn: mockGetOptedIn,
@@ -991,7 +979,6 @@ describe('OAuthService - revokeRefreshToken', () => {
         platform: mockPlatform,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
-        trackEvent: mockTrackEvent,
         addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
         getCompletedMetaMetricsOnboarding:
           mockGetCompletedMetaMetricsOnboarding,

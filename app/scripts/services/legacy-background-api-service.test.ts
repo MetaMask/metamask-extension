@@ -12,7 +12,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { add0x, hexToBytes } from '@metamask/utils';
+import { add0x, hexToBytes, type Hex } from '@metamask/utils';
 import {
   EncAccountDataType,
   SecretType,
@@ -22,14 +22,23 @@ import {
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
+import { captureException } from '../../../shared/lib/sentry';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
+import { DecodedTransactionDataSource } from '../../../shared/types/transaction-decode';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
+import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import { decodeTransactionData } from '../lib/transaction/decode/util';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -38,6 +47,20 @@ import {
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
 
 jest.mock('../lib/transaction/containers/enforced-simulations');
+
+jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
+  ...jest.requireActual('../../../shared/lib/shield/subscription-utils'),
+  getIsShieldSubscriptionActive: jest.fn(),
+}));
+
+const mockGetIsShieldSubscriptionActive = jest.mocked(
+  getIsShieldSubscriptionActive,
+);
+
+jest.mock('../lib/transaction/sentinel-api');
+jest.mock('../lib/transaction/transaction-relay');
+jest.mock('../lib/transaction/decode/util');
+jest.mock('../../../shared/lib/sentry');
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -240,6 +263,96 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('getAssets', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    it('fetches assets from the AssetsController with forceUpdate when the feature is enabled', async () => {
+      const accounts = [{ id: 'account-1' }] as never;
+      const options = { chainIds: ['eip155:1'] };
+      const assets = { 'account-1': {} };
+
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const getAssetsHandler = jest.fn().mockResolvedValue(assets);
+        rootMessenger.registerActionHandler(
+          'AssetsController:getAssets',
+          getAssetsHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:getAssets',
+            accounts,
+            options as never,
+          ),
+        ).resolves.toStrictEqual(assets);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AssetsController:getAssets',
+          accounts,
+          { ...options, forceUpdate: true },
+        );
+      });
+    });
+
+    it('resolves to undefined and does not call the AssetsController when the feature is not enabled', async () => {
+      const accounts = [{ id: 'account-1' }] as never;
+
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const getAssetsHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:getAssets',
+          getAssetsHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:getAssets', accounts),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AssetsController:getAssets',
+          expect.anything(),
+          expect.anything(),
+        );
+        expect(getAssetsHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('isPublicEndpointUrl', () => {
     it('returns true for a public endpoint URL', async () => {
       await withService(({ rootMessenger }) => {
@@ -305,6 +418,35 @@ describe('LegacyBackgroundApiService', () => {
           expect(mockGetOpenMetamaskTabsIds).toHaveBeenCalled();
         },
       );
+    });
+  });
+
+  describe('getPhishingResult', () => {
+    it('updates the phishing state and returns the test result for the website', async () => {
+      const website = 'https://example.com';
+      const phishingResult = { result: false, type: 'all' };
+      const mockMaybeUpdateState = jest.fn();
+      const mockTestOrigin = jest.fn().mockReturnValue(phishingResult);
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PhishingController:maybeUpdateState',
+          mockMaybeUpdateState,
+        );
+        rootMessenger.registerActionHandler(
+          'PhishingController:testOrigin',
+          mockTestOrigin,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getPhishingResult',
+          website,
+        );
+
+        expect(mockMaybeUpdateState).toHaveBeenCalled();
+        expect(mockTestOrigin).toHaveBeenCalledWith(website);
+        expect(result).toBe(phishingResult);
+      });
     });
   });
 
@@ -396,6 +538,44 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('checkDelegationDisabled', () => {
+    it('performs an eth_call against the delegation manager and returns the decoded result', async () => {
+      const delegationManagerAddress: Hex =
+        '0x1234567890123456789012345678901234567890';
+      const delegationHash: Hex = `0x${'0'.repeat(63)}1`;
+      const mockRequest = jest
+        .fn()
+        .mockResolvedValue(
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+        );
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({
+            provider: { request: mockRequest },
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkDelegationDisabled',
+          delegationManagerAddress,
+          delegationHash,
+          'networkClientId',
+        );
+
+        expect(mockRequest).toHaveBeenCalledWith({
+          method: 'eth_call',
+          params: [
+            { to: delegationManagerAddress, data: expect.any(String) },
+            'latest',
+          ],
+        });
+        expect(result).toBe(true);
+      });
+    });
+  });
+
   describe('getNextNonce', () => {
     it('returns the next nonce and releases the nonce lock', async () => {
       await withService(async ({ rootMessenger }) => {
@@ -464,6 +644,47 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('decodeTransactionData', () => {
+    it('decodes transaction data using the selected network client provider', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const provider = { request: jest.fn() };
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            selectedNetworkClientId: 'networkClientId',
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ provider }),
+        );
+
+        const decoded = {
+          data: [],
+          source: DecodedTransactionDataSource.FourByte,
+        };
+        jest.mocked(decodeTransactionData).mockResolvedValue(decoded);
+
+        const request = {
+          transactionData: '0xabc',
+          contractAddress: '0x123',
+          chainId: '0x1',
+        } as const;
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:decodeTransactionData',
+          request,
+        );
+
+        expect(decodeTransactionData).toHaveBeenCalledWith({
+          ...request,
+          provider,
+        });
+        expect(result).toStrictEqual(decoded);
+      });
+    });
+  });
+
   describe('getSeedPhrase', () => {
     it('returns the seed phrase', async () => {
       const mnemonic =
@@ -520,41 +741,6 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'ApprovalController:getState',
-          jest.fn().mockReturnValue({
-            pendingApprovals: {
-              foo: {
-                id: 'foo',
-                type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-                requestState: {
-                  txId: 'bar',
-                },
-              },
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'TransactionController:getState',
-          jest.fn().mockReturnValue({
-            transactions: [
-              {
-                id: 'bar',
-                chainId: '0x1',
-                txParams: {
-                  from: selectedAddress,
-                },
-              },
-            ],
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'ApprovalController:rejectRequest',
-          jest.fn(),
-        );
-
-        rootMessenger.registerActionHandler(
           'TransactionController:wipeTransactions',
           jest.fn(),
         );
@@ -579,12 +765,6 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(selectedAddress);
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'ApprovalController:rejectRequest',
-          'foo',
-          expect.any(Error),
-        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'TransactionController:wipeTransactions',
@@ -926,10 +1106,6 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:getState',
           jest.fn().mockReturnValue({ migrationVersion: 0 }),
         );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:trackEvent',
-          jest.fn(),
-        );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
 
@@ -1213,6 +1389,66 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(['0x123']);
+      });
+    });
+  });
+
+  describe('isSendBundleSupported', () => {
+    it('returns whether the sendBundle feature is supported for the chain', async () => {
+      jest.mocked(isSendBundleSupported).mockResolvedValue(true);
+
+      await withService(async ({ rootMessenger }) => {
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:isSendBundleSupported',
+          '0x1',
+        );
+
+        expect(isSendBundleSupported).toHaveBeenCalledWith('0x1');
+        expect(result).toBe(true);
+      });
+    });
+  });
+
+  describe('setAccountLabel', () => {
+    it('sets the account name for the account at the given address', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const setAccountNameHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue({ id: 'account-id' }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setAccountName',
+          setAccountNameHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:setAccountLabel',
+          '0x123',
+          'New Label',
+        );
+
+        expect(setAccountNameHandler).toHaveBeenCalledWith(
+          'account-id',
+          'New Label',
+        );
+      });
+    });
+
+    it('throws if no account is found for the given address', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue(undefined),
+        );
+
+        expect(() =>
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setAccountLabel',
+            '0x123',
+            'New Label',
+          ),
+        ).toThrow('No account found for address: 0x123');
       });
     });
   });
@@ -2716,6 +2952,251 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('rejectAllPendingApprovals', () => {
+    it('accepts snap dialog approvals with null and deletes their interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const acceptRequestHandler = jest.fn();
+        const deleteInterfaceHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogAlert,
+                requestData: { id: 'interface-1' },
+              },
+              '2': {
+                id: '2',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogPrompt,
+                requestData: { id: 'interface-2' },
+              },
+              '3': {
+                id: '3',
+                origin: 'npm:@metamask/snap',
+                type: DIALOG_APPROVAL_TYPES.default,
+                requestData: { id: 'interface-3' },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          acceptRequestHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          deleteInterfaceHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '2',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '3',
+          null,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-1',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-2',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-3',
+        );
+      });
+    });
+
+    it('accepts snap confirmation approvals with false and deletes their interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: ApprovalType.SnapDialogConfirmation,
+                requestData: { id: 'interface-1' },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SnapInterfaceController:deleteInterface',
+          'interface-1',
+        );
+      });
+    });
+
+    it('accepts snap account confirmations with false without deleting an interface', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const deleteInterfaceHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+                requestData: {},
+              },
+              '2': {
+                id: '2',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+                requestData: {},
+              },
+              '3': {
+                id: '3',
+                origin: 'npm:@metamask/snap',
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+                requestData: {},
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SnapInterfaceController:deleteInterface',
+          deleteInterfaceHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '1',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '2',
+          false,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          '3',
+          false,
+        );
+        expect(deleteInterfaceHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('rejects all other approvals with a user-rejected-request error', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              '1': {
+                id: '1',
+                origin: 'https://example.com',
+                type: ApprovalType.Transaction,
+                requestData: {},
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:rejectRequest',
+          '1',
+          providerErrors.userRejectedRequest({
+            data: {
+              cause: 'rejectAllApprovals',
+            },
+          }),
+        );
+      });
+    });
+
+    it('does nothing when there are no pending approvals', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const acceptRequestHandler = jest.fn();
+        const rejectRequestHandler = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({ pendingApprovals: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          acceptRequestHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          rejectRequestHandler,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:rejectAllPendingApprovals',
+        );
+
+        expect(acceptRequestHandler).not.toHaveBeenCalled();
+        expect(rejectRequestHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('acceptPermissionsRequest', () => {
     it('accepts the permissions request', async () => {
       await withService(async ({ rootMessenger }) => {
@@ -2783,6 +3264,211 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('toggleExternalServices', () => {
+    afterEach(() => {
+      mockGetIsShieldSubscriptionActive.mockReset();
+    });
+
+    /**
+     * Registers handlers for all actions used by `toggleExternalServices`.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @returns The registered mock handlers, keyed by action.
+     */
+    function registerToggleExternalServicesHandlers(
+      rootMessenger: RootMessenger,
+    ) {
+      const handlers = {
+        toggleExternalServices: jest.fn(),
+        getState: jest.fn().mockReturnValue({ subscriptions: [] }),
+        enableTokenDetection: jest.fn(),
+        disableTokenDetection: jest.fn(),
+        enableGasFeeApis: jest.fn(),
+        disableGasFeeApis: jest.fn(),
+        stopAllPolling: jest.fn(),
+        startShield: jest.fn(),
+        stopShield: jest.fn(),
+      };
+      rootMessenger.registerActionHandler(
+        'PreferencesController:toggleExternalServices',
+        handlers.toggleExternalServices,
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:getState',
+        handlers.getState,
+      );
+      rootMessenger.registerActionHandler(
+        'TokenDetectionController:enable',
+        handlers.enableTokenDetection,
+      );
+      rootMessenger.registerActionHandler(
+        'TokenDetectionController:disable',
+        handlers.disableTokenDetection,
+      );
+      rootMessenger.registerActionHandler(
+        'GasFeeController:enableNonRPCGasFeeApis',
+        handlers.enableGasFeeApis,
+      );
+      rootMessenger.registerActionHandler(
+        'GasFeeController:disableNonRPCGasFeeApis',
+        handlers.disableGasFeeApis,
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:stopAllPolling',
+        handlers.stopAllPolling,
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:start',
+        handlers.startShield,
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:stop',
+        handlers.stopShield,
+      );
+      return handlers;
+    }
+
+    it('enables external services and starts shield when a subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(true);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          true,
+        );
+
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(true);
+        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.startShield).toHaveBeenCalledTimes(1);
+        expect(handlers.disableTokenDetection).not.toHaveBeenCalled();
+        expect(handlers.stopAllPolling).not.toHaveBeenCalled();
+        expect(handlers.stopShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('enables external services without starting shield when no subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(false);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          true,
+        );
+
+        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.startShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('disables external services and stops shield when a subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(true);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          false,
+        );
+
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(false);
+        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
+        expect(handlers.stopShield).toHaveBeenCalledTimes(1);
+        expect(handlers.enableTokenDetection).not.toHaveBeenCalled();
+        expect(handlers.startShield).not.toHaveBeenCalled();
+      });
+    });
+
+    it('disables external services without stopping shield when no subscription is active', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(false);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          false,
+        );
+
+        expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
+        expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
+        expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
+        expect(handlers.stopShield).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('throwTestError', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('throws a TestError with the given message from a timeout handler', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.call('LegacyBackgroundApiService:throwTestError', 'boom');
+
+        expect(() => jest.runAllTimers()).toThrow(
+          expect.objectContaining({ name: 'TestError', message: 'boom' }),
+        );
+      });
+    });
+  });
+
+  describe('captureTestError', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('captures a TestError with the given message from a timeout handler', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.call(
+          'LegacyBackgroundApiService:captureTestError',
+          'boom',
+        );
+
+        jest.runAllTimers();
+
+        expect(captureException).toHaveBeenCalledWith(
+          expect.objectContaining({ name: 'TestError', message: 'boom' }),
+        );
+      });
+    });
+  });
+
+  describe('isRelaySupported', () => {
+    const isRelaySupportedMock = jest.mocked(isRelaySupported);
+
+    it('delegates to the transaction relay lib and returns its result', async () => {
+      isRelaySupportedMock.mockResolvedValue(true);
+
+      await withService(async ({ rootMessenger }) => {
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:isRelaySupported',
+          '0x1',
+        );
+
+        expect(isRelaySupportedMock).toHaveBeenCalledWith('0x1');
+        expect(result).toBe(true);
+      });
+    });
+  });
 });
 
 /**
@@ -2847,10 +3533,13 @@ function getMessenger(
       'NetworkController:getSelectedNetworkClient',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
+      'AssetsController:getAssets',
       'AssetsController:setSelectedCurrency',
       'KeyringController:exportSeedPhrase',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
+      'ApprovalController:acceptRequest',
+      'SnapInterfaceController:deleteInterface',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
       'ApprovalController:rejectRequest',
@@ -2864,6 +3553,7 @@ function getMessenger(
       'KeyringController:removeAccount',
       'AccountsController:getAccount',
       'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',
@@ -2875,10 +3565,6 @@ function getMessenger(
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
-      'MetaMetricsController:trackEvent',
-      'MetaMetricsController:createEventFragment',
-      'MetaMetricsController:getEventFragmentById',
-      'MetaMetricsController:updateEventFragment',
       'KeyringController:verifyPassword',
       'KeyringController:exportAccount',
       'KeyringController:changePassword',
@@ -2904,6 +3590,10 @@ function getMessenger(
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
+      'MetaMetricsController:trackEvent',
+      'MetaMetricsController:getEventFragmentById',
+      'MetaMetricsController:updateEventFragment',
+      'MetaMetricsController:createEventFragment',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
       'TransactionController:updateEditableParams',
@@ -2912,6 +3602,16 @@ function getMessenger(
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',
+      'PhishingController:maybeUpdateState',
+      'PhishingController:testOrigin',
+      'PreferencesController:toggleExternalServices',
+      'SubscriptionController:getState',
+      'TokenDetectionController:enable',
+      'TokenDetectionController:disable',
+      'GasFeeController:enableNonRPCGasFeeApis',
+      'GasFeeController:disableNonRPCGasFeeApis',
+      'ShieldController:start',
+      'ShieldController:stop',
     ],
   });
 
@@ -2945,6 +3645,7 @@ async function withService<ReturnValue>(
     getOpenMetamaskTabsIds: () => ({}),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
+    createVaultMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

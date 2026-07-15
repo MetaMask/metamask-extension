@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ERC20 } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -29,7 +29,7 @@ const AssetOptions = ({
   isNativeAsset,
 }) => {
   const t = useContext(I18nContext);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
@@ -46,19 +46,20 @@ const AssetOptions = ({
 
   const handleRemoveToken = () => {
     // Track the TokenHidden event before calling onRemove
-    trackEvent({
-      event: MetaMetricsEventName.TokenHidden,
-      category: MetaMetricsEventCategory.Wallet,
-      sensitiveProperties: {
-        token_symbol: token?.symbol,
-        token_contract_address: token?.address,
-        token_decimal_precision: token?.decimals,
-        location: MetaMetricsEventLocation.TokenDetails,
-        token_standard: ERC20,
-        asset_type: AssetType.token,
-        chain_id: token?.chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenHidden)
+        .addCategory(MetaMetricsEventCategory.Wallet)
+        .addSensitiveProperties({
+          token_symbol: token?.symbol,
+          token_contract_address: token?.address,
+          token_decimal_precision: token?.decimals,
+          location: MetaMetricsEventLocation.TokenDetails,
+          token_standard: ERC20,
+          asset_type: AssetType.token,
+          chain_id: token?.chainId,
+        })
+        .build(),
+    );
 
     setAssetOptionsOpen(false);
     onRemove();

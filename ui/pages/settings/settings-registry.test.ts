@@ -12,6 +12,7 @@ import {
   SECURITY_REGISTER_PASSKEY_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
   SETTINGS_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
   THEME_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
@@ -161,6 +162,41 @@ describe('settings-registry', () => {
       expect(tabPaths).not.toContain(CURRENCY_ROUTE);
       expect(tabPaths).not.toContain(THEME_ROUTE);
       expect(tabPaths).not.toContain(THIRD_PARTY_APIS_ROUTE);
+    });
+  });
+
+  describe('external routes (sync accounts)', () => {
+    const loadRegistryWithSyncEnabled = () => {
+      let registry: typeof import('./settings-registry');
+      jest.isolateModules(() => {
+        jest.doMock('../../../shared/lib/environment', () => ({
+          ...jest.requireActual('../../../shared/lib/environment'),
+          getIsAddDeviceSyncEnabled: () => true,
+        }));
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        registry = require('./settings-registry');
+      });
+      // @ts-expect-error assigned within isolateModules callback
+      return registry;
+    };
+
+    afterEach(() => {
+      jest.dontMock('../../../shared/lib/environment');
+    });
+
+    it('exposes sync accounts as a tab', () => {
+      const { SETTINGS_TABS: tabs } = loadRegistryWithSyncEnabled();
+      const tabPaths = tabs.map((tab) => tab.path);
+
+      expect(tabPaths).toContain(SYNC_ACCOUNTS_ROUTE);
+    });
+
+    it('excludes the top-level sync accounts route from nested settings routes', () => {
+      const { SETTINGS_RENDERABLE_ROUTES: renderable } =
+        loadRegistryWithSyncEnabled();
+      const paths = renderable.map((route) => route.path);
+
+      expect(paths).not.toContain(SYNC_ACCOUNTS_ROUTE);
     });
   });
 
