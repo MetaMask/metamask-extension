@@ -23,6 +23,7 @@ import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/ha
 import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
 import { useI18nContext } from '../useI18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 export type UseOptinResult = {
@@ -65,7 +66,7 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
           state,
           selectedAccountGroupId as AccountGroupId,
         )
-      : [],
+      : EMPTY_ARRAY,
   );
 
   // Get accounts for the primary account group

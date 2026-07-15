@@ -14,6 +14,7 @@ import { useAppDispatch } from '../../store/hooks';
 import {
   ShieldSubscriptionProvider,
   useShieldSubscriptionContext,
+  resetEvaluatedShieldCohortsForTesting,
 } from './shield-subscription';
 
 jest.mock('../../store/hooks', () => ({
@@ -26,11 +27,15 @@ jest.mock('react-redux', () => ({
 }));
 jest.mock('../../hooks/subscription/useSubscription');
 jest.mock('../../hooks/shield/metrics/useSubscriptionMetrics');
+jest.mock('../../hooks/usePolling', () => jest.fn());
+jest.mock('./subscriptionsPollingActions', () => ({
+  subscriptionsStartPolling: jest.fn(),
+  subscriptionsStopPolling: jest.fn(),
+}));
 jest.mock('../../store/actions', () => ({
   assignUserToCohort: jest.fn(),
   setPendingShieldCohort: jest.fn(),
   setShowShieldEntryModalOnce: jest.fn(),
-  subscriptionsStartPolling: jest.fn(),
 }));
 
 const mockUseAppDispatch = jest.mocked(useAppDispatch);
@@ -43,6 +48,7 @@ describe('ShieldSubscriptionProvider', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetEvaluatedShieldCohortsForTesting();
 
     mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockUseSelector.mockImplementation((selector) => {

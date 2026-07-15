@@ -346,7 +346,7 @@ describe('Permission List Item', () => {
           const pendingRevocations = [
             {
               txId: '1',
-              permissionContext: '0x00000000',
+              permissionContext: '0x00000000' as Hex,
             },
           ];
           jest

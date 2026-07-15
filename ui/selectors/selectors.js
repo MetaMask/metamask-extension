@@ -755,22 +755,28 @@ export function getHDEntropyIndex(state) {
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
-export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId =
-    getAccountTrackerControllerAccountsByChainId(state);
-  return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
-    acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
-      (innerAcc, address) => {
-        innerAcc[address.toLowerCase()] =
-          allAccountsByChainId[chainId][address].balance;
-        return innerAcc;
-      },
-      {},
-    );
+export const getCrossChainMetaMaskCachedBalances = createSelector(
+  getAccountTrackerControllerAccountsByChainId,
+  (allAccountsByChainId) => {
+    const chainIds = Object.keys(allAccountsByChainId);
+    if (chainIds.length === 0) {
+      return EMPTY_OBJECT;
+    }
 
-    return acc;
-  }, {});
-}
+    return chainIds.reduce((acc, chainId) => {
+      acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
+        (innerAcc, address) => {
+          innerAcc[address.toLowerCase()] =
+            allAccountsByChainId[chainId][address].balance;
+          return innerAcc;
+        },
+        {},
+      );
+
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
@@ -1347,7 +1353,7 @@ export function getTotalUnapprovedCount(state) {
 }
 
 export function getSlides(state) {
-  return state.metamask.slides || [];
+  return state.metamask.slides || EMPTY_ARRAY;
 }
 
 export function getUnapprovedTxCount(state) {

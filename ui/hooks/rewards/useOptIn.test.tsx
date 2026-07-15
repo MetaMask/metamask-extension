@@ -6,6 +6,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 import { useOptIn } from './useOptIn';
 
 // Mock usePrimaryWalletGroupAccounts hook
@@ -78,6 +79,9 @@ jest.mock('../../selectors/multichain-accounts/account-tree', () => {
   const actual = jest.requireActual(
     '../../selectors/multichain-accounts/account-tree',
   );
+  const { EMPTY_ARRAY: emptyAccounts } = jest.requireActual(
+    '../../selectors/shared',
+  );
   return {
     ...actual,
     getSelectedAccountGroup: jest.fn(() => 'entropy:test/0'),
@@ -118,7 +122,7 @@ jest.mock('../../selectors/multichain-accounts/account-tree', () => {
       if (groupId === 'entropy:test/0') {
         return mockActiveGroupAccounts;
       }
-      return [];
+      return emptyAccounts;
     }),
   };
 });
@@ -215,7 +219,7 @@ describe('useOptIn', () => {
         if (groupId === 'entropy:test/0') {
           return mockActiveGroupAccounts;
         }
-        return [];
+        return EMPTY_ARRAY;
       },
     );
   });
@@ -366,9 +370,9 @@ describe('useOptIn', () => {
             return mockSideEffectAccounts;
           }
           if (groupId === 'entropy:test/0') {
-            return [];
+            return EMPTY_ARRAY;
           }
-          return [];
+          return EMPTY_ARRAY;
         },
       );
 

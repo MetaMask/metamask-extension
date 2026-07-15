@@ -77,8 +77,13 @@ export function useBasicFunctionalityDisableEffect() {
   const disableAndRefresh = useDisableAndRefresh();
 
   useEffect(() => {
+    let cancelled = false;
+
     const run = async () => {
       try {
+        if (cancelled) {
+          return;
+        }
         if (!isBasicFunctionalityEnabled && isNotificationsEnabled) {
           await disableAndRefresh();
         }
@@ -86,7 +91,12 @@ export function useBasicFunctionalityDisableEffect() {
         // Do nothing
       }
     };
+
     run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [disableAndRefresh, isBasicFunctionalityEnabled, isNotificationsEnabled]);
 }
 
@@ -103,6 +113,8 @@ export function useFetchInitialNotificationsEffect() {
   const enableAndRefresh = useEnableAndRefresh();
 
   useEffect(() => {
+    let cancelled = false;
+
     const shouldEnableNotificationsOnStartup = async () => {
       if (await hasNotificationSubscriptionExpired()) {
         return true;
@@ -121,6 +133,9 @@ export function useFetchInitialNotificationsEffect() {
 
     const run = async () => {
       try {
+        if (cancelled) {
+          return;
+        }
         if (
           isBasicFunctionalityEnabled &&
           shouldFetchNotifications &&
@@ -132,7 +147,12 @@ export function useFetchInitialNotificationsEffect() {
         // Do nothing
       }
     };
+
     run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     shouldFetchNotifications,
     isBasicFunctionalityEnabled,
@@ -154,8 +174,13 @@ export function useEnableNotificationsByDefaultEffect() {
   const enableAndRefresh = useEnableAndRefresh();
 
   useEffect(() => {
+    let cancelled = false;
+
     const run = async () => {
       try {
+        if (cancelled) {
+          return;
+        }
         if (
           !isNotificationsEnabled &&
           isBasicFunctionalityEnabled &&
@@ -163,6 +188,9 @@ export function useEnableNotificationsByDefaultEffect() {
           isNotificationsEnabledByDefaultFeatureFlag
         ) {
           if (!(await hasUserTurnedOffNotificationsOnce())) {
+            if (cancelled) {
+              return;
+            }
             await enableAndRefresh();
           }
         }
@@ -170,7 +198,12 @@ export function useEnableNotificationsByDefaultEffect() {
         // Do nothing
       }
     };
+
     run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     enableAndRefresh,
     isBasicFunctionalityEnabled,

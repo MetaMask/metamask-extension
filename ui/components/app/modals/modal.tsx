@@ -315,7 +315,7 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const modalRef = useRef<FadeModalRef>(null);
+  const modalRef = useRef<FadeModalRef | null>(null);
 
   useEffect(() => {
     if (active) {
@@ -340,7 +340,6 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
         }
         hideModal(modal.customOnHideOpts);
       }}
-      // @ts-expect-error FadeModal is a JS class component without TS type declarations
       ref={modalRef}
       modalStyle={modalStyle}
       contentStyle={contentStyle}
