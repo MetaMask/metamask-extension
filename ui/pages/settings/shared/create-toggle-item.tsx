@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -12,6 +12,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { SettingItemProps } from '../types';
+import { useAppDispatch } from '../../../store/hooks';
 import { SettingsToggleItem } from './settings-toggle-item';
 
 const selectAlwaysFalse = (): boolean => false;
@@ -50,7 +51,7 @@ export const createToggleItem = (
 ): React.ComponentType<SettingItemProps> => {
   const ToggleItem = () => {
     const t = useI18nContext();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { trackEvent, createEventBuilder } = useAnalytics();
     const value = useSelector(config.selector);
     const disabled = useSelector(config.disabledSelector ?? selectAlwaysFalse);

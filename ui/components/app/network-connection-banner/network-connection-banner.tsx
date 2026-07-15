@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BannerBase,
@@ -22,6 +21,7 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { NetworkConnectionBanner as NetworkConnectionBannerType } from '../../../../shared/constants/app-state';
+import { useAppDispatch } from '../../../store/hooks';
 
 type BannerIcon = {
   color: IconColor;
@@ -234,7 +234,7 @@ const getBannerContent = (
 export const NetworkConnectionBanner = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const networkConnectionBanner = useNetworkConnectionBanner();
 
   const updateRpc = useCallback(() => {

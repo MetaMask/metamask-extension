@@ -4,7 +4,7 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import React, { useCallback, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -23,12 +23,13 @@ import {
 import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
+import { useAppDispatch } from '../../../store/hooks';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
 
 export const NetworkManager = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') ?? '';

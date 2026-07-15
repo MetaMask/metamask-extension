@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
 import {
   Button,
@@ -36,6 +36,7 @@ import { setSlippage } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
 import { sanitizeAmountInput } from '../utils/quote';
+import { useAppDispatch } from '../../../store/hooks';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [
   SlippageValue.EvmStablecoin,
@@ -48,7 +49,7 @@ export const BridgeTransactionSettingsModal = ({
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
   const t = useI18nContext();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   /**
    * The current slippage value in the quote request
    */

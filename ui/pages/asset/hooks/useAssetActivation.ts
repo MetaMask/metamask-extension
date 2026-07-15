@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 
@@ -19,6 +19,7 @@ import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
+import { useAppDispatch } from '../../../store/hooks';
 
 /**
  * Manages trustline activation and deactivation for supported assets (currently Stellar classic tokens).
@@ -30,7 +31,7 @@ import { Asset } from '../types/asset';
  */
 export const useAssetActivation = ({ asset }: { asset: Asset }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // For non trusline asset, assetId and chainId are undefined.
   let assetId: CaipAssetType | undefined;

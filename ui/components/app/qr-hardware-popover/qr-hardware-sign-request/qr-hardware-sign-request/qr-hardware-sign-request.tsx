@@ -1,9 +1,10 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { completeQrCodeScan } from '../../../../../store/actions';
 import QrPlayer from '../qr-player';
 import QrReader from '../qr-reader';
+import { useAppDispatch } from '../../../../../store/hooks';
+
 import {
   FlowStatus,
   type FlowStatusValue,
@@ -30,7 +31,7 @@ const QRHardwareSignRequest = ({
   setErrorTitle,
   setErrorActive,
 }: QRHardwareSignRequestProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [status, setStatus] = useState<FlowStatusValue>(FlowStatus.Play);
 
   useEffect(() => {

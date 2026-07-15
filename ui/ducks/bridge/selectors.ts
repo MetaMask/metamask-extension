@@ -106,6 +106,7 @@ import {
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
 import { getCurrentCurrency } from '../metamask/metamask';
+import type { MetaMaskReduxState } from '../../store/store';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -151,6 +152,19 @@ export type BridgeAppState = {
     };
   bridge: BridgeState;
 };
+
+/**
+ * Returns the bridge-relevant slices from the full Redux state.
+ *
+ * @param state - Full Redux state.
+ */
+export function getBridgeAppState(state: MetaMaskReduxState): BridgeAppState {
+  return {
+    // @ts-expect-error FlattenedBackgroundStateProxy matches the bridge metamask shape at runtime.
+    metamask: state.metamask,
+    bridge: state.bridge,
+  };
+}
 
 // getMultichainNetworkConfigurationsByChainId is memoized in ui/selectors/multichain.ts.
 const getAllBridgeableNetworks = createSelector(

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -49,10 +49,11 @@ import {
 } from '../../../ducks/app/app';
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { useBoolean } from '../../../hooks/useBoolean';
+import { useAppDispatch } from '../../../store/hooks';
 
 export function BasicConfigurationModal() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);

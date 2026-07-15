@@ -1,5 +1,4 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useDispatch } from 'react-redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -8,11 +7,15 @@ import { replaceMusdConversionTransactionForPayToken } from '../../components/ap
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
 import { rejectPendingApproval } from '../../store/actions';
+import { useAppDispatch } from '../../store/hooks';
 import { useMusdPaymentToken } from './useMusdPaymentToken';
+
+jest.mock('../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -52,7 +55,9 @@ jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
   updateTransactionPaymentToken: jest.fn(),
 }));
 
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
+  typeof useAppDispatch
+>;
 const mockUseConfirmContext = useConfirmContext as jest.Mock;
 const mockUseTransactionPayToken = useTransactionPayToken as jest.Mock;
 const mockReplaceTransaction =
@@ -82,7 +87,7 @@ describe('useMusdPaymentToken', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
 
     mockUseConfirmContext.mockReturnValue({
       currentConfirmation: mockTransactionMeta,

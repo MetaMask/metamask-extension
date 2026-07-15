@@ -1,6 +1,6 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Text,
@@ -43,6 +43,7 @@ import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { useAppDispatch } from '../../../store/hooks';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 type RecoveryPhraseProps = {
@@ -56,7 +57,7 @@ export default function RecoveryPhrase({
 }: RecoveryPhraseProps) {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const { trackEvent, createEventBuilder } = useAnalytics();

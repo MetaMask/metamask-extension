@@ -1,16 +1,20 @@
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
+import { useAppDispatch } from '../../../../store/hooks';
 import NameDisplay from './name-display';
+
+jest.mock('../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -19,13 +23,13 @@ jest.mock('../../../../hooks/useDisplayName', () => ({
 }));
 
 describe('NameDisplay', () => {
-  const useDispatchMock = jest.mocked(useDispatch);
+  const useAppDispatchMock = jest.mocked(useAppDispatch);
   const useSelectorMock = jest.mocked(useSelector);
   const useDisplayNameMock = jest.mocked(useDisplayName);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    useDispatchMock.mockReturnValue(jest.fn());
+    useAppDispatchMock.mockReturnValue(jest.fn());
     useSelectorMock.mockReturnValue(jest.fn());
   });
 

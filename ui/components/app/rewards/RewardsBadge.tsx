@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   Icon,
@@ -11,6 +10,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setRewardsBadgeHidden } from '../../../ducks/rewards';
 import { setStorageItem } from '../../../../shared/lib/storage-helpers';
+import { useAppDispatch } from '../../../store/hooks';
 import { REWARDS_BADGE_HIDDEN } from './utils/constants';
 import { RewardsIcon, RewardsIconVariant } from './RewardsIcon';
 
@@ -34,7 +34,7 @@ export const RewardsBadge = ({
   onClick?: () => void;
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClose = useCallback(() => {

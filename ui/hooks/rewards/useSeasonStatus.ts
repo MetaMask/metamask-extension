@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   getRewardsSeasonMetadata,
   getRewardsSeasonStatus,
@@ -17,6 +17,7 @@ import {
 } from '../../ducks/rewards';
 import { CandidateSubscriptionId } from '../../ducks/rewards/types';
 import { REWARDS_ERROR_MESSAGES } from '../../../shared/constants/rewards';
+import { useAppDispatch } from '../../store/hooks';
 
 type UseSeasonStatusOptions = {
   subscriptionId: CandidateSubscriptionId;
@@ -38,7 +39,7 @@ export const useSeasonStatus = ({
   subscriptionId,
   onAuthorizationError,
 }: UseSeasonStatusOptions): UseSeasonStatusReturn => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isUnlocked = useSelector(getIsUnlocked);
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 

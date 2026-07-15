@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -25,10 +25,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
+import { useAppDispatch } from '../../../store/hooks';
 
 export const MetametricsToggleItem = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { enableMetametrics, error: enableMetametricsError } =
     useEnableMetametrics();

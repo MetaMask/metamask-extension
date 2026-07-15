@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -27,12 +26,13 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { PRIVACY_ROUTE } from '../../../../helpers/constants/routes';
 import { setPna25Acknowledged } from '../../../../store/actions';
+import { useAppDispatch } from '../../../../store/hooks';
 import { PNA25_BLOG_POST_LINK, Pna25NoticeAction } from './constants';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Pna25Modal() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
 

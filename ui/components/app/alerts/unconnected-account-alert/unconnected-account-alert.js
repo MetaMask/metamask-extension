@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { ALERT_STATE } from '../../../../ducks/alerts';
 import {
@@ -22,6 +22,8 @@ import Checkbox from '../../../ui/check-box';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useAppDispatch } from '../../../../store/hooks';
+
 import {
   Icon,
   IconName,
@@ -34,7 +36,7 @@ const { ERROR, LOADING } = ALERT_STATE;
 
 const UnconnectedAccountAlert = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const alertState = useSelector(getAlertState);
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,

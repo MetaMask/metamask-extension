@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import {
@@ -38,6 +38,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { useAppDispatch } from '../../../../../store/hooks';
 
 export const TURN_ON_BACKUP_AND_SYNC_MODAL_NAME = 'TURN_ON_BACKUP_AND_SYNC';
 export const turnOnBackupAndSyncModalTestIds = {
@@ -50,7 +51,7 @@ export const turnOnBackupAndSyncModalTestIds = {
 export function TurnOnBackupAndSyncModal() {
   const { hideModal } = useModalProps();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
 

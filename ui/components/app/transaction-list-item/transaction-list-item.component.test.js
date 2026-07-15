@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import { act, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import {
   TrustSignalDisplayState,
@@ -40,7 +40,12 @@ import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
+import { useAppDispatch } from '../../../store/hooks';
 import TransactionListItem from '.';
+
+jest.mock('../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 const mockTrackEvent = jest.fn();
 
@@ -93,7 +98,6 @@ jest.mock('react-redux', () => {
   return {
     ...actual,
     useSelector: jest.fn(),
-    useDispatch: jest.fn(),
   };
 });
 
@@ -279,7 +283,7 @@ describe('TransactionListItem', () => {
           balance: '2AA1EFB94E0000',
         }),
       );
-      useDispatch.mockReturnValue(jest.fn());
+      useAppDispatch.mockReturnValue(jest.fn());
       const { getByText, queryByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
@@ -325,7 +329,7 @@ describe('TransactionListItem', () => {
       }),
     );
 
-    useDispatch.mockReturnValue(jest.fn());
+    useAppDispatch.mockReturnValue(jest.fn());
 
     const transactionGroupSigning = {
       ...transactionGroup,
@@ -446,7 +450,7 @@ describe('TransactionListItem', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({ balance: '2AA1EFB94E0000' }),
       );
-      useDispatch.mockReturnValue(jest.fn());
+      useAppDispatch.mockReturnValue(jest.fn());
     });
 
     it('renders the ChainBadge using metamaskPay.chainId (source) for perpsWithdraw', () => {

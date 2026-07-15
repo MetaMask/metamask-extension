@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 
 import {
@@ -32,6 +32,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import Preloader from '../../ui/icon/preloader';
 import { Tab, Tabs } from '../../ui/tabs';
+import { useAppDispatch } from '../../../store/hooks';
 import { AccountDetailsSection } from './account-details-section';
 
 export const AccountDetailsDisplay = ({
@@ -41,7 +42,7 @@ export const AccountDetailsDisplay = ({
   accountType,
   onExportClick,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()

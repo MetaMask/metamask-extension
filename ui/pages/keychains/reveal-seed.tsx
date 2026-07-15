@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import copyToClipboard from 'copy-to-clipboard';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -45,6 +45,7 @@ import {
 import { PasskeyVerification } from '../../components/app/passkey-verification';
 import { useBoolean } from '../../hooks/useBoolean';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
+import { useAppDispatch } from '../../store/hooks';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
 import { RevealSeedWarning } from './reveal-seed-warning';
@@ -62,7 +63,7 @@ const PASSWORD_PROMPT_SCREEN: RevealSeedScreen = 'PASSWORD_PROMPT_SCREEN'; // NO
 const REVEAL_SEED_SCREEN: RevealSeedScreen = 'REVEAL_SEED_SCREEN';
 
 function RevealSeedPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../component-library';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import {
@@ -23,10 +23,11 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { useAppDispatch } from '../../../../store/hooks';
 import { useSnapHome } from './useSnapHome';
 
 export const SnapHomeRenderer = ({ snapId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),

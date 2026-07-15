@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
@@ -12,12 +12,13 @@ import {
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import { useAppDispatch } from '../../store/hooks';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 
 // This hook is used to track cross chain swaps events related to quote-fetching
 export const useQuoteFetchEvents = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     isLoading,
     quotesRefreshCount,

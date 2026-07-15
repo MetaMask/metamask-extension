@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../../store/hooks';
 import {
   forceUpdateMetamaskState,
   handleSnapRequest,
 } from '../../store/actions';
 
 export function useSnapSettings({ snapId }: { snapId?: string | null }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<{ id: string } | undefined>(undefined);
   const [error, setError] = useState<Error | undefined>(undefined);

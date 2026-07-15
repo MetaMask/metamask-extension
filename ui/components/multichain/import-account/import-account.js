@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -25,12 +25,13 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getIsSocialLoginFlow } from '../../../selectors';
 
 // Subviews
+import { useAppDispatch } from '../../../store/hooks';
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
 
 export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);

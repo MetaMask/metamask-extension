@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -67,6 +67,7 @@ import {
 import { MINUTE } from '../../../../shared/constants/time';
 import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { PasskeyVerification } from '../../app/passkey-verification';
+import { useAppDispatch } from '../../../store/hooks';
 
 const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
 const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
@@ -98,7 +99,7 @@ const MultichainPrivateKeyList = ({
   goBack,
 }: MultichainPrivateKeyListProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [password, setPassword] = useState<string>('');

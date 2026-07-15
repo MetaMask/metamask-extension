@@ -7,12 +7,12 @@ import {
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
 import React, { createContext, useContext, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   handleSnapRequest as handleSnapRequestFunction,
   updateInterfaceState,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import { useAppDispatch } from '../../store/hooks';
 import { mergeValue } from './utils';
 
 export type HandleEvent = <Type extends State>(args: {
@@ -72,7 +72,7 @@ export const SnapInterfaceContextProvider = ({
   snapId,
   initialState,
 }: React.PropsWithChildren<SnapInterfaceContextProviderProps>) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the
   // UI. It's kept in a ref to avoid useless re-rendering of the entire tree of

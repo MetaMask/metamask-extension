@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   ChainPaymentInfo,
@@ -32,6 +32,7 @@ import {
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import { useAppDispatch } from '../../store/hooks';
 
 export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
@@ -200,7 +201,7 @@ export const useAvailableTokenBalances = (params: {
 export const useSubscriptionPricing = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const subscriptionPricing = useSelector(getSubscriptionPricing);
 
   const { pending, error } = useAsyncResult(async () => {

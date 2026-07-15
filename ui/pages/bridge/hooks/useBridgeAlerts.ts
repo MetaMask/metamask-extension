@@ -1,4 +1,4 @@
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import {
   getActiveQuoteInsufficientNativeReserveError,
@@ -19,6 +19,7 @@ import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
+import { useAppDispatch } from '../../../store/hooks';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 
@@ -28,7 +29,7 @@ import { useAssetSecurityData } from './useAssetSecurityData';
  */
 export const useBridgeAlerts = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const formattedPriceImpactPercentage = useSelector(
     getFormattedPriceImpactPercentage,

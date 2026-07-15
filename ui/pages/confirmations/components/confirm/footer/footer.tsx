@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -48,6 +47,7 @@ import {
   useHardwareFooter,
   useHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
+import { useAppDispatch } from '../../../../../store/hooks';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
@@ -249,7 +249,7 @@ const CancelButton = ({
 };
 
 const Footer = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();

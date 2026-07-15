@@ -1,5 +1,4 @@
 import { act } from 'react-dom/test-utils';
-import { useDispatch } from 'react-redux';
 import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
@@ -10,11 +9,15 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { useAppDispatch } from '../../../store/hooks';
 import { useSmartTransactionFeatureFlags } from './useSmartTransactionFeatureFlags';
+
+jest.mock('../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
@@ -78,11 +81,11 @@ describe('useSmartTransactionFeatureFlags', () => {
   const fetchSmartTransactionsLivenessMock = jest.mocked(
     fetchSmartTransactionsLiveness,
   );
-  const useDispatchMock = jest.mocked(useDispatch);
+  const useAppDispatchMock = jest.mocked(useAppDispatch);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    useDispatchMock.mockReturnValue(jest.fn());
+    useAppDispatchMock.mockReturnValue(jest.fn());
     fetchSmartTransactionsLivenessMock.mockReturnValue(() => Promise.resolve());
   });
 

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setRewardsModalOpen,
@@ -8,13 +8,14 @@ import {
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
 import { DeeplinkQRCode } from '../deeplink-qr-code';
+import { useAppDispatch } from '../../../store/hooks';
 import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsQRCode() {
   const rewardsDeeplinkUrl = useSelector(selectRewardsDeeplinkUrl);
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleClose = useCallback(() => {
     dispatch(setRewardsModalOpen(false));

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   MetaMetricsContextProp,
@@ -56,7 +56,8 @@ import {
   setPendingRedirectRoute,
   setLastVisitedPerpsRoute,
 } from '../../store/actions';
-import { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
+import { useAppDispatch } from '../../store/hooks';
 import { ConnectedStatusPopoverContainer } from './connected-status-popover-container';
 import { DeeplinkQrCodeModalContainer } from './deeplink-qrcode-modal-container';
 import { ShieldCohortContainer } from './shield-cohort-container';
@@ -118,7 +119,7 @@ function useHomeState() {
 }
 
 function useHomeActions() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return useMemo(
     () => ({

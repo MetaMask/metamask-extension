@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
@@ -62,10 +62,11 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
+import { useAppDispatch } from '../../store/hooks';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 

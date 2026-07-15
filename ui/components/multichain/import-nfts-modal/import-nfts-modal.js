@@ -1,7 +1,7 @@
 import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
 import React, { useContext, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventName,
@@ -63,6 +63,7 @@ import { NetworkListItem } from '../network-list-item';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { toast, ToastContent } from '../../ui/toast/toast';
+import { useAppDispatch } from '../../../store/hooks';
 
 const ACTION_MODES = {
   // Displays the import nft modal
@@ -74,7 +75,7 @@ const ACTION_MODES = {
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);

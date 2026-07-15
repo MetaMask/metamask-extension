@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -39,6 +39,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { useAppDispatch } from '../../../../../store/hooks';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -54,7 +55,7 @@ const NetworkFilter = ({
   showTokenFiatBalance = true,
 }: SortControlProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const chainId = useSelector(getCurrentChainId);
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);

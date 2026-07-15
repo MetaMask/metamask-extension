@@ -1,16 +1,17 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isCrossChain } from '@metamask/bridge-controller';
 import { setEvmBalances } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
+import { useAppDispatch } from '../../store/hooks';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
  * This sets the latest balance for the fromToken and the native token on the src chain
  */
 export const useLatestBalance = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const fromToken = useSelector(getFromToken);
 
   /**

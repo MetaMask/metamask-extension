@@ -1,6 +1,6 @@
 import React, { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Text,
@@ -58,6 +58,7 @@ import { getHDEntropyIndex } from '../../../selectors';
 import { PasskeyVerification } from '../../../components/app/passkey-verification';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { useAppDispatch } from '../../../store/hooks';
 
 type RevealRecoveryPhraseScreen =
   | 'VERIFY_PASSKEY_SCREEN'
@@ -91,7 +92,7 @@ export default function RevealRecoveryPhrase({
 }: {
   setSecretRecoveryPhrase: (seedPhrase: string) => void;
 }) {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();

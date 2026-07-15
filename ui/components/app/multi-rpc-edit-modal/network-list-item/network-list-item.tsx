@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   NetworkConfiguration,
   RpcEndpointType,
@@ -28,6 +27,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { useAppDispatch } from '../../../../store/hooks';
 
 const NetworkListItem = ({
   networkConfiguration,
@@ -41,7 +41,7 @@ const NetworkListItem = ({
 
   const t = useI18nContext();
   const [isOpenTooltip, setIsOpenTooltip] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [referenceElement, setReferenceElement] =
     useState<HTMLElement | null>();

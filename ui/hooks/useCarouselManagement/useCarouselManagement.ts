@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
@@ -19,6 +19,7 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentLocale } from '../../ducks/locale/locale';
 import { isMaintainedLocale } from '../../../shared/constants/locales';
+import { useAppDispatch } from '../../store/hooks';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
@@ -94,7 +95,7 @@ export const useCarouselManagement = ({
   enabled = true,
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const slides = useSelector(getSlides);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);

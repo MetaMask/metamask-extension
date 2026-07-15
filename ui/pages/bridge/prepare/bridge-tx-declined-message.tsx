@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   AlignItems,
   Display,
@@ -11,9 +10,10 @@ import {
   ButtonLink,
 } from '../../../components/component-library';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { useAppDispatch } from '../../../store/hooks';
 
 export const BridgeTxDeclinedMessage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <Text

@@ -12,7 +12,6 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useSegmentContext } from '../../../../hooks/useSegmentContext';
@@ -30,6 +29,7 @@ import {
 } from '../../../../../shared/constants/perps';
 import { setTutorialModalOpen } from '../../../../ducks/perps';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { useAppDispatch } from '../../../../store/hooks';
 
 const LIST_ITEM_BASE =
   'flex items-center gap-3 px-4 py-3 bg-background-muted cursor-pointer hover:bg-hover active:bg-pressed';
@@ -76,7 +76,7 @@ const SupportListItem = ({
 
 export const PerpsSupportLearn = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
   const { track } = usePerpsEventTracking();

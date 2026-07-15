@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
@@ -39,6 +39,7 @@ import {
 
 import { PAY_TRANSACTION_TYPES } from '../pages/confirmations/constants/pay';
 import { resolveTransactionType } from '../components/app/transaction-list-item/helpers';
+import { useAppDispatch } from '../store/hooks';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -97,7 +98,7 @@ const signatureTypes = [
 export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getAllTokens);

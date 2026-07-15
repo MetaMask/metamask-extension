@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AvatarAccountSize,
   AvatarNetwork,
@@ -43,6 +43,8 @@ import {
 } from '../../../../shared/lib/hexstring-utils';
 import type { EditContactFormProps } from '../contacts.types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAppDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -57,7 +59,7 @@ export function EditContactForm({
   onSuccess,
 }: EditContactFormProps) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);

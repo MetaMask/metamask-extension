@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
@@ -12,9 +12,10 @@ import {
   setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
+import { useAppDispatch } from '../../../store/hooks';
 
 export function useSmartTransactionFeatureFlags() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     id: transactionId,

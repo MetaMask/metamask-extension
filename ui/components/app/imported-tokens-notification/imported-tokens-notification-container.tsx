@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -17,12 +17,13 @@ import {
   IconName,
 } from '../../component-library';
 import { SECOND } from '../../../../shared/constants/time';
+import { useAppDispatch } from '../../../store/hooks';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
 
 export function ImportedTokensNotificationContainer() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const newTokensImported = useSelector(getNewTokensImported);
   const newTokensImportedError = useSelector(getNewTokensImportedError);
 

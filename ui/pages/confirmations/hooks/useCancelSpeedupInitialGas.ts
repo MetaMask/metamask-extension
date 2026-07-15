@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   EthGasPriceEstimate,
@@ -9,6 +8,7 @@ import {
 import { PriorityLevels } from '../../../../shared/constants/gas';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import { updatePreviousGasParams } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 
 export type UseCancelSpeedupInitialGasParams = {
   effectiveTransaction: TransactionMeta;
@@ -54,7 +54,7 @@ export function useCancelSpeedupInitialGas({
 }: UseCancelSpeedupInitialGasParams): { isInitialGasReady: boolean } {
   const appliedInitialGasForTransactionIdRef = useRef<string | null>(null);
   const storedPreviousGasForTransactionIdRef = useRef<string | null>(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (currentModal !== CANCEL_SPEEDUP_MODAL) {

@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import {
   Box,
@@ -38,6 +38,7 @@ import {
   onboardingToggleBasicFunctionalityOn,
 } from '../../../../ducks/app/app';
 import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identity';
+import { useAppDispatch } from '../../../../store/hooks';
 
 export const backupAndSyncToggleTestIds = {
   container: 'backup-and-sync-container',
@@ -63,7 +64,7 @@ export const BackupAndSyncToggle = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { setIsBackupAndSyncFeatureEnabled, error } = useBackupAndSync();
 

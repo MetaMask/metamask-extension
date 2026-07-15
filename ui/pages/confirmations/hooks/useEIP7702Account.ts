@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
@@ -16,6 +16,7 @@ import {
   selectDefaultRpcEndpointByChainId,
   type NetworkConfigurationsByChainIdState,
 } from '../../../../shared/lib/selectors/networks';
+import { useAppDispatch } from '../../../store/hooks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 export function useEIP7702Account(
@@ -23,7 +24,7 @@ export function useEIP7702Account(
     chainId: '0x',
   },
 ) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const { confirmations, navigateToId } = useConfirmationNavigation();
   const defaultRpcEndpoint = useSelector(

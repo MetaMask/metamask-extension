@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Modal from '../../modal';
 import { Text } from '../../../component-library/text';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
@@ -11,11 +11,12 @@ import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import { getSelectedNetworkClientId } from '../../../../../shared/lib/selectors/networks';
+import { useAppDispatch } from '../../../../store/hooks';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const allNfts = useSelector(getNfts);
   const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),

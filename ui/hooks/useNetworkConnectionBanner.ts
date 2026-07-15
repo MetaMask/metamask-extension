@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { selectFirstFailedNetworkForNetworkConnectionBanner } from '../selectors/multichain/networks';
 import {
@@ -16,6 +16,7 @@ import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
+import { useAppDispatch } from '../store/hooks';
 import { useAnalytics } from './useAnalytics';
 
 type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
@@ -37,7 +38,7 @@ const UNAVAILABLE_BANNER_TIMEOUT = 30 * 1000;
 
 export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { trackEvent, createEventBuilder } = useAnalytics();
     const isOffline = useSelector(getIsDeviceOffline);
     const failedNetwork = useSelector(

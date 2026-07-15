@@ -5,6 +5,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
+import { useAppDispatch } from '../../../../../store/hooks';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { usePostQuoteWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
@@ -96,7 +97,7 @@ jest.mock('../../send/asset', () => ({
 
 const CHAIN_ID_MOCK = '0x1';
 
-// `PayWithModal` calls `useDispatch()` for the perpsWithdraw `addToken`
+// `PayWithModal` calls `useAppDispatch()` for the perpsWithdraw `addToken`
 // import path, so the component needs a redux store at render time. The
 // non-perpsWithdraw test cases never actually dispatch — a default mock-state
 // store is enough to satisfy the hook.

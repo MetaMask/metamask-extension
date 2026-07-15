@@ -2,7 +2,7 @@ import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -29,10 +29,11 @@ import ToggleButton from '../../../ui/toggle-button';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
+import { useAppDispatch } from '../../../../store/hooks';
 
 const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an

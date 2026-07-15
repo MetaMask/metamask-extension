@@ -13,7 +13,7 @@ import {
   NameType,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   Box,
@@ -57,6 +57,7 @@ import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { useAppDispatch } from '../../../../store/hooks';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -161,7 +162,7 @@ function getInitialSources(
 }
 
 function useProposedNames(value: string, type: NameType, variation: string) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { proposedNames } = useName(value, type, variation);
 
   // Track latest proposed names without resetting polling interval.
@@ -243,7 +244,7 @@ export default function NameDetails({
   const [openMetricSent, setOpenMetricSent] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
 
   const formattedValue = formatValue(value, type);

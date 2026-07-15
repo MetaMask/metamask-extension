@@ -1,6 +1,6 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
@@ -38,11 +38,12 @@ import {
   getShowTestNetworks,
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
+import { useAppDispatch } from '../../../../../store/hooks';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
   const [, setSearchParams] = useSearchParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,

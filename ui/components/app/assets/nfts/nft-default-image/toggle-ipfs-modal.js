@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   ButtonPrimary,
@@ -17,6 +16,8 @@ import {
   setIsIpfsGatewayEnabled,
 } from '../../../../../store/actions';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../../../shared/constants/network';
+import { useAppDispatch } from '../../../../../store/hooks';
+
 import {
   Size,
   TextColor,
@@ -25,7 +26,7 @@ import {
 
 export const ToggleIpfsModal = ({ onClose }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <Modal isOpen onClose={onClose} className="toggle-ipfs-modal">

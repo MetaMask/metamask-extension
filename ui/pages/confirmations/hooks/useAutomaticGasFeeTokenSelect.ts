@@ -1,18 +1,18 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../context/confirm';
+import { useAppDispatch } from '../../../store/hooks';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export function useAutomaticGasFeeTokenSelect() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     isSupported: isGaslessSupported,
     isSmartTransaction,

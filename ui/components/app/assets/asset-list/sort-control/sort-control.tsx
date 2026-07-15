@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { Text } from '../../../../component-library';
@@ -22,6 +22,7 @@ import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
+import { useAppDispatch } from '../../../../../store/hooks';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -82,7 +83,7 @@ const SortControl = ({ handleClose }: SortControlProps) => {
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   type SortKeys = 'title' | 'tokenFiatAmount';
   const handleSort = useCallback(

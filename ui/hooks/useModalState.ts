@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { closeNetworkMenu, hideModal } from '../store/actions';
+import { useAppDispatch } from '../store/hooks';
 
 export function useModalState() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const closeModals = useCallback(() => {
     dispatch(closeNetworkMenu());

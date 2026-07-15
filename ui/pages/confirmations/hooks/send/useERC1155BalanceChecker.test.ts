@@ -1,17 +1,19 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useDispatch } from 'react-redux';
 
 import {
   findNetworkClientIdByChainId,
   getERC1155BalanceOf,
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
+import { useAppDispatch } from '../../../../store/hooks';
 import { useERC1155BalanceChecker } from './useERC1155BalanceChecker';
 
-jest.mock('../../../../store/actions');
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
+jest.mock('../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
 }));
+
+jest.mock('../../../../store/actions');
+jest.mock('react-redux', () => ({}));
 
 const mockFindNetworkClientIdByChainId =
   findNetworkClientIdByChainId as jest.MockedFunction<
@@ -20,7 +22,9 @@ const mockFindNetworkClientIdByChainId =
 const mockGetERC1155BalanceOf = getERC1155BalanceOf as jest.MockedFunction<
   typeof getERC1155BalanceOf
 >;
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
+  typeof useAppDispatch
+>;
 const mockDispatch = jest.fn();
 
 describe('useERC1155BalanceChecker', () => {
@@ -42,7 +46,7 @@ describe('useERC1155BalanceChecker', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockFindNetworkClientIdByChainId.mockResolvedValue('mainnet' as never);
     mockGetERC1155BalanceOf.mockResolvedValue('5');
   });

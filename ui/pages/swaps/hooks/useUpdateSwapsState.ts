@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -19,9 +19,10 @@ import {
   getUseExternalServices,
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
+import { useAppDispatch } from '../../../store/hooks';
 
 export default function useUpdateSwapsState() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);

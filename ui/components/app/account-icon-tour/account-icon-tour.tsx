@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ProductTour } from '../../multichain/product-tour-popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { clearProductTour } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { useAppDispatch } from '../../../store/hooks';
 
 const options = {
   placement: 'bottom-start',
@@ -34,7 +35,7 @@ const accountIconTour = (state: MetaMaskReduxState) =>
 export const AccountIconTour = (props: Props) => {
   const { anchorElement } = props;
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isVisible = useSelector(accountIconTour);
 
   const handleClose = useCallback(() => {

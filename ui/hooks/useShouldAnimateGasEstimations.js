@@ -1,16 +1,17 @@
 import { useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 
 import {
   getGasLoadingAnimationIsShowing,
   toggleGasLoadingAnimation,
 } from '../ducks/app/app';
+import { useAppDispatch } from '../store/hooks';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 export function useShouldAnimateGasEstimations() {
   const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isGasLoadingAnimationActive = useSelector(
     getGasLoadingAnimationIsShowing,

@@ -1,10 +1,12 @@
 import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { selectIsNetworkMenuOpen } from '../../selectors';
 import { toggleNetworkMenu } from '../../store/actions';
 import { setHomeDeepLinkQrCode } from '../../ducks/app/app';
+import { useAppDispatch } from '../../store/hooks';
+
 import {
   DEEP_LINK_ORIGIN,
   HomeQueryParams,
@@ -40,7 +42,7 @@ export const useHomeDeepLinkEffects = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const isNetworkMenuOpen = useSelector(selectIsNetworkMenuOpen);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const openNetworkSelectorModal = useCallback(() => {
     if (!isNetworkMenuOpen) {

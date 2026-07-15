@@ -1318,23 +1318,28 @@ export const selectNetworkIdentifierByChainId = createSelector(
   },
 );
 
-export function getRequestingNetworkInfo(state, chainIds) {
-  // If chainIds is undefined, set it to an empty array
-  let processedChainIds = chainIds === undefined ? [] : chainIds;
-
-  // If chainIds is a string, convert it to an array
-  if (typeof processedChainIds === 'string') {
-    processedChainIds = [processedChainIds];
+function normalizeRequestingChainIds(chainIds) {
+  if (chainIds === undefined) {
+    return EMPTY_ARRAY;
   }
 
-  // Ensure chainIds is flattened if it contains nested arrays
-  const flattenedChainIds = processedChainIds.flat();
+  if (typeof chainIds === 'string') {
+    return [chainIds];
+  }
 
-  // Filter the networks to include only those with chainId in flattenedChainIds
-  return Object.values(getNetworkConfigurationsByChainId(state)).filter(
-    (network) => flattenedChainIds.includes(network.chainId),
-  );
+  return chainIds.flat();
 }
+
+export const getRequestingNetworkInfo = createParameterizedShallowEqualSelector(
+  20,
+)(
+  getNetworkConfigurationsByChainId,
+  (_, chainIds) => normalizeRequestingChainIds(chainIds),
+  (networkConfigurationsByChainId, flattenedChainIds) =>
+    Object.values(networkConfigurationsByChainId).filter((network) =>
+      flattenedChainIds.includes(network.chainId),
+    ),
+);
 
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
@@ -1373,16 +1378,16 @@ export function getSuggestedTokens(state) {
   );
 }
 
-export function getSuggestedNfts(state) {
-  return (
-    getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
+export const getSuggestedNfts = createSelector(
+  getUnapprovedConfirmations,
+  (unapprovedConfirmations) =>
+    unapprovedConfirmations.filter(({ requestData, type }) => {
       return (
         type === ApprovalType.WatchAsset &&
         requestData?.asset?.tokenId !== undefined
       );
-    }) || []
-  );
-}
+    }),
+);
 
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
@@ -3110,39 +3115,39 @@ export function getGasFeesSponsoredNetworkEnabled(state) {
   return gasFeesSponsoredNetwork;
 }
 
-export function getBlockExplorerLinkText(
-  state,
-  accountDetailsModalComponent = false,
-) {
-  const isCustomNetwork = getIsCustomNetwork(state);
-  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+export const getBlockExplorerLinkText = createParameterizedSelector(10)(
+  getIsCustomNetwork,
+  getRpcPrefsForCurrentProvider,
+  (_state, accountDetailsModalComponent = false) =>
+    accountDetailsModalComponent ?? false,
+  (isCustomNetwork, rpcPrefs, accountDetailsModalComponent) => {
+    let blockExplorerLinkText = {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    };
 
-  let blockExplorerLinkText = {
-    firstPart: 'addBlockExplorer',
-    secondPart: '',
-  };
+    if (rpcPrefs.blockExplorerUrl) {
+      blockExplorerLinkText = accountDetailsModalComponent
+        ? {
+            firstPart: 'blockExplorerView',
+            secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+          }
+        : {
+            firstPart: 'viewinExplorer',
+            secondPart: 'blockExplorerAccountAction',
+          };
+    } else if (isCustomNetwork === false) {
+      blockExplorerLinkText = accountDetailsModalComponent
+        ? { firstPart: 'etherscanViewOn', secondPart: '' }
+        : {
+            firstPart: 'viewOnEtherscan',
+            secondPart: 'blockExplorerAccountAction',
+          };
+    }
 
-  if (rpcPrefs.blockExplorerUrl) {
-    blockExplorerLinkText = accountDetailsModalComponent
-      ? {
-          firstPart: 'blockExplorerView',
-          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
-        }
-      : {
-          firstPart: 'viewinExplorer',
-          secondPart: 'blockExplorerAccountAction',
-        };
-  } else if (isCustomNetwork === false) {
-    blockExplorerLinkText = accountDetailsModalComponent
-      ? { firstPart: 'etherscanViewOn', secondPart: '' }
-      : {
-          firstPart: 'viewOnEtherscan',
-          secondPart: 'blockExplorerAccountAction',
-        };
-  }
-
-  return blockExplorerLinkText;
-}
+    return blockExplorerLinkText;
+  },
+);
 export const getUnconnectedAccounts = createSelector(
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForConnectedDapp,
@@ -3510,13 +3515,6 @@ export const getAllPermittedAccounts = createParameterizedSelector(
   },
 );
 
-function getAllPermittedScopes(state, origin) {
-  const caip25Permission = getCaip25PermissionFromSubject(
-    subjectSelector(state, origin),
-  );
-  return caip25Permission ? getAllScopesFromPermission(caip25Permission) : [];
-}
-
 /**
  * Selects the permitted accounts from the eth_accounts permission for the
  * origin of the current tab.
@@ -3545,21 +3543,30 @@ export function getPermittedEVMChainsForSelectedTab(state, activeTab) {
   return getPermittedEVMChains(state, activeTab);
 }
 
-export function getAllPermittedChainsForSelectedTab(state, activeTab) {
-  const permittedScopes = getAllPermittedScopes(state, activeTab);
-  // our `endowment:caip25` permission can include a special class of `wallet` scopes,
-  // see https://github.com/ChainAgnostic/namespaces/tree/main/wallet &
-  // https://github.com/ChainAgnostic/namespaces/blob/main/wallet/caip2.md
-  // amongs the other chainId scopes. We want to exclude the `wallet` scopes here.
-  return permittedScopes.filter((caipChainId) => {
-    try {
-      const { namespace } = parseCaipChainId(caipChainId);
-      return namespace !== KnownCaipNamespace.Wallet;
-    } catch (err) {
-      return false;
-    }
-  });
-}
+export const getAllPermittedChainsForSelectedTab = createParameterizedSelector(
+  30,
+)(
+  subjectSelector,
+  (_state, activeTab) => activeTab,
+  (subject) => {
+    const caip25Permission = getCaip25PermissionFromSubject(subject);
+    const permittedScopes = caip25Permission
+      ? getAllScopesFromPermission(caip25Permission)
+      : EMPTY_ARRAY;
+    // our `endowment:caip25` permission can include a special class of `wallet` scopes,
+    // see https://github.com/ChainAgnostic/namespaces/tree/main/wallet &
+    // https://github.com/ChainAgnostic/namespaces/blob/main/wallet/caip2.md
+    // amongs the other chainId scopes. We want to exclude the `wallet` scopes here.
+    return permittedScopes.filter((caipChainId) => {
+      try {
+        const { namespace } = parseCaipChainId(caipChainId);
+        return namespace !== KnownCaipNamespace.Wallet;
+      } catch (err) {
+        return false;
+      }
+    });
+  },
+);
 
 /**
  * Returns a map of permitted accounts by origin for all origins.

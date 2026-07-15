@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -30,12 +30,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useAppDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Account Hover Menu';
 
 export const DefaultAddress = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);

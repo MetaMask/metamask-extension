@@ -12,7 +12,6 @@ import {
   BoxAlignItems,
   ButtonSize,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
 import { pickBy } from 'lodash';
 
 import {
@@ -33,6 +32,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
 import { hexWEIToDecGWEI } from '../../../../../../shared/lib/conversion.utils';
 import { usePersistGasFeePreference } from '../../../hooks/gas/usePersistGasFeePreference';
+import { useAppDispatch } from '../../../../../store/hooks';
 
 export const AdvancedEIP1559Modal = ({
   setActiveModal,
@@ -42,7 +42,7 @@ export const AdvancedEIP1559Modal = ({
   handleCloseModals: () => void;
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const persistGasFeePreference = usePersistGasFeePreference();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();

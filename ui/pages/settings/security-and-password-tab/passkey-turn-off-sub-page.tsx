@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -38,12 +38,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsPasskeyRegistered } from '../../../selectors';
+import { useAppDispatch } from '../../../store/hooks';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 export default function PasskeyTurnOffSubPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent, createEventBuilder } = useAnalytics();

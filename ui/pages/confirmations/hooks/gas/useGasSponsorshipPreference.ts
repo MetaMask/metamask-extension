@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { setGasSponsorshipOptOut } from '../../../../store/actions';
+import { useAppDispatch } from '../../../../store/hooks';
 
 /**
  * Hook to read and write the per-chain gas sponsorship opt-out preference.
@@ -17,7 +18,7 @@ import { setGasSponsorshipOptOut } from '../../../../store/actions';
  * - `setSponsorshipOptedOut`: Function to set the opt-out preference for this chain.
  */
 export function useGasSponsorshipPreference(chainId: Hex | undefined) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { gasSponsorshipOptOutByChainId } = useSelector(getPreferences);
 
   const isSponsorshipOptedOut = Boolean(

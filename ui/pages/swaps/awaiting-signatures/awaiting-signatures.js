@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { I18nContext } from '../../../contexts/i18n';
@@ -31,12 +31,13 @@ import SwapsFooter from '../swaps-footer';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { Text } from '../../../components/component-library';
+import { useAppDispatch } from '../../../store/hooks';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
   const t = useContext(I18nContext);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
   const approveTxParams = useSelector(getApproveTxParams, shallowEqual);

@@ -10,7 +10,17 @@ import {
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
+import { useAppDispatch } from '../../../store/hooks';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
+
+jest.mock('../../../store/hooks', () => ({
+  useAppDispatch: jest.fn().mockReturnValue((action: unknown) => {
+    if (typeof action === 'function') {
+      return action(jest.fn(), jest.fn());
+    }
+    return action;
+  }),
+}));
 
 const mockTrackEvent = jest.fn();
 

@@ -4,7 +4,7 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AccountGroupId,
   AccountWalletId,
@@ -60,11 +60,12 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { useAppDispatch } from '../../../store/hooks';
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [searchParams] = useSearchParams();
 

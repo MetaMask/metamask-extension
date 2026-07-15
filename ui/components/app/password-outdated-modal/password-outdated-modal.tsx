@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   IconColor,
@@ -29,6 +29,8 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAppDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -38,7 +40,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PasswordOutdatedModal() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isSeedlessPwdOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const { trackEvent } = useContext(MetaMetricsContext);

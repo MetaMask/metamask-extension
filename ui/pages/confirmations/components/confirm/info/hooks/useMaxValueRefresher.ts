@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   TransactionType,
   type TransactionMeta,
@@ -21,6 +21,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useIsGaslessSupported } from '../../../../hooks/gas/useIsGaslessSupported';
+import { useAppDispatch } from '../../../../../../store/hooks';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
 /**
@@ -41,7 +42,7 @@ import { useSupportsEIP1559 } from './useSupportsEIP1559';
 export const useMaxValueRefresher = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     chainId,
     id: transactionId,

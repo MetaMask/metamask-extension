@@ -1,6 +1,4 @@
 import React, { useCallback } from 'react';
-
-import { useDispatch } from 'react-redux';
 import {
   Box,
   Button,
@@ -27,6 +25,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { rejectAllApprovals } from '../../../../../store/actions';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useConfirmContext } from '../../../context/confirm';
+import { useAppDispatch } from '../../../../../store/hooks';
 
 export type NavProps = {
   confirmationId?: string;
@@ -34,7 +33,7 @@ export type NavProps = {
 
 export const Nav = ({ confirmationId }: NavProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { count, getIndex, navigateToIndex } = useConfirmationNavigation();
 

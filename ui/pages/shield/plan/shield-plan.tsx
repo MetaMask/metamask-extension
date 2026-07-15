@@ -12,7 +12,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   BadgeWrapper,
@@ -92,7 +92,8 @@ import {
   getIsTrialedSubscription,
 } from '../../../../shared/lib/shield';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
+import { useAppDispatch } from '../../../store/hooks';
 import {
   setLastUsedSubscriptionPaymentDetails,
   setPendingRedirectRoute,
@@ -111,7 +112,7 @@ const ShieldPlan = () => {
   const { search } = useLocation();
   const locale = useSelector(getIntlLocale);
   const t = useI18nContext();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useAppDispatch();
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,

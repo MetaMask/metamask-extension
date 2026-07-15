@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
 import {
@@ -26,6 +26,7 @@ import {
 } from '../../contexts/metamask-notifications/notification-storage-keys';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
 import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
+import { useAppDispatch } from '../../store/hooks';
 
 /**
  * useState that only applies updates while mounted. Prevents
@@ -79,7 +80,7 @@ export function useListNotifications(): {
   isLoading: boolean;
   error?: unknown;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useSafeState<boolean>(false);
   const [error, setError] = useSafeState<unknown>(null);
@@ -129,7 +130,7 @@ export function useCreateNotifications(): {
   createNotifications: () => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [error, setError] = useSafeState<string | null>(null);
 
   const createNotifications = useCallback(async () => {
@@ -165,7 +166,7 @@ export function useEnableNotifications(): {
   enableNotifications: () => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const hasMarketingConsent = Boolean(
     useSelector(getDataCollectionForMarketing),
   );
@@ -208,7 +209,7 @@ export function useDisableNotifications(): {
   disableNotifications: () => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [error, setError] = useSafeState<string | null>(null);
 
   const disableNotifications = useCallback(async () => {
@@ -242,7 +243,7 @@ export function useMarkNotificationAsRead(): {
     notifications: MarkAsReadNotificationsParam,
   ) => Promise<void>;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const markNotificationAsRead = useCallback(
     async (notifications: MarkAsReadNotificationsParam) => {

@@ -1,7 +1,6 @@
 'use no memo';
 
 import { ApprovalRequest } from '@metamask/approval-controller';
-import { useDispatch } from 'react-redux';
 import { useEffect, useMemo } from 'react';
 
 import {
@@ -9,12 +8,13 @@ import {
   clearAlerts,
   updateAlerts,
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useAppDispatch } from '../../../../store/hooks';
 import { useUpdateEthereumChainAlerts } from './useUpdateEthereumChainAlerts';
 
 export const useTemplateConfirmationAlerts = (
   pendingConfirmation: ApprovalRequest<{ id: string }>,
 ) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const addEthereumChainAlerts =
     useUpdateEthereumChainAlerts(pendingConfirmation);
   const alerts: Alert[] = useMemo(

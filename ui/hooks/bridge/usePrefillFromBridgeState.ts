@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
@@ -12,6 +12,7 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
+import { useAppDispatch } from '../../store/hooks';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
@@ -22,7 +23,7 @@ import { useBridgeNavigation } from './useBridgeNavigation';
  * or reset the bridge controller state and inputs.
  */
 export const usePrefillFromBridgeState = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { activeQuote } = useSelector(getBridgeQuotes);
   const fromChains = useSelector(getFromChains);

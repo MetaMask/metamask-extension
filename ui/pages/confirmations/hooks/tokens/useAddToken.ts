@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Hex, createProjectLogger } from '@metamask/utils';
 
 import { useAsyncResult } from '../../../../hooks/useAsync';
@@ -8,6 +8,7 @@ import {
 } from '../../../../store/actions';
 import { getAllTokens } from '../../../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import { useAppDispatch } from '../../../../store/hooks';
 
 const log = createProjectLogger('add-token');
 
@@ -22,7 +23,7 @@ export function useAddToken({
   symbol: string;
   tokenAddress: Hex;
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const allTokens = useSelector(getAllTokens);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 

@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import {
   resetBridgeController,
@@ -25,11 +25,15 @@ import {
   mockUseSelectorPassthrough,
   BATCH_SELL_CHAIN_ID,
 } from '../../../../../../test/data/batch-sell';
+import { useAppDispatch } from '../../../../../store/hooks';
 import { useBatchSellQuotesFetching } from './useBatchSellQuotesFetching';
+
+jest.mock('../../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -71,7 +75,7 @@ jest.mock('lodash', () => ({
 }));
 
 const mockDispatch = jest.fn();
-const mockUseDispatch = jest.mocked(useDispatch);
+const mockUseAppDispatch = jest.mocked(useAppDispatch);
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetFromAccount = jest.mocked(getFromAccount);
 const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
@@ -179,7 +183,7 @@ describe('useBatchSellQuotesFetching', () => {
     jest.clearAllMocks();
 
     mockDispatch.mockReset();
-    mockUseDispatch.mockReturnValue(mockDispatch as never);
+    mockUseAppDispatch.mockReturnValue(mockDispatch as never);
 
     mockGetFromAccount.mockReturnValue(MOCK_ACCOUNT as never);
     mockGetIsStxEnabled.mockReturnValue(true as never);

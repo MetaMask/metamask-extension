@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import {
@@ -46,6 +46,7 @@ import {
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
+import { useAppDispatch } from '../../../store/hooks';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -54,7 +55,7 @@ import type { MetaMaskReduxDispatch } from '../../../store/store';
  */
 export function useOnboardingCompletion() {
   const navigate = useNavigate();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const isSidePanelEnabled = useSidePanelEnabled();
 

@@ -1,6 +1,6 @@
 import log from 'loglevel';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Button as DSButton,
   ButtonSize as DSButtonSize,
@@ -82,6 +82,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { useAppDispatch } from '../../../store/hooks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -109,7 +110,7 @@ export const NetworksForm = ({
   onAddFromChainlist?: () => void;
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
@@ -583,7 +584,9 @@ export const NetworksForm = ({
             return url.length > (isList ? 37 : 35) ? url : undefined;
           }}
           addButtonText={t('addRpcUrl')}
-          itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
+          itemIsDeletable={(item, items) =>
+            items.length > 1 && item.type !== RpcEndpointType.Infura
+          }
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
             setRpcUrls((state) => ({

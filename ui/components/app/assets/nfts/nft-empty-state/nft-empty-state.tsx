@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { twMerge } from '@metamask/design-system-react';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
@@ -11,6 +11,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { showImportNftsModal } from '../../../../../store/actions';
+import { useAppDispatch } from '../../../../../store/hooks';
 
 export type NftEmptyStateProps = {
   className?: string;
@@ -20,7 +21,7 @@ export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
   const t = useI18nContext();
   const theme = useSelector(getTheme);
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // Theme-aware icon
   const nftIcon =

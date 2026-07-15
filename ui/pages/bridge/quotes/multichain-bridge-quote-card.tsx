@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
@@ -49,6 +49,7 @@ import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
+import { useAppDispatch } from '../../../store/hooks';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -93,7 +94,7 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const isRWASwap = useSelector(getIsRWASwap);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { isEstimatedReturnLow } = useSelector(
     getValidationErrors,
     shallowEqual,

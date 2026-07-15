@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   setParticipateInMetaMetrics,
@@ -8,6 +8,7 @@ import {
   hideLoadingIndication,
 } from '../store/actions';
 import { getPna25Acknowledged } from '../selectors/metametrics';
+import { useAppDispatch } from '../store/hooks';
 
 /**
  * Provides a hook to enable MetaMetrics tracking.
@@ -20,7 +21,7 @@ export function useEnableMetametrics(): {
   loading: boolean;
   error: string | null;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +66,7 @@ export function useDisableMetametrics(): {
   loading: boolean;
   error: string | null;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

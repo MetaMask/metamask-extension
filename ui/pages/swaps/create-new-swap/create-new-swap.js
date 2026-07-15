@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
@@ -17,12 +17,13 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getSwapsDefaultToken } from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { useAppDispatch } from '../../../store/hooks';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const t = useContext(I18nContext);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 

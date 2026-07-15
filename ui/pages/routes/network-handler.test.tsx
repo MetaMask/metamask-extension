@@ -1,23 +1,21 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { useDispatch } from 'react-redux';
 
 import {
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
 } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { automaticallySwitchNetwork } from '../../store/actions';
 import { NetworkHandler } from './network-handler';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
-jest.mock('../../store/store', () => ({
-  ...jest.requireActual('../../store/store'),
+jest.mock('../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
   useAppSelector: jest.fn(),
 }));
 
@@ -42,7 +40,7 @@ describe('NetworkHandler', () => {
     totalUnapprovedConfirmationCount = 0;
     isUnlocked = true;
     mockDispatch.mockReset();
-    jest.mocked(useDispatch).mockReturnValue(mockDispatch);
+    jest.mocked(useAppDispatch).mockReturnValue(mockDispatch);
 
     jest.mocked(useAppSelector).mockImplementation((selector) => {
       if (selector === getNetworkToAutomaticallySwitchTo) {

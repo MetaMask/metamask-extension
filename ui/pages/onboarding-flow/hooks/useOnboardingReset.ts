@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
+import { useAppDispatch } from '../../../store/hooks';
+
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
@@ -15,7 +16,7 @@ import {
  * account-not-found, import-srp, and create-password.
  */
 export function useOnboardingReset() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   return useCallback(async () => {

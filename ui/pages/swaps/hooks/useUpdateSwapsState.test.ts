@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { waitFor } from '@testing-library/react';
 import {
   fetchTokens,
@@ -19,10 +19,14 @@ import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../selectors';
+import { useAppDispatch } from '../../../store/hooks';
 import useUpdateSwapsState from './useUpdateSwapsState';
 
+jest.mock('../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
+
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -62,7 +66,7 @@ describe('useUpdateSwapsState', () => {
   };
 
   beforeEach(() => {
-    (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
+    (useAppDispatch as jest.Mock).mockReturnValue(mockDispatch);
 
     (useSelector as jest.Mock).mockImplementation((selector) => {
       if (selector === getCurrentChainId) {

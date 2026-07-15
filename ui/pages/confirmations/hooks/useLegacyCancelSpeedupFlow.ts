@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   TransactionMeta,
   CANCEL_RATE,
@@ -22,6 +21,7 @@ import {
 } from '../../../store/actions';
 import { updateTransactionGasFees } from '../../../store/actions/update-transaction-gas-fees';
 import { decGWEIToHexWEI } from '../../../../shared/lib/conversion.utils';
+import { useAppDispatch } from '../../../store/hooks';
 
 type GasFeeEstimatesUnion =
   | EthGasPriceEstimate
@@ -88,7 +88,7 @@ export function useLegacyCancelSpeedupFlow({
   transaction,
   gasFeeEstimates,
 }: UseLegacyCancelSpeedupFlowParams): UseLegacyCancelSpeedupFlowReturn {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const cancelTransaction = useCallback(() => {
     const gasPrice = getReplacementGasPrice(

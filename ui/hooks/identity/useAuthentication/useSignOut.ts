@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 import { performSignOut } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 
 /**
  * Custom hook to manage sign-out
@@ -20,7 +21,7 @@ import { performSignOut } from '../../../store/actions';
 export function useSignOut(): {
   signOut: () => Promise<void>;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isSignedIn = useSelector(selectIsSignedIn);
 

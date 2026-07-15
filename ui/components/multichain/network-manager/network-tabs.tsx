@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { hideModal } from '../../../store/actions';
 import { ModalHeader, ModalBody, Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAppDispatch } from '../../../store/hooks';
 import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
 
@@ -21,7 +21,7 @@ export const NetworkTabs = ({
   onClose,
   isPage = false,
 }: NetworkTabsProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
   const [activeTab, setActiveTab] = useState(initialTab);
   const handleClose = useCallback(() => {

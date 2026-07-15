@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   setRewardsGeoMetadata,
   setRewardsGeoMetadataError,
@@ -7,6 +6,7 @@ import {
 } from '../../ducks/rewards';
 import { getRewardsGeoMetadata } from '../../store/actions';
 import { RewardsGeoMetadata } from '../../../shared/types/rewards';
+import { useAppDispatch } from '../../store/hooks';
 
 type UseGeoRewardsMetadataProps = {
   enabled?: boolean;
@@ -24,7 +24,7 @@ type UseGeoRewardsMetadataReturn = {
 export const useGeoRewardsMetadata = ({
   enabled = true,
 }: UseGeoRewardsMetadataProps): UseGeoRewardsMetadataReturn => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isLoadingRef = useRef(false);
 
   const fetchGeoRewardsMetadata = useCallback(async (): Promise<void> => {

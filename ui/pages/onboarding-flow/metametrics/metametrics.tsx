@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import {
@@ -43,6 +43,7 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useAppDispatch } from '../../../store/hooks';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -118,7 +119,7 @@ function MetametricsCheckboxOption({
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isFirefox = useIsFirefox();
 

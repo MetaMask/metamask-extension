@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   type NavigateOptions,
   type To,
@@ -37,6 +37,7 @@ import {
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { useAppDispatch } from '../../store/hooks';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -74,7 +75,7 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
  */
 export const useBridgeNavigation = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { search, pathname, state: maybeState } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(

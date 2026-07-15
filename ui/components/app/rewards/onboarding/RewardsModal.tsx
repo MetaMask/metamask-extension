@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Modal,
   ModalContent,
@@ -25,7 +25,7 @@ import {
 import { useTheme } from '../../../../hooks/useTheme';
 import RewardsErrorToast from '../RewardsErrorToast';
 import RewardsQRCode from '../RewardsQRCode';
-import { useAppSelector } from '../../../../store/store';
+import { useAppSelector, useAppDispatch } from '../../../../store/hooks';
 import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
 import OnboardingMainStep from './OnboardingMainStep';
 
@@ -55,7 +55,7 @@ export default function RewardsModal({
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );
   const hardwareWalletType = useSelector(getHardwareWalletType);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const theme = useTheme();
 

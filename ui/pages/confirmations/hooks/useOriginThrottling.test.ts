@@ -1,11 +1,15 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { updateThrottledOriginState } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 import { useOriginThrottling } from './useOriginThrottling';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
+jest.mock('../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
+
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -26,7 +30,7 @@ describe('useOriginThrottling', () => {
   };
 
   beforeEach(() => {
-    (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
+    (useAppDispatch as jest.Mock).mockReturnValue(mockDispatch);
     (useSelector as jest.Mock).mockImplementation((selectorFn) =>
       selectorFn({ metamask: { throttledOrigins: mockThrottledOrigins } }),
     );

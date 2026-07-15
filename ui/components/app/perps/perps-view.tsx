@@ -7,7 +7,7 @@ import {
 } from '@metamask/design-system-react';
 import type { Order, Position } from '@metamask/perps-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -37,6 +37,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { useSelectedAccountComplianceGate } from '../compliance';
+import { useAppDispatch } from '../../../store/hooks';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -70,7 +71,7 @@ type BatchCloseResult = {
 
 export const PerpsView = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);

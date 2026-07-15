@@ -7,7 +7,6 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   Text,
@@ -57,6 +56,7 @@ import {
 } from '../../../components/app/musd/constants';
 import { MUSD_DEEPLINK_PARAM } from '../../../../shared/lib/deep-links/routes/musd';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useAppDispatch } from '../../../store/hooks';
 
 const MUSD_EDUCATION_COIN_IMAGE_DARK = './images/musd-education-coin-dark.png';
 const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
@@ -75,7 +75,7 @@ const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
 const MusdEducationScreen = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const { trackEvent, createEventBuilder } = useAnalytics();

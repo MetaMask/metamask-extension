@@ -2,7 +2,6 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { errorCodes } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -21,6 +20,7 @@ import {
   submitEvmTransaction,
 } from '../../utils/send';
 import { useSendContext } from '../../context/send';
+import { useAppDispatch } from '../../../../store/hooks';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
 
@@ -32,7 +32,7 @@ type SnapConfirmSendResult = {
 
 export const useSendActions = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const {
     asset,

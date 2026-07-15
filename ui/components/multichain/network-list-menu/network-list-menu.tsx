@@ -5,7 +5,7 @@ import {
   Draggable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import { EthScope } from '@metamask/keyring-api';
@@ -108,6 +108,7 @@ import NetworksForm from '../networks-form';
 import { useNetworkFormState } from '../networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useAppDispatch } from '../../../store/hooks';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -164,7 +165,7 @@ const isCustomNetworkConfiguration = (
 
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 

@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import Box from '../../ui/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -19,6 +18,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DynamicSnapPermissions } from '../../../../shared/constants/snaps/permissions';
 import { revokeDynamicSnapPermissions } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 
 export const PermissionCellOptions = ({
   snapId,
@@ -26,7 +26,7 @@ export const PermissionCellOptions = ({
   description,
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const ref = useRef(false);
   const [showOptions, setShowOptions] = useState(false);
   const [showDetails, setShowDetails] = useState(false);

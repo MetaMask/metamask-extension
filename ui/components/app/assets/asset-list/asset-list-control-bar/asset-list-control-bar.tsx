@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon as DsButtonIcon,
@@ -85,6 +85,7 @@ import {
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
+import { useAppDispatch } from '../../../../../store/hooks';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -101,7 +102,7 @@ const AssetListControlBar = ({
   onNetworkSelect,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const sortButtonRef = useRef<HTMLButtonElement>(null);

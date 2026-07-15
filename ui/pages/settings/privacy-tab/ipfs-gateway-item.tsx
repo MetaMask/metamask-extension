@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { FormTextField } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -16,6 +16,8 @@ import {
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { PRIVACY_ITEMS } from '../search-config';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useAppDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -23,7 +25,7 @@ import {
 
 export const IpfsGatewayItem = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const ipfsGatewayFromState = useSelector(

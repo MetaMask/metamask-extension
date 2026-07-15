@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import {
   activeTabHasPermissions,
@@ -51,6 +51,7 @@ import {
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../store/store';
+import { useAppDispatch } from '../../store/hooks';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
 
@@ -62,7 +63,7 @@ const AUTO_HIDE_DELAY = 5 * SECOND;
  */
 export const HomeNotificationsContainer = memo(function () {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [canShowBlockageNotification, setCanShowBlockageNotification] =
     useState(true);

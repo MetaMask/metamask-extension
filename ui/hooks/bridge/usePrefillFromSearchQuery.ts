@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,
   CaipAssetTypeStruct,
@@ -18,6 +18,7 @@ import {
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import { useAppDispatch } from '../../store/hooks';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
@@ -64,7 +65,7 @@ const fetchAssetMetadata = async (
  * It also clears the search params after setting the values.
  */
 export const usePrefillFromSearchQuery = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const fromToken = useSelector(getFromToken);
 
   const abortController = useRef<AbortController>(new AbortController());

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
   ButtonsAlignment,
@@ -15,6 +15,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import { useAppDispatch } from '../../../store/hooks';
 
 export type MultichainAccountEditModalProps = {
   isOpen: boolean;
@@ -28,7 +29,7 @@ export const MultichainAccountEditModal = ({
   accountGroupId,
 }: MultichainAccountEditModalProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const accountGroup = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );

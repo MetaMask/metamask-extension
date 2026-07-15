@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonVariant,
@@ -19,10 +19,11 @@ import {
 } from '../../components/component-library';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import type { MetaMaskReduxState } from '../../store/store';
+import { useAppDispatch } from '../../store/hooks';
 
 export function ConnectedStatusPopoverContainer() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const connectedStatusPopoverHasBeenShown = useSelector(

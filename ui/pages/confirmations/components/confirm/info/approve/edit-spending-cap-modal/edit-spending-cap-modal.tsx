@@ -1,6 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/lib/conversion.utils';
@@ -34,6 +33,7 @@ import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation
 import { ConfirmLoader } from '../../shared/confirm-loader/confirm-loader';
 import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
+import { useAppDispatch } from '../../../../../../../store/hooks';
 
 export function countDecimalDigits(numberString: string) {
   return numberString.split('.')[1]?.length || 0;
@@ -54,7 +54,7 @@ export const EditSpendingCapModal = ({
 }) => {
   const t = useI18nContext();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();

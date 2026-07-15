@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import {
   MetaMetricsEventName,
@@ -11,12 +11,16 @@ import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-f
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { CarouselWithEmptyState } from '../carousel';
+import { useAppDispatch } from '../../../store/hooks';
 import { Carousel } from './carousel';
+
+jest.mock('../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../carousel', () => ({
@@ -76,7 +80,7 @@ const renderCarousel = () =>
 describe('AccountOverview Carousel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(useDispatch).mockReturnValue(jest.fn());
+    jest.mocked(useAppDispatch).mockReturnValue(jest.fn());
     jest.mocked(useSelector).mockImplementation((selector) => {
       if (selector === getAppIsLoading) {
         return false;

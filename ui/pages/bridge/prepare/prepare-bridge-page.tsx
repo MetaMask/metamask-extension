@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
@@ -85,6 +85,7 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
+import { useAppDispatch } from '../../../store/hooks';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -96,7 +97,7 @@ const PrepareBridgePage = ({
 }: {
   onOpenSettings: () => void;
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const t = useI18nContext();
 

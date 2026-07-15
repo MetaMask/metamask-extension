@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import log from 'loglevel';
 import {
@@ -22,6 +22,7 @@ import {
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
 import { useI18nContext } from '../useI18nContext';
+import { useAppDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 export type UseOptinResult = {
@@ -51,7 +52,7 @@ type UseOptInOptions = {
 
 export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const [optinError, setOptinError] = useState<string | null>(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [optinLoading, setOptinLoading] = useState<boolean>(false);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();

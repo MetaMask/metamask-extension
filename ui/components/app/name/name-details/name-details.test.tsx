@@ -2,7 +2,7 @@ import { NameType } from '@metamask/name-controller';
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import {
   MetaMetricsEventCategory,
@@ -18,7 +18,12 @@ import { setName, updateProposedNames } from '../../../../store/actions';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { useAppDispatch } from '../../../../store/hooks';
 import NameDetails from './name-details';
+
+jest.mock('../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('../../../../store/actions', () => ({
   setName: jest.fn(),
@@ -27,7 +32,6 @@ jest.mock('../../../../store/actions', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -176,13 +180,13 @@ describe('NameDetails', () => {
   const store = configureStore()(STATE_MOCK);
   const setNameMock = jest.mocked(setName);
   const updateProposedNamesMock = jest.mocked(updateProposedNames);
-  const useDispatchMock = jest.mocked(useDispatch);
+  const useAppDispatchMock = jest.mocked(useAppDispatch);
   const useSelectorMock = jest.mocked(useSelector);
   const useDisplayNameMock = jest.mocked(useDisplayName);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    useDispatchMock.mockReturnValue(jest.fn());
+    useAppDispatchMock.mockReturnValue(jest.fn());
 
     useDisplayNameMock.mockReturnValue({
       name: null,
@@ -597,7 +601,7 @@ describe('NameDetails', () => {
 
   describe('metrics', () => {
     it('sends open modal event', async () => {
-      useDispatchMock.mockReturnValue(
+      useAppDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
           results: {
             [SOURCE_ID_MOCK]: {

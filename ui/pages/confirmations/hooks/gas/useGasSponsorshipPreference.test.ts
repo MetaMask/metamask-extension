@@ -1,18 +1,22 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { setGasSponsorshipOptOut } from '../../../../store/actions';
+import { useAppDispatch } from '../../../../store/hooks';
 import { useGasSponsorshipPreference } from './useGasSponsorshipPreference';
 
+jest.mock('../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
+
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
 jest.mock('../../../../../shared/lib/selectors/preferences');
 jest.mock('../../../../store/actions');
 
-const mockUseDispatch = jest.mocked(useDispatch);
+const mockUseAppDispatch = jest.mocked(useAppDispatch);
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetPreferences = jest.mocked(getPreferences);
 const mockSetGasSponsorshipOptOut = jest.mocked(setGasSponsorshipOptOut);
@@ -23,7 +27,7 @@ describe('useGasSponsorshipPreference', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockDispatch = jest.fn();
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockGetPreferences.mockReturnValue({
       gasSponsorshipOptOutByChainId: {},
     } as ReturnType<typeof getPreferences>);

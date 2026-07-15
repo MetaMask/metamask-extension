@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import {
@@ -47,6 +47,7 @@ import { findKeyringId } from '../../../../shared/lib/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
 import { AttemptExportState } from '../../../../shared/constants/accounts';
+import { useAppDispatch } from '../../../store/hooks';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
@@ -57,7 +58,7 @@ type AccountDetailsProps = {
 
 export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);

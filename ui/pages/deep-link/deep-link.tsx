@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
@@ -30,7 +30,8 @@ import { ButtonLink, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
-import { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
+import { useAppDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
@@ -164,7 +165,7 @@ async function updateStateFromUrl(
 export const DeepLink = () => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   // it's technically not possible for a natural flow to reach this page
   // when `skipDeepLinkInterstitial` is true, but if a user manually navigates
   // to this "interstitial" page, or uses their back button, we should show

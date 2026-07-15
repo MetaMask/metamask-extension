@@ -1,6 +1,6 @@
 import log from 'loglevel';
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   deleteAccountSyncingDataFromUserStorage,
   syncAccountTreeWithUserStorage,
@@ -13,6 +13,7 @@ import { getUseExternalServices } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
+import { useAppDispatch } from '../../../store/hooks';
 
 /**
  * A utility used internally to decide if account syncing should be dispatched
@@ -51,7 +52,7 @@ export const useShouldDispatchAccountSyncing = () => {
  * and error state.
  */
 export const useAccountSyncing = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const shouldDispatchAccountSyncing = useShouldDispatchAccountSyncing();
 
@@ -76,7 +77,7 @@ export const useAccountSyncing = () => {
  * Custom hook to delete a user's account syncing data from user storage
  */
 export const useDeleteAccountSyncingDataFromUserStorage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const dispatchDeleteAccountSyncingData = useCallback(async () => {
     try {
       await dispatch(deleteAccountSyncingDataFromUserStorage());

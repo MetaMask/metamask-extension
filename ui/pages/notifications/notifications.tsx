@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   type INotification,
@@ -40,11 +40,12 @@ import {
   getNotificationPreferences,
 } from '../../store/actions';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { useAppDispatch } from '../../store/hooks';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
 const useFeatureAnnouncementsEnabled = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [areFeatureAnnouncementsEnabled, setAreFeatureAnnouncementsEnabled] =
     useSafeState(false);
 
@@ -170,7 +171,7 @@ export default function Notifications() {
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const fromPath = searchParams.get('from') ?? undefined;
 

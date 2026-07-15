@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { validateRewardsReferralCode } from '../../store/actions';
+import { useAppDispatch } from '../../store/hooks';
 
 export const REFERRAL_CODE_DEBOUNCE_MS = 1000;
 export const REFERRAL_CODE_MIN_LENGTH = 3;
@@ -72,7 +72,7 @@ export const useValidateReferralCode = (
   const hasInitialized = useRef(false);
   const requestIdRef = useRef(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const clearDebounceTimer = useCallback(() => {
     if (debounceTimerRef.current) {

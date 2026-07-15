@@ -4,7 +4,7 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Footer, Header, Page } from '../page';
 import {
@@ -48,6 +48,7 @@ import { removePermissionsFor } from '../../../../store/actions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
 import { Toast, ToastContainer } from '../../toast';
+import { useAppDispatch } from '../../../../store/hooks';
 import { ConnectionListItem } from './connection-list-item';
 
 const PermissionsPage = () => {
@@ -56,7 +57,7 @@ const PermissionsPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const headerRef = useRef();
 
   const fromPath = searchParams.get('from') ?? undefined;

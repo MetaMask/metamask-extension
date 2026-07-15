@@ -1,14 +1,17 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useDispatch } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import { updateBatchSellTrades } from '../../../../../ducks/batch-sell/actions';
 import type { SendAssetEntry } from '../types';
 import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
+import { useAppDispatch } from '../../../../../store/hooks';
 import { useBatchSellTradesFetching } from './useBatchSellTradesFetching';
+
+jest.mock('../../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../../../ducks/batch-sell/actions', () => ({
@@ -23,7 +26,7 @@ jest.mock('lodash', () => ({
 }));
 
 const mockDispatch = jest.fn();
-const mockUseDispatch = jest.mocked(useDispatch);
+const mockUseAppDispatch = jest.mocked(useAppDispatch);
 const mockUpdateBatchSellTrades = jest.mocked(updateBatchSellTrades);
 
 const ASSET_A_ID = 'eip155:1/erc20:0xaaa' as CaipAssetType;
@@ -97,7 +100,7 @@ function renderDefault(
 describe('useBatchSellTradesFetching', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseDispatch.mockReturnValue(mockDispatch as never);
+    mockUseAppDispatch.mockReturnValue(mockDispatch as never);
   });
 
   describe('early-return guards in the main effect', () => {

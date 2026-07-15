@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
 import type { Hex } from '@metamask/utils';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -27,13 +27,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useAppDispatch } from '../../store/hooks';
 import { DeleteContactModal } from './components/delete-contact-modal';
 import { ViewContactContent } from './components/view-contact-content';
 
 export function ContactDetailsPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { chainId, address } = useParams<{
     chainId: string;

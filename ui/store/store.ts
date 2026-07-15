@@ -1,9 +1,4 @@
 import { Reducer, StoreEnhancer } from 'redux';
-import {
-  type TypedUseSelectorHook,
-  useDispatch,
-  useSelector,
-} from 'react-redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
@@ -92,9 +87,5 @@ export default function configureStore(preloadedState: any) {
     preloadedState,
   });
 }
-type Store = ReturnType<typeof configureStore>;
-export type MetaMaskReduxState = ReturnType<Store['getState']>;
-export type MetaMaskReduxDispatch = Store['dispatch'];
-export const useAppSelector: TypedUseSelectorHook<MetaMaskReduxState> =
-  useSelector;
-export const useAppDispatch = () => useDispatch<MetaMaskReduxDispatch>();
+export type { MetaMaskReduxDispatch, MetaMaskReduxState } from './types';
+export { useAppDispatch, useAppSelector } from './hooks';

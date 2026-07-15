@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
@@ -10,6 +10,7 @@ import {
   isAssetInAccountCustomAssets,
 } from '../selectors/assets-unify-state/asset-preferences';
 import { importCustomAssetsBatch } from '../store/actions';
+import { useAppDispatch } from '../store/hooks';
 
 const ARC_USDC_ASSET_ID =
   'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
@@ -25,7 +26,7 @@ const ARC_DEFAULT_ASSETS_METADATA: Record<string, Record<string, unknown>> = {
  * the Arc network is present. Also handles new accounts added after Arc.
  */
 export function useArcDefaultTokens() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allAccounts = useSelector(getInternalAccounts);
   const customAssets = useSelector(getAssetsControllerCustomAssets);

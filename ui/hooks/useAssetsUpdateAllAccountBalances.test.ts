@@ -1,13 +1,17 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { updateBalancesFoAccounts } from '../store/actions';
 import { getEnabledChainIds } from '../selectors';
+import { useAppDispatch } from '../store/hooks';
 import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
+
+jest.mock('../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 // Mock dependencies
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../store/actions', () => ({
@@ -19,7 +23,9 @@ jest.mock('../selectors', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
+  typeof useAppDispatch
+>;
 const mockUpdateBalancesFoAccounts =
   updateBalancesFoAccounts as jest.MockedFunction<
     typeof updateBalancesFoAccounts
@@ -30,7 +36,7 @@ describe('useAssetsUpdateAllAccountBalances', () => {
 
   beforeEach(() => {
     mockDispatch = jest.fn().mockImplementation(() => Promise.resolve());
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
     // Mock returns a thunk function (action creator now returns ThunkAction)
     mockUpdateBalancesFoAccounts.mockImplementation(
       () => () => Promise.resolve(),

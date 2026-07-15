@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 import { performSignIn } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 
 /**
  * Custom hook to manage sign-in
@@ -19,7 +20,7 @@ import { performSignIn } from '../../../store/actions';
 export function useSignIn(): {
   signIn: (shouldSignInOverride?: boolean) => Promise<void>;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isSignedIn = useSelector(selectIsSignedIn);
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import log from 'loglevel';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getRewardsCandidateSubscriptionId } from '../../store/actions';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
@@ -8,7 +8,7 @@ import {
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type UseCandidateSubscriptionIdReturn = {
@@ -20,7 +20,7 @@ type UseCandidateSubscriptionIdReturn = {
  */
 export const useCandidateSubscriptionId =
   (): UseCandidateSubscriptionIdReturn => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const isUnlocked = useSelector(getIsUnlocked);
     const isRewardsEnabled = useSelector(selectRewardsEnabled);

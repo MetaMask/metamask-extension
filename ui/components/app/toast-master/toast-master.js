@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
 import React, { memo, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AvatarNetwork,
@@ -55,6 +55,8 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { useAppDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -189,7 +191,7 @@ function PrivacyPolicyToast() {
 
 function PermittedNetworkToast() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isPermittedNetworkToastOpen = useSelector(
     (state) => state.appState.showPermittedNetworkToastOpen,
@@ -247,7 +249,7 @@ function PermittedNetworkToast() {
 
 function InfuraSwitchToast() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const showInfuraSwitchToast = useSelector(selectShowInfuraSwitchToast);
   const autoHideDelay = 5 * SECOND;
@@ -488,7 +490,7 @@ function StorageErrorToast() {
 
 function SidePanelMigrationToast() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const showSidePanelMigrationToast = useSelector(
     selectShowSidePanelMigrationToast,

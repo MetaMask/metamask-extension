@@ -3,12 +3,16 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
+import { useAppDispatch } from '../../store/hooks';
 import { useHwSwapQrState } from './useHwSwapQrState';
+
+jest.mock('../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/selectors/keyring', () => ({
@@ -36,7 +40,7 @@ jest.mock(
 );
 
 const mockUseSelector = jest.requireMock('react-redux').useSelector;
-const mockUseDispatch = jest.requireMock('react-redux').useDispatch;
+const mockUseAppDispatch = jest.requireMock('../../store/hooks').useAppDispatch;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetHardwareWalletType = jest.requireMock(
   '../../../shared/lib/selectors/keyring',
@@ -66,7 +70,7 @@ describe('useHwSwapQrState', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockGetHardwareWalletType.mockReturnValue(undefined);
     mockGetActiveQrCodeScanRequest.mockReturnValue(undefined);
     mockIsQrHardwareSignRequest.mockReturnValue(false);

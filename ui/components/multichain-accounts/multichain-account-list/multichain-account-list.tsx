@@ -11,7 +11,7 @@ import {
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
@@ -62,6 +62,7 @@ import {
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
+import { useAppDispatch } from '../../../store/hooks';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -109,7 +110,7 @@ export const MultichainAccountList = ({
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();

@@ -2,7 +2,7 @@ import React, { Ref } from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ButtonProps } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { setErrorToast } from '../../../../ducks/rewards';
 import {
@@ -13,12 +13,18 @@ import {
   selectOptinAllowedForGeoLoading,
   selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
+import { useAppDispatch } from '../../../../store/hooks';
 import OnboardingMainStep from './OnboardingMainStep';
+
 import {
   REWARDS_ONBOARD_HERO_IMAGE_URL,
   REWARDS_ONBOARD_OPTIN_LEGAL_LEARN_MORE_URL,
   REWARDS_ONBOARD_TERMS_URL,
 } from './constants';
+
+jest.mock('../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(
@@ -99,7 +105,6 @@ jest.mock('../../../../hooks/rewards/useCandidateSubscriptionId', () => ({
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock(
@@ -119,7 +124,7 @@ const mockedUseValidateReferralCode = jest.requireMock(
   '../../../../hooks/rewards/useValidateReferralCode',
 ).useValidateReferralCode as jest.Mock;
 const mockedUseSelector = useSelector as jest.Mock;
-const mockedUseDispatch = useDispatch as jest.Mock;
+const mockedUseAppDispatch = useAppDispatch as jest.Mock;
 
 type SelectorState = {
   candidateSubscriptionId?: unknown;
@@ -160,7 +165,7 @@ function setup({
     optin,
   });
 
-  mockedUseDispatch.mockReturnValue(dispatch);
+  mockedUseAppDispatch.mockReturnValue(dispatch);
 
   const fullState = {
     candidateSubscriptionId: null,

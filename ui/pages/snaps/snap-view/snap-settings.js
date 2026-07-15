@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import semver from 'semver';
@@ -43,6 +43,7 @@ import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 import { ShowMore } from '../../../components/app/snaps/show-more';
 import { useMessenger } from '../../../hooks/useMessenger';
+import { useAppDispatch } from '../../../store/hooks';
 import { KeyringSnapRemovalResultStatus } from './constants';
 import { useUpdate } from './hooks/useUpdate';
 import { useKeyringSnap } from './hooks/useKeyringSnap';
@@ -52,7 +53,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   const navigate = useNavigate();
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [update, approvalId] = useUpdate();
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);

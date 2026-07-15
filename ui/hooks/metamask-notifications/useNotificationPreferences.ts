@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import log from 'loglevel';
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
+import { useAppDispatch } from '../../store/hooks';
+
 import {
   getNotificationPreferences,
   putNotificationPreferences,
@@ -35,7 +36,7 @@ export type NotificationPreferenceSectionUpdate<
 export type { NotificationPreferences };
 
 export function useNotificationPreferences() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const [pendingWrites, setPendingWrites] = useState(0);
   const pendingWritesRef = useRef(0);

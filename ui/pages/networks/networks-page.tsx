@@ -17,7 +17,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -47,6 +47,7 @@ import { getEditedNetwork } from '../../selectors/selectors';
 import { SettingsHeader } from '../settings/shared/settings-header';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useAppDispatch } from '../../store/hooks';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import {
   ChainlistNetworkPicker,
@@ -121,7 +122,7 @@ const NetworksPageFormBody = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const NetworksPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();

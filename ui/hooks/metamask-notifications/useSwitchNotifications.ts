@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   checkAccountsPresence,
@@ -11,6 +11,7 @@ import {
   getIsUpdatingMetamaskNotificationsAccount,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
+import { useAppDispatch } from '../../store/hooks';
 import { useSafeState } from './useNotifications';
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
@@ -19,7 +20,7 @@ export function useSwitchAccountNotificationsChange(): {
   onChange: (addresses: string[], state: boolean) => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +52,7 @@ export function useSwitchAccountNotificationsChange(): {
 }
 
 function useRefetchAccountSettings() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const getAccountSettings = useCallback(async (accounts: string[]) => {
     try {

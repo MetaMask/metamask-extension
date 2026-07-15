@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getTokensByChainId } from '../../../ducks/metamask/metamask';
 import { getAssetDetails } from '../../../helpers/utils/token-util';
 import {
@@ -11,6 +11,7 @@ import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { selectNftsByChainId } from '../../../selectors';
+import { useAppDispatch } from '../../../store/hooks';
 
 export function useAssetDetails(
   tokenAddress,
@@ -19,7 +20,7 @@ export function useAssetDetails(
   chainId,
 ) {
   const isMounted = useRef(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // state selectors
   const nfts = useSelector((state) => selectNftsByChainId(state, chainId));

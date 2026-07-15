@@ -11,7 +11,7 @@
  */
 
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
   Box,
@@ -37,7 +37,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversion } from '../../../hooks/musd';
 import { addMusdConversionDismissedCtaKey } from '../../../store/actions';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
+import { useAppDispatch } from '../../../store/hooks';
 import { MUSD_CONVERSION_APY } from './constants';
+
 import {
   createMusdCtaClickedEventProperties,
   MUSD_EVENTS_CONSTANTS,
@@ -94,7 +96,7 @@ export const MusdAssetCta = ({
   variant = 'card',
 }: MusdAssetCtaProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { startConversionFlow, educationSeen } = useMusdConversion();
   const networkConfigurationsByChainId = useSelector(

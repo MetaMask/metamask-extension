@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
   CHAIN_IDS,
@@ -8,6 +8,7 @@ import {
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { addNetwork } from '../../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
+import { useAppDispatch } from '../../../../store/hooks';
 
 /**
  * Manages the EVM network required for Perps deposits.
@@ -20,7 +21,7 @@ import type { MetaMaskReduxDispatch } from '../../../../store/store';
  * the chain the controller actually deposits to, which is always Arbitrum One.
  */
 export const usePerpsNetworkManagement = () => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useAppDispatch();
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );

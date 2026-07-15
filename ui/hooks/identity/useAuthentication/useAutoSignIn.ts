@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import {
@@ -11,6 +11,7 @@ import {
   selectNeedsProfilePairing,
 } from '../../../selectors/identity/authentication';
 import { requestProfilePairing } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 import { useSignIn } from './useSignIn';
 
 /**
@@ -30,7 +31,7 @@ export function useAutoSignIn(): {
   autoSignIn: () => Promise<void>;
   shouldAutoSignIn: boolean;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [hasNewKeyrings, setHasNewKeyrings] = useState(false);
   const { signIn } = useSignIn();
 

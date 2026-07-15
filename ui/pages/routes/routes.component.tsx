@@ -3,14 +3,13 @@
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -46,6 +45,8 @@ import {
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
+  RAMPS_BUILD_QUOTE_ROUTE,
+  RAMPS_TOKEN_SELECTION_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -202,6 +203,10 @@ const NftFullImage = mmLazy(
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
+const RampsTokenSelection = mmLazy(
+  () => import('../ramps/token-selection/index.ts'),
+);
 const PermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/permissions-page/permissions-page.js'),
@@ -530,6 +535,14 @@ export const routeConfig = [
             element: <DeFiPage />,
           },
           {
+            path: RAMPS_BUILD_QUOTE_ROUTE,
+            element: <RampsBuildQuote />,
+          },
+          {
+            path: RAMPS_TOKEN_SELECTION_ROUTE,
+            element: <RampsTokenSelection />,
+          },
+          {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
             element: <MusdConversionPage />,
           },
@@ -582,7 +595,7 @@ export const routeConfig = [
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);

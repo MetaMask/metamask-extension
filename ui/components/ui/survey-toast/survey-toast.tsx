@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
@@ -19,6 +19,7 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
+import { useAppDispatch } from '../../../store/hooks';
 
 type Survey = {
   url: string;
@@ -32,7 +33,7 @@ type Survey = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SurveyToast() {
   const [survey, setSurvey] = useState<Survey | null>(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
   const isOptedIn = useSelector(getOptedIn);

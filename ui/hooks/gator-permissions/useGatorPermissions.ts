@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { fetchAndUpdateGatorPermissions } from '../../store/controller-actions/gator-permissions-controller';
 import { AppState } from '../../selectors/gator-permissions/gator-permissions';
+import { useAppDispatch } from '../../store/hooks';
 
 export type UseGatorPermissionsOptions = {
   /**
@@ -30,7 +31,7 @@ export function useGatorPermissions(
   options: UseGatorPermissionsOptions = {},
 ): UseGatorPermissionsResult {
   const { refreshInBackground = true } = options;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // identify whether any gator permissions exist in the gator cache
   const hasCachedPermissions = useSelector(

@@ -3,12 +3,16 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-n
 import { lookupDomainName } from '../../../../ducks/domains';
 // eslint-disable-next-line import-x/no-namespace
 import * as SendValidationUtils from '../../utils/sendValidations';
+import { useAppDispatch } from '../../../../store/hooks';
 import { useNameValidation } from './useNameValidation';
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useDispatch: jest.fn().mockReturnValue((callback: any) => callback?.()),
+jest.mock('../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn().mockReturnValue((callback: unknown) => {
+    if (typeof callback === 'function') {
+      return callback();
+    }
+    return callback;
+  }),
 }));
 
 jest.mock('../../../../ducks/domains', () => ({

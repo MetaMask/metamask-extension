@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import { TextButton, TextColor } from '@metamask/design-system-react';
@@ -45,6 +45,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { SECURITY_ITEMS } from '../search-config';
+import { useAppDispatch } from '../../../store/hooks';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -57,7 +58,7 @@ const PasskeyItem = () => {
   const passkeyMethodSpecificLabel = t(
     getPasskeyAuthMethodKey({ specific: true }),
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
 

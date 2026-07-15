@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -25,10 +25,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { transitionBack } from '../../../components/ui/transition';
+import { useAppDispatch } from '../../../store/hooks';
 import { AUTO_LOCK_OPTIONS } from './auto-lock-utils';
 
 const AutoLockSubPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();

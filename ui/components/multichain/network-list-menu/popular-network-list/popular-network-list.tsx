@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -39,6 +38,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constan
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import type { FeaturedNetwork } from '../../../../selectors/config-registry/config-registry';
+import { useAppDispatch } from '../../../../store/hooks';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -47,7 +47,7 @@ const PopularNetworkList = ({
 }) => {
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { value: isOpen, setTrue: open, setFalse: close } = useBoolean();
 
   const [referenceElement, setReferenceElement] = useState();

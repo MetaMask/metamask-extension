@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -73,6 +73,7 @@ import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscri
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
 import { isBeta, isFlask } from '../../../../shared/lib/build-types';
+import { useAppDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -86,7 +87,7 @@ export function useGlobalMenuSections(
   onClose: () => void,
 ): GlobalMenuSection[] {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
   const { captureCommonExistingShieldSubscriptionEvents } =

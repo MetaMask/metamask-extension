@@ -1,16 +1,19 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
-import { useDispatch } from 'react-redux';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as AlertActions from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useAppDispatch } from '../../../../store/hooks';
 import * as UpdateEthereumChainAlerts from './useUpdateEthereumChainAlerts';
 
 import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 
+jest.mock('../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
 const PENDING_APPROVAL_MOCK = {
@@ -32,7 +35,7 @@ const MOCK_ADD_ETH_CHAIN_ALERT = [
 describe('updateConfirmationAlerts', () => {
   it('calls updateAlerts to update alerts in state', () => {
     const mockDispatch = jest.fn();
-    (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
+    (useAppDispatch as jest.Mock).mockReturnValue(mockDispatch);
     jest
       .spyOn(UpdateEthereumChainAlerts, 'useUpdateEthereumChainAlerts')
       .mockReturnValue(MOCK_ADD_ETH_CHAIN_ALERT);

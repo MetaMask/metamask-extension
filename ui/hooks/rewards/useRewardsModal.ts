@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { setRewardsModalOpen } from '../../ducks/rewards';
 import {
   selectRewardsDeeplinkUrl,
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
+import { useAppDispatch } from '../../store/hooks';
 import { useCandidateSubscriptionId } from './useCandidateSubscriptionId';
 
 /**
@@ -13,7 +14,7 @@ import { useCandidateSubscriptionId } from './useCandidateSubscriptionId';
  * form or the QR code based on the user's opt-in state.
  */
 export const useRewardsModal = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const rewardsDeeplinkUrl = useSelector(selectRewardsDeeplinkUrl);

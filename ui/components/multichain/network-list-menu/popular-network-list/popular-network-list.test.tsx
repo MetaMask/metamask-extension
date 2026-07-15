@@ -1,17 +1,21 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { getUnapprovedConfirmations } from '../../../../selectors';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { useAppDispatch } from '../../../../store/hooks';
 import PopularNetworkList from './popular-network-list';
+
+jest.mock('../../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -21,13 +25,13 @@ const STATE_MOCK = {
 
 describe('PopularNetworkList', () => {
   const store = configureStore()(STATE_MOCK);
-  const useDispatchMock = useDispatch as jest.Mock;
+  const useAppDispatchMock = useAppDispatch as jest.Mock;
   const useSelectorMock = useSelector as jest.Mock;
   const mockDispatch = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
-    useDispatchMock.mockReturnValue(mockDispatch);
+    useAppDispatchMock.mockReturnValue(mockDispatch);
 
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getUnapprovedConfirmations) {
@@ -117,6 +121,6 @@ describe('PopularNetworkList', () => {
     const addButton = screen.getByTestId('test-add-button');
     fireEvent.click(addButton);
 
-    expect(useDispatchMock).toHaveBeenCalled();
+    expect(useAppDispatchMock).toHaveBeenCalled();
   });
 });

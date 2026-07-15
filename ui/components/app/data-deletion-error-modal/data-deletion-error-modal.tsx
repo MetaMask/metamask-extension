@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -28,12 +27,13 @@ import {
   ButtonSize,
 } from '../../component-library';
 import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
+import { useAppDispatch } from '../../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DataDeletionErrorModal() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   function closeModal() {
     dispatch(hideDataDeletionErrorModal());

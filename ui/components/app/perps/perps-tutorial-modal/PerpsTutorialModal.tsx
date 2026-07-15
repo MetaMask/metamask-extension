@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -31,6 +31,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { useAppDispatch } from '../../../../store/hooks';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';
 import ChooseLeverageStep from './steps/ChooseLeverageStep';
@@ -47,7 +48,7 @@ type PerpsTutorialModalProps = {
 const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
   const isOpen = useSelector(selectTutorialModalOpen);
   const activeStep = useSelector(selectTutorialActiveStep);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const { track } = usePerpsEventTracking();
   usePerpsEventTracking({

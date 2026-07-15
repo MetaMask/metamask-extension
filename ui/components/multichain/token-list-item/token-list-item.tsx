@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
@@ -64,6 +64,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
 import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { TokenWithFiatAmount } from '../../app/assets/types';
+import { useAppDispatch } from '../../../store/hooks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -217,7 +218,7 @@ export const TokenListItemComponent = ({
   const showScamWarning =
     isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const navigate = useNavigate();
   const [showTokenInsights, setShowTokenInsights] = useState(false);

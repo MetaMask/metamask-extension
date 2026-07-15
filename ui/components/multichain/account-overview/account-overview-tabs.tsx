@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
@@ -56,6 +56,7 @@ import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
 import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
 import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
 import { transitionForward } from '../../ui/transition';
+import { useAppDispatch } from '../../../store/hooks';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -99,7 +100,7 @@ export const AccountOverviewTabs = ({
   const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const isActivityListRedesignEnabled = useSelector(
     getIsActivityListRedesignEnabled,

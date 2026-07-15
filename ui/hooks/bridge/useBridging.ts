@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   FeatureId,
   formatChainIdToCaip,
@@ -26,6 +26,8 @@ import {
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import { useAppDispatch } from '../../store/hooks';
+
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
@@ -37,7 +39,7 @@ import {
  * @returns a function to navigate to the bridge page
  */
 const useBridging = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { navigateToBridgePage, bridgeState } = useBridgeNavigation();
   const lastSelectedChainId = useSelector(getLastSelectedChainId);

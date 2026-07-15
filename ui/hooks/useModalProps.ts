@@ -1,7 +1,8 @@
 import { useMemo, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { MetaMaskReduxState } from '../store/store';
 import { hideModal } from '../store/actions';
+import { useAppDispatch } from '../store/hooks';
 
 type ModalProps = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -15,7 +16,7 @@ export function useModalProps(): ModalProps {
     return state.appState.modal.modalState?.props;
   });
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onHideModal = useCallback(() => dispatch(hideModal()), [dispatch]);
 
   return useMemo(

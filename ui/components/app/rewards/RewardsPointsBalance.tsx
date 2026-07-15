@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { IconName } from '@metamask/design-system-react';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -21,7 +21,7 @@ import { useSeasonStatus } from '../../../hooks/rewards/useSeasonStatus';
 import { useOptIn } from '../../../hooks/rewards/useOptIn';
 import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
 import { getStorageItem } from '../../../../shared/lib/storage-helpers';
-import { useAppSelector } from '../../../store/store';
+import { useAppSelector, useAppDispatch } from '../../../store/hooks';
 import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
 import { RewardsBadge } from './RewardsBadge';
 import { REWARDS_BADGE_HIDDEN } from './utils/constants';
@@ -33,7 +33,7 @@ import { REWARDS_BADGE_HIDDEN } from './utils/constants';
 export const RewardsPointsBalance = () => {
   const locale = useSelector(getIntlLocale);
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const rewardsBadgeHidden = useSelector(selectRewardsBadgeHidden);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   selectCandidateSubscriptionId,
   selectRewardsBadgeHidden,
@@ -13,6 +13,7 @@ import {
 import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { useAppDispatch } from '../../../store/hooks';
 import { RewardsPointsBalance } from './RewardsPointsBalance';
 
 // Mock dependencies
@@ -66,7 +67,8 @@ jest.mock('../../component-library/skeleton', () => ({
   ),
 }));
 
-jest.mock('../../../store/store', () => ({
+jest.mock('../../../store/hooks', () => ({
+  useAppDispatch: jest.fn(),
   useAppSelector: jest.fn(),
 }));
 
@@ -76,9 +78,11 @@ jest.mock('../../../../shared/lib/storage-helpers', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
+  typeof useAppDispatch
+>;
 
-const { useAppSelector } = jest.requireMock('../../../store/store');
+const { useAppSelector } = jest.requireMock('../../../store/hooks');
 const { getStorageItem } = jest.requireMock(
   '../../../../shared/lib/storage-helpers',
 );
@@ -190,7 +194,7 @@ describe('RewardsPointsBalance', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setSelectorValues({});
-    mockUseDispatch.mockReturnValue(jest.fn());
+    mockUseAppDispatch.mockReturnValue(jest.fn());
     mockUseOptIn.mockReturnValue({
       optin: jest.fn().mockResolvedValue(undefined),
     } as ReturnType<typeof useOptIn>);
@@ -675,7 +679,7 @@ describe('RewardsPointsBalance', () => {
 
   it('does not open onboarding modal without a rewards deeplink', () => {
     const dispatchMock = jest.fn();
-    mockUseDispatch.mockReturnValue(dispatchMock);
+    mockUseAppDispatch.mockReturnValue(dispatchMock);
     setSelectorValues({
       candidateSubscriptionId: null,
       rewardsActiveAccountSubscriptionId: null,
@@ -689,7 +693,7 @@ describe('RewardsPointsBalance', () => {
 
   it('opens onboarding modal from a rewards deeplink when there is no subscription', async () => {
     const dispatchMock = jest.fn();
-    mockUseDispatch.mockReturnValue(dispatchMock);
+    mockUseAppDispatch.mockReturnValue(dispatchMock);
     delete process.env.IN_TEST;
     setSelectorValues({
       candidateSubscriptionId: null,
@@ -706,7 +710,7 @@ describe('RewardsPointsBalance', () => {
 
   it('opens onboarding modal from a rewards deeplink in test environment', async () => {
     const dispatchMock = jest.fn();
-    mockUseDispatch.mockReturnValue(dispatchMock);
+    mockUseAppDispatch.mockReturnValue(dispatchMock);
     process.env.IN_TEST = 'true';
     setSelectorValues({
       candidateSubscriptionId: null,
@@ -723,7 +727,7 @@ describe('RewardsPointsBalance', () => {
 
   it('opens onboarding modal from a rewards deeplink even when a candidate subscription exists', async () => {
     const dispatchMock = jest.fn();
-    mockUseDispatch.mockReturnValue(dispatchMock);
+    mockUseAppDispatch.mockReturnValue(dispatchMock);
     delete process.env.IN_TEST;
     setSelectorValues({
       candidateSubscriptionId: 'candidate-subscription-id',
@@ -740,7 +744,7 @@ describe('RewardsPointsBalance', () => {
 
   it('opens onboarding modal from a rewards deeplink even when the active account has a subscription', async () => {
     const dispatchMock = jest.fn();
-    mockUseDispatch.mockReturnValue(dispatchMock);
+    mockUseAppDispatch.mockReturnValue(dispatchMock);
     delete process.env.IN_TEST;
     setSelectorValues({
       candidateSubscriptionId: null,

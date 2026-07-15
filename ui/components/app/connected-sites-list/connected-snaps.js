@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -20,12 +20,13 @@ import { getOriginOfCurrentTab } from '../../../selectors';
 import { disconnectOriginFromSnap } from '../../../store/actions';
 import { getSnapRoute } from '../../../helpers/utils/util';
 import { SnapIcon } from '../snaps/snap-icon';
+import { useAppDispatch } from '../../../store/hooks';
 
 export default function ConnectedSnaps({ connectedSubjects }) {
   const [showOptions, setShowOptions] = useState();
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
 
   const onDisconnect = (snapId) => {

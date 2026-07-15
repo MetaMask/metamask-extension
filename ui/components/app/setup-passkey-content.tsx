@@ -21,7 +21,7 @@ import {
   TextColor,
   TextAlign,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getFirstTimeFlowType,
@@ -53,6 +53,8 @@ import {
   forceUpdateMetamaskState,
 } from '../../store/actions';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useAppDispatch } from '../../store/hooks';
+
 import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
@@ -81,7 +83,7 @@ export default function SetupPasskeyContent({
   onNext,
   password,
 }: SetupPasskeyContentProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext() as (
     key: string,

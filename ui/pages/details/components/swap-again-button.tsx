@@ -8,7 +8,6 @@ import {
   FeatureId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import { useDispatch } from 'react-redux';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
@@ -16,6 +15,7 @@ import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionForward } from '../../../components/ui/transition';
+import { useAppDispatch } from '../../../store/hooks';
 
 export function SwapAgainButton({
   destinationToken,
@@ -25,7 +25,7 @@ export function SwapAgainButton({
   sourceToken: TokenAmount | undefined;
 }) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { navigateToBridgePage } = useBridgeNavigation();
 
   const buttonLabelKey = useMemo(() => {

@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   getIsSmartTransaction,
   type SmartTransactionsState,
@@ -26,11 +26,12 @@ import { isSignatureTransactionType } from '../../../../../utils';
 import { NestedTransactionData } from '../../batch/nested-transaction-data/nested-transaction-data';
 import { QuotedSwapTransactionData } from '../quote-transaction-data/quoted-transaction-data';
 import { TransactionData } from '../transaction-data/transaction-data';
+import { useAppDispatch } from '../../../../../../../store/hooks';
 
 const NonceDetails = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (

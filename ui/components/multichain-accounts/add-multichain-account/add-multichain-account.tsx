@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { AccountWalletId } from '@metamask/account-api';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -19,6 +18,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
+import { useAppDispatch } from '../../../store/hooks';
+
 import {
   endTrace,
   trace,
@@ -34,7 +35,7 @@ export const AddMultichainAccount = ({
   walletId,
 }: AddMultichainAccountProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const {

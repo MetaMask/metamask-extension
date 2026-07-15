@@ -1,5 +1,5 @@
 import { useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isEthAddress } from '../../../../shared/lib/multichain/address';
 import type { ExternalDestinationAccount } from '../prepare/types';
 import {
@@ -15,6 +15,7 @@ import {
 } from '../../../../shared/lib/multichain/accounts';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { shortenString } from '../../../helpers/utils/util';
+import { useAppDispatch } from '../../../store/hooks';
 
 type UseExternalAccountResolutionProps = {
   searchQuery: string;
@@ -29,7 +30,7 @@ export const useExternalAccountResolution = ({
   isDestinationBitcoin = false,
   isDestinationTron = false,
 }: UseExternalAccountResolutionProps): ExternalDestinationAccount | null => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const domainResolutionsFromStore = useSelector(getDomainResolutions);
 

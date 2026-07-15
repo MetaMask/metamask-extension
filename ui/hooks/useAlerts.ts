@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import isEqual from 'lodash/isEqual';
 import {
@@ -13,9 +13,10 @@ import {
   setAlertConfirmed as setAlertConfirmedAction,
 } from '../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../helpers/constants/design-system';
+import { useAppDispatch } from '../store/hooks';
 
 const useAlerts = (ownerId: string) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const alerts: Alert[] = sortAlertsBySeverity(
     useSelector((state) => selectAlerts(state as AlertsState, ownerId)),

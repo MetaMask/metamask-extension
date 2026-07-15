@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -16,10 +16,11 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { Copyable } from '../copyable';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
+import { useAppDispatch } from '../../../../store/hooks';
 
 export const SnapSettingsRenderer = () => {
   const [searchParams] = useSearchParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const t = useI18nContext();
 
   const snapId = searchParams.get('snapId');

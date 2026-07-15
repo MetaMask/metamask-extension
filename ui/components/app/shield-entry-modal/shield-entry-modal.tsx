@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   COHORT_NAMES,
@@ -60,6 +60,7 @@ import {
 } from '../../../../shared/lib/shield';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { useAppDispatch } from '../../../store/hooks';
 import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
@@ -70,7 +71,7 @@ const ShieldEntryModal = ({
   onClose?: () => void;
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const { captureShieldEntryModalEvent, captureShieldCtaClickedEvent } =

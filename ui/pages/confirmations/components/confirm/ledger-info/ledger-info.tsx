@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import {
@@ -28,11 +28,12 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useLedgerConnection from '../../../hooks/useLedgerConnection';
+import { useAppDispatch } from '../../../../../store/hooks';
 
 const LedgerInfo = () => {
   const { isLedgerWallet } = useLedgerConnection();
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const inE2eTest =
     process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';

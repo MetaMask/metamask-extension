@@ -5,10 +5,11 @@ import {
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getEnabledNetworksByNamespace } from '../../selectors';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../shared/constants/network';
 import { setEnabledAllPopularNetworks } from '../../store/actions';
+import { useAppDispatch } from '../../store/hooks';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -17,7 +18,7 @@ import { setEnabledAllPopularNetworks } from '../../store/actions';
  */
 export const useEnableMissingNetwork = () => {
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const enableMissingNetwork = useCallback(
     (chainId: Hex | CaipChainId) => {

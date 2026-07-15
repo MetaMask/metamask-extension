@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ButtonSize } from '@metamask/design-system-react';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
@@ -26,6 +26,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
 import { useBoolean } from '../../../hooks/useBoolean';
+import { useAppDispatch } from '../../../store/hooks';
+
 import {
   mapTransactionTypeToCategory,
   resolveTransactionType,
@@ -37,7 +39,7 @@ export default function SmartTransactionListItem({
   isEarliestNonce = false,
   chainId,
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const { value: showDetails, toggle: toggleShowDetails } = useBoolean();
   const { title, primaryCurrency, recipientAddress, isPending } =

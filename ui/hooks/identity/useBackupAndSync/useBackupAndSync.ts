@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import log from 'loglevel';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { useAppDispatch } from '../../../store/hooks';
+
 import {
   setIsBackupAndSyncFeatureEnabled as setIsBackupAndSyncFeatureEnabledAction,
   hideLoadingIndication,
@@ -21,7 +22,7 @@ export function useBackupAndSync(): {
   ) => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [error, setError] = useState<string | null>(null);
 
   const setIsBackupAndSyncFeatureEnabled = useCallback(

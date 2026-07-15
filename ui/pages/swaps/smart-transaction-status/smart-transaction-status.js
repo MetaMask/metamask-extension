@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
@@ -55,6 +55,7 @@ import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useAppDispatch } from '../../../store/hooks';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -66,7 +67,7 @@ export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const t = useContext(I18nContext);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const fetchParams = useSelector(getFetchParams, isEqual) || {};
   const {
