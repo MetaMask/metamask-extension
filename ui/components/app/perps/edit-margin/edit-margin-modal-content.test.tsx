@@ -61,6 +61,7 @@ jest.mock('../perps-toast', () => ({
     MARGIN_ADD_FAILED: 'perpsToastMarginAddFailed',
     MARGIN_ADD_IN_PROGRESS: 'perpsToastMarginAddInProgress',
     MARGIN_ADD_SUCCESS: 'perpsToastMarginAddSuccess',
+    MARGIN_ADJUSTMENT_FAILED: 'perpsToastMarginAdjustmentFailed',
     MARGIN_REMOVE_FAILED: 'perpsToastMarginRemoveFailed',
     MARGIN_REMOVE_IN_PROGRESS: 'perpsToastMarginRemoveInProgress',
     MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
@@ -240,6 +241,55 @@ describe('EditMarginModalContent', () => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('controller failure', () => {
+    it('shows fallback toast when perpsUpdateMargin returns success false with generic error', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'Failed to update margin',
+      });
+
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const amountInput = screen.getByPlaceholderText('0.00');
+      fireEvent.change(amountInput, { target: { value: '100' } });
+      fireEvent.click(screen.getByTestId('perps-edit-margin-confirm'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: 'Unable to adjust margin. Please try again.',
+        });
+      });
+      expect(defaultProps.onClose).not.toHaveBeenCalled();
+    });
+
+    it('shows controller error message when perpsUpdateMargin returns a specific failure', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'Insufficient margin available',
+      });
+
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const amountInput = screen.getByPlaceholderText('0.00');
+      fireEvent.change(amountInput, { target: { value: '100' } });
+      fireEvent.click(screen.getByTestId('perps-edit-margin-confirm'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: 'Insufficient margin available',
+        });
+      });
     });
   });
 

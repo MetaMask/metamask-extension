@@ -2016,7 +2016,6 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
-        "WebSocket": true,
         "clearInterval": true,
         "clearTimeout": true,
         "fetch": true,
@@ -2831,12 +2830,17 @@
         "AbortSignal": true,
         "CustomEvent": true,
         "DOMException": true,
+        "DecompressionStream": true,
         "Event": true,
         "EventTarget": true,
         "Headers": true,
+        "Response": true,
+        "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
+        "atob": true,
         "clearInterval": true,
+        "clearTimeout": true,
         "fetch": true,
         "setInterval": true,
         "setTimeout": true
@@ -2850,11 +2854,13 @@
     "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
+        "Blob": true,
         "CloseEvent": true,
-        "CustomEvent": true,
+        "DOMException": true,
         "Event": true,
         "EventTarget": true,
         "MessageEvent": true,
+        "TextEncoder": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true

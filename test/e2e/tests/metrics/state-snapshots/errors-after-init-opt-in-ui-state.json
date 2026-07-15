@@ -341,6 +341,7 @@
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
     "rawRemoteFeatureFlags": "object",
+    "recentlyViewedMarkets": "object",
     "recoveryPhraseReminderHasBeenShown": false,
     "recoveryPhraseReminderLastShown": "number",
     "referrals": "object",

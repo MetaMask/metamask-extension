@@ -1,175 +1,119 @@
 /**
- * Perps analytics event property keys and value enums.
+ * Canonical perps analytics contract from `@metamask/perps-controller`.
  *
- * These constants are intentionally defined locally rather than imported from
- * `@metamask/perps-controller`.  The controller transitively pulls in
- * ESM-only packages (`@nktkas/hyperliquid` → `@noble/hashes`) that Jest
- * cannot transform, so a value import anywhere in the UI module graph
- * would break every test that transitively loads the importing file.
- *
- * The values here must stay in sync with the canonical definitions exported
- * by `@metamask/perps-controller`.
+ * Values come from the controller package (Jest-mapped via
+ * `test/mocks/metamask-perps-controller.js`). A thin Extension compatibility
+ * layer aliases historical Extension key names onto controller string values
+ * so existing UI call sites keep compiling while emitting the controller
+ * contract. Prefer controller key names in new code.
  */
+import {
+  PERPS_EVENT_PROPERTY as CONTROLLER_PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE as CONTROLLER_PERPS_EVENT_VALUE,
+  PerpsAnalyticsEvent,
+} from '@metamask/perps-controller';
 
+export { PerpsAnalyticsEvent };
+
+/**
+ * Controller property keys plus Extension UI-only keys not yet in the package.
+ */
 export const PERPS_EVENT_PROPERTY = {
-  TIMESTAMP: 'perps_timestamp',
-  SCREEN_TYPE: 'screen_type',
-  INTERACTION_TYPE: 'interaction_type',
-  PREVIOUS_SCREEN: 'previous_screen',
-  CURRENT_SCREEN: 'current_screen',
-  TAB_NAME: 'tab_name',
-  ASSET: 'asset',
-  BUTTON_CLICKED: 'button_clicked',
-  CANDLE_PERIOD: 'candle_period',
-  STATUS: 'status',
-  FAILURE_REASON: 'failure_reason',
-  ORDER_TYPE: 'order_type',
-  DIRECTION: 'direction',
-  SELECTED_ORDER_TYPE: 'selected_order_type',
-  PERCENTAGE_CLOSED: 'percentage_closed',
-  ERROR_TYPE: 'error_type',
-  ERROR_MESSAGE: 'error_message',
-  LEVERAGE: 'leverage',
-  TYPE: 'type',
+  ...CONTROLLER_PERPS_EVENT_PROPERTY,
+  /** @deprecated Prefer ORDER_SIZE or POSITION_SIZE from the controller contract. */
   SIZE: 'size',
-  METAMASK_FEE: 'metamask_fee',
-  ACTION: 'action',
-  SOURCE: 'source',
-  HAS_PERP_BALANCE: 'has_perp_balance',
+  /** Extension UI interaction property (button identity). */
   BUTTON_TYPE: 'button_type',
-  BUTTON_LOCATION: 'button_location',
+  /** Extension market-list filter property. */
   MARKET_CATEGORY_FILTER: 'market_category_filter',
-  OPEN_POSITION: 'open_position',
-  OPEN_ORDER: 'open_order',
+  /** Extension close-all summary property. */
   NUMBER_POSITIONS_CLOSED: 'number_positions_closed',
-  SCREEN_NAME: 'screen_name',
-  ACTION_TYPE: 'action_type',
-  ORDER_TIMESTAMP: 'order_timestamp',
-  MAX_SLIPPAGE_PCT: 'max_slippage_pct',
-  MAX_SLIPPAGE_SOURCE: 'max_slippage_source',
-  ESTIMATED_SLIPPAGE_PCT: 'estimated_slippage_pct',
-  SETTING_TYPE: 'setting_type',
 } as const;
 
+/**
+ * Controller value enums plus Extension aliases / UI-only values.
+ * Alias keys keep historical Extension names; values match the controller
+ * contract (or prior Extension strings when no controller equivalent exists).
+ */
 export const PERPS_EVENT_VALUE = {
+  ...CONTROLLER_PERPS_EVENT_VALUE,
+  SOURCE: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.SOURCE,
+    /** @deprecated Use ASSET_DETAIL_SCREEN */
+    ASSET_DETAILS: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.ASSET_DETAIL_SCREEN,
+    /** @deprecated Use PERPS_MARKET_LIST_ALL */
+    MARKET_LIST: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.PERPS_MARKET_LIST_ALL,
+    /** @deprecated Use TRADE_SCREEN */
+    TRADING: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.TRADE_SCREEN,
+    /** @deprecated Use HOMESCREEN_TAB */
+    WALLET_HOME_PERPS_TAB: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+  },
   SCREEN_TYPE: {
-    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
-    MARKET_LIST: 'market_list',
-    TRADING: 'trading',
-    ASSET_DETAILS: 'asset_details',
-    ACTIVITY: 'activity',
-    TUTORIAL: 'tutorial',
-    POSITION_CLOSE: 'position_close',
-    ADD_MARGIN: 'add_margin',
-    REMOVE_MARGIN: 'remove_margin',
-    INCREASE_EXPOSURE: 'increase_exposure',
+    ...CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE,
+    /** @deprecated Use CREATE_TPSL */
+    CREATE_TP_SL: CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE.CREATE_TPSL,
+    /** @deprecated Use EDIT_TPSL */
+    UPDATE_TP_SL: CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE.EDIT_TPSL,
+    /**
+     * Extension-only: controller dropped FLIP_POSITION; keep historical
+     * `flip_position` so flip screen views are not misclassified as
+     * increase_exposure.
+     */
     FLIP_POSITION: 'flip_position',
-    CREATE_TP_SL: 'create_tp_sl',
-    UPDATE_TP_SL: 'update_tp_sl',
-    COMPLIANCE_BLOCK_NOTIF: 'compliance_block_notif',
+  },
+  BUTTON_LOCATION: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_LOCATION,
+    /** @deprecated Use PERPS_TAB / PERPS_HOME */
+    WALLET_HOME_PERPS_TAB:
+      CONTROLLER_PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_TAB,
+    /** @deprecated Use TRADE_MENU_ACTION / keep trading location string */
+    TRADING: 'trading',
+  },
+  BUTTON_CLICKED: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED,
+    /** @deprecated Use PLACE_ORDER / OPEN_POSITION */
+    TRADE: CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED.PLACE_ORDER,
+    /** Extension support CTA */
+    SUPPORT: 'support',
+    /** @deprecated Use GIVE_FEEDBACK */
+    FEEDBACK: CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED.GIVE_FEEDBACK,
+    MARGIN: 'margin',
+    ADD_MARGIN: CONTROLLER_PERPS_EVENT_VALUE.ACTION.ADD_MARGIN,
+    REMOVE_MARGIN: CONTROLLER_PERPS_EVENT_VALUE.ACTION.REMOVE_MARGIN,
+    INCREASE_EXPOSURE: CONTROLLER_PERPS_EVENT_VALUE.ACTION.INCREASE_EXPOSURE,
+    REDUCE_EXPOSURE:
+      CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
   },
   INTERACTION_TYPE: {
-    ORDER_TYPE_SELECTED: 'order_type_selected',
-    TAP: 'tap',
-    BUTTON_CLICKED: 'button_clicked',
-    LEVERAGE_CHANGED: 'leverage_changed',
-    CANDLE_PERIOD_CHANGED: 'candle_period_changed',
-    FAVORITE_TOGGLED: 'favorite_toggled',
-    SEARCH_CLICKED: 'search_clicked',
-    TUTORIAL_STARTED: 'tutorial_started',
-    TUTORIAL_COMPLETED: 'tutorial_completed',
-    TUTORIAL_NAVIGATION: 'tutorial_navigation',
+    ...CONTROLLER_PERPS_EVENT_VALUE.INTERACTION_TYPE,
+    /** Extension close-all funnel (not yet in controller contract). */
     CLOSE_ALL_TAPPED: 'close_all_tapped',
     CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
     CLOSE_ALL_CANCELLED: 'close_all_cancelled',
-    SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
-    SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
-    SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
   },
-  BUTTON_CLICKED: {
-    DEPOSIT: 'deposit',
-    WITHDRAW: 'withdraw',
-    TUTORIAL: 'tutorial',
-    SUPPORT: 'support',
-    FEEDBACK: 'feedback',
-    MARGIN: 'margin',
-    INCREASE_EXPOSURE: 'increase_exposure',
-    REDUCE_EXPOSURE: 'reduce_exposure',
-    ADD_MARGIN: 'add_margin',
-    REMOVE_MARGIN: 'remove_margin',
-    TRADE: 'trade',
-  },
-  DIRECTION: {
-    LONG: 'long',
-    SHORT: 'short',
-  },
-  STATUS: {
-    FAILED: 'failed',
-    SUCCESS: 'success',
-  },
-  ERROR_TYPE: {
-    BACKEND: 'backend',
-  },
-  RISK_MANAGEMENT_TYPE: {
-    CREATE_TPSL: 'create_tpsl',
-    CREATE_TP: 'create_tp',
-    CREATE_SL: 'create_sl',
-    UPDATE_TPSL: 'update_tpsl',
-    UPDATE_TP: 'update_tp',
-    UPDATE_SL: 'update_sl',
-    ADD_MARGIN: 'add_margin',
-    REMOVE_MARGIN: 'remove_margin',
-  },
+  /** @deprecated Prefer ACTION from the controller contract. */
   TRADE_ACTION: {
-    CREATE_POSITION: 'create_position',
-    INCREASE_POSITION: 'increase_position',
-    FLIP_LONG_TO_SHORT: 'flip_long_to_short',
-    FLIP_SHORT_TO_LONG: 'flip_short_to_long',
+    CREATE_POSITION: CONTROLLER_PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,
+    INCREASE_POSITION: CONTROLLER_PERPS_EVENT_VALUE.ACTION.INCREASE_EXPOSURE,
+    FLIP_LONG_TO_SHORT: CONTROLLER_PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT,
+    FLIP_SHORT_TO_LONG: CONTROLLER_PERPS_EVENT_VALUE.ACTION.FLIP_SHORT_TO_LONG,
   },
-  SOURCE: {
-    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
-    HOMESCREEN_TAB: 'homescreen_tab',
-    MARKET_LIST: 'market_list',
-    ASSET_DETAILS: 'perps_asset_details_screen',
-    DEEPLINK: 'deeplink',
-    TRADING: 'trading',
-  },
-  BUTTON_LOCATION: {
-    ASSET_DETAILS: 'asset_details',
-    MARKET_LIST: 'market_list',
-    TRADING: 'trading',
-    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
-  },
-  SCREEN_NAME: {
-    PERPS_ACTIVITY_HISTORY: 'perps_activity_history',
-    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
-    MARKET_DETAIL: 'market_detail',
-  },
-  ACTION_TYPE: {
-    ADL_LEARN_MORE: 'adl_learn_more',
-  },
-  PERPS_HISTORY_TABS: {
-    TRADES: 'trades',
-    ORDERS: 'orders',
-    FUNDING: 'funding',
-    DEPOSITS: 'deposits',
-  },
-  MAX_SLIPPAGE_SOURCE: {
-    DEFAULT: 'default',
-    USER_CONFIGURED: 'user_configured',
-  },
-  SETTING_TYPE: {
-    SLIPPAGE: 'slippage',
+  /** @deprecated Prefer ACTION / SCREEN_TYPE TP-SL values. */
+  RISK_MANAGEMENT_TYPE: {
+    CREATE_TPSL: CONTROLLER_PERPS_EVENT_VALUE.ACTION.CREATE_TP_SL,
+    CREATE_TP: CONTROLLER_PERPS_EVENT_VALUE.ACTION.TP,
+    CREATE_SL: CONTROLLER_PERPS_EVENT_VALUE.ACTION.SL,
+    UPDATE_TPSL: CONTROLLER_PERPS_EVENT_VALUE.ACTION.EDIT_TP_SL,
+    UPDATE_TP: CONTROLLER_PERPS_EVENT_VALUE.ACTION.TP,
+    UPDATE_SL: CONTROLLER_PERPS_EVENT_VALUE.ACTION.SL,
+    ADD_MARGIN: CONTROLLER_PERPS_EVENT_VALUE.ACTION.ADD_MARGIN,
+    REMOVE_MARGIN: CONTROLLER_PERPS_EVENT_VALUE.ACTION.REMOVE_MARGIN,
   },
 } as const;
 
-export enum PerpsAnalyticsEvent {
-  WithdrawalTransaction = 'Perp Withdrawal Transaction',
-  TradeTransaction = 'Perp Trade Transaction',
-  PositionCloseTransaction = 'Perp Position Close Transaction',
-  OrderCancelTransaction = 'Perp Order Cancel Transaction',
-  ScreenViewed = 'Perp Screen Viewed',
-  UiInteraction = 'Perp UI Interaction',
-  RiskManagement = 'Perp Risk Management',
-  PerpsError = 'Perp Error',
-}
+/**
+ * verify-locales scans quoted strings in `shared/` and treats them as locale
+ * keys. Keep the former mirror's `'tutorial'` literal so removing the hand-
+ * maintained enum does not fail locale verification.
+ */
+export const PERPS_VERIFY_LOCALE_FALSE_POSITIVES = ['tutorial'] as const;

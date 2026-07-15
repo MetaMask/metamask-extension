@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import {
@@ -10,6 +11,7 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { MarketListView } from '.';
 
 const mockNavigate = jest.fn();
@@ -19,7 +21,19 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+// Capture imperative track() calls; declarative ScreenViewed is a no-op here.
+const mockTrack = jest.fn();
+jest.mock('../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: (options?: unknown) =>
+    options ? undefined : { track: mockTrack },
+}));
+
 const mockUsePerpsLiveMarketListData = jest.fn();
+jest.mock('../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    setFlowAttribution: jest.fn(),
+  }),
+}));
 jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
   usePerpsLiveAccount: () => ({ account: null }),
@@ -327,6 +341,44 @@ describe('MarketListView', () => {
       await waitFor(() => {
         expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('sort/filter analytics', () => {
+    it('fires sort_applied with sort_field and sort_direction on sort apply', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('sort-dropdown-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByTestId('sort-field-option-priceChange'));
+      fireEvent.click(screen.getByTestId('sort-direction-asc'));
+      fireEvent.click(screen.getByTestId('sort-modal-apply'));
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'sort_applied',
+          sort_field: 'priceChange',
+          sort_direction: 'asc',
+        }),
+      );
+    });
+
+    it('fires filter_applied with filter_category on category select', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('filter-select-button'));
+      fireEvent.click(screen.getByTestId('filter-select-option-crypto'));
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'filter_applied',
+          filter_category: 'crypto',
+        }),
+      );
     });
   });
 });

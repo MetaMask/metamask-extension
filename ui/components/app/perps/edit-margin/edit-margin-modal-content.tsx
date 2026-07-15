@@ -54,6 +54,7 @@ import {
   isPerpsLiquidationPriceValid,
   PERPS_LIQUIDATION_PRICE_FALLBACK,
 } from '../utils/formatPerpsDisplayPrice';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -108,8 +109,8 @@ export const EditMarginModalContent = ({
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
-  const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
+  const { replacePerpsToastByKey } = usePerpsToast();
   const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -293,6 +294,10 @@ export const EditMarginModalContent = ({
         const signedAmount =
           marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
 
+        // The controller's UpdateMarginParams only accepts { symbol, amount,
+        // providerId } — it does not take trackingData, so (unlike the order /
+        // close / TP-SL flows) margin risk events can't carry client fee/VIP
+        // attribution until the controller adds it.
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsUpdateMargin',
           [
@@ -304,19 +309,33 @@ export const EditMarginModalContent = ({
         );
 
         if (!result.success) {
-          throw new Error(result.error || 'Failed to update margin');
-        }
+          // Surface UI only; do not throw into catch or re-emit a client
+          // PerpsRiskManagement here. The controller emits the terminal margin
+          // risk "failed" event for the `{ success: false }` branch from the
+          // next perps-controller release (core #9471) — a client fallback
+          // would double-emit once that ships.
+          const errorMessage = result.error || 'Failed to update margin';
+          const normalizedErrorMessage = errorMessage.trim();
+          const shouldUseFallbackDescription =
+            normalizedErrorMessage.length === 0 ||
+            MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+              pattern.test(normalizedErrorMessage),
+            );
 
-        const riskType =
-          marginMode === 'add'
-            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-        });
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+            description: shouldUseFallbackDescription
+              ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
+              : normalizedErrorMessage,
+          });
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
+          return;
+        }
 
         const streamManager = getPerpsStreamManager();
         const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
@@ -340,23 +359,19 @@ export const EditMarginModalContent = ({
         const errorMessage =
           error instanceof Error ? error.message : 'An unknown error occurred';
 
-        const riskType =
-          marginMode === 'add'
-            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-        });
+        // Transport/background throws never reach the controller margin
+        // pipeline — keep client PerpsError for that gap. Do not re-emit
+        // client PerpsRiskManagement (controller owns risk margin events).
         track(MetaMetricsEventName.PerpsError, {
           [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
 
         const normalizedErrorMessage = errorMessage.trim();
         const shouldUseFallbackDescription =
@@ -385,8 +400,8 @@ export const EditMarginModalContent = ({
     position.symbol,
     onClose,
     onSavingChange,
-    replacePerpsToastByKey,
     track,
+    replacePerpsToastByKey,
     t,
   ]);
 

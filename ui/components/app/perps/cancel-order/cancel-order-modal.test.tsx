@@ -25,6 +25,16 @@ jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => ({
+      ...input,
+      entryPoint: 'homescreen_tab',
+      discoverySource: 'market_list',
+    }),
+  }),
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CANCEL_ORDER_FAILED: 'perpsToastCancelOrderFailed',
@@ -296,7 +306,7 @@ describe('CancelOrderModal', () => {
   });
 
   describe('cancel action', () => {
-    it('calls perpsCancelOrder with orderId and symbol on button click', async () => {
+    it('calls perpsCancelOrder with orderId, symbol, and trackingData on button click', async () => {
       const user = userEvent.setup();
       renderWithProvider(
         <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
@@ -308,7 +318,18 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsCancelOrder',
-          [{ orderId: baseOrder.orderId, symbol: baseOrder.symbol }],
+          [
+            {
+              orderId: baseOrder.orderId,
+              symbol: baseOrder.symbol,
+              trackingData: expect.objectContaining({
+                totalFee: 0,
+                marketPrice: expect.any(Number),
+                entryPoint: 'homescreen_tab',
+                discoverySource: 'market_list',
+              }),
+            },
+          ],
         );
       });
 
@@ -446,7 +467,7 @@ describe('CancelOrderModal', () => {
   });
 
   describe('analytics', () => {
-    it('fires PerpsOrderCancelTransaction with success on successful cancel', async () => {
+    it('does not emit duplicate PerpsOrderCancelTransaction on successful cancel', async () => {
       const user = userEvent.setup();
       renderWithProvider(
         <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
@@ -456,22 +477,17 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(mockTrack).toHaveBeenCalledWith(
-          'Perp Order Cancel Transaction',
-          expect.objectContaining({
-            asset: baseOrder.symbol,
-            status: 'success',
-            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: baseOrder.orderType,
-          }),
-        );
-      });
-
-      await waitFor(() => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
+
+      expect(
+        mockTrack.mock.calls.some(
+          ([event]) => event === 'Perp Order Cancel Transaction',
+        ),
+      ).toBe(false);
     });
 
-    it('fires PerpsOrderCancelTransaction with failed status and PerpsError on failure', async () => {
+    it('emits PerpsError but not cancel transaction analytics on failure', async () => {
       const user = userEvent.setup();
       mockSubmitRequestToBackground.mockRejectedValue(
         new Error('Network error'),
@@ -485,22 +501,22 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(mockTrack).toHaveBeenCalledWith(
-          'Perp Order Cancel Transaction',
-          expect.objectContaining({
-            asset: baseOrder.symbol,
-            status: 'failed',
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Network error',
-          }),
-        );
-        expect(mockTrack).toHaveBeenCalledWith(
-          'Perp Error',
-          expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'backend',
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Network error',
-          }),
-        );
+        expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
+
+      expect(
+        mockTrack.mock.calls.some(
+          ([event]) => event === 'Perp Order Cancel Transaction',
+        ),
+      ).toBe(false);
+      expect(
+        mockTrack.mock.calls.some(
+          ([event, properties]) =>
+            event === 'Perp Error' &&
+            properties?.[PERPS_EVENT_PROPERTY.ERROR_MESSAGE] ===
+              'Network error',
+        ),
+      ).toBe(true);
 
       await waitFor(() => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();

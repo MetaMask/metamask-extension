@@ -39,6 +39,15 @@ jest.mock('../../compliance', () => {
   };
 });
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => {
+  const buildTpslTrackingData = (input: Record<string, unknown>) => input;
+  return {
+    usePerpsAttribution: () => ({
+      buildTpslTrackingData,
+    }),
+  };
+});
+
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
@@ -909,11 +918,17 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithTPSL.symbol,
               takeProfitPrice: '3200.00',
               stopLossPrice: '2600.00',
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+                positionSize: 2.5,
+                isEditingExistingPosition: true,
+              }),
+            }),
           ],
         );
       });
@@ -932,11 +947,16 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithoutTPSL.symbol,
               takeProfitPrice: undefined,
               stopLossPrice: undefined,
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+                isEditingExistingPosition: false,
+              }),
+            }),
           ],
         );
       });
@@ -1028,11 +1048,15 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithTPSL.symbol,
               takeProfitPrice: '3200.00',
               stopLossPrice: '2600.00',
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+              }),
+            }),
           ],
         );
       });

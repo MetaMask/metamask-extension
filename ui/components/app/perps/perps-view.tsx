@@ -32,6 +32,7 @@ import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -205,30 +206,21 @@ export const PerpsView = () => {
 
       if (successCount > 0 && failureCount > 0) {
         setBatchActionError(t('somethingWentWrong'));
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
-        });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_PARTIAL,
           messageParams: [successCount, positionCount],
         });
       } else if (!result?.success || failureCount > 0) {
         setBatchActionError(t('somethingWentWrong'));
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
-        });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
         });
         return;
       } else {
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
-            successCount || positionCount,
-        });
+        // No client close-all summary event here (would carry
+        // number_positions_closed): the controller emits the batch-close
+        // summary with number_positions_closed from the next perps-controller
+        // release (core #9471). Emitting it client-side would double-count.
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
         });
@@ -240,15 +232,14 @@ export const PerpsView = () => {
           [],
         );
         applyPositionsSnapshot(fresh ?? []);
-      } catch {
-        // Refresh failure is non-critical; positions were already closed.
+      } catch (refreshError) {
+        // Refresh failure is non-critical — the positions were already closed
+        // and the stream reconciles them; capture for visibility, don't swallow.
+        captureException(refreshError);
       }
-    } catch {
+    } catch (error) {
+      captureException(error);
       setBatchActionError(t('somethingWentWrong'));
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
-      });
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
       });
@@ -290,7 +281,8 @@ export const PerpsView = () => {
         [],
       );
       applyOrdersSnapshot(fresh ?? []);
-    } catch {
+    } catch (error) {
+      captureException(error);
       setBatchActionError(t('somethingWentWrong'));
     } finally {
       setIsCancelAllPending(false);

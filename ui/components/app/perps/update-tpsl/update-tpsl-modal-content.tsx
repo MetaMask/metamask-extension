@@ -43,6 +43,7 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -53,7 +54,6 @@ import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, PerpsBackgroundResult } from '../types';
 import {
   normalizeTpslPrices,
-  deriveTpslType,
   formatRoePercent,
   getPnlDisplayColor,
   getPrivacyAwareColor,
@@ -67,6 +67,7 @@ import {
   getStopLossErrorDirection,
   getStopLossLiquidationErrorDirection,
 } from '../utils/tpslValidation';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import {
   applyDefaultStopLossSign,
   isSignedDecimalInput,
@@ -115,6 +116,7 @@ export const UpdateTPSLModalContent = ({
 }: UpdateTPSLModalContentProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
+  const { buildTpslTrackingData } = usePerpsAttribution();
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
@@ -478,44 +480,33 @@ export const UpdateTPSLModalContent = ({
               symbol: position.symbol,
               takeProfitPrice: cleanTpPrice,
               stopLossPrice: cleanSlPrice,
+              trackingData: buildTpslTrackingData({
+                direction:
+                  Number.parseFloat(position.size) >= 0 ? 'long' : 'short',
+                source: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+                positionSize: Math.abs(Number.parseFloat(position.size)) || 0,
+                isEditingExistingPosition: Boolean(
+                  position.takeProfitPrice || position.stopLossPrice,
+                ),
+              }),
             },
           ],
         );
-        const derivedTpslType = deriveTpslType({
-          takeProfitPrice: cleanTpPrice,
-          stopLossPrice: cleanSlPrice,
-          hasExistingTpsl: Boolean(
-            position.takeProfitPrice || position.stopLossPrice,
-          ),
-        });
 
         if (!result.success) {
           const failMessage = result.error || 'Failed to update TP/SL';
-          track(MetaMetricsEventName.PerpsRiskManagement, {
-            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
-            [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
-            [PERPS_EVENT_PROPERTY.SIZE]: position.size,
-          });
-          track(MetaMetricsEventName.PerpsError, {
-            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failMessage,
-          });
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.UPDATE_FAILED,
             description: failMessage,
           });
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
           return;
         }
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.TYPE]: derivedTpslType,
-          [PERPS_EVENT_PROPERTY.SIZE]: position.size,
-        });
         const streamManager = getPerpsStreamManager();
         streamManager.setOptimisticTPSL(
           position.symbol,
@@ -534,6 +525,11 @@ export const UpdateTPSLModalContent = ({
         );
         streamManager.positions.pushData(optimisticallyUpdatedPositions);
 
+        // Intentionally not retained/cleared on unmount: this reconciliation
+        // is meant to run ~2.5s AFTER the modal closes (see the "runs delayed
+        // refetch reconciliation after modal closes" test), and it only pushes
+        // into the global stream manager — no React state is touched, so there
+        // is no unmounted-component update to guard against.
         setTimeout(async () => {
           try {
             const freshPositions = await submitRequestToBackground<
@@ -557,6 +553,11 @@ export const UpdateTPSLModalContent = ({
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
           description: errorMessage,
@@ -576,6 +577,7 @@ export const UpdateTPSLModalContent = ({
     position,
     replacePerpsToastByKey,
     track,
+    buildTpslTrackingData,
   ]);
 
   const isSubmitDisabled = isSaving || hasInvalidTPSL;

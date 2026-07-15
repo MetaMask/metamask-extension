@@ -1,5 +1,6 @@
 import {
   PerpsController,
+  type PerpsAnalyticsProperties,
   type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
   type UserHistoryItem,
@@ -51,6 +52,9 @@ export const PerpsControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const storageNamespace = 'PerpsController';
   let isDisconnecting = false;
+  // Ref so metrics can close over the controller after construction
+  // (trackPerpsEvent runs only after init; infrastructure is created first).
+  const messengerClientRef: { current?: PerpsController } = {};
   const infrastructure = createPerpsInfrastructure({
     getStorageItem: (key: string) =>
       controllerMessenger.call(
@@ -78,6 +82,10 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         caipAccountId,
         baseFeeBips,
       ),
+    mergeAttributionContext: (properties) =>
+      messengerClientRef.current
+        ? messengerClientRef.current.mergeAttributionContext(properties)
+        : (properties ?? {}),
   });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
@@ -108,6 +116,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });
+  messengerClientRef.current = messengerClient;
 
   const api = getApi(
     messengerClient,
@@ -190,7 +199,11 @@ type PerpsActionName =
   | 'perpsToggleWatchlistMarket'
   | 'perpsIsWatchlistMarket'
   | 'perpsReconnect'
-  | 'perpsGetConnectionState';
+  | 'perpsGetConnectionState'
+  | 'perpsSetAttributionContext'
+  | 'perpsGetAttributionContext'
+  | 'perpsClearAttributionContext'
+  | 'perpsMergeAttributionContext';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -511,5 +524,15 @@ function getApi(
     perpsReconnect: messengerClient.reconnect.bind(messengerClient),
     perpsGetConnectionState: () =>
       messengerClient.getWebSocketConnectionState(),
+
+    // -- Analytics attribution --
+    perpsSetAttributionContext:
+      messengerClient.setAttributionContext.bind(messengerClient),
+    perpsGetAttributionContext:
+      messengerClient.getAttributionContext.bind(messengerClient),
+    perpsClearAttributionContext:
+      messengerClient.clearAttributionContext.bind(messengerClient),
+    perpsMergeAttributionContext: (properties?: PerpsAnalyticsProperties) =>
+      messengerClient.mergeAttributionContext(properties),
   };
 }

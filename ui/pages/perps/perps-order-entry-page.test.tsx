@@ -74,6 +74,14 @@ jest.mock('../../components/app/compliance', () => ({
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
+jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+    buildTpslTrackingData: (input: Record<string, unknown>) => input,
+    setFlowAttribution: jest.fn(),
+  }),
+}));
+
 const enterAmount = (value: string) => {
   const amountContainer = screen.getByTestId('amount-input-field');
   const amountInput = amountContainer.querySelector(
@@ -1219,6 +1227,417 @@ describe('PerpsOrderEntryPage', () => {
       ];
     };
 
+    it('includes saved-order defaults on the trading screen view', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const screenViewedCall = mockAnalyticsTrackEvent.mock.calls.find(
+        ([arg]) => arg?.name === MetaMetricsEventName.PerpsScreenViewed,
+      );
+
+      expect(screenViewedCall?.[0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.SAVED_ORDER]: false,
+          [PERPS_EVENT_PROPERTY.DEFAULT_LEVERAGE]: expect.any(Number),
+          [PERPS_EVENT_PROPERTY.DEFAULT_AUTO_CLOSE]: false,
+        }),
+      );
+    });
+
+    const consideredCalls = () =>
+      mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsTransactionConsidered,
+      );
+
+    it('emits PERPS_TRANSACTION_CONSIDERED after a debounced user fill', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+
+      expect(consideredCalls()[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ORDER_CONTEXT]: 'trade',
+          [PERPS_EVENT_PROPERTY.ACTION]:
+            PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,
+          [PERPS_EVENT_PROPERTY.ORDER_SIZE]: 100,
+          [PERPS_EVENT_PROPERTY.ORDER_TYPE]: 'market',
+          [PERPS_EVENT_PROPERTY.INPUT_METHOD]: 'keypad',
+          [PERPS_EVENT_PROPERTY.TRADE_WITH_TOKEN]: false,
+          [PERPS_EVENT_PROPERTY.LEVERAGE]: expect.any(Number),
+        }),
+      );
+    });
+
+    it('does not emit CONSIDERED on the seeded/default fill', async () => {
+      jest.useFakeTimers();
+      try {
+        await act(async () => {
+          renderWithProvider(
+            <PerpsOrderEntryPage />,
+            mockStore(createMockState()),
+          );
+        });
+        // No user interaction — only the default amount was populated.
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(0);
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
+    it('resets the debounce when the fill changes before 1s', async () => {
+      jest.useFakeTimers();
+      try {
+        await act(async () => {
+          renderWithProvider(
+            <PerpsOrderEntryPage />,
+            mockStore(createMockState()),
+          );
+        });
+        await act(async () => enterAmount('100'));
+        await act(async () => {
+          jest.advanceTimersByTime(500);
+        });
+        await act(async () => enterAmount('200'));
+        await act(async () => {
+          jest.advanceTimersByTime(500);
+        });
+        expect(consideredCalls()).toHaveLength(0);
+        await act(async () => {
+          jest.advanceTimersByTime(600);
+        });
+        expect(consideredCalls()).toHaveLength(1);
+        expect(consideredCalls()[0][0].properties).toEqual(
+          expect.objectContaining({ [PERPS_EVENT_PROPERTY.ORDER_SIZE]: 200 }),
+        );
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
+    it('does not emit CONSIDERED in close mode', async () => {
+      jest.useFakeTimers();
+      mockSearchParams.set('mode', 'close');
+      try {
+        await act(async () => {
+          renderWithProvider(
+            <PerpsOrderEntryPage />,
+            mockStore(createMockState()),
+          );
+        });
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(0);
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
+    it('clamps default_leverage to the market max on the trading screen view', () => {
+      const ethMarket = mockCryptoMarkets.find((m) => m.symbol === 'ETH');
+      if (!ethMarket) {
+        throw new Error('ETH market fixture missing');
+      }
+      mockLiveMarketData.mockReturnValue({
+        markets: [{ ...ethMarket, maxLeverage: '25x' }],
+        isInitialLoading: false,
+      });
+      const state = createMockState();
+      // Saved leverage well above the market max — the UI seeds the clamped
+      // value, so the analytics default must be clamped too.
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: { ETH: { leverage: 999 } },
+        testnet: { ETH: { leverage: 999 } },
+      };
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      const screenViewed = mockAnalyticsTrackEvent.mock.calls.find(
+        ([arg]) => arg?.name === MetaMetricsEventName.PerpsScreenViewed,
+      );
+      expect(
+        screenViewed?.[0].properties[PERPS_EVENT_PROPERTY.DEFAULT_LEVERAGE],
+      ).toBe(25);
+    });
+
+    it('reschedules the considered debounce on a non-size change', async () => {
+      jest.useFakeTimers();
+      try {
+        await act(async () => {
+          renderWithProvider(
+            <PerpsOrderEntryPage />,
+            mockStore(createMockState()),
+          );
+        });
+        await act(async () => enterAmount('100'));
+        await act(async () => {
+          jest.advanceTimersByTime(900);
+        });
+        // A non-size change (toggle auto-close) must reschedule the pending
+        // event, not cancel it.
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('auto-close-toggle'));
+        });
+        await act(async () => {
+          jest.advanceTimersByTime(600);
+        });
+        expect(consideredCalls()).toHaveLength(0);
+        await act(async () => {
+          jest.advanceTimersByTime(500);
+        });
+        expect(consideredCalls()).toHaveLength(1);
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
+    it('resets considered gating on symbol change so the next market default does not fire', async () => {
+      jest.useFakeTimers();
+      try {
+        let view!: ReturnType<typeof renderWithProvider>;
+        await act(async () => {
+          view = renderWithProvider(
+            <PerpsOrderEntryPage />,
+            mockStore(createMockState()),
+          );
+        });
+        await act(async () => enterAmount('100'));
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(1);
+
+        // Navigate to a different market; the prior edit must not carry over.
+        mockUseParams.mockReturnValue({ symbol: 'BTC' });
+        await act(async () => {
+          view.rerender(<PerpsOrderEntryPage />);
+        });
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(1);
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
+    it('resets considered gating on direction switch so the reseeded amount does not fire', async () => {
+      jest.useFakeTimers();
+      try {
+        await act(async () => {
+          renderWithProvider(
+            <PerpsOrderEntryPage />,
+            mockStore(createMockState()),
+          );
+        });
+
+        // User edits the size, then switches Long/Short before the debounce
+        // elapses. Switching reseeds usePerpsOrderForm to its default amount;
+        // the seeded default must NOT emit CONSIDERED without a fresh edit.
+        await act(async () => enterAmount('100'));
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('direction-tab-short'));
+        });
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(0);
+
+        // A new size interaction after the switch re-arms the event.
+        await act(async () => enterAmount('250'));
+        await act(async () => {
+          jest.advanceTimersByTime(1500);
+        });
+        expect(consideredCalls()).toHaveLength(1);
+        expect(consideredCalls()[0][0].properties).toEqual(
+          expect.objectContaining({ [PERPS_EVENT_PROPERTY.ORDER_SIZE]: 250 }),
+        );
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
+    it('emits the error screen view when the order submit fails', async () => {
+      mockSearchParams.set('orderType', 'limit');
+      mockSearchParams.set('direction', 'long');
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({ success: false, error: 'Order failed' });
+        }
+        return Promise.resolve(undefined);
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      fireEvent.change(
+        amountContainer.querySelector('input') as HTMLInputElement,
+        { target: { value: '100' } },
+      );
+      const limitContainer = screen.getByTestId('limit-price-input');
+      fireEvent.change(
+        limitContainer.querySelector('input') as HTMLInputElement,
+        { target: { value: '1000' } },
+      );
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      await waitFor(() => expect(submitButton).not.toBeDisabled());
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      await waitFor(() => {
+        const errorScreens = mockAnalyticsTrackEvent.mock.calls.filter(
+          ([arg]) =>
+            arg?.name === MetaMetricsEventName.PerpsScreenViewed &&
+            arg?.properties?.[PERPS_EVENT_PROPERTY.SCREEN_TYPE] ===
+              PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+        );
+        expect(errorScreens.length).toBeGreaterThanOrEqual(1);
+        expect(
+          errorScreens[0][0].properties[PERPS_EVENT_PROPERTY.SCREEN_NAME],
+        ).toBe('perps_order');
+      });
+    });
+
+    it('does not reset the considered debounce on live position stream churn', async () => {
+      jest.useFakeTimers();
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      try {
+        let view!: ReturnType<typeof renderWithProvider>;
+        await act(async () => {
+          view = renderWithProvider(
+            <PerpsOrderEntryPage />,
+            mockStore(createMockState()),
+          );
+        });
+        await act(async () => enterAmount('100'));
+        await act(async () => {
+          jest.advanceTimersByTime(900);
+        });
+        // Position stream churns (new object refs, same ETH position) mid-
+        // debounce. With the old live-`position` dep this reset the timer and
+        // could drop the event; gating on the stable `positionDirection`
+        // primitive must leave the pending debounce intact.
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions.map((p) => ({ ...p })),
+          isInitialLoading: false,
+        });
+        await act(async () => {
+          view.rerender(<PerpsOrderEntryPage />);
+        });
+        await act(async () => {
+          jest.advanceTimersByTime(200);
+        });
+        expect(consideredCalls()).toHaveLength(1);
+        expect(consideredCalls()[0][0].properties).toEqual(
+          expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.ACTION]:
+              PERPS_EVENT_VALUE.ACTION.INCREASE_EXPOSURE,
+          }),
+        );
+      } finally {
+        await act(async () => {
+          jest.runOnlyPendingTimers();
+        });
+        jest.useRealTimers();
+      }
+    });
+
+    it('emits CONSIDERED with flip_long_to_short for a short order on a long position', async () => {
+      // ETH position is long (size 2.5); a short order flips it.
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSearchParams.set('direction', 'short');
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('100');
+
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+      expect(consideredCalls()[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ACTION]:
+            PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT,
+        }),
+      );
+    });
+
+    it('emits CONSIDERED with flip_short_to_long for a long order on a short position', async () => {
+      // BTC position is short (size -0.5); a long order flips it.
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSearchParams.set('direction', 'long');
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('100');
+
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+      expect(consideredCalls()[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ACTION]:
+            PERPS_EVENT_VALUE.ACTION.FLIP_SHORT_TO_LONG,
+        }),
+      );
+    });
+
+    it('emits the error screen view when the market is not found', () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      const errorCall = mockAnalyticsTrackEvent.mock.calls.find(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsScreenViewed &&
+          arg?.properties?.screen_type === 'error',
+      );
+      expect(errorCall).toBeDefined();
+      expect(errorCall?.[0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'market_not_found',
+          [PERPS_EVENT_PROPERTY.SCREEN_NAME]: 'perps_order',
+        }),
+      );
+    });
+
     it('tracks has_perp_balance as true when unified funds are tradeable but not withdrawable', () => {
       mockLiveAccount.mockReturnValue({
         account: {
@@ -1292,6 +1711,12 @@ describe('PerpsOrderEntryPage', () => {
             symbol: 'ETH',
             isBuy: true,
             orderType: 'market',
+            trackingData: expect.objectContaining({
+              hlFeeRate: 0.00145,
+              // No existing position -> create_position; the controller only
+              // emits the tx `action` when trackingData.tradeAction is set.
+              tradeAction: PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,
+            }),
           }),
         ],
       );
@@ -1316,7 +1741,7 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('does not duplicate symbol in toast description for HIP3 markets (TAT-3053)', async () => {
+    it('does not duplicate symbol in toast description for HIP3 markets', async () => {
       // HIP3 market symbol is "xyz:TSLA" but positionSize uses the display name "TSLA".
       // The strip logic must match against the display name, not the raw symbol,
       // otherwise the toast reads "Long 0.5 TSLA TSLA" instead of "Long 0.5 TSLA".
@@ -1428,6 +1853,7 @@ describe('PerpsOrderEntryPage', () => {
             trackingData: expect.objectContaining({
               totalFee: expect.any(Number),
               marketPrice: 3025.5,
+              hlFeeRate: 0.00145,
             }),
           }),
         ],
@@ -1662,6 +2088,9 @@ describe('PerpsOrderEntryPage', () => {
           expect.objectContaining({
             symbol: 'ETH',
             orderType: 'market',
+            trackingData: expect.objectContaining({
+              hlFeeRate: 0.00145,
+            }),
           }),
         ]),
       );
@@ -1678,6 +2107,49 @@ describe('PerpsOrderEntryPage', () => {
           key: 'perpsToastOrderPlaced',
         }),
       );
+    });
+
+    it('surfaces failure toast when modify add-to-position place order fails', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Add to position failed',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      // Modify mode has no shared inProgress toast key — hide is not called.
+      expect(mockHidePerpsToast).not.toHaveBeenCalled();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastSubmitInProgress',
+        }),
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateFailed',
+        description: "We couldn't load this page.",
+      });
     });
 
     it('submits existing position TP/SL values unchanged in modify mode', async () => {
@@ -1790,6 +2262,11 @@ describe('PerpsOrderEntryPage', () => {
             symbol: 'ETH',
             takeProfitPrice: '3300',
             stopLossPrice: '2800',
+            trackingData: expect.objectContaining({
+              direction: 'long',
+              source: 'trade_screen',
+              isEditingExistingPosition: false,
+            }),
           }),
         ],
       );

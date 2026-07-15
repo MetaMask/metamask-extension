@@ -613,18 +613,10 @@ describe('PerpsView', () => {
         ([arg]) =>
           arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
       );
-      expect(closeTxCalls).toHaveLength(1);
-      expect(closeTxCalls[0][0]).toEqual(
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 1,
-          }),
-        }),
-      );
+      expect(closeTxCalls).toHaveLength(0);
     });
 
-    it('shows failed toast and tracks FAILED status when all positions fail to close', async () => {
+    it('shows failed toast when all positions fail to close without duplicate analytics', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsClosePositions') {
           return Promise.resolve({
@@ -653,15 +645,7 @@ describe('PerpsView', () => {
         ([arg]) =>
           arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
       );
-      expect(closeTxCalls).toHaveLength(1);
-      expect(closeTxCalls[0][0]).toEqual(
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
-          }),
-        }),
-      );
+      expect(closeTxCalls).toHaveLength(0);
     });
   });
 

@@ -53,6 +53,7 @@ import {
 } from '../../../../shared/constants/perps';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../hooks/perps';
+import { usePerpsAttribution } from '../../../hooks/perps/usePerpsAttribution';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
@@ -130,6 +131,7 @@ export const MarketListView = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
   const { track } = usePerpsEventTracking();
+  const { setFlowAttribution } = usePerpsAttribution();
 
   // Use stream hooks for real-time market data
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
@@ -227,10 +229,17 @@ export const MarketListView = () => {
 
   const handleSortChange = useCallback(
     (field: SortField, direction: SortDirection) => {
+      // Sort applied — field and/or direction changed.
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.SORT_APPLIED,
+        [PERPS_EVENT_PROPERTY.SORT_FIELD]: field,
+        [PERPS_EVENT_PROPERTY.SORT_DIRECTION]: direction,
+      });
       setSortField(field);
       setSortDirection(direction);
     },
-    [],
+    [track],
   );
 
   const handleFilterChange = useCallback(
@@ -243,6 +252,12 @@ export const MarketListView = () => {
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.MARKET_LIST,
       });
+      // Filter applied — market category changed.
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.FILTER_APPLIED,
+        [PERPS_EVENT_PROPERTY.FILTER_CATEGORY]: filter,
+      });
       setSelectedFilter(filter);
     },
     [track],
@@ -250,6 +265,10 @@ export const MarketListView = () => {
 
   const handleMarketSelect = useCallback(
     (market: PerpsMarketData) => {
+      setFlowAttribution({
+        discoverySource: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
+        entryPoint: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
+      });
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
@@ -259,7 +278,7 @@ export const MarketListView = () => {
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
       );
     },
-    [navigate, track],
+    [navigate, setFlowAttribution, track],
   );
 
   const handleSearchClick = useCallback(() => {

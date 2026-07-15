@@ -36,8 +36,10 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { getPositionDirection, buildPerpsVipTrackingData } from '../utils';
+import { getPositionDirection } from '../utils';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { handlePerpsError } from '../utils/translate-perps-error';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsFeesDisplay } from '../perps-fees-display';
@@ -75,6 +77,7 @@ export const ReversePositionModal = ({
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { buildTrackingData } = usePerpsAttribution();
   const { gate } = useSelectedAccountComplianceGate();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -160,16 +163,32 @@ export const ReversePositionModal = ({
           {
             symbol: position.symbol,
             position: positionForFlip,
-            trackingData: buildPerpsVipTrackingData({
+            trackingData: buildTrackingData({
               totalFee: estimatedFees ?? 0,
               marketPrice: currentPrice,
               vipTier,
               vipDiscount: metamaskFeeRateDiscountPercentage,
+              hlFeeRate: feeRate,
             }),
           },
         ]);
         if (flipResult?.success !== true) {
-          throw new Error(flipResult?.error || 'Failed to flip position');
+          // Controller already emitted flip submitted/terminal analytics —
+          // surface UI only; do not throw into catch (would duplicate PerpsError).
+          const err = new Error(flipResult?.error || 'Failed to flip position');
+          const message = handlePerpsError(err, t as (key: string) => string);
+          setError(message);
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+            description: message,
+          });
+          return;
         }
         const streamManager = getPerpsStreamManager();
         const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
@@ -181,6 +200,8 @@ export const ReversePositionModal = ({
         replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
         onClose();
       } catch (err) {
+        // Transport/background throws never reach the controller flip
+        // submitted/terminal pipeline — keep client PerpsError for that gap.
         const raw =
           err instanceof Error ? err.message : 'An unknown error occurred';
         track(MetaMetricsEventName.PerpsError, {
@@ -188,6 +209,11 @@ export const ReversePositionModal = ({
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
         const message = handlePerpsError(err, t as (key: string) => string);
         setError(message);
         replacePerpsToastByKey({
@@ -211,6 +237,8 @@ export const ReversePositionModal = ({
     currentPrice,
     vipTier,
     metamaskFeeRateDiscountPercentage,
+    feeRate,
+    buildTrackingData,
   ]);
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -256,15 +257,44 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+// Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
+// properties the page constructs.
+const mockPerpsScreenViewedOptions: {
+  eventName?: unknown;
+  properties?: Record<string, unknown>;
+}[] = [];
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: jest.fn() }),
+  usePerpsEventTracking: (options?: {
+    eventName?: unknown;
+    properties?: Record<string, unknown>;
+  }) => {
+    if (options) {
+      mockPerpsScreenViewedOptions.push(options);
+      return undefined;
+    }
+    return { track: jest.fn() };
+  },
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
   usePerpsMarketInfo: jest.fn(),
+}));
+// Cancel/close/reverse/TP-SL modals call usePerpsAttribution; keep them
+// renderable without mounting PerpsAttributionProvider in this page suite.
+const mockSetFlowAttribution = jest.fn();
+jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => ({
+      ...input,
+      entryPoint: 'homescreen_tab',
+      discoverySource: 'market_list',
+    }),
+    buildTpslTrackingData: (input: Record<string, unknown>) => input,
+    setFlowAttribution: mockSetFlowAttribution,
+  }),
 }));
 jest.mock(
   '../../components/app/perps/hooks/usePerpsDepositConfirmation',
@@ -409,6 +439,7 @@ describe('PerpsMarketDetailPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockPerpsScreenViewedOptions.length = 0;
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
     mockTriggerDeposit.mockClear();
@@ -438,6 +469,96 @@ describe('PerpsMarketDetailPage', () => {
   });
 
   describe('when perps feature is enabled', () => {
+    it('includes watchlisted on the asset_detail screen view', async () => {
+      await renderPage(mockStore(createMockState(true)));
+
+      const assetDetailView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'asset_details',
+      );
+
+      expect(assetDetailView).toBeDefined();
+      expect(assetDetailView?.properties).toHaveProperty('watchlisted');
+      expect(typeof assetDetailView?.properties?.watchlisted).toBe('boolean');
+    });
+
+    it('emits the error screen view when the market is not found', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as
+        | { conditions?: boolean; properties?: Record<string, unknown> }
+        | undefined;
+
+      expect(errorView).toBeDefined();
+      expect(errorView?.conditions).toBe(true);
+      expect(errorView?.properties).toMatchObject({
+        error_type: 'market_not_found',
+        screen_name: 'perps_market_details',
+      });
+    });
+
+    it('emits exactly one error screen view and no asset_details view for an unknown symbol', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
+      await renderPage(mockStore(createMockState(true)));
+
+      type ScreenViewOption = {
+        conditions?: boolean;
+        properties?: Record<string, unknown>;
+      };
+      const activeErrorViews = (
+        mockPerpsScreenViewedOptions as ScreenViewOption[]
+      ).filter(
+        (option) =>
+          option.properties?.screen_type === 'error' &&
+          option.conditions === true,
+      );
+      const activeAssetDetailViews = (
+        mockPerpsScreenViewedOptions as ScreenViewOption[]
+      ).filter(
+        (option) =>
+          option.properties?.screen_type === 'asset_details' &&
+          option.conditions === true,
+      );
+
+      expect(activeErrorViews).toHaveLength(1);
+      // asset_details is gated on `market`, so an unknown symbol must not also
+      // fire it (one rendered error screen => one screen-view event).
+      expect(activeAssetDetailViews).toHaveLength(0);
+    });
+
+    it('re-arms the error screen view per symbol via resetKey', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'BADONE' });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as { resetKey?: unknown } | undefined;
+
+      // resetKey keyed on the symbol lets consecutive invalid symbols each track.
+      expect(errorView?.resetKey).toBe('BADONE');
+    });
+
+    it('re-asserts the asset_details entry point on mount', async () => {
+      await renderPage(mockStore(createMockState(true)));
+
+      expect(mockSetFlowAttribution).toHaveBeenCalledWith({
+        entryPoint: 'asset_detail_screen',
+      });
+    });
+
     it('renders market detail page for ETH', async () => {
       const store = mockStore(createMockState(true));
 
@@ -1845,7 +1966,16 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsCancelOrder',
-          [{ orderId: 'order-001', symbol: 'ETH' }],
+          [
+            expect.objectContaining({
+              orderId: 'order-001',
+              symbol: 'ETH',
+              trackingData: expect.objectContaining({
+                entryPoint: 'homescreen_tab',
+                discoverySource: 'market_list',
+              }),
+            }),
+          ],
         );
       });
     });
@@ -1928,7 +2058,7 @@ describe('PerpsMarketDetailPage', () => {
     });
   });
 
-  describe('orders section spacing (TAT-3264)', () => {
+  describe('orders section spacing', () => {
     it('renders the orders section header with the same top spacing token as the stats section header', () => {
       const store = mockStore(createMockState(true));
       renderWithProvider(<PerpsMarketDetailPage />, store);
