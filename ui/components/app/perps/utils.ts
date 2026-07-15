@@ -1,4 +1,5 @@
 import { TextColor } from '@metamask/design-system-react';
+import { getPerpsDisplaySymbol } from '@metamask/perps-controller';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import type {
   Order,
@@ -185,22 +186,19 @@ export const getChangeColor = (percentString: string): TextColor => {
  * analytics properties / `data-testid` / React `key` values. This is the
  * single canonical helper for stripping the prefix — do not add another one.
  *
+ * Delegates to `@metamask/perps-controller`'s `getPerpsDisplaySymbol` so the
+ * UI and controller share one implementation instead of maintaining a
+ * parallel copy that could drift. Re-exported under this name since it's
+ * already used across ~20 call sites in the UI layer.
+ *
  * @param symbol - The symbol to extract the display name from.
  * @returns The display symbol.
  * @example
  * getDisplaySymbol('xyz:TSLA') => 'TSLA'
  * getDisplaySymbol('BTC') => 'BTC'
  */
-export const getDisplaySymbol = (symbol: string): string => {
-  if (!symbol || typeof symbol !== 'string') {
-    return symbol;
-  }
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-};
+export const getDisplaySymbol = (symbol: string): string =>
+  getPerpsDisplaySymbol(symbol);
 
 export type AssetIconUrls = {
   primary: string;
