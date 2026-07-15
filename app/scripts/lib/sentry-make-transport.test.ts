@@ -285,6 +285,7 @@ describe('sentry-make-transport', () => {
   });
 
   describe('Sentry.init with makeTransport (MetaMetrics)', () => {
+    // Jest exposes extension APIs on an HTTP URL, unlike MetaMask's extension-owned realms.
     afterEach(async () => {
       await Sentry.close(2000);
       deleteStateHookProperty('getPersistedState');
