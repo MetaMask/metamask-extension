@@ -496,10 +496,7 @@ class HomePage {
         return;
       } catch (e) {
         if (attempt === attempts) {
-          console.log(
-            `Expected balance ${expectedBalance} ${symbol} not displayed after ${attempts} refresh attempts`,
-            e,
-          );
+          await this.logBalanceDiagnostics(expectedBalance, symbol, attempts);
           throw e;
         }
         console.log(
@@ -507,6 +504,48 @@ class HomePage {
         );
       }
     }
+  }
+
+  /**
+   * Logs balance-related state on assertion failure to distinguish a transient
+   * hydration lag (balance/rates eventually arrive) from a durable stall
+   * (balance stays 0 / metadata or rates missing). Diagnostic only; never throws.
+   *
+   * @param expectedBalance - The balance that was expected.
+   * @param symbol - The balance symbol.
+   * @param attempts - Number of refresh attempts made.
+   */
+  private async logBalanceDiagnostics(
+    expectedBalance: string,
+    symbol: string,
+    attempts: number,
+  ): Promise<void> {
+    let visibleBalance = 'unknown';
+    try {
+      const balanceElement = await this.driver.findElement(this.balance);
+      visibleBalance = await balanceElement.getText();
+    } catch {
+      // Balance element not present.
+    }
+
+    let state: Record<string, unknown> | undefined;
+    try {
+      state = (await getCleanAppState(this.driver))?.metamask;
+    } catch {
+      // State hooks unavailable.
+    }
+
+    console.log(
+      `Expected balance ${expectedBalance} ${symbol} not displayed after ${attempts} refresh attempts.`,
+      JSON.stringify({
+        visibleBalance,
+        assetsBalance: state?.assetsBalance,
+        assetsInfoKeys: Object.keys(
+          (state?.assetsInfo as Record<string, unknown>) ?? {},
+        ),
+        conversionRates: state?.conversionRates,
+      }),
+    );
   }
 
   /**
