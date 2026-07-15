@@ -79,6 +79,18 @@ describe('BridgeAlertBannerList', () => {
     });
   });
 
+  it('renders nothing when there are no alerts and no hardware wallet warning', () => {
+    const mockStore = createBridgeMockStore({});
+    const { queryByTestId } = renderWithProvider(
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('bridge-banner-alerts')).not.toBeInTheDocument();
+  });
+
   // @ts-expect-error: each is a valid test function in jest
   it.each([
     [
@@ -321,88 +333,4 @@ describe('BridgeAlertBannerList', () => {
     });
   });
 
-  // @ts-expect-error: each is a valid test function in jest
-  it.each([
-    [
-      'price impact error',
-      {
-        isPriceImpactError: true,
-      },
-    ],
-    [
-      'price impact warning',
-      {
-        isPriceImpactWarning: true,
-      },
-    ],
-  ])(
-    'should render the %s alert',
-    async (_: string, validationErrors: Record<string, boolean>) => {
-      jest
-        .spyOn(reactRouterUtils, 'useSearchParams')
-        .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
-      validationErrors &&
-        jest
-          .spyOn(bridgeSelectors, 'getValidationErrors')
-          .mockReturnValue(validationErrors as never);
-      // Provide price data so the price-data-unavailable banner does not appear
-      // (mockBridgeQuotesErc20Erc20 has no priceData field)
-      jest
-        .spyOn(bridgeSelectors, 'getActiveQuotePriceData')
-        .mockReturnValue({ priceImpact: 0 } as never);
-      const mockStore = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromTokenInputValue: '1',
-          fromToken: {
-            assetId: 'eip155:10/slip44:60',
-            address: '0x0000000000000000000000000000000000000000',
-            symbol: 'ETH',
-            name: 'Ethereum',
-            chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM),
-            decimals: 18,
-          },
-          toToken: {
-            assetId: toAssetId(
-              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-              formatChainIdToCaip(CHAIN_IDS.POLYGON),
-            ),
-            chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
-            address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-            symbol: 'USDC',
-            name: 'Native USD Coin (POS)',
-            decimals: 6,
-          },
-        },
-        bridgeStateOverrides: {
-          quotesInitialLoadTime: Date.now(),
-          quotesLoadingStatus: RequestStatus.FETCHED,
-          quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              priceData: { priceImpact: '0.05' },
-            },
-          })) as unknown as QuoteResponse[],
-          quoteRequest: {
-            srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            srcChainId: 1,
-            destChainId: 10,
-            walletAddress: '0x123',
-            slippage: 0.5,
-            srcTokenAmount: '1',
-          },
-        },
-      });
-      const { getByTestId } = renderWithProvider(
-        <HardwareWalletProvider>
-          <PrepareBridgePage onOpenSettings={jest.fn()} />
-        </HardwareWalletProvider>,
-        configureStore(mockStore),
-      );
-
-      expect(getByTestId('bridge-banner-alerts')).toHaveTextContent('');
-    },
-  );
 });

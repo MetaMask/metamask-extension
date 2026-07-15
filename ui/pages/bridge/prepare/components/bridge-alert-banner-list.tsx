@@ -93,6 +93,15 @@ export const BridgeAlertBannerList = ({
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
 
+  const showHardwareWalletAlert =
+    isUsingHardwareWallet && isTxSubmittable && hardwareWalletName && activeQuote;
+  const visibleAlerts = isValidQuoteRequest(quoteParams, false)
+    ? bannerAlerts.filter((alert) => alert && alertVisibility[alert.id] !== false)
+    : [];
+  if (!showHardwareWalletAlert && visibleAlerts.length === 0) {
+    return null;
+  }
+
   // Alert banners
   return (
     <>
@@ -104,49 +113,43 @@ export const BridgeAlertBannerList = ({
         backgroundColor={BackgroundColor.backgroundDefault}
         data-testid="bridge-banner-alerts"
       >
-        {isUsingHardwareWallet &&
-          isTxSubmittable &&
-          hardwareWalletName &&
-          activeQuote && (
-            <BannerAlert title={t('hardwareWalletSubmissionWarningTitle')}>
-              <ul style={{ listStyle: 'disc' }}>
-                <li>
-                  <Text variant={TextVariant.BodyMd}>
-                    {t('hardwareWalletSubmissionWarningStep1', [
-                      hardwareWalletName,
-                    ])}
-                  </Text>
-                </li>
-                <li>
-                  <Text variant={TextVariant.BodyMd}>
-                    {t('hardwareWalletSubmissionWarningStep2', [
-                      hardwareWalletName,
-                    ])}
-                  </Text>
-                </li>
-              </ul>
-            </BannerAlert>
-          )}
+        {showHardwareWalletAlert && (
+          <BannerAlert title={t('hardwareWalletSubmissionWarningTitle')}>
+            <ul style={{ listStyle: 'disc' }}>
+              <li>
+                <Text variant={TextVariant.BodyMd}>
+                  {t('hardwareWalletSubmissionWarningStep1', [
+                    hardwareWalletName,
+                  ])}
+                </Text>
+              </li>
+              <li>
+                <Text variant={TextVariant.BodyMd}>
+                  {t('hardwareWalletSubmissionWarningStep2', [
+                    hardwareWalletName,
+                  ])}
+                </Text>
+              </li>
+            </ul>
+          </BannerAlert>
+        )}
 
-        {isValidQuoteRequest(quoteParams, false) &&
-          bannerAlerts
-            .filter((alert) => alert && alertVisibility[alert.id] !== false)
-            .map((alert, index: number) => {
-              let onClose: (() => void) | undefined;
-              if (alert.openModalOnClick) {
-                onClose = () => setModalAlertId(alert.id);
-              } else if (alert.isDismissable) {
-                onClose = () => dismissAlert(alert.id);
-              }
+        {visibleAlerts.map((alert, index: number) => {
+          let onClose: (() => void) | undefined;
+          if (alert.openModalOnClick) {
+            onClose = () => setModalAlertId(alert.id);
+          } else if (alert.isDismissable) {
+            onClose = () => dismissAlert(alert.id);
+          }
 
-              return (
-                <LocalBannerAlert
-                  key={`${alert.id}-${index}`}
-                  alert={alert}
-                  onClose={onClose}
-                />
-              );
-            })}
+          return (
+            <LocalBannerAlert
+              key={`${alert.id}-${index}`}
+              alert={alert}
+              onClose={onClose}
+            />
+          );
+        })}
       </Column>
 
       <BridgeAlertModal
