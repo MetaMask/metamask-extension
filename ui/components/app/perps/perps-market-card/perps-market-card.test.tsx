@@ -49,7 +49,6 @@ describe('PerpsMarketCard', () => {
     expect(
       screen.getByText(messages.networkNameBitcoin.message),
     ).toBeInTheDocument();
-    expect(screen.queryByText('BTC')).not.toBeInTheDocument();
   });
 
   it('shows only the ticker when the full asset names flag is disabled', () => {
@@ -59,6 +58,66 @@ describe('PerpsMarketCard', () => {
     expect(
       screen.queryByText(messages.networkNameBitcoin.message),
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('perps-market-card-ticker-suffix'),
+    ).not.toBeInTheDocument();
+  });
+
+  describe('ticker suffix next to the volume', () => {
+    it('shows the ticker next to the volume when the full name is displayed', () => {
+      renderWithProvider(
+        <PerpsMarketCard {...defaultProps} />,
+        mockStoreWithFullNames,
+      );
+
+      expect(
+        screen.getByTestId('perps-market-card-ticker-suffix'),
+      ).toHaveTextContent('BTC');
+      expect(screen.getByText('$1.2B')).toBeInTheDocument();
+    });
+
+    it('does not show a ticker suffix when there is no volume to attach it to', () => {
+      renderWithProvider(
+        <PerpsMarketCard {...defaultProps} volume={undefined} />,
+        mockStoreWithFullNames,
+      );
+
+      expect(
+        screen.queryByTestId('perps-market-card-ticker-suffix'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('strips the provider prefix from the ticker suffix for HIP-3 markets', () => {
+      renderWithProvider(
+        <PerpsMarketCard
+          {...defaultProps}
+          symbol="xyz:TSLA"
+          name="Tesla"
+          data-testid="perps-market-card-xyz-TSLA"
+        />,
+        mockStoreWithFullNames,
+      );
+
+      expect(
+        screen.getByTestId('perps-market-card-ticker-suffix'),
+      ).toHaveTextContent('TSLA');
+    });
+
+    it('does not show a duplicate ticker suffix for HIP-3 bare symbol names', () => {
+      renderWithProvider(
+        <PerpsMarketCard
+          {...defaultProps}
+          symbol="xyz:AAPL"
+          name="AAPL"
+          data-testid="perps-market-card-xyz-AAPL"
+        />,
+        mockStoreWithFullNames,
+      );
+
+      expect(
+        screen.queryByTestId('perps-market-card-ticker-suffix'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('calls onClick with the symbol when clicked', () => {

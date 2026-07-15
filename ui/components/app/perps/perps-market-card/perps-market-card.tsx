@@ -49,6 +49,11 @@ export const PerpsMarketCard = ({
   const displaySymbol = getDisplaySymbol(
     showFullAssetNames ? name || symbol : symbol,
   );
+  const displayTicker = getDisplaySymbol(symbol);
+  // Only needed when the title above is showing a full name rather than the
+  // ticker itself; also guards HIP-3 markets where the resolved name equals
+  // the bare ticker, which would otherwise duplicate it.
+  const showTickerSuffix = displaySymbol !== displayTicker;
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);
   const changeColor = getChangeColor(displayChange24hPercent);
 
@@ -93,9 +98,32 @@ export const PerpsMarketCard = ({
           )}
         </Box>
         {volume ? (
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {volume}
-          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
+            {showTickerSuffix && (
+              <>
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                  data-testid="perps-market-card-ticker-suffix"
+                >
+                  {displayTicker}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {'\u00B7'}
+                </Text>
+              </>
+            )}
+            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              {volume}
+            </Text>
+          </Box>
         ) : null}
       </Box>
       <Box
