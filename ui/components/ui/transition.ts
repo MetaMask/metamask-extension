@@ -1,4 +1,3 @@
-import { flushSync } from 'react-dom';
 import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 
@@ -22,7 +21,7 @@ const startTransition = (
     return;
   }
   document.documentElement.dataset.pageTransition = direction;
-  const transition = document.startViewTransition(() => flushSync(callback));
+  const transition = document.startViewTransition(callback);
   transition.finished.finally(() => {
     delete document.documentElement.dataset.pageTransition;
   });
