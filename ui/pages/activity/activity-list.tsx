@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Box, Text } from '@metamask/design-system-react';
+import { useDeferredValue } from '../../hooks/useDeferredValue';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
@@ -40,10 +41,11 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const scrollContainerRef = useScrollContainer();
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
+  const deferredNetworks = useDeferredValue(networks);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const filters = filter ?? { networks: networks ?? [] };
+  const filters = filter ?? { networks: deferredNetworks ?? [] };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);

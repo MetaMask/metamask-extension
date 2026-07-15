@@ -336,7 +336,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     iconName: IconName.SwapVertical,
   },
 
-  // --- Sync Accounts tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
+  // --- Sync Accounts tab (only when QR_SYNC_ENABLED=true) ---
   ...(getIsAddDeviceSyncEnabled()
     ? {
         [SYNC_ACCOUNTS_ROUTE]: {
