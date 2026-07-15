@@ -55,15 +55,15 @@ sequenceDiagram
 
 ### UI phases (`QR_SYNC_PHASES`)
 
-| Phase | User sees | Trigger |
-| ----- | --------- | ------- |
-| `idle` / `displaying-qr` | QR code to scan | `createSession()` |
-| `awaiting-otp-input` | OTP entry | Mobile scanned QR |
-| `awaiting-sync-offer` | Loading (“validating…”) | OTP submitted |
-| `reviewing-sync-offer` | Password → wallet picker | Mobile sends `sync-offer` |
-| `awaiting-sync-completion` | Loading (“syncing…”) | `syncAccounts()` sent `sync-ready` |
-| `completed` | Success summary | Mobile sends `sync-completed` |
-| `failed` / `cancelled` | Error or peer cancel | Timeout, disconnect, user/mobile cancel |
+| Phase                      | User sees                | Trigger                                 |
+| -------------------------- | ------------------------ | --------------------------------------- |
+| `idle` / `displaying-qr`   | QR code to scan          | `createSession()`                       |
+| `awaiting-otp-input`       | OTP entry                | Mobile scanned QR                       |
+| `awaiting-sync-offer`      | Loading (“validating…”)  | OTP submitted                           |
+| `reviewing-sync-offer`     | Password → wallet picker | Mobile sends `sync-offer`               |
+| `awaiting-sync-completion` | Loading (“syncing…”)     | `syncAccounts()` sent `sync-ready`      |
+| `completed`                | Success summary          | Mobile sends `sync-completed`           |
+| `failed` / `cancelled`     | Error or peer cancel     | Timeout, disconnect, user/mobile cancel |
 
 Phases are defined in `shared/constants/qr-sync.ts`. The UI maps them in `ui/pages/settings/sync-accounts/sync-accounts-settings.tsx`.
 
@@ -103,11 +103,11 @@ QR Sync splits **session transport** from **wallet export assembly**:
 
 QR Sync is gated at build time by `QR_SYNC_ENABLED`.
 
-| Setting | Location | Default |
-| ------- | -------- | ------- |
-| Build flag | `.metamaskrc` → `QR_SYNC_ENABLED='true'` | `false` in `.metamaskrc.dist` |
-| Runtime check | `getIsQrSyncEnabled()` in `shared/lib/environment.ts` | Compile-time `process.env.QR_SYNC_ENABLED === 'true'` |
-| Settings visibility | `ui/pages/settings/settings-registry.ts` | Sync tab only when flag is on |
+| Setting             | Location                                              | Default                                               |
+| ------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
+| Build flag          | `.metamaskrc` → `QR_SYNC_ENABLED='true'`              | `false` in `.metamaskrc.dist`                         |
+| Runtime check       | `getIsQrSyncEnabled()` in `shared/lib/environment.ts` | Compile-time `process.env.QR_SYNC_ENABLED === 'true'` |
+| Settings visibility | `ui/pages/settings/settings-registry.ts`              | Sync tab only when flag is on                         |
 
 **Local development**
 
@@ -163,24 +163,24 @@ Defined in `app/scripts/controllers/qr-sync/types.ts` as `WalletExportEntry[]` (
 
 ### Encoding rules
 
-| Field | Encoding |
-| ----- | -------- |
-| `mnemonic` | Wordlist indices → UTF-8 space-separated words → base64 |
-| `privateKey` | UTF-8 hex string (`0x…`) → base64 |
+| Field        | Encoding                                                |
+| ------------ | ------------------------------------------------------- |
+| `mnemonic`   | Wordlist indices → UTF-8 space-separated words → base64 |
+| `privateKey` | UTF-8 hex string (`0x…`) → base64                       |
 
 Encoding is implemented as private methods on `QrSyncDataService` (`#encodeMnemonicForWalletExport`, `#encodePrivateKeyForWalletExport`), using `convertEnglishWordlistIndicesToCodepoints` and `@metamask/utils` base64 helpers.
 
 ### Design decisions (do not change without mobile alignment)
 
-| Decision | Rationale |
-| -------- | --------- |
-| No `sel` / selection bitmap in payload | User already chose accounts in extension UI; mobile imports exactly what is sent |
-| No `address` fields on export entries | User verifies correctness manually on mobile |
-| Omit `hidden` / `pinned` when `false` | Smaller payload |
-| Omit `isPrimary` when not primary | Only one wallet should have `isPrimary: true` |
-| `deadline` on MWP envelope, not nested | Same level as `type` and `version` |
-| One `Mnemonic` entry per entropy source (SRP) | Multiple HD keyrings → multiple mnemonic entries, each with its own `groups[]` |
-| One `PrivateKey` entry per imported account | Each simple-key-pair account is its own top-level entry |
+| Decision                                      | Rationale                                                                        |
+| --------------------------------------------- | -------------------------------------------------------------------------------- |
+| No `sel` / selection bitmap in payload        | User already chose accounts in extension UI; mobile imports exactly what is sent |
+| No `address` fields on export entries         | User verifies correctness manually on mobile                                     |
+| Omit `hidden` / `pinned` when `false`         | Smaller payload                                                                  |
+| Omit `isPrimary` when not primary             | Only one wallet should have `isPrimary: true`                                    |
+| `deadline` on MWP envelope, not nested        | Same level as `type` and `version`                                               |
+| One `Mnemonic` entry per entropy source (SRP) | Multiple HD keyrings → multiple mnemonic entries, each with its own `groups[]`   |
+| One `PrivateKey` entry per imported account   | Each simple-key-pair account is its own top-level entry                          |
 
 ---
 
@@ -188,13 +188,13 @@ Encoding is implemented as private methods on `QrSyncDataService` (`#encodeMnemo
 
 The wallet picker reads from Redux account tree (`getAccountTree` selector).
 
-| `AccountWalletType` | Typical contents | Exportable? | Shown in picker? |
-| ------------------- | ---------------- | ----------- | ---------------- |
-| `AccountWalletType.Entropy` | HD / SRP wallets (multichain tree) | **Yes** → `Mnemonic` | **Yes** (whole wallet) |
-| `AccountWalletType.Keyring` + `KeyringTypes.hd` | HD keyring wallets | **Yes** → `Mnemonic` | **Yes** (whole wallet) |
-| `AccountWalletType.Keyring` + `KeyringTypes.simple` | Imported private-key accounts | **Yes** → `PrivateKey` | **Yes** (whole wallet) |
-| `Keyring` (hardware) | Ledger, Trezor, … | **No** | **Hidden** |
-| `Snap` | Snap-managed wallets | **No** | **Hidden** |
+| `AccountWalletType`                                 | Typical contents                   | Exportable?            | Shown in picker?       |
+| --------------------------------------------------- | ---------------------------------- | ---------------------- | ---------------------- |
+| `AccountWalletType.Entropy`                         | HD / SRP wallets (multichain tree) | **Yes** → `Mnemonic`   | **Yes** (whole wallet) |
+| `AccountWalletType.Keyring` + `KeyringTypes.hd`     | HD keyring wallets                 | **Yes** → `Mnemonic`   | **Yes** (whole wallet) |
+| `AccountWalletType.Keyring` + `KeyringTypes.simple` | Imported private-key accounts      | **Yes** → `PrivateKey` | **Yes** (whole wallet) |
+| `Keyring` (hardware)                                | Ledger, Trezor, …                  | **No**                 | **Hidden**             |
+| `Snap`                                              | Snap-managed wallets               | **No**                 | **Hidden**             |
 
 Within an entropy wallet, each **account group** maps to one HD derivation index:
 
@@ -216,12 +216,12 @@ Imported private-key accounts export via `KeyringController:exportAccount` → `
 
 **File:** `app/scripts/controllers/qr-sync/qr-sync-controller.ts`
 
-| Method | Responsibility |
-| ------ | -------------- |
-| `createSession()` | Connect MWP client, show QR payload |
-| `submitOtp(otp)` | Validate OTP, wait for `sync-offer` |
+| Method                                            | Responsibility                                                        |
+| ------------------------------------------------- | --------------------------------------------------------------------- |
+| `createSession()`                                 | Connect MWP client, show QR payload                                   |
+| `submitOtp(otp)`                                  | Validate OTP, wait for `sync-offer`                                   |
 | `syncAccounts(password, selectedAccountGroupIds)` | Build export via data service, send `sync-ready`, wait for completion |
-| `cancelOtp()` / `cancelSync()` | User-initiated cancel |
+| `cancelOtp()` / `cancelSync()`                    | User-initiated cancel                                                 |
 
 `syncAccounts` delegates export assembly:
 
@@ -253,9 +253,9 @@ Then sends `sync-ready` with `deadline = now + SYNC_COMPLETION_TIMEOUT` and tran
 
 ### Messenger delegation
 
-| Messenger | Delegated actions |
-| --------- | ----------------- |
-| `qr-sync-controller-messenger.ts` | `QrSyncDataService:buildWalletExportEntries` |
+| Messenger                           | Delegated actions                                                                                                                                                                |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `qr-sync-controller-messenger.ts`   | `QrSyncDataService:buildWalletExportEntries`                                                                                                                                     |
 | `qr-sync-data-service-messenger.ts` | `KeyringController:withKeyringV2`, `exportSeedPhrase`, `exportAccount`; `AccountTreeController:getAccountGroupObject`, `getAccountWalletObject`; `AccountsController:getAccount` |
 
 ---
@@ -264,14 +264,14 @@ Then sends `sync-ready` with `deadline = now + SYNC_COMPLETION_TIMEOUT` and tran
 
 **Directory:** `ui/pages/settings/sync-accounts/` (replaces the earlier `add-device-tab` naming).
 
-| Step | Component | Notes |
-| ---- | --------- | ----- |
-| QR scan | `components/qr-code-scan.tsx` | Shown in `idle` / `displaying-qr` |
-| OTP | `components/enter-verification-code.tsx` | Calls `QrSyncController:submitOtp` |
-| Password | `components/enter-password.tsx` | Required before wallet picker |
-| Wallet picker | `components/add-wallets.tsx` + `wallet-selection-list.tsx` | Filters syncable wallets; whole-wallet checkboxes |
-| Syncing | `components/loading-step.tsx` | After confirm |
-| Success / error | `components/success.tsx`, `sync-error.tsx` | Terminal states |
+| Step            | Component                                                  | Notes                                             |
+| --------------- | ---------------------------------------------------------- | ------------------------------------------------- |
+| QR scan         | `components/qr-code-scan.tsx`                              | Shown in `idle` / `displaying-qr`                 |
+| OTP             | `components/enter-verification-code.tsx`                   | Calls `QrSyncController:submitOtp`                |
+| Password        | `components/enter-password.tsx`                            | Required before wallet picker                     |
+| Wallet picker   | `components/add-wallets.tsx` + `wallet-selection-list.tsx` | Filters syncable wallets; whole-wallet checkboxes |
+| Syncing         | `components/loading-step.tsx`                              | After confirm                                     |
+| Success / error | `components/success.tsx`, `sync-error.tsx`                 | Terminal states                                   |
 
 **Wallet filtering** (`utils.ts`):
 
@@ -305,15 +305,15 @@ type AddDeviceSyncRequest = {
 
 Persisted fields (see `metadata.ts`):
 
-| Field | Purpose |
-| ----- | ------- |
-| `qrSyncPhase` | Current UI step |
-| `qrSyncConnectionStatus` | MWP transport status |
-| `qrSyncError` | `{ code, message }` for failures |
-| `qrSyncQrPayload` | QR content for display |
-| `syncOffer` | Parsed mobile `sync-offer` |
-| `qrSyncSelectedAccountGroupIds` | Groups sent in last `sync-ready` |
-| `qrSyncCreatedAt` / `qrSyncUpdatedAt` | Timestamps |
+| Field                                 | Purpose                          |
+| ------------------------------------- | -------------------------------- |
+| `qrSyncPhase`                         | Current UI step                  |
+| `qrSyncConnectionStatus`              | MWP transport status             |
+| `qrSyncError`                         | `{ code, message }` for failures |
+| `qrSyncQrPayload`                     | QR content for display           |
+| `syncOffer`                           | Parsed mobile `sync-offer`       |
+| `qrSyncSelectedAccountGroupIds`       | Groups sent in last `sync-ready` |
+| `qrSyncCreatedAt` / `qrSyncUpdatedAt` | Timestamps                       |
 
 ### UI selectors
 
@@ -369,39 +369,39 @@ Summary for PMs:
 
 ### Core implementation
 
-| File | Purpose |
-| ---- | ------- |
-| `app/scripts/controllers/qr-sync/qr-sync-controller.ts` | MWP session lifecycle, `syncAccounts`, messaging |
-| `app/scripts/controllers/qr-sync/qr-sync-data-service.ts` | Wallet export payload assembly |
-| `app/scripts/controllers/qr-sync/types.ts` | Payload types, messenger types, controller state |
-| `app/scripts/controllers/qr-sync/constants.ts` | Message version, action types, error messages |
-| `app/scripts/controllers/qr-sync/utils.ts` | `isQrSyncOffer`, `parseMwpError`, timeouts |
-| `app/scripts/controllers/qr-sync/metadata.ts` | Controller state defaults + metadata |
-| `app/scripts/messenger-client-init/messengers/qr-sync-controller-messenger.ts` | Controller messenger |
-| `app/scripts/messenger-client-init/messengers/qr-sync-data-service-messenger.ts` | Data service messenger |
+| File                                                                             | Purpose                                          |
+| -------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `app/scripts/controllers/qr-sync/qr-sync-controller.ts`                          | MWP session lifecycle, `syncAccounts`, messaging |
+| `app/scripts/controllers/qr-sync/qr-sync-data-service.ts`                        | Wallet export payload assembly                   |
+| `app/scripts/controllers/qr-sync/types.ts`                                       | Payload types, messenger types, controller state |
+| `app/scripts/controllers/qr-sync/constants.ts`                                   | Message version, action types, error messages    |
+| `app/scripts/controllers/qr-sync/utils.ts`                                       | `isQrSyncOffer`, `parseMwpError`, timeouts       |
+| `app/scripts/controllers/qr-sync/metadata.ts`                                    | Controller state defaults + metadata             |
+| `app/scripts/messenger-client-init/messengers/qr-sync-controller-messenger.ts`   | Controller messenger                             |
+| `app/scripts/messenger-client-init/messengers/qr-sync-data-service-messenger.ts` | Data service messenger                           |
 
 ### UI
 
-| File | Purpose |
-| ---- | ------- |
-| `ui/pages/settings/sync-accounts/sync-accounts-settings.tsx` | Phase router, `syncAccounts` call |
-| `ui/pages/settings/sync-accounts/components/add-wallets.tsx` | Wallet picker screen |
-| `ui/pages/settings/sync-accounts/components/wallet-selection-list.tsx` | Whole-wallet selection list |
-| `ui/pages/settings/sync-accounts/utils.ts` | `filterSyncableWallets`, `getSyncSummaryCounts` |
-| `ui/selectors/qr-sync/qr-sync.ts` | Redux selectors |
-| `ui/selectors/multichain-accounts/account-tree.ts` | Account tree for picker |
+| File                                                                   | Purpose                                         |
+| ---------------------------------------------------------------------- | ----------------------------------------------- |
+| `ui/pages/settings/sync-accounts/sync-accounts-settings.tsx`           | Phase router, `syncAccounts` call               |
+| `ui/pages/settings/sync-accounts/components/add-wallets.tsx`           | Wallet picker screen                            |
+| `ui/pages/settings/sync-accounts/components/wallet-selection-list.tsx` | Whole-wallet selection list                     |
+| `ui/pages/settings/sync-accounts/utils.ts`                             | `filterSyncableWallets`, `getSyncSummaryCounts` |
+| `ui/selectors/qr-sync/qr-sync.ts`                                      | Redux selectors                                 |
+| `ui/selectors/multichain-accounts/account-tree.ts`                     | Account tree for picker                         |
 
 ### Shared
 
-| File | Purpose |
-| ---- | ------- |
+| File                          | Purpose                       |
+| ----------------------------- | ----------------------------- |
 | `shared/constants/qr-sync.ts` | Phases, error codes, timeouts |
-| `shared/lib/environment.ts` | `getIsAddDeviceSyncEnabled()` |
+| `shared/lib/environment.ts`   | `getIsAddDeviceSyncEnabled()` |
 
 ### Documentation
 
-| File | Purpose |
-| ---- | ------- |
+| File                     | Purpose                |
+| ------------------------ | ---------------------- |
 | `docs/qr-sync/SENTRY.md` | Sentry reporting rules |
 
 ### Dependencies
@@ -489,12 +489,12 @@ yarn test:e2e:single test/e2e/tests/qr-sync/ --browser=chrome
 
 Follow `test/e2e/AGENTS.md` and `.agents/skills/mms-e2e-testing/SKILL.md` when adding scenarios.
 
-| File | Purpose |
-| ---- | ------- |
-| `test/e2e/tests/qr-sync/qr-sync.spec.ts` | Wallet export happy paths |
-| `test/e2e/tests/qr-sync/qr-sync-phases.spec.ts` | Phase UI, timeouts, cancel/restart |
-| `test/e2e/page-objects/flows/qr-sync.flow.ts` | Shared navigation and completion helpers |
-| `test/e2e/helpers/qr-sync/mobile-wallet-simulator.ts` | Simulates mobile MWP messages in tests |
+| File                                                  | Purpose                                  |
+| ----------------------------------------------------- | ---------------------------------------- |
+| `test/e2e/tests/qr-sync/qr-sync.spec.ts`              | Wallet export happy paths                |
+| `test/e2e/tests/qr-sync/qr-sync-phases.spec.ts`       | Phase UI, timeouts, cancel/restart       |
+| `test/e2e/page-objects/flows/qr-sync.flow.ts`         | Shared navigation and completion helpers |
+| `test/e2e/helpers/qr-sync/mobile-wallet-simulator.ts` | Simulates mobile MWP messages in tests   |
 
 ### Manual QA (pending sign-off)
 
