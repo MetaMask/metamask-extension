@@ -125,6 +125,20 @@ export type LegacyBackgroundApiServiceGetCodeAction = {
 };
 
 /**
+ * Checks whether a delegation has been disabled on-chain by performing an
+ * `eth_call` against the delegation manager contract.
+ *
+ * @param delegationManagerAddress - The delegation manager contract address.
+ * @param delegationHash - The hash of the delegation to check.
+ * @param networkClientId - The ID of the network client to use for the request.
+ * @returns `true` if the delegation is disabled, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceCheckDelegationDisabledAction = {
+  type: `LegacyBackgroundApiService:checkDelegationDisabled`;
+  handler: LegacyBackgroundApiService['checkDelegationDisabled'];
+};
+
+/**
  * Estimates the gas for a given transaction using the currently selected
  * network client.
  *
@@ -135,6 +149,23 @@ export type LegacyBackgroundApiServiceGetCodeAction = {
 export type LegacyBackgroundApiServiceEstimateGasAction = {
   type: `LegacyBackgroundApiService:estimateGas`;
   handler: LegacyBackgroundApiService['estimateGas'];
+};
+
+/**
+ * Decodes the data of a transaction using the currently selected network
+ * client's provider.
+ *
+ * @param request - The transaction decode request.
+ * @param request.transactionData - The transaction data to decode.
+ * @param request.contractAddress - The address of the contract the
+ * transaction interacts with.
+ * @param request.chainId - The chain ID of the network the transaction is on.
+ * @returns The decoded transaction data, or `undefined` if it could not be
+ * decoded.
+ */
+export type LegacyBackgroundApiServiceDecodeTransactionDataAction = {
+  type: `LegacyBackgroundApiService:decodeTransactionData`;
+  handler: LegacyBackgroundApiService['decodeTransactionData'];
 };
 
 /**
@@ -431,6 +462,18 @@ export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
 };
 
 /**
+ * Capture an artificial error in a timeout handler for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+ * use this for handling errors.
+ */
+export type LegacyBackgroundApiServiceCaptureTestErrorAction = {
+  type: `LegacyBackgroundApiService:captureTestError`;
+  handler: LegacyBackgroundApiService['captureTestError'];
+};
+
+/**
  * Throw an artificial error in a timeout handler for testing purposes.
  *
  * @param message - The error message.
@@ -440,6 +483,17 @@ export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
 export type LegacyBackgroundApiServiceThrowTestErrorAction = {
   type: `LegacyBackgroundApiService:throwTestError`;
   handler: LegacyBackgroundApiService['throwTestError'];
+};
+
+/**
+ * Determines if the transaction relay supports the given chain.
+ *
+ * @param chainId - The chain ID to check for relay support.
+ * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceIsRelaySupportedAction = {
+  type: `LegacyBackgroundApiService:isRelaySupported`;
+  handler: LegacyBackgroundApiService['isRelaySupported'];
 };
 
 /**
@@ -457,7 +511,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction
+  | LegacyBackgroundApiServiceCheckDelegationDisabledAction
   | LegacyBackgroundApiServiceEstimateGasAction
+  | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
@@ -483,4 +539,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
-  | LegacyBackgroundApiServiceThrowTestErrorAction;
+  | LegacyBackgroundApiServiceCaptureTestErrorAction
+  | LegacyBackgroundApiServiceThrowTestErrorAction
+  | LegacyBackgroundApiServiceIsRelaySupportedAction;

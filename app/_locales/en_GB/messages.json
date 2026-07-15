@@ -385,7 +385,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "Converted $1",
+    "message": "Converted to $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -1143,9 +1143,6 @@
   "addCustomToken": {
     "message": "Add a custom token"
   },
-  "addDevice": {
-    "message": "Sync with mobile"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1175,7 +1172,7 @@
     "message": "Add friends and addresses you trust"
   },
   "addFromChainlist": {
-    "message": "Add from Chainlist"
+    "message": "Add from ChainList"
   },
   "addFunds": {
     "message": "Add funds"
@@ -1232,6 +1229,27 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "add_device_error_connection": {
+    "message": "We couldn't keep a secure connection with your phone. Check your internet connection and try again."
+  },
+  "add_device_error_expired": {
+    "message": "This sync session expired. Start again to generate a new QR code."
+  },
+  "add_device_error_generic": {
+    "message": "Something went wrong while syncing with your phone. Please try again."
+  },
+  "add_device_error_invalid_code": {
+    "message": "The verification code was incorrect. Start again to try syncing your phone."
+  },
+  "add_device_error_rejected": {
+    "message": "The sync was cancelled on your phone. Start again to try syncing."
+  },
+  "add_device_error_sync_failed": {
+    "message": "We couldn't finish syncing your accounts to your phone. Please try again."
+  },
+  "add_device_error_title": {
+    "message": "Sync couldn't be completed"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 imported accounts were synced to your phone.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1273,6 +1291,9 @@
   "add_device_syncing_title": {
     "message": "Importing accounts"
   },
+  "add_device_try_again": {
+    "message": "Try again"
+  },
   "add_device_validating_desc": {
     "message": "Establishing a secure, encrypted connection with your phone."
   },
@@ -1290,6 +1311,10 @@
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "Includes $1 for added protection",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Optional"
@@ -1675,8 +1700,20 @@
   "asset": {
     "message": "Asset"
   },
+  "assetActivate": {
+    "message": "Activate",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "Activate $1 on $2 to get started.",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "We could not fetch any historical data"
+  },
+  "assetInactive": {
+    "message": "Inactive",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "assetOptions": {
     "message": "Asset options"
@@ -2179,6 +2216,18 @@
   "bridgePriceImpactWarningTitle": {
     "message": "Price impact warning"
   },
+  "bridgeQrHardwareSignDisplayStepTitle": {
+    "message": "Step $1 of $2: Scan this QR code with your wallet",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
+  },
+  "bridgeQrHardwareSignLastStepTitle": {
+    "message": "Last step: Scan the QR code shown on your wallet",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
+  "bridgeQrHardwareSignStepTitle": {
+    "message": "Step $1 of $2: Scan the QR code shown on your wallet",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
+  },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "No quotes available. Try a smaller amount."
   },
@@ -2528,6 +2577,14 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
+  },
+  "chainlistLearnHowToStaySafe": {
+    "message": "Learn how to stay safe.",
+    "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
+  },
+  "chainlistNetworkDataSourceBanner": {
+    "message": "Network data comes from ChainList. Always verify before adding. $1",
+    "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
   },
   "chainlistNetworkDetails": {
     "message": "Symbol: $1 · ID: $2",
@@ -2996,6 +3053,9 @@
   "contractInteraction": {
     "message": "Contract interaction"
   },
+  "convertAgain": {
+    "message": "Convert again"
+  },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
   },
@@ -3252,6 +3312,12 @@
   "deepLinkQrPredictTitle": {
     "message": "Open Prediction Markets on mobile"
   },
+  "deepLinkQrTrendingDescription": {
+    "message": "Explore is available on MetaMask mobile. Scan this code with your mobile device to use it."
+  },
+  "deepLinkQrTrendingTitle": {
+    "message": "Open Explore on mobile"
+  },
   "deepLink_Caution": {
     "message": "Proceed with caution"
   },
@@ -3348,6 +3414,9 @@
   },
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
+  },
+  "deepLink_theTrendingPage": {
+    "message": "the Explore page"
   },
   "default": {
     "message": "Default"
@@ -3797,6 +3866,9 @@
   "enter_verification_code_expires_in": {
     "message": "Expires in $1s",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Too many incorrect attempts. Start with a new QR code."
   },
   "enter_your_password": {
     "message": "Enter your password"
@@ -4309,6 +4381,14 @@
   "hardwareAlmostThereTitle": {
     "message": "Almost there! Confirm on your device again",
     "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "hardwareApproveAmount": {
+    "message": "Approve $1 $2",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareApprovedAmount": {
+    "message": "Approved $1 $2",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
   },
   "hardwareDeviceDisconnected": {
     "message": "Reconnect your device and try again",
@@ -7159,6 +7239,18 @@
   "perpsFees": {
     "message": "Fees"
   },
+  "perpsFeesTooltipHyperliquidFee": {
+    "message": "Hyperliquid fee",
+    "description": "Label for the Hyperliquid protocol fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipMetamaskFee": {
+    "message": "MetaMask fee",
+    "description": "Label for the MetaMask fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipProviderFee": {
+    "message": "Provider fee",
+    "description": "Fallback label for the protocol fee rate in the Perps order summary fees tooltip"
+  },
   "perpsFilterAll": {
     "message": "All"
   },
@@ -7253,6 +7345,10 @@
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
+  "perpsLiquidationPriceTooltip": {
+    "message": "If the price hits this point, you'll be liquidated and lose your margin. Higher leverage makes this more likely.",
+    "description": "Tooltip content for the liquidation price row on the Perps order summary"
+  },
   "perpsLong": {
     "message": "Long"
   },
@@ -7261,6 +7357,10 @@
   },
   "perpsMarginRiskWarning": {
     "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
+  },
+  "perpsMarginTooltip": {
+    "message": "Margin is the money you put in to open a trade. It acts as collateral, and it's the most you can lose on that trade.",
+    "description": "Tooltip content for the margin row on the Perps order summary"
   },
   "perpsMarket": {
     "message": "Market"
@@ -8129,9 +8229,6 @@
     "message": "Expires in $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Something went wrong scanning the QR code. Generate a new one to try again."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8196,6 +8293,33 @@
   },
   "quotedTotalCost": {
     "message": "Total cost: $1"
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "Please try again, or contact support if this keeps happening."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "We couldn’t verify your region"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Error loading tokens"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "No tokens available"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "We’re experiencing a service disruption. Please try again later."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "Buying is temporarily unavailable"
+  },
+  "rampsShowAllTokens": {
+    "message": "Show all tokens"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "Buying crypto isn’t supported in your region yet."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "Buying isn’t available here"
   },
   "rank": {
     "message": "Rank"
@@ -8916,6 +9040,10 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
+  },
+  "sendBundleHwGasPayment": {
+    "message": "Paying network fee with $1",
+    "description": "$1 is the symbol of the token being used to pay the network fee"
   },
   "sendSelectReceiveAsset": {
     "message": "Select asset to receive"
@@ -10061,6 +10189,18 @@
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
   },
+  "spendableBalance": {
+    "message": "Spendable"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "Reserved (locked)"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "Value"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "Total balance"
+  },
   "spender": {
     "message": "Spender"
   },
@@ -10292,6 +10432,18 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
+  },
+  "stellarClassicTrustlineAddError": {
+    "message": "Something went wrong while adding this trustline. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "Something went wrong while removing this trustline. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
+    "message": "You still have $1 $2 in this wallet. You must send or swap it all before deactivating this asset on Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "stillConnectingTo": {
     "message": "Still connecting to $1...",
@@ -10723,6 +10875,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
+  },
+  "syncAccounts": {
+    "message": "Sync with mobile"
   },
   "syncing": {
     "message": "Syncing..."
