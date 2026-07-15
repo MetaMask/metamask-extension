@@ -1298,7 +1298,7 @@ export const selectConversionRateByChainId = createSelector(
   },
 );
 
-export const selectNftsByChainId = createSelector(
+export const selectNftsByChainId = createParameterizedSelector(10)(
   getSelectedInternalAccount,
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
@@ -3004,7 +3004,8 @@ export function getTokenScanCache(state) {
  * @returns {Record<string, TokenScanCacheResult>}
  *
  */
-export const getTokenScanResultsForAddresses = createParameterizedSelector(30)(
+export const getTokenScanResultsForAddresses =
+  createParameterizedShallowEqualSelector(30)(
   getTokenScanCache,
   (_state, chainId) => chainId,
   (_state, _chainId, tokenAddresses) => tokenAddresses,
@@ -3025,7 +3026,7 @@ export const getTokenScanResultsForAddresses = createParameterizedSelector(30)(
 
     return results;
   },
-);
+  );
 
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
