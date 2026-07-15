@@ -1,5 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -63,8 +64,8 @@ export const NotificationDetailCopyButton = ({
       const otherNotificationProperties = () => {
         if (
           'notification_type' in notification &&
-          notification.notification_type === 'on-chain' &&
-          notification.payload?.chain_id
+          isOnChainNotification(notification) &&
+          notification.payload.chain_id
         ) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention

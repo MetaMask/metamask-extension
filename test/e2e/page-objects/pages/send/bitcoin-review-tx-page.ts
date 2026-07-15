@@ -19,6 +19,10 @@ class BitcoinReviewTxPage {
         this.cancelButton,
         this.confirmButton,
       ]);
+      await this.driver.waitForSelector({
+        text: 'Transaction request',
+        tag: 'h2',
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for bitcoin review tx page to be loaded',

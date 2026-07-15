@@ -1,9 +1,6 @@
 import React from 'react';
-import {
-  useTransactionDisplay,
-  type TransactionStatus,
-} from '../../../helpers/utils/transaction-display';
 import { toast, ToastContent as ToastContentBase } from '../../ui/toast/toast';
+import { useToastLabel } from './useToastLabel';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
@@ -11,6 +8,7 @@ type ToastContentOptions = {
   title?: string;
   description?: string;
   dataTestId?: string;
+  transactionId?: string;
 };
 
 export const ToastContent = ({
@@ -18,13 +16,15 @@ export const ToastContent = ({
   title,
   description,
   dataTestId,
-}: { status: TransactionStatus } & ToastContentOptions) => {
-  const { title: statusTitle } = useTransactionDisplay(status);
+  transactionId,
+}: { status: ToastStatus } & ToastContentOptions) => {
+  const { title: derivedTitle, description: derivedDescription } =
+    useToastLabel(status, transactionId);
 
   return (
     <ToastContentBase
-      title={title ?? statusTitle}
-      description={description}
+      title={title ?? derivedTitle}
+      description={description ?? derivedDescription}
       dataTestId={dataTestId}
     />
   );
