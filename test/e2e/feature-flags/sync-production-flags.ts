@@ -561,9 +561,7 @@ function extractEntryComments(content: string): Map<string, string> {
  *
  * @param content - Full registry file source
  */
-function extractIntraEntryComments(
-  content: string,
-): Map<string, string[]> {
+function extractIntraEntryComments(content: string): Map<string, string[]> {
   const result = new Map<string, string[]>();
   for (const block of extractRegistryEntryBlocks(content)) {
     const braceIndex = block.text.indexOf('{');
