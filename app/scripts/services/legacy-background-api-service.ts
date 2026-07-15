@@ -59,10 +59,6 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
-  NetworkEnablementControllerGetStateAction,
-  NetworkEnablementControllerRestoreEnabledNetworkMapAction,
-} from '@metamask/network-enablement-controller';
-import {
   PhishingControllerMaybeUpdateStateAction,
   PhishingControllerTestOriginAction,
 } from '@metamask/phishing-controller';
@@ -298,8 +294,6 @@ type AllowedActions =
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceResyncAccountsAction
-  | NetworkEnablementControllerGetStateAction
-  | NetworkEnablementControllerRestoreEnabledNetworkMapAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction

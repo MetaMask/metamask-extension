@@ -112,8 +112,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
-      'NetworkEnablementController:getState',
-      'NetworkEnablementController:restoreEnabledNetworkMap',
     ],
   });
 

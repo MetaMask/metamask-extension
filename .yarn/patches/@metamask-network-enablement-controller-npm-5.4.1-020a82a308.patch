@@ -1,88 +1,18 @@
-diff --git a/dist/NetworkEnablementController-method-action-types.d.cts b/dist/NetworkEnablementController-method-action-types.d.cts
-index e2183670445e2930473ae7299f387ad3b93c9dd5..4257b38b47b7a72c2edec8777d6e28e6456c07ea 100644
---- a/dist/NetworkEnablementController-method-action-types.d.cts
-+++ b/dist/NetworkEnablementController-method-action-types.d.cts
-@@ -2,7 +2,7 @@
-  * This file is auto generated.
-  * Do not edit manually.
-  */
--import type { NetworkEnablementController } from "./NetworkEnablementController.cjs";
-+import type { NetworkEnablementController } from "./NetworkEnablementController.mjs";
- /**
-  * Enables or disables a network for the user.
-  *
-@@ -117,6 +117,15 @@ export type NetworkEnablementControllerDisableNetworkAction = {
-     type: `NetworkEnablementController:disableNetwork`;
-     handler: NetworkEnablementController['disableNetwork'];
- };
-+/**
-+ * Restores the enabled network map to a previously snapshotted state.
-+ *
-+ * @param enabledNetworkMap - Previously snapshotted enabledNetworkMap.
-+ */
-+export type NetworkEnablementControllerRestoreEnabledNetworkMapAction = {
-+    type: `NetworkEnablementController:restoreEnabledNetworkMap`;
-+    handler: NetworkEnablementController['restoreEnabledNetworkMap'];
-+};
- /**
-  * Checks if a network is enabled.
-  *
-@@ -167,5 +176,5 @@ export type NetworkEnablementControllerListPopularNetworksAction = {
- /**
-  * Union of all NetworkEnablementController action types.
-  */
--export type NetworkEnablementControllerMethodActions = NetworkEnablementControllerEnableNetworkAction | NetworkEnablementControllerEnableNetworkInNamespaceAction | NetworkEnablementControllerEnableAllPopularNetworksAction | NetworkEnablementControllerInitAction | NetworkEnablementControllerInitNativeAssetIdentifiersAction | NetworkEnablementControllerDisableNetworkAction | NetworkEnablementControllerIsNetworkEnabledAction | NetworkEnablementControllerListPopularEvmNetworksAction | NetworkEnablementControllerListPopularMultichainNetworksAction | NetworkEnablementControllerListPopularNetworksAction;
--//# sourceMappingURL=NetworkEnablementController-method-action-types.d.cts.map
-\ No newline at end of file
-+export type NetworkEnablementControllerMethodActions = NetworkEnablementControllerEnableNetworkAction | NetworkEnablementControllerEnableNetworkInNamespaceAction | NetworkEnablementControllerEnableAllPopularNetworksAction | NetworkEnablementControllerInitAction | NetworkEnablementControllerInitNativeAssetIdentifiersAction | NetworkEnablementControllerDisableNetworkAction | NetworkEnablementControllerRestoreEnabledNetworkMapAction | NetworkEnablementControllerIsNetworkEnabledAction | NetworkEnablementControllerListPopularEvmNetworksAction | NetworkEnablementControllerListPopularMultichainNetworksAction | NetworkEnablementControllerListPopularNetworksAction;
-+//# sourceMappingURL=NetworkEnablementController-method-action-types.d.mts.map
-\ No newline at end of file
-diff --git a/dist/NetworkEnablementController-method-action-types.d.mts b/dist/NetworkEnablementController-method-action-types.d.mts
-index af87e69708f3fc15711c35c0e554db4c448a444f..4257b38b47b7a72c2edec8777d6e28e6456c07ea 100644
---- a/dist/NetworkEnablementController-method-action-types.d.mts
-+++ b/dist/NetworkEnablementController-method-action-types.d.mts
-@@ -117,6 +117,15 @@ export type NetworkEnablementControllerDisableNetworkAction = {
-     type: `NetworkEnablementController:disableNetwork`;
-     handler: NetworkEnablementController['disableNetwork'];
- };
-+/**
-+ * Restores the enabled network map to a previously snapshotted state.
-+ *
-+ * @param enabledNetworkMap - Previously snapshotted enabledNetworkMap.
-+ */
-+export type NetworkEnablementControllerRestoreEnabledNetworkMapAction = {
-+    type: `NetworkEnablementController:restoreEnabledNetworkMap`;
-+    handler: NetworkEnablementController['restoreEnabledNetworkMap'];
-+};
- /**
-  * Checks if a network is enabled.
-  *
-@@ -167,5 +176,5 @@ export type NetworkEnablementControllerListPopularNetworksAction = {
- /**
-  * Union of all NetworkEnablementController action types.
-  */
--export type NetworkEnablementControllerMethodActions = NetworkEnablementControllerEnableNetworkAction | NetworkEnablementControllerEnableNetworkInNamespaceAction | NetworkEnablementControllerEnableAllPopularNetworksAction | NetworkEnablementControllerInitAction | NetworkEnablementControllerInitNativeAssetIdentifiersAction | NetworkEnablementControllerDisableNetworkAction | NetworkEnablementControllerIsNetworkEnabledAction | NetworkEnablementControllerListPopularEvmNetworksAction | NetworkEnablementControllerListPopularMultichainNetworksAction | NetworkEnablementControllerListPopularNetworksAction;
-+export type NetworkEnablementControllerMethodActions = NetworkEnablementControllerEnableNetworkAction | NetworkEnablementControllerEnableNetworkInNamespaceAction | NetworkEnablementControllerEnableAllPopularNetworksAction | NetworkEnablementControllerInitAction | NetworkEnablementControllerInitNativeAssetIdentifiersAction | NetworkEnablementControllerDisableNetworkAction | NetworkEnablementControllerRestoreEnabledNetworkMapAction | NetworkEnablementControllerIsNetworkEnabledAction | NetworkEnablementControllerListPopularEvmNetworksAction | NetworkEnablementControllerListPopularMultichainNetworksAction | NetworkEnablementControllerListPopularNetworksAction;
- //# sourceMappingURL=NetworkEnablementController-method-action-types.d.mts.map
-\ No newline at end of file
 diff --git a/dist/NetworkEnablementController.cjs b/dist/NetworkEnablementController.cjs
-index 3f071f8a148e4d92ff319608ae124f99b00c3922..b60c050c20d97216dcd4ed26faa252a93d84aec4 100644
+index 3f071f8a148e4d92ff319608ae124f99b00c3922..1168c358c48121f7f8b301f7928a2f62683538c9 100644
 --- a/dist/NetworkEnablementController.cjs
 +++ b/dist/NetworkEnablementController.cjs
-@@ -21,6 +21,7 @@ const MESSENGER_EXPOSED_METHODS = [
-     'initNativeAssetIdentifiers',
-     'enableNetwork',
-     'disableNetwork',
-+    'restoreEnabledNetworkMap',
-     'enableNetworkInNamespace',
-     'enableAllPopularNetworks',
-     'isNetworkEnabled',
-@@ -408,6 +409,22 @@ class NetworkEnablementController extends base_controller_1.BaseController {
+@@ -408,6 +408,28 @@ class NetworkEnablementController extends base_controller_1.BaseController {
              state.enabledNetworkMap[namespace][storageKey] = false;
          });
      }
 +    /**
 +     * Restores the enabled network map to a previously snapshotted state.
++     *
++     * Not a general merge API: only updates keys already present in the current
++     * map. Missing snapshot values default to `false`. Intended for callers with
++     * direct controller access (e.g. extension) to undo `#onAddNetwork` filter
++     * switches when adding a network without changing the active selection.
 +     *
 +     * @param enabledNetworkMap - Previously snapshotted enabledNetworkMap.
 +     */
@@ -90,8 +20,9 @@ index 3f071f8a148e4d92ff319608ae124f99b00c3922..b60c050c20d97216dcd4ed26faa252a9
 +        this.update((state) => {
 +            Object.entries(state.enabledNetworkMap).forEach(([namespace, currentNetworks]) => {
 +                Object.keys(currentNetworks).forEach((chainId) => {
-+                    const previousValue = enabledNetworkMap[namespace]?.[chainId];
-+                    state.enabledNetworkMap[namespace][chainId] =
++                    const storageKey = chainId;
++                    const previousValue = enabledNetworkMap[namespace]?.[storageKey];
++                    state.enabledNetworkMap[namespace][storageKey] =
 +                        previousValue ?? false;
 +                });
 +            });
@@ -101,74 +32,64 @@ index 3f071f8a148e4d92ff319608ae124f99b00c3922..b60c050c20d97216dcd4ed26faa252a9
       * Checks if a network is enabled.
       *
 diff --git a/dist/NetworkEnablementController.d.cts b/dist/NetworkEnablementController.d.cts
-index d45edfa8b59b78b216365cb1f8accae09faf3d6d..77e675dfc53a250572d127efe4084609fd5ba982 100644
+index d45edfa8b59b78b216365cb1f8accae09faf3d6d..897a6272c61bccda2d2c0db24e6342903652d762 100644
 --- a/dist/NetworkEnablementController.d.cts
 +++ b/dist/NetworkEnablementController.d.cts
-@@ -5,7 +5,7 @@ import type { MultichainNetworkControllerGetStateAction } from "@metamask/multic
- import type { NetworkControllerGetStateAction, NetworkControllerNetworkAddedEvent, NetworkControllerNetworkRemovedEvent, NetworkControllerStateChangeEvent } from "@metamask/network-controller";
- import type { TransactionControllerTransactionSubmittedEvent } from "@metamask/transaction-controller";
- import type { CaipChainId, CaipNamespace, Hex } from "@metamask/utils";
--import type { NetworkEnablementControllerMethodActions } from "./NetworkEnablementController-method-action-types.cjs";
-+import type { NetworkEnablementControllerMethodActions } from "./NetworkEnablementController-method-action-types.mjs";
- declare const controllerName = "NetworkEnablementController";
- /**
-  * Information about an ordered network.
-@@ -182,6 +182,12 @@ export declare class NetworkEnablementController extends BaseController<typeof c
+@@ -182,6 +182,17 @@ export declare class NetworkEnablementController extends BaseController<typeof c
       * - A CAIP-2 chain ID (e.g., 'eip155:1' for Ethereum mainnet, 'solana:mainnet' for Solana)
       */
      disableNetwork(chainId: Hex | CaipChainId): void;
 +    /**
 +     * Restores the enabled network map to a previously snapshotted state.
 +     *
++     * Not a general merge API: only updates keys already present in the current
++     * map. Missing snapshot values default to `false`. Intended for callers with
++     * direct controller access (e.g. extension) to undo `#onAddNetwork` filter
++     * switches when adding a network without changing the active selection.
++     *
 +     * @param enabledNetworkMap - Previously snapshotted enabledNetworkMap.
 +     */
-+    restoreEnabledNetworkMap(enabledNetworkMap: EnabledMap): void;
++    restoreEnabledNetworkMap(enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap']): void;
      /**
       * Checks if a network is enabled.
       *
-@@ -219,4 +225,4 @@ export declare class NetworkEnablementController extends BaseController<typeof c
-     listPopularNetworks(): CaipChainId[];
- }
- export {};
--//# sourceMappingURL=NetworkEnablementController.d.cts.map
-\ No newline at end of file
-+//# sourceMappingURL=NetworkEnablementController.d.mts.map
-\ No newline at end of file
 diff --git a/dist/NetworkEnablementController.d.mts b/dist/NetworkEnablementController.d.mts
-index ae00ba562bcd69d36d0401b734d71f18ea4556ec..77e675dfc53a250572d127efe4084609fd5ba982 100644
+index ae00ba562bcd69d36d0401b734d71f18ea4556ec..1155bf6d28c8fa881ad83e662a44c3401744babc 100644
 --- a/dist/NetworkEnablementController.d.mts
 +++ b/dist/NetworkEnablementController.d.mts
-@@ -182,6 +182,12 @@ export declare class NetworkEnablementController extends BaseController<typeof c
+@@ -182,6 +182,17 @@ export declare class NetworkEnablementController extends BaseController<typeof c
       * - A CAIP-2 chain ID (e.g., 'eip155:1' for Ethereum mainnet, 'solana:mainnet' for Solana)
       */
      disableNetwork(chainId: Hex | CaipChainId): void;
 +    /**
 +     * Restores the enabled network map to a previously snapshotted state.
 +     *
++     * Not a general merge API: only updates keys already present in the current
++     * map. Missing snapshot values default to `false`. Intended for callers with
++     * direct controller access (e.g. extension) to undo `#onAddNetwork` filter
++     * switches when adding a network without changing the active selection.
++     *
 +     * @param enabledNetworkMap - Previously snapshotted enabledNetworkMap.
 +     */
-+    restoreEnabledNetworkMap(enabledNetworkMap: EnabledMap): void;
++    restoreEnabledNetworkMap(enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap']): void;
      /**
       * Checks if a network is enabled.
       *
 diff --git a/dist/NetworkEnablementController.mjs b/dist/NetworkEnablementController.mjs
-index 4a29e5ba966d608445cd223b667ad403aa48babb..08f903bffc2fc021e515daf9163b46b919e03f3d 100644
+index 4a29e5ba966d608445cd223b667ad403aa48babb..f3530073442bd10897872e84a301b9ecd112c7aa 100644
 --- a/dist/NetworkEnablementController.mjs
 +++ b/dist/NetworkEnablementController.mjs
-@@ -18,6 +18,7 @@ const MESSENGER_EXPOSED_METHODS = [
-     'initNativeAssetIdentifiers',
-     'enableNetwork',
-     'disableNetwork',
-+    'restoreEnabledNetworkMap',
-     'enableNetworkInNamespace',
-     'enableAllPopularNetworks',
-     'isNetworkEnabled',
-@@ -405,6 +406,22 @@ export class NetworkEnablementController extends BaseController {
+@@ -405,6 +405,28 @@ export class NetworkEnablementController extends BaseController {
              state.enabledNetworkMap[namespace][storageKey] = false;
          });
      }
 +    /**
 +     * Restores the enabled network map to a previously snapshotted state.
++     *
++     * Not a general merge API: only updates keys already present in the current
++     * map. Missing snapshot values default to `false`. Intended for callers with
++     * direct controller access (e.g. extension) to undo `#onAddNetwork` filter
++     * switches when adding a network without changing the active selection.
 +     *
 +     * @param enabledNetworkMap - Previously snapshotted enabledNetworkMap.
 +     */
@@ -176,8 +97,9 @@ index 4a29e5ba966d608445cd223b667ad403aa48babb..08f903bffc2fc021e515daf9163b46b9
 +        this.update((state) => {
 +            Object.entries(state.enabledNetworkMap).forEach(([namespace, currentNetworks]) => {
 +                Object.keys(currentNetworks).forEach((chainId) => {
-+                    const previousValue = enabledNetworkMap[namespace]?.[chainId];
-+                    state.enabledNetworkMap[namespace][chainId] =
++                    const storageKey = chainId;
++                    const previousValue = enabledNetworkMap[namespace]?.[storageKey];
++                    state.enabledNetworkMap[namespace][storageKey] =
 +                        previousValue ?? false;
 +                });
 +            });
@@ -187,51 +109,26 @@ index 4a29e5ba966d608445cd223b667ad403aa48babb..08f903bffc2fc021e515daf9163b46b9
       * Checks if a network is enabled.
       *
 diff --git a/dist/constants.cjs b/dist/constants.cjs
-index 0ce368f00d98bcb38f43e9c7fb608b51b955e7c5..e80711fbd7652b2ced819162f63f3d3354260cec 100644
+index 0ce368f00d98bcb38f43e9c7fb608b51b955e7c5..134eaa14da1f5f02e70421b6a866a2c3440db834 100644
 --- a/dist/constants.cjs
 +++ b/dist/constants.cjs
 @@ -17,5 +17,6 @@ exports.POPULAR_NETWORKS = [
      '0x8f', // Monad (143)
      '0x10e6', // MegaETH (4326)
      '0x13b2', // Arc (5042)
-+    '0x1237', // Robinhood Chain (4663)
++    '0x1237', // Robinhood (4663)
  ];
  //# sourceMappingURL=constants.cjs.map
 \ No newline at end of file
 diff --git a/dist/constants.mjs b/dist/constants.mjs
-index 476d382fbfa0cc052a66aae03a58473af8c9f118..d8740b5f0c8a85859d685d6a93fb5904a59439c9 100644
+index 476d382fbfa0cc052a66aae03a58473af8c9f118..96b817adb8bccdfbba3f9f3fca7aa67325ef4df2 100644
 --- a/dist/constants.mjs
 +++ b/dist/constants.mjs
 @@ -14,5 +14,6 @@ export const POPULAR_NETWORKS = [
      '0x8f', // Monad (143)
      '0x10e6', // MegaETH (4326)
      '0x13b2', // Arc (5042)
-+    '0x1237', // Robinhood Chain (4663)
++    '0x1237', // Robinhood (4663)
  ];
  //# sourceMappingURL=constants.mjs.map
-\ No newline at end of file
-diff --git a/dist/index.d.cts b/dist/index.d.cts
-index 0000000000000000000000000000000000000000..1111111111111111111111111111111111111111 100644
---- a/dist/index.d.cts
-+++ b/dist/index.d.cts
-@@ -1,6 +1,6 @@
- export { NetworkEnablementController } from "./NetworkEnablementController.cjs";
- export type { NetworkEnablementControllerState, NetworkEnablementControllerGetStateAction, NetworkEnablementControllerActions, NetworkEnablementControllerEvents, NetworkEnablementControllerStateChangeEvent, NetworkEnablementControllerMessenger, NativeAssetIdentifier, NativeAssetIdentifiersMap, NetworkConfig, } from "./NetworkEnablementController.cjs";
--export type { NetworkEnablementControllerEnableNetworkAction, NetworkEnablementControllerEnableNetworkInNamespaceAction, NetworkEnablementControllerEnableAllPopularNetworksAction, NetworkEnablementControllerInitAction, NetworkEnablementControllerInitNativeAssetIdentifiersAction, NetworkEnablementControllerDisableNetworkAction, NetworkEnablementControllerIsNetworkEnabledAction, NetworkEnablementControllerListPopularEvmNetworksAction, NetworkEnablementControllerListPopularMultichainNetworksAction, NetworkEnablementControllerListPopularNetworksAction, } from "./NetworkEnablementController-method-action-types.cjs";
-+export type { NetworkEnablementControllerEnableNetworkAction, NetworkEnablementControllerEnableNetworkInNamespaceAction, NetworkEnablementControllerEnableAllPopularNetworksAction, NetworkEnablementControllerInitAction, NetworkEnablementControllerInitNativeAssetIdentifiersAction, NetworkEnablementControllerDisableNetworkAction, NetworkEnablementControllerRestoreEnabledNetworkMapAction, NetworkEnablementControllerIsNetworkEnabledAction, NetworkEnablementControllerListPopularEvmNetworksAction, NetworkEnablementControllerListPopularMultichainNetworksAction, NetworkEnablementControllerListPopularNetworksAction, } from "./NetworkEnablementController-method-action-types.cjs";
- export { selectEnabledNetworkMap, selectIsNetworkEnabled, createSelectorForEnabledNetworksForNamespace, selectAllEnabledNetworks, selectEnabledNetworksCount, selectEnabledEvmNetworks, selectEnabledSolanaNetworks, } from "./selectors.cjs";
- export { Slip44Service, getEvmSlip44, getSlip44BySymbol } from "./services/index.cjs";
- //# sourceMappingURL=index.d.cts.map
-diff --git a/dist/index.d.mts b/dist/index.d.mts
-index 0000000000000000000000000000000000000000..2222222222222222222222222222222222222222 100644
---- a/dist/index.d.mts
-+++ b/dist/index.d.mts
-@@ -1,6 +1,6 @@
- export { NetworkEnablementController } from "./NetworkEnablementController.mjs";
- export type { NetworkEnablementControllerState, NetworkEnablementControllerGetStateAction, NetworkEnablementControllerActions, NetworkEnablementControllerEvents, NetworkEnablementControllerStateChangeEvent, NetworkEnablementControllerMessenger, NativeAssetIdentifier, NativeAssetIdentifiersMap, NetworkConfig, } from "./NetworkEnablementController.mjs";
--export type { NetworkEnablementControllerEnableNetworkAction, NetworkEnablementControllerEnableNetworkInNamespaceAction, NetworkEnablementControllerEnableAllPopularNetworksAction, NetworkEnablementControllerInitAction, NetworkEnablementControllerInitNativeAssetIdentifiersAction, NetworkEnablementControllerDisableNetworkAction, NetworkEnablementControllerIsNetworkEnabledAction, NetworkEnablementControllerListPopularEvmNetworksAction, NetworkEnablementControllerListPopularMultichainNetworksAction, NetworkEnablementControllerListPopularNetworksAction, } from "./NetworkEnablementController-method-action-types.mjs";
-+export type { NetworkEnablementControllerEnableNetworkAction, NetworkEnablementControllerEnableNetworkInNamespaceAction, NetworkEnablementControllerEnableAllPopularNetworksAction, NetworkEnablementControllerInitAction, NetworkEnablementControllerInitNativeAssetIdentifiersAction, NetworkEnablementControllerDisableNetworkAction, NetworkEnablementControllerRestoreEnabledNetworkMapAction, NetworkEnablementControllerIsNetworkEnabledAction, NetworkEnablementControllerListPopularEvmNetworksAction, NetworkEnablementControllerListPopularMultichainNetworksAction, NetworkEnablementControllerListPopularNetworksAction, } from "./NetworkEnablementController-method-action-types.mjs";
- export { selectEnabledNetworkMap, selectIsNetworkEnabled, createSelectorForEnabledNetworksForNamespace, selectAllEnabledNetworks, selectEnabledNetworksCount, selectEnabledEvmNetworks, selectEnabledSolanaNetworks, } from "./selectors.mjs";
- export { Slip44Service, getEvmSlip44, getSlip44BySymbol } from "./services/index.mjs";
- //# sourceMappingURL=index.d.mts.map
 \ No newline at end of file
