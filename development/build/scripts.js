@@ -71,6 +71,7 @@ const scuttlingConfigBase = {
     Boolean: '',
     Number: '',
     Request: '',
+    WebAssembly: '',
     Date: '',
     JSON: '',
     encodeURIComponent: '',
