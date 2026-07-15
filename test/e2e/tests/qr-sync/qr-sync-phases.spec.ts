@@ -1,103 +1,18 @@
 import { QR_SYNC_TIMEOUT_MS_E2E } from '../../../../shared/constants/qr-sync';
-import type {
-  QrSyncSimulatorAction,
-  SimulatorParams,
-} from '../../helpers/qr-sync/mobile-wallet-simulator';
-import { getServerMochaToBackground } from '../../background-socket/server-mocha-to-background';
 import { QR_SYNC_E2E_OTP, WALLET_PASSWORD } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import {
+  completeQrSyncFromSyncPage,
+  navigateToSyncAccountsSettings,
+  openSyncAccountsFromSettings,
+  qrSyncSimulate,
+} from '../../page-objects/flows/qr-sync.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import SyncAccountsSettingsPage from '../../page-objects/pages/settings/sync-accounts-settings-page';
 import { Driver } from '../../webdriver/driver';
 
 const TIMEOUT_ASSERTION_BUFFER_MS = 1_500;
-
-function qrSyncSimulate(
-  action: QrSyncSimulatorAction,
-  params?: SimulatorParams,
-): void {
-  const mock = getServerMochaToBackground();
-  mock.send({
-    command: 'qrSyncSimulate',
-    action,
-    params,
-  });
-}
-
-/**
- * Opens Sync accounts from the Settings page and waits for the QR code.
- *
- * @param driver - The WebDriver instance.
- * @returns The Sync accounts page object.
- */
-async function openSyncAccountsFromSettings(
-  driver: Driver,
-): Promise<SyncAccountsSettingsPage> {
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToSyncAccountsSettings();
-
-  const syncAccountsPage = new SyncAccountsSettingsPage(driver);
-  await syncAccountsPage.checkPageIsLoaded();
-  await syncAccountsPage.waitForQrCode();
-  return syncAccountsPage;
-}
-
-/**
- * Opens Settings and navigates to Sync accounts, waiting for the QR code.
- *
- * @param driver - The WebDriver instance.
- * @returns The Sync accounts page object.
- */
-async function navigateToSyncAccountsSettings(
-  driver: Driver,
-): Promise<SyncAccountsSettingsPage> {
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.openSettingsPage();
-
-  return openSyncAccountsFromSettings(driver);
-}
-
-/**
- * Completes the QrSync flow from an active sync session screen.
- *
- * @param syncAccountsPage - The Sync accounts page object.
- * @param driver - The WebDriver instance.
- * @param expectedWalletCount - Expected synced entropy/HD wallet count.
- * @param expectedImportedAccountCount - Expected synced imported account count.
- */
-async function completeQrSyncFromSyncPage(
-  syncAccountsPage: SyncAccountsSettingsPage,
-  driver: Driver,
-  expectedWalletCount: number,
-  expectedImportedAccountCount: number,
-): Promise<void> {
-  qrSyncSimulate('mobileScanned');
-  await syncAccountsPage.waitForOtpScreen();
-  await syncAccountsPage.enterOtp(QR_SYNC_E2E_OTP);
-  await syncAccountsPage.waitForLoadingStep();
-
-  await driver.delay(500);
-
-  qrSyncSimulate('deliverSyncOffer');
-  await syncAccountsPage.waitForPasswordScreen();
-  await syncAccountsPage.enterPassword(WALLET_PASSWORD);
-
-  await syncAccountsPage.waitForSyncButton();
-  await syncAccountsPage.confirmSync();
-  await syncAccountsPage.waitForLoadingStep();
-
-  await driver.delay(500);
-
-  qrSyncSimulate('deliverSyncCompleted');
-  await syncAccountsPage.assertSuccessSyncedCounts(
-    expectedWalletCount,
-    expectedImportedAccountCount,
-  );
-}
 
 describe('QR Sync Phases', function () {
   this.timeout(60_000);
@@ -119,12 +34,12 @@ describe('QR Sync Phases', function () {
 
         const restartedSyncAccountsPage =
           await openSyncAccountsFromSettings(driver);
-        await completeQrSyncFromSyncPage(
-          restartedSyncAccountsPage,
+        await completeQrSyncFromSyncPage({
+          syncAccountsPage: restartedSyncAccountsPage,
           driver,
-          1,
-          0,
-        );
+          expectedWalletCount: 1,
+          expectedImportedAccountCount: 0,
+        });
       },
     );
   });
@@ -217,7 +132,12 @@ describe('QR Sync Phases', function () {
         await syncAccountsPage.clickGenerateNewQrCode();
         await syncAccountsPage.waitForQrCode();
 
-        await completeQrSyncFromSyncPage(syncAccountsPage, driver, 1, 0);
+        await completeQrSyncFromSyncPage({
+          syncAccountsPage,
+          driver,
+          expectedWalletCount: 1,
+          expectedImportedAccountCount: 0,
+        });
       },
     );
   });
@@ -245,7 +165,12 @@ describe('QR Sync Phases', function () {
         await syncAccountsPage.clickStartWithNewQrCode();
         await syncAccountsPage.waitForQrCode();
 
-        await completeQrSyncFromSyncPage(syncAccountsPage, driver, 1, 0);
+        await completeQrSyncFromSyncPage({
+          syncAccountsPage,
+          driver,
+          expectedWalletCount: 1,
+          expectedImportedAccountCount: 0,
+        });
       },
     );
   });

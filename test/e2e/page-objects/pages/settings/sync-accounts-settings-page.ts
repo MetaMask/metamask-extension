@@ -48,33 +48,24 @@ class SyncAccountsSettingsPage {
   private readonly qrSyncWalletRowId = (walletId: string) =>
     `[data-testid="qr-sync-wallet-row-${walletId}"]`;
 
+  private readonly successWithSyncedCountsLocator = (
+    walletCount: number,
+    accountCount: number,
+  ): string =>
+    `[data-testid="qr-sync-success"][data-synced-wallet-count="${walletCount}"][data-synced-account-count="${accountCount}"]`;
+
   // eslint-disable-next-line @typescript-eslint/member-ordering
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   async assertSuccessSyncedCounts(
     walletCount: number,
     accountCount: number,
   ): Promise<void> {
-    await this.waitForSuccess();
-    const successElement = await this.driver.findElement(this.success);
-
-    await this.driver.waitUntil(
-      async () => {
-        const syncedWalletCount = await successElement.getAttribute(
-          'data-synced-wallet-count',
-        );
-        const syncedAccountCount = await successElement.getAttribute(
-          'data-synced-account-count',
-        );
-
-        return (
-          syncedWalletCount === String(walletCount) &&
-          syncedAccountCount === String(accountCount)
-        );
-      },
-      { timeout: this.driver.timeout, interval: 100 },
+    await this.driver.waitForSelector(
+      this.successWithSyncedCountsLocator(walletCount, accountCount),
     );
   }
 
