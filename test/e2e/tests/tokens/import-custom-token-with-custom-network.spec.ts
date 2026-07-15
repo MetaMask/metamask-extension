@@ -192,6 +192,54 @@ async function testSpecificMock(mockServer: Mockttp): Promise<void> {
 }
 
 /**
+ * Reads the extension's persisted `storage.local` snapshot from the page.
+ *
+ * @param driver - The webdriver instance.
+ * @returns The parsed `storage.local` contents.
+ */
+async function readExtensionStorage(
+  driver: Driver,
+): Promise<Record<string, unknown>> {
+  const result = (await driver.executeAsyncScript(`
+    const callback = arguments[arguments.length - 1];
+    const browser = globalThis.browser ?? globalThis.chrome;
+    browser.storage.local
+      .get(null)
+      .then((value) => callback({ value }))
+      .catch((error) =>
+        callback({ error: error?.message ?? error?.toString?.() ?? error }),
+      );
+  `)) as { value?: Record<string, unknown>; error?: string };
+
+  if (result?.error) {
+    throw new Error(result.error);
+  }
+
+  return result?.value ?? {};
+}
+
+/**
+ * Polls extension storage until the imported token has been persisted to
+ * `storage.local`.
+ *
+ * @param driver - The webdriver instance.
+ * @param tokenAddress - The imported token's contract address.
+ */
+async function waitForTokenPersisted(
+  driver: Driver,
+  tokenAddress: string,
+): Promise<void> {
+  const needle = tokenAddress.toLowerCase();
+  await driver.waitUntil(
+    async () => {
+      const storage = await readExtensionStorage(driver);
+      return JSON.stringify(storage).toLowerCase().includes(needle);
+    },
+    { interval: 500, timeout: 10000 },
+  );
+}
+
+/**
  * Fully restarts the extension via `browser.runtime.reload()`.
  *
  * Unlike `driver.refresh()` (which only reloads the UI tab while the background
@@ -307,9 +355,7 @@ describe('Import custom token on a custom network', function () {
         await homePage.checkPageIsLoaded();
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('100', UFO_SYMBOL);
 
-        // Give the debounced persistence a moment to flush the imported token
-        // to storage.local before the background restarts.
-        await driver.delay(2000);
+        await waitForTokenPersisted(driver, UFO_TOKEN_ADDRESS);
 
         // Fully restart the extension (not just the UI tab) so controllers
         // rehydrate from storage. This is what reproduces the incident where
