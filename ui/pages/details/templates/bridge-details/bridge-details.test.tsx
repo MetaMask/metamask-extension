@@ -4,7 +4,7 @@ import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { useBridgeHistoryItem } from './hooks/useBridgeHistoryItem';
 import { useHistoryTokens } from './hooks/useHistoryTokens';
-import { BridgeDetails } from ".";
+import { BridgeDetails } from "./bridge-details";
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
