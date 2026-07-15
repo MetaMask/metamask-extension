@@ -118,6 +118,10 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
 </div>
 `;
 
+exports[`RampsBuildQuoteScreen matches snapshot redirecting when intent token never settles after load 1`] = `<div />`;
+
+exports[`RampsBuildQuoteScreen matches snapshot redirecting when settled token mismatches intent after load 1`] = `<div />`;
+
 exports[`RampsBuildQuoteScreen matches snapshot when falling back without regional default amount 1`] = `
 <div>
   <div

@@ -1,16 +1,12 @@
-type QuoteSuccessItem = {
-  provider: string;
-};
-
-type QuotesResponse = {
-  success?: QuoteSuccessItem[];
-  error?: { error?: string }[];
-} | null;
+import type { Quote, QuotesResponse } from '@metamask/ramps-controller';
 
 type NamedSelection = {
   id: string;
   name: string;
 } | null;
+
+/** Subset of controller QuotesResponse used by build-quote selection/error UI. */
+type QuotesResponseOrNull = Pick<QuotesResponse, 'success' | 'error'> | null;
 
 export function parseFiatAmount(amount: string): number {
   const parsed = Number.parseFloat(amount.replace(',', '.'));
@@ -28,11 +24,49 @@ export function isTokenStateSettled(
   return selectedTokenAssetId?.toLowerCase() === intentAssetId.toLowerCase();
 }
 
+/**
+ * Resolves whether build-quote should keep waiting, recover via redirect, or
+ * render the ready screen.
+ *
+ * When navigation passes an `assetId` intent, we wait only while tokens are
+ * still loading. Once loading finishes without a matching selection, redirect
+ * to token selection — otherwise a failed pre-select leaves the user stuck on
+ * the loading overlay forever.
+ * @param options0
+ * @param options0.intentAssetId
+ * @param options0.selectedTokenAssetId
+ * @param options0.tokensLoading
+ */
+export function resolveBuildQuoteViewKind({
+  intentAssetId,
+  selectedTokenAssetId,
+  tokensLoading,
+}: {
+  intentAssetId: string | undefined;
+  selectedTokenAssetId: string | undefined;
+  tokensLoading: boolean;
+}): 'loading' | 'redirect' | 'ready' {
+  const tokenStateIsSettled = isTokenStateSettled(
+    intentAssetId,
+    selectedTokenAssetId,
+  );
+
+  if (tokensLoading && (!selectedTokenAssetId || !tokenStateIsSettled)) {
+    return 'loading';
+  }
+
+  if (!selectedTokenAssetId || !tokenStateIsSettled) {
+    return 'redirect';
+  }
+
+  return 'ready';
+}
+
 export function findSelectedQuote(
-  quotesResponse: QuotesResponse,
+  quotesResponse: QuotesResponseOrNull,
   selectedProvider: NamedSelection,
   selectedPaymentMethod: NamedSelection,
-): QuoteSuccessItem | null {
+): Quote | null {
   if (!quotesResponse?.success || !selectedProvider || !selectedPaymentMethod) {
     return null;
   }
@@ -78,8 +112,8 @@ export function resolveDisplayedQuoteError({
   hasSettledQuoteAmount: boolean;
   selectedQuoteLoading: boolean;
   hasQuoteFetchError: boolean;
-  quotesResponse: QuotesResponse;
-  selectedQuote: QuoteSuccessItem | null;
+  quotesResponse: QuotesResponseOrNull;
+  selectedQuote: Quote | null;
 }): string | null {
   if (quoteFetchErrorMessage) {
     return quoteFetchErrorMessage;
@@ -98,4 +132,36 @@ export function resolveDisplayedQuoteError({
   }
 
   return quotesResponse.error[0]?.error ?? null;
+}
+
+/**
+ * Continue is only enabled when the displayed amount has settled through the
+ * quote debounce window, so users cannot proceed on a quote for a prior amount.
+ * @param options0
+ * @param options0.hasAmount
+ * @param options0.hasSettledQuoteAmount
+ * @param options0.selectedQuoteLoading
+ * @param options0.selectedQuote
+ * @param options0.hasQuoteFetchError
+ */
+export function resolveCanContinue({
+  hasAmount,
+  hasSettledQuoteAmount,
+  selectedQuoteLoading,
+  selectedQuote,
+  hasQuoteFetchError,
+}: {
+  hasAmount: boolean;
+  hasSettledQuoteAmount: boolean;
+  selectedQuoteLoading: boolean;
+  selectedQuote: Quote | null;
+  hasQuoteFetchError: boolean;
+}): boolean {
+  return (
+    hasAmount &&
+    hasSettledQuoteAmount &&
+    !selectedQuoteLoading &&
+    selectedQuote !== null &&
+    !hasQuoteFetchError
+  );
 }

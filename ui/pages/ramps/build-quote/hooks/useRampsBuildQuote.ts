@@ -13,6 +13,8 @@ import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFac
 import {
   findSelectedQuote,
   isTokenStateSettled,
+  resolveBuildQuoteViewKind,
+  resolveCanContinue,
   resolveDisplayedQuoteError,
   resolvePaymentMethodLabel,
 } from '../utils/build-quote';
@@ -155,11 +157,13 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     navigate(-1);
   }, [navigate]);
 
-  const canContinue =
-    hasAmount &&
-    !selectedQuoteLoading &&
-    selectedQuote !== null &&
-    !hasQuoteFetchError;
+  const canContinue = resolveCanContinue({
+    hasAmount,
+    hasSettledQuoteAmount,
+    selectedQuoteLoading,
+    selectedQuote,
+    hasQuoteFetchError,
+  });
 
   const handleContinue = useCallback(() => {
     if (!canContinue || !selectedQuote) {
@@ -168,11 +172,17 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     return undefined;
   }, [canContinue, selectedQuote]);
 
-  if (!tokenStateIsSettled || (tokensLoading && !selectedToken)) {
+  const viewKind = resolveBuildQuoteViewKind({
+    intentAssetId,
+    selectedTokenAssetId: selectedToken?.assetId,
+    tokensLoading,
+  });
+
+  if (viewKind === 'loading') {
     return { kind: 'loading' };
   }
 
-  if (!selectedToken) {
+  if (viewKind === 'redirect' || !selectedToken) {
     return { kind: 'redirect' };
   }
 

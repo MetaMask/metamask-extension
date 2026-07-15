@@ -2,6 +2,8 @@ import {
   findSelectedQuote,
   isTokenStateSettled,
   parseFiatAmount,
+  resolveBuildQuoteViewKind,
+  resolveCanContinue,
   resolveDisplayedQuoteError,
   resolvePaymentMethodLabel,
 } from './build-quote';
@@ -30,6 +32,63 @@ describe('build-quote utils', () => {
           'eip155:1/slip44:60',
           'eip155:1/erc20:0x1',
         ),
+      }).toMatchSnapshot();
+    });
+  });
+
+  describe('resolveBuildQuoteViewKind', () => {
+    it('matches snapshot for loading, redirect, and ready cases', () => {
+      const intent = 'eip155:1/slip44:60';
+      const matching = 'eip155:1/slip44:60';
+      const mismatch = 'eip155:1/erc20:0x1';
+
+      expect({
+        noIntentLoadingWithoutToken: resolveBuildQuoteViewKind({
+          intentAssetId: undefined,
+          selectedTokenAssetId: undefined,
+          tokensLoading: true,
+        }),
+        noIntentReadyWithToken: resolveBuildQuoteViewKind({
+          intentAssetId: undefined,
+          selectedTokenAssetId: matching,
+          tokensLoading: false,
+        }),
+        noIntentRedirectWithoutToken: resolveBuildQuoteViewKind({
+          intentAssetId: undefined,
+          selectedTokenAssetId: undefined,
+          tokensLoading: false,
+        }),
+        intentLoadingWithoutToken: resolveBuildQuoteViewKind({
+          intentAssetId: intent,
+          selectedTokenAssetId: undefined,
+          tokensLoading: true,
+        }),
+        intentLoadingWithMismatch: resolveBuildQuoteViewKind({
+          intentAssetId: intent,
+          selectedTokenAssetId: mismatch,
+          tokensLoading: true,
+        }),
+        intentReadyWhenMatched: resolveBuildQuoteViewKind({
+          intentAssetId: intent,
+          selectedTokenAssetId: matching,
+          tokensLoading: false,
+        }),
+        intentReadyWhenMatchedWhileTokensLoading: resolveBuildQuoteViewKind({
+          intentAssetId: intent,
+          selectedTokenAssetId: matching,
+          tokensLoading: true,
+        }),
+        // Failed / unfinished pre-select after load must redirect, not spin forever
+        intentRedirectWhenLoadFinishedWithoutToken: resolveBuildQuoteViewKind({
+          intentAssetId: intent,
+          selectedTokenAssetId: undefined,
+          tokensLoading: false,
+        }),
+        intentRedirectWhenLoadFinishedWithMismatch: resolveBuildQuoteViewKind({
+          intentAssetId: intent,
+          selectedTokenAssetId: mismatch,
+          tokensLoading: false,
+        }),
       }).toMatchSnapshot();
     });
   });
@@ -119,6 +178,58 @@ describe('build-quote utils', () => {
             error: [],
           },
           selectedQuote: { provider: 'transak' },
+        }),
+      }).toMatchSnapshot();
+    });
+  });
+
+  describe('resolveCanContinue', () => {
+    it('matches snapshot for continue enablement cases', () => {
+      const readyQuote = { provider: 'transak' };
+
+      expect({
+        ready: resolveCanContinue({
+          hasAmount: true,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: false,
+          selectedQuote: readyQuote,
+          hasQuoteFetchError: false,
+        }),
+        // Displayed amount still settling through debounce — must disable
+        duringDebounce: resolveCanContinue({
+          hasAmount: true,
+          hasSettledQuoteAmount: false,
+          selectedQuoteLoading: false,
+          selectedQuote: readyQuote,
+          hasQuoteFetchError: false,
+        }),
+        loadingQuote: resolveCanContinue({
+          hasAmount: true,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: true,
+          selectedQuote: readyQuote,
+          hasQuoteFetchError: false,
+        }),
+        noQuote: resolveCanContinue({
+          hasAmount: true,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: false,
+          selectedQuote: null,
+          hasQuoteFetchError: false,
+        }),
+        fetchError: resolveCanContinue({
+          hasAmount: true,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: false,
+          selectedQuote: readyQuote,
+          hasQuoteFetchError: true,
+        }),
+        emptyAmount: resolveCanContinue({
+          hasAmount: false,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: false,
+          selectedQuote: readyQuote,
+          hasQuoteFetchError: false,
         }),
       }).toMatchSnapshot();
     });

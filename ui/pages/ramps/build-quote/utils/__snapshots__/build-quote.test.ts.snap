@@ -27,6 +27,31 @@ exports[`build-quote utils parseFiatAmount matches snapshot for supported amount
 }
 `;
 
+exports[`build-quote utils resolveBuildQuoteViewKind matches snapshot for loading, redirect, and ready cases 1`] = `
+{
+  "intentLoadingWithMismatch": "loading",
+  "intentLoadingWithoutToken": "loading",
+  "intentReadyWhenMatched": "ready",
+  "intentReadyWhenMatchedWhileTokensLoading": "ready",
+  "intentRedirectWhenLoadFinishedWithMismatch": "redirect",
+  "intentRedirectWhenLoadFinishedWithoutToken": "redirect",
+  "noIntentLoadingWithoutToken": "loading",
+  "noIntentReadyWithToken": "ready",
+  "noIntentRedirectWithoutToken": "redirect",
+}
+`;
+
+exports[`build-quote utils resolveCanContinue matches snapshot for continue enablement cases 1`] = `
+{
+  "duringDebounce": false,
+  "emptyAmount": false,
+  "fetchError": false,
+  "loadingQuote": false,
+  "noQuote": false,
+  "ready": true,
+}
+`;
+
 exports[`build-quote utils resolveDisplayedQuoteError matches snapshot for displayed quote error cases 1`] = `
 {
   "fetchError": "Failed to fetch quote.",

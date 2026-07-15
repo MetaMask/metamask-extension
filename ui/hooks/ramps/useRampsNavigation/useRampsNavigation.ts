@@ -89,11 +89,12 @@ function isAssetSupported(
 }
 
 // Pre-select the token; a failed pre-selection fails open (non-fatal).
+// Build-quote redirects to token selection if the selection never settles.
 async function preselectToken(assetId: CaipAssetType): Promise<void> {
   try {
     await submitRequestToBackground('setRampsSelectedToken', [assetId]);
   } catch {
-    // Fail open — the build-quote page can re-resolve the token itself.
+    // Fail open — build-quote redirects if selection never settles.
   }
 }
 

@@ -2,17 +2,24 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { RampsBuildQuoteScreen } from './build-quote';
 
+const QUOTE_DEBOUNCE_MS = 500;
+
 const mockNavigate = jest.fn();
+let mockLocationState: { assetId?: string } | null = null;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+  useLocation: () => ({
+    pathname: '/ramps/build-quote',
+    state: mockLocationState,
+  }),
 }));
 
 jest.mock('../../../../shared/lib/selectors/networks', () => ({
@@ -92,6 +99,7 @@ const mockControllerState = ({
 describe('RampsBuildQuoteScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocationState = null;
     useRampsController.mockReturnValue(mockControllerState());
     useRampsQuotes.mockReturnValue({
       data: {
@@ -101,6 +109,10 @@ describe('RampsBuildQuoteScreen', () => {
       loading: false,
       error: null,
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('matches snapshot when quote is available', () => {
@@ -166,6 +178,24 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
+  it('disables continue while amount debounce has not settled', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(screen.getByTestId('ramps-build-quote-continue')).toBeEnabled();
+
+    fireEvent.change(screen.getByTestId('ramps-build-quote-amount-input'), {
+      target: { value: '25' },
+    });
+
+    expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
+  });
+
   it('matches snapshot with provider quote error', () => {
     useRampsQuotes.mockReturnValue({
       data: {
@@ -202,7 +232,53 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('matches snapshot redirecting when intent token never settles after load', () => {
+    mockLocationState = {
+      assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+    };
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        selectedToken: null,
+        tokensLoading: false,
+      }),
+    );
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot redirecting when settled token mismatches intent after load', () => {
+    mockLocationState = {
+      assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+    };
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        selectedToken: {
+          ...mockSelectedToken,
+          assetId: 'eip155:1/slip44:60',
+          symbol: 'ETH',
+          name: 'Ether',
+        },
+        tokensLoading: false,
+      }),
+    );
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('matches snapshot with regional default amount', () => {
+    jest.useFakeTimers();
     useRampsController.mockReturnValue(
       mockControllerState({
         userRegion: {
@@ -222,6 +298,10 @@ describe('RampsBuildQuoteScreen', () => {
       createStore(),
       '/ramps/build-quote',
     );
+
+    act(() => {
+      jest.advanceTimersByTime(QUOTE_DEBOUNCE_MS);
+    });
 
     expect(container).toMatchSnapshot();
   });
@@ -250,6 +330,7 @@ describe('RampsBuildQuoteScreen', () => {
   });
 
   it('matches snapshot after user edits amount before regional default applies', () => {
+    jest.useFakeTimers();
     useRampsController.mockReturnValue(
       mockControllerState({
         userRegion: {
@@ -288,6 +369,10 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     rerender(<RampsBuildQuoteScreen />);
+
+    act(() => {
+      jest.advanceTimersByTime(QUOTE_DEBOUNCE_MS);
+    });
 
     expect(container).toMatchSnapshot();
   });
