@@ -277,6 +277,7 @@ Then sends `sync-ready` with `deadline = now + SYNC_COMPLETION_TIMEOUT` and tran
 
 - `isSyncableWallet` / `filterSyncableWallets` — entropy, HD keyring, and imported (`simple`) wallets only.
 - Hardware and Snap wallets are excluded from the picker.
+- `getSyncSummaryCounts` — derives success-screen wallet vs imported-account counts from the selection (entropy/HD keyring → `syncedWalletCount`; imported private-key groups → `syncedAccountCount`).
 
 **Selection model** (`wallet-selection-list.tsx`):
 
@@ -386,7 +387,7 @@ Summary for PMs:
 | `ui/pages/settings/sync-accounts/sync-accounts-settings.tsx` | Phase router, `syncAccounts` call |
 | `ui/pages/settings/sync-accounts/components/add-wallets.tsx` | Wallet picker screen |
 | `ui/pages/settings/sync-accounts/components/wallet-selection-list.tsx` | Whole-wallet selection list |
-| `ui/pages/settings/sync-accounts/utils.ts` | `filterSyncableWallets` |
+| `ui/pages/settings/sync-accounts/utils.ts` | `filterSyncableWallets`, `getSyncSummaryCounts` |
 | `ui/selectors/qr-sync/qr-sync.ts` | Redux selectors |
 | `ui/selectors/multichain-accounts/account-tree.ts` | Account tree for picker |
 
@@ -395,7 +396,7 @@ Summary for PMs:
 | File | Purpose |
 | ---- | ------- |
 | `shared/constants/qr-sync.ts` | Phases, error codes, timeouts |
-| `shared/lib/environment.ts` | `getIsQrSyncEnabled()` |
+| `shared/lib/environment.ts` | `getIsAddDeviceSyncEnabled()` |
 
 ### Documentation
 
@@ -441,25 +442,59 @@ yarn test:unit ui/pages/settings/sync-accounts/
 **UI** (`utils.test.ts`, `wallet-selection-list.test.tsx`, `add-wallets.test.tsx`):
 
 - Syncable wallet filtering
+- `getSyncSummaryCounts` wallet vs imported-account totals
 - Whole-wallet checkbox behavior
 - `selectedAccountGroupIds` passed to sync handler
 
 ### E2E tests
 
-**File:** `test/e2e/tests/qr-sync/qr-sync.spec.ts`
+**Specs:**
+
+- `test/e2e/tests/qr-sync/qr-sync.spec.ts` — happy-path wallet export scenarios
+- `test/e2e/tests/qr-sync/qr-sync-phases.spec.ts` — phase transitions, timeouts, cancel/restart
+
+**Flow helper:** `test/e2e/page-objects/flows/qr-sync.flow.ts` (`completeQrSyncFlow`, `completeQrSyncFromSyncPage`, `navigateToSyncAccountsSettings`, `openSyncAccountsFromSettings`, `qrSyncSimulate`)
 
 Uses a mobile wallet simulator (`test/e2e/helpers/qr-sync/mobile-wallet-simulator.ts`) to drive MWP messages without a physical device.
 
-**Current coverage:** Single HD wallet happy path (QR → OTP → password → wallet confirm → success).
+**`qr-sync.spec.ts` coverage:**
+
+- Single HD wallet happy path
+- One HD wallet + one imported private-key account
+- Two HD wallets + one imported private-key account (multi-SRP fixture)
+
+**`qr-sync-phases.spec.ts` coverage:**
+
+- Cancel session (back from sync page) and complete a new session
+- QR not scanned before MWP session timeout → QR expired screen
+- OTP not entered before MWP session timeout → OTP expired screen
+- Sync offer not received before `SYNC_OFFER_TIMEOUT` → session expired error
+- Restart from QR expired screen (`Generate new QR code`) and complete sync
+- Restart from OTP expired screen (`Start with new QR code`) and complete sync
 
 **Running E2E:**
 
 ```bash
 yarn build:test   # QR_SYNC_ENABLED=true on test builds
+
+# Happy-path export scenarios
 yarn test:e2e:single test/e2e/tests/qr-sync/qr-sync.spec.ts --browser=chrome
+
+# Phase, timeout, and restart scenarios
+yarn test:e2e:single test/e2e/tests/qr-sync/qr-sync-phases.spec.ts --browser=chrome
+
+# All QR sync E2E tests
+yarn test:e2e:single test/e2e/tests/qr-sync/ --browser=chrome
 ```
 
 Follow `test/e2e/AGENTS.md` and `.agents/skills/mms-e2e-testing/SKILL.md` when adding scenarios.
+
+| File | Purpose |
+| ---- | ------- |
+| `test/e2e/tests/qr-sync/qr-sync.spec.ts` | Wallet export happy paths |
+| `test/e2e/tests/qr-sync/qr-sync-phases.spec.ts` | Phase UI, timeouts, cancel/restart |
+| `test/e2e/page-objects/flows/qr-sync.flow.ts` | Shared navigation and completion helpers |
+| `test/e2e/helpers/qr-sync/mobile-wallet-simulator.ts` | Simulates mobile MWP messages in tests |
 
 ### Manual QA (pending sign-off)
 
@@ -474,4 +509,4 @@ Follow `test/e2e/AGENTS.md` and `.agents/skills/mms-e2e-testing/SKILL.md` when a
 
 ## Known issues & future work
 
-- ~ OTP display grant — P2; `QrSyncController` TODO ~line 500; MWP SDK not wired
+- ~ OTP display grant — P2; `QrSyncController` TODO ~line 510; MWP SDK not wired
