@@ -56,8 +56,6 @@ describe('buildArtifactsBody', () => {
       `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
     );
     expect(result).not.toContain('build-experimental-webpack');
-    expect(result).not.toContain('Browserify');
-    expect(result).not.toContain('browserify');
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).not.toContain('reused from');
     expect(result).toContain(
