@@ -197,6 +197,52 @@
   "activity_approveSpendingCap_success_title": {
     "message": "खर्च करने की लिमिट को एप्रूव किया गया"
   },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "ट्रस्टलाइन एक्टिवेट नहीं हो पाई"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "ट्रस्टलाइन एक्टिवेट की जा रही है $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "ट्रस्टलाइन एक्टिवेट की गई $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "ट्रस्टलाइन डीएक्टिवेट नहीं हो पाई"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "ट्रस्टलाइन डीएक्टिवेट की जा रही है $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "ट्रस्टलाइन डीएक्टिवेट की गई $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_bridge_failed_description": {
     "message": "ब्रिज नहीं हो पाया"
   },
@@ -330,7 +376,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "$1 कन्वर्ट किया गया",
+    "message": "$1 में कन्वर्ट किया गया",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -1176,6 +1222,9 @@
   "add_device_syncing_title": {
     "message": "अकाउंट इंपोर्ट किए जा रहे हैं"
   },
+  "add_device_try_again": {
+    "message": "फिर से प्रयास करें"
+  },
   "add_device_validating_desc": {
     "message": "आपके फ़ोन के साथ एक सुरक्षित, एन्क्रिप्टेड कनेक्शन बनाया जा रहा है।"
   },
@@ -1578,8 +1627,20 @@
   "asset": {
     "message": "एसेट"
   },
+  "assetActivate": {
+    "message": "एक्टिवेट करें",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "शुरू करने के लिए $2 पर $1 एक्टिवेट करें।",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "हम कोई ऐतिहासिक डेटा प्राप्त नहीं कर सके"
+  },
+  "assetInactive": {
+    "message": "एक्टिव नहीं है",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "assetOptions": {
     "message": "एसेट के विकल्प"
@@ -2082,6 +2143,18 @@
   "bridgePriceImpactWarningTitle": {
     "message": "कीमत के असर को लेकर चेतावनी"
   },
+  "bridgeQrHardwareSignDisplayStepTitle": {
+    "message": "$2 में से $1 स्टेप: अपने वॉलेट से इस QR कोड को स्कैन करें",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
+  },
+  "bridgeQrHardwareSignLastStepTitle": {
+    "message": "आखिरी स्टेप: अपने वॉलेट पर दिखाए गए QR कोड को स्कैन करें",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
+  "bridgeQrHardwareSignStepTitle": {
+    "message": "$2 में से $1 स्टेप: अपने वॉलेट पर दिखाए गए QR कोड को स्कैन करें",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
+  },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "कोई कोटेशन उपलब्ध नहीं है। कम अमाउंट से कोशिश करें।"
   },
@@ -2431,6 +2504,14 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "यह टोकन सिंबल आपके द्वारा डाले गए नेटवर्क नाम या चेन ID से मैच नहीं कर रहा है। कई लोकप्रिय टोकन इसी तरह के सिंबल का उपयोग करते हैं, जिनका उपयोग स्कैमर्स आपको बदले में ज़्यादा कीमती टोकन भेजने का झांसा देने के लिए कर सकते हैं। आगे बढ़ने से पहले हर चीज़ अच्छे से वेरीफाई कर लें।"
+  },
+  "chainlistLearnHowToStaySafe": {
+    "message": "जानें कि सुरक्षित कैसे रहें।",
+    "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
+  },
+  "chainlistNetworkDataSourceBanner": {
+    "message": "नेटवर्क डेटा चेनलिस्ट से आता है। जोड़ने से पहले हमेशा वेरिफ़ाई करें। $1",
+    "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
   },
   "chainlistNetworkDetails": {
     "message": "सिंबल: $1 · ID: $2",
@@ -2899,6 +2980,9 @@
   "contractInteraction": {
     "message": "कॉन्ट्रैक्ट इंटरैक्शन"
   },
+  "convertAgain": {
+    "message": "फिर से कन्वर्ट करें"
+  },
   "convertTokenToNFTDescription": {
     "message": "हमने पाया है कि यह संपत्ति एक NFT है। MetaMask के पास अब NFT के लिए फुल नेटिव सपोर्ट है। क्या आप इसे अपनी टोकन लिस्ट से हटाना चाहते हैं और इसे NFT के रूप में जोड़ना चाहते हैं?"
   },
@@ -3155,6 +3239,12 @@
   "deepLinkQrPredictTitle": {
     "message": "प्रेडिक्शन मार्केट्स को मोबाइल पर खोलें"
   },
+  "deepLinkQrTrendingDescription": {
+    "message": "एक्सप्लोर MetaMask मोबाइल पर उपलब्ध है। इसका इस्तेमाल करने के लिए इस कोड को अपने मोबाइल डिवाइस से स्कैन करें।"
+  },
+  "deepLinkQrTrendingTitle": {
+    "message": "मोबाइल पर एक्सप्लोर खोलें"
+  },
   "deepLink_Caution": {
     "message": "सावधानी से आगे बढ़ें"
   },
@@ -3251,6 +3341,9 @@
   },
   "deepLink_theTransactionShieldPage": {
     "message": "ट्रांसेक्शन शील्ड पेज"
+  },
+  "deepLink_theTrendingPage": {
+    "message": "द एक्सप्लोर पेज"
   },
   "default": {
     "message": "डिफॉल्ट"
@@ -4185,6 +4278,62 @@
   "hardware": {
     "message": "हार्डवेयर"
   },
+  "hardwareAllSetTitle": {
+    "message": "आप एकदम तैयार हैं",
+    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
+  },
+  "hardwareAlmostThereTitle": {
+    "message": "लगभग हो गया! अपने डिवाइस पर फिर से कन्फर्म करें",
+    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "hardwareApproveAmount": {
+    "message": "$1 $2 एप्रूव करें",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareApprovedAmount": {
+    "message": "$1 $2 एप्रूव किया गया",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareDeviceDisconnected": {
+    "message": "अपना डिवाइस रीकनेक्ट करें और फिर से कोशिश करें",
+    "description": "Title shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareReconnectDevice": {
+    "message": "जारी रखने के लिए अपना डिवाइस रीकनेक्ट करें",
+    "description": "Description shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareRejected": {
+    "message": "रिजेक्ट किया गया",
+    "description": "Label for a rejected hardware-wallet bridge signature."
+  },
+  "hardwareResendTransaction": {
+    "message": "ट्रांसेक्शन का फिर से भेजें",
+    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
+  },
+  "hardwareSendAmount": {
+    "message": "$1 $2 भेजें",
+    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSendingAmount": {
+    "message": "$1 $2 भेज रहे हैं",
+    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSentAmount": {
+    "message": "$1 $2 भेज दिया गया",
+    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSpender": {
+    "message": "खर्च करने वाला: $1",
+    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "hardwareToAddress": {
+    "message": "प्रति: $1",
+    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareTransactionRejected": {
+    "message": "आपने अपने डिवाइस पर इस ट्रांज़ैक्शन को रिजेक्ट कर दिया है",
+    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
+  },
   "hardwareWalletConnected": {
     "message": "hardware wallet कनेक्ट किया गया"
   },
@@ -4192,7 +4341,7 @@
     "message": "जारी रखें"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "रीकनेक्ट",
+    "message": "रीकनेक्ट करें और फिर से कोशिश करें",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
@@ -4775,6 +4924,12 @@
   "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
     "message": "Ethereum ऐप को इनस्टॉल करें और खोलें"
   },
+  "ledgerConnectionStatusDeviceNotFoundStepPlugIn": {
+    "message": "अपने लेजर को कंप्यूटर में प्लग करें"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepRetry": {
+    "message": "फिर से कनेक्ट करने की कोशिश करें"
+  },
   "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
     "message": "अपने Ledger डिवाइस को अनलॉक करें"
   },
@@ -4786,6 +4941,9 @@
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Ledger काम नहीं कर रहा है"
+  },
+  "ledgerConnectionStatusGenericErrorDescription": {
+    "message": "चेक करें कि आपका लेजर डिवाइस चुने गए अकाउंट के लिए सीक्रेट रिकवरी फ्रेज़ या प्राइवेट की (key) के साथ सेट अप हुआ है"
   },
   "ledgerConnectionStatusGenericErrorTitle": {
     "message": "कुछ गलत हो गया"
@@ -6985,6 +7143,18 @@
   "perpsFees": {
     "message": "फीस"
   },
+  "perpsFeesTooltipHyperliquidFee": {
+    "message": "हाइपरलिक्विड फीस",
+    "description": "Label for the Hyperliquid protocol fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipMetamaskFee": {
+    "message": "MetaMask फीस",
+    "description": "Label for the MetaMask fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipProviderFee": {
+    "message": "प्रदाता फीस",
+    "description": "Fallback label for the protocol fee rate in the Perps order summary fees tooltip"
+  },
   "perpsFilterAll": {
     "message": "सभी"
   },
@@ -7079,6 +7249,10 @@
   "perpsLiquidationPrice": {
     "message": "लिक्विडेशन प्राइस"
   },
+  "perpsLiquidationPriceTooltip": {
+    "message": "अगर प्राइस इस स्तर तक पहुँचती है, तो आपकी पोज़िशन लिक्विडेट हो जाएगी और आपका मार्जिन खो जाएगा। अधिक लीवरेज इसे और अधिक संभावित बनाता है।",
+    "description": "Tooltip content for the liquidation price row on the Perps order summary"
+  },
   "perpsLong": {
     "message": "लॉन्ग"
   },
@@ -7087,6 +7261,10 @@
   },
   "perpsMarginRiskWarning": {
     "message": "मार्जिन हटाने से आपका लिक्विडेशन प्राइस करीब आ जाता है। पक्का करें कि आपके पास काफ़ी बफ़र हो।"
+  },
+  "perpsMarginTooltip": {
+    "message": "मार्जिन वह राशि है जो आप किसी ट्रेड को खोलने के लिए लगाते हैं। यह एक प्रकार की कोलैटरल के रूप में काम करती है और यह उस ट्रेड में आपकी अधिकतम हानि होती है।",
+    "description": "Tooltip content for the margin row on the Perps order summary"
   },
   "perpsMarket": {
     "message": "मार्केट"
@@ -7999,6 +8177,14 @@
     "message": "गलत QR कोड",
     "description": "Title shown when the UR type does not match what is expected during signing."
   },
+  "qrHardwareScanSignatureFinal": {
+    "message": "फाइनल QR कोड स्कैन करें",
+    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrHardwareScanSignatureNext": {
+    "message": "अगला QR कोड स्कैन करें",
+    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
   "queued": {
     "message": "कतारबद्ध"
   },
@@ -8007,6 +8193,9 @@
   },
   "quotedTotalCost": {
     "message": "कुल कीमत: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "कोई टोकन उपलब्ध नहीं है"
   },
   "rank": {
     "message": "रैंक"
@@ -8437,8 +8626,99 @@
   "scamQuestionnaireContinue": {
     "message": "जारी रखें"
   },
+  "scamQuestionnaireHeaderTitle": {
+    "message": "सुरक्षा जाँच"
+  },
+  "scamQuestionnaireQ1No": {
+    "message": "नहीं, मैं इस व्यक्ति को असल ज़िंदगी में जानता हूँ"
+  },
+  "scamQuestionnaireQ1Subtitle": {
+    "message": "इसमें डेटिंग ऐप्स, सोशल मीडिया और ग्रुप चैट शामिल हैं—भले ही आपने वीडियो पर बात की हो।"
+  },
+  "scamQuestionnaireQ1Title": {
+    "message": "क्या किसी ऐसे व्यक्ति ने, जिसे आप सिर्फ़ ऑनलाइन जानते हैं, आपको यह भेजने के लिए कहा है?"
+  },
+  "scamQuestionnaireQ1Yes": {
+    "message": "हाँ, ऑनलाइन मिले किसी व्यक्ति ने मुझे यह भेजने के लिए कहा"
+  },
+  "scamQuestionnaireQ2GoodsSubtitle": {
+    "message": "मुझे जो चीज़ मिल रही है, उसके लिए मैं किसी मर्चेंट को पेमेंट कर रहा हूँ"
+  },
+  "scamQuestionnaireQ2GoodsTitle": {
+    "message": "सामान या सर्विस खरीदना"
+  },
+  "scamQuestionnaireQ2GovernmentSubtitle": {
+    "message": "क्रिप्टो में मांगे गए फाइन, टैक्स या ऑफ़िशियल फ़ीस"
+  },
+  "scamQuestionnaireQ2GovernmentTitle": {
+    "message": "पुलिस या किसी सरकारी एजेंसी को पेमेंट करना"
+  },
+  "scamQuestionnaireQ2HelpingSubtitle": {
+    "message": "किसी पार्टनर, परिवार के सदस्य या ज़रूरतमंद दोस्त को पैसे भेजना"
+  },
+  "scamQuestionnaireQ2HelpingTitle": {
+    "message": "किसी ऐसे व्यक्ति की मदद करना जिसकी मुझे परवाह है"
+  },
+  "scamQuestionnaireQ2InvestmentSubtitle": {
+    "message": "क्रिप्टो, टोकन या कोई फ़ाइनेंशियल मौका खरीदना"
+  },
+  "scamQuestionnaireQ2InvestmentTitle": {
+    "message": "इन्वेस्टमेंट"
+  },
+  "scamQuestionnaireQ2JobSubtitle": {
+    "message": "ऑनबोर्डिंग फ़ीस, इक्विपमेंट या टास्क पेमेंट"
+  },
+  "scamQuestionnaireQ2JobTitle": {
+    "message": "नौकरी का मौका या काम से संबंधित कुछ"
+  },
+  "scamQuestionnaireQ2SelfTransferSubtitle": {
+    "message": "खुद ट्रांसफर करना या कोल्ड स्टोरेज में ले जाना"
+  },
+  "scamQuestionnaireQ2SelfTransferTitle": {
+    "message": "अपने वॉलेट के बीच फंड ट्रांसफर करना"
+  },
+  "scamQuestionnaireQ2Subtitle": {
+    "message": "वह ऑप्शन चुनें जो इस पेमेंट के बारे में सबसे अच्छे से बताता हो।"
+  },
+  "scamQuestionnaireQ2Title": {
+    "message": "यह पेमेंट किस लिए है?"
+  },
+  "scamQuestionnaireQ3No": {
+    "message": "नहीं, मैं यह पूरी तरह से खुद कर रहा हूँ"
+  },
+  "scamQuestionnaireQ3Subtitle": {
+    "message": "यह फोन कॉल, वीडियो चैट या आपकी स्क्रीन शेयर करके हो सकता है।"
+  },
+  "scamQuestionnaireQ3Title": {
+    "message": "क्या कोई आपको इस ट्रांसेक्शन में गाइड कर रहा है?"
+  },
+  "scamQuestionnaireQ3Yes": {
+    "message": "हाँ, अभी कोई मुझे स्टेप्स समझा रहा है"
+  },
+  "scamQuestionnaireSelectAnswer": {
+    "message": "किसी उत्तर को चुनें"
+  },
   "scamQuestionnaireWarningContactSupport": {
     "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "scamQuestionnaireWarningProceedAnyway": {
+    "message": "जोखिमों को नज़रअंदाज़ करें और फिर भी जारी रखें"
+  },
+  "scamQuestionnaireWarningProceedAnywayCountdown": {
+    "message": "फिर भी $1s में जारी रखें",
+    "description": "$1 is the number of seconds remaining before the user can continue"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleDetail": {
+    "message": "एक बार भेजने के बाद, आपके फंड वापस नहीं मिल सकते।"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleEmphasis": {
+    "message": "क्रिप्टो ट्रांसेक्शन को पहले जैसा नहीं किया जा सकता।"
+  },
+  "scamQuestionnaireWarningReasonKnownScam": {
+    "message": "आपके उत्तरों और इस प्राप्तकर्ता की हिस्ट्री के आधार पर, यह ट्रांसेक्शन एक स्कैम हो सकता है।"
+  },
+  "scamQuestionnaireWarningStopPayment": {
+    "message": "यह पेमेंट रोकें"
   },
   "scamQuestionnaireWarningTitle": {
     "message": "हो सकता है कि आपके साथ अभी धोखाधड़ी हो रही हो"
@@ -8636,6 +8916,10 @@
   },
   "sendBugReport": {
     "message": "हमें एक बग रिपोर्ट भेजें।"
+  },
+  "sendBundleHwGasPayment": {
+    "message": "नेटवर्क फीस $1 से पे की जा रही है",
+    "description": "$1 is the symbol of the token being used to pay the network fee"
   },
   "sendSelectReceiveAsset": {
     "message": "प्राप्त करने के लिए एसेट को चुनें"
@@ -9781,6 +10065,18 @@
   "speedUpTransactionTitle": {
     "message": "ट्रांसेक्शन में तेज़ी लाएं"
   },
+  "spendableBalance": {
+    "message": "खर्च करने लायक"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "रिज़र्व्ड (लॉक किया हुआ)"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "मूल्य"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "कुल बैलेंस"
+  },
   "spender": {
     "message": "खर्च करने वाला"
   },
@@ -10012,6 +10308,18 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
+  },
+  "stellarClassicTrustlineAddError": {
+    "message": "यह ट्रस्टलाइन जोड़ते समय कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "यह ट्रस्टलाइन हटाते समय कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
+    "message": "आपके वॉलेट में अभी भी $1 $2 हैं। स्टेलर पर इस एसेट को डीएक्टिवेट करने से पहले आपको यह सब भेजना या स्वैप करना होगा।",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "stillConnectingTo": {
     "message": "अब भी $1 से कनेक्ट किया जा रहा है...",
@@ -10444,6 +10752,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
   },
+  "syncAccounts": {
+    "message": "मोबाइल के साथ सिंक करें"
+  },
   "syncing": {
     "message": "सिंक किया जा रहा है..."
   },
@@ -10640,6 +10951,9 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "कुल गैस फीस"
+  },
+  "transactionIdCopied": {
+    "message": "Transaction ID कॉपी किया गया"
   },
   "transactionIdLabel": {
     "message": "ट्रांसेक्शन ID",
