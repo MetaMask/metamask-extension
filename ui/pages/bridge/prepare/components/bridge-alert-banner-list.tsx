@@ -98,13 +98,24 @@ export const BridgeAlertBannerList = ({
     isTxSubmittable &&
     hardwareWalletName &&
     activeQuote;
+
   const visibleAlerts = isValidQuoteRequest(quoteParams, false)
     ? bannerAlerts.filter(
         (alert) => alert && alertVisibility[alert.id] !== false,
       )
     : [];
+
+  // If no alerts, do not render the alert banner list but do render the modal
+  // so it can close cleanly even when alerts disappear while it is open
   if (!showHardwareWalletAlert && visibleAlerts.length === 0) {
-    return null;
+    return (
+      <BridgeAlertModal
+        isOpen={false}
+        variant="alert-details"
+        alertId={modalAlertId}
+        onClose={() => setModalAlertId(undefined)}
+      />
+    );
   }
 
   // Alert banners
