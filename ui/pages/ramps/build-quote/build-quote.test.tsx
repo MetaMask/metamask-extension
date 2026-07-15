@@ -154,6 +154,12 @@ describe('RampsBuildQuoteScreen', () => {
       '/ramps/build-quote',
     );
 
+    expect(
+      screen.getByTestId('ramps-build-quote-provider-label'),
+    ).toHaveTextContent(
+      messages.rampsBuyingViaProvider.message.replace('$1', 'Transak'),
+    );
+    expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
     expect(container).toMatchSnapshot();
   });
 
