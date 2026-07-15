@@ -4978,6 +4978,7 @@ describe('snap selectors', () => {
       },
       insights: {
         one: { value: 1 },
+        two: { value: 2 },
       },
     },
   };
@@ -4995,6 +4996,28 @@ describe('snap selectors', () => {
     expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
       value: 1,
     });
+  });
+
+  it('caches snap insights per snap ID', () => {
+    const cachingState = {
+      ...snapState,
+      metamask: {
+        ...snapState.metamask,
+        insights: {
+          alpha: { value: 'a' },
+          beta: { value: 'b' },
+        },
+      },
+    };
+
+    selectors.getSnapInsights.resetRecomputations();
+
+    const firstInsight = selectors.getSnapInsights(cachingState, 'alpha');
+    const secondInsight = selectors.getSnapInsights(cachingState, 'beta');
+
+    expect(selectors.getSnapInsights(cachingState, 'alpha')).toBe(firstInsight);
+    expect(selectors.getSnapInsights(cachingState, 'beta')).toBe(secondInsight);
+    expect(selectors.getSnapInsights.recomputations()).toBe(2);
   });
 
   it('filters snap collections for snap permissions and enabled state', () => {
