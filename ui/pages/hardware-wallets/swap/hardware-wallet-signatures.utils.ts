@@ -732,8 +732,8 @@ export type HardwareWalletSignatureViewModel = {
   finalStepStatus: SignatureStepStatus;
   firstStepLabel: string;
   finalStepLabel: string;
-  firstStepDescription: string;
-  finalStepDescription: string;
+  firstStepDescription?: string;
+  finalStepDescription?: string;
   isRetryable: boolean;
   showStuckRetryButton: boolean;
   showFooter: boolean;
