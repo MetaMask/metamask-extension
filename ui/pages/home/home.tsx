@@ -195,13 +195,24 @@ export default function Home() {
     clearLastVisitedPerpsRoute,
   });
 
-  useEffect(() => {
-    if (hasLookupSelectedNetworksRun) {
-      return;
-    }
-    hasLookupSelectedNetworksRun = true;
-    lookupSelectedNetworksAction();
-  }, [lookupSelectedNetworksAction]);
+useEffect(() => {
+  if (hasLookupSelectedNetworksRun) {
+    return () => {
+      // no-op
+    };
+  }
+
+  hasLookupSelectedNetworksRun = true;
+  lookupSelectedNetworksAction();
+
+  return () => {
+    // Reset on the next tick so React 18 StrictMode's immediate unmount/remount
+    // sequence still dedupes the effect, while genuine later mounts can re-run it.
+    setTimeout(() => {
+      hasLookupSelectedNetworksRun = false;
+    }, 0);
+  };
+}, [lookupSelectedNetworksAction]);
 
   const onSupportLinkClick = useCallback(() => {
     if (isMain()) {
