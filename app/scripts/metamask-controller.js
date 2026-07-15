@@ -239,6 +239,7 @@ import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-fla
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
+import { restrictKeyringForDeviceRead } from './lib/hardware-device-read-keyring';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -9029,7 +9030,9 @@ export default class MetamaskController extends EventEmitter {
    * stall indefinitely on a locked or unresponsive device, so they are
    * executed on the lock-free `withKeyringV2Unsafe` path instead of holding
    * the controller-wide operation mutex for the whole device interaction.
-   * The callback must not mutate persisted keyring state beyond the
+   * To enforce this, the callback does not receive the full keyring: it
+   * receives a frozen read-only facade (see `restrictKeyringForDeviceRead`)
+   * on which mutating methods do not exist. The remaining reads only touch
    * non-load-bearing paging cursor/cache fields (`page`, `paths`, `hdk`).
    * @param {*} callback - The callback to execute with the keyring
    * @returns {*} The result of the callback
@@ -9151,7 +9154,10 @@ export default class MetamaskController extends EventEmitter {
       return await Promise.race([
         this.keyringController.withKeyringV2Unsafe(
           { type: v2KeyringType },
-          async ({ keyring }) => await callback(keyring),
+          // The facade structurally prevents `deviceRead` callbacks from
+          // reaching mutating keyring methods on the lock-free path.
+          async ({ keyring }) =>
+            await callback(restrictKeyringForDeviceRead(keyring)),
         ),
         new Promise((_resolve, reject) => {
           timeoutHandle = setTimeout(
