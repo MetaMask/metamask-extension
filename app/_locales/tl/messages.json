@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "Ini-import ang mga account"
   },
-  "add_device_try_again": {
-    "message": "Subukang muli"
-  },
   "add_device_validating_desc": {
     "message": "Nagtatatag ng ligtas at naka-encrypt na koneksyon sa iyong telepono."
   },
@@ -8200,9 +8197,6 @@
   "quotedTotalCost": {
     "message": "Kabuuang halaga: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "Walang available na token"
-  },
   "rank": {
     "message": "Rank"
   },
@@ -10757,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Dapat ay 11 character o mas kaunti ang simbolo."
-  },
-  "syncAccounts": {
-    "message": "I-sync sa mobile"
   },
   "syncing": {
     "message": "Sini-sync..."

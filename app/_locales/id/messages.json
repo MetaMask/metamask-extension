@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "Mengimpor akun"
   },
-  "add_device_try_again": {
-    "message": "Coba lagi"
-  },
   "add_device_validating_desc": {
     "message": "Membangun koneksi yang aman dan terenkripsi dengan ponsel Anda."
   },
@@ -8208,9 +8205,6 @@
   "quotedTotalCost": {
     "message": "Total biaya: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "Token tidak tersedia"
-  },
   "rank": {
     "message": "Peringkat"
   },
@@ -10765,9 +10759,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Simbol harus terdiri dari 11 karakter atau lebih sedikit."
-  },
-  "syncAccounts": {
-    "message": "Sinkronkan dengan seluler"
   },
   "syncing": {
     "message": "Menyinkronkan..."

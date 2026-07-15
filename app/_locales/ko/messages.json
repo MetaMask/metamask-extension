@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "계정 가져오기"
   },
-  "add_device_try_again": {
-    "message": "다시 시도"
-  },
   "add_device_validating_desc": {
     "message": "휴대전화와 안전한 암호화 연결을 설정하고 있습니다."
   },
@@ -8208,9 +8205,6 @@
   "quotedTotalCost": {
     "message": "총비용: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "사용 가능한 토큰 없음"
-  },
   "rank": {
     "message": "순위"
   },
@@ -10765,9 +10759,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "기호는 11자 이하여야 합니다."
-  },
-  "syncAccounts": {
-    "message": "모바일과 동기화"
   },
   "syncing": {
     "message": "동기화 중..."

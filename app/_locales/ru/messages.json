@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "Выполняется импорт счетов"
   },
-  "add_device_try_again": {
-    "message": "Повторить попытку"
-  },
   "add_device_validating_desc": {
     "message": "Установление безопасного зашифрованного соединения с вашим телефоном."
   },
@@ -8200,9 +8197,6 @@
   "quotedTotalCost": {
     "message": "Общая стоимость: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "Нет доступных токенов"
-  },
   "rank": {
     "message": "Рейтинг"
   },
@@ -10757,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Символ должен состоять из 11 или менее знаков."
-  },
-  "syncAccounts": {
-    "message": "Синхронизировать с мобильным устройством"
   },
   "syncing": {
     "message": "Синхронизируется..."

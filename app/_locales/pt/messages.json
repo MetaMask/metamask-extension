@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "Importação de contas"
   },
-  "add_device_try_again": {
-    "message": "Tentar novamente"
-  },
   "add_device_validating_desc": {
     "message": "Estabelecendo uma conexão segura e criptografada com o seu telefone."
   },
@@ -8200,9 +8197,6 @@
   "quotedTotalCost": {
     "message": "Custo total: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "Nenhum token disponível"
-  },
   "rank": {
     "message": "Classificação"
   },
@@ -10757,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "O símbolo deve ter até 11 caracteres."
-  },
-  "syncAccounts": {
-    "message": "Sincronizar com dispositivo móvel"
   },
   "syncing": {
     "message": "Sincronizando..."

@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "アカウントのインポート"
   },
-  "add_device_try_again": {
-    "message": "もう一度お試しください"
-  },
   "add_device_validating_desc": {
     "message": "お使いの携帯電話との暗号化された安全な接続を確立します。"
   },
@@ -8204,9 +8201,6 @@
   "quotedTotalCost": {
     "message": "合計コスト: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "使用可能なトークンがありません"
-  },
   "rank": {
     "message": "ランキング"
   },
@@ -10761,9 +10755,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "シンボルは11文字以下でなければなりません."
-  },
-  "syncAccounts": {
-    "message": "モバイルと同期"
   },
   "syncing": {
     "message": "同期中..."

@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "अकाउंट इंपोर्ट किए जा रहे हैं"
   },
-  "add_device_try_again": {
-    "message": "फिर से प्रयास करें"
-  },
   "add_device_validating_desc": {
     "message": "आपके फ़ोन के साथ एक सुरक्षित, एन्क्रिप्टेड कनेक्शन बनाया जा रहा है।"
   },
@@ -8200,9 +8197,6 @@
   "quotedTotalCost": {
     "message": "कुल कीमत: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "कोई टोकन उपलब्ध नहीं है"
-  },
   "rank": {
     "message": "रैंक"
   },
@@ -10757,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
-  },
-  "syncAccounts": {
-    "message": "मोबाइल के साथ सिंक करें"
   },
   "syncing": {
     "message": "सिंक किया जा रहा है..."

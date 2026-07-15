@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "Hesaplar içe aktarılıyor"
   },
-  "add_device_try_again": {
-    "message": "Tekrar deneyin"
-  },
   "add_device_validating_desc": {
     "message": "Telefonunuzla güvenli, şifrelenmiş bağlantı kuruluyor."
   },
@@ -8208,9 +8205,6 @@
   "quotedTotalCost": {
     "message": "Toplam maliyet: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "tokenlar yok"
-  },
   "rank": {
     "message": "Sıralama"
   },
@@ -10765,9 +10759,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Sembol en fazla 11 karakter olmalıdır."
-  },
-  "syncAccounts": {
-    "message": "Mobil ile senkronize et"
   },
   "syncing": {
     "message": "Senkronize ediliyor..."

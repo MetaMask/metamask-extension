@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "正在导入账户"
   },
-  "add_device_try_again": {
-    "message": "请重试"
-  },
   "add_device_validating_desc": {
     "message": "正在与您的手机建立安全的加密连接。"
   },
@@ -8200,9 +8197,6 @@
   "quotedTotalCost": {
     "message": "总成本：$1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "无可用代币"
-  },
   "rank": {
     "message": "排名"
   },
@@ -10757,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
-  },
-  "syncAccounts": {
-    "message": "与移动设备同步"
   },
   "syncing": {
     "message": "同步中……"

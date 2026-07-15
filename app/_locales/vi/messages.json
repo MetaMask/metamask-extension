@@ -1225,9 +1225,6 @@
   "add_device_syncing_title": {
     "message": "Đang nhập tài khoản"
   },
-  "add_device_try_again": {
-    "message": "Thử lại"
-  },
   "add_device_validating_desc": {
     "message": "Đang thiết lập kết nối an toàn, được mã hóa với điện thoại của bạn."
   },
@@ -8208,9 +8205,6 @@
   "quotedTotalCost": {
     "message": "Tổng chi phí: $1"
   },
-  "rampsNoTokensAvailable": {
-    "message": "Không có token khả dụng"
-  },
   "rank": {
     "message": "Xếp hạng"
   },
@@ -10765,9 +10759,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Ký hiệu không được dài quá 11 ký tự."
-  },
-  "syncAccounts": {
-    "message": "Đồng bộ với thiết bị di động"
   },
   "syncing": {
     "message": "Đang đồng bộ..."
