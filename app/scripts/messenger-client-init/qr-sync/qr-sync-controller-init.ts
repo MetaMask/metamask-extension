@@ -1,8 +1,8 @@
-import { RELAY_URL } from '../controllers/qr-sync/constants';
-import { KeyManager } from '../controllers/qr-sync/key-manager';
-import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
-import type { QrSyncControllerMessenger } from '../controllers/qr-sync/types';
-import type { MessengerClientInitFunction } from './types';
+import { RELAY_URL } from '../../controllers/qr-sync/constants';
+import { KeyManager } from '../../controllers/qr-sync/key-manager';
+import { QrSyncController } from '../../controllers/qr-sync/qr-sync-controller';
+import type { QrSyncControllerMessenger } from '../../controllers/qr-sync/types';
+import type { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the QR sync controller.
