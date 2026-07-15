@@ -283,7 +283,8 @@ class AccountListPage {
     expectedErrorMessage?: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    // Retry click: button can be momentarily disabled by AccountTreeController sync
+    await this.clickAddWalletAndWaitForChooseTypePage();
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -397,7 +398,8 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    // Retry click: button can be momentarily disabled by AccountTreeController sync
+    await this.clickAddWalletAndWaitForChooseTypePage();
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -727,6 +729,28 @@ class AccountListPage {
   async checkAddWalletButtonIsDisplayed(): Promise<void> {
     console.log('Check add wallet button is displayed');
     await this.driver.waitForSelector(this.addMultichainWalletButton);
+  }
+
+  /**
+   * Clicks the "Add wallet" button and waits for the Choose Wallet Type page
+   * to appear. Retries the click if navigation doesn't happen (e.g. if the
+   * button was momentarily disabled by AccountTreeController sync).
+   */
+  async clickAddWalletAndWaitForChooseTypePage(): Promise<void> {
+    console.log('Click add wallet button and wait for choose type page');
+    await this.driver.waitUntil(
+      async () => {
+        await this.driver.clickElementSafe(
+          this.addMultichainWalletButton,
+          2000,
+        );
+        return await this.driver.isElementPresentAndVisible(
+          this.importAccountFromMultichainWalletModalButton,
+          2000,
+        );
+      },
+      { timeout: 30000, interval: 500 },
+    );
   }
 
   async clickWalletDetailsButton(): Promise<void> {
