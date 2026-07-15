@@ -180,6 +180,11 @@ export const BASIC_FUNCTIONALITY_OFF_ROUTE = '/basic-functionality-off';
 
 export const DEFI_ROUTE = '/defi';
 
+// Ramps (native buy) routes
+export const RAMPS_ROUTE = '/ramps';
+export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
+export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
+
 // Perps routes
 export const PERPS_ROUTE = '/perps';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';

@@ -2322,6 +2322,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'rampsEnabled',
     type: FeatureFlagType.Remote,
     inProd: false,
+    productionDefault: {
+      minimumVersion: '13.41.0',
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  rampsServiceDisruption: {
+    name: 'rampsServiceDisruption',
+    type: FeatureFlagType.Remote,
+    inProd: false,
     productionDefault: false,
     status: FeatureFlagStatus.Active,
   },

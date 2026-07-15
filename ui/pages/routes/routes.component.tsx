@@ -45,6 +45,8 @@ import {
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
+  RAMPS_BUILD_QUOTE_ROUTE,
+  RAMPS_TOKEN_SELECTION_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -200,6 +202,10 @@ const NftFullImage = mmLazy(
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
+const RampsTokenSelection = mmLazy(
+  () => import('../ramps/token-selection/index.ts'),
+);
 const PermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/permissions-page/permissions-page.js'),
@@ -522,6 +528,14 @@ export const routeConfig = [
           {
             path: `${DEFI_ROUTE}/:chainId/:protocolId`,
             element: <DeFiPage />,
+          },
+          {
+            path: RAMPS_BUILD_QUOTE_ROUTE,
+            element: <RampsBuildQuote />,
+          },
+          {
+            path: RAMPS_TOKEN_SELECTION_ROUTE,
+            element: <RampsTokenSelection />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
