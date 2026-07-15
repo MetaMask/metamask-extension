@@ -49,6 +49,7 @@ import {
   selectRequiredTransactionHashes,
   selectRequiredTransactionIds,
 } from './transactionController';
+import { isPerpsWithdrawExtraTransaction } from './metamask-pay';
 import type { TokenScanCacheResults } from './token-scan';
 import {
   getMarketData,
@@ -115,13 +116,15 @@ export const selectLocalTransactions = createSelector(
     const filtered = (transactions ?? []).filter(
       (tx) =>
         isFromSelectedAccount(tx, selectedAddress) &&
-        !isInternalRequiredTransaction(tx),
+        !isInternalRequiredTransaction(tx) &&
+        !isPerpsWithdrawExtraTransaction(tx),
     );
 
     const filteredSmartTransactions = smartTransactions.filter(
       (tx) =>
         !(tx.type && EXCLUDED_TRANSACTION_TYPES.has(tx.type)) &&
-        !isInternalRequiredTransaction(tx),
+        !isInternalRequiredTransaction(tx) &&
+        !isPerpsWithdrawExtraTransaction(tx),
     );
 
     const combined = [...filtered, ...filteredSmartTransactions];

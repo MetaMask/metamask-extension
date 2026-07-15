@@ -6,10 +6,12 @@ import type {
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { NetworkName } from '../../../components/app/transaction/network-name';
+import { TransactionId } from '../../../components/app/transaction/transaction-id';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
-import { selectLocalTransactionsByHash } from '../../../selectors/activity';
+import { selectPerpsWithdrawMetamaskPayByHash } from '../../../selectors/metamask-pay';
 import {
   ARBITRUM_USDC,
   PERPS_CURRENCY,
@@ -27,11 +29,6 @@ const ARBITRUM_USDC_ASSET_ID = toAssetId(
   toEvmCaipChainId(ARBITRUM_USDC.chainId),
 );
 
-function useTransactionMeta(hash: string | undefined) {
-  const localTransactions = useSelector(selectLocalTransactionsByHash);
-  return localTransactions.get(hash || '')?.initialTransaction;
-}
-
 export function PerpsDetails({
   item,
 }: {
@@ -39,8 +36,8 @@ export function PerpsDetails({
 }) {
   const t = useI18nContext();
   const { formatDateTime, formatCurrencyWithMinThreshold } = useFormatters();
-  const transactionMeta = useTransactionMeta(item.hash);
-  const { metamaskPay } = transactionMeta || {};
+  const metamaskPayByHash = useSelector(selectPerpsWithdrawMetamaskPayByHash);
+  const metamaskPay = metamaskPayByHash.get(item.hash?.toLowerCase() || '');
   const { totalFiat, networkFeeFiat, bridgeFeeFiat } = metamaskPay || {};
 
   const withdrewToken = useMemo((): TokenAmount | undefined => {
@@ -63,17 +60,19 @@ export function PerpsDetails({
   }, [totalFiat, bridgeFeeFiat, networkFeeFiat]);
   const receivedToken = useDestinationToken(metamaskPay);
 
-  const formattedTransactionFee = formatCurrencyWithMinThreshold(
-    Number(networkFeeFiat ?? 0) + Number(bridgeFeeFiat ?? 0),
-    PERPS_CURRENCY,
-  );
+  const payFeeAmount = Number(networkFeeFiat ?? 0) + Number(bridgeFeeFiat ?? 0);
+  const formattedTransactionFee =
+    payFeeAmount > 0
+      ? formatCurrencyWithMinThreshold(payFeeAmount, PERPS_CURRENCY)
+      : undefined;
 
-  const chainId =
-    metamaskPay?.isPostQuote && metamaskPay.chainId
-      ? toEvmCaipChainId(metamaskPay.chainId)
-      : item.chainId;
-
-  const blockExplorerHash = item.hash === '0x0' ? undefined : item.hash;
+  const { chainId } = item;
+  const detailsHash = item.hash && item.hash !== '0x0' ? item.hash : undefined;
+  const txId =
+    detailsHash &&
+    (!chainId.startsWith('eip155:') || isValidTransactionHash(detailsHash))
+      ? detailsHash
+      : undefined;
 
   return (
     <div className="flex grow flex-col">
@@ -97,6 +96,10 @@ export function PerpsDetails({
             value={<AccountName address={item.data.from} />}
           />
           <Row label={t('network')} value={<NetworkName chainId={chainId} />} />
+          <Row
+            label={t('transactionIdLabel')}
+            value={txId ? <TransactionId value={txId} /> : null}
+          />
         </Section>
 
         {formattedTransactionFee ? (
@@ -111,7 +114,7 @@ export function PerpsDetails({
       </div>
 
       <Footer>
-        <BlockExplorerButton chainId={chainId} txHash={blockExplorerHash} />
+        <BlockExplorerButton chainId={chainId} txHash={detailsHash} />
       </Footer>
     </div>
   );
