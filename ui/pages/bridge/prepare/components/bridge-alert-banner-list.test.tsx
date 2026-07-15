@@ -332,5 +332,4 @@ describe('BridgeAlertBannerList', () => {
       ).toMatchSnapshot();
     });
   });
-
 });

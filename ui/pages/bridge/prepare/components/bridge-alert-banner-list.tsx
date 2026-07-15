@@ -94,9 +94,14 @@ export const BridgeAlertBannerList = ({
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
 
   const showHardwareWalletAlert =
-    isUsingHardwareWallet && isTxSubmittable && hardwareWalletName && activeQuote;
+    isUsingHardwareWallet &&
+    isTxSubmittable &&
+    hardwareWalletName &&
+    activeQuote;
   const visibleAlerts = isValidQuoteRequest(quoteParams, false)
-    ? bannerAlerts.filter((alert) => alert && alertVisibility[alert.id] !== false)
+    ? bannerAlerts.filter(
+        (alert) => alert && alertVisibility[alert.id] !== false,
+      )
     : [];
   if (!showHardwareWalletAlert && visibleAlerts.length === 0) {
     return null;
