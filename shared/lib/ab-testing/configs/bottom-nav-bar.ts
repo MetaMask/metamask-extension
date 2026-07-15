@@ -32,11 +32,9 @@ export const BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping = {
   flagKey: BOTTOM_NAV_AB_TEST_KEY,
   validVariants: [ABTestVariant.Control, ABTestVariant.Treatment],
   eventNames: [
-    MetaMetricsEventName.BottomNavTabClicked,
     MetaMetricsEventName.TokenScreenViewed,
     MetaMetricsEventName.PerpsScreenViewed,
-    'Unified SwapBridge Page Viewed',
     MetaMetricsEventName.ActivityScreenViewed,
-    MetaMetricsEventName.HomeSubtabClicked,
+    'Unified SwapBridge Page Viewed',
   ],
 };

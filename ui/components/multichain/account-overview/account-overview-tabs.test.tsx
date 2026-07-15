@@ -5,12 +5,8 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { AccountOverviewTab } from '../../../../shared/constants/app-state';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
 import { setPerpsTabBadgeSeen } from '../../../store/actions';
@@ -64,72 +60,6 @@ jest.mock('../../app/perps/perps-tab', () => ({
 beforeEach(() => {
   jest.clearAllMocks();
   (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
-});
-
-describe('AccountOverviewTabs - event metrics', () => {
-  const mockTrackEvent = jest.fn();
-  const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
-    bufferedTrace: jest.fn(),
-    bufferedEndTrace: jest.fn(),
-    onboardingParentContext: { current: null },
-  };
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  const renderTabs = () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
-        remoteFeatureFlags: {
-          perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
-        },
-      },
-    });
-
-    return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={true}
-          showActivity={true}
-          showDefi={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-  };
-
-  // @ts-expect-error it.each is missing from the Mocha type definitions
-  it.each([
-    ['nfts', 'account-overview__nfts-tab'],
-    ['defi', 'account-overview__defi-tab'],
-    ['activity', 'account-overview__activity-tab'],
-    ['perps', 'account-overview__perps-tab'],
-  ])(
-    'fires HomeSubtabClicked with name "%s" when that tab is clicked',
-    (tabName: AccountOverviewTab, testId: string) => {
-      const { getByTestId } = renderTabs();
-
-      fireEvent.click(getByTestId(testId));
-
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          category: MetaMetricsEventCategory.Home,
-          event: MetaMetricsEventName.HomeSubtabClicked,
-          properties: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            name: tabName,
-          }),
-        }),
-      );
-    },
-  );
 });
 
 describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {

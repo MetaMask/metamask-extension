@@ -17,10 +17,6 @@ import {
   AccountOverviewTabKey,
   AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
@@ -177,21 +173,13 @@ export const AccountOverviewTabs = ({
         dispatch(detectNfts(selectedChainIds));
       }
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.HomeSubtabClicked,
-        properties: {
-          name: tabName,
-        },
-      });
-
       if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
         trace({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
         });
       }
     },
-    [activeTabKey, setActiveTabKey, dispatch, selectedChainIds, trackEvent],
+    [activeTabKey, setActiveTabKey, dispatch, selectedChainIds],
   );
 
   const onClickAsset = useCallback(
