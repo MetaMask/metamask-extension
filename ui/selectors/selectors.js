@@ -494,6 +494,8 @@ export const getMetaMaskCachedBalances = createSelector(
  * @returns {Function} A parameterized selector.
  */
 const createChainIdSelector = createParameterizedShallowEqualSelector(10);
+const NFT_CHAIN_ID_SELECTOR_CACHE_SIZE = 10;
+const TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE = 30;
 
 /**
  * Get MetaMask accounts, including account name and balance.
@@ -1298,14 +1300,15 @@ export const selectConversionRateByChainId = createSelector(
   },
 );
 
-export const selectNftsByChainId = createParameterizedSelector(10)(
+export const selectNftsByChainId =
+  createParameterizedSelector(NFT_CHAIN_ID_SELECTOR_CACHE_SIZE)(
   getSelectedInternalAccount,
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
   (selectedAccount, nfts, chainId) => {
     return nfts?.[selectedAccount.address]?.[chainId] ?? EMPTY_ARRAY;
   },
-);
+  );
 
 export const selectNetworkIdentifierByChainId = createSelector(
   selectNetworkConfigurationByChainId,
@@ -3005,7 +3008,9 @@ export function getTokenScanCache(state) {
  *
  */
 export const getTokenScanResultsForAddresses =
-  createParameterizedShallowEqualSelector(30)(
+  createParameterizedShallowEqualSelector(
+    TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE,
+  )(
   getTokenScanCache,
   (_state, chainId) => chainId,
   (_state, _chainId, tokenAddresses) => tokenAddresses,

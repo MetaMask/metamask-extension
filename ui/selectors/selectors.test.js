@@ -1371,11 +1371,29 @@ describe('Selectors', () => {
     });
 
     it('caches token scan lookups per chain ID and address list contents', () => {
+      const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+      const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+
       expect(
-        selectors.getTokenScanResultsForAddresses(state, chainIdOne, [
-          tokenAddressOne,
-          tokenAddressTwo,
-        ]),
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          addressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          equivalentAddressesForChainOne,
+        ),
       ).toStrictEqual({
         [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
           result_type: 'Malicious',
