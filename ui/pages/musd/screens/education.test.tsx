@@ -312,7 +312,10 @@ describe('MusdEducationScreen', () => {
 
       expect(mockDispatch).toHaveBeenCalled();
       // Deeplink buy branch pins the fallback chain to mainnet.
-      expect(mockGoToBuy).toHaveBeenCalledWith({ chainId: '0x1' });
+      expect(mockGoToBuy).toHaveBeenCalledWith({
+        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+        chainId: '0x1',
+      });
       // Flag off opens Portfolio in a new tab, so the screen returns home.
       await waitFor(() =>
         expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE),
@@ -332,7 +335,10 @@ describe('MusdEducationScreen', () => {
       fireEvent.click(button);
 
       await waitFor(() =>
-        expect(mockGoToBuy).toHaveBeenCalledWith({ chainId: '0x1' }),
+        expect(mockGoToBuy).toHaveBeenCalledWith({
+          assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+          chainId: '0x1',
+        }),
       );
       // goToBuy navigates in-app itself; the screen must not override it home.
       expect(mockNavigate).not.toHaveBeenCalledWith(DEFAULT_ROUTE);

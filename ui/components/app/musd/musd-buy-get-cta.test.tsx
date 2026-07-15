@@ -240,7 +240,10 @@ describe('MusdBuyGetCta', () => {
 
       // goToBuy owns the flag-off Portfolio fallback (with this chain) and the
       // flag-on in-app routing.
-      expect(mockGoToBuy).toHaveBeenCalledWith({ chainId: '0x1' });
+      expect(mockGoToBuy).toHaveBeenCalledWith({
+        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+        chainId: '0x1',
+      });
     });
 
     it('routes through goToBuy when inner CTA button is clicked for BUY variant', () => {
@@ -257,7 +260,10 @@ describe('MusdBuyGetCta', () => {
         screen.getByRole('button', { name: messages.musdBuyMusd.message }),
       );
 
-      expect(mockGoToBuy).toHaveBeenCalledWith({ chainId: '0x1' });
+      expect(mockGoToBuy).toHaveBeenCalledWith({
+        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+        chainId: '0x1',
+      });
     });
 
     it('does not route to buy for the GET variant', () => {

@@ -8,6 +8,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import type { CaipAssetType } from '@metamask/utils';
 import {
   Box,
   Text,
@@ -52,6 +53,7 @@ import {
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getIsRampsEnabled } from '../../../selectors/ramps-feature-flags';
 import {
+  getMusdAssetIdForChain,
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
@@ -186,7 +188,15 @@ const MusdEducationScreen = () => {
     dispatch(setMusdConversionEducationSeen(true));
 
     if (isDeeplinkNoTokensGoToBuy) {
-      await goToBuy({ chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID });
+      await goToBuy({
+        // Pre-select mUSD (mainnet) so the in-app flow lands on build-quote
+        // instead of the token-selection page; chainId is only used for the
+        // flag-off Portfolio fallback.
+        assetId: getMusdAssetIdForChain(MUSD_CONVERSION_DEFAULT_CHAIN_ID) as
+          | CaipAssetType
+          | undefined,
+        chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
+      });
       // Flag off opens Portfolio in a new tab, so send the user home; flag on
       // navigates in-app (build-quote, or a blocking modal on the education
       // screen), so leave routing to goToBuy.

@@ -9,7 +9,7 @@
 
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -47,6 +47,7 @@ import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { ASSET_CELL_HEIGHT } from '../assets/constants';
 import {
+  getMusdAssetIdForChain,
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
@@ -160,7 +161,18 @@ export const MusdBuyGetCta = ({
     );
 
     if (variant === BuyGetMusdCtaVariant.BUY) {
-      goToBuy({ chainId: selectedChainId ?? undefined });
+      const buyChainId = selectedChainId ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
+      goToBuy({
+        // Pre-select mUSD so the in-app flow lands on build-quote instead of
+        // the token-selection page. Fall back to mainnet mUSD when the current
+        // chain has no mUSD route. chainId is only used for the flag-off
+        // Portfolio fallback.
+        assetId: (getMusdAssetIdForChain(buyChainId) ??
+          getMusdAssetIdForChain(MUSD_CONVERSION_DEFAULT_CHAIN_ID)) as
+          | CaipAssetType
+          | undefined,
+        chainId: selectedChainId ?? undefined,
+      });
     } else if (variant === BuyGetMusdCtaVariant.GET) {
       if (!defaultPaymentToken) {
         console.error(
