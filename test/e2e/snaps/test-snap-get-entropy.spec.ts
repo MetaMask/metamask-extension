@@ -84,11 +84,11 @@ describe('Test Snap getEntropy', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickApproveButton();
 
-        await driver.waitForBrowserAlert({
-          text: 'Entropy source with ID "invalid" not found.',
-          windowTitle: WINDOW_TITLES.TestSnaps,
-        });
-        await driver.closeAlertPopup();
+        // Dialog closes after approve; switch to Test Snaps, then validate+dismiss the alert.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+        await driver.validateAlertTextAndClose(
+          'Entropy source with ID "invalid" not found.',
+        );
       },
     );
   });
