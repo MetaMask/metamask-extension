@@ -89,17 +89,15 @@ export default function HardwareWalletSignatures() {
         }
       />
       <Box
-        className="hardware-wallet-signatures__content"
+        className="hardware-wallet-signatures__content h-full"
         flexDirection={BoxFlexDirection.Column}
         paddingTop={6}
         paddingHorizontal={4}
         alignItems={BoxAlignItems.Start}
-        style={{ height: '100%' }}
       >
         <Box
-          className="hardware-wallet-signatures__device"
+          className="hardware-wallet-signatures__device self-center"
           marginBottom={6}
-          style={{ alignSelf: 'center' }}
         >
           <GenericHardwareWalletAnimation status={signatureStatus} />
         </Box>
