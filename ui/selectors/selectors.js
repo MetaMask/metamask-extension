@@ -494,7 +494,11 @@ export const getMetaMaskCachedBalances = createSelector(
  * @returns {Function} A parameterized selector.
  */
 const createChainIdSelector = createParameterizedShallowEqualSelector(10);
+// Cache recent per-chain NFT lookups for views that bounce between a small set of
+// networks during a render cycle.
 const NFT_CHAIN_ID_SELECTOR_CACHE_SIZE = 10;
+// Cache recent chainId + address-list combinations for token trust signal lookups
+// across asset pages and confirmation flows.
 const TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE = 30;
 
 /**
