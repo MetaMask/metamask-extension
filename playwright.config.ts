@@ -50,8 +50,8 @@ const config: PlaywrightTestConfig = {
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on',
+    // We capture our own diagnostics via verboseReportOnFailure
+    trace: 'off',
     video: 'off',
     /* Run tests headless in local */
     headless: isHeadless('PLAYWRIGHT'),
@@ -96,7 +96,7 @@ const config: PlaywrightTestConfig = {
     },
   ],
 
-  /* Folder for test artifacts such as screenshots, videos, traces, etc. */
+  /* Folder for test artifacts such as screenshots, videos, etc. */
   outputDir: `${logOutputFolder}/test-artifacts/`,
 };
 
