@@ -197,7 +197,6 @@ describe('Send ERC20 - Max Balance Validation', function () {
         // baseline: the Tokens list shows the seeded 10 TST balance
         await tokensTab.checkTokenAmountIsDisplayed(`10 ${SYMBOL}`);
 
-
         const subscriptionId = await subscriptionPromise;
         console.log(`Subscription established: ${subscriptionId}`);
         const notification = createBalanceUpdateNotification({
