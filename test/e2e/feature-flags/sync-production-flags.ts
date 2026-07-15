@@ -555,6 +555,36 @@ function extractEntryComments(content: string): Map<string, string> {
 }
 
 /**
+ * Extracts comment lines that appear *inside* an entry block (between the
+ * opening `{` and closing `},`). These are distinct from the leading comments
+ * captured by `extractEntryComments`.
+ *
+ * @param content - Full registry file source
+ */
+function extractIntraEntryComments(
+  content: string,
+): Map<string, string[]> {
+  const result = new Map<string, string[]>();
+  for (const block of extractRegistryEntryBlocks(content)) {
+    const braceIndex = block.text.indexOf('{');
+    if (braceIndex === -1) {
+      continue;
+    }
+    const inner = block.text.slice(braceIndex + 1);
+    const comments: string[] = [];
+    for (const line of inner.split('\n')) {
+      if (line.trim().startsWith('//')) {
+        comments.push(line);
+      }
+    }
+    if (comments.length > 0) {
+      result.set(block.sortKey, comments);
+    }
+  }
+  return result;
+}
+
+/**
  * Rebuilds the registry block with sorted entries and deep-sorted productionDefault keys.
  *
  * @param content - Full registry file source
@@ -565,9 +595,15 @@ export function rebuildRegistryContent(
   registry: Record<string, FeatureFlagRegistryEntry>,
 ): string {
   const commentByFlag = extractEntryComments(content);
+  const intraCommentByFlag = extractIntraEntryComments(content);
   const sortedNames = Object.keys(registry).sort((a, b) => a.localeCompare(b));
   const blocks = sortedNames.map((name) => {
-    const entryBlock = buildRegistryEntryBlockFromEntry(name, registry[name]);
+    let entryBlock = buildRegistryEntryBlockFromEntry(name, registry[name]);
+    const intraComments = intraCommentByFlag.get(name);
+    if (intraComments) {
+      const braceIdx = entryBlock.indexOf('{');
+      entryBlock = `${entryBlock.slice(0, braceIdx + 1)}\n${intraComments.join('\n')}${entryBlock.slice(braceIdx + 1)}`;
+    }
     const comment = commentByFlag.get(name);
     return comment ? `${comment}${entryBlock}` : entryBlock;
   });
@@ -753,7 +789,7 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
   const original = fs.readFileSync(REGISTRY_FILE_PATH, 'utf-8');
   fs.writeFileSync(REGISTRY_FILE_PATH, content, 'utf-8');
   try {
-    execSync(`yarn oxfmt -c oxfmt.config.mts ${REGISTRY_FILE_PATH}`, {
+    execSync(`yarn oxfmt -c oxfmt.config.mts "${REGISTRY_FILE_PATH}"`, {
       cwd: path.resolve(__dirname, '../../..'),
       stdio: 'pipe',
     });

@@ -315,6 +315,43 @@ describe('rebuildRegistryContent', () => {
     expect(commentIndex).toBeLessThan(alphaIndex);
   });
 
+  it('preserves intra-entry comments', () => {
+    const contentWithIntraComment = `export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
+  alphaFlag: {
+    // Dark-launched: default OFF in production until rollout.
+    name: 'alphaFlag',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+};
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+`;
+
+    const registry = {
+      alphaFlag: {
+        name: 'alphaFlag',
+        type: FeatureFlagType.Remote,
+        inProd: true,
+        productionDefault: false,
+        status: FeatureFlagStatus.Active,
+      },
+    };
+
+    const rebuilt = rebuildRegistryContent(contentWithIntraComment, registry);
+
+    expect(rebuilt).toContain(
+      '// Dark-launched: default OFF in production until rollout.',
+    );
+    const commentIdx = rebuilt.indexOf('// Dark-launched');
+    const inProdIdx = rebuilt.indexOf('inProd:', commentIdx);
+    expect(commentIdx).toBeLessThan(inProdIdx);
+  });
+
   it('alphabetizes entry metadata fields', () => {
     const registry = {
       zuluFlag: {
