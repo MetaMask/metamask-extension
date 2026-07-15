@@ -1,5 +1,8 @@
 import migrate, { version } from './219';
 
+/*eslint accessor-pairs: ["error", { "setWithoutGet": false }]*/
+/*eslint no-empty-function: ["error", { "allow": ["setters"] }]*/
+
 const PPOM_DB_NAME = 'PPOMDB';
 
 describe(`migration #${version}`, () => {
