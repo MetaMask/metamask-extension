@@ -307,11 +307,11 @@
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
     "@ecies/ciphers@npm:^0.2.6": "patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch",
-    "@metamask/accounts-controller": "^39.0.3",
+    "@metamask/accounts-controller": "^39.0.4",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/assets-controller@npm:^9.1.0": "^10.1.0",
     "@metamask/messenger": "^2.0.0",
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@12.0.0-preview-ae00c4c29"
+    "@metamask/multichain-account-service": "^13.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -342,7 +342,7 @@
     "@metamask/account-api": "^1.0.4",
     "@metamask/account-tree-controller": "^7.5.3",
     "@metamask/account-watcher": "^4.1.3",
-    "@metamask/accounts-controller": "^39.0.3",
+    "@metamask/accounts-controller": "^39.0.4",
     "@metamask/address-book-controller": "^7.1.2",
     "@metamask/analytics-controller": "^1.1.1",
     "@metamask/announcement-controller": "^8.0.0",
@@ -408,7 +408,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/mobile-wallet-protocol-core": "^0.4.0",
     "@metamask/mobile-wallet-protocol-dapp-client": "^0.3.0",
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@12.0.0-preview-ae00c4c29",
+    "@metamask/multichain-account-service": "^13.0.0",
     "@metamask/multichain-api-client": "^0.10.1",
     "@metamask/multichain-api-middleware": "^3.1.4",
     "@metamask/multichain-network-controller": "^3.1.0",
