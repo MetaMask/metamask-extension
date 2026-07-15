@@ -1601,7 +1601,6 @@
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
     "version": "null",
-    "versionInfo": [],
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {
       "testnet": [],
