@@ -60,6 +60,7 @@ import {
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
+import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useAppDispatch } from '../../../store/hooks';
@@ -151,7 +152,7 @@ export const MultichainAccountList = ({
   const selectConnectedAccountGroups = useCallback(
     (state: MultichainAccountsState) => {
       if (!showConnectionStatus || permittedAddresses.length === 0) {
-        return [];
+        return EMPTY_ARRAY;
       }
       return getAccountGroupsByAddress(state, permittedAddresses);
     },

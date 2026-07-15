@@ -17,6 +17,7 @@ import {
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { EMPTY_ARRAY } from '../../../../../selectors/shared';
 import { ReviewGatorPermissionItem } from './review-gator-permission-item';
 
 const mockAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
@@ -82,9 +83,14 @@ const store = configureStore({
 
 jest.mock(
   '../../../../../selectors/gator-permissions/gator-permissions',
-  () => ({
-    getPendingRevocations: jest.fn().mockReturnValue([]),
-  }),
+  () => {
+    const { EMPTY_ARRAY: emptyRevocations } = jest.requireActual(
+      '../../../../../selectors/shared',
+    );
+    return {
+      getPendingRevocations: jest.fn().mockReturnValue(emptyRevocations),
+    };
+  },
 );
 
 jest.mock(
@@ -143,6 +149,10 @@ describe('Permission List Item', () => {
     const mockOnClick = jest.fn();
     const mockNetworkName = 'Ethereum';
     const mockStartTime = 1736271776; // January 7, 2025;
+
+    afterEach(() => {
+      jest.mocked(getPendingRevocations).mockReturnValue(EMPTY_ARRAY);
+    });
 
     describe('NATIVE token permissions', () => {
       const mockExpiryTimestamp = 1767225600; // January 1, 2026 00:00:00 UTC
@@ -333,12 +343,15 @@ describe('Permission List Item', () => {
         });
 
         it('shows Revocation pending when permission context is in pending revocations', () => {
-          jest.mocked(getPendingRevocations).mockReturnValueOnce([
+          const pendingRevocations = [
             {
               txId: '1',
               permissionContext: '0x00000000',
             },
-          ]);
+          ];
+          jest
+            .mocked(getPendingRevocations)
+            .mockReturnValue(pendingRevocations);
           const { getByRole } = renderWithProvider(
             <ReviewGatorPermissionItem
               networkName={mockNetworkName}

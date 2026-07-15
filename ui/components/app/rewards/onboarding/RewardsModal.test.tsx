@@ -69,9 +69,7 @@ function setupSelectors({
   );
 
   mockedUseAppSelector.mockImplementation(
-    (
-      selector: (state: MetaMaskReduxState) => unknown,
-    ): unknown =>
+    (selector: (state: MetaMaskReduxState) => unknown): unknown =>
       selector({
         metamask: {
           rewardsActiveAccount: rewardActiveAccountSubscriptionId

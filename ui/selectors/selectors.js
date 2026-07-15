@@ -176,6 +176,7 @@ import {
   createParameterizedDeepEqualSelector,
   createParameterizedShallowEqualSelector,
   createResultEqualSelector,
+  createShallowResultSelector,
 } from '../../shared/lib/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
@@ -1142,19 +1143,19 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
-export function getCompleteAddressBook(state) {
-  const addresses = state.metamask.addressBook;
-  const addressWithChainId = Object.entries(addresses)
-    .filter(([chainId, _]) => chainId !== '*')
-    .map(([chainId, addresse]) =>
-      Object.values(addresse).map((address) => ({
-        ...address,
-        chainId,
-      })),
-    )
-    .flat();
-  return addressWithChainId;
-}
+export const getCompleteAddressBook = createShallowResultSelector(
+  (state) => state.metamask.addressBook,
+  (addresses) =>
+    Object.entries(addresses)
+      .filter(([chainId, _]) => chainId !== '*')
+      .map(([chainId, addresse]) =>
+        Object.values(addresse).map((address) => ({
+          ...address,
+          chainId,
+        })),
+      )
+      .flat(),
+);
 
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
@@ -1259,7 +1260,7 @@ export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
 }
 
-export const getNetworkConfigurationIdByChainId = createSelector(
+export const getNetworkConfigurationIdByChainId = createResultEqualSelector(
   (state) => state.metamask.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) =>
     Object.entries(networkConfigurationsByChainId).reduce(
@@ -1354,7 +1355,7 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-export const getUnapprovedConfirmations = createSelector(
+export const getUnapprovedConfirmations = createShallowResultSelector(
   (state) => state.metamask.pendingApprovals ?? EMPTY_OBJECT,
   (pendingApprovals) => Object.values(pendingApprovals),
 );
@@ -1367,16 +1368,16 @@ export const getUnapprovedTemplatedConfirmations = createResultEqualSelector(
     ),
 );
 
-export function getSuggestedTokens(state) {
-  return (
-    getUnapprovedConfirmations(state)?.filter(({ type, requestData }) => {
+export const getSuggestedTokens = createShallowResultSelector(
+  getUnapprovedConfirmations,
+  (unapprovedConfirmations) =>
+    unapprovedConfirmations.filter(({ type, requestData }) => {
       return (
         type === ApprovalType.WatchAsset &&
         requestData?.asset?.tokenId === undefined
       );
-    }) || []
-  );
-}
+    }),
+);
 
 export const getSuggestedNfts = createSelector(
   getUnapprovedConfirmations,
@@ -1613,19 +1614,25 @@ const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
 
-export function getTargetSubjectMetadata(state, origin) {
-  const metadata = getSubjectMetadata(state)[origin];
+export const getTargetSubjectMetadata = createParameterizedDeepEqualSelector(
+  30,
+)(
+  getSubjectMetadata,
+  (_state, origin) => origin,
+  (subjectMetadata, origin) => {
+    const metadata = subjectMetadata[origin];
 
-  if (metadata?.subjectType === SubjectType.Snap) {
-    const { svgIcon, ...remainingMetadata } = metadata;
-    return {
-      ...remainingMetadata,
-      iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
-    };
-  }
+    if (metadata?.subjectType === SubjectType.Snap) {
+      const { svgIcon, ...remainingMetadata } = metadata;
+      return {
+        ...remainingMetadata,
+        iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
+      };
+    }
 
-  return metadata;
-}
+    return metadata;
+  },
+);
 
 /**
  * Input selector for reusing the same state object.
@@ -2191,14 +2198,14 @@ export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   },
 );
 
-const getAllConnectedAccounts = createSelector(
+const getAllConnectedAccounts = createShallowResultSelector(
   getConnectedSubjectsForAllAddresses,
   (connectedSubjects) => {
     return Object.keys(connectedSubjects);
   },
 );
 
-export const getConnectedSitesList = createSelector(
+export const getConnectedSitesList = createResultEqualSelector(
   getConnectedSubjectsForAllAddresses,
   getInternalAccounts,
   getAllConnectedAccounts,
@@ -2290,12 +2297,15 @@ export const getSnapsMetadata = createDeepEqualSelector(
  *
  * Parameterized selector with bounded snap ID cache.
  */
+const SNAP_METADATA_FALLBACK = Object.freeze({ name: null });
+
 export const getSnapMetadata = createParameterizedSelector(20)(
   getSnapsMetadata,
   (_, snapId) => snapId,
   (metadata, snapId) => {
     return (
       metadata[snapId] ?? {
+        ...SNAP_METADATA_FALLBACK,
         name: snapId ? stripSnapPrefix(snapId) : null,
       }
     );
@@ -2951,12 +2961,12 @@ export function getIsEnrolledPasskeyIncompatibleWithSidepanel(state) {
  * @returns {boolean}
  */
 export function getIsPasskeyFeatureAvailable(state) {
-  return (
+  return Boolean(
     getIsPasskeyFeatureEnabled() &&
     isWebAuthnSupported() &&
     !getIsSocialLoginFlow(state) &&
     !isFirefoxBrowser() &&
-    getDeviceType() !== DEVICE_TYPE.MOBILE
+    getDeviceType() !== DEVICE_TYPE.MOBILE,
   );
 }
 
@@ -3495,12 +3505,6 @@ function getPermittedEVMAccounts(state, origin) {
   );
 }
 
-function getPermittedEVMChains(state, origin) {
-  return getEVMChainsFromPermission(
-    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
-  );
-}
-
 export const getAllPermittedAccounts = createParameterizedSelector(
   PERMITTED_ACCOUNTS_LRU_CACHE_SIZE,
 )(
@@ -3511,7 +3515,7 @@ export const getAllPermittedAccounts = createParameterizedSelector(
     const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
     return caip25Caveat
       ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
-      : [];
+      : EMPTY_ARRAY;
   },
 );
 
@@ -3539,34 +3543,39 @@ export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
   return getAllPermittedAccounts(state, activeTab);
 }
 
-export function getPermittedEVMChainsForSelectedTab(state, activeTab) {
-  return getPermittedEVMChains(state, activeTab);
-}
+export const getPermittedEVMChainsForSelectedTab =
+  createParameterizedShallowEqualSelector(30)(
+    subjectSelector,
+    (_state, activeTab) => activeTab,
+    (subject) => {
+      const caip25Permission = getCaip25PermissionFromSubject(subject);
+      return getEVMChainsFromPermission(caip25Permission);
+    },
+  );
 
-export const getAllPermittedChainsForSelectedTab = createParameterizedSelector(
-  30,
-)(
-  subjectSelector,
-  (_state, activeTab) => activeTab,
-  (subject) => {
-    const caip25Permission = getCaip25PermissionFromSubject(subject);
-    const permittedScopes = caip25Permission
-      ? getAllScopesFromPermission(caip25Permission)
-      : EMPTY_ARRAY;
-    // our `endowment:caip25` permission can include a special class of `wallet` scopes,
-    // see https://github.com/ChainAgnostic/namespaces/tree/main/wallet &
-    // https://github.com/ChainAgnostic/namespaces/blob/main/wallet/caip2.md
-    // amongs the other chainId scopes. We want to exclude the `wallet` scopes here.
-    return permittedScopes.filter((caipChainId) => {
-      try {
-        const { namespace } = parseCaipChainId(caipChainId);
-        return namespace !== KnownCaipNamespace.Wallet;
-      } catch (err) {
-        return false;
-      }
-    });
-  },
-);
+export const getAllPermittedChainsForSelectedTab =
+  createParameterizedShallowEqualSelector(30)(
+    subjectSelector,
+    (_state, activeTab) => activeTab,
+    (subject) => {
+      const caip25Permission = getCaip25PermissionFromSubject(subject);
+      const permittedScopes = caip25Permission
+        ? getAllScopesFromPermission(caip25Permission)
+        : EMPTY_ARRAY;
+      // our `endowment:caip25` permission can include a special class of `wallet` scopes,
+      // see https://github.com/ChainAgnostic/namespaces/tree/main/wallet &
+      // https://github.com/ChainAgnostic/namespaces/blob/main/wallet/caip2.md
+      // amongs the other chainId scopes. We want to exclude the `wallet` scopes here.
+      return permittedScopes.filter((caipChainId) => {
+        try {
+          const { namespace } = parseCaipChainId(caipChainId);
+          return namespace !== KnownCaipNamespace.Wallet;
+        } catch (err) {
+          return false;
+        }
+      });
+    },
+  );
 
 /**
  * Returns a map of permitted accounts by origin for all origins.
@@ -3681,10 +3690,12 @@ function getEVMAccountsFromPermission(caip25Permission) {
 
 function getEVMChainsFromPermission(caip25Permission) {
   if (!caip25Permission) {
-    return [];
+    return EMPTY_ARRAY;
   }
   const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
-  return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
+  return caip25Caveat
+    ? getPermittedEthChainIds(caip25Caveat.value)
+    : EMPTY_ARRAY;
 }
 
 function subjectSelector(state, origin) {
@@ -4015,26 +4026,28 @@ export function getDeferredDeepLink(state) {
  * @param {MetaMaskReduxState} state - The Redux state object.
  * @returns {Record<string, string>} The deferred deep link parameters if available, empty object otherwise.
  */
-export function getDeferredDeepLinkParameters(state) {
-  const deferredDeepLink = getDeferredDeepLink(state);
-  if (!deferredDeepLink) {
-    return null;
-  }
-
-  const utmProperties = {};
-  try {
-    const url = new URL(deferredDeepLink.referringLink);
-
-    for (const utmParam of UTM_PARAMETERS) {
-      const value = url.searchParams.get(utmParam);
-      if (value) {
-        utmProperties[utmParam] = value;
-      }
+export const getDeferredDeepLinkParameters = createResultEqualSelector(
+  getDeferredDeepLink,
+  (deferredDeepLink) => {
+    if (!deferredDeepLink) {
+      return null;
     }
-  } catch (error) {
-    log.error('Failed to parse deferred deep link:', deferredDeepLink, error);
-    return null;
-  }
 
-  return utmProperties;
-}
+    const utmProperties = {};
+    try {
+      const url = new URL(deferredDeepLink.referringLink);
+
+      for (const utmParam of UTM_PARAMETERS) {
+        const value = url.searchParams.get(utmParam);
+        if (value) {
+          utmProperties[utmParam] = value;
+        }
+      }
+    } catch (error) {
+      log.error('Failed to parse deferred deep link:', deferredDeepLink, error);
+      return null;
+    }
+
+    return utmProperties;
+  },
+);

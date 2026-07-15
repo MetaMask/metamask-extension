@@ -42,7 +42,10 @@ import {
   selectDefaultNetworkClientIdsByChainId,
   getNetworksMetadata,
 } from '../../../shared/lib/selectors/networks';
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
+import {
+  createDeepEqualSelector,
+  createResultEqualSelector,
+} from '../../../shared/lib/selectors/selector-creators';
 import { getEnabledNetworks } from '../../../shared/lib/selectors/multichain';
 import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
 import { getDomain } from '../../../shared/lib/url-utils';
@@ -291,19 +294,18 @@ export const getAllMultichainNetworkConfigurations = createSelector(
  * @deprecated Prefer using `getAllMultichainNetworkConfigurations` for multichain networks
  * or `getNetworkConfigurationsByChainId` for EVM-only networks directly.
  */
-export const getMultichainNetworkConfigurationsByChainId = createSelector(
-  getAllMultichainNetworkConfigurations,
-  getNetworkConfigurationsByChainId,
-  (
-    networks,
-    networkConfigurationsByChainId,
-  ): [
-    Record<CaipChainId, InternalMultichainNetworkConfiguration>,
-    Record<Hex, InternalNetworkConfiguration>,
-  ] => {
-    return [networks, networkConfigurationsByChainId];
-  },
-);
+export const getMultichainNetworkConfigurationsByChainId =
+  createResultEqualSelector(
+    getAllMultichainNetworkConfigurations,
+    getNetworkConfigurationsByChainId,
+    (
+      networks,
+      networkConfigurationsByChainId,
+    ): [
+      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
+      Record<Hex, InternalNetworkConfiguration>,
+    ] => [networks, networkConfigurationsByChainId],
+  );
 
 export const getIsEvmMultichainNetworkSelected = (state: IsEvmSelectedState) =>
   state.metamask.isEvmSelected;
@@ -761,9 +763,9 @@ export const getMultichainNetwork = createSelector(
 
     let nonEvmNetwork: MultichainProviderConfig | undefined;
 
-    if (selectedAccount.scopes.length > 0) {
+    if (selectedAccount.scopes?.length > 0) {
       nonEvmNetwork = nonEvmNetworks.find((provider) => {
-        return selectedAccount.scopes.includes(provider.chainId);
+        return selectedAccount.scopes?.includes(provider.chainId);
       });
     }
 

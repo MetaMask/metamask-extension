@@ -24,7 +24,7 @@ import ConfirmResetAccount from './confirm-reset-account';
 import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
-import FadeModal from './fade-modal';
+import FadeModal, { type FadeModalRef } from './fade-modal';
 import RampsInfoModal from './ramps/ramps-info-modal';
 
 const modalContainerBaseStyle = {
@@ -61,11 +61,6 @@ type ModalConfig = {
   disableBackdropClick?: boolean;
   onHide?: () => void;
   customOnHideOpts?: CustomOnHideOpts;
-};
-
-type FadeModalRef = {
-  show: () => void;
-  hide: () => void;
 };
 
 const MODALS: Record<string, ModalConfig> = {
