@@ -153,9 +153,9 @@ describe('addEthereumChainHandler', () => {
 
     await handler(request);
 
-    expect(MockEthChainUtils.validateAddEthereumChainParams).toHaveBeenCalledWith(
-      request.params?.[0],
-    );
+    expect(
+      MockEthChainUtils.validateAddEthereumChainParams,
+    ).toHaveBeenCalledWith(request.params?.[0]);
   });
 
   it('should return an error if request params validation fails', async () => {
@@ -218,7 +218,9 @@ describe('addEthereumChainHandler', () => {
     const nonInfuraConfiguration = createMockNonInfuraConfiguration();
 
     const { mocks, end, handler } = createMockedHandler();
-    mocks.getCurrentChainIdForDomain = jest.fn().mockReturnValue(CHAIN_IDS.MAINNET);
+    mocks.getCurrentChainIdForDomain = jest
+      .fn()
+      .mockReturnValue(CHAIN_IDS.MAINNET);
 
     await handler({
       origin: 'example.com',
@@ -263,7 +265,9 @@ describe('addEthereumChainHandler', () => {
     describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
       it('updates the network with a new networkConfiguration', async () => {
         const { mocks, end, handler } = createMockedHandler();
-        mocks.getCurrentChainIdForDomain = jest.fn().mockReturnValue(CHAIN_IDS.SEPOLIA);
+        mocks.getCurrentChainIdForDomain = jest
+          .fn()
+          .mockReturnValue(CHAIN_IDS.SEPOLIA);
         mocks.getNetworkConfigurationByChainId = jest
           .fn()
           .mockReturnValue(createMockMainnetConfiguration());
@@ -335,7 +339,9 @@ describe('addEthereumChainHandler', () => {
     describe('if the proposed networkConfiguration does not have a different rpcUrl from the one already in state', () => {
       it('should only switch to the existing networkConfiguration if one already exists for the given chain id without auto approving the chain permission', async () => {
         const { mocks, end, handler } = createMockedHandler();
-        mocks.getCurrentChainIdForDomain = jest.fn().mockReturnValue(CHAIN_IDS.MAINNET);
+        mocks.getCurrentChainIdForDomain = jest
+          .fn()
+          .mockReturnValue(CHAIN_IDS.MAINNET);
         mocks.getNetworkConfigurationByChainId = jest
           .fn()
           .mockReturnValue(createMockOptimismConfiguration());

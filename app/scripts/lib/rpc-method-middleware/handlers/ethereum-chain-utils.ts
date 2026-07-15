@@ -7,7 +7,11 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { KnownCaipNamespace, parseCaipChainId, type Hex } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  parseCaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,
@@ -114,8 +118,8 @@ export function validateSwitchEthereumChainParams(req: {
     });
   }
 
-  const { chainId, ...otherParams } = req.params[0] as SwitchEthereumChainParams &
-    Record<string, unknown>;
+  const { chainId, ...otherParams } = req
+    .params[0] as SwitchEthereumChainParams & Record<string, unknown>;
 
   if (Object.keys(otherParams).length > 0) {
     throw rpcErrors.invalidParams({
@@ -177,9 +181,9 @@ export function validateAddEthereumChainParams(
 
   const firstValidRPCUrl = rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl));
   const firstValidBlockExplorerUrl = Array.isArray(blockExplorerUrls)
-    ? blockExplorerUrls.find((blockExplorerUrl) =>
+    ? (blockExplorerUrls.find((blockExplorerUrl) =>
         isLocalhostOrHttps(blockExplorerUrl),
-      ) ?? null
+      ) ?? null)
     : null;
 
   if (!firstValidRPCUrl) {

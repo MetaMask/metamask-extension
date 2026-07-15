@@ -254,7 +254,11 @@ export default class ExtensionPlatform {
     const errorMessageText = errorMessage ?? txMeta.error?.message ?? '';
     const message = Number.isNaN(nonce)
       ? t('notificationTransactionWithoutNonceFailedMessage', errorMessageText)
-      : t('notificationTransactionFailedMessage', String(nonce), errorMessageText);
+      : t(
+          'notificationTransactionFailedMessage',
+          String(nonce),
+          errorMessageText,
+        );
     await this._showNotification(title ?? '', message ?? '');
   }
 

@@ -68,7 +68,7 @@ export const ImportAccount = ({ onActionComplete }) => {
       }
     } catch (error) {
       const message = getErrorMessage(error);
-      trackImportEvent(strategy, message);
+      trackImportEvent(strategy, false);
 
       if (handleKeyringControllerError(error)) {
         return false;
@@ -83,7 +83,7 @@ export const ImportAccount = ({ onActionComplete }) => {
 
   function trackImportEvent(strategy, wasSuccessful) {
     const accountImportType =
-      strategy === 'Private Key'
+      strategy === 'privateKey'
         ? MetaMetricsEventAccountImportType.PrivateKey
         : MetaMetricsEventAccountImportType.Json;
 

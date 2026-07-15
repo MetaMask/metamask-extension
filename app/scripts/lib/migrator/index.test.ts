@@ -36,14 +36,13 @@ describe('migrations', () => {
 
     beforeAll(() => {
       const fileNames = fs.readdirSync('./app/scripts/migrations/');
-      migrationNumbers = fileNames
-        .reduce<number[]>((acc, filename) => {
-          const name = filename.split('.')[0];
-          if (/^\d+$/u.test(name)) {
-            acc.push(Number.parseInt(name, 10));
-          }
-          return acc;
-        }, []);
+      migrationNumbers = fileNames.reduce<number[]>((acc, filename) => {
+        const name = filename.split('.')[0];
+        if (/^\d+$/u.test(name)) {
+          acc.push(Number.parseInt(name, 10));
+        }
+        return acc;
+      }, []);
     });
 
     it('should include all migrations', () => {
@@ -58,14 +57,13 @@ describe('migrations', () => {
 
     it('should have tests for all migrations', () => {
       const fileNames = fs.readdirSync('./app/scripts/migrations/');
-      const testNumbers = fileNames
-        .reduce<number[]>((acc, filename) => {
-          const name = filename.split('.test.')[0];
-          if (/^\d+$/u.test(name)) {
-            acc.push(Number.parseInt(name, 10));
-          }
-          return acc;
-        }, []);
+      const testNumbers = fileNames.reduce<number[]>((acc, filename) => {
+        const name = filename.split('.test.')[0];
+        if (/^\d+$/u.test(name)) {
+          acc.push(Number.parseInt(name, 10));
+        }
+        return acc;
+      }, []);
 
       migrationNumbers.forEach((num) => {
         if (num >= 33) {
@@ -85,9 +83,13 @@ describe('migrations', () => {
     });
 
     it('should match the last version in live migrations', async () => {
-      const migrator = new Migrator({ migrations: liveMigrations as Migration[] });
+      const migrator = new Migrator({
+        migrations: liveMigrations as Migration[],
+      });
       const migratedData = await migrator.migrateData(firstTimeState);
-      const lastMigration = (liveMigrations as Migration[])[liveMigrations.length - 1];
+      const lastMigration = (liveMigrations as Migration[])[
+        liveMigrations.length - 1
+      ];
 
       expect(migratedData.state.meta.version).toStrictEqual(
         lastMigration.version,

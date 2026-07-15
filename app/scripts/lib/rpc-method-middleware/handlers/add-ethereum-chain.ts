@@ -179,7 +179,7 @@ async function addEthereumChainImplementation(
     rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
     Boolean(
       firstValidBlockExplorerUrl &&
-        blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex,
+      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex,
     );
 
   if (shouldAddOrUpdateNetwork) {
@@ -235,7 +235,8 @@ async function addEthereumChainImplementation(
         );
       } else {
         const featured = FEATURED_RPCS.find(
-          (network: (typeof FEATURED_RPCS)[number]) => network.chainId === chainId,
+          (network: (typeof FEATURED_RPCS)[number]) =>
+            network.chainId === chainId,
         );
         const featuredEndpoint = featured
           ? featured.rpcEndpoints[featured.defaultRpcEndpointIndex]
@@ -253,7 +254,8 @@ async function addEthereumChainImplementation(
           name: chainName,
           nativeCurrency: ticker,
           rpcEndpoints: [
-            ...(featuredEndpoint && !URI.equal(firstValidRPCUrl, featuredEndpoint.url)
+            ...(featuredEndpoint &&
+            !URI.equal(firstValidRPCUrl, featuredEndpoint.url)
               ? [featuredEndpoint]
               : []),
             {

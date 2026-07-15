@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import {
@@ -69,38 +76,53 @@ export const HomeNotificationsContainer = memo(function () {
   const infuraBlocked = useSelector(getInfuraBlocked);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
-  const showOutdatedBrowserWarning = useSelector(
-    (state: MetaMaskReduxState) =>
-      getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
+  // Computed once: these values do not depend on Redux state.
+  const isBrowserDeprecated = useMemo(() => getIsBrowserDeprecated(), []);
+  const isPopupEnvironment = useMemo(
+    () => getEnvironmentType() === ENVIRONMENT_TYPE_POPUP,
+    [],
   );
+
+  const showOutdatedBrowserWarningRaw = useSelector(
+    getShowOutdatedBrowserWarning,
+  );
+  const showOutdatedBrowserWarning =
+    isBrowserDeprecated && showOutdatedBrowserWarningRaw;
 
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
-  const shouldShowSeedPhraseReminder = useSelector(
-    (state: MetaMaskReduxState) => {
-      const account = getSelectedInternalAccount(state);
-      return account ? getShouldShowSeedPhraseReminder(state, account) : false;
-    },
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const seedPhraseReminderSelector = useMemo(
+    () => (state: MetaMaskReduxState) =>
+      selectedAccount
+        ? getShouldShowSeedPhraseReminder(state, selectedAccount)
+        : false,
+    [selectedAccount],
   );
+  const shouldShowSeedPhraseReminder = useSelector(seedPhraseReminderSelector);
 
-  const shouldShowWeb3ShimUsageNotification = useSelector(
-    (state: MetaMaskReduxState) => {
-      if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
-        return false;
-      }
-      if (!getWeb3ShimUsageAlertEnabledness(state)) {
-        return false;
-      }
-      if (!activeTabHasPermissions(state)) {
-        return false;
-      }
-      const origin = getOriginOfCurrentTab(state);
-      return (
-        getWeb3ShimUsageStateForOrigin(state, origin) ===
-        Web3ShimUsageAlertStates.recorded
-      );
-    },
+  const web3ShimUsageAlertEnabled = useSelector(
+    getWeb3ShimUsageAlertEnabledness,
+  );
+  const hasActiveTabPermissions = useSelector(activeTabHasPermissions);
+  const web3ShimUsageStateForOrigin = useSelector((state: MetaMaskReduxState) =>
+    originOfCurrentTab
+      ? getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab)
+      : undefined,
+  );
+  const shouldShowWeb3ShimUsageNotification = useMemo(
+    () =>
+      isPopupEnvironment &&
+      web3ShimUsageAlertEnabled &&
+      hasActiveTabPermissions &&
+      web3ShimUsageStateForOrigin === Web3ShimUsageAlertStates.recorded,
+    [
+      isPopupEnvironment,
+      web3ShimUsageAlertEnabled,
+      hasActiveTabPermissions,
+      web3ShimUsageStateForOrigin,
+    ],
   );
 
   const clearNewNetworkAdded = useCallback(
@@ -148,16 +170,21 @@ export const HomeNotificationsContainer = memo(function () {
     }
   }, [newNetworkAddedConfigurationId, dispatch, clearNewNetworkAdded]);
 
-  const outdatedBrowserDescription = isMv3ButOffscreenDocIsMissing ? (
-    <div>
-      <Text>{t('outdatedBrowserNotification')}</Text>
-      <br />
-      <Text fontWeight={FontWeight.Bold} color={TextColor.WarningDefault}>
-        {t('noHardwareWalletOrSnapsSupport')}
-      </Text>
-    </div>
-  ) : (
-    t('outdatedBrowserNotification')
+  const outdatedBrowserDescription = useMemo(
+    () =>
+      // isMv3ButOffscreenDocIsMissing is a build-time constant — no need in deps
+      isMv3ButOffscreenDocIsMissing ? (
+        <div>
+          <Text>{t('outdatedBrowserNotification')}</Text>
+          <br />
+          <Text fontWeight={FontWeight.Bold} color={TextColor.WarningDefault}>
+            {t('noHardwareWalletOrSnapsSupport')}
+          </Text>
+        </div>
+      ) : (
+        t('outdatedBrowserNotification')
+      ),
+    [t],
   );
 
   const notificationItems = [

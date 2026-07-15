@@ -74,9 +74,10 @@ type ActiveTab = {
 
 type BackgroundConnection = {
   onNotification: (
-    handler: (
-      data: { method?: string; params?: unknown[] },
-    ) => Promise<void> | void,
+    handler: (data: {
+      method?: string;
+      params?: unknown[];
+    }) => Promise<void> | void,
   ) => void;
   startSendingPatches: () => Promise<void>;
 };
@@ -375,7 +376,9 @@ async function queryCurrentActiveTab(
  * @param {ExtensionPortStream} connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
-function connectSubstreams(connectionStream: ExtensionPortStream): UiSubstreams {
+function connectSubstreams(
+  connectionStream: ExtensionPortStream,
+): UiSubstreams {
   const mx = setupMultiplex(connectionStream);
 
   const controllerSubstream = mx.createStream('controller');

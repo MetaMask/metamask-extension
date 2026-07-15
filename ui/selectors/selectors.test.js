@@ -1369,6 +1369,7 @@ describe('Selectors', () => {
   it('#getAdvancedGasFeeValues', () => {
     const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
+      userFeeLevel: 'custom',
       maxBaseFee: '75',
       priorityFee: '2',
     });

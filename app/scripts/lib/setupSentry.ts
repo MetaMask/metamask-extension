@@ -26,7 +26,9 @@ import { getInstallType, initInstallType } from './install-type';
 const internalLog = createModuleLogger(log, 'internal');
 
 type SentryClientOptions = NonNullable<Parameters<typeof Sentry.init>[0]>;
-type BeforeBreadcrumbHandler = NonNullable<SentryClientOptions['beforeBreadcrumb']>;
+type BeforeBreadcrumbHandler = NonNullable<
+  SentryClientOptions['beforeBreadcrumb']
+>;
 type RewriteErrorMessage = (errorMessage: string) => string;
 
 type SentrySpanLike = {
@@ -54,7 +56,13 @@ type SentryBreadcrumb = Breadcrumb & {
 
 type SentryReport = Omit<
   SentryEvent,
-  'breadcrumbs' | 'contexts' | 'exception' | 'extra' | 'request' | 'spans' | 'tags'
+  | 'breadcrumbs'
+  | 'contexts'
+  | 'exception'
+  | 'extra'
+  | 'request'
+  | 'spans'
+  | 'tags'
 > & {
   breadcrumbs?: SentryBreadcrumb[];
   contexts?: Record<string, unknown>;
@@ -73,7 +81,8 @@ type SentryReport = Omit<
 // Destructuring breaks the inlining of the environment variables
 const METAMASK_BUILD_TYPE: string | undefined = process.env.METAMASK_BUILD_TYPE;
 const METAMASK_DEBUG: string | undefined = process.env.METAMASK_DEBUG;
-const METAMASK_ENVIRONMENT: string | undefined = process.env.METAMASK_ENVIRONMENT;
+const METAMASK_ENVIRONMENT: string | undefined =
+  process.env.METAMASK_ENVIRONMENT;
 const RELEASE = getSentryRelease(
   METAMASK_ENVIRONMENT ?? '',
   process.env.METAMASK_VERSION ?? '',
@@ -236,7 +245,7 @@ function getTracesSampleRate(sentryTarget: string | undefined): number {
     return 1.0;
   }
 
-  return 0.0075;
+  return 0.005;
 }
 
 /**
@@ -467,7 +476,10 @@ export function sanitizeBreadcrumbsInReport(report: SentryReport): void {
 }
 
 // `op: 'mark'` span names with no Sentry-side consumer, dropped from transactions.
-const LOW_VALUE_TRACE_MARKS = new Set(['sentry-tracing-init', 'mm-hero-painted']);
+const LOW_VALUE_TRACE_MARKS = new Set([
+  'sentry-tracing-init',
+  'mm-hero-painted',
+]);
 
 /**
  * Removes the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'` child spans from a
@@ -481,7 +493,11 @@ export function dropLowValueMarkSpans(report: SentryReport): void {
   }
   report.spans = report.spans.filter((span) => {
     const markName = span?.description ?? span?.name;
-    return !(span?.op === 'mark' && markName && LOW_VALUE_TRACE_MARKS.has(markName));
+    return !(
+      span?.op === 'mark' &&
+      markName &&
+      LOW_VALUE_TRACE_MARKS.has(markName)
+    );
   });
 }
 
@@ -601,15 +617,15 @@ function sanitizeAddressesFromErrorMessages(report: SentryReport): void {
 const EVM_ADDRESS_REGEX = /0x[A-Fa-f0-9]{40}/gu;
 const NON_EVM_ADDRESS_REGEXES = [
   // Tron (base58, starts with `T`, 34 chars total)
-  /T[1-9A-HJ-NP-Za-km-z]{33}/gu,
+  /\bT[1-9A-HJ-NP-Za-km-z]{33}\b/gu,
   // Stellar / XLM (starts with `G`, 56 chars total)
-  /G[A-Z2-7]{55}/gu,
+  /\bG[A-Z2-7]{55}\b/gu,
   // Bitcoin bech32 / taproot (`bc1...`)
-  /bc1[02-9ac-hj-np-z]{6,87}/gu,
+  /\bbc1[02-9ac-hj-np-z]{6,87}\b/gu,
   // Bitcoin legacy P2PKH / P2SH (base58, starts with `1` or `3`)
-  /[13][1-9A-HJ-NP-Za-km-z]{25,34}/gu,
+  /\b[13][1-9A-HJ-NP-Za-km-z]{25,34}\b/gu,
   // Solana (base58, 32-44 chars). Kept last as its range overlaps the others.
-  /[1-9A-HJ-NP-Za-km-z]{32,44}/gu,
+  /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/gu,
 ];
 
 /**

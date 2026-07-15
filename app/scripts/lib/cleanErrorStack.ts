@@ -20,4 +20,3 @@ export default function cleanErrorStack(err: Error): Error {
 
   return err;
 }
-
