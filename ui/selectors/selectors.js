@@ -497,7 +497,7 @@ const createChainIdSelector = createParameterizedShallowEqualSelector(10);
 // Cache recent per-chain NFT lookups for views that switch among a small set of
 // networks during a render cycle. Ten entries accommodate the current
 // multichain asset-view network fanout without expanding the LRU unnecessarily.
-const NFT_CHAIN_ID_SELECTOR_CACHE_SIZE = 10;
+const NFT_SELECTOR_CACHE_SIZE = 10;
 // Cache recent chainId + address-list combinations for token trust signal lookups
 // across asset pages and confirmation flows. Thirty entries supports several
 // address-list variants across a handful of active networks in a single view.
@@ -1307,7 +1307,7 @@ export const selectConversionRateByChainId = createSelector(
 );
 
 export const selectNftsByChainId =
-  createParameterizedSelector(NFT_CHAIN_ID_SELECTOR_CACHE_SIZE)(
+  createParameterizedSelector(NFT_SELECTOR_CACHE_SIZE)(
   getSelectedInternalAccount,
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
