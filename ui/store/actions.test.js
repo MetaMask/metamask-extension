@@ -3817,6 +3817,29 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getCustomerServiceToken', () => {
+    it('calls AuthenticationController:getCustomerServiceToken through the background messenger', async () => {
+      const messengerCallStub = sinon
+        .stub()
+        .withArgs('AuthenticationController:getCustomerServiceToken', [])
+        .resolves('customer-service-token');
+
+      background.getApi.returns({
+        messengerCall: messengerCallStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const result = await actions.getCustomerServiceToken();
+      expect(result).toBe('customer-service-token');
+      expect(
+        messengerCallStub.calledOnceWith(
+          'AuthenticationController:getCustomerServiceToken',
+          [],
+        ),
+      ).toBe(true);
+    });
+  });
+
   describe('#createOnChainTriggers', () => {
     afterEach(() => {
       sinon.restore();

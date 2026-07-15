@@ -29,7 +29,7 @@ async function mockSegment(mockServer: Mockttp) {
 }
 
 describe('Error Page', function () {
-  it('sends "Support Link Click" event with metrics ID when user consents', async function () {
+  it('sends "Support Link Click" event with customer_service_token when user consents', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -63,8 +63,8 @@ describe('Error Page', function () {
         const queryString = new URL(trackedUrl).search;
         assert.match(
           queryString,
-          /metamask_metametrics_id/u,
-          'Metrics ID missing from tracked URL',
+          /customer_service_token/u,
+          'Customer service token missing from tracked URL when user consents',
         );
       },
     );

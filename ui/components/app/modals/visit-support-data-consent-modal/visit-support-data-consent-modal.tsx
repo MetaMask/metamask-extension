@@ -1,9 +1,6 @@
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { selectSessionData } from '../../../../selectors/identity/authentication';
-import { getAnalyticsId } from '../../../../selectors/selectors';
 import { openWindow } from '../../../../helpers/utils/window';
 import {
   Modal,
@@ -35,6 +32,7 @@ import {
 } from '../../../../../shared/lib/build-support-link';
 import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
+import { getCustomerServiceToken } from '../../../../store/actions';
 
 type VisitSupportDataConsentModalProps = {
   onClose: () => void;
@@ -49,32 +47,47 @@ const VisitSupportDataConsentModal = ({
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const canonicalProfileId = sessionData?.profile?.canonicalProfileId;
-  const analyticsId = useSelector(getAnalyticsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupportButton = useCallback(
-    (params: SupportLinkUserData) => {
+    () => {
       onClose();
-      const supportLinkWithUserId = buildSupportLinkWithUserData(
-        SUPPORT_LINK as string,
-        params,
-      );
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            url: supportLinkWithUserId,
-            [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-          })
-          .build(),
-      );
-      openWindow(supportLinkWithUserId);
+      const openSupportLink = (customerServiceToken?: string) => {
+        const params: SupportLinkUserData = {
+          version,
+          customerServiceToken,
+          shieldCustomerId,
+        };
+        const supportLinkWithUserId = buildSupportLinkWithUserData(
+          SUPPORT_LINK as string,
+          params,
+        );
+
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+            .addCategory(MetaMetricsEventCategory.Settings)
+            .addProperties({
+              url: supportLinkWithUserId,
+              [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
+            })
+            .build(),
+        );
+        openWindow(supportLinkWithUserId);
+      };
+
+      getCustomerServiceToken()
+        .then(openSupportLink)
+        .catch(() => openSupportLink());
     },
-    [onClose, trackEvent, createEventBuilder, segmentContext.page?.title],
+    [
+      onClose,
+      version,
+      shieldCustomerId,
+      trackEvent,
+      createEventBuilder,
+      segmentContext.page?.title,
+    ],
   );
 
   const handleClickNoShare = useCallback(() => {
@@ -125,15 +138,7 @@ const VisitSupportDataConsentModal = ({
             <ButtonPrimary
               size={ButtonPrimarySize.Lg}
               width={BlockSize.Half}
-              onClick={() =>
-                handleClickContactSupportButton({
-                  version,
-                  profileId,
-                  canonicalProfileId,
-                  analyticsId,
-                  shieldCustomerId,
-                })
-              }
+              onClick={handleClickContactSupportButton}
               data-testid="visit-support-data-consent-modal-accept-button"
             >
               {t('visitSupportDataConsentModalAccept')}

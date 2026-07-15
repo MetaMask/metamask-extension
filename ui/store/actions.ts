@@ -7427,6 +7427,24 @@ export async function getBearerToken(): Promise<string | undefined> {
 }
 
 /**
+ * Fetches the user's customer-service token from the authentication API.
+ *
+ * @returns The customer-service token, or undefined if authentication fails.
+ */
+export async function getCustomerServiceToken(): Promise<string | undefined> {
+  try {
+    const customerServiceToken = await submitRequestToBackground<string>(
+      'messengerCall',
+      ['AuthenticationController:getCustomerServiceToken', []],
+    );
+    return customerServiceToken;
+  } catch (error) {
+    logErrorWithMessage(error);
+    return undefined;
+  }
+}
+
+/**
  * Initiates the creation of on-chain triggers.
  *
  * This function dispatches a request to the background script to create on-chain triggers.
