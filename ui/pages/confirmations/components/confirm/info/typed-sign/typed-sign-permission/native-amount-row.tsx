@@ -5,11 +5,11 @@ import {
   AvatarToken,
   AvatarTokenSize,
   BoxAlignItems,
+  Skeleton,
 } from '@metamask/design-system-react';
 import React from 'react';
 
 import { ConfirmInfoRowTextTokenUnits } from '../../../../../../../components/app/confirm/info/row/text-token-units';
-import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 
 /**
