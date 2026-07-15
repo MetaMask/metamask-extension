@@ -134,7 +134,6 @@ const FadeModal = forwardRef(function FadeModal(
   ref,
 ) {
   const contentRef = useRef(null);
-  const hideSourceRef = useRef(undefined);
   const [willHide, setWillHide] = useState(true);
   const [hidden, setHidden] = useState(true);
 
@@ -153,7 +152,7 @@ const FadeModal = forwardRef(function FadeModal(
 
   const leave = useCallback(() => {
     setHidden(true);
-    onHide(hideSourceRef.current);
+    onHide();
   }, [onHide]);
 
   const enter = useCallback(() => {

@@ -29,6 +29,7 @@ function Mascot({
   const logoRef = useRef(null);
   const animationEventEmitterRef = useRef(animationEventEmitter);
   animationEventEmitterRef.current = animationEventEmitter;
+  const prevFollowMouseRef = useRef(followMouse);
 
   if (!logoRef.current) {
     logoRef.current = MetaMaskLogo({
@@ -92,6 +93,12 @@ function Mascot({
   }, [lookAtDirection, lookAtTarget, logo]);
 
   useEffect(() => {
+    if (prevFollowMouseRef.current === followMouse) {
+      return;
+    }
+
+    prevFollowMouseRef.current = followMouse;
+
     const refollowMouse = debounce(logo.setFollowMouse.bind(logo, true), 1000);
     logo.setFollowMouse(false);
     if (followMouse) {

@@ -14,7 +14,7 @@ export type FadeModalProps = {
   keyboard?: boolean | ((event: KeyboardEvent) => void);
   modalStyle?: React.CSSProperties;
   onShow?: () => void;
-  onHide?: (source?: unknown) => void;
+  onHide?: () => void;
   children?: React.ReactNode;
   testId?: string;
 };
