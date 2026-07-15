@@ -1047,10 +1047,13 @@ export const TokenManagementPage = () => {
         return;
       }
 
-      const tokenAddedEvent = createEventBuilder(MetaMetricsEventName.TokenAdded)
+      const tokenAddedEvent = createEventBuilder(
+        MetaMetricsEventName.TokenAdded,
+      )
         .addCategory(MetaMetricsEventCategory.Wallet)
         .addSensitiveProperties({
-          [METRICS_PROPERTIES.chainId]: payload.hexChainId ?? payload.caipChainId,
+          [METRICS_PROPERTIES.chainId]:
+            payload.hexChainId ?? payload.caipChainId,
           [METRICS_PROPERTIES.tokenStandard]: payload.isEvm
             ? ERC20
             : TokenStandard.none,
