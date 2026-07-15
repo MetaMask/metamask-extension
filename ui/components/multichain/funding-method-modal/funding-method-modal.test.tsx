@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -14,6 +14,19 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   __esModule: true,
   default: () => ({ goToBuy: mockGoToBuy }),
 }));
+
+const mockTrackEvent = jest.fn();
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockStore = configureMockStore([thunk]);
 
@@ -75,6 +88,24 @@ describe('FundingMethodModal', () => {
     // Preserves the chain context it passed to the Portfolio deeplink today;
     // goToBuy handles the flag-off Portfolio fallback internally.
     expect(mockGoToBuy).toHaveBeenCalledWith({ chainId: '0x5' });
+  });
+
+  it('does not track the buy click when the ramps gate blocks it', async () => {
+    mockGoToBuy.mockResolvedValueOnce(false);
+    const { getByText } = renderWithProvider(
+      <FundingMethodModal
+        isOpen={true}
+        onClose={jest.fn()}
+        title="Test Modal"
+        onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
+      />,
+      store,
+    );
+
+    fireEvent.click(getByText(messages.tokenMarketplace.message));
+    await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('should call onClickReceive when the Receive Crypto item is clicked', () => {

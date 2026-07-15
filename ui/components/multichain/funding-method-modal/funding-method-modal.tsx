@@ -102,7 +102,13 @@ export const FundingMethodModal = ({
     createEventBuilder,
   ]);
 
-  const handleBuyCryptoClick = useCallback(() => {
+  const handleBuyCryptoClick = useCallback(async () => {
+    const opened = await goToBuy({ chainId: chainId as Hex | CaipChainId });
+    // The ramps gate can block the buy (e.g. service disruption, unsupported
+    // region) and show its own modal; don't report a buy click in that case.
+    if (!opened) {
+      return;
+    }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -118,7 +124,6 @@ export const FundingMethodModal = ({
         })
         .build(),
     );
-    goToBuy({ chainId: chainId as Hex | CaipChainId });
   }, [chainId, symbol, trackEvent, createEventBuilder, goToBuy]);
 
   return (
