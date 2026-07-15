@@ -5,7 +5,7 @@
 # MetaMask persists its real state (vault + controller state) to
 # chrome.storage.local, which Chrome backs with a LevelDB database on disk.
 # The "storage corrupted/missing/damaged" bug reports are corruption of THAT
-# database, not of chrome.storage.session and not of an in-flight set() call.
+# database, not of an in-flight set() call.
 #
 # You cannot reproduce this by killing the service worker (a single set() is
 # committed atomically by the browser process, off the SW JS thread). You CAN

@@ -10,11 +10,9 @@ const { chrome } = globalThis;
 // TEMPORARY storage-corruption investigation helpers (do not ship).
 //
 // These helpers target `chrome.storage.local`, which is where MetaMask's real
-// persisted state lives (via ExtensionStore -> PersistenceManager). An earlier
-// version of this experiment targeted `chrome.storage.session`, which is the
-// wrong surface: session storage is in-memory and is intentionally cleared on
-// extension reload, so it can never reproduce the "corrupted/missing/damaged"
-// reports, which are all about the on-disk `local` (LevelDB) database.
+// persisted state lives (via ExtensionStore -> PersistenceManager). The
+// "corrupted/missing/damaged" reports are all about that on-disk `local`
+// (LevelDB) database.
 //
 // Note on what this can and cannot prove: `chrome.storage.local.set()` hands the
 // payload to the browser process over IPC; the actual disk commit runs off the

@@ -5,22 +5,19 @@ damaged" bug class (related: MetaMask/metamask-extension#43773). **Do not ship.*
 
 ## Why "kill the service worker mid-write" does not reproduce it
 
-The original PoC wrote to `chrome.storage.session` and killed the service
-worker (SW) while its JS thread was blocked. The write always survived. That is
-expected, and it is a negative result, not a repro:
+Blocking the service-worker (SW) JS thread during a `chrome.storage.local` write
+and then killing the SW does not lose or corrupt the write — it survives. That
+is expected, and it is a negative result, not a repro:
 
-1. **Wrong storage area.** MetaMask's persisted state (vault + controllers)
-   lives in `chrome.storage.local` (see
-   [`shared/lib/stores/extension-store.ts`](../../shared/lib/stores/extension-store.ts),
-   orchestrated by
-   [`persistence-manager.ts`](../../shared/lib/stores/persistence-manager.ts)).
-   `storage.session` is in-memory and is *intentionally* cleared on extension
-   reload — corrupting it tells you nothing about user reports.
-2. **The write isn't on the SW thread.** `storage.*.set()` posts the payload to
-   the browser process over IPC; the disk commit runs there, off the SW JS
-   thread. Chrome will not terminate a SW that has in-flight extension-API I/O
-   at an unsafe point. Blocking the JS thread and killing the SW cannot tear a
-   single `set` in half.
+**The write isn't on the SW thread.** `storage.local.set()` posts the payload to
+the browser process over IPC; the disk commit runs there, off the SW JS thread.
+Chrome will not terminate a SW that has in-flight extension-API I/O at an unsafe
+point. Blocking the JS thread and killing the SW cannot tear a single `set` in
+half. (MetaMask's persisted state — vault + controllers — lives in
+`chrome.storage.local`, see
+[`shared/lib/stores/extension-store.ts`](../../shared/lib/stores/extension-store.ts),
+orchestrated by
+[`persistence-manager.ts`](../../shared/lib/stores/persistence-manager.ts).)
 
 Real corruption comes from the **browser process / disk layer** (crash, power
 loss during LevelDB compaction, aborted fsync, bad sectors, quota/disk-full) or
@@ -55,9 +52,9 @@ await chrome.storage.local.remove(
 ```
 
 The same file also contains `debugSlowStorageWriteExperiment` /
-`debugReadSlowStorageWriteExperiment`, ported from `session` to `local` so at
-least they measure the correct surface (still expected to *not* fail on SW kill —
-kept for completeness).
+`debugReadSlowStorageWriteExperiment`, which write and read back keys on
+`chrome.storage.local` (still expected to *not* fail on SW kill — kept for
+completeness).
 
 ### 2. `corrupt-leveldb.sh` — on-disk LevelDB damage (best fidelity to reports)
 
