@@ -1,11 +1,16 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { PaymentMethod } from '@metamask/ramps-controller';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import LoadingScreen from '../../../components/ui/loading-screen';
+import Spinner from '../../../components/ui/spinner';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import {
   RampsSelectionCenteredMessage,
@@ -41,8 +46,6 @@ export function RampsPaymentMethodScreen() {
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
 
-  // Idle = query not ready yet; loading includes initial fetch + auto-select.
-  const isLoading = paymentMethodsLoading || paymentMethodsStatus === 'idle';
   // Keep cached methods visible if a background refetch fails.
   const showError = Boolean(paymentMethodsError) && paymentMethods.length === 0;
 
@@ -70,12 +73,44 @@ export function RampsPaymentMethodScreen() {
     [navigate, setSelectedPaymentMethod],
   );
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
   const title = t('rampsSelectPaymentMethod');
   const backButtonTestId = 'ramps-payment-method-back';
+
+  // Prerequisites missing — query stays disabled until the user leaves.
+  if (paymentMethodsStatus === 'idle') {
+    return (
+      <RampsSelectionPage
+        title={title}
+        onBack={handleBack}
+        testId="ramps-payment-method-empty"
+        backButtonTestId={backButtonTestId}
+      >
+        <RampsSelectionCenteredMessage
+          message={t('rampsNoPaymentMethodsAvailable')}
+        />
+      </RampsSelectionPage>
+    );
+  }
+
+  if (paymentMethodsLoading) {
+    return (
+      <RampsSelectionPage
+        title={title}
+        onBack={handleBack}
+        testId="ramps-payment-method-loading"
+        backButtonTestId={backButtonTestId}
+      >
+        <Box
+          className="flex-1"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+        >
+          <Spinner className="h-8 w-8" />
+        </Box>
+      </RampsSelectionPage>
+    );
+  }
 
   if (showError) {
     return (

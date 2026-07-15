@@ -112,6 +112,65 @@ describe('RampsPaymentMethodScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('matches snapshot when payment methods query is idle', () => {
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      paymentMethods: [],
+      paymentMethodsLoading: false,
+      paymentMethodsStatus: 'idle',
+      selectedPaymentMethod: null,
+      userRegion: null,
+    });
+
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('keeps back navigation available while loading', () => {
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      paymentMethods: [],
+      paymentMethodsLoading: true,
+      paymentMethodsStatus: 'loading',
+      selectedPaymentMethod: null,
+      userRegion: null,
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    fireEvent.click(screen.getByTestId('ramps-payment-method-back'));
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
+  });
+
+  it('keeps back navigation available when idle', () => {
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      paymentMethods: [],
+      paymentMethodsLoading: false,
+      paymentMethodsStatus: 'idle',
+      selectedPaymentMethod: null,
+      userRegion: null,
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    fireEvent.click(screen.getByTestId('ramps-payment-method-back'));
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
+  });
+
   it('matches snapshot when payment methods fail to load', () => {
     useRampsController.mockReturnValue({
       ...defaultControllerState,
@@ -168,30 +227,6 @@ describe('RampsPaymentMethodScreen', () => {
       screen.queryByTestId('ramps-payment-method-error'),
     ).not.toBeInTheDocument();
     expect(container).toMatchSnapshot();
-  });
-
-  it('shows loading while payment methods query is idle', () => {
-    useRampsController.mockReturnValue({
-      ...defaultControllerState,
-      paymentMethods: [],
-      paymentMethodsLoading: false,
-      paymentMethodsStatus: 'idle',
-      selectedPaymentMethod: null,
-      userRegion: null,
-    });
-
-    renderWithProvider(
-      <RampsPaymentMethodScreen />,
-      createStore(),
-      '/ramps/payment-method',
-    );
-
-    expect(
-      screen.queryByTestId('ramps-payment-method-empty'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('ramps-payment-method-screen'),
-    ).not.toBeInTheDocument();
   });
 
   it('selects a payment method and navigates back', async () => {
