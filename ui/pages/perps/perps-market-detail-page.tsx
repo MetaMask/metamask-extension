@@ -2109,6 +2109,7 @@ const PerpsMarketDetailPage = () => {
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
+          markPrice={livePrice?.markPrice}
           sizeDecimals={marketInfo?.szDecimals}
         />
       )}

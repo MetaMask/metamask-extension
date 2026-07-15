@@ -7021,6 +7021,12 @@
   "perpsCloseAmount": {
     "message": "Close amount"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Limit price is outside the allowed range for the current oracle price."
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Enter a valid limit price to continue."
+  },
   "perpsCloseLong": {
     "message": "Close long"
   },
@@ -7029,6 +7035,9 @@
   },
   "perpsClosePosition": {
     "message": "Close position"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Current price is unavailable. Try again in a moment."
   },
   "perpsCloseShort": {
     "message": "Close short"

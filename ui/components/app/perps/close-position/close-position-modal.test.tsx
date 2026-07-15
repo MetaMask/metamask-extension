@@ -145,16 +145,16 @@ type MockedUsePerpsOrderFeesReturn = {
   isLoading: boolean;
   metamaskFeeRateDiscountPercentage: number | undefined;
 };
-const mockUsePerpsOrderFees = jest.fn<MockedUsePerpsOrderFeesReturn, []>(
-  () => ({
+const mockUsePerpsOrderFees =
+  jest.fn<MockedUsePerpsOrderFeesReturn, [Record<string, unknown>]>(() => ({
     feeRate: 0.00145,
     undiscountedFeeRate: 0.00145,
     isLoading: false,
     metamaskFeeRateDiscountPercentage: undefined,
-  }),
-);
+  }));
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => mockUsePerpsOrderFees(),
+  usePerpsOrderFees: (options: Record<string, unknown>) =>
+    mockUsePerpsOrderFees(options),
 }));
 
 jest.mock('../perps-toast', () => ({
@@ -164,6 +164,8 @@ jest.mock('../perps-toast', () => ({
     PARTIAL_CLOSE_FAILED: 'perpsToastPartialCloseFailed',
     PARTIAL_CLOSE_IN_PROGRESS: 'perpsToastPartialCloseInProgress',
     PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
+    ORDER_PLACED: 'perpsToastOrderPlaced',
+    ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
   },
   usePerpsToast: () => ({
@@ -176,6 +178,17 @@ const mockStore = configureStore({
     ...mockState.metamask,
   },
 });
+
+const createCloseLimitEnabledStore = () =>
+  configureStore({
+    metamask: {
+      ...mockState.metamask,
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        perpsClosePositionLimitOrderEnabled: true,
+      },
+    },
+  });
 
 const basePosition = mockPositions[0];
 
@@ -193,6 +206,71 @@ describe('ClosePositionModal', () => {
   });
 
   describe('perpsClosePosition call', () => {
+    it('preserves the full market close request shape', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              symbol: basePosition.symbol,
+              orderType: 'market',
+              currentPrice: 2900,
+              position: basePosition,
+            }),
+          ],
+        );
+      });
+      const params = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsClosePosition',
+      )?.[1][0];
+      expect(params).not.toHaveProperty('size');
+      expect(params).not.toHaveProperty('price');
+    });
+
+    it('preserves formatted partial market close sizes', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              orderType: 'market',
+              currentPrice: 2900,
+              size: '1.2500',
+            }),
+          ],
+        );
+      });
+    });
+
     it('includes trackingData with totalFee and marketPrice', async () => {
       renderWithProvider(
         <ClosePositionModal
@@ -700,6 +778,438 @@ describe('ClosePositionModal', () => {
         expect(
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();
+      });
+    });
+  });
+
+  describe('close limit orders', () => {
+    const enterLimitPrice = (price: string) => {
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: price },
+      });
+    };
+
+    it('keeps the existing market-only UI when the flag is disabled', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('order-type-toggle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          orderType: 'market',
+          isMaker: false,
+        }),
+      );
+    });
+
+    it('defaults to Market and exposes Limit when the flag is enabled', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      expect(screen.getByTestId('order-type-toggle')).toBeInTheDocument();
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+
+      expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('perpsCloseLimitPriceRequired')),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('passes the opposite position direction to the warning behavior', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('2800');
+
+      expect(
+        screen.getByText(tEn('perpsLimitPriceBelowCurrentPrice')),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeEnabled();
+    });
+
+    it('warns above market when closing a short', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={mockPositions[1]}
+          currentPrice={45000}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('46000');
+
+      expect(
+        screen.getByText(tEn('perpsLimitPriceAboveCurrentPrice')),
+      ).toBeInTheDocument();
+    });
+
+    it('clears the limit price and restores market fees when Market is selected', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('3000');
+
+      fireEvent.click(screen.getByTestId('order-type-market'));
+
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          orderType: 'market',
+          isMaker: false,
+        }),
+      );
+    });
+
+    it('submits an exact full limit request without market-only fields', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+          sizeDecimals={4}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('3000.25');
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              symbol: basePosition.symbol,
+              orderType: 'limit',
+              price: '3000.25',
+              position: basePosition,
+            }),
+          ],
+        );
+      });
+      const params = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsClosePosition',
+      )?.[1][0];
+      expect(params).not.toHaveProperty('size');
+      expect(params).not.toHaveProperty('currentPrice');
+      expect(params).not.toHaveProperty('usdAmount');
+      expect(params).not.toHaveProperty('priceAtCalculation');
+      expect(params).not.toHaveProperty('maxSlippageBps');
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastOrderPlaced' }),
+      );
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastTradeSuccess' }),
+      );
+    });
+
+    it('submits a formatted partial size for limit closes', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+          sizeDecimals={4}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('3000');
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              orderType: 'limit',
+              price: '3000',
+              size: '1.2500',
+            }),
+          ],
+        );
+      });
+    });
+
+    it('uses limit price for partial minimum notional validation', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={{ ...basePosition, size: '1' }}
+          currentPrice={100}
+          markPrice={100}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('5');
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(
+        screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('shows oracle deviation errors and revalidates live mark prices', () => {
+      const store = createCloseLimitEnabledStore();
+      const { rerender } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        store,
+      );
+
+      enterLimitPrice('3000');
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeEnabled();
+
+      rerender(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={100000}
+        />,
+      );
+
+      expect(
+        screen.getByText(tEn('perpsCloseLimitPriceOutsideOracleBand')),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('forces Market behavior when the flag is disabled mid-session', async () => {
+      const store = createCloseLimitEnabledStore();
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        store,
+      );
+      enterLimitPrice('3000');
+
+      const currentState = store.getState();
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          ...currentState.metamask,
+          remoteFeatureFlags: {
+            ...currentState.metamask.remoteFeatureFlags,
+            perpsClosePositionLimitOrderEnabled: false,
+          },
+        },
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('order-type-toggle'),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByTestId('limit-price-input'),
+        ).not.toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              orderType: 'market',
+              currentPrice: 2900,
+            }),
+          ],
+        );
+      });
+    });
+
+    it('recalculates long and short limit PnL and margin', () => {
+      const store = createCloseLimitEnabledStore();
+      const { unmount } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        store,
+      );
+      enterLimitPrice('3200');
+      expect(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      ).toHaveTextContent('$2,875');
+      expect(screen.getByText('+$875.00')).toBeInTheDocument();
+      unmount();
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={mockPositions[1]}
+          currentPrice={45000}
+          markPrice={45000}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('46000');
+      expect(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      ).toHaveTextContent('$1,250');
+      expect(screen.getByText('-$500.00')).toBeInTheDocument();
+    });
+
+    it('calculates losing long and profitable short limit PnL', () => {
+      const { unmount } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('2800');
+      expect(screen.getByText('-$125.00')).toBeInTheDocument();
+      unmount();
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={mockPositions[1]}
+          currentPrice={45000}
+          markPrice={45000}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('44000');
+      expect(screen.getByText('+$500.00')).toBeInTheDocument();
+    });
+
+    it('applies the close fraction to limit PnL, margin, fees, and receive', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('3200');
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      ).toHaveTextContent('$1,437.5');
+      expect(screen.getByText('+$437.50')).toBeInTheDocument();
+
+      const parseUsd = (element: HTMLElement) =>
+        Number.parseFloat(element.textContent?.replace(/[^0-9.]/gu, '') ?? '0');
+      const marginValue = parseUsd(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      );
+      const feesValue = parseUsd(
+        screen.getByTestId('perps-close-summary-fees-value'),
+      );
+      const receiveValue = parseUsd(
+        screen.getByTestId('perps-close-summary-receive-value'),
+      );
+      expect(receiveValue).toBeCloseTo(marginValue - feesValue, 2);
+    });
+
+    it('uses maker limit fees and recalculates the fee notional', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('3200');
+
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: basePosition.symbol,
+        orderType: 'limit',
+        amount: '8000',
+        isMaker: true,
       });
     });
   });
