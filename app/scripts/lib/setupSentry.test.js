@@ -1,6 +1,9 @@
+import { cloneDeep } from 'lodash';
 import {
+  dropLowValueMarkSpans,
   removeUrlsFromBreadCrumb,
   rewriteReport,
+  rewriteTransactionReport,
   shouldCreateSpanForRequest,
 } from './setupSentry';
 
@@ -273,6 +276,142 @@ describe('Setup Sentry', () => {
       };
       rewriteReport(testReport);
       expect(testReport.contexts.account.address).toStrictEqual('**');
+    });
+
+    it('removes addresses from breadcrumbs when sending an error report', () => {
+      const testReport = {
+        message: 'An error occurred',
+        breadcrumbs: [
+          {
+            message: 'console.error',
+            data: {
+              arguments: [
+                new Error(
+                  'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+                ),
+              ],
+            },
+          },
+        ],
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.breadcrumbs[0].data.arguments[0].message).toStrictEqual(
+        'Failed for 0x**',
+      );
+    });
+
+    it('scrubs breadcrumbs without mutating live source objects', () => {
+      const liveError = new Error(
+        'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+      );
+      const liveArgs = [liveError];
+      const testReport = cloneDeep({
+        message: 'An error occurred',
+        breadcrumbs: [
+          {
+            message: 'console.error',
+            data: { arguments: liveArgs, logger: 'console' },
+          },
+        ],
+        request: {},
+      });
+
+      rewriteReport(testReport);
+
+      expect(testReport.breadcrumbs[0].data.arguments[0].message).toStrictEqual(
+        'Failed for 0x**',
+      );
+      expect(liveError.message).toStrictEqual(
+        'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+      );
+    });
+  });
+
+  describe('rewriteTransactionReport', () => {
+    it('removes addresses from breadcrumbs when sending a transaction', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        breadcrumbs: [
+          {
+            message: 'fetch',
+            data: {
+              url: 'https://api.example.com/0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+            },
+          },
+        ],
+      };
+      rewriteTransactionReport(testReport);
+      expect(testReport.breadcrumbs[0].data.url).toStrictEqual('');
+    });
+  });
+
+  describe('dropLowValueMarkSpans', () => {
+    it('drops the listed low-value mark spans, keeping the transaction and other marks/spans', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [
+          { op: 'mark', description: 'sentry-tracing-init' },
+          { op: 'mark', description: 'mm-hero-painted' },
+          { op: 'mark', description: 'first-contentful-paint' },
+          { op: 'http.client', description: 'GET /foo' },
+        ],
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.transaction).toBe('ui.popup');
+      expect(testReport.spans).toStrictEqual([
+        { op: 'mark', description: 'first-contentful-paint' },
+        { op: 'http.client', description: 'GET /foo' },
+      ]);
+    });
+
+    it('keeps a non-mark span even if its description matches a low-value mark name', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [{ op: 'http.client', description: 'sentry-tracing-init' }],
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.spans).toStrictEqual([
+        { op: 'http.client', description: 'sentry-tracing-init' },
+      ]);
+    });
+
+    it('leaves a transaction without a low-value mark unchanged', () => {
+      const spans = [
+        { op: 'mark', description: 'first-contentful-paint' },
+        { op: 'http.client', description: 'GET /foo' },
+      ];
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans,
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.spans).toStrictEqual(spans);
+    });
+
+    it('does not throw when the transaction has no spans array', () => {
+      const testReport = { type: 'transaction', transaction: 'ui.popup' };
+      expect(() => dropLowValueMarkSpans(testReport)).not.toThrow();
+      expect(testReport.spans).toBeUndefined();
+    });
+
+    it('matches the mark name on the `name` field (SDK v10 forward-compat)', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [
+          { op: 'mark', name: 'sentry-tracing-init' },
+          { op: 'mark', name: 'first-contentful-paint' },
+        ],
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.spans).toStrictEqual([
+        { op: 'mark', name: 'first-contentful-paint' },
+      ]);
     });
   });
 

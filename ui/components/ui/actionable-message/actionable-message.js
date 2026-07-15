@@ -26,6 +26,24 @@ export const typeHash = {
  * {@link https://github.com/MetaMask/metamask-extension/issues/19528}
  */
 
+/**
+ * @param {object} props
+ * @param {import('react').ReactNode} props.message
+ * @param {object} [props.primaryAction]
+ * @param {object} [props.primaryActionV2]
+ * @param {object} [props.secondaryAction]
+ * @param {string} [props.className]
+ * @param {string} [props.infoTooltipText]
+ * @param {boolean} [props.withRightButton]
+ * @param {string} [props.type]
+ * @param {boolean} [props.useIcon]
+ * @param {import('react').ReactNode} [props.icon]
+ * @param {string} [props.iconFillColor]
+ * @param {boolean} [props.roundedButtons]
+ * @param {string} [props.dataTestId]
+ * @param {number} [props.autoHideTime]
+ * @param {() => void} [props.onAutoHide]
+ */
 export default function ActionableMessage({
   message = '',
   primaryAction = null,

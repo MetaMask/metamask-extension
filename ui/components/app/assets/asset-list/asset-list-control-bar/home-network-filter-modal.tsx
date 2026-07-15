@@ -6,6 +6,9 @@ import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -14,6 +17,8 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  IconColor as DsIconColor,
+  IconName as DsIconName,
   Text,
   TextColor,
   TextVariant,
@@ -40,6 +45,7 @@ import {
   ModalOverlay,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { transitionForward } from '../../../../ui/transition';
 import { NETWORKS_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   addNetwork,
@@ -115,12 +121,18 @@ const getSelectableChainId = (network: MultichainNetworkConfiguration) =>
 const isIconName = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
 
-const SectionHeader = ({ children }: { children: React.ReactNode }) => (
+const SectionHeader = ({
+  children,
+  className = 'px-4 pb-2 pt-4',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
   <Text
     variant={TextVariant.BodyMd}
     color={TextColor.TextAlternative}
     fontWeight={FontWeight.Medium}
-    className="px-4 py-2"
+    className={className}
   >
     {children}
   </Text>
@@ -148,12 +160,42 @@ const HomeNetworkFilterRow = ({
         focus={false}
         endAccessory={
           endIconName ? (
-            <Icon name={endIconName} size={IconSize.Sm} />
+            <Box className="flex items-center justify-center rounded-lg p-1">
+              <Icon name={endIconName} size={IconSize.Lg} />
+            </Box>
           ) : undefined
         }
         showEndAccessory={!selected}
       />
     </Box>
+  );
+};
+
+const getDsIconName = (iconName: IconName): DsIconName =>
+  Object.keys(IconName).find(
+    (key) => IconName[key as keyof typeof IconName] === iconName,
+  ) as DsIconName;
+
+const NetworkSelectionItemIcon = ({
+  name,
+  iconSrc,
+}: {
+  name: string;
+  iconSrc?: string;
+}) => {
+  if (isIconName(iconSrc)) {
+    return (
+      <AvatarIcon
+        iconName={getDsIconName(iconSrc)}
+        size={AvatarIconSize.Md}
+        severity={AvatarIconSeverity.Neutral}
+        iconProps={{ color: DsIconColor.IconDefault }}
+      />
+    );
+  }
+
+  return (
+    <AvatarNetwork name={name} src={iconSrc} size={AvatarNetworkSize.Md} />
   );
 };
 
@@ -180,12 +222,12 @@ export const NetworkSelectionModal = ({
           size={ModalContentSize.Sm}
           modalDialogProps={{
             padding: 0,
-            className: 'overflow-hidden',
+            className: 'flex h-full flex-col overflow-hidden',
           }}
         >
           <ModalHeader onClose={onClose}>{title}</ModalHeader>
           <Box
-            className="max-h-[calc(100vh-168px)] overflow-y-auto"
+            className="min-h-0 flex-1 overflow-y-auto"
             flexDirection={BoxFlexDirection.Column}
           >
             {topItem ? (
@@ -198,15 +240,10 @@ export const NetworkSelectionModal = ({
                 onClick={topItem.onClick}
               >
                 <Box className="flex min-w-0 items-center gap-3">
-                  {isIconName(topItem.iconSrc) ? (
-                    <Icon name={topItem.iconSrc} size={IconSize.Sm} />
-                  ) : (
-                    <AvatarNetwork
-                      name={topItem.name}
-                      src={topItem.iconSrc}
-                      size={AvatarNetworkSize.Md}
-                    />
-                  )}
+                  <NetworkSelectionItemIcon
+                    name={topItem.name}
+                    iconSrc={topItem.iconSrc}
+                  />
                   <Text
                     variant={TextVariant.BodyMd}
                     color={TextColor.TextDefault}
@@ -223,13 +260,10 @@ export const NetworkSelectionModal = ({
                         ? IconName.Check
                         : (topItem.endIconName as IconName)
                     }
-                    size={IconSize.Sm}
+                    size={IconSize.Lg}
                   />
                 )}
               </button>
-            ) : null}
-            {topItem && sections.length > 0 ? (
-              <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
             ) : null}
             {sections.map((section, index) => (
               <Box key={section.key} className="flex flex-col">
@@ -237,7 +271,11 @@ export const NetworkSelectionModal = ({
                   <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
                 ) : null}
                 {section.title ? (
-                  <SectionHeader>{section.title}</SectionHeader>
+                  <SectionHeader
+                    className={index > 0 ? 'px-4 pb-2 pt-4' : undefined}
+                  >
+                    {section.title}
+                  </SectionHeader>
                 ) : null}
                 {section.items.map(({ key, ...item }) => (
                   <HomeNetworkFilterRow key={key} {...item} />
@@ -246,11 +284,11 @@ export const NetworkSelectionModal = ({
             ))}
           </Box>
           {footerButton ? (
-            <Box className="px-4 pt-2">
+            <Box className="px-4 pt-4">
               <Button
                 data-testid={footerButton.testId}
-                className="h-14 w-full rounded-2xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
-                size={ButtonSize.Lg}
+                className="h-12 w-full rounded-xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
+                size={ButtonSize.Md}
                 variant={ButtonVariant.Secondary}
                 onClick={footerButton.onClick}
               >
@@ -346,6 +384,13 @@ const HomeNetworkFilterModalContent = ({
     );
   }, [orderedNetworksList, testNetworkMap, useExternalServices]);
 
+  // When there are no custom networks and no visible test networks, the default
+  // list is the only list, so selecting default networks is equivalent to
+  // selecting all networks. Once custom or test networks are visible, the top row
+  // specifically selects "All default networks".
+  const hasOnlyDefaultNetworks =
+    customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
+
   const additionalNetworks = useMemo(() => {
     const availableNetworks = FEATURED_RPCS.filter(
       ({ chainId }) => !evmNetworks[chainId],
@@ -382,15 +427,17 @@ const HomeNetworkFilterModalContent = ({
   );
 
   const handleManageNetworks = useCallback(() => {
-    onClose();
-    navigate(`${NETWORKS_ROUTE}?drawerOpen=true`);
-  }, [navigate, onClose]);
+    // Don't close the modal first — letting the whole current view (modal
+    // included) transition as one view-transition snapshot keeps the motion
+    // smooth. The modal's open state resets when the home route unmounts.
+    transitionForward(() => navigate(NETWORKS_ROUTE));
+  }, [navigate]);
 
   const sections = useMemo<NetworkSelectionSection[]>(() => {
     const nextSections: NetworkSelectionSection[] = [
       {
         key: 'default-networks',
-        title: t('defaultNetworks'),
+        title: hasOnlyDefaultNetworks ? undefined : t('defaultNetworks'),
         items: defaultNetworks.map((network) => ({
           key: network.chainId,
           name: network.name,
@@ -461,6 +508,7 @@ const HomeNetworkFilterModalContent = ({
     defaultNetworks,
     handleAddNetwork,
     handleSelectNetwork,
+    hasOnlyDefaultNetworks,
     isNetworkSelected,
     showTestnets,
     t,
@@ -474,7 +522,9 @@ const HomeNetworkFilterModalContent = ({
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',
-        name: t('allDefaultNetworks'),
+        name: hasOnlyDefaultNetworks
+          ? t('allNetworks')
+          : t('allDefaultNetworks'),
         iconSrc: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,

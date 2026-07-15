@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -34,12 +34,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getHDEntropyIndex, getFirstTimeFlowType } from '../../../selectors';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import { TraceName } from '../../../../shared/lib/trace';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import RecoveryPhraseChips from './recovery-phrase-chips';
@@ -55,26 +56,17 @@ export default function RecoveryPhrase({
 }: RecoveryPhraseProps) {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { search } = useLocation();
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
-  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
-
-  const queryParams = new URLSearchParams();
-  if (isFromReminder) {
-    queryParams.set('isFromReminder', isFromReminder);
-  }
-  if (isFromSettingsSecurity) {
-    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
-  }
-  const nextRouteQueryString = queryParams.toString();
+  const isFirefox = useIsFirefox();
+  const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
+    useOnboardingSearchParams();
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
@@ -89,7 +81,6 @@ export default function RecoveryPhrase({
       );
     } else if (hasSeedPhraseBackedUp) {
       // if user has already done the Secure Wallet flow, we can redirect to the next page
-      const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
       navigate(
         isFirefox ? ONBOARDING_COMPLETION_ROUTE : ONBOARDING_METAMETRICS,
         { replace: true },
@@ -100,54 +91,65 @@ export default function RecoveryPhrase({
     secretRecoveryPhrase,
     nextRouteQueryString,
     hasSeedPhraseBackedUp,
+    isFirefox,
   ]);
 
   const handleContinue = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
 
     navigate({
       pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
       search: nextRouteQueryString ? `?${nextRouteQueryString}` : '',
     });
-  }, [hdEntropyIndex, navigate, trackEvent, nextRouteQueryString]);
+  }, [
+    createEventBuilder,
+    hdEntropyIndex,
+    navigate,
+    trackEvent,
+    nextRouteQueryString,
+  ]);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.SrpDefinitionClicked,
-      properties: {
-        location: 'review_recovery_phrase',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SrpDefinitionClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          location: 'review_recovery_phrase',
+        })
+        .build(),
+    );
     setShowSrpDetailsModal(true);
-  }, [trackEvent]);
+  }, [createEventBuilder, trackEvent]);
 
   const handleRemindLater = useCallback(async () => {
     await dispatch(setSeedPhraseBackedUp(false));
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
     bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
-    if (
-      getBrowserName() === PLATFORM_FIREFOX ||
-      firstTimeFlowType === FirstTimeFlowType.restore
-    ) {
+    if (isFirefox || firstTimeFlowType === FirstTimeFlowType.restore) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_METAMETRICS, { replace: true });
@@ -157,7 +159,9 @@ export default function RecoveryPhrase({
     dispatch,
     firstTimeFlowType,
     hdEntropyIndex,
+    isFirefox,
     navigate,
+    createEventBuilder,
     trackEvent,
   ]);
 
@@ -242,15 +246,17 @@ export default function RecoveryPhrase({
           secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
           phraseRevealed={phraseRevealed}
           revealPhrase={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event:
+            trackEvent(
+              createEventBuilder(
                 MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
-              properties: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
+              )
+                .addCategory(MetaMetricsEventCategory.Onboarding)
+                .addProperties({
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  hd_entropy_index: hdEntropyIndex,
+                })
+                .build(),
+            );
             setPhraseRevealed(true);
           }}
         />

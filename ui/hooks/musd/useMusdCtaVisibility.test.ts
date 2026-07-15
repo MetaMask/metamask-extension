@@ -154,7 +154,7 @@ const wrapper = ({
 }: {
   children: React.ReactNode;
   store: ReturnType<typeof createMockStore>;
-}) => React.createElement(Provider, { store }, children);
+}) => React.createElement(Provider, { store, children });
 
 describe('useMusdCtaVisibility', () => {
   beforeEach(() => {

@@ -194,7 +194,7 @@ exports[`<ApproveStaticSimulation /> renders component when token is not an NFT 
             data-testid="edit-spending-cap-icon"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/edit.svg');"
             />
           </button>

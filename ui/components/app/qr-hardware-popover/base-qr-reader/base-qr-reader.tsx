@@ -9,12 +9,12 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
   getMozExtensionOriginForDisplay,
   isFirefoxBrowser,
 } from '../../../../../shared/lib/browser-runtime.utils';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -78,7 +78,7 @@ const BaseQrReader = ({
   setErrorActive,
 }: BaseQrReaderProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const {
     state: {
@@ -269,8 +269,6 @@ const BaseQrReader = ({
     if (error.type === WebcamErrorType.NoWebcamFound) {
       title = t('noWebcamFoundTitle');
       message = t('noWebcamFound');
-    } else if (error.message === t('QRHardwareMismatchedSignId')) {
-      message = t('QRHardwareMismatchedSignId');
     } else {
       title = t('generalCameraErrorTitle');
       message = t('generalCameraError');

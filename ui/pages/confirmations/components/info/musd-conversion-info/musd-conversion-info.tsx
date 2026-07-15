@@ -25,6 +25,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
+import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
 import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
 import { MusdOverrideContent } from './musd-override-content';
 
@@ -36,19 +37,21 @@ const MusdBottomContent = () => {
   const isPaidByMetaMask = useIsPaidByMetaMask();
 
   const isResultReady = isQuotesLoading || Boolean(quotes?.length);
-
-  if (!isResultReady || hideResults) {
-    return null;
-  }
+  const showResults = isResultReady && !hideResults;
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingBottom={4}>
-      <BridgeFeeRow
-        variant={ConfirmInfoRowSize.Small}
-        tooltipDescription={t('musdConversionFeeTooltipDescription')}
-      />
-      <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
-      {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
+      <PayWithRow />
+      {showResults && (
+        <>
+          <BridgeFeeRow
+            variant={ConfirmInfoRowSize.Small}
+            tooltipDescription={t('musdConversionFeeTooltipDescription')}
+          />
+          <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
+          {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
+        </>
+      )}
     </Box>
   );
 };
@@ -131,16 +134,17 @@ export const MusdConversionInfo = () => {
     [],
   );
 
+  const renderBottomContent = useCallback(() => <MusdBottomContent />, []);
+
   return (
     <CustomAmountInfo
       autoFocusAmount
       currency="usd"
       disableAutomaticToken={true}
       preferredToken={preferredToken}
-      hasMax={true}
       prefillMaxOnLoad={prefillMaxOnLoad}
       overrideCenterContent={renderOverrideContent}
-      overrideBottomContent={<MusdBottomContent />}
+      overrideBottomContent={renderBottomContent}
     />
   );
 };

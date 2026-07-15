@@ -177,8 +177,6 @@ yarn test:integration
 yarn test:integration:coverage
 
 # Playwright Tests
-yarn test:e2e:swap         # Swap functionality
-yarn test:e2e:global       # Global tests
 yarn test:e2e:benchmark    # Performance benchmarks
 ```
 
@@ -1718,6 +1716,11 @@ Performance Checks (React Components):
 - **Cursor Rule:** [`.cursor/rules/mms-add-non-evm-network/RULE.md`](./.cursor/rules/mms-add-non-evm-network/RULE.md) - Cursor rule entrypoint for the shared standard.
 - **Claude Skill:** [`.claude/skills/mms-add-non-evm-network/SKILL.md`](./.claude/skills/mms-add-non-evm-network/SKILL.md) - Claude skill entrypoint for the shared standard.
 - **Cursor Command:** [`.cursor/commands/add-non-evm-swaps-bridge-network.md`](./.cursor/commands/add-non-evm-swaps-bridge-network.md) - Cursor command shim to the Claude command entrypoint.
+
+### EVM Swaps/Bridge Agent Entrypoints
+
+- **EVM Swaps/Bridge Standard:** [`docs/add-evm-swaps-bridge-network.md`](./docs/add-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding a new EVM network to the unified swaps/bridge flow (bridge allowlist, default token pair, stablecoin slippage, and `bridgeConfigV2` rollout). Follows the MegaETH/Robinhood pattern.
+- **Cursor Skill:** [`.cursor/skills/mms-add-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/mms-add-evm-swaps-bridge-network/SKILL.md) - Local Cursor skill entrypoint for the shared standard.
 
 ### External Resources
 

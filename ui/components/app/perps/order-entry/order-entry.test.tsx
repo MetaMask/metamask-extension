@@ -7,6 +7,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { OrderEntry } from './order-entry';
+import { resetSizeDenominations } from './components/amount-input/size-denomination-store';
 
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
@@ -31,6 +32,7 @@ jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  ...jest.requireActual('../../../../hooks/perps/usePerpsOrderFees'),
   usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
 }));
 
@@ -55,6 +57,7 @@ describe('OrderEntry', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetSizeDenominations();
     jest.mocked(submitRequestToBackground).mockImplementation((method) => {
       function immediate<ResolvedValue>(
         value: ResolvedValue,
@@ -171,7 +174,7 @@ describe('OrderEntry', () => {
       expect(input).toHaveValue('1000.00');
     });
 
-    it('shows token conversion when amount is entered', () => {
+    it('shows token conversion when the denomination is toggled to the asset', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       const container = screen.getByTestId('amount-input-field');
@@ -181,10 +184,11 @@ describe('OrderEntry', () => {
         target: { value: '45250' },
       });
 
-      const tokenContainer = screen.getByTestId('amount-input-token-field');
-      const tokenInput = tokenContainer.querySelector('input');
+      // Toggle the single field into asset denomination to view the equivalent.
+      fireEvent.click(screen.getByTestId('toggle-denomination'));
+
       // Amount is treated as position size (TAT-2684 fix), so token = size / price = $45250 / $45250 = 1 BTC
-      expect(tokenInput).toHaveValue('1');
+      expect(input).toHaveValue('1');
     });
   });
 
@@ -201,6 +205,13 @@ describe('OrderEntry', () => {
   describe('order summary', () => {
     it('shows dash when no amount entered', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '' },
+      });
 
       const dashElements = screen.getAllByText('-');
       expect(dashElements.length).toBeGreaterThanOrEqual(3);

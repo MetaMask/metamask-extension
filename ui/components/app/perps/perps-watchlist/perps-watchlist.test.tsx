@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { tEn } from '../../../../../test/lib/i18n-helpers';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockCryptoMarkets } from '../mocks';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 import { PerpsWatchlist } from './perps-watchlist';
@@ -18,6 +18,10 @@ jest.mock('react-router-dom', () => ({
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
+    },
   },
 });
 
@@ -54,14 +58,18 @@ describe('PerpsWatchlist', () => {
     expect(screen.getByTestId('perps-watchlist-ETH')).toBeInTheDocument();
   });
 
-  it('displays market name, volume, and price for each watchlist item', () => {
+  it('displays full asset name, volume, and price for each watchlist item', () => {
     renderWithProvider(
       <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
       mockStore,
     );
 
-    expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
-    expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameBitcoin.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('$1.2B')).toBeInTheDocument();
     expect(screen.getByText('$850M')).toBeInTheDocument();
     expect(screen.getByText('$45,250.00')).toBeInTheDocument();

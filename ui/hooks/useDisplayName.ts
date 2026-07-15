@@ -1,7 +1,8 @@
 import { NameOrigin, NameType } from '@metamask/name-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import isEqual from 'lodash/isEqual';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
@@ -293,25 +294,30 @@ function useAccountGroupNames(
       .filter((item) => item.address !== null);
   }, [requests]);
 
-  const namesByAddress = useSelector((state: MultichainAccountsState) => {
-    const result: Record<string, UseAccountGroupNamesResponse> = {};
-    ethereumAddresses.forEach(({ address }) => {
-      if (address) {
-        const accountGroupName = selectAccountGroupNameByInternalAccount(
-          state,
-          address,
-        );
-        const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
-        const walletName = walletInfo?.name || null;
+  const selectNamesByAddress = useCallback(
+    (state: MultichainAccountsState) => {
+      const result: Record<string, UseAccountGroupNamesResponse> = {};
+      ethereumAddresses.forEach(({ address }) => {
+        if (address) {
+          const accountGroupName = selectAccountGroupNameByInternalAccount(
+            state,
+            address,
+          );
+          const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
+          const walletName = walletInfo?.name || null;
 
-        result[address] = {
-          accountGroupName,
-          walletName,
-        };
-      }
-    });
-    return result;
-  });
+          result[address] = {
+            accountGroupName,
+            walletName,
+          };
+        }
+      });
+      return result;
+    },
+    [ethereumAddresses],
+  );
+
+  const namesByAddress = useSelector(selectNamesByAddress, isEqual);
 
   return useMemo(() => {
     return requests.map(({ type, value }, index) => {

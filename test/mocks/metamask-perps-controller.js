@@ -128,11 +128,68 @@ const mockPerpsErrorCodes = new Proxy(
   { get: (_target, prop) => String(prop) },
 );
 
+const mockOrderSlippageConfig = {
+  DefaultMarketSlippageBps: 300,
+  DefaultTpslSlippageBps: 1000,
+  DefaultLimitSlippageBps: 100,
+};
+
+const mockMaxSlippageBounds = {
+  MinBps: 10,
+  MaxBps: 1000,
+  StepBps: 10,
+};
+
+const mockPerformanceConfig = {
+  SlippageEstimateThrottleMs: 250,
+  SlippageEstimateBookLevels: 10,
+};
+
+const mockTradingDefaults = {
+  leverage: 3,
+  marginPercent: 10,
+  takeProfitPercent: 0.3,
+  stopLossPercent: 0.1,
+  amount: {
+    mainnet: 10,
+    testnet: 10,
+  },
+};
+
+/**
+ * Simplified max-amount helper for unit tests (matches controller shape; omits
+ * position-size rounding details that are covered by controller tests).
+ *
+ * @param {object} params
+ * @param {number} params.spendableBalance
+ * @param {number} params.assetPrice
+ * @param {number} params.assetSzDecimals
+ * @param {number} params.leverage
+ * @returns {number}
+ */
+function mockGetMaxAllowedAmount({
+  spendableBalance,
+  assetPrice,
+  assetSzDecimals,
+  leverage,
+}) {
+  if (spendableBalance === 0 || !assetPrice || assetSzDecimals === undefined) {
+    return 0;
+  }
+  return Math.max(0, Math.floor(spendableBalance * leverage * 0.99));
+}
+
 module.exports = {
   PERPS_EVENT_PROPERTY: mockPerpsEventPropertyKeys,
   PERPS_EVENT_VALUE: mockPerpsEventValueLiterals,
   PerpsAnalyticsEvent: mockPerpsAnalyticsEventNames,
   PERPS_ERROR_CODES: mockPerpsErrorCodes,
+  ORDER_SLIPPAGE_CONFIG: mockOrderSlippageConfig,
+  MAX_SLIPPAGE_BOUNDS: mockMaxSlippageBounds,
+  PERFORMANCE_CONFIG: mockPerformanceConfig,
+  TRADING_DEFAULTS: mockTradingDefaults,
+  getMaxAllowedAmount: mockGetMaxAllowedAmount,
+  BASIS_POINTS_DIVISOR: 10000,
   MARKET_CATEGORIES: mockMarketCategories,
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,

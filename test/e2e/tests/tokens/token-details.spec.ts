@@ -7,12 +7,13 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPricesV3,
+  mockTokenMetadataApis,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -28,11 +29,19 @@ describe('Token Details', function () {
       .build(),
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
+    },
+    unifiedEvmAccountsApiBalances: {
+      mainnetAdditionalBalances: [
+        {
+          assetId: `eip155:1/erc20:${tokenAddress.toLowerCase()}`,
+          balance: '1',
+        },
+      ],
     },
   };
 
@@ -42,6 +51,9 @@ describe('Token Details', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+          ])),
           await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
@@ -50,19 +62,17 @@ describe('Token Details', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           chainId,
           tokenAddress,
           symbol,
+          '18',
         );
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.openTokenDetails(symbol);
-        await assetListPage.checkTokenSymbolAndAddressDetails(
-          symbol,
-          tokenAddress,
-        );
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.openTokenDetails(symbol);
+        await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
       },
     );
   });
@@ -89,6 +99,9 @@ describe('Token Details', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+          ])),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
               price: ethConversionInUsd,
@@ -116,26 +129,24 @@ describe('Token Details', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           chainId,
           tokenAddress,
           symbol,
+          '18',
         );
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.openTokenDetails(symbol);
-        await assetListPage.checkTokenSymbolAndAddressDetails(
-          symbol,
-          tokenAddress,
-        );
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.openTokenDetails(symbol);
+        await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
 
-        await assetListPage.checkTokenPriceAndMarketCap(
+        await tokensTab.checkTokenPriceAndMarketCap(
           expectedPrice,
           expectedMarketCap,
         );
 
-        await assetListPage.checkPriceChartIsShown();
+        await tokensTab.checkPriceChartIsShown();
       },
     );
   });
@@ -165,11 +176,11 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.openTokenDetails('Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.openTokenDetails('Ethereum');
 
         // check display of price in details
-        await assetListPage.checkTokenPrice('$1,700.00');
+        await tokensTab.checkTokenPrice('$1,700.00');
       },
     );
   });

@@ -5,8 +5,9 @@ import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
@@ -29,8 +30,12 @@ const useRamps = (
   metamaskEntry: RampsMetaMaskEntry = RampsMetaMaskEntry.BuySellButton,
 ): IUseRamps => {
   const chainId = useSelector(getCurrentChainId);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const getBuyURI = useCallback(
@@ -47,8 +52,8 @@ const useRamps = (
         }
 
         params.set('chainId', numericChainId);
-        if (metaMetricsId) {
-          params.set('metametricsId', metaMetricsId);
+        if (analyticsId) {
+          params.set('metametricsId', analyticsId);
         }
         params.set('metricsEnabled', String(isMetaMetricsEnabled === true));
         if (isMarketingEnabled) {
@@ -62,7 +67,7 @@ const useRamps = (
         return `${DEFAULT_PORTFOLIO_URL}/buy`;
       }
     },
-    [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, metamaskEntry],
+    [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, metamaskEntry],
   );
 
   const openBuyCryptoInPdapp = useCallback(

@@ -219,6 +219,20 @@
         "nock>debug": true
       }
     },
+    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "depcheck>@babel/traverse>@babel/helper-globals": true,
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "@babel/core>@babel/template": true,
+        "@babel/core>@babel/types": true,
+        "nock>debug": true
+      }
+    },
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
@@ -318,7 +332,7 @@
         "process._rawDebug": true
       },
       "packages": {
-        "depcheck>@babel/parser": true,
+        "@lavamoat/webpack>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "@lavamoat/webpack>json-stable-stringify": true,
@@ -532,6 +546,22 @@
         "mockttp>@peculiar/x509>tsyringe": true
       }
     },
+    "@pmmmwh/react-refresh-webpack-plugin": {
+      "builtin": {
+        "path.dirname": true,
+        "path.join": true,
+        "querystring.stringify": true
+      },
+      "globals": {
+        "URL": true,
+        "__dirname": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "@pmmmwh/react-refresh-webpack-plugin>schema-utils": true,
+        "webpack": true
+      }
+    },
     "jest-preview>sirv>@polka/url": {
       "builtin": {
         "querystring.parse": true
@@ -597,11 +627,16 @@
     "@swc/core>@swc/core-win32-x64-msvc": {
       "native": true
     },
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false
+      }
+    },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
+        "document": false
       }
     },
     "webpack>@webassemblyjs/ast": {
@@ -719,6 +754,24 @@
       "packages": {
         "schema-utils>ajv": true,
         "eslint>fast-deep-equal": true
+      }
+    },
+    "style-loader>schema-utils>ajv-keywords": {
+      "globals": {
+        "Buffer": true,
+        "console.error": true,
+        "console.warn": true
+      }
+    },
+    "eslint>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "eslint>fast-deep-equal": true,
+        "fast-json-stable-stringify": true,
+        "eslint>ajv>json-schema-traverse": true,
+        "uri-js": true
       }
     },
     "schema-utils>ajv": {
@@ -1138,6 +1191,7 @@
         "process.cwd": true
       },
       "packages": {
+        "lockfile-lint>cosmiconfig>env-paths": true,
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
         "mocha>js-yaml": true,
@@ -1366,14 +1420,25 @@
         "webpack>tapable": true
       }
     },
+    "lockfile-lint>cosmiconfig>env-paths": {
+      "builtin": {
+        "os.homedir": true,
+        "os.tmpdir": true,
+        "path.basename": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      }
+    },
     "postcss-loader>cosmiconfig>env-paths": {
       "builtin": {
         "os": true,
         "path": true
       },
       "globals": {
-        "process.env": true,
-        "process.platform": true
+        "process.env": true
       }
     },
     "depcheck>cosmiconfig>parse-json>error-ex": {
@@ -1394,7 +1459,7 @@
         "atob": true
       }
     },
-    "@storybook/test-runner>@storybook/core-common>esbuild": {
+    "tsx>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -1803,26 +1868,23 @@
     },
     "webpack-dev-server>http-proxy-middleware": {
       "builtin": {
-        "querystring.stringify": true,
-        "url.parse": true,
-        "util.format": true,
-        "zlib.createBrotliDecompress": true,
-        "zlib.createGunzip": true,
-        "zlib.createInflate": true
+        "node:querystring.stringify": true,
+        "node:url.URL": true,
+        "node:url.parse": true,
+        "node:zlib.createBrotliDecompress": true,
+        "node:zlib.createGunzip": true,
+        "node:zlib.createInflate": true
       },
       "globals": {
         "Buffer.byteLength": true,
         "Buffer.concat": true,
-        "Buffer.from": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true
+        "Buffer.from": true
       },
       "packages": {
+        "nock>debug": true,
         "@viem/anvil>http-proxy": true,
         "del>is-glob": true,
-        "webpack-dev-server>http-proxy-middleware>is-plain-obj": true,
+        "webpack-dev-server>http-proxy-middleware>is-plain-object": true,
         "micromatch": true
       }
     },
@@ -1997,6 +2059,8 @@
         "os.release": true,
         "path.basename": true,
         "path.relative": true,
+        "path.resolve": true,
+        "path.win32.basename": true,
         "url.fileURLToPath": true
       },
       "globals": {
@@ -2035,8 +2099,8 @@
         "console.log": true
       },
       "packages": {
-        "depcheck>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "@lavamoat/webpack>@babel/parser": true,
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
       }
     },
     "webpack>loader-runner": {
@@ -2584,6 +2648,15 @@
         "schema-utils>ajv": true
       }
     },
+    "@pmmmwh/react-refresh-webpack-plugin>schema-utils": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "style-loader>schema-utils>ajv-keywords": true,
+        "eslint>ajv": true
+      }
+    },
     "webpack-dev-server>selfsigned": {
       "builtin": {
         "crypto.createPrivateKey": true,
@@ -2911,7 +2984,7 @@
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@swc/core": true,
-        "@storybook/test-runner>@storybook/core-common>esbuild": true,
+        "tsx>esbuild": true,
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,
@@ -3083,6 +3156,11 @@
         "AST_Node": true,
         "OutputStream": true,
         "process.env": true
+      }
+    },
+    "uri-js": {
+      "globals": {
+        "define": true
       }
     },
     "ws>utf-8-validate": {

@@ -1,4 +1,9 @@
 import {
+  isCrossChain,
+  StatusTypes as BridgeStatusTypes,
+} from '@metamask/bridge-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import {
   type Transaction,
   TransactionStatus as KeyringTransactionStatus,
   TransactionType as KeyringTransactionType,
@@ -16,6 +21,28 @@ type FungibleAsset = Extract<
   NonNullable<Movement['asset']>,
   { fungible: true }
 >;
+
+/**
+ * Custom labels for non-EVM transactions.
+ *
+ * The labels are used to map the transaction type to the title in the activity list and dialog.
+ * The labels are defined in the `transaction.details.typeLabel` property.
+ * For details: {@link https://github.com/MetaMask/metamask-extension/pull/38040}
+ */
+export enum CustomTransactionTypeLabel {
+  // Token requires one off approve to receive
+  TrustlineApprove = 'trustline-approve',
+  // Token requires revoke the approve to stop receiving
+  TrustlineDisapprove = 'trustline-disapprove',
+}
+
+function hasTrustlineTypeLabel(details: Transaction['details']): boolean {
+  // A flag to indicate if the transaction is a trustline type.
+  return [
+    String(CustomTransactionTypeLabel.TrustlineApprove),
+    String(CustomTransactionTypeLabel.TrustlineDisapprove),
+  ].includes(details?.typeLabel ?? '');
+}
 
 function mapStatus(status: Transaction['status']): Status {
   switch (status) {
@@ -85,13 +112,32 @@ function getFees(transaction: Transaction) {
   });
 }
 
+// Amounts with more integer digits than this are treated as "unlimited" and hidden.
+// Mirrors TOKEN_VALUE_UNLIMITED_THRESHOLD = 10^15 used on EVM confirmation screens.
+const APPROVE_AMOUNT_MAX_INTEGER_DIGITS = 15;
+
+function mapBridgeStatus(bridgeStatus: BridgeStatusTypes): Status {
+  switch (bridgeStatus) {
+    case BridgeStatusTypes.FAILED:
+      return 'failed';
+    case BridgeStatusTypes.COMPLETE:
+      return 'success';
+    case BridgeStatusTypes.PENDING:
+    case BridgeStatusTypes.SUBMITTED:
+    default:
+      return 'pending';
+  }
+}
+
 // Converts keyring API transactions into the shared activity item shape
 export function mapKeyringTransaction({
   transaction,
   subjectAddress,
+  bridgeHistory,
 }: {
   transaction: Transaction;
   subjectAddress?: string;
+  bridgeHistory?: BridgeHistoryItem;
 }): ActivityListItem {
   const status = mapStatus(transaction.status);
   const timestamp = mapTimestamp(transaction.timestamp);
@@ -107,7 +153,49 @@ export function mapKeyringTransaction({
       ? subjectAddress
       : getAddress(transaction.to);
 
+  const fees = getFees(transaction);
+
   if (transaction.type === KeyringTransactionType.Send) {
+    // Keyring transactions mark these as "send" but they may actually be a bridge
+    // Hence, we check the local bridge history
+    if (
+      bridgeHistory &&
+      isCrossChain(
+        bridgeHistory.quote.srcChainId,
+        bridgeHistory.quote.destChainId,
+      )
+    ) {
+      const { quote } = bridgeHistory;
+      const bridgeStatus = bridgeHistory.status.status;
+
+      return {
+        type: 'bridge',
+        chainId,
+        status: mapBridgeStatus(bridgeStatus),
+        timestamp,
+        hash: transaction.id,
+        data: {
+          from,
+          sourceToken: {
+            amount: quote.srcTokenAmount,
+            assetId: quote.srcAsset.assetId,
+            decimals: quote.srcAsset.decimals,
+            direction: 'out',
+            symbol: quote.srcAsset.symbol,
+          },
+          destinationToken: {
+            amount:
+              bridgeHistory.status.destChain?.amount ?? quote.destTokenAmount,
+            assetId: quote.destAsset.assetId,
+            decimals: quote.destAsset.decimals,
+            direction: 'in',
+            symbol: quote.destAsset.symbol,
+          },
+          fees,
+        },
+      };
+    }
+
     const fromToken = getToken(transaction.from, 'out');
     let token = fromToken;
 
@@ -121,12 +209,12 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         to,
         token,
-        fees: getFees(transaction),
+        fees,
       },
     };
   }
@@ -137,12 +225,12 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         to,
         token: getToken(transaction.to, 'in'),
-        fees: getFees(transaction),
+        fees,
       },
     };
   }
@@ -153,14 +241,74 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
+      hash: transaction.id,
       data: {
-        hash: transaction.id,
         from,
         destinationToken: getToken(transaction.to, 'in'),
         sourceToken: getToken(transaction.from, 'out'),
-        fees: getFees(transaction),
+        fees,
       },
     };
+  }
+
+  if (transaction.type === KeyringTransactionType.TokenApprove) {
+    const rawToken = getToken(transaction.from, 'out');
+
+    if (hasTrustlineTypeLabel(transaction.details)) {
+      return {
+        type: 'assetActivation',
+        chainId,
+        status,
+        timestamp,
+        hash: transaction.id,
+        data: {
+          from,
+          token: rawToken ? { ...rawToken, amount: undefined } : rawToken,
+          fees,
+        },
+      };
+    }
+
+    // Hide the approved amount when its integer part exceeds 15 digits (~1 quadrillion),
+    // matching the EVM API confirmed path which never exposes the approved amount.
+    // This also prevents uint256.max (78 digits) from collapsing the title column.
+    const isUnlimited =
+      rawToken?.amount !== undefined &&
+      rawToken.amount.split('.')[0].length > APPROVE_AMOUNT_MAX_INTEGER_DIGITS;
+
+    return {
+      type: 'approveSpendingCap',
+      chainId,
+      status,
+      timestamp,
+      hash: transaction.id,
+      data: {
+        from,
+        token: rawToken
+          ? { ...rawToken, amount: isUnlimited ? undefined : rawToken.amount }
+          : rawToken,
+        fees,
+      },
+    };
+  }
+
+  if (transaction.type === KeyringTransactionType.TokenDisapprove) {
+    const rawToken = getToken(transaction.from, 'out');
+
+    if (hasTrustlineTypeLabel(transaction.details)) {
+      return {
+        type: 'assetDeactivation',
+        chainId,
+        status,
+        timestamp,
+        hash: transaction.id,
+        data: {
+          from,
+          token: rawToken ? { ...rawToken, amount: undefined } : rawToken,
+          fees,
+        },
+      };
+    }
   }
 
   return {
@@ -168,11 +316,11 @@ export function mapKeyringTransaction({
     chainId,
     status,
     timestamp,
+    hash: transaction.id,
     data: {
-      hash: transaction.id,
       from,
       to,
-      fees: getFees(transaction),
+      fees,
       transactionType: transaction.type,
     },
   };

@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -61,10 +61,10 @@ describe('Address Book', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Sent ETH' });
-        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
   });
@@ -121,10 +121,10 @@ describe('Address Book', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Sent ETH' });
-        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
   });

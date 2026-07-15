@@ -1,55 +1,95 @@
 import { Wallet } from '@metamask/wallet';
-import { Json } from '@metamask/utils';
-import { Encryptor } from '@metamask/keyring-controller';
-import { ShowApprovalRequest } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { RootMessenger } from '../lib/messenger';
-import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
-import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
+import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
+import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
+import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
+import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
+import {
+  getNetworkControllerInstanceOptions,
+  setupRpcEndpointMetrics,
+} from './instance-options/network-controller';
+import {
+  getTransactionControllerInstanceOptions,
+  setupTransactionControllerListeners,
+} from './instance-options/transaction-controller';
+import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import type { InitializeWalletRequest } from './types';
 
-export function initializeWallet({
-  messenger,
-  state,
-  encryptor,
-  showApprovalRequest,
-}: {
-  messenger: RootMessenger;
-  state: Record<string, Record<string, Json>>;
-  encryptor?: Encryptor;
-  showApprovalRequest?: ShowApprovalRequest;
-}) {
-  return new Wallet({
+/**
+ * Construct the `@metamask/wallet` `Wallet` for the extension. Each
+ * controller's client-specific options live in its own builder under
+ * `./instance-options/`.
+ *
+ * @param request - The wallet initialization request.
+ * @returns The constructed `Wallet`.
+ */
+export function initializeWallet(request: InitializeWalletRequest) {
+  const {
+    connectivityAdapter,
+    encryptor,
+    getFlatState,
+    getPermittedAccounts,
+    getTransactionMetricsRequest,
+    infuraProjectId,
+    messenger,
+    showApprovalRequest,
+    state,
+  } = request;
+
+  const transactionControllerInitMessenger =
+    getTransactionControllerInitMessenger(messenger);
+
+  const wallet = new Wallet({
+    instanceOptions: {
+      approvalController: getApprovalControllerInstanceOptions({
+        showApprovalRequest,
+      }),
+      connectivityController: getConnectivityControllerInstanceOptions({
+        connectivityAdapter,
+      }),
+      keyringController: getKeyringControllerInstanceOptions({
+        encryptor,
+        messenger,
+      }),
+      networkController: getNetworkControllerInstanceOptions(infuraProjectId),
+      remoteFeatureFlagController:
+        getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
+      storageService: getStorageServiceInstanceOptions(),
+      transactionController: getTransactionControllerInstanceOptions({
+        initMessenger: transactionControllerInitMessenger,
+        getFlatState,
+        getPermittedAccounts,
+        getTransactionMetricsRequest,
+      }),
+    },
     messenger,
     state,
-    instanceOptions: {
-      approvalController: {
-        showApprovalRequest,
-        typesExcludedFromRateLimiting: [
-          ApprovalType.PersonalSign,
-          ApprovalType.EthSignTypedData,
-          ApprovalType.Transaction,
-          ApprovalType.WatchAsset,
-          ApprovalType.EthGetEncryptionPublicKey,
-          ApprovalType.EthDecrypt,
+  });
 
-          // Exclude Smart TX Status Page from rate limiting to allow sequential
-          // transactions.
-          SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-
-          // Allow one flavor of snap_dialog to be queued.
-          DIALOG_APPROVAL_TYPES.default,
-        ],
-      },
-      keyringController: {
-        encryptor,
-        keyringBuilders: getKeyringBuilders(messenger),
-        keyringV2Builders: getKeyringV2Builders(),
-      },
-      storageService: {
-        storage: new BrowserStorageAdapter(),
-      },
+  // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
+  // and the external-services preference, seeded from the same persisted state
+  // as the initial `disabled` value above. The controller is driven over the
+  // shared messenger, so no instance reference is needed.
+  setupRemoteFeatureFlagToggle({
+    messenger,
+    onboardingState: {
+      completedOnboarding:
+        state.OnboardingController?.completedOnboarding === true,
+    },
+    preferencesState: {
+      useExternalServices:
+        state.PreferencesController?.useExternalServices !== false,
     },
   });
+
+  setupRpcEndpointMetrics(infuraProjectId, messenger);
+  setupTransactionControllerListeners({
+    getTransactionMetricsRequest,
+    messenger: transactionControllerInitMessenger,
+  });
+
+  wallet.init().catch((error) => console.error(error));
+
+  return wallet;
 }

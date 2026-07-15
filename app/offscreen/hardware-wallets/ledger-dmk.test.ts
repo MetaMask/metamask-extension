@@ -2,9 +2,7 @@ import { LedgerDMKBridge } from '@metamask/eth-ledger-bridge-keyring';
 
 import { of, Subject } from 'rxjs';
 
-import {
-  LedgerAction,
-} from '../../../shared/constants/offscreen-communication';
+import { LedgerAction } from '../../../shared/constants/offscreen-communication';
 
 import { LedgerDMKBridgeHandler } from './ledger-dmk';
 
@@ -43,7 +41,8 @@ const createMockBridge = () => ({
   deviceSignTransaction: mockBridgeDeviceSignTransaction,
   deviceSignMessage: mockBridgeDeviceSignMessage,
   deviceSignTypedData: mockBridgeDeviceSignTypedData,
-  deviceSignDelegationAuthorization: mockBridgeDeviceSignDelegationAuthorization,
+  deviceSignDelegationAuthorization:
+    mockBridgeDeviceSignDelegationAuthorization,
   connect: mockBridgeConnect,
   onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
   dmk: {

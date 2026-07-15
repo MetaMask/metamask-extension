@@ -3,8 +3,9 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
 import {
   useDisableNotifications,
@@ -15,6 +16,7 @@ import {
   getIsNotificationEnabledByDefaultFeatureFlag,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
+import { getNotificationPreferences } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
@@ -87,6 +89,7 @@ export function useBasicFunctionalityDisableEffect() {
 }
 
 export function useFetchInitialNotificationsEffect() {
+  const dispatch = useDispatch();
   const isNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -98,6 +101,22 @@ export function useFetchInitialNotificationsEffect() {
   const enableAndRefresh = useEnableAndRefresh();
 
   useEffect(() => {
+    const shouldEnableNotificationsOnStartup = async () => {
+      if (await hasNotificationSubscriptionExpired()) {
+        return true;
+      }
+
+      try {
+        const preferences = (await dispatch(
+          getNotificationPreferences(),
+        )) as unknown;
+
+        return preferences === null || preferences === undefined;
+      } catch {
+        return false;
+      }
+    };
+
     const run = async () => {
       try {
         if (
@@ -105,7 +124,7 @@ export function useFetchInitialNotificationsEffect() {
           shouldFetchNotifications &&
           isUnlocked
         ) {
-          await enableAndRefresh(await hasNotificationSubscriptionExpired());
+          await enableAndRefresh(await shouldEnableNotificationsOnStartup());
         }
       } catch {
         // Do nothing
@@ -116,6 +135,7 @@ export function useFetchInitialNotificationsEffect() {
     shouldFetchNotifications,
     isBasicFunctionalityEnabled,
     isUnlocked,
+    dispatch,
     enableAndRefresh,
   ]);
 }
@@ -173,12 +193,22 @@ export const MetamaskNotificationsProvider = ({
   // Enable notifications by default for users
   useEnableNotificationsByDefaultEffect();
 
+  const listNotificationsCallback = useCallback(() => {
+    listNotifications();
+  }, [listNotifications]);
+
+  const contextValue = useMemo(
+    () => ({
+      listNotifications: listNotificationsCallback,
+      notificationsData,
+      isLoading,
+      error,
+    }),
+    [listNotificationsCallback, notificationsData, isLoading, error],
+  );
+
   return (
-    <MetamaskNotificationsContext.Provider
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      value={{ listNotifications, notificationsData, isLoading, error }}
-    >
+    <MetamaskNotificationsContext.Provider value={contextValue}>
       {children}
     </MetamaskNotificationsContext.Provider>
   );

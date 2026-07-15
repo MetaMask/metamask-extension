@@ -37,10 +37,22 @@ type IFrameMessage<TAction extends LedgerAction> = {
  * the keyring. In this case, the bridge is used to communicate with the
  * Offscreen Document. Inside the Offscreen document the ledger script
  * communicates directly with the Ledger device via WebHID.
+ *
+ * `isDeviceConnected` is intentionally omitted from the implemented shape: the
+ * offscreen bridge does not own HID state (the offscreen document does, and it
+ * already signals connect/disconnect via `OffscreenCommunicationEvents`).
+ * Forcing the bridge to declare a stale `boolean` here would mislead callers
+ * into reading it. If you need device-connection state, listen for
+ * `ledgerDeviceConnect` events on the background side.
+ *
+ * TODO(upstream): make `isDeviceConnected` optional on `LedgerBridge<T>` in
+ * `@metamask/eth-ledger-bridge-keyring` so this `Omit` can go away.
+ * Tracked separately.
  */
-export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridgeOptions> {
-  isDeviceConnected = false;
-
+export class LedgerOffscreenBridge implements Omit<
+  LedgerBridge<LedgerOffscreenBridgeOptions>,
+  'isDeviceConnected'
+> {
   init() {
     return Promise.resolve();
   }
@@ -187,6 +199,18 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
           } else {
             const error = response?.payload?.error;
             if (
+              error?.name === 'HardwareWalletError' &&
+              typeof error?.code === 'number'
+            ) {
+              reject(
+                new HardwareWalletError(error.message, {
+                  code: error.code,
+                  severity: error.severity,
+                  category: error.category,
+                  userMessage: error.userMessage,
+                }),
+              );
+            } else if (
               error &&
               error.name === 'HardwareWalletError' &&
               typeof error.code === 'number'

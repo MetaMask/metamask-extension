@@ -3,6 +3,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   isSolanaChainId,
   isBitcoinChainId,
+  isTronChainId,
   isNativeAddress,
   formatChainIdToCaip,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
@@ -111,9 +112,9 @@ import {
   getDefaultToToken,
   toBridgeToken,
   isNonEvmChain,
-  isTronChainId,
   getMaybeHexChainId,
   isSupportedBridgeChain,
+  getDefaultFromToken,
 } from './utils';
 import type {
   BridgeNetwork,
@@ -380,8 +381,10 @@ export const getFromToken = createSelector(
     );
     // If the user has not selected a token, return the native token for the selected network as default
     // If selected network is not supported by swap/bridge, return ETH (edge case)
-    const fromChainId = fromChain?.chainId ?? FALLBACK_CHAIN_ID;
-    return toBridgeToken(getNativeAssetForChainId(fromChainId));
+    if (!fromChain?.chainId) {
+      return toBridgeToken(getNativeAssetForChainId(FALLBACK_CHAIN_ID));
+    }
+    return getDefaultFromToken(fromChain.chainId);
   },
 );
 
@@ -1043,7 +1046,7 @@ export const computeQuoteValidationErrors = (
   const isNetworkFeeUnavailable = Boolean(
     quote &&
     srcChainId &&
-    isBitcoinChainId(srcChainId) &&
+    (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
     !isGasless &&
     (quote.totalNetworkFee?.amount === undefined ||
       new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),

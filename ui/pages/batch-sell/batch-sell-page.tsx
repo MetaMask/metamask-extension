@@ -53,7 +53,7 @@ const BatchSellPage = () => {
             startAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowLeft}
-                size={ButtonIconSize.Sm}
+                size={ButtonIconSize.Md}
                 ariaLabel={t('back')}
                 onClick={handleBack}
               />

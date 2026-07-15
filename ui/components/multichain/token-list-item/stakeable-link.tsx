@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -14,6 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -21,10 +22,10 @@ import {
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type StakeableLinkProps = {
@@ -34,9 +35,13 @@ type StakeableLinkProps = {
 
 export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   return (
     <button
@@ -49,26 +54,27 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
         const url = getPortfolioUrl(
           'stake',
           'ext_stake_button',
-          metaMetricsId,
+          analyticsId,
           isMetaMetricsEnabled === true,
           isMarketingEnabled === true,
         );
         global.platform.openTab({ url });
-        trackEvent({
-          event: MetaMetricsEventName.StakingEntryPointClicked,
-          category: MetaMetricsEventCategory.Tokens,
-          properties: {
-            location: 'Token List Item',
-            text: 'Stake',
-            // FIXME: This might not be a number for non-EVM accounts
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainId,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: symbol,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.StakingEntryPointClicked)
+            .addCategory(MetaMetricsEventCategory.Tokens)
+            .addProperties({
+              location: 'Token List Item',
+              text: 'Stake',
+              // FIXME: This might not be a number for non-EVM accounts
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: symbol,
+            })
+            .build(),
+        );
       }}
       className="cursor-pointer border-none p-0 m-0 bg-transparent"
     >

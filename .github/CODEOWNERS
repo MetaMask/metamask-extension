@@ -55,17 +55,19 @@ development/circular-deps.ts         @MetaMask/extension-security-team
 ui/components/component-library      @MetaMask/design-system-engineers
 tailwind.config.js                   @MetaMask/design-system-engineers
 
-# The Notifications team is responsible for code related to notifications
+# The Engagement team is responsible for code related to notifications.
 
-# Controllers
-**/controllers/metamask-notifications/**            @MetaMask/notifications
-**/controllers/push-platform-notifications/**       @MetaMask/notifications
+# Notifications - controllers and services
+app/scripts/controllers/push-notifications/**                     @MetaMask/engagement
+app/scripts/messenger-client-init/messengers/notifications/**    @MetaMask/engagement
+app/scripts/messenger-client-init/notifications/**               @MetaMask/engagement
 
-# UI
-**/metamask-notifications/**                        @MetaMask/notifications
-**/multichain/notification*/**                      @MetaMask/notifications
-**/pages/notification*/**                           @MetaMask/notifications
-**/utils/notification.util.ts                       @MetaMask/notifications
+# Notifications - UI
+**/metamask-notifications/**                                @MetaMask/engagement
+ui/pages/notifications/**                                         @MetaMask/engagement
+ui/pages/notification-details/**                                  @MetaMask/engagement
+ui/pages/notifications-settings/**                                @MetaMask/engagement
+ui/helpers/utils/notification.util.ts                             @MetaMask/engagement
 
 # Accounts team is responsible for code related with: Snap accounts,
 # Multichain accounts, Authentication, Backup and sync, Hardware Wallets
@@ -85,8 +87,17 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/bridge/**                                          @MetaMask/swaps-engineers
 **/bridge-status/**                                   @MetaMask/swaps-engineers
 
-# Ramps team to own code for the ramps folder
-**/ramps/**                                           @MetaMask/ramp
+# Money Movement team (formerly Ramps) to own code for the ramps folder
+ui/hooks/ramps/                                       @MetaMask/money-movement
+ui/selectors/rampsController/                         @MetaMask/money-movement
+ui/store/controller-actions/ramps-controller*         @MetaMask/money-movement
+app/scripts/messenger-client-init/ramps-*             @MetaMask/money-movement
+app/scripts/messenger-client-init/messengers/ramps-*  @MetaMask/money-movement
+test/e2e/tests/btc/mocks/ramps.ts                     @MetaMask/money-movement
+**/ramps/**                                           @MetaMask/money-movement
+
+# Product Safety Team
+**/product-safety/**                     @MetaMask/product-safety
 
 # Perps Team
 ui/pages/perps/ @MetaMask/perps
@@ -99,26 +110,38 @@ test/e2e/tests/perps/ @MetaMask/perps
 docs/perps/ @MetaMask/perps
 **/perps/** @MetaMask/perps
 
-# Snaps
-**/snaps/**                          @MetaMask/core-platform
-shared/constants/permissions.ts      @MetaMask/core-platform
-ui/helpers/utils/permission.js       @MetaMask/core-platform
-app/scripts/constants/snaps.ts       @MetaMask/core-platform
+# Core Platform
+**/snaps/**                                                @MetaMask/core-platform
+shared/constants/permissions.ts                            @MetaMask/core-platform
+ui/helpers/utils/permission.js                             @MetaMask/core-platform
+app/scripts/constants/snaps.ts                             @MetaMask/core-platform
+app/scripts/services/legacy-background-api-service.ts      @MetaMask/core-platform
+app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platform
 
-# Co-owned by Confirmations and Snaps
+
+# Co-owned by Extension Platform and Core Platform
+app/scripts/metamask-controller.js @MetaMask/extension-platform @MetaMask/core-platform
+
+# Co-owned by Confirmations and Core Platform
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Core Extension UX
 ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
+shared/lib/activity                             @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
+ui/pages/activity                               @MetaMask/core-extension-ux
 ui/pages/core                                   @MetaMask/core-extension-ux
+ui/pages/details                                @MetaMask/core-extension-ux
 ui/pages/permissions-connect/                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
 ui/components/app/transaction-list              @MetaMask/core-extension-ux
 ui/components/app/transaction-list-item-details @MetaMask/core-extension-ux
 ui/components/app/transaction-list-item         @MetaMask/core-extension-ux
+ui/pages/settings/notifications-tab/**          @MetaMask/core-extension-ux @MetaMask/engagement
+ui/components/multichain/notification*/**       @MetaMask/core-extension-ux @MetaMask/engagement
+ui/components/multichain/notifications*/**      @MetaMask/core-extension-ux @MetaMask/engagement
 
 # Co-owned by accounts and core-extension-ux
 ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/core-extension-ux
@@ -196,21 +219,21 @@ test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/
 test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform
 
 # Wallet Integrations
-app/scripts/lib/rpc-method-middleware                                 @MetaMask/wallet-integrations
-shared/lib/caip25-caveat-merger.ts                                    @MetaMask/wallet-integrations
-test/e2e/page-objects/benchmark                                       @MetaMask/wallet-integrations
-test/e2e/playwright/benchmark                                         @MetaMask/wallet-integrations
-test/e2e/flask/multichain-api                                         @MetaMask/wallet-integrations
+test/e2e/page-objects/benchmark                                       @MetaMask/core-platform
+test/e2e/playwright/benchmark                                         @MetaMask/core-platform
+app/scripts/lib/defi-referrals/createDefiReferralMiddleware.ts        @MetaMask/core-platform
+app/scripts/lib/rpc-method-middleware                                 @MetaMask/core-platform
+shared/lib/caip25-caveat-merger.ts                                    @MetaMask/core-platform
+test/e2e/flask/multichain-api                                         @MetaMask/core-platform
 # TODO CONSOLIDATE THE MIDDLEWARE BELOW INTO THE RPC-METHOD-MIDDLEWARE FOLDER
-app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/wallet-integrations
-app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/wallet-integrations
-app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
-app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations
-app/scripts/lib/createDefiReferralMiddleware.ts                @MetaMask/wallet-integrations
-app/scripts/lib/middleware/                                           @MetaMask/wallet-integrations
-app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/wallet-integrations
-app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/wallet-integrations
-app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/wallet-integrations
+app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/core-platform
+app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/core-platform
+app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/core-platform
+app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/core-platform
+app/scripts/lib/middleware/                                           @MetaMask/core-platform
+app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/core-platform
+app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/core-platform
+app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/core-platform
 
 # mUSD
 **/musd/** @MetaMask/earn
@@ -270,3 +293,19 @@ app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platfor
 ui/hooks/gator-permissions                           @MetaMask/delegation
 app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
 shared/lib/gator-permissions                         @MetaMask/delegation
+
+# Wallet Library initialization
+app/scripts/wallet-init/initialization*                                  @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/keyrings*                                        @MetaMask/accounts-engineers @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/remote-feature-flags*                            @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/approval-controller*            @MetaMask/confirmations
+app/scripts/wallet-init/instance-options/connectivity-controller*        @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/keyring-controller*             @MetaMask/accounts-engineers @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/network-controller*             @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/remote-feature-flag-controller* @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/storage-service*                @MetaMask/extension-platform @MetaMask/core-platform
+
+# Snapshots – no code owners assigned
+# This allows anyone with write access to approve changes to any *.snap files.
+# ⚠️ Note: Leaving this rule unassigned disables Code Owner review enforcement for snapshot files.
+**/*.snap

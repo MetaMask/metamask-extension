@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -8,17 +8,39 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getLatestMetricsEventTimestamp,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
+  getShowDeleteMetaMetricsDataModal,
 } from '../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
+import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import DeleteMetaMetricsDataButton from './delete-metametrics-data-button';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
   useDispatch: jest.fn(),
+}));
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  createMetaMetricsDataDeletionTask: jest.fn(),
 }));
 
 describe('DeleteMetaMetricsDataButton', () => {
@@ -27,12 +49,19 @@ describe('DeleteMetaMetricsDataButton', () => {
   const mockDispatch = jest.fn();
 
   beforeEach(() => {
+    mockTrackEvent.mockClear();
     useDispatchMock.mockReturnValue(mockDispatch);
+    (createMetaMetricsDataDeletionTask as jest.Mock).mockResolvedValue(
+      undefined,
+    );
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return 'fake-metrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -83,15 +112,18 @@ describe('DeleteMetaMetricsDataButton', () => {
       `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Policy. "`,
     );
   });
-  it('should enable the data deletion button when page mounts after a deletion task is performed and more data is recoded after the deletion', async () => {
+  it('should enable the data deletion button when page mounts after a deletion task is performed', async () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getMetaMetricsDataDeletionStatus) {
         return 'INITIALIZED';
       }
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
         return true;
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getOptedIn) {
+        return true;
+      }
+      if (selector === getAnalyticsId) {
         return 'fake-metrics-id';
       }
       return undefined;
@@ -112,10 +144,13 @@ describe('DeleteMetaMetricsDataButton', () => {
     );
   });
 
-  // if user does not opt in to participate in metrics or for backup and sync, metametricsId will not be created.
-  it('should disable the data deletion button when there is metametrics id not available', async () => {
+  // If the user does not opt in to metrics or backup and sync, analyticsId will not be created.
+  it('should disable the data deletion button when there is no analytics id available', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetaMetrics) {
+      if (selector === getCompletedMetaMetricsOnboarding) {
+        return true;
+      }
+      if (selector === getOptedIn) {
         return false;
       }
       return undefined;
@@ -141,10 +176,13 @@ describe('DeleteMetaMetricsDataButton', () => {
     );
   });
 
-  // particilapteInMetrics will be false before the deletion is performed, this way no further data will be recorded after deletion.
-  it('should disable the data deletion button after a deletion task is performed and no data is recoded after the deletion', async () => {
+  it('should disable the data deletion button after a deletion task is performed this session', async () => {
+    let showDeleteModal = true;
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getMetaMetricsId) {
+      if (selector === getShowDeleteMetaMetricsDataModal) {
+        return showDeleteModal;
+      }
+      if (selector === getAnalyticsId) {
         return 'fake-metrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -153,52 +191,30 @@ describe('DeleteMetaMetricsDataButton', () => {
       if (selector === getMetaMetricsDataDeletionTimestamp) {
         return 1717779342113;
       }
-      if (selector === getLatestMetricsEventTimestamp) {
-        return 1717779342110;
+      if (selector === getCompletedMetaMetricsOnboarding) {
+        return true;
+      }
+      if (selector === getOptedIn) {
+        return true;
       }
       return undefined;
     });
     const store = configureStore({});
-    const { getByRole, container } = renderWithProvider(
+    const { getByRole, getByTestId, rerender, container } = renderWithProvider(
       <DeleteMetaMetricsDataButton />,
       store,
     );
-    expect(
-      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
-    ).toBeDisabled();
-    expect(
-      container.querySelector('.settings-page__content-description')
-        ?.textContent,
-    ).toMatchInlineSnapshot(
-      `" You initiated deletion on 7/06/2024. This process can take up to 30 days. View the Privacy Policy. "`,
-    );
-  });
 
-  // particilapteInMetrics will be false before the deletion is performed, this way no further data will be recorded after deletion.
-  it('should disable the data deletion button after a deletion task is performed and no data is recoded after the deletion', async () => {
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getMetaMetricsId) {
-        return 'fake-metrics-id';
-      }
-      if (selector === getMetaMetricsDataDeletionStatus) {
-        return 'INITIALIZED';
-      }
-      if (selector === getMetaMetricsDataDeletionTimestamp) {
-        return 1717779342113;
-      }
-      if (selector === getLatestMetricsEventTimestamp) {
-        return 1717779342110;
-      }
-      return undefined;
+    fireEvent.click(getByTestId('clear-metametrics-data'));
+
+    showDeleteModal = false;
+    rerender(<DeleteMetaMetricsDataButton />);
+
+    await waitFor(() => {
+      expect(
+        getByRole('button', { name: messages.deleteMetaMetricsData.message }),
+      ).toBeDisabled();
     });
-    const store = configureStore({});
-    const { getByRole, container } = renderWithProvider(
-      <DeleteMetaMetricsDataButton />,
-      store,
-    );
-    expect(
-      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
-    ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,

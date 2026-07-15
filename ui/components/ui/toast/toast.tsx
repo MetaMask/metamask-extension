@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type CSSProperties } from 'react';
 import { toast, ToastBar, Toaster as ToasterBase } from 'react-hot-toast';
 import {
   ButtonIcon,
@@ -11,7 +11,7 @@ import {
 } from '@metamask/design-system-react';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { StatusIcon } from '../icon/status-icon';
+import { StatusIcon } from '../status-icon/status-icon';
 
 export { toast } from 'react-hot-toast';
 
@@ -33,7 +33,8 @@ export function Toaster() {
       position="bottom-center"
       containerClassName="toast-container"
       containerStyle={{
-        display: 'var(--toast-display, flex)',
+        visibility:
+          'var(--toast-visibility, visible)' as CSSProperties['visibility'],
         bottom: 'var(--toaster-bottom-offset, 16px)',
       }}
       toastOptions={{
@@ -90,7 +91,7 @@ export const ToastContent = ({
   return (
     <div data-testid={dataTestId}>
       <div className="flex min-w-0 flex-col">
-        <p className="text-m-body-md font-bold">{title}</p>
+        <p className="text-m-body-md">{title}</p>
 
         {description && (
           <p className="mt-1 text-s-body-sm text-text-alternative">

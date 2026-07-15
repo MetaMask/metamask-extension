@@ -4,6 +4,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
+import { ConvertAgainButton } from '../components/convert-again-button';
 import { SwapAgainButton } from '../components/swap-again-button';
 import { MetadataSection, TokensSection } from '../components/sections';
 
@@ -41,12 +42,16 @@ export function SwapDetails({
         </Section>
       </div>
       <Footer>
-        <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
+        <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
 
-        <SwapAgainButton
-          sourceToken={item.data.sourceToken}
-          destinationToken={item.data.destinationToken}
-        />
+        {item.type === 'convert' ? (
+          <ConvertAgainButton sourceToken={item.data.sourceToken} />
+        ) : (
+          <SwapAgainButton
+            sourceToken={item.data.sourceToken}
+            destinationToken={item.data.destinationToken}
+          />
+        )}
       </Footer>
     </div>
   );

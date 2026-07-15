@@ -62,12 +62,6 @@
     "^ background; v popup": {},
     "wait-on>axios": {
       "globals": {
-        "Buffer": false,
-        "Buffer.alloc": true,
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true,
         "postMessage": true,
         "fetch": true,
         "Request": true,
@@ -146,7 +140,7 @@
         "fetch": true
       }
     },
-    "react-beautiful-dnd": {
+    "@hello-pangea/dnd": {
       "globals": {
         "addEventListener": true,
         "removeEventListener": true
@@ -245,7 +239,21 @@
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "document": false,
-        "document.visibilityState": true,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
+    "@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
         "addEventListener": false
       }
     },
@@ -270,11 +278,28 @@
         "importScripts": false
       }
     },
-    "@metamask/assets-controllers>@tanstack/query-core": {
+    "@metamask/mobile-wallet-protocol-core>centrifuge": {
       "globals": {
+        "AbortController": false,
+        "Event": false,
+        "EventSource": false,
+        "EventTarget": false,
+        "MessageEvent": false,
+        "ReadableStream": false,
+        "SockJS": false,
+        "SuppressedError": false,
+        "URL": false,
+        "WebTransport": false,
+        "console": false,
+        "console.warn": true,
         "document": false,
-        "document.visibilityState": true,
-        "addEventListener": false
+        "fetch": false,
+        "localStorage": false
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>zod": {
+      "globals": {
+        "__zod_globalRegistry": "write"
       }
     }
   }

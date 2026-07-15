@@ -8,6 +8,7 @@ import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 import useMultichainAssetsRatesPolling from '../hooks/useMultichainAssetsRatesPolling';
 import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
+import { useArcDefaultTokens } from '../hooks/useArcDefaultTokens';
 
 // Calls all legacy polling hooks unconditionally. Rendered only when
 // assets-unify-state is disabled so that the hooks always execute in the
@@ -28,6 +29,7 @@ const AssetsControllerPolling = ({ children }: { children: ReactNode }) => {
   useTokenListPolling();
   useDeFiPolling();
   useStaticTokensPollingHook();
+  useArcDefaultTokens();
 
   return <>{children}</>;
 };

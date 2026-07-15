@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Modal, { ModalContent } from '../../modal';
+import { I18nContext } from '../../../../contexts/i18n';
 
 export default class ConfirmResetAccount extends PureComponent {
   static propTypes = {
@@ -8,16 +9,14 @@ export default class ConfirmResetAccount extends PureComponent {
     resetAccount: PropTypes.func.isRequired,
   };
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+  static contextType = I18nContext;
 
   handleReset = () => {
     this.props.resetAccount().then(() => this.props.hideModal());
   };
 
   render() {
-    const { t } = this.context;
+    const t = this.context;
 
     return (
       <Modal

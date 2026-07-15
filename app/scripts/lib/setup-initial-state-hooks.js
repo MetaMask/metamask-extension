@@ -64,10 +64,13 @@ export const persistenceManager = new PersistenceManager({ localStore })
 /**
  * Get the persisted wallet state.
  *
+ * @param options - Options for retrieving persisted state.
+ * @param options.reportErrors - Whether read errors should be reported to Sentry.
  * @returns The persisted wallet state.
  */
-globalThis.stateHooks.getPersistedState = async function () {
-  return await persistenceManager.get({ validateVault: false });
+globalThis.stateHooks.getPersistedState = async function (options = {}) {
+  const { reportErrors = true } = options;
+  return await persistenceManager.get({ validateVault: false, reportErrors });
 };
 
 /**

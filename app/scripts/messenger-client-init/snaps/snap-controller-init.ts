@@ -15,15 +15,7 @@ import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-
-// Copied from `@metamask/snaps-controllers`, since it is not exported.
-type TrackingEventPayload = {
-  event: string;
-  category: string;
-  properties: Record<string, Json | undefined>;
-};
-
-type TrackEventHook = (event: TrackingEventPayload) => void;
+import { getClientConfig } from './utils';
 
 /**
  * Initialize the Snap controller.
@@ -120,6 +112,8 @@ export const SnapControllerInit: MessengerClientInitFunction<
       forcePreinstalledSnaps,
     },
 
+    clientConfig: getClientConfig(),
+
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected
     // type.
     // TODO: Look into the type mismatch.
@@ -131,14 +125,6 @@ export const SnapControllerInit: MessengerClientInitFunction<
     getFeatureFlags,
 
     ensureOnboardingComplete,
-
-    // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
-    // properties, but `MetaMetricsEventPayload` uses `Json`, even though
-    // `undefined` is supported.
-    trackEvent: initMessenger.call.bind(
-      initMessenger,
-      'MetaMetricsController:trackEvent',
-    ) as unknown as TrackEventHook,
   });
 
   initMessenger.subscribe('KeyringController:lock', () => {

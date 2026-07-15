@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  FeatureId,
   formatChainIdToCaip,
   GenericQuoteRequest,
   getNativeAssetForChainId,
@@ -8,6 +9,7 @@ import {
 } from '@metamask/bridge-controller';
 import { parseCaipChainId } from '@metamask/utils';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
@@ -19,6 +21,7 @@ import {
 } from '../../ducks/bridge/selectors';
 import {
   resetInputFields,
+  setBridgeLocation,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
@@ -61,7 +64,7 @@ const useBridging = () => {
    */
   const openBridgeExperience = useCallback(
     (
-      location: MetaMetricsSwapsEventSource | 'Carousel',
+      location: MetaMetricsSwapsEventSource,
       sourceToken?: {
         symbol: string;
         address: string;
@@ -76,6 +79,7 @@ const useBridging = () => {
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
+      dispatch(setBridgeLocation(location));
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
           location: location as never,
@@ -85,6 +89,11 @@ const useBridging = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
         }),
       );
 

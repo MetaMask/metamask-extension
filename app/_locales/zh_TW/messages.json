@@ -30,9 +30,6 @@
   "activity": {
     "message": "交易紀錄"
   },
-  "addAcquiredTokens": {
-    "message": "將您已經擁有的代幣顯示於 MetaMask"
-  },
   "addAlias": {
     "message": "新增化名"
   },
@@ -278,9 +275,6 @@
   "currentExtension": {
     "message": "目前擴充功能頁面"
   },
-  "customToken": {
-    "message": "自訂代幣"
-  },
   "decimal": {
     "message": "小數點位數"
   },
@@ -496,9 +490,6 @@
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
   },
-  "importTokensCamelCase": {
-    "message": "Import Tokens"
-  },
   "imported": {
     "message": "已匯入私鑰",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -625,9 +616,6 @@
     "message": "驗證網路的詳細資料",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mustSelectOne": {
-    "message": "必須選擇至少 1 代幣。"
-  },
   "name": {
     "message": "名稱"
   },
@@ -690,9 +678,6 @@
   },
   "notCurrentAccount": {
     "message": "這是正確的帳戶嗎？它與您的錢包目前所選擇的帳戶不同"
-  },
-  "notEnoughGas": {
-    "message": "Gas 不夠"
   },
   "ofTextNofM": {
     "message": "之"
@@ -952,9 +937,6 @@
   },
   "tokenContractAddress": {
     "message": "代幣合約位址"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "需要填入代幣的小數位數。"
   },
   "tokenSymbol": {
     "message": "代幣代號"

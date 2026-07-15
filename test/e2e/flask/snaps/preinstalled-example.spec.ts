@@ -4,11 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
-import {
-  DAPP_PATH,
-  MOCK_META_METRICS_ID,
-  WINDOW_TITLES,
-} from '../../constants';
+import { DAPP_PATH, MOCK_ANALYTICS_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
@@ -92,7 +88,7 @@ describe('Preinstalled example Snap', function () {
           2,
         );
         await testSnaps.checkMessageResultSpan(
-          'rpcResultSpan',
+          'preinstalledResultSpan',
           jsonTextValidation,
         );
       },
@@ -138,8 +134,9 @@ describe('Preinstalled example Snap', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -190,8 +187,9 @@ describe('Preinstalled example Snap', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -238,8 +236,9 @@ describe('Preinstalled example Snap', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -281,6 +280,34 @@ describe('Preinstalled example Snap', function () {
         assert.equal(json.contexts.trace.op, 'custom');
         assert.equal(json.contexts.trace.origin, 'manual');
         assert.equal(json.transaction, 'Test Snap Trace');
+      },
+    );
+  });
+
+  it('can access the messenger', async function () {
+    await withFixtures(
+      {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockTestSnapsSite,
+      },
+      async ({ driver }) => {
+        await login(driver);
+
+        const testSnaps = new TestSnaps(driver);
+        // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
+        // So instead, we go to the real URL and we use a proxy it so the responses come from the localhost test-snap server.
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+
+        await testSnaps.scrollAndClickButton('messengerCallButton');
+
+        await testSnaps.checkMessageResultSpan(
+          'preinstalledResultSpan',
+          'false',
+        );
       },
     );
   });

@@ -102,7 +102,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                   data-testid="header-info__account-details-button"
                 >
                   <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/info.svg');"
                   />
                 </button>
@@ -121,11 +121,13 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Signature request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             Review request details before you confirm.
           </p>
@@ -207,6 +209,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  data-testid="confirmation__details-origin"
                 >
                   metamask.github.io
                 </p>
@@ -226,7 +229,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
@@ -237,7 +240,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/collapse.svg');"
                 />
               </button>
@@ -314,11 +317,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             This site wants permission to spend your tokens.
           </p>
@@ -585,10 +590,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                   style="border-width: 0px;"
                 >
-                  <img
-                    alt="Goerli logo"
-                    class="mm-avatar-network__network-image"
-                  />
+                  G
                 </div>
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -637,6 +639,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  data-testid="confirmation__details-origin"
                 >
                   metamask.github.io
                 </p>
@@ -713,7 +716,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
@@ -724,7 +727,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/expand.svg');"
                 />
               </button>
@@ -791,11 +794,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             This site wants permission to spend your tokens.
           </p>
@@ -1009,10 +1014,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                   style="border-width: 0px;"
                 >
-                  <img
-                    alt="Goerli logo"
-                    class="mm-avatar-network__network-image"
-                  />
+                  G
                 </div>
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -1061,6 +1063,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  data-testid="confirmation__details-origin"
                 >
                   metamask.github.io
                 </p>
@@ -1137,7 +1140,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
@@ -1148,7 +1151,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/expand.svg');"
                 />
               </button>
@@ -1298,7 +1301,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   data-testid="header-info__account-details-button"
                 >
                   <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/info.svg');"
                   />
                 </button>
@@ -1317,11 +1320,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Signature request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             Review request details before you confirm.
           </p>
@@ -1404,6 +1409,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  data-testid="confirmation__details-origin"
                 >
                   metamask.github.io
                 </p>
@@ -1480,7 +1486,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
@@ -1523,6 +1529,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                    data-testid="confirmation__message-primary-type"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2060,11 +2067,13 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             This site wants permission to spend your tokens.
           </p>
@@ -2323,6 +2332,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  data-testid="confirmation__details-origin"
                 >
                   metamask.github.io
                 </p>
@@ -2399,7 +2409,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
@@ -2410,7 +2420,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/expand.svg');"
                 />
               </button>
@@ -2477,11 +2487,13 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Signature request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             Review request details before you confirm.
           </p>
@@ -2564,6 +2576,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  data-testid="confirmation__details-origin"
                 >
                   metamask.github.io
                 </p>
@@ -2640,7 +2653,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
@@ -2651,7 +2664,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/collapse.svg');"
                 />
               </button>
@@ -2694,6 +2707,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                    data-testid="confirmation__message-primary-type"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -3179,31 +3193,68 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              aria-hidden="true"
+              class="relative overflow-hidden rounded"
+              data-testid="confirm-title-skeleton"
               style="height: 24px; width: 200px;"
+            >
+              <div
+                aria-hidden="true"
+                class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+              />
+            </div>
+          </div>
+          <div
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 60px; width: 60px; margin-top: 32px; margin-bottom: 10px; border-radius: 50%; justify-self: center; align-self: center;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
             />
           </div>
           <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="margin-top: 32px; margin-bottom: 10px; border-radius: 50%; justify-self: center; align-self: center; height: 60px; width: 60px;"
-          />
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 32px; width: 200px; margin-bottom: 20px; justify-self: center; align-self: center;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
           <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="margin-bottom: 20px; justify-self: center; align-self: center; height: 32px; width: 200px;"
-          />
-          <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
             data-testid="confirmation__info_skeleton"
-            style="margin-bottom: 12px; height: 72px; width: 100%;"
-          />
+            style="height: 72px; width: 100%; margin-bottom: 12px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
           <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="margin-bottom: 12px; height: 72px; width: 100%;"
-          />
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 72px; width: 100%; margin-bottom: 12px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
           <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="margin-bottom: 12px; height: 72px; width: 100%;"
-          />
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 72px; width: 100%; margin-bottom: 12px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -3277,7 +3328,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   data-testid="header-info__account-details-button"
                 >
                   <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/info.svg');"
                   />
                 </button>
@@ -3296,11 +3347,13 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         >
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            data-testid="confirm-title-text"
           >
             Signature request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+            data-testid="confirm-title-description"
           >
             Review request details before you confirm.
           </p>
@@ -3386,6 +3439,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  data-testid="confirmation__details-origin"
                 >
                   metamask.github.io
                 </p>
@@ -3462,7 +3516,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
@@ -3505,6 +3559,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                    data-testid="confirmation__message-primary-type"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"

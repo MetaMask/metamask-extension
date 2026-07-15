@@ -55,6 +55,8 @@ module.exports = {
     // Intentionally empty
   },
 
+  trackAnalyticsEvent: () => Promise.resolve(),
+
   decodeTransactionData: async (request) => {
     const { contractAddress } = request;
 

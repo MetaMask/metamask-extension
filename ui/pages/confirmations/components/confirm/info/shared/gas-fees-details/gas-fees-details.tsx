@@ -1,11 +1,15 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionContainerType,
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../../../../../../components/component-library';
 import {
-  AlignItems,
-  Display,
-} from '../../../../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -19,6 +23,8 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useGasSponsorshipPreference } from '../../../../../hooks/gas/useGasSponsorshipPreference';
 
 export const GasFeesDetails = (): JSX.Element | null => {
   const t = useI18nContext();
@@ -32,6 +38,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
   const {
+    addedProtectionFeeFiat,
     estimatedFeeFiat,
     estimatedFeeFiatWith18SignificantDigits,
     estimatedFeeNative,
@@ -46,6 +53,23 @@ export const GasFeesDetails = (): JSX.Element | null => {
 
   const estimationFailed = useEstimationFailed();
 
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
+    transactionMeta?.chainId,
+  );
+
+  const isSponsorshipEligible =
+    isGaslessSupported &&
+    transactionMeta?.isGasFeeSponsored &&
+    transactionMeta?.type !== TransactionType.revokeDelegation;
+
+  const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;
+  const showAddedProtectionFee = Boolean(
+    transactionMeta?.containerTypes?.includes(
+      TransactionContainerType.EnforcedSimulations,
+    ),
+  );
+
   if (!transactionMeta?.txParams) {
     return null;
   }
@@ -53,22 +77,28 @@ export const GasFeesDetails = (): JSX.Element | null => {
   return (
     <>
       <EditGasFeesRow
+        addedProtectionFeeFiat={addedProtectionFeeFiat}
+        showAddedProtectionFee={showAddedProtectionFee}
         fiatFee={estimatedFeeFiat}
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
       />
       {supportsEIP1559 &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored && (
+        !isGasFeeSponsored && (
           <ConfirmInfoAlertRow
             alertKey={RowAlertKey.Speed}
             data-testid="gas-fee-details-speed"
             label={t('speed')}
             ownerId={transactionMeta.id}
           >
-            <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+            >
               <GasTiming
                 chainId={transactionMeta.chainId}
+                networkClientId={transactionMeta.networkClientId}
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
                 userFeeLevelOverride={transactionMeta.userFeeLevel}
@@ -78,7 +108,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
         )}
       {showAdvancedDetails &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored &&
+        !isGasFeeSponsored &&
         !estimationFailed && (
           <GasFeesRow
             data-testid="gas-fee-details-max-fee"

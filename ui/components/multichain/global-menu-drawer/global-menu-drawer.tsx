@@ -49,13 +49,16 @@ export const GlobalMenuDrawer = ({
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+  const usePortal = isFullscreen || isSidepanel;
   const [drawerStyle, setDrawerStyle] = useState<React.CSSProperties>({});
   const [backdropStyle, setBackdropStyle] = useState<React.CSSProperties>({});
   const [containerElement, setContainerElement] = useState<HTMLElement | null>(
     null,
   );
   const [contentTopOffset, setContentTopOffset] = useState(0);
-  const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(null);
+  const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(() =>
+    isOpen && !usePortal ? 'open' : null,
+  );
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const enterFrameRef = useRef<number | null>(null);
   const wasOpenRef = useRef(false);
@@ -65,12 +68,11 @@ export const GlobalMenuDrawer = ({
   const appContainerRef = useRef<HTMLElement | null>(null);
   const resizeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  const usePortal = isFullscreen || isSidepanel;
   const hasPosition = Object.keys(drawerStyle).length > 0;
   const readyToShow = isOpen && (!usePortal || hasPosition);
 
   // Open drawer: use entering transition only when going from closed to open (hamburger click). When mounting or returning from a page with drawerOpen in URL, show immediately.
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (readyToShow) {
       wasOpenRef.current = true;
       if (exitTimeoutRef.current !== null) {
@@ -362,7 +364,7 @@ export const GlobalMenuDrawer = ({
               <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
-                  size={ButtonIconSize.Sm}
+                  size={ButtonIconSize.Md}
                   ariaLabel={title || t('close')}
                   onClick={onClose}
                   data-testid="drawer-close-button"

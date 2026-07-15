@@ -55,7 +55,6 @@ describe('Swap tests', function (this: Suite) {
           ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           refreshRate: 30000,
         },
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -138,7 +137,6 @@ describe('Swap tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -258,8 +256,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved token alert modal and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -353,8 +349,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved all confirmation alerts and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -436,8 +430,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         await bridgePage.approveModal();
         console.log('Approved all alerts and submitted swap');
-
-        await bridgePage.dismissStatusPageIfPresent();
 
         await verifySubmittedSwapTransaction({
           driver,

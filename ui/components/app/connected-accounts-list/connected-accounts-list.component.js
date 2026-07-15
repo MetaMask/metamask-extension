@@ -11,13 +11,12 @@ import {
   Text,
 } from '../../component-library';
 import { MenuItem } from '../../ui/menu';
+import { I18nContext } from '../../../contexts/i18n';
 import ConnectedAccountsListItem from './connected-accounts-list-item';
 import ConnectedAccountsListOptions from './connected-accounts-list-options';
 
 export default class ConnectedAccountsList extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func.isRequired,
-  };
+  static contextType = I18nContext;
 
   static defaultProps = {
     accountToConnect: null,
@@ -87,7 +86,7 @@ export default class ConnectedAccountsList extends PureComponent {
 
   renderUnconnectedAccount() {
     const { accountToConnect, connectAccount } = this.props;
-    const { t } = this.context;
+    const t = this.context;
 
     if (!accountToConnect) {
       return null;
@@ -121,7 +120,7 @@ export default class ConnectedAccountsList extends PureComponent {
 
   renderListItemOptions(address) {
     const { accountWithOptionsShown } = this.state;
-    const { t } = this.context;
+    const t = this.context;
 
     return (
       <ConnectedAccountsListOptions
@@ -140,7 +139,7 @@ export default class ConnectedAccountsList extends PureComponent {
   }
 
   renderListItemAction(address) {
-    const { t } = this.context;
+    const t = this.context;
 
     return (
       <Text variant={TextVariant.bodyMd}>
@@ -158,7 +157,7 @@ export default class ConnectedAccountsList extends PureComponent {
   render() {
     const { connectedAccounts, selectedAddress, shouldRenderListOptions } =
       this.props;
-    const { t } = this.context;
+    const t = this.context;
 
     return (
       <>

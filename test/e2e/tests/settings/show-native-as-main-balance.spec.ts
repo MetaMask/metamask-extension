@@ -2,12 +2,16 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
+import {
+  getLocalhost25EthAssetsControllerPatch,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
@@ -56,6 +60,7 @@ describe('Settings: Show native token as main balance', function () {
         fixtures: new FixtureBuilderV2()
           .withConversionRateDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(getLocalhost25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -64,8 +69,8 @@ describe('Settings: Show native token as main balance', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenAmountIsDisplayed('25 ETH');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenAmountIsDisplayed('25 ETH');
       },
     );
   });
@@ -76,6 +81,7 @@ describe('Settings: Show native token as main balance', function () {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()
+          .withAssetsController(getMainnet25EthAssetsControllerPatch(1700))
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -98,8 +104,8 @@ describe('Settings: Show native token as main balance', function () {
         await closeSettings(driver);
 
         // assert amount displayed
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenFiatAmountIsDisplayed('$42,500.00');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenFiatAmountIsDisplayed('$42,500.00');
       },
     );
   });
@@ -110,6 +116,7 @@ describe('Settings: Show native token as main balance', function () {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()
+          .withAssetsController(getMainnet25EthAssetsControllerPatch(1700))
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {

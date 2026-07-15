@@ -4,6 +4,7 @@ import { startCase } from 'lodash';
 import {
   type QuoteMetadata,
   type QuoteResponse,
+  FeatureId,
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
 } from '@metamask/bridge-controller';
@@ -98,6 +99,8 @@ export const BridgeQuotesModal = ({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               gas_included_7702: Boolean(quote.quote?.gasIncluded7702),
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
             },
           ),
         );

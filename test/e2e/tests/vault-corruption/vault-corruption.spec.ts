@@ -160,7 +160,8 @@ describe('Vault Corruption', function () {
           driver,
           breakPrimaryDatabaseOnlyScript,
           {
-            participateInMetaMetrics: true,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           },
         );
 

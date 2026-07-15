@@ -44,11 +44,16 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Amount
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Amount
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -65,11 +70,16 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Transfer window
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Transfer window
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -150,7 +160,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
             style="cursor: pointer; position: static;"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
@@ -240,11 +250,16 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Streaming amount
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Streaming amount
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -266,11 +281,16 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Period
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Period
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -351,7 +371,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
             style="cursor: pointer; position: static;"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
@@ -441,11 +461,16 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Streaming amount
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Streaming amount
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -462,11 +487,16 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Period
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Period
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -547,7 +577,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
             style="cursor: pointer; position: static;"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
@@ -637,11 +667,16 @@ exports[`Permission List Item render ERC20 token permissions renders token appro
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Revoke token approvals
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Revoke token approvals
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -722,7 +757,7 @@ exports[`Permission List Item render ERC20 token permissions renders token appro
             style="cursor: pointer; position: static;"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
@@ -812,11 +847,16 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Amount
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Amount
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -833,11 +873,16 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Transfer window
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Transfer window
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -918,7 +963,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
             style="cursor: pointer; position: static;"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>
@@ -1008,11 +1053,16 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Streaming amount
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Streaming amount
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -1029,11 +1079,16 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         class="flex flex-row gap-4 justify-between mt-2"
         style="flex: 1; align-self: center;"
       >
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        <div
+          class="flex flex-row gap-1 items-center"
+          style="align-self: center;"
         >
-          Period
-        </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+          >
+            Period
+          </p>
+        </div>
         <div
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
@@ -1114,7 +1169,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
             style="cursor: pointer; position: static;"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/copy.svg');"
             />
           </button>

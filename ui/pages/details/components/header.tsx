@@ -25,7 +25,7 @@ function getTitleKey(item: ActivityListItem | undefined) {
 }
 
 function getDefinedArgs(...args: (string | undefined)[]) {
-  return args.filter((arg) => Boolean(arg));
+  return args.map((arg) => arg ?? '');
 }
 
 function getTitleArgs(item: ActivityListItem) {
@@ -36,7 +36,7 @@ function getTitleArgs(item: ActivityListItem) {
         item.data.destinationToken?.symbol,
       );
 
-      return args.length === 2 ? args : undefined;
+      return args.length === 2 && args.every(Boolean) ? args : undefined;
     }
     case 'convert': {
       return getDefinedArgs(
@@ -60,14 +60,15 @@ function getTitleArgs(item: ActivityListItem) {
     case 'claimMusdBonus':
     case 'deposit':
     case 'nftBuy':
-    case 'nftMint': {
+    case 'nftMint':
+    case 'nftSell': {
       return getDefinedArgs(item.data.token?.symbol);
     }
     case 'swapIncomplete': {
       return getDefinedArgs(item.data.sourceToken?.symbol);
     }
     default:
-      return [];
+      return [''];
   }
 }
 
@@ -75,7 +76,8 @@ export function Header({ item, onBack }: Props) {
   const t = useI18nContext();
   const titleKey = getTitleKey(item);
   const titleArgs = item ? getTitleArgs(item) : undefined;
-  const title = titleKey && titleArgs ? t(titleKey, titleArgs) : item?.type;
+  const title =
+    titleKey && titleArgs?.length ? t(titleKey, titleArgs) : item?.type;
 
   return (
     <HeaderBase

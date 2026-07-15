@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
 import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
@@ -60,11 +61,18 @@ export const MultichainAccountNetworkGroup = ({
   className,
 }: MultichainAccountNetworkGroupProps) => {
   // Fetch chain IDs from account group if groupId is provided
-  const accountGroupScopes = useSelector((state) =>
-    groupId
-      ? getInternalAccountListSpreadByScopesByGroupId(state, groupId)
-      : [],
+  const selectAccountGroupScopes = useCallback(
+    (
+      state: Parameters<
+        typeof getInternalAccountListSpreadByScopesByGroupId
+      >[0],
+    ) =>
+      groupId
+        ? getInternalAccountListSpreadByScopesByGroupId(state, groupId)
+        : [],
+    [groupId],
   );
+  const accountGroupScopes = useSelector(selectAccountGroupScopes, isEqual);
 
   const filteredChainIds = useMemo(() => {
     // If only filterChainIds is provided (no groupId), show those chains

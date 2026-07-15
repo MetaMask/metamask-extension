@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { isEqual, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
@@ -102,11 +102,11 @@ export function useTokensToSearch({
   tokenBucketPriority = TokenBucketPriority.owned,
 }) {
   const chainId = useSelector(getCurrentChainId);
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
+  const tokenConversionRates = useSelector(getTokenExchangeRates);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
-  const tokenList = useSelector(getTokenList, isEqual);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const tokenList = useSelector(getTokenList);
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
@@ -121,7 +121,7 @@ export function useTokensToSearch({
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
-  const swapsTokens = useSelector(getSwapsTokens, isEqual) || [];
+  const swapsTokens = useSelector(getSwapsTokens) || [];
 
   const tokensToSearch = swapsTokens.length
     ? swapsTokens

@@ -6,12 +6,14 @@ import React, {
   useLayoutEffect,
   useRef,
 } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
@@ -22,6 +24,11 @@ import {
   PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import {
+  formatPerpsFiatUniversal,
+  formatPerpsLiquidationPrice,
+} from '../utils/formatPerpsDisplayPrice';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -49,6 +56,7 @@ import {
   deriveTpslType,
   formatRoePercent,
   getPnlDisplayColor,
+  getPrivacyAwareColor,
 } from '../utils';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import {
@@ -110,6 +118,7 @@ export const UpdateTPSLModalContent = ({
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const { privacyMode } = useSelector(getPreferences);
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
@@ -600,6 +609,66 @@ export const UpdateTPSLModalContent = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+      {/* Price context — entry / current / liquidation, matches mobile PerpsTPSLView */}
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={1}
+        data-testid="perps-update-tpsl-price-info"
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-update-tpsl-entry-price"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsEntryPrice')}
+          </Text>
+          <SensitiveText
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            isHidden={privacyMode}
+            data-testid="perps-update-tpsl-entry-price-value"
+          >
+            {formatPerpsFiatUniversal(position.entryPrice)}
+          </SensitiveText>
+        </Box>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-update-tpsl-current-price"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsCurrentPrice')}
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            data-testid="perps-update-tpsl-current-price-value"
+          >
+            {formatPerpsFiatUniversal(currentPrice)}
+          </Text>
+        </Box>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-update-tpsl-liquidation-price"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsLiquidationPrice')}
+          </Text>
+          <SensitiveText
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            isHidden={privacyMode}
+            data-testid="perps-update-tpsl-liquidation-price-value"
+          >
+            {formatPerpsLiquidationPrice(position.liquidationPrice)}
+          </SensitiveText>
+        </Box>
+      </Box>
       {/* Take Profit */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text
@@ -712,16 +781,21 @@ export const UpdateTPSLModalContent = ({
             >
               {t('perpsEstimatedPnlAtTakeProfit')}
             </Text>
-            <Text
+            <SensitiveText
               variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
-              color={getPnlDisplayColor(estimatedPnlAtTp)}
+              color={getPrivacyAwareColor(
+                getPnlDisplayColor(estimatedPnlAtTp),
+                privacyMode,
+              )}
+              isHidden={privacyMode}
+              data-testid="perps-update-tpsl-estimated-tp-pnl-value"
             >
               {estimatedPnlAtTp >= 0 ? '+' : '-'}
               {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
                 ranges: PRICE_RANGES_MINIMAL_VIEW,
               })}
-            </Text>
+            </SensitiveText>
           </Box>
         )}
         {isTpInvalid && (
@@ -848,16 +922,21 @@ export const UpdateTPSLModalContent = ({
             >
               {t('perpsEstimatedPnlAtStopLoss')}
             </Text>
-            <Text
+            <SensitiveText
               variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
-              color={getPnlDisplayColor(estimatedPnlAtSl)}
+              color={getPrivacyAwareColor(
+                getPnlDisplayColor(estimatedPnlAtSl),
+                privacyMode,
+              )}
+              isHidden={privacyMode}
+              data-testid="perps-update-tpsl-estimated-sl-pnl-value"
             >
               {estimatedPnlAtSl >= 0 ? '+' : '-'}
               {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
                 ranges: PRICE_RANGES_MINIMAL_VIEW,
               })}
-            </Text>
+            </SensitiveText>
           </Box>
         )}
         {(isSlInvalid || isSlLiquidationInvalid) && (

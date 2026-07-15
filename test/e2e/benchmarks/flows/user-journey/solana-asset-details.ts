@@ -7,7 +7,7 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
@@ -55,18 +55,18 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
       async ({ driver }: { driver: Driver }) => {
         // Login flow
         await login(driver, { validateBalance: false });
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenListIsDisplayed();
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenListIsDisplayed();
 
-        await assetListPage.clickOnAsset('Solana');
+        await tokensTab.clickOnAsset('Solana');
         // Measure: Asset click to price chart loaded
         steps.push(
           await measureStepWithLongTasks(
             driver,
             'assetClickToPriceChart',
             async () => {
-              await assetListPage.checkPriceChartIsShown();
-              await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
+              await tokensTab.checkPriceChartIsShown();
+              await tokensTab.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
             },
           ),
         );

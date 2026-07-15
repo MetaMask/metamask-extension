@@ -8,9 +8,15 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
 import {
+  AvatarFavicon,
+  AvatarFaviconSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
@@ -28,16 +34,6 @@ import {
   setPermittedAccounts,
   setPermittedChains,
 } from '../../../../store/actions';
-import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  Button,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  ButtonSize,
-  ButtonVariant,
-  IconName,
-} from '../../../component-library';
 import { ToastContainer, Toast } from '../../../multichain/toast/toast';
 import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
@@ -449,10 +445,10 @@ export const MultichainReviewPermissions = () => {
                 ) : null}
                 <Button
                   size={ButtonSize.Lg}
-                  block
+                  isFullWidth
                   variant={ButtonVariant.Secondary}
                   startIconName={IconName.Logout}
-                  danger
+                  isDanger
                   onClick={handleDisconnectClick}
                   data-test-id="disconnect-all"
                 >
@@ -462,16 +458,17 @@ export const MultichainReviewPermissions = () => {
             ) : (
               <>
                 {connectedAccountGroups.length > 0 ? (
-                  <ButtonPrimary
-                    size={ButtonPrimarySize.Lg}
-                    block
+                  <Button
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    isFullWidth
                     data-test-id="no-connections-button"
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={requestAccountsAndChainPermissions}
                   >
                     {t('connectAccounts')}
-                  </ButtonPrimary>
+                  </Button>
                 ) : null}
               </>
             )}

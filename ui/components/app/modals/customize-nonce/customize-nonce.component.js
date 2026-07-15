@@ -59,7 +59,7 @@ const CustomizeNonce = ({
           <ButtonIcon
             iconName={IconName.Close}
             className="customize-nonce-modal__close"
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('close')}
             onClick={hideModal}
           />

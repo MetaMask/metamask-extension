@@ -13,7 +13,6 @@ import type {
 } from '@metamask/assets-controllers';
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
-import { debounce } from 'lodash';
 import {
   Modal,
   ModalContent,
@@ -34,6 +33,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useDeferredValue } from '../../../../hooks/useDeferredValue';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
@@ -45,7 +45,9 @@ import {
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import {
+  ARC_USDC_TOKEN_ADDRESS,
   CHAIN_ID_TOKEN_IMAGE_MAP,
+  CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
@@ -141,29 +143,17 @@ export function AssetPickerModal({
 }: AssetPickerModalProps) {
   const t = useI18nContext();
   const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
-  const debouncedSetSearchQuery = useMemo(
-    () =>
-      debounce((value: string) => {
-        setDebouncedSearchQuery(value);
-      }, 200),
-    [],
-  );
+  const deferredSearchQuery = useDeferredValue(searchQuery);
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Cleanup abort controller and debounce on unmount
+  // Cleanup abort controller on unmount
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
-      debouncedSetSearchQuery.cancel();
     };
-  }, [debouncedSetSearchQuery]);
-
-  useEffect(() => {
-    debouncedSetSearchQuery(searchQuery);
-  }, [searchQuery, debouncedSetSearchQuery]);
+  }, []);
 
   const handleAssetChange = useCallback(
     (newAsset: Parameters<typeof onAssetChange>[0]) => {
@@ -254,13 +244,27 @@ export function AssetPickerModal({
           string?: string;
         })
     > {
+      // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
+      // display duplicate. Hide it from the picker so only the native token is
+      // selectable; native tokens (empty/zero address) are never affected.
+      const addToken = (
+        symbol: string,
+        address?: null | string,
+        tokenChainId?: string,
+      ) =>
+        shouldAddToken(symbol, address, tokenChainId) &&
+        !(
+          tokenChainId === CHAIN_IDS.ARC &&
+          (address ?? '').toLowerCase() === ARC_USDC_TOKEN_ADDRESS
+        );
+
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
         // Filter out Tron special assets (resources, staking state, etc.)
         if (isTronSpecialAsset(token.assetId)) {
           continue;
         }
-        if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+        if (addToken(token.symbol, token.address, token.chainId)) {
           yield token.isNative
             ? {
                 ...token,
@@ -308,7 +312,7 @@ export function AssetPickerModal({
       }
 
       for (const token of allDetectedTokens) {
-        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
+        if (addToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
       }
@@ -324,16 +328,13 @@ export function AssetPickerModal({
       for (const topToken of topTokens ?? []) {
         const token: TokenListToken =
           evmTokenMetadataByAddress?.[topToken.address];
-        if (
-          token &&
-          shouldAddToken(token.symbol, token.address, currentChainId)
-        ) {
+        if (token && addToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
       }
 
       for (const token of Object.values(evmTokenMetadataByAddress)) {
-        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
+        if (addToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
       }
@@ -370,7 +371,7 @@ export function AssetPickerModal({
       address?: string | null,
       tokenChainId?: string,
     ) => {
-      const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
+      const trimmedSearchQuery = deferredSearchQuery.trim().toLowerCase();
       const isSymbolMatch = symbol?.toLowerCase().includes(trimmedSearchQuery);
       // only check for matching address if search term has 6 characters or more
       // users are expected to copy and paste addresses instead of typing them
@@ -441,7 +442,7 @@ export function AssetPickerModal({
     return filteredTokens;
   }, [
     currentChainId,
-    debouncedSearchQuery,
+    deferredSearchQuery,
     isMultiselectEnabled,
     selectedChainIds,
     selectedNetwork?.chainId,

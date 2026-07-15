@@ -10,6 +10,7 @@ import {
 } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
+import { ALL_METAMASK_FACILITATOR_ADDRESSES } from '../../../../../../../../shared/lib/gator-permissions';
 import { PermissionDetailRenderer } from './permission-detail-renderer';
 
 jest.mock(
@@ -518,6 +519,32 @@ describe('PermissionDetailRenderer', () => {
         });
       });
     }
+
+    it('shows MetaMask facilitator instead of addresses when all redeemers are facilitator addresses', async () => {
+      renderPermissionDetail({
+        permission: ERC20_STREAM_PERMISSION,
+        rules: [
+          {
+            type: 'redeemer',
+            data: { addresses: [ALL_METAMASK_FACILITATOR_ADDRESSES[0]] },
+          },
+        ],
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(messages.redeemers.message),
+        ).toBeInTheDocument();
+      });
+      expect(
+        screen.getByText(messages.gatorPermissionsMetaMaskFacilitator.message),
+      ).toBeInTheDocument();
+      expect(
+        document.querySelector(
+          '[data-original-title="May only be redeemed by the MetaMask x402 facilitator"]',
+        ),
+      ).not.toBeInTheDocument();
+    });
 
     it('uses the Snap-specific request-from tooltip when origin is a Snap id', async () => {
       renderPermissionDetail({

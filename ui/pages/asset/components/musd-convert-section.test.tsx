@@ -36,9 +36,10 @@ jest.mock('../../../selectors/musd', () => {
   };
 });
 
+const MOCK_NETWORK_CONFIGS = {};
 jest.mock('../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../selectors/multichain'),
-  getMultichainNetworkConfigurationsByChainId: () => ({}),
+  getMultichainNetworkConfigurationsByChainId: () => MOCK_NETWORK_CONFIGS,
   getImageForChainId: () => '',
 }));
 

@@ -41,7 +41,7 @@ import {
 } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
-import { formatAmount } from '../../../pages/confirmations/components/simulation-details/formatAmount';
+import { formatAmount } from '../../../../shared/lib/format-amount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 
 type MultichainBridgeTransactionListItemProps = {

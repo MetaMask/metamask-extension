@@ -58,6 +58,11 @@ import ShieldEntryModal from '../../components/app/shield-entry-modal';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
+import {
+  transitionBack,
+  transitionForward,
+} from '../../components/ui/transition';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import TabBar from './tab-bar';
 import {
   SETTINGS_ROOT_SECTIONS,
@@ -96,6 +101,7 @@ const clearReactInternalReferences = (element: Element) => {
 const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const t = useSettingsI18n();
   const normalizedPathname = normalizeSettingsPath(location.pathname);
   const meta = getSettingsRouteMeta(normalizedPathname);
@@ -170,6 +176,15 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   );
 
   const currentPageLabelKey = meta?.labelKey;
+
+  const handleClose = useCallback(() => {
+    if (isOnSettingsRoot) {
+      runCloseTransition(() => navigate(backRoute));
+      return;
+    }
+
+    transitionBack(() => navigate(backRoute));
+  }, [backRoute, isOnSettingsRoot, navigate, runCloseTransition]);
 
   // Header: "Settings" on fullscreen; tab or sub-page name on popup/sidepanel
   const headerTitle =
@@ -267,8 +282,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         <SettingsSearchResults
           results={searchResults}
           onClickResult={(item) => {
-            navigate(`${item.tabRoute}#${item.settingId}`);
-            handleCloseSearch();
+            transitionForward(() => {
+              navigate(`${item.tabRoute}#${item.settingId}`);
+              handleCloseSearch();
+            });
           }}
         />
       </Box>
@@ -375,6 +392,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                       <Link
                         to={crumb.path}
                         className="flex items-center gap-2 cursor-pointer"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          transitionBack(() => navigate(crumb.path));
+                        }}
                       >
                         {isFirst && (
                           <Icon
@@ -426,7 +447,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         title={headerTitle}
         isPopupOrSidepanel={isPopupOrSidepanel}
         isOnSettingsRoot={isOnSettingsRoot}
-        onClose={() => navigate(backRoute)}
+        onClose={handleClose}
         isSearchOpen={isSearchOpen}
         onOpenSearch={() => setIsSearchOpen(true)}
         onCloseSearch={handleCloseSearch}

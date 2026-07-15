@@ -63,8 +63,10 @@ export const SettingsHeader = ({
         textFieldSearchProps={{
           value: searchValue,
           placeholder: searchPlaceholder ?? t('search'),
+          className: 'rounded-full border border-border-muted',
           onChangeText: onSearchChange,
           onClickClearButton: onSearchClear,
+          showClearButton: false,
           autoFocus: true,
           inputProps: {
             'data-testid': 'settings-header-search-input',
@@ -108,7 +110,7 @@ export const SettingsHeader = ({
       <ButtonIcon
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
         onClick={onClose}
         data-testid="settings-header-back-button"
       />
