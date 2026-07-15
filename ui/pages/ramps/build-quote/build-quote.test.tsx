@@ -248,7 +248,7 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot redirecting when intent token never settles after load', () => {
+  it('matches snapshot while waiting when intent token has not settled after load', () => {
     mockLocationState = {
       assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
     };
@@ -268,7 +268,7 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot redirecting when settled token mismatches intent after load', () => {
+  it('matches snapshot while waiting when settled token mismatches intent after load', () => {
     mockLocationState = {
       assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
     };
