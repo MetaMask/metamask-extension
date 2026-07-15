@@ -17,11 +17,7 @@ export type SupportLinkUserData = {
  */
 export function buildSupportLinkWithUserData(
   supportLink: string,
-  {
-    version,
-    customerServiceToken,
-    shieldCustomerId,
-  }: SupportLinkUserData,
+  { version, customerServiceToken, shieldCustomerId }: SupportLinkUserData,
 ): string {
   const url = new URL(supportLink);
   url.searchParams.append('metamask_version', version);

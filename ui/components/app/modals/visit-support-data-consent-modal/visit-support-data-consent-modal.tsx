@@ -49,46 +49,43 @@ const VisitSupportDataConsentModal = ({
   const segmentContext = useSegmentContext();
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
-  const handleClickContactSupportButton = useCallback(
-    () => {
-      onClose();
+  const handleClickContactSupportButton = useCallback(() => {
+    onClose();
 
-      const openSupportLink = (customerServiceToken?: string) => {
-        const params: SupportLinkUserData = {
-          version,
-          customerServiceToken,
-          shieldCustomerId,
-        };
-        const supportLinkWithUserId = buildSupportLinkWithUserData(
-          SUPPORT_LINK as string,
-          params,
-        );
-
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-            .addCategory(MetaMetricsEventCategory.Settings)
-            .addProperties({
-              url: supportLinkWithUserId,
-              [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-            })
-            .build(),
-        );
-        openWindow(supportLinkWithUserId);
+    const openSupportLink = (customerServiceToken?: string) => {
+      const params: SupportLinkUserData = {
+        version,
+        customerServiceToken,
+        shieldCustomerId,
       };
+      const supportLinkWithUserId = buildSupportLinkWithUserData(
+        SUPPORT_LINK as string,
+        params,
+      );
 
-      getCustomerServiceToken()
-        .then(openSupportLink)
-        .catch(() => openSupportLink());
-    },
-    [
-      onClose,
-      version,
-      shieldCustomerId,
-      trackEvent,
-      createEventBuilder,
-      segmentContext.page?.title,
-    ],
-  );
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            url: supportLinkWithUserId,
+            [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
+          })
+          .build(),
+      );
+      openWindow(supportLinkWithUserId);
+    };
+
+    getCustomerServiceToken()
+      .then(openSupportLink)
+      .catch(() => openSupportLink());
+  }, [
+    onClose,
+    version,
+    shieldCustomerId,
+    trackEvent,
+    createEventBuilder,
+    segmentContext.page?.title,
+  ]);
 
   const handleClickNoShare = useCallback(() => {
     onClose();

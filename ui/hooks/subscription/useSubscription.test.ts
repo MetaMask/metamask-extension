@@ -39,7 +39,9 @@ jest.mock('../../store/actions', () => ({
 
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockAddTransaction = jest.mocked(actions.addTransaction);
-const mockGetCustomerServiceToken = jest.mocked(actions.getCustomerServiceToken);
+const mockGetCustomerServiceToken = jest.mocked(
+  actions.getCustomerServiceToken,
+);
 const mockUseSubscriptionPricing = jest.mocked(
   subscriptionPricingHooks.useSubscriptionPricing,
 );
@@ -305,7 +307,9 @@ describe('useHandleSubscriptionSupportAction', () => {
     state = cloneDeep(mockState) as unknown as MetaMaskReduxState;
     (state.metamask as Record<string, unknown>).customerId =
       'test-shield-customer-id';
-    mockGetCustomerServiceToken.mockResolvedValue('test-customer-service-token');
+    mockGetCustomerServiceToken.mockResolvedValue(
+      'test-customer-service-token',
+    );
   });
 
   it('opens support link with customer-service token and shield id', async () => {
