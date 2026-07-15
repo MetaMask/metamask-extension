@@ -458,7 +458,7 @@ export class QrSyncController extends BaseController<
       const sessionError = parseSessionError(error);
       this.#setError({
         error: sessionError,
-        code: QrSyncErrorCodes.UNKNOWN,
+        code: sessionError.code,
         message: sessionError.message,
       });
     };

@@ -60,18 +60,25 @@ const SyncAccountsSettings = () => {
     setPassword(undefined);
   }, [qrSyncPhase]);
 
-  const handleExit = useCallback(async () => {
-    setIsExiting(true);
-
-    // cancel the current sync session
+  const cancelQrSyncSession = useCallback(async () => {
     await submitRequestToBackground<void>('messengerCall', [
       'QrSyncController:cancelSync',
       [],
     ]).catch(() => undefined);
+  }, []);
 
-    // navigate to the default route
+  const handleExit = useCallback(async () => {
+    setIsExiting(true);
+    await cancelQrSyncSession();
     navigate(DEFAULT_ROUTE);
-  }, [navigate]);
+  }, [cancelQrSyncSession, navigate]);
+
+  const handleRetry = useCallback(() => {
+    // cancel the current sync session and start a new one
+    // cancelSync reset the QrSync state to IDLE besides disconnect/cleanup the existing session
+    // `IDLE` phase will trigger the `createSession` request to create a new session
+    cancelQrSyncSession().catch(() => undefined);
+  }, [cancelQrSyncSession]);
 
   const handleAddWallets = useCallback(
     async ({
@@ -135,7 +142,12 @@ const SyncAccountsSettings = () => {
         ) : null;
       case QR_SYNC_PHASES.CANCELLED:
       case QR_SYNC_PHASES.FAILED:
-        return <SyncError />;
+        return (
+          <SyncError
+            onRetry={handleRetry}
+            onCancel={() => handleExit().catch(() => undefined)}
+          />
+        );
       default:
         return null;
     }

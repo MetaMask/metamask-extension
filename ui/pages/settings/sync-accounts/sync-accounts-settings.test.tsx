@@ -4,12 +4,11 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-// eslint-disable-next-line import-x/no-restricted-paths
-import messages from '../../../../app/_locales/en/messages.json';
 import {
   QR_SYNC_PHASES,
   QrSyncErrorCodes,
 } from '../../../../shared/constants/qr-sync';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import SyncAccountsSettings from './sync-accounts-settings';
 
@@ -47,6 +46,26 @@ jest.mock('./components', () => {
     AddWallets: () => <div data-testid="add-wallets" />,
     LoadingStep: () => <div data-testid="loading-step" />,
     Success: () => <div data-testid="success" />,
+    SyncError: ({
+      onRetry,
+      onCancel,
+    }: {
+      onRetry: () => void;
+      onCancel: () => void;
+    }) => (
+      <div data-testid="sync-error">
+        <button type="button" data-testid="sync-error-retry" onClick={onRetry}>
+          retry
+        </button>
+        <button
+          type="button"
+          data-testid="sync-error-cancel"
+          onClick={onCancel}
+        >
+          cancel
+        </button>
+      </div>
+    ),
   };
 });
 
@@ -159,9 +178,7 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(
-      screen.getByText(messages.add_device_error_title.message),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
   });
 
   it('renders SyncError when the phase is failed', () => {
@@ -173,9 +190,7 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(
-      screen.getByText(messages.add_device_error_title.message),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
   });
 
   it('renders QrCodeScan when the phase is failed with a QR_EXPIRED error', () => {
@@ -192,9 +207,7 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('qr-code-scan')).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.add_device_error_title.message),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
   });
 
   it('renders EnterVerificationCode when the phase is failed with an OTP_EXPIRED error', () => {
@@ -211,9 +224,7 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.add_device_error_title.message),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
   });
 
   it('renders EnterVerificationCode when the phase is failed with an OTP_ATTEMPTS_EXCEEDED error', () => {
@@ -230,9 +241,7 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
     expect(screen.getByTestId('enter-verification-code')).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.add_device_error_title.message),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('sync-error')).not.toBeInTheDocument();
   });
 
   it('renders SyncError when the phase is failed with a non-overridden error', () => {
@@ -248,13 +257,11 @@ describe('SyncAccountsSettings', () => {
       },
     });
     renderWithProvider(<SyncAccountsSettings />, store);
-    expect(
-      screen.getByText(messages.add_device_error_title.message),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('sync-error')).toBeInTheDocument();
     expect(screen.queryByTestId('qr-code-scan')).not.toBeInTheDocument();
   });
 
-  it('creates a new session when retry is clicked on the error step', async () => {
+  it('cancels the session when retry is clicked on the error step', async () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -264,18 +271,18 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
 
-    fireEvent.click(screen.getByText(messages.add_device_try_again.message));
+    fireEvent.click(screen.getByTestId('sync-error-retry'));
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'messengerCall',
-        ['QrSyncController:createSession', []],
+        ['QrSyncController:cancelSync', []],
       );
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('cancels the sync session when cancel is clicked on the error step', async () => {
+  it('cancels and navigates away when cancel is clicked on the error step', async () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -285,14 +292,14 @@ describe('SyncAccountsSettings', () => {
     });
     renderWithProvider(<SyncAccountsSettings />, store);
 
-    fireEvent.click(screen.getByText(messages.cancel.message));
+    fireEvent.click(screen.getByTestId('sync-error-cancel'));
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'messengerCall',
         ['QrSyncController:cancelSync', []],
       );
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
-    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });
