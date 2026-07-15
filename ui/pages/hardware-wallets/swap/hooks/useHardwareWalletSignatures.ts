@@ -153,6 +153,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       return undefined;
     }
 
+    // FIXME: The `BatchTransaction` type has no `id` field being declared. For now
+    // we fallback to runtime detection to filter them, but it would be nice to
+    // fix the original type at some point.
     const nestedTransactionIds =
       sendBundleTxMeta.batchTransactions
         ?.map((batchTransaction) =>
