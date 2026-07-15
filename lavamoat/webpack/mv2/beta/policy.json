@@ -776,7 +776,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
+        "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/keyring-sdk": true,
@@ -1467,28 +1467,6 @@
         "@metamask/utils": true,
         "async-mutex": true,
         "@metamask/eth-snap-keyring>uuid": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "console.info": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-internal-api": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
-        "@metamask/keyring-sdk": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -6790,11 +6768,6 @@
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
       "globals": {
         "crypto": true
       }
