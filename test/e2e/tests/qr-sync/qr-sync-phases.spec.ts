@@ -99,27 +99,6 @@ async function completeQrSyncFromSyncPage(
   );
 }
 
-/**
- * Completes the QrSync flow from mobile scan through success.
- *
- * @param driver - The WebDriver instance.
- * @param expectedWalletCount - Expected synced entropy/HD wallet count.
- * @param expectedImportedAccountCount - Expected synced imported account count.
- */
-async function completeQrSyncFlow(
-  driver: Driver,
-  expectedWalletCount: number,
-  expectedImportedAccountCount: number,
-): Promise<void> {
-  const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
-  await completeQrSyncFromSyncPage(
-    syncAccountsPage,
-    driver,
-    expectedWalletCount,
-    expectedImportedAccountCount,
-  );
-}
-
 describe('QR Sync Phases', function () {
   this.timeout(60_000);
 
@@ -218,7 +197,32 @@ describe('QR Sync Phases', function () {
     );
   });
 
-  it('should restart the Qr Sync session from the error screen', async function () {
+  it('should restart the Qr Sync session from the QR Expired screen', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { password: WALLET_PASSWORD });
+
+        const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
+
+        await driver.delay(
+          QR_SYNC_TIMEOUT_MS_E2E.MWP_SESSION_TIMEOUT +
+            TIMEOUT_ASSERTION_BUFFER_MS,
+        );
+        await syncAccountsPage.waitForQrExpiredMessage();
+
+        await syncAccountsPage.clickGenerateNewQrCode();
+        await syncAccountsPage.waitForQrCode();
+
+        await completeQrSyncFromSyncPage(syncAccountsPage, driver, 1, 0);
+      },
+    );
+  });
+
+  it('should restart the Qr Sync session from the OTP Timeout screen', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),

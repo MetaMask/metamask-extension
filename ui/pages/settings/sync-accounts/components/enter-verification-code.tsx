@@ -29,7 +29,11 @@ const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
 const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
   QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
 
-const EnterVerificationCode = () => {
+type EnterVerificationCodeProps = {
+  onRestart: () => void;
+};
+
+const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
   const qrSyncError = useSelector(selectQrSyncError);
   const hasMaxedOutAttempts =
@@ -185,13 +189,6 @@ const EnterVerificationCode = () => {
     },
     [],
   );
-
-  const onRestart = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]).catch(() => undefined);
-  }, []);
 
   let errorMessage: string | null = null;
   if (isExpired) {

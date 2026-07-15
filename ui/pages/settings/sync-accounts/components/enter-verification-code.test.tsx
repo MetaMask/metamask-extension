@@ -25,7 +25,10 @@ type QrSyncError = {
   message: string;
 };
 
-const renderComponent = (qrSyncError: QrSyncError | null = null) => {
+const renderComponent = (
+  qrSyncError: QrSyncError | null = null,
+  onRestart: () => void = jest.fn(),
+) => {
   const store = configureMockStore([thunk])({
     ...mockState,
     metamask: {
@@ -33,7 +36,13 @@ const renderComponent = (qrSyncError: QrSyncError | null = null) => {
       qrSyncError,
     },
   });
-  return renderWithProvider(<EnterVerificationCode />, store);
+  return {
+    onRestart,
+    ...renderWithProvider(
+      <EnterVerificationCode onRestart={onRestart} />,
+      store,
+    ),
+  };
 };
 
 const getInputs = () =>
@@ -95,23 +104,18 @@ describe('EnterVerificationCode', () => {
     ).toBeInTheDocument();
   });
 
-  it('creates a new session when restart is clicked after an error', async () => {
+  it('calls onRestart when restart is clicked after an error', async () => {
     mockSubmitRequestToBackground.mockRejectedValue(new Error('invalid otp'));
-    renderComponent();
+    const onRestart = jest.fn();
+    renderComponent(null, onRestart);
 
     typeCode('111111');
 
     await screen.findByText(messages.enter_verification_code_error.message);
 
-    mockSubmitRequestToBackground.mockResolvedValue(undefined);
     fireEvent.click(screen.getByText(messages.start_with_new_qr_code.message));
 
-    await waitFor(() => {
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:createSession', []],
-      );
-    });
+    expect(onRestart).toHaveBeenCalledTimes(1);
   });
 
   it('shows the max-attempts message, restart button and disables the inputs', () => {

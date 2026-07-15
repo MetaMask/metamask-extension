@@ -20,7 +20,6 @@ import {
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../../components/component-library/skeleton';
-import { submitRequestToBackground } from '../../../../store/background-connection';
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 
@@ -38,7 +37,11 @@ const QR_CODE_CELL_SIZE = 5;
 const QR_CODE_MARGIN = 16;
 const QR_CODE_SIZE = 340;
 
-const QrCodeScan = () => {
+type QrCodeScanProps = {
+  onRestart: () => void;
+};
+
+const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
   const lastQrPayloadRef = useRef<string | null>(null);
@@ -73,13 +76,10 @@ const QrCodeScan = () => {
     return () => clearInterval(intervalId);
   }, [shouldDimQr]);
 
-  const handleReset = useCallback(async () => {
+  const handleReset = useCallback(() => {
     setSecondsLeft(MWP_SESSION_REQUEST_EXPIRY_SECONDS);
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]).catch(() => undefined);
-  }, []);
+    onRestart();
+  }, [onRestart]);
 
   const renderResetBlock = (message: string) => (
     <Box

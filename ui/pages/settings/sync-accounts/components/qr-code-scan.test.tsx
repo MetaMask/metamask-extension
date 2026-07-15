@@ -7,7 +7,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
-import { submitRequestToBackground } from '../../../../store/background-connection';
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import QrCodeScan from './qr-code-scan';
 
@@ -17,17 +16,13 @@ jest.mock('qrcode-generator', () => () => ({
   createDataURL: jest.fn(() => 'data:image/gif;base64,mock-qr'),
 }));
 
-jest.mock('../../../../store/background-connection', () => ({
-  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
-}));
-
 jest.mock('../../../../selectors/qr-sync/qr-sync', () => ({
   ...jest.requireActual('../../../../selectors/qr-sync/qr-sync'),
   selectQrSyncQrPayload: jest.fn(),
 }));
 
-const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 const mockSelectQrSyncQrPayload = jest.mocked(selectQrSyncQrPayload);
+const defaultOnRestart = jest.fn();
 
 const createMockStore = (metamaskOverrides = {}) =>
   configureMockStore([thunk])({
@@ -40,9 +35,15 @@ const createMockStore = (metamaskOverrides = {}) =>
     },
   });
 
+const renderQrCodeScan = (
+  mockStore = createMockStore(),
+  onRestart: () => void = defaultOnRestart,
+) => renderWithProvider(<QrCodeScan onRestart={onRestart} />, mockStore);
+
 describe('QrCodeScan', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    defaultOnRestart.mockClear();
     mockSelectQrSyncQrPayload.mockImplementation(
       (state) => state.metamask.qrSyncQrPayload,
     );
@@ -54,7 +55,7 @@ describe('QrCodeScan', () => {
 
   it('renders the heading, description and QR code image', () => {
     const mockStore = createMockStore();
-    renderWithProvider(<QrCodeScan />, mockStore);
+    renderQrCodeScan(mockStore);
 
     expect(screen.getByText(messages.scanQrCode.message)).toBeInTheDocument();
     expect(
@@ -65,7 +66,7 @@ describe('QrCodeScan', () => {
 
   it('shows the countdown while the QR code is valid', () => {
     const mockStore = createMockStore();
-    renderWithProvider(<QrCodeScan />, mockStore);
+    renderQrCodeScan(mockStore);
 
     expect(
       screen.getByText(
@@ -77,7 +78,7 @@ describe('QrCodeScan', () => {
   it('shows the expired message and reset button after the timer runs out', () => {
     jest.useFakeTimers();
     const mockStore = createMockStore();
-    renderWithProvider(<QrCodeScan />, mockStore);
+    renderQrCodeScan(mockStore);
 
     act(() => {
       jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
@@ -93,20 +94,21 @@ describe('QrCodeScan', () => {
 
   it('keeps the previous QR image when the payload becomes null', () => {
     const mockStore = createMockStore();
-    const { rerender } = renderWithProvider(<QrCodeScan />, mockStore);
+    const { rerender } = renderQrCodeScan(mockStore);
 
     expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
 
     mockSelectQrSyncQrPayload.mockReturnValue(null);
-    rerender(<QrCodeScan />);
+    rerender(<QrCodeScan onRestart={defaultOnRestart} />);
 
     expect(screen.getByTestId('qr-code-image')).toBeInTheDocument();
   });
 
-  it('requests a new session when the reset button is clicked', async () => {
+  it('calls onRestart when the reset button is clicked', () => {
     jest.useFakeTimers();
     const mockStore = createMockStore();
-    renderWithProvider(<QrCodeScan />, mockStore);
+    const onRestart = jest.fn();
+    renderQrCodeScan(mockStore, onRestart);
 
     act(() => {
       jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
@@ -114,9 +116,11 @@ describe('QrCodeScan', () => {
 
     fireEvent.click(screen.getByText(messages.generateNewQrCode.message));
 
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'messengerCall',
-      ['QrSyncController:createSession', []],
-    );
+    expect(onRestart).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByText(
+        `Expires in ${QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000}s`,
+      ),
+    ).toBeInTheDocument();
   });
 });

@@ -14,6 +14,10 @@ class SyncAccountsSettingsPage {
 
   private readonly driver: Driver;
 
+  private readonly generateNewQrCodeButton = {
+    text: 'Generate new QR code',
+  };
+
   private readonly loading = '[data-testid="qr-sync-loading"]';
 
   private readonly otpExpiredMessage = { text: 'Verification code expired' };
@@ -30,8 +34,6 @@ class SyncAccountsSettingsPage {
   private readonly qrCode = '[data-testid="qr-sync-qr-code"]';
 
   private readonly qrExpiredMessage = { text: 'QR code expired' };
-
-  private readonly qrLoading = '[data-testid="qr-sync-qr-loading"]';
 
   private readonly sessionExpiredErrorMessage = {
     text: 'This sync session expired. Start again to generate a new QR code.',
@@ -90,6 +92,10 @@ class SyncAccountsSettingsPage {
     await this.driver.clickElement(this.doneButton);
   }
 
+  async clickGenerateNewQrCode(): Promise<void> {
+    await this.driver.clickElement(this.generateNewQrCodeButton);
+  }
+
   async clickStartWithNewQrCode(): Promise<void> {
     await this.driver.clickElement(this.startWithNewQrCodeButton);
   }
@@ -139,16 +145,11 @@ class SyncAccountsSettingsPage {
   }
 
   async waitForQrCode(): Promise<void> {
-    await this.driver.waitForSelector(this.qrLoading);
     await this.driver.waitForSelector(this.qrCode);
   }
 
   async waitForQrExpiredMessage(): Promise<void> {
     await this.driver.waitForSelector(this.qrExpiredMessage);
-  }
-
-  async waitForQrLoading(): Promise<void> {
-    await this.driver.waitForSelector(this.qrLoading);
   }
 
   async waitForSessionExpiredError(): Promise<void> {

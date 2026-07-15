@@ -42,11 +42,6 @@ export const selectIsQrSyncTerminal = createSelector(
   },
 );
 
-export const selectShouldCreateQrSyncSession = createSelector(
-  [selectQrSyncPhase],
-  (phase) => phase === QR_SYNC_PHASES.IDLE,
-);
-
 export function isQrSyncPhase(
   phase: QrSyncPhase,
   expectedPhase: QrSyncPhase,
