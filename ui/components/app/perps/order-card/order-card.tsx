@@ -19,7 +19,7 @@ import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatPerpsFiatUniversal } from '../utils/formatPerpsDisplayPrice';
-import { getDisplayName } from '../utils';
+import { getDisplaySymbol } from '../utils';
 import { formatOrderLabel } from '../utils/orderUtils';
 import type { Order } from '../types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
@@ -55,10 +55,10 @@ export const OrderCard = ({
   const { privacyMode } = useSelector(getPreferences);
   // Title uses the full asset name when enabled; the size line keeps the ticker
   // as its unit. When the flag is off, fall back to the ticker.
-  const displayName = getDisplayName(
+  const displayName = getDisplaySymbol(
     showFullAssetNames ? assetName || order.symbol : order.symbol,
   );
-  const displaySymbol = getDisplayName(order.symbol);
+  const displaySymbol = getDisplaySymbol(order.symbol);
   const isTriggerBasedOrder =
     order.isTrigger === true || order.isPositionTpsl === true;
 

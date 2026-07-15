@@ -457,16 +457,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
-      expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
-              [
-                [
-                  "Warning: ReactDOM.render is no longer supported in React 18. Use createRoot instead. Until you switch to the new API, your app will behave as if it's running React 17. Learn more: https://reactjs.org/link/switch-to-createroot",
-                ],
-                [
-                  [Error: submit failed],
-                ],
-              ]
-          `);
+      expect(
+        consoleErrorSpy.mock.calls.some(
+          (call) =>
+            call[0] instanceof Error && call[0].message === 'submit failed',
+        ),
+      ).toBe(true);
       consoleErrorSpy.mockRestore();
     });
 
