@@ -16,42 +16,57 @@ type Props = {
   onBack: () => void;
 };
 
-function getTitleKey(item: ActivityListItem | undefined) {
-  if (!item) {
-    return undefined;
-  }
-
-  return `activity_${item.type}_${item.status}_title`;
-}
-
 function getDefinedArgs(...args: (string | undefined)[]) {
   return args.map((arg) => arg ?? '');
 }
 
-function getTitleArgs(item: ActivityListItem) {
+function getTitleConfig(item: ActivityListItem | undefined) {
+  if (!item) {
+    return undefined;
+  }
+
+  const key = `activity_${item.type}_${item.status}_title`;
+
   switch (item.type) {
     case 'swap': {
-      const args = getDefinedArgs(
-        item.data.sourceToken?.symbol,
-        item.data.destinationToken?.symbol,
-      );
+      const sourceSymbol = item.data.sourceToken?.symbol;
+      const destinationSymbol = item.data.destinationToken?.symbol;
 
-      return args.length === 2 && args.every(Boolean) ? args : undefined;
+      if (!destinationSymbol) {
+        return {
+          key: `activity_swapIncomplete_${item.status}_title`,
+          args: getDefinedArgs(sourceSymbol),
+        };
+      }
+
+      return {
+        key,
+        args: getDefinedArgs(sourceSymbol, destinationSymbol),
+      };
     }
     case 'convert': {
-      return getDefinedArgs(
-        item.data.destinationToken?.symbol ?? item.data.sourceToken?.symbol,
-      );
+      return {
+        key,
+        args: getDefinedArgs(
+          item.data.destinationToken?.symbol ?? item.data.sourceToken?.symbol,
+        ),
+      };
     }
     case 'bridge':
     case 'wrap':
     case 'unwrap': {
-      return getDefinedArgs(item.data.sourceToken?.symbol);
+      return {
+        key,
+        args: getDefinedArgs(item.data.sourceToken?.symbol),
+      };
     }
     case 'lendingWithdrawal': {
-      return getDefinedArgs(
-        item.data.sourceToken?.symbol ?? item.data.destinationToken?.symbol,
-      );
+      return {
+        key,
+        args: getDefinedArgs(
+          item.data.sourceToken?.symbol ?? item.data.destinationToken?.symbol,
+        ),
+      };
     }
     case 'send':
     case 'receive':
@@ -62,22 +77,22 @@ function getTitleArgs(item: ActivityListItem) {
     case 'nftBuy':
     case 'nftMint':
     case 'nftSell': {
-      return getDefinedArgs(item.data.token?.symbol);
+      return {
+        key,
+        args: getDefinedArgs(item.data.token?.symbol),
+      };
     }
     case 'swapIncomplete': {
       return getDefinedArgs(item.data.sourceToken?.symbol);
     }
     default:
-      return [''];
+      return { key, args: [''] };
   }
 }
 
 export function Header({ item, onBack }: Props) {
   const t = useI18nContext();
-  const titleKey = getTitleKey(item);
-  const titleArgs = item ? getTitleArgs(item) : undefined;
-  const title =
-    titleKey && titleArgs?.length ? t(titleKey, titleArgs) : item?.type;
+  const titleConfig = getTitleConfig(item);
 
   return (
     <HeaderBase
@@ -91,9 +106,9 @@ export function Header({ item, onBack }: Props) {
         />
       }
     >
-      {title ? (
+      {titleConfig ? (
         <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
-          {title}
+          {t(titleConfig.key, titleConfig.args)}
         </Text>
       ) : null}
     </HeaderBase>
