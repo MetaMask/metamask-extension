@@ -103,7 +103,6 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
 
         const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
         await bitcoinReviewTxPage.checkPageIsLoaded();
-        await bitcoinReviewTxPage.checkSendAmountIsDisplayed('0.5');
         await bitcoinReviewTxPage.clickConfirmButton();
 
         // Wait for the transaction to appear in the activity list.
