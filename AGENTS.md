@@ -259,7 +259,7 @@ yarn lint:lockfile:dedupe:fix
 yarn allow-scripts auto
 
 # 4. Update LavaMoat policies
-yarn lavamoat:auto         # Regenerates the webpack app LavaMoat policies
+yarn lavamoat:auto         # Regenerates the webpack LavaMoat policies
 
 # 5. Update attributions
 yarn attributions:generate
@@ -848,7 +848,7 @@ Update policies whenever you:
 **Automated (Recommended):**
 
 ```bash
-# Regenerate the webpack app LavaMoat policies
+# Regenerate the webpack LavaMoat policies
 yarn lavamoat:auto
 
 # Or use MetaMask bot (team members only):
@@ -858,7 +858,7 @@ yarn lavamoat:auto
 **Manual:**
 
 ```bash
-# Regenerate the webpack app LavaMoat policies
+# Regenerate the webpack LavaMoat policies
 yarn lavamoat:auto
 
 # If policies still fail after regeneration:
@@ -870,7 +870,7 @@ rm -rf node_modules/ && yarn && yarn lavamoat:auto
 If a build fails on a policy violation, regenerate the policies and review the diff:
 
 ```bash
-# Regenerate the webpack app LavaMoat policies
+# Regenerate the webpack LavaMoat policies
 yarn lavamoat:auto
 ```
 
