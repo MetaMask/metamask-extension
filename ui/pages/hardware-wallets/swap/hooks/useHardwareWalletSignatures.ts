@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useReducer,
@@ -14,8 +13,6 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useAppSelector } from '../../../../store/store';
 
 import { getIsStxEnabled } from '../../../../ducks/bridge/selectors';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { useHwSwapQuoteData } from '../../../../hooks/hardware-wallets/useHwSwapQuoteData';
@@ -143,10 +140,8 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       ? internalSelectPendingApproval(state, currentApprovalRequestId)
       : undefined,
   );
-  const { trackEvent } = useContext(MetaMetricsContext);
 
-  const { lockedQuote, fromToken, toToken, hardwareWalletType } =
-    useHwSwapQuoteData();
+  const { lockedQuote, fromToken, toToken } = useHwSwapQuoteData();
   const needsTwoConfirmations = isSendBundleFlow
     ? Boolean(sendBundleState?.needsTwoConfirmations)
     : Boolean(lockedQuote?.approval);
@@ -185,7 +180,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     getInitialHardwareWalletSignaturesState,
   );
 
-  const hasTrackedPageView = useRef(false);
   const retryGenerationRef = useRef(0);
   // Guards HW reject/fail dispatches so errors from the OLD submission during
   // cancelCurrentBatch() don't race with the retry and prematurely transition
@@ -203,6 +197,21 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   // longer than SIGNATURE_STUCK_TIMEOUT_MS without progressing. Resets when
   // the state leaves awaiting-signature or a retry starts.
   const [hasSignatureTimedOut, setHasSignatureTimedOut] = useState(false);
+
+  /**
+   * True when a catch must not update the signature state machine: either
+   * cancel-during-retry is in flight (`isRetryingRef`), or retry advanced
+   * `retryGenerationRef` after this submission started (stale generation).
+   */
+  const isStaleAttempt = useCallback(
+    (submissionGeneration: number): boolean => {
+      return (
+        isRetryingRef.current ||
+        submissionGeneration !== retryGenerationRef.current
+      );
+    },
+    [],
+  );
 
   const submitSendBundleTransaction = useCallback(async () => {
     if (!sendBundleTxMeta) {
@@ -229,13 +238,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
-      // Ignore reject/fail from an aborted batch: during cancel-during-retry
-      // (`isRetryingRef`), or after retry advanced the generation so this
-      // catch is stale relative to the in-flight attempt.
-      if (
-        isRetryingRef.current ||
-        submissionGeneration !== retryGenerationRef.current
-      ) {
+      if (isStaleAttempt(submissionGeneration)) {
         return;
       }
 
@@ -255,6 +258,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     dispatch,
     dispatchSignatureEvent,
     expectedSendBundleApproval,
+    isStaleAttempt,
     sendBundleTxMeta,
   ]);
 
@@ -275,11 +279,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       try {
         await submitBridgeTransactionBase(quoteResponse);
       } catch (error) {
-        const isStaleAttempt =
-          isRetryingRef.current ||
-          submissionGeneration !== retryGenerationRef.current;
-
-        if (!isStaleAttempt) {
+        if (!isStaleAttempt(submissionGeneration)) {
           if (isUserRejectedHardwareWalletError(error)) {
             dispatchSignatureEvent({
               type: HardwareWalletSignatureEvent.TransactionRejected,
@@ -295,6 +295,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     },
     [
       dispatchSignatureEvent,
+      isStaleAttempt,
       signatureState.status,
       submitBridgeTransactionBase,
     ],
@@ -376,14 +377,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
-      // Same stale-attempt guards as submitSendBundleTransaction /
-      // submitBridgeTransaction: a late reject from an aborted approve, or
-      // from a superseded retry generation, must not overwrite the fresh
-      // attempt's state.
-      if (
-        isRetryingRef.current ||
-        submissionGeneration !== retryGenerationRef.current
-      ) {
+      if (isStaleAttempt(submissionGeneration)) {
         return;
       }
 
@@ -402,13 +396,14 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     currentApprovalRequestId,
     dispatch,
     dispatchSignatureEvent,
+    isStaleAttempt,
     sendBundleTxMeta,
   ]);
 
-  const getTxField = (field: 'from' | 'to'): string | undefined =>
+  const getPrimaryTxField = (field: 'from' | 'to'): string | undefined =>
     sendBundleTxMeta?.txParams[field] ??
     getTransactionField(lockedQuote?.trade, field);
-  const fromAddress = getTxField('from');
+  const fromAddress = getPrimaryTxField('from');
 
   const { retrySubmission, hasStartedSubmission } = useHwSwapSubmission({
     lockedQuote,
@@ -574,39 +569,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     }
   }, [isRetrying]);
 
-  useEffect(() => {
-    if (hasTrackedPageView.current || !lockedQuote) {
-      return;
-    }
-
-    hasTrackedPageView.current = true;
-    trackEvent({
-      event: 'Awaiting Signature(s) on a HW wallet',
-      category: MetaMetricsEventCategory.Swaps,
-      /* eslint-disable @typescript-eslint/naming-convention */
-      properties: {
-        needs_two_confirmations: needsTwoConfirmations,
-        token_from: fromToken?.symbol ?? '',
-        token_to: toToken?.symbol ?? '',
-        is_hardware_wallet: isHardwareWalletAccount,
-        hardware_wallet_type: hardwareWalletType ?? '',
-      },
-      sensitiveProperties: {
-        token_from_amount: lockedQuote?.quote?.srcTokenAmount ?? '',
-        token_to_amount: lockedQuote?.quote?.destTokenAmount ?? '',
-      },
-      /* eslint-enable @typescript-eslint/naming-convention */
-    });
-  }, [
-    fromToken?.symbol,
-    hardwareWalletType,
-    isHardwareWalletAccount,
-    lockedQuote,
-    needsTwoConfirmations,
-    toToken?.symbol,
-    trackEvent,
-  ]);
-
   const {
     firstStepStatus,
     finalStepStatus,
@@ -627,7 +589,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     signatureState,
     isSendBundleFlow,
     needsTwoConfirmations,
-    toAddress: getTxField('to'),
+    toAddress: getPrimaryTxField('to'),
     spenderAddress: getTransactionField(lockedQuote?.approval, 'to'),
     fromAmount,
     fromTokenSymbol: fromToken?.symbol,

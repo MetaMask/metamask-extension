@@ -14,7 +14,6 @@ import {
   I18nProvider,
   en,
 } from '../../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { ConnectionStatus } from '../../../../contexts/hardware-wallets';
 import {
   addTransaction,
@@ -127,7 +126,6 @@ const mockCancelCurrentBatch = jest.fn().mockResolvedValue(undefined);
 const mockResetConnectionError = jest.fn();
 const mockRetrySubmission = jest.fn().mockResolvedValue(undefined);
 const mockNavigateToBridgePage = jest.fn();
-const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
 function createSendBundleTxMeta(
   overrides: Partial<TransactionMeta> = {},
@@ -250,24 +248,13 @@ function renderUseHardwareWalletSignatures({
     return (
       <MetaMaskTestReduxProvider store={store}>
         <I18nProvider currentLocale="en" current={en} en={en}>
-          <MetaMetricsContext.Provider
-            value={
-              {
-                trackEvent: mockTrackEvent,
-                bufferedTrace: jest.fn(),
-                bufferedEndTrace: jest.fn(),
-                onboardingParentContext: { current: null },
-              } as never
-            }
-          >
-            <RouterProvider
-              router={router}
-              future={{
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                v7_startTransition: true,
-              }}
-            />
-          </MetaMetricsContext.Provider>
+          <RouterProvider
+            router={router}
+            future={{
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              v7_startTransition: true,
+            }}
+          />
         </I18nProvider>
       </MetaMaskTestReduxProvider>
     );
@@ -307,7 +294,6 @@ describe('useHardwareWalletSignatures', () => {
     mockResetConnectionError.mockReset();
     mockRetrySubmission.mockReset().mockResolvedValue(undefined);
     mockNavigateToBridgePage.mockReset();
-    mockTrackEvent.mockReset().mockResolvedValue(undefined);
     mockNavigate.mockReset();
     mockSetSigningInProgress.mockReset();
     mockCleanupPendingApproval.mockReset();
@@ -892,11 +878,6 @@ describe('useHardwareWalletSignatures', () => {
 
       expect(mockNavigateToBridgePage).toHaveBeenCalled();
       expect(mockNavigate).not.toHaveBeenCalled();
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          event: 'Awaiting Signature(s) on a HW wallet',
-        }),
-      );
     });
   });
 });
