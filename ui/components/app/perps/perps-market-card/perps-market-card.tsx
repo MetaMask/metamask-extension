@@ -17,7 +17,7 @@ import { PerpsTokenLogo } from '../perps-token-logo';
 import {
   formatSignedChangePercent,
   getChangeColor,
-  getDisplayName,
+  getDisplaySymbol,
 } from '../utils';
 
 const CARD_STYLES =
@@ -46,7 +46,7 @@ export const PerpsMarketCard = ({
   'data-testid': testId,
 }: PerpsMarketCardProps) => {
   const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
-  const displaySymbol = getDisplayName(
+  const displaySymbol = getDisplaySymbol(
     showFullAssetNames ? name || symbol : symbol,
   );
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);

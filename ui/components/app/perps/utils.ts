@@ -19,24 +19,6 @@ export { willFlipPosition } from './utils/orderUtils';
 export { buildPerpsVipTrackingData } from './utils/trackingData';
 
 /**
- * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
- * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
- *
- * @param symbol - The symbol to extract the display name from
- * @returns The display name
- * @example
- * getDisplayName('xyz:TSLA') => 'TSLA'
- * getDisplayName('BTC') => 'BTC'
- */
-export const getDisplayName = (symbol: string): string => {
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-};
-
-/**
  * Determines if a position is long (positive size) or short (negative size)
  *
  * @param size - The position size as a string
@@ -193,12 +175,18 @@ export const getChangeColor = (percentString: string): TextColor => {
 };
 
 /**
- * Extract the display symbol from a full symbol string
- * Strips DEX prefix for HIP-3 markets (e.g., "xyz:TSLA" -> "TSLA")
- * Includes null/type safety checks
+ * Extract the display symbol from a full symbol string.
+ * Strips the DEX prefix for HIP-3 markets (e.g. "xyz:TSLA" -> "TSLA").
+ * Includes null/type safety checks.
  *
- * @param symbol - The symbol to extract the display name from
- * @returns The display name
+ * IMPORTANT: This is for RENDERING ONLY. Always keep the raw, full symbol
+ * (with prefix) when calling background/API methods, building WebSocket
+ * subscriptions, navigating routes, passing to `PerpsTokenLogo`, or setting
+ * analytics properties / `data-testid` / React `key` values. This is the
+ * single canonical helper for stripping the prefix — do not add another one.
+ *
+ * @param symbol - The symbol to extract the display name from.
+ * @returns The display symbol.
  * @example
  * getDisplaySymbol('xyz:TSLA') => 'TSLA'
  * getDisplaySymbol('BTC') => 'BTC'
