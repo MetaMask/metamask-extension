@@ -827,6 +827,12 @@
         "TextEncoder": true
       }
     },
+    "@metamask/7715-permission-types": {
+      "packages": {
+        "@metamask/delegation-core": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
