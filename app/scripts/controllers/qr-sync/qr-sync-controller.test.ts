@@ -1260,8 +1260,7 @@ describe('QrSyncController', () => {
     it('reports send-message failures to Sentry', async () => {
       const captureException = jest.fn();
       const sendError = new Error('Relay write failed');
-      const { controller, qrSyncMessenger, primaryGroupId } =
-        setupController();
+      const { controller, qrSyncMessenger, primaryGroupId } = setupController();
       // @ts-expect-error - captureException mock
       qrSyncMessenger.captureException = captureException;
 

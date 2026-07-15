@@ -648,16 +648,11 @@ export class QrSyncController extends BaseController<
     error: unknown,
     options?: { code?: QrSyncError['code'] },
   ): void {
-    if (
-      options?.code &&
-      !shouldReportQrSyncErrorToSentry(options.code)
-    ) {
+    if (options?.code && !shouldReportQrSyncErrorToSentry(options.code)) {
       return;
     }
 
-    this.messenger.captureException?.(
-      createSentryError(sentryMessage, error),
-    );
+    this.messenger.captureException?.(createSentryError(sentryMessage, error));
   }
 
   async #setError({
@@ -669,9 +664,7 @@ export class QrSyncController extends BaseController<
     qrSyncError?: QrSyncError;
     cancelOtp?: boolean;
   }): Promise<void> {
-    const stateError =
-      qrSyncError ??
-      parseMwpError(error);
+    const stateError = qrSyncError ?? parseMwpError(error);
 
     this.#reportToSentry(
       `QR sync session failed (${stateError.code})`,
