@@ -74,6 +74,22 @@ const mockSelectedToken = {
   tokenSupported: true,
 };
 
+type MockSelectedToken = typeof mockSelectedToken;
+
+type MockControllerStateOptions = {
+  userRegion?: {
+    regionCode: string;
+    country: {
+      currency: string;
+      isoCode: string;
+      name: string;
+      defaultAmount?: number;
+    };
+  };
+  selectedToken?: MockSelectedToken | null;
+  tokensLoading?: boolean;
+};
+
 const mockControllerState = ({
   userRegion = {
     regionCode: 'us-ca',
@@ -86,7 +102,7 @@ const mockControllerState = ({
   },
   selectedToken = mockSelectedToken,
   tokensLoading = false,
-} = {}) => ({
+}: MockControllerStateOptions = {}) => ({
   userRegion,
   selectedToken,
   tokensLoading,

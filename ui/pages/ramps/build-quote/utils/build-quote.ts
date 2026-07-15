@@ -1,12 +1,24 @@
-import type { Quote, QuotesResponse } from '@metamask/ramps-controller';
+import type { Quote, QuoteError } from '@metamask/ramps-controller';
 
 type NamedSelection = {
   id: string;
   name: string;
 } | null;
 
-/** Subset of controller QuotesResponse used by build-quote selection/error UI. */
-type QuotesResponseOrNull = Pick<QuotesResponse, 'success' | 'error'> | null;
+/** Fields used for provider quote matching. */
+type QuoteSelectionItem = Pick<Quote, 'provider'>;
+
+/** Fields used for provider quote error display. */
+type QuoteErrorItem = Pick<QuoteError, 'provider' | 'error'>;
+
+/**
+ * Subset of controller QuotesResponse (`success` / `error`) used by build-quote
+ * selection and error UI. Wider Quote fields are not required here.
+ */
+type QuotesResponseOrNull = {
+  success?: QuoteSelectionItem[];
+  error?: QuoteErrorItem[];
+} | null;
 
 export function parseFiatAmount(amount: string): number {
   const parsed = Number.parseFloat(amount.replace(',', '.'));
@@ -66,7 +78,7 @@ export function findSelectedQuote(
   quotesResponse: QuotesResponseOrNull,
   selectedProvider: NamedSelection,
   selectedPaymentMethod: NamedSelection,
-): Quote | null {
+): QuoteSelectionItem | null {
   if (!quotesResponse?.success || !selectedProvider || !selectedPaymentMethod) {
     return null;
   }
@@ -113,7 +125,7 @@ export function resolveDisplayedQuoteError({
   selectedQuoteLoading: boolean;
   hasQuoteFetchError: boolean;
   quotesResponse: QuotesResponseOrNull;
-  selectedQuote: Quote | null;
+  selectedQuote: QuoteSelectionItem | null;
 }): string | null {
   if (quoteFetchErrorMessage) {
     return quoteFetchErrorMessage;
@@ -154,7 +166,7 @@ export function resolveCanContinue({
   hasAmount: boolean;
   hasSettledQuoteAmount: boolean;
   selectedQuoteLoading: boolean;
-  selectedQuote: Quote | null;
+  selectedQuote: QuoteSelectionItem | null;
   hasQuoteFetchError: boolean;
 }): boolean {
   return (
