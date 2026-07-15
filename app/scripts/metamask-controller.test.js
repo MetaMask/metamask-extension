@@ -2445,6 +2445,32 @@ describe('MetaMaskController', () => {
           const mode = metamaskController.getLedgerMode();
           expect(mode).toBe('dmk');
         });
+
+        it('returns Legacy when RemoteFeatureFlagController state omits remoteFeatureFlags', () => {
+          jest
+            .spyOn(metamaskController.controllerMessenger, 'call')
+            .mockImplementation((action) => {
+              if (action === 'RemoteFeatureFlagController:getState') {
+                return {};
+              }
+              return {};
+            });
+
+          expect(metamaskController.getLedgerMode()).toBe('legacy');
+        });
+
+        it('returns DMK when a manifest override enables ledgerDmk', () => {
+          const { getManifestFlags } = jest.requireMock(
+            '../../shared/lib/manifestFlags',
+          );
+          getManifestFlags.mockReturnValueOnce({
+            remoteFeatureFlags: {
+              ledgerDmk: true,
+            },
+          });
+
+          expect(metamaskController.getLedgerMode()).toBe('dmk');
+        });
       });
 
       describe('setLedgerTransportPreference', () => {

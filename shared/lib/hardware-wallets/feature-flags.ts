@@ -10,7 +10,7 @@
  * Remote feature flag key for the Ledger DMK (Device Management Key) rollout.
  *
  * Flag shape (version-gated):
- * Enabled variant: `{ enabled: true, featureVersion: '100.0.0', minimumVersion: '100.0.0' }`
+ * Enabled variant: `{ enabled: true, featureVersion: '13.42.0', minimumVersion: '13.42.0' }`
  * Disabled (production default): `{ enabled: false, featureVersion: null, minimumVersion: null }`
  *
  * Use `getBooleanFeatureFlag` to resolve the value at runtime; it returns

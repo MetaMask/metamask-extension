@@ -52,7 +52,6 @@ import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
-  LedgerHandlerMode,
 } from '../../shared/constants/offscreen-communication';
 import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
@@ -68,14 +67,13 @@ import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
-import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-import { ENABLE_DMK_FEATURE_FLAG } from '../../shared/lib/hardware-wallets/feature-flags';
 import Migrator from './lib/migrator';
 import migrations from './migrations';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
@@ -793,54 +791,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  */
 
 /**
- * Sends a switchLedgerMode message to the offscreen document.
- * Failures are ignored because the offscreen may not be ready yet.
- *
- * @param {string} mode
- */
-function sendSwitchLedgerModeMessage(mode) {
-  try {
-    browser.runtime.sendMessage({
-      target: OffscreenCommunicationTarget.extension,
-      event: OffscreenCommunicationEvents.switchLedgerMode,
-      mode,
-    });
-  } catch {
-    // noop
-  }
-}
-
-/**
- * Pushes the initial Ledger handler mode to the offscreen document and
- * subscribes to remote feature flag changes so the offscreen can hot-swap.
- * The offscreen boots as Legacy by default; when DMK is enabled via the
- * remote feature flag we send a switchLedgerMode event to hot-swap.
- */
-function setupLedgerModeOffscreenBridge() {
-  if (!isManifestV3) {
-    return;
-  }
-
-  sendSwitchLedgerModeMessage(controller.getLedgerMode());
-
-  // When the `ledgerDmk` flag toggles, push a `switchLedgerMode` event to
-  // the offscreen document so it can hot-swap the active Ledger handler.
-  controller.controllerMessenger.subscribe(
-    'RemoteFeatureFlagController:stateChange',
-    (isDmkEnabled) => {
-      sendSwitchLedgerModeMessage(
-        isDmkEnabled ? LedgerHandlerMode.DMK : LedgerHandlerMode.Legacy,
-      );
-    },
-    (state) =>
-      getBooleanFeatureFlag(
-        state.remoteFeatureFlags[ENABLE_DMK_FEATURE_FLAG],
-        false,
-      ),
-  );
-}
-
-/**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
  * @param {Backup | null} backup
@@ -914,7 +864,7 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  setupLedgerModeOffscreenBridge();
+  setupLedgerModeOffscreenBridge(controller);
 
   controller.metaMetricsController.updateTraits({
     [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
