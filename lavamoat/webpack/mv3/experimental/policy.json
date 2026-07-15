@@ -5080,7 +5080,7 @@
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "uuid": true,
         "viem": true,
-        "eth-lattice-keyring>gridplus-sdk>zod": true
+        "openai>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -7061,21 +7061,15 @@
         "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>zod": {
+    "openai>zod": {
       "globals": {
         "File": true,
-        "JSONSchema": true,
         "URL": true,
+        "__zod_globalConfig": true,
         "__zod_globalRegistry": true,
         "atob": true,
         "btoa": true,
-        "coerce": true,
-        "core": true,
-        "iso": true,
-        "locales": true,
-        "navigator": true,
-        "regexes": true,
-        "util": true
+        "navigator": true
       }
     }
   }
