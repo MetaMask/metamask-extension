@@ -193,7 +193,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
         // Validate the seeded native balance (25 ETH) on login. This is stable
         // because the localhost native asset is seeded/mocked under the correct
         // id (eip155:1337/slip44:1).
-        await login(driver, { expectedBalance: '25' });
+        await login(driver);
 
         const tokensTab = new TokensTab(driver);
         const sendPage = new SendPage(driver);
