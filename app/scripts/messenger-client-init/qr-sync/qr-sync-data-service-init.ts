@@ -1,6 +1,6 @@
-import { QrSyncDataService } from '../controllers/qr-sync/qr-sync-data-service';
-import type { QrSyncDataServiceMessenger } from '../controllers/qr-sync/types';
-import type { MessengerClientInitFunction } from './types';
+import { QrSyncDataService } from '../../controllers/qr-sync/qr-sync-data-service';
+import type { QrSyncDataServiceMessenger } from '../../controllers/qr-sync/types';
+import type { MessengerClientInitFunction } from '../types';
 
 /**
  * Initialize the QR sync data service.

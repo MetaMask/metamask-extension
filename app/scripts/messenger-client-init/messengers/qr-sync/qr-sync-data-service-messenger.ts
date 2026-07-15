@@ -4,8 +4,8 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 
-import type { QrSyncDataServiceMessenger } from '../../controllers/qr-sync/types';
-import type { RootMessenger } from '../../lib/messenger';
+import type { QrSyncDataServiceMessenger } from '../../../controllers/qr-sync/types';
+import type { RootMessenger } from '../../../lib/messenger';
 
 /**
  * Create a messenger restricted to the allowed actions and events of the QR
