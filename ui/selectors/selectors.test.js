@@ -1357,6 +1357,8 @@ describe('Selectors', () => {
     });
 
     it('caches NFT lookups per chain ID', () => {
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(0);
+
       expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
         { address: '0xnft-1' },
       ]);
@@ -1370,9 +1372,11 @@ describe('Selectors', () => {
       expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
     });
 
-    it('caches token scan lookups per chain ID and address list contents', () => {
+    it('caches token scan lookups with equivalent address arrays across different references', () => {
       const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
       const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(0);
 
       expect(
         selectors.getTokenScanResultsForAddresses(
