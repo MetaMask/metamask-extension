@@ -1,32 +1,45 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
 import Button from '../../ui/button';
-import { AvatarFavicon, IconSize } from '../../component-library';
+import { AvatarFavicon, AvatarFaviconSize, IconSize } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
-import { Size } from '../../../helpers/constants/design-system';
 import { SnapIcon } from '../snaps/snap-icon';
-import { I18nContext } from '../../../contexts/i18n';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default class ConnectedSitesList extends Component {
-  static contextType = I18nContext;
+type ConnectedSubject = {
+  name?: string;
+  iconUrl?: string;
+  origin: string;
+  extensionId?: string;
+};
 
-  static propTypes = {
-    connectedSubjects: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        iconUrl: PropTypes.string,
-        origin: PropTypes.string,
-      }),
-    ).isRequired,
-    onDisconnect: PropTypes.func.isRequired,
-    getSnapName: PropTypes.func.isRequired,
-  };
+type ConnectedSitesListProps = {
+  connectedSubjects: ConnectedSubject[];
+  onDisconnect: (origin: string) => void;
+  getSnapName: (origin: string) => string;
+};
 
-  getConnectedSitesListContent = () => {
-    const { connectedSubjects, onDisconnect, getSnapName } = this.props;
-    const t = this.context;
+export default function ConnectedSitesList({
+  connectedSubjects,
+  onDisconnect,
+  getSnapName,
+}: ConnectedSitesListProps) {
+  const t = useI18nContext();
+
+  const getSubjectDisplayName = useCallback(
+    (subject: ConnectedSubject) => {
+      if (subject.extensionId) {
+        return t('externalExtension');
+      }
+
+      // We strip https schemes only, and only if the URL has no port.
+      return stripHttpsSchemeWithoutPort(subject.origin);
+    },
+    [t],
+  );
+
+  const getConnectedSitesListContent = () => {
     return connectedSubjects.map((subject) => {
       if (isSnapId(subject.origin)) {
         const snapName = getSnapName(subject.origin);
@@ -58,14 +71,14 @@ export default class ConnectedSitesList extends Component {
           <div className="connected-sites-list__subject-info">
             <AvatarFavicon
               className="connected-sites-list__subject-icon"
-              name={subject.name}
-              size={Size.MD}
+              name={subject.name ?? subject.origin}
+              size={AvatarFaviconSize.Md}
               src={subject.iconUrl}
             />
             <SiteOrigin
               className="connected-sites-list__subject-name"
               title={subject.extensionId || subject.origin}
-              siteOrigin={this.getSubjectDisplayName(subject)}
+              siteOrigin={getSubjectDisplayName(subject)}
             />
           </div>
           <Button
@@ -80,20 +93,9 @@ export default class ConnectedSitesList extends Component {
     });
   };
 
-  render() {
-    return (
-      <main className="connected-sites-list__content-rows">
-        {this.getConnectedSitesListContent()}
-      </main>
-    );
-  }
-
-  getSubjectDisplayName(subject) {
-    if (subject.extensionId) {
-      return this.context('externalExtension');
-    }
-
-    // We strip https schemes only, and only if the URL has no port.
-    return stripHttpsSchemeWithoutPort(subject.origin);
-  }
+  return (
+    <main className="connected-sites-list__content-rows">
+      {getConnectedSitesListContent()}
+    </main>
+  );
 }
