@@ -352,7 +352,7 @@ class TokensTab extends HomePage {
 
   async clickManageTokens(): Promise<void> {
     console.log('Click Manage tokens in the token options menu');
-    await this.driver.clickElement('[data-testid="manageTokens__button"]');
+    await this.driver.clickElement(this.manageTokensButton);
   }
 
   async importCustomTokenByChain(

@@ -4,7 +4,6 @@
  * Regression test for ASSETS-3385 ("Max Send balance not updating").
  */
 
-import { strict as assert } from 'assert';
 import { merge } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
 import type { Mockttp } from 'mockttp';
@@ -87,7 +86,9 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
         balances: [
           {
             accountId: `eip155:${CHAIN_ID}:${account}`,
-            assetId: `eip155:${CHAIN_ID}/slip44:60`,
+            // Chain 1337's native asset is slip44:1 (not slip44:60); using the
+            // correct id keeps the native balance populated and steady.
+            assetId: `eip155:${CHAIN_ID}/slip44:1`,
             balance: '25',
           },
           {
@@ -125,7 +126,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
       .withAssetsController({
         assetsBalance: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            [`eip155:${CHAIN_ID}/slip44:60`]: {
+            [`eip155:${CHAIN_ID}/slip44:1`]: {
               amount: '25',
             },
             [`eip155:${CHAIN_ID}/erc20:${TOKEN_ADDRESS}`]: {
@@ -134,7 +135,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
           },
         },
         assetsInfo: {
-          [`eip155:${CHAIN_ID}/slip44:60`]: {
+          [`eip155:${CHAIN_ID}/slip44:1`]: {
             decimals: 18,
             name: 'Ether',
             symbol: 'ETH',
@@ -189,7 +190,10 @@ describe('Send ERC20 - Max Balance Validation', function () {
 
         const subscriptionPromise = waitForAccountActivitySubscription();
 
-        await login(driver, { validateBalance: false });
+        // Validate the seeded native balance (25 ETH) on login. This is stable
+        // because the localhost native asset is seeded/mocked under the correct
+        // id (eip155:1337/slip44:1).
+        await login(driver, { expectedBalance: '25' });
 
         const tokensTab = new TokensTab(driver);
         const sendPage = new SendPage(driver);
@@ -232,28 +236,12 @@ describe('Send ERC20 - Max Balance Validation', function () {
         await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
 
         await sendPage.clickMaxButton();
-        const maxAfterUpdate = await sendPage.getAmountInputValue();
-        assert.equal(
-          parseFloat(maxAfterUpdate),
-          5,
-          `Max should fill the updated balance (5 ${SYMBOL}), but filled "${maxAfterUpdate}"`,
-        );
+        await sendPage.checkAmountInputValue('5');
+        await sendPage.checkContinueButtonEnabled();
 
-        // sending the Max (available) balance is valid
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          true,
-          'Continue should be enabled when sending the Max (available) balance',
-        );
-
-        // a re-send above the updated balance must be blocked
         await sendPage.fillAmount('10');
         await sendPage.checkInsufficientFundsError();
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          false,
-          'Continue should be disabled when balance is insufficient',
-        );
+        await sendPage.checkContinueButtonDisabled();
       },
     );
   });
