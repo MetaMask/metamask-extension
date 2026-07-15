@@ -2,9 +2,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
-import { useBridgeHistoryItem } from './hooks/useBridgeHistoryItem';
-import { useHistoryTokens } from './hooks/useHistoryTokens';
-import { BridgeDetails } from "./bridge-details";
+import { useBridgeHistoryItem, useHistoryTokens } from './hooks';
+import { BridgeDetails } from './bridge-details';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -12,11 +11,8 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: (state: unknown) => unknown) => selector({}),
 }));
 
-jest.mock('./hooks/useBridgeHistoryItem', () => ({
+jest.mock('./hooks', () => ({
   useBridgeHistoryItem: jest.fn(),
-}));
-
-jest.mock('./hooks/useHistoryTokens', () => ({
   useHistoryTokens: jest.fn(),
 }));
 
@@ -36,7 +32,7 @@ jest.mock('../../../../selectors/multichain-accounts/utils', () => ({
   getSanitizedChainId: jest.fn((chainId: string) => chainId),
 }));
 
-jest.mock('./components/BridgeNetworkRow', () => ({
+jest.mock('./bridge-network-row', () => ({
   BridgeNetworkRow: ({
     fromChainId,
     toChainId,

@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../../../selectors/multichain';
-import { BridgeNetworkRow } from './BridgeNetworkRow';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { getImageForChainId } from '../../../../selectors/multichain';
+import { BridgeNetworkRow } from './bridge-network-row';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -17,11 +17,11 @@ jest.mock('@metamask/design-system-react', () => ({
   AvatarNetworkSize: { Xs: 'Xs' },
 }));
 
-jest.mock('../../../../../../shared/lib/selectors/networks', () => ({
+jest.mock('../../../../../shared/lib/selectors/networks', () => ({
   getAllNetworkConfigurationsByCaipChainId: jest.fn(() => ({})),
 }));
 
-jest.mock('../../../../../selectors/multichain', () => ({
+jest.mock('../../../../selectors/multichain', () => ({
   getImageForChainId: jest.fn(),
 }));
 
@@ -33,7 +33,9 @@ describe('BridgeNetworkRow', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetAllNetworkConfigurationsByCaipChainId.mockReturnValue({});
-    mockGetImageForChainId.mockImplementation((chainId: string) => `img:${chainId}`);
+    mockGetImageForChainId.mockImplementation(
+      (chainId: string) => `img:${chainId}`,
+    );
   });
 
   it('renders the configured network names for both chains', () => {

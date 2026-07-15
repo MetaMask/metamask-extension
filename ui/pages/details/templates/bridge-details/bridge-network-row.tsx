@@ -9,8 +9,8 @@ import {
 } from '@metamask/bridge-controller';
 import type { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { getImageForChainId } from '../../../../selectors/multichain';
 
 export const BridgeNetworkRow = ({
   fromChainId,

@@ -1,9 +1,7 @@
 import React, { useMemo } from 'react';
 import type { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import type {
-  ActivityListItem,
-} from '../../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
@@ -19,9 +17,8 @@ import { TokenRow } from '../../components/token-row';
 import { FeesRows, TotalAmountRow } from '../../components/amounts-section';
 import { BridgeExplorerButtons } from '../../components/bridge-explorer-buttons';
 import { SwapAgainButton } from '../../components/swap-again-button';
-import { useHistoryTokens } from './hooks/useHistoryTokens';
-import { useBridgeHistoryItem } from './hooks/useBridgeHistoryItem';
-import { BridgeNetworkRow } from './components/BridgeNetworkRow';
+import { useHistoryTokens, useBridgeHistoryItem } from './hooks';
+import { BridgeNetworkRow } from './bridge-network-row';
 
 export function BridgeDetails({
   item,
@@ -38,9 +35,9 @@ export function BridgeDetails({
   // bridge item lacks the destination token, network and tx hash. Backfill them
   // from local bridge history so the received-token row and both source and
   // destination block explorer links render correctly.
-  const bridgeHistoryItem = useBridgeHistoryItem(sourceTxHash)
+  const bridgeHistoryItem = useBridgeHistoryItem(sourceTxHash);
 
-  const historyTokens = useHistoryTokens(sourceTxHash)
+  const historyTokens = useHistoryTokens(sourceTxHash);
 
   const sourceToken = item.data.sourceToken ?? historyTokens?.sourceToken;
   const destinationToken =
@@ -104,7 +101,10 @@ export function BridgeDetails({
           {destinationToken && (
             <div>
               <p className="text-alternative mb-1">{t('youReceived')}</p>
-              <TokenRow token={destinationToken} showNetworkBadge={showFromTo} />
+              <TokenRow
+                token={destinationToken}
+                showNetworkBadge={showFromTo}
+              />
             </div>
           )}
         </div>

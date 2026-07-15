@@ -1,7 +1,5 @@
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import type {
-  TokenAmount,
-} from '../../../../../../shared/lib/activity/types';
+import type { TokenAmount } from '../../../../../shared/lib/activity/types';
 
 export function getBridgeHistoryTokens(
   bridgeHistoryItem?: BridgeHistoryItem,
