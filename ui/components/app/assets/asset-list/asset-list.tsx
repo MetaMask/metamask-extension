@@ -1,14 +1,10 @@
 import type { CaipAssetType } from '@metamask/utils';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../../../shared/constants/metametrics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
@@ -35,6 +31,7 @@ export type AssetListProps = {
   ) => void;
   showTokensLinks?: boolean;
   safeChains?: SafeChain[];
+  entryPoint?: ScreenViewedEntryPoint;
 };
 
 const TokenListContainer = React.memo(
@@ -77,6 +74,7 @@ const AssetList = ({
   onClickAsset,
   showTokensLinks,
   safeChains,
+  entryPoint,
 }: AssetListProps) => {
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
@@ -103,10 +101,12 @@ const AssetList = ({
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           network_filter: networkFilter,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          entry_point: entryPoint,
         })
         .build(),
     );
-  }, [trackEvent, createEventBuilder, networkFilter]);
+  }, [trackEvent, createEventBuilder, networkFilter, entryPoint]);
 
   // Use the centralized token filter that includes min balance check
   // This is the source of truth for which tokens are eligible for mUSD conversion

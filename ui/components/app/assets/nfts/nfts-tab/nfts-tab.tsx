@@ -25,11 +25,16 @@ import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../../../../shared/constants/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function NftsTab() {
+export default function NftsTab({
+  entryPoint,
+}: Readonly<{
+  entryPoint?: ScreenViewedEntryPoint;
+}>) {
   const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
@@ -64,10 +69,12 @@ export default function NftsTab() {
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           network_filter: networkFilter,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          entry_point: entryPoint,
         })
         .build(),
     );
-  }, [trackEvent, createEventBuilder, networkFilter]);
+  }, [trackEvent, createEventBuilder, networkFilter, entryPoint]);
 
   const handleNftClick = (nft: NFT) => {
     transitionForward(() =>

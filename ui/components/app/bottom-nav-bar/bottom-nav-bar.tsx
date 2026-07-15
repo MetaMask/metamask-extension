@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -77,6 +78,7 @@ export function BottomNavBar() {
     () =>
       navigate(
         lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
+        { state: { entryPoint: ScreenViewedEntryPoint.BottomNavClick } },
       ),
     [navigate, lastActiveTab],
   );
@@ -89,7 +91,10 @@ export function BottomNavBar() {
   const handleSwapsClick = useCallback(() => navigate(SWAP_PATH), [navigate]);
 
   const handleActivityClick = useCallback(
-    () => navigate(ACTIVITY_ROUTE),
+    () =>
+      navigate(ACTIVITY_ROUTE, {
+        state: { entryPoint: ScreenViewedEntryPoint.BottomNavClick },
+      }),
     [navigate],
   );
 

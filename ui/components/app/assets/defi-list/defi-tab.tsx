@@ -12,7 +12,10 @@ import DefiList from './defi-list';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function DeFiTab({ onClickAsset }: AssetListProps) {
+export default function DeFiTab({
+  onClickAsset,
+  entryPoint,
+}: Readonly<AssetListProps>) {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
 
@@ -28,10 +31,12 @@ export default function DeFiTab({ onClickAsset }: AssetListProps) {
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           network_filter: networkFilter,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          entry_point: entryPoint,
         })
         .build(),
     );
-  }, [trackEvent, createEventBuilder, networkFilter]);
+  }, [trackEvent, createEventBuilder, networkFilter, entryPoint]);
 
   return (
     <>

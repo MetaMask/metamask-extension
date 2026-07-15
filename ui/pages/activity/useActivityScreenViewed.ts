@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
@@ -13,6 +14,7 @@ type UseActivityScreenViewedProps = {
   isSettled: boolean;
   isEmpty: boolean;
   pendingLength: number;
+  entryPoint?: ScreenViewedEntryPoint;
 };
 
 /**
@@ -30,6 +32,7 @@ export const useActivityScreenViewed = ({
   isSettled,
   isEmpty,
   pendingLength,
+  entryPoint,
 }: UseActivityScreenViewedProps) => {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
@@ -61,9 +64,10 @@ export const useActivityScreenViewed = ({
           network_filter: networks,
           is_empty: empty,
           pending_transactions: pending,
+          entry_point: entryPoint,
           /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
     );
-  }, [filter, isSettled, trackEvent]);
+  }, [filter, isSettled, trackEvent, entryPoint]);
 };

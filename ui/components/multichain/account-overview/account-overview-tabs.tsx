@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
   Box,
@@ -18,7 +18,6 @@ import {
   AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
 import { endTrace, trace } from '../../../../shared/lib/trace';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
@@ -53,6 +52,7 @@ import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
 import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
 import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
 import { transitionForward } from '../../ui/transition';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -94,8 +94,18 @@ export const AccountOverviewTabs = ({
   const activeTabKey = urlTab || persistedTab;
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Tracks how the currently active tab was reached so screen-viewed events
+  // can distinguish a bottom-nav click (arriving at home) from a subtab click.
+  const [tabEntryPoint, setTabEntryPoint] = useState<
+    ScreenViewedEntryPoint | undefined
+  >(
+    location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick
+      ? ScreenViewedEntryPoint.BottomNavClick
+      : undefined,
+  );
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const isActivityListRedesignEnabled = useSelector(
@@ -167,6 +177,7 @@ export const AccountOverviewTabs = ({
         });
       }
 
+      setTabEntryPoint(ScreenViewedEntryPoint.SubtabClick);
       setActiveTabKey(tabName);
 
       if (tabName === AccountOverviewTabKey.Nfts) {
@@ -222,6 +233,7 @@ export const AccountOverviewTabs = ({
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
+                entryPoint={tabEntryPoint}
               />
             </ErrorBoundary>
           </Tab>
@@ -283,6 +295,7 @@ export const AccountOverviewTabs = ({
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
+                entryPoint={tabEntryPoint}
               />
             </ErrorBoundary>
           </Tab>
@@ -295,7 +308,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__nfts-tab"
           >
             <ErrorBoundary key="nfts">
-              <NftsTab />
+              <NftsTab entryPoint={tabEntryPoint} />
             </ErrorBoundary>
           </Tab>
         )}
@@ -309,7 +322,7 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="activity">
               {isActivityListRedesignEnabled ? (
-                <ActivityListV3 />
+                <ActivityListV3 entryPoint={tabEntryPoint} />
               ) : (
                 <ActivityListV2 />
               )}

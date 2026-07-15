@@ -1451,3 +1451,8 @@ export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
   DefaultEstimate = 'default_estimate',
 }
+
+export enum ScreenViewedEntryPoint {
+  SubtabClick = 'subtab_click',
+  BottomNavClick = 'bottom_nav_click',
+}

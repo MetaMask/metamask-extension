@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Box, Text } from '@metamask/design-system-react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
@@ -12,6 +13,7 @@ import { useItemInView } from '../../hooks/useItemInView';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
@@ -33,9 +35,21 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 const itemHeight = 62;
 const headerHeight = 40;
 
-export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
+export function ActivityList({
+  filter,
+  entryPoint: entryPointProp,
+}: { filter?: ActivityListFilter; entryPoint?: ScreenViewedEntryPoint } = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const location = useLocation();
+  // Prop takes precedence (set by AccountOverviewTabs for the in-page tab case).
+  // Fall back to location state for the standalone route case (bottom nav).
+  // Undefined when the user arrived via direct URL / deep link / app cold-start.
+  const entryPoint =
+    entryPointProp ??
+    (location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick
+      ? ScreenViewedEntryPoint.BottomNavClick
+      : undefined);
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
@@ -73,6 +87,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     pendingLength: [...localItems, ...nonEvmItems].filter(
       (item) => item.status === 'pending',
     ).length,
+    entryPoint,
   });
 
   const itemRef = useItemInView({
