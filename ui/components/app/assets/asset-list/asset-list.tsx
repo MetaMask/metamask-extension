@@ -1,6 +1,6 @@
+import type { CaipAssetType } from '@metamask/utils';
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -11,7 +11,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../../selectors';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
@@ -25,11 +25,14 @@ import {
   useMusdConversionTokens,
 } from '../../../../hooks/musd';
 import { selectAccountGroupBalanceForEmptyState } from '../../../../selectors/assets';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
 import AssetListControlBar from './asset-list-control-bar';
 
 export type AssetListProps = {
-  onClickAsset: (chainId: string, address: string) => void;
+  onClickAsset: (
+    chainId: string,
+    address: string,
+    assetId?: CaipAssetType,
+  ) => void;
   showTokensLinks?: boolean;
   safeChains?: SafeChain[];
 };
@@ -39,25 +42,31 @@ const TokenListContainer = React.memo(
     onClickAsset,
     safeChains,
   }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'>) => {
-    const { trackEvent } = useContext(MetaMetricsContext);
+    const { trackEvent, createEventBuilder } = useAnalytics();
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
     const onTokenClick = useCallback(
-      (chainId: string, tokenAddress: string) => {
+      (chainId: string, tokenAddress: string, assetId?: CaipAssetType) => {
         trace({ name: TraceName.AssetDetails });
-        onClickAsset(chainId, tokenAddress);
-        trackEvent({
-          event: MetaMetricsEventName.TokenScreenViewed,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: primaryCurrencyProperties.suffix,
-            location: 'Home',
-          },
-        });
+        onClickAsset(chainId, tokenAddress, assetId);
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenScreenViewed)
+            .addCategory(MetaMetricsEventCategory.Navigation)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: primaryCurrencyProperties.suffix,
+              location: 'Home',
+            })
+            .build(),
+        );
       },
-      [],
+      [
+        createEventBuilder,
+        onClickAsset,
+        primaryCurrencyProperties.suffix,
+        trackEvent,
+      ],
     );
 
     return <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />;

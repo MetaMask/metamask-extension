@@ -1,7 +1,12 @@
 import { TransactionStatus, TransactionType } from '@metamask/keyring-api';
 import { MultichainNetworks } from '../../../constants/multichain/networks';
 import { solanaBridgeFixture } from './fixtures/non-evm-bridge';
-import { mapKeyringTransaction } from './keyring-transaction';
+import {
+  CustomTransactionTypeLabel,
+  mapKeyringTransaction,
+} from './keyring-transaction';
+
+const STELLAR_USDC_ASSET = `stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN`;
 
 describe('mapKeyringTransaction', () => {
   it('maps keyring send transactions with token amount data', () => {
@@ -294,6 +299,100 @@ describe('mapKeyringTransaction', () => {
           amount: '0.000003',
           direction: 'out',
           symbol: 'BTC',
+        },
+      },
+    });
+  });
+
+  it('maps trustline approve TokenApprove to assetActivation', () => {
+    const item = mapKeyringTransaction({
+      transaction: {
+        id: 'trustline-approve-id',
+        chain: 'stellar:pubnet',
+        account: '00000000-0000-4000-8000-000000000000',
+        status: TransactionStatus.Confirmed,
+        timestamp: 1716367781,
+        type: TransactionType.TokenApprove,
+        details: {
+          typeLabel: CustomTransactionTypeLabel.TrustlineApprove,
+        },
+        from: [
+          {
+            address: 'owner-address',
+            asset: {
+              fungible: true,
+              type: STELLAR_USDC_ASSET,
+              unit: 'USDC',
+              amount: '0',
+            },
+          },
+        ],
+        to: [{ address: 'issuer-address', asset: null }],
+        fees: [],
+        events: [],
+      },
+    });
+
+    expect(item).toMatchObject({
+      type: 'assetActivation',
+      chainId: 'stellar:pubnet',
+      status: 'success',
+      timestamp: 1716367781000,
+      hash: 'trustline-approve-id',
+      data: {
+        from: 'owner-address',
+        token: {
+          amount: undefined,
+          assetId: STELLAR_USDC_ASSET,
+          direction: 'out',
+          symbol: 'USDC',
+        },
+      },
+    });
+  });
+
+  it('maps trustline disapprove TokenDisapprove to assetDeactivation', () => {
+    const item = mapKeyringTransaction({
+      transaction: {
+        id: 'trustline-disapprove-id',
+        chain: 'stellar:pubnet',
+        account: '00000000-0000-4000-8000-000000000000',
+        status: TransactionStatus.Confirmed,
+        timestamp: 1716367781,
+        type: TransactionType.TokenDisapprove,
+        details: {
+          typeLabel: CustomTransactionTypeLabel.TrustlineDisapprove,
+        },
+        from: [
+          {
+            address: 'owner-address',
+            asset: {
+              fungible: true,
+              type: STELLAR_USDC_ASSET,
+              unit: 'USDC',
+              amount: '0',
+            },
+          },
+        ],
+        to: [{ address: 'issuer-address', asset: null }],
+        fees: [],
+        events: [],
+      },
+    });
+
+    expect(item).toMatchObject({
+      type: 'assetDeactivation',
+      chainId: 'stellar:pubnet',
+      status: 'success',
+      timestamp: 1716367781000,
+      hash: 'trustline-disapprove-id',
+      data: {
+        from: 'owner-address',
+        token: {
+          amount: undefined,
+          assetId: STELLAR_USDC_ASSET,
+          direction: 'out',
+          symbol: 'USDC',
         },
       },
     });

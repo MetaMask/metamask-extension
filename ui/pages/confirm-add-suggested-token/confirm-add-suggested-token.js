@@ -20,7 +20,7 @@ import {
 import TokenBalance from '../../components/ui/token-balance';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -100,7 +100,7 @@ const ConfirmAddSuggestedToken = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
   const tokens = useSelector(getTokens);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const approvalId = suggestedTokens[0]?.id;
 
   const knownTokenBannerAlert = useMemo(() => {
@@ -141,23 +141,31 @@ const ConfirmAddSuggestedToken = () => {
       suggestedTokens.map(async ({ requestData: { asset }, id }) => {
         await dispatch(resolvePendingApproval(id, null));
 
-        trackEvent({
-          event: MetaMetricsEventName.TokenAdded,
-          category: MetaMetricsEventCategory.Wallet,
-          sensitiveProperties: {
-            token_symbol: asset.symbol,
-            token_contract_address: asset.address,
-            token_decimal_precision: asset.decimals,
-            unlisted: asset.unlisted,
-            source: MetaMetricsTokenEventSource.Dapp,
-            token_standard: ERC20,
-            asset_type: AssetType.token,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenAdded)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              token_symbol: asset.symbol,
+              token_contract_address: asset.address,
+              token_decimal_precision: asset.decimals,
+              unlisted: asset.unlisted,
+              source: MetaMetricsTokenEventSource.Dapp,
+              token_standard: ERC20,
+              asset_type: AssetType.token,
+            })
+            .build(),
+        );
       }),
     );
     navigate(mostRecentOverviewPage);
-  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedTokens]);
+  }, [
+    createEventBuilder,
+    dispatch,
+    navigate,
+    trackEvent,
+    mostRecentOverviewPage,
+    suggestedTokens,
+  ]);
 
   const handleCancelTokenClick = useCallback(async () => {
     await Promise.all(

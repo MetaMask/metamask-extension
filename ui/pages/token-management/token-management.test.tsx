@@ -15,6 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
 import { TokenManagementPage } from './token-management';
 
@@ -27,6 +28,23 @@ const METRICS_PROPERTIES = {
   tokenSymbol: 'token_symbol',
   viewState: 'view_state',
 } as const;
+
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: jest.fn(() => ({})),
+}));
+
+const trackAnalyticsEventMock = jest.fn().mockResolvedValue(undefined);
+const backgroundConnectionMock = new Proxy(
+  {
+    trackAnalyticsEvent: trackAnalyticsEventMock,
+  },
+  {
+    get: (target, prop) =>
+      prop in target
+        ? target[prop as keyof typeof target]
+        : jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const mockTokenManagementLocationState = {
   current: null as unknown,
@@ -65,6 +83,7 @@ jest.mock('../../store/actions', () => {
     addImportedTokens: jest.fn(() => () => Promise.resolve()),
     hideAsset: jest.fn(() => () => Promise.resolve()),
     ignoreTokens: jest.fn(() => () => Promise.resolve()),
+    importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
     multichainAddAssets: jest.fn(() => () => Promise.resolve()),
     multichainIgnoreAssets: jest.fn(() => () => Promise.resolve()),
   };
@@ -75,6 +94,7 @@ type MockedTokenManagementActions = {
   addImportedTokens: jest.Mock;
   hideAsset: jest.Mock;
   ignoreTokens: jest.Mock;
+  importCustomAssetsBatch: jest.Mock;
   multichainAddAssets: jest.Mock;
   multichainIgnoreAssets: jest.Mock;
 };
@@ -165,6 +185,93 @@ const resetTokenSearchState = (): void => {
   mockTokenSearch.spy.mockClear();
 };
 
+const expectEvmApiResultImport = async ({
+  accountId,
+  actions,
+  address,
+  assetId,
+  decimals,
+  name,
+  symbol,
+}: {
+  accountId: string;
+  actions: MockedTokenManagementActions;
+  address: string;
+  assetId: string;
+  decimals: number;
+  name: string;
+  symbol: string;
+}) => {
+  await waitFor(() =>
+    expect(actions.addImportedTokens).toHaveBeenCalledWith(
+      [
+        expect.objectContaining({
+          address,
+          symbol,
+          decimals,
+          isERC721: false,
+          name,
+        }),
+      ],
+      'mainnet',
+    ),
+  );
+  await waitFor(() =>
+    expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+      accountId,
+      [{ assetId, isHidden: false }],
+      {
+        [assetId]: {
+          address,
+          symbol,
+          name,
+          decimals,
+        },
+      },
+    ),
+  );
+};
+
+const expectNonEvmApiResultImport = async ({
+  accountId,
+  actions,
+  address,
+  assetId,
+  decimals,
+  name,
+  symbol,
+}: {
+  accountId: string;
+  actions: MockedTokenManagementActions;
+  address: string;
+  assetId: string;
+  decimals: number;
+  name: string;
+  symbol: string;
+}) => {
+  await waitFor(() =>
+    expect(actions.multichainAddAssets).toHaveBeenCalledWith(
+      [assetId],
+      accountId,
+    ),
+  );
+  await waitFor(() =>
+    expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+      accountId,
+      [{ assetId, isHidden: false }],
+      {
+        [assetId]: {
+          address,
+          symbol,
+          name,
+          decimals,
+        },
+      },
+    ),
+  );
+  expect(actions.addCustomAsset).not.toHaveBeenCalled();
+};
+
 describe('TokenManagementPage', () => {
   let consoleWarnSpy: jest.SpyInstance;
   const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
@@ -252,12 +359,15 @@ describe('TokenManagementPage', () => {
   beforeEach(() => {
     mockTokenManagementLocationState.current = null;
     mockUseNavigate.mockClear();
+    trackAnalyticsEventMock.mockClear();
+    setBackgroundConnection(backgroundConnectionMock as never);
     resetTokenSearchState();
     const actions = getMockedActions();
     actions.addCustomAsset.mockClear();
     actions.addImportedTokens.mockClear();
     actions.hideAsset.mockClear();
     actions.ignoreTokens.mockClear();
+    actions.importCustomAssetsBatch.mockClear();
     actions.multichainAddAssets.mockClear();
     actions.multichainIgnoreAssets.mockClear();
     const originalWarn = console.warn;
@@ -294,6 +404,9 @@ describe('TokenManagementPage', () => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      analyticsId: 'test-analytics-id',
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
       selectedMultichainNetworkChainId,
       useExternalServices: true,
       preferences: {
@@ -336,11 +449,7 @@ describe('TokenManagementPage', () => {
     },
   });
 
-  const renderPage = (
-    state = createState(),
-    routeState?: unknown,
-    trackEvent = jest.fn(),
-  ) => {
+  const renderPage = (state = createState(), routeState?: unknown) => {
     mockTokenManagementLocationState.current = routeState ?? null;
     const store = configureStore({
       ...state,
@@ -351,9 +460,68 @@ describe('TokenManagementPage', () => {
         <TokenManagementPage />,
         store,
         TOKEN_MANAGEMENT_ROUTE,
-        undefined,
-        () => trackEvent,
       ),
+    };
+  };
+
+  const solanaAccountId = 'solana-internal-account';
+
+  const createStateWithSolanaAccount = (
+    overrides: Parameters<typeof createState>[0] = {},
+  ) => {
+    const baseState = createState({
+      enabledNetworkMap: {
+        eip155: { '0x1': true },
+        solana: { [solanaChainId]: true },
+      },
+      accountGroupAssets: {
+        [solanaChainId]: [],
+      },
+      ...overrides,
+    });
+    const selectedWallet =
+      baseState.metamask.accountTree.wallets[
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+      ];
+    const selectedGroup =
+      selectedWallet.groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'];
+
+    return {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        internalAccounts: {
+          ...baseState.metamask.internalAccounts,
+          accounts: {
+            ...baseState.metamask.internalAccounts.accounts,
+            [solanaAccountId]: {
+              id: solanaAccountId,
+              address: 'SolanaAddress',
+              type: 'solana:data-account',
+              scopes: [solanaChainId],
+              options: {},
+              methods: [],
+              metadata: { name: 'Solana 1', keyring: { type: 'Snap Keyring' } },
+            },
+          },
+        },
+        accountTree: {
+          ...baseState.metamask.accountTree,
+          wallets: {
+            ...baseState.metamask.accountTree.wallets,
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+              ...selectedWallet,
+              groups: {
+                ...selectedWallet.groups,
+                'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                  ...selectedGroup,
+                  accounts: [...selectedGroup.accounts, solanaAccountId],
+                },
+              },
+            },
+          },
+        },
+      },
     };
   };
 
@@ -377,48 +545,51 @@ describe('TokenManagementPage', () => {
   });
 
   it('tracks the manage tokens screen opening with the default view state', async () => {
-    const trackEvent = jest.fn();
-    renderPage(createState(), undefined, trackEvent);
+    renderPage(createState());
 
     await waitFor(() =>
-      expect(trackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.TokenScreenViewed,
-        properties: {
-          screen: 'manage_tokens',
-          [METRICS_PROPERTIES.viewState]: 'default',
-        },
-      }),
+      expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.TokenScreenViewed,
+          properties: {
+            category: MetaMetricsEventCategory.Home,
+            screen: 'manage_tokens',
+            [METRICS_PROPERTIES.viewState]: 'default',
+          },
+          sensitiveProperties: {},
+        }),
+        expect.anything(),
+      ),
     );
   });
 
   it('tracks the manage tokens screen opening with the no-results view state', async () => {
-    const trackEvent = jest.fn();
     renderPage(
       createState({
         accountGroupAssets: {
           '0x1': [],
         },
       }),
-      undefined,
-      trackEvent,
     );
 
     await waitFor(() =>
-      expect(trackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.TokenScreenViewed,
-        properties: {
-          screen: 'manage_tokens',
-          [METRICS_PROPERTIES.viewState]: 'no_results',
-        },
-      }),
+      expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.TokenScreenViewed,
+          properties: {
+            category: MetaMetricsEventCategory.Home,
+            screen: 'manage_tokens',
+            [METRICS_PROPERTIES.viewState]: 'no_results',
+          },
+          sensitiveProperties: {},
+        }),
+        expect.anything(),
+      ),
     );
   });
 
   it('navigates to the custom token import page from the sticky add custom token button', () => {
-    const trackEvent = jest.fn();
-    const { store } = renderPage(createState(), undefined, trackEvent);
+    renderPage(createState());
 
     const addCustomTokenButton = screen.getByTestId(
       'token-management-add-custom-token-button',
@@ -429,15 +600,18 @@ describe('TokenManagementPage', () => {
 
     fireEvent.click(addCustomTokenButton);
 
-    expect(store.getState().appState.importTokensModalOpen).toBeFalsy();
     expect(CUSTOM_TOKEN_IMPORT_ROUTE).toBe('/custom-token-import');
-    expect(trackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: 'MANAGE_TOKENS_CUSTOM_CTA',
-      },
-    });
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenImportButtonClicked,
+        properties: {
+          category: MetaMetricsEventCategory.Navigation,
+          location: 'MANAGE_TOKENS_CUSTOM_CTA',
+        },
+        sensitiveProperties: {},
+      }),
+      expect.anything(),
+    );
   });
 
   it('shows and dismisses the custom token success toast from route state', async () => {
@@ -957,7 +1131,7 @@ describe('TokenManagementPage', () => {
     expect(fetchNextPage).toHaveBeenCalledTimes(1);
   });
 
-  it('toggling ON a not-yet-imported search result imports the token and adds it to AssetsController', async () => {
+  it('toggling ON a not-yet-imported search result imports the token and seeds unified assets', async () => {
     const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
     const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
     setTokenSearchState({
@@ -979,37 +1153,97 @@ describe('TokenManagementPage', () => {
       target: { value: 'usdc' },
     });
 
-    const toggle = screen.getByTestId(
-      `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+      ),
     );
-    fireEvent.click(toggle);
 
-    await waitFor(() =>
-      expect(actions.addImportedTokens).toHaveBeenCalledWith(
-        [
-          expect.objectContaining({
-            address: usdcAddress,
-            symbol: 'USDC',
-            decimals: 6,
-            isERC721: false,
-          }),
-        ],
-        'mainnet',
+    await expectEvmApiResultImport({
+      accountId: mainnetToken.accountId,
+      actions,
+      address: usdcAddress,
+      assetId: usdcAssetId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
+  });
+
+  it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+
+    renderPage();
+
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
       ),
     );
-    await waitFor(() =>
-      expect(actions.addCustomAsset).toHaveBeenCalledWith(
-        mainnetToken.accountId,
-        usdcAssetId,
+
+    await expectEvmApiResultImport({
+      accountId: mainnetToken.accountId,
+      actions,
+      address: usdcAddress,
+      assetId: usdcAssetId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
+  });
+
+  it('toggling ON a not-yet-imported non-EVM browse result imports via multichainAddAssets and seeds unified assets', async () => {
+    const solanaResultId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
+    const solanaTokenReference = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+    setTokenSearchState({
+      results: [
+        {
+          assetId: solanaResultId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+
+    renderPage(createStateWithSolanaAccount());
+
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${solanaResultId.toLowerCase()}-toggle`,
       ),
     );
+
+    await expectNonEvmApiResultImport({
+      accountId: solanaAccountId,
+      actions,
+      address: solanaTokenReference,
+      assetId: solanaResultId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
   });
 
   it('toggling OFF an EVM token defers the hide and keeps the row visible until unmount', async () => {
     const actions = getMockedActions();
-    const trackEvent = jest.fn();
 
-    const { unmount } = renderPage(createState(), undefined, trackEvent);
+    const { unmount } = renderPage(createState());
 
     const toggle = screen.getByTestId(
       `token-management-cell-0x1:${mainnetToken.address}-toggle`,
@@ -1020,19 +1254,24 @@ describe('TokenManagementPage', () => {
     expect(toggle.value).toBe('false');
     expect(actions.ignoreTokens).not.toHaveBeenCalled();
     expect(actions.hideAsset).not.toHaveBeenCalled();
-    expect(trackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Wallet,
-      event: MetaMetricsEventName.TokenHidden,
-      sensitiveProperties: expect.objectContaining({
-        [METRICS_PROPERTIES.assetType]: AssetType.token,
-        [METRICS_PROPERTIES.chainId]: '0x1',
-        location: 'MANAGE_TOKENS',
-        [METRICS_PROPERTIES.tokenContractAddress]: mainnetToken.address,
-        [METRICS_PROPERTIES.tokenDecimalPrecision]: mainnetToken.decimals,
-        [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
-        [METRICS_PROPERTIES.tokenSymbol]: mainnetToken.symbol,
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenHidden,
+        properties: {
+          category: MetaMetricsEventCategory.Wallet,
+        },
+        sensitiveProperties: expect.objectContaining({
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.chainId]: '0x1',
+          location: 'MANAGE_TOKENS',
+          [METRICS_PROPERTIES.tokenContractAddress]: mainnetToken.address,
+          [METRICS_PROPERTIES.tokenDecimalPrecision]: mainnetToken.decimals,
+          [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
+          [METRICS_PROPERTIES.tokenSymbol]: mainnetToken.symbol,
+        }),
       }),
-    });
+      expect.anything(),
+    );
 
     unmount();
 

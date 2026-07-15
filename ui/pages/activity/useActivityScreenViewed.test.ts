@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import React from 'react';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -12,12 +11,18 @@ import type { ActivityListFilter } from './helpers';
 
 const mockTrackEvent = jest.fn();
 
-const mockMetaMetrics = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 function createStore() {
   return configureMockStore()({
@@ -30,14 +35,7 @@ function createStore() {
 function makeWrapper() {
   const store = createStore();
   return function wrapper({ children }: { children: React.ReactNode }) {
-    return React.createElement(Provider, {
-      store,
-      children: React.createElement(
-        MetaMetricsContext.Provider,
-        { value: mockMetaMetrics },
-        children,
-      ),
-    });
+    return React.createElement(Provider, { store, children });
   };
 }
 
@@ -69,9 +67,9 @@ describe('useActivityScreenViewed', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.ActivityScreenViewed,
+      name: MetaMetricsEventName.ActivityScreenViewed,
       properties: {
+        category: MetaMetricsEventCategory.Home,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         network_filter: ['eip155:1'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -79,6 +77,7 @@ describe('useActivityScreenViewed', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         pending_transactions: 0,
       },
+      sensitiveProperties: {},
     });
   });
 
@@ -113,7 +112,6 @@ describe('useActivityScreenViewed', () => {
       { wrapper: makeWrapper() },
     );
 
-    // Simulate isSettled cycling false → true again
     isSettled = false;
     rerender();
     isSettled = true;

@@ -10,7 +10,6 @@ import {
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
-import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
@@ -288,6 +287,33 @@ describe('MetaMaskController', function () {
     });
   });
 
+  describe('#createNewVaultAndGetSeedPhrase', function () {
+    it('creates a vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      const encodedSeedPhrase =
+        await metamaskController.createNewVaultAndGetSeedPhrase(password);
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
+    });
+  });
+
+  describe('#unlockAndGetSeedPhrase', function () {
+    it('unlocks the vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      await metamaskController.createNewVaultAndKeychain(password);
+      await metamaskController.keyringController.setLocked();
+
+      const encodedSeedPhrase =
+        await metamaskController.unlockAndGetSeedPhrase(password);
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
+    });
+  });
+
   describe('#addToken', function () {
     const address = '0x514910771af9ca656af840dff83e8264ecf986ca';
     const symbol = 'LINK';
@@ -489,32 +515,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#acceptPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
-    });
-  });
-
   describe('#resolvePendingApproval', function () {
     it('should not propagate ApprovalRequestNotFoundError', async function () {
       const error = new ApprovalRequestNotFoundError('123');
@@ -653,40 +653,6 @@ describe('MetaMaskController', function () {
         { txMeta, actionId },
         { waitForResult: true, walletType: HardwareKeyringNames.ledger },
       );
-    });
-  });
-
-  describe('#rejectPendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', function () {
-      const error = new ApprovalRequestNotFoundError('123');
-      metamaskController.approvalController = {
-        rejectRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.approvalController = {
-        rejectRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).toThrow(error);
     });
   });
 

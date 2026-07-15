@@ -1105,9 +1105,9 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
         metamaskState.preferences?.tokenNetworkFilter || {},
       ),
-      [MetaMetricsUserTrait.ProfileId]: Object.entries(
+      [MetaMetricsUserTrait.CanonicalProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
-      )?.[0]?.[1]?.profile?.profileId,
+      )?.[0]?.[1]?.profile?.canonicalProfileId,
       [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(
         metamaskState.firstTimeFlowType,
       ),

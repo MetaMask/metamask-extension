@@ -4,6 +4,7 @@ import {
   getEnforcedSimulationsSlippage,
   getIsEnforcedSimulationsEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
+import { getIsPayAmountPrefillEnabled } from '../../../../shared/lib/transaction/pay-prefill';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -41,21 +42,6 @@ type PreferredTokensConfig = {
 
 type RawPayTokensFlag = {
   preferredTokens?: PreferredTokensConfig;
-};
-
-export type PayPrefilledAmountConfig = {
-  enabled?: boolean;
-};
-
-type RawPayExtendedFlag = {
-  prefilledAmount?: {
-    default?: PayPrefilledAmountConfig;
-    overrides?: Record<string, PayPrefilledAmountConfig>;
-    [transactionType: string]:
-      | PayPrefilledAmountConfig
-      | Record<string, PayPrefilledAmountConfig>
-      | undefined;
-  };
 };
 
 type HardwareWalletConfig = {
@@ -100,18 +86,6 @@ const selectPayTokensFlag = createSelector(
         confirmations_pay_tokens?: RawPayTokensFlag;
       }
     ).confirmations_pay_tokens,
-  /* eslint-enable @typescript-eslint/naming-convention */
-);
-
-const selectPayExtendedFlag = createSelector(
-  getRemoteFeatureFlags,
-  (flags) =>
-    /* eslint-disable @typescript-eslint/naming-convention */
-    (
-      flags as unknown as {
-        confirmations_pay_extended?: RawPayExtendedFlag;
-      }
-    ).confirmations_pay_extended,
   /* eslint-enable @typescript-eslint/naming-convention */
 );
 
@@ -171,20 +145,11 @@ export const selectPayQuoteConfig = createSelector(
  */
 export const selectIsPayAmountPrefillEnabled = createSelector(
   [
-    selectPayExtendedFlag,
+    getRemoteFeatureFlags,
     (_state, transactionType?: string) => transactionType,
   ],
-  (flag, transactionType): boolean => {
-    const prefill = flag?.prefilledAmount;
-    const defaultEnabled = prefill?.default?.enabled ?? false;
-
-    const transactionConfig = transactionType
-      ? (prefill?.overrides?.[transactionType] ??
-        (prefill?.[transactionType] as PayPrefilledAmountConfig | undefined))
-      : undefined;
-
-    return transactionConfig?.enabled ?? defaultEnabled;
-  },
+  (remoteFeatureFlags, transactionType): boolean =>
+    getIsPayAmountPrefillEnabled({ remoteFeatureFlags }, transactionType),
 );
 
 export const selectPreferredPayToken = createSelector(

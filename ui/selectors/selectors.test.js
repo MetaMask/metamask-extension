@@ -1,3 +1,5 @@
+/* eslint-disable jest/require-top-level-describe -- file-wide reselect dev mode hooks */
+import { setGlobalDevModeChecks } from 'reselect';
 import { ApprovalType } from '@metamask/controller-utils';
 import { KnownCaipNamespace } from '@metamask/utils';
 import {
@@ -63,6 +65,14 @@ jest.mock('./multichain/networks', () => ({
     return state.metamask.selectedMultichainNetworkChainId;
   }),
 }));
+
+beforeAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
+});
+
+afterAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'once' });
+});
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
@@ -1132,6 +1142,80 @@ describe('Selectors', () => {
       expect(selectors.getTransaction.recomputations()).toBe(2);
     });
 
+    it('returns updated transaction when transaction object is replaced in state', () => {
+      const initialTx = {
+        chainId: CHAIN_IDS.MAINNET,
+        id: 'tx-1',
+        status: TransactionStatus.submitted,
+        txParams: { to: '0x1' },
+      };
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [initialTx],
+        },
+      };
+
+      expect(selectors.getTransaction(mutableState, 'tx-1').txParams.to).toBe(
+        '0x1',
+      );
+
+      const updatedState = {
+        ...mutableState,
+        metamask: {
+          ...mutableState.metamask,
+          transactions: [
+            {
+              ...initialTx,
+              txParams: { to: '0xupdated' },
+            },
+          ],
+        },
+      };
+
+      expect(selectors.getTransaction(updatedState, 'tx-1').txParams.to).toBe(
+        '0xupdated',
+      );
+    });
+
+    it('recomputes unapproved transaction when txParams mutate in place', () => {
+      const mutableState = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-3',
+              status: TransactionStatus.unapproved,
+              txParams: { maxFeePerGas: '0x1', gas: '0x5208' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x1');
+
+      mutableState.metamask.transactions[0].txParams.maxFeePerGas = '0x999';
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x999');
+    });
+
     it('caches full transaction data per transaction ID', () => {
       expect(
         selectors.getFullTxData(
@@ -1285,6 +1369,7 @@ describe('Selectors', () => {
   it('#getAdvancedGasFeeValues', () => {
     const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
+      userFeeLevel: 'custom',
       maxBaseFee: '75',
       priorityFee: '2',
     });
@@ -1297,6 +1382,76 @@ describe('Selectors', () => {
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
+  });
+
+  describe('#getNames', () => {
+    it('returns a stable empty object when names are unavailable', () => {
+      const result1 = selectors.getNames({ metamask: {} });
+      const result2 = selectors.getNames({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the names slice is unchanged', () => {
+      const names = {
+        ethereumAddress: {
+          '0xabc': {
+            '0x1': {
+              name: 'Test Name',
+            },
+          },
+        },
+      };
+      const state = {
+        metamask: {
+          names,
+        },
+      };
+
+      const result1 = selectors.getNames(state);
+      const result2 = selectors.getNames({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(names);
+    });
+  });
+
+  describe('#getNameSources', () => {
+    it('returns a stable empty object when name sources are unavailable', () => {
+      const result1 = selectors.getNameSources({ metamask: {} });
+      const result2 = selectors.getNameSources({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the name sources slice is unchanged', () => {
+      const nameSources = {
+        ens: { label: 'ENS' },
+      };
+      const state = {
+        metamask: {
+          nameSources,
+        },
+      };
+
+      const result1 = selectors.getNameSources(state);
+      const result2 = selectors.getNameSources({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(nameSources);
+    });
   });
 
   it('#getShowOutdatedBrowserWarning returns false if outdatedBrowserWarningLastShown is less than 2 days ago', () => {
@@ -4859,5 +5014,115 @@ describe('snap selectors', () => {
     expect(
       selectors.getThirdPartyNotifySnaps(snapState).map(({ id }) => id),
     ).toStrictEqual(['npm:bar']);
+  });
+});
+
+describe('getUnconnectedAccounts', () => {
+  const origin = 'https://test.dapp';
+  const connectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+  const stateWithConnectedAccount = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      subjects: {
+        [origin]: {
+          permissions: {
+            'endowment:caip25': {
+              caveats: [
+                {
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [`eip155:1:${connectedAddress}`],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+              invoker: origin,
+              parentCapability: 'endowment:caip25',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  it('returns accounts that are not connected to the active dapp', () => {
+    const result = selectors.getUnconnectedAccounts(
+      stateWithConnectedAccount,
+      origin,
+    );
+    const resultAddresses = result.map((account) => account.address);
+    expect(resultAddresses).not.toContain(connectedAddress);
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('returns all accounts when no accounts are connected to the dapp', () => {
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const result = selectors.getUnconnectedAccounts(mockState, origin);
+    expect(result).toHaveLength(allAccounts.length);
+  });
+
+  it('returns an empty array when all accounts are connected', () => {
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const allAddresses = allAccounts.map((a) => a.address);
+
+    const stateWithAllConnected = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        subjects: {
+          [origin]: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: allAddresses.map(
+                            (addr) => `eip155:1:${addr}`,
+                          ),
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                invoker: origin,
+                parentCapability: 'endowment:caip25',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const result = selectors.getUnconnectedAccounts(
+      stateWithAllConnected,
+      origin,
+    );
+    expect(result).toStrictEqual([]);
+  });
+
+  it('does not include the connected account in the result', () => {
+    const result = selectors.getUnconnectedAccounts(
+      stateWithConnectedAccount,
+      origin,
+    );
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(
+      stateWithConnectedAccount,
+    );
+    expect(result).toHaveLength(allAccounts.length - 1);
+    expect(result.some((account) => account.address === connectedAddress)).toBe(
+      false,
+    );
   });
 });

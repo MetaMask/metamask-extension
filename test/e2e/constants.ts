@@ -90,6 +90,12 @@ export const HARDWARE_WALLET_ACCOUNT_ID =
 /** Trezor hardware wallet address (lowercase) */
 export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
+/**
+ * Human-readable localhost native ETH balance seeded by hardware wallet E2E
+ * tests via `0x100000000000000000000` wei (`setAccountBalance`).
+ */
+export const HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN = '1208925';
+
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 
@@ -249,13 +255,14 @@ export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 /* Title of Portfolio page */
 export const PORTFOLIO_PAGE_TITLE = 'MetaMask Portfolio';
 
-/* Default TRON address created using test SRP */
+/* Default TRON address created using test SRP (Account 1) */
 export const DEFAULT_TRON_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 
-/* Second TRON address created using test SRP */
+/* Arbitrary Tron recipient address used in send-flow tests
+ * (signAndSendTrx, signAndSendUsdt). NOT a snap-derived HD account. */
 export const DEFAULT_TRON_ADDRESS_2 = 'TEcjynxEx7bPfDByW1uwPgsLCBhqynvpQx';
 
-/* Default TRON address created using test SRP */
+/* Default TRON address shortened display (Account 1) */
 export const DEFAULT_TRON_ADDRESS_SHORT = 'TJ3Q...vGS3';
 
 /* Account types */
@@ -287,6 +294,15 @@ export const MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES = {
   canonical_profile_id: MOCK_CANONICAL_PROFILE_ID,
 } as const;
 
+/** Universal event properties added downstream by the platform adapter in E2E. */
+export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
+  locale: 'en',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  chain_id: '0x539',
+  ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
+} as const;
+
 /* Mock remote feature flags response */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
@@ -307,6 +323,9 @@ export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
 
 /* The password for the wallet used in e2e tests*/
 export const WALLET_PASSWORD = 'correct horse battery staple';
+
+/** Default OTP for QrSync E2E scenarios (matches mobile simulator). */
+export const QR_SYNC_E2E_OTP = '123456';
 
 export const MOCK_AUTH_CONNECTION_ID = 'torus-test-health';
 export const MOCK_GROUPED_AUTH_CONNECTION_ID = 'torus-test-health-aggregate';

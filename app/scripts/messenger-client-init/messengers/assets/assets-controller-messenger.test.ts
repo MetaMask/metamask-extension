@@ -5,6 +5,45 @@ import {
   getAssetsControllerInitMessenger,
 } from './assets-controller-messenger';
 
+const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
+  'AccountTreeController:getAccountsFromSelectedAccountGroup',
+  'NetworkEnablementController:getState',
+  'NetworkController:getState',
+  'NetworkController:getNetworkClientById',
+  'BackendWebSocketService:subscribe',
+  'BackendWebSocketService:getConnectionInfo',
+  'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+  'BackendWebSocketService:addChannelCallback',
+  'BackendWebSocketService:removeChannelCallback',
+  'SnapController:handleRequest',
+  'SnapController:getRunnableSnaps',
+  'PermissionController:getPermissions',
+  'PhishingController:bulkScanTokens',
+  'AccountsController:getSelectedAccount',
+] as const;
+
+const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
+  'AccountTreeController:selectedAccountGroupChange',
+  'AccountTreeController:stateChanged',
+  'ClientController:stateChanged',
+  'NetworkEnablementController:stateChange',
+  'NetworkEnablementController:stateChanged',
+  'KeyringController:lock',
+  'KeyringController:unlock',
+  'NetworkController:stateChange',
+  'NetworkController:networkDidChange',
+  'NetworkController:networkRemoved',
+  'NetworkController:networkAdded',
+  'BackendWebSocketService:connectionStateChanged',
+  'AccountsController:accountBalancesUpdated',
+  'PermissionController:stateChange',
+  'SnapController:snapInstalled',
+  'PreferencesController:stateChange',
+  'TransactionController:transactionConfirmed',
+  'TransactionController:unapprovedTransactionAdded',
+  'AccountActivityService:balanceUpdated',
+] as const;
+
 describe('getAssetsControllerMessenger', () => {
   it('returns a messenger instance', () => {
     const messenger = getRootMessenger<never, never>();
@@ -29,21 +68,99 @@ describe('getAssetsControllerMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: expect.arrayContaining([
-          // Core dependencies
-          'AccountTreeController:getAccountsFromSelectedAccountGroup',
-          'NetworkEnablementController:getState',
-          // Network dependencies
-          'NetworkController:getState',
-          'NetworkController:getNetworkClientById',
-          // Backend WebSocket dependencies
+          ...ASSETS_CONTROLLER_DELEGATED_ACTIONS,
+        ]),
+      }),
+    );
+  });
+
+  it('delegates AccountsController accountBalancesUpdated event', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining([
+          'AccountsController:accountBalancesUpdated',
+        ]),
+      }),
+    );
+  });
+
+  it('delegates AccountActivityService balanceUpdated event', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining([
+          'AccountActivityService:balanceUpdated',
+        ]),
+      }),
+    );
+  });
+
+  it('delegates core#9388 account-group and network-enablement events', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining([
+          'AccountTreeController:selectedAccountGroupChange',
+          'AccountTreeController:stateChanged',
+          'NetworkEnablementController:stateChanged',
+        ]),
+      }),
+    );
+  });
+
+  it('delegates NetworkController networkDidChange event', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining(['NetworkController:networkDidChange']),
+      }),
+    );
+  });
+
+  it('delegates NetworkController stateChange event', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining(['NetworkController:stateChange']),
+      }),
+    );
+  });
+
+  it('delegates BackendWebsocketDataSource WebSocket actions', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
           'BackendWebSocketService:subscribe',
           'BackendWebSocketService:getConnectionInfo',
           'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-          // SnapDataSource dependencies
-          'SnapController:handleRequest',
-          'SnapController:getRunnableSnaps',
-          'PermissionController:getPermissions',
-          'PhishingController:bulkScanTokens',
+          'BackendWebSocketService:addChannelCallback',
+          'BackendWebSocketService:removeChannelCallback',
         ]),
       }),
     );
@@ -57,19 +174,7 @@ describe('getAssetsControllerMessenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        events: expect.arrayContaining([
-          // Core events
-          'AccountTreeController:selectedAccountGroupChange',
-          'NetworkEnablementController:stateChange',
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          // Data source events
-          'NetworkController:stateChange',
-          'BackendWebSocketService:connectionStateChanged',
-          'AccountsController:accountBalancesUpdated',
-          'PermissionController:stateChange',
-          'PreferencesController:stateChange',
-        ]),
+        events: expect.arrayContaining([...ASSETS_CONTROLLER_DELEGATED_EVENTS]),
       }),
     );
   });
@@ -104,6 +209,7 @@ describe('getAssetsControllerInitMessenger', () => {
           'AuthenticationController:getBearerToken',
           'SnapController:handleRequest',
           'PreferencesController:getState',
+          'OnboardingController:getState',
         ]),
       }),
     );

@@ -134,6 +134,7 @@
       "srcAsset": {
         "chainId": 10,
         "address": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+        "assetId": "eip155:10/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
         "symbol": "USDC",
         "name": "USD Coin",
         "decimals": 6,
