@@ -1,11 +1,21 @@
 import BigNumber from 'bignumber.js';
 import { capitalize } from 'lodash';
-import type { Order, OrderParams, Position } from '@metamask/perps-controller';
+import {
+  type Order,
+  type OrderParams,
+  type Position,
+} from '@metamask/perps-controller';
 
 const FULL_POSITION_SIZE_TOLERANCE = new BigNumber('0.00000001');
 const ORDER_PRICE_MATCH_TOLERANCE = new BigNumber('0.00000001');
 const SYNTHETIC_TP_ID_SUFFIX = '-synthetic-tp';
 const SYNTHETIC_SL_ID_SUFFIX = '-synthetic-sl';
+const TP_SL_DETAILED_ORDER_TYPES = new Set([
+  'Stop Limit',
+  'Stop Market',
+  'Take Profit Limit',
+  'Take Profit Market',
+]);
 
 /**
  * Safely creates a BigNumber, returning null for empty/invalid values.
@@ -51,6 +61,10 @@ const getOrderTriggerPrice = (order: Order): BigNumber | null => {
   }
   return parsedPrice;
 };
+
+const isDetailedTpSlOrder = (detailedOrderType?: string): boolean =>
+  detailedOrderType !== undefined &&
+  TP_SL_DETAILED_ORDER_TYPES.has(detailedOrderType);
 
 const isClosingSideForPosition = (
   order: Order,
@@ -270,10 +284,9 @@ export const derivePositionTpslPricesFromOrders = (
  * Determines whether an order should be shown in Market Details > Orders
  * (the perps asset / position detail screen).
  *
- * All non-reduce-only orders are shown. Reduce-only orders are shown only when
- * they are NOT full-position TP/SL — those are surfaced in the auto-close
- * section instead, so keeping them out of the orders list avoids duplicate
- * entries.
+ * All non-reduce-only orders and plain reduce-only close orders are shown.
+ * Only full-position TP/SL orders are hidden because those are surfaced in the
+ * auto-close section instead.
  *
  * @param order - The order to check
  * @param position - The current position (if any)
@@ -286,6 +299,15 @@ export const shouldDisplayOrderInMarketDetailsOrders = (
   if (!order.reduceOnly) {
     return true;
   }
+
+  const isTpSlOrder =
+    order.isPositionTpsl === true ||
+    order.isTrigger === true ||
+    isDetailedTpSlOrder(order.detailedOrderType);
+  if (!isTpSlOrder) {
+    return true;
+  }
+
   return !isOrderAssociatedWithFullPosition(order, position);
 };
 
@@ -409,8 +431,8 @@ export const buildDisplayOrdersWithSyntheticTpsl = (
  * Normalizes orders for the Perps Market Details > Orders section.
  *
  * Composes display-order enrichment (synthetic TP/SL rows) with visibility
- * filtering: reduce-only orders associated with the full position are excluded
- * because they are surfaced in the auto-close section instead.
+ * filtering: full-position TP/SL orders are excluded because they are surfaced
+ * in the auto-close section instead. Plain reduce-only close orders remain.
  *
  * @param options0 - Options object
  * @param options0.orders - The orders to normalize

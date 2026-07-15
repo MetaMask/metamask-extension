@@ -161,9 +161,11 @@ jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
     CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+    LIMIT_CLOSE_FAILED: 'perpsToastLimitCloseFailed',
     PARTIAL_CLOSE_FAILED: 'perpsToastPartialCloseFailed',
     PARTIAL_CLOSE_IN_PROGRESS: 'perpsToastPartialCloseInProgress',
     PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
+    PARTIAL_LIMIT_CLOSE_FAILED: 'perpsToastPartialLimitCloseFailed',
     ORDER_PLACED: 'perpsToastOrderPlaced',
     ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
@@ -793,6 +795,34 @@ describe('ClosePositionModal', () => {
       });
     };
 
+    const submitLimitClose = async ({ partial }: { partial: boolean }) => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('3000');
+      if (partial) {
+        const slider = within(
+          screen.getByTestId('close-amount-slider-pct-100'),
+        ).getByRole('slider');
+        fireEvent.change(slider, { target: { value: '50' } });
+      }
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledTimes(2);
+      });
+    };
+
     it('keeps the existing market-only UI when the flag is disabled', () => {
       renderWithProvider(
         <ClosePositionModal
@@ -977,6 +1007,66 @@ describe('ClosePositionModal', () => {
             }),
           ],
         );
+      });
+    });
+
+    it('shows a placement failure for a rejected full limit close', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'limit_order_failed',
+      });
+
+      await submitLimitClose({ partial: false });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenNthCalledWith(2, {
+        key: 'perpsToastLimitCloseFailed',
+        description: tEn('perpsToastPositionStillActive'),
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastCloseFailed' }),
+      );
+    });
+
+    it('shows a placement failure for a rejected partial limit close', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'limit_order_failed',
+      });
+
+      await submitLimitClose({ partial: true });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenNthCalledWith(2, {
+        key: 'perpsToastPartialLimitCloseFailed',
+        description: tEn('perpsToastPositionStillActive'),
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastPartialCloseFailed' }),
+      );
+    });
+
+    it('shows one placement failure when a full limit close throws', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('network error'),
+      );
+
+      await submitLimitClose({ partial: false });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenNthCalledWith(2, {
+        key: 'perpsToastLimitCloseFailed',
+        description: tEn('perpsToastPositionStillActive'),
+      });
+    });
+
+    it('shows one placement failure when a partial limit close throws', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('network error'),
+      );
+
+      await submitLimitClose({ partial: true });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenNthCalledWith(2, {
+        key: 'perpsToastPartialLimitCloseFailed',
+        description: tEn('perpsToastPositionStillActive'),
       });
     });
 

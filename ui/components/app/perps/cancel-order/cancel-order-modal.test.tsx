@@ -101,6 +101,42 @@ describe('CancelOrderModal', () => {
       expect(screen.getByText('Limit short')).toBeInTheDocument();
     });
 
+    it('builds modal title as "Limit close long" for a reduce-only sell', () => {
+      const closeLongOrder: Order = {
+        ...baseOrder,
+        side: 'sell',
+        reduceOnly: true,
+      };
+      renderWithProvider(
+        <CancelOrderModal
+          isOpen
+          onClose={jest.fn()}
+          order={closeLongOrder}
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Limit close long')).toBeInTheDocument();
+    });
+
+    it('builds modal title as "Limit close short" for a reduce-only buy', () => {
+      const closeShortOrder: Order = {
+        ...baseOrder,
+        side: 'buy',
+        reduceOnly: true,
+      };
+      renderWithProvider(
+        <CancelOrderModal
+          isOpen
+          onClose={jest.fn()}
+          order={closeShortOrder}
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Limit close short')).toBeInTheDocument();
+    });
+
     it('displays the limit price row', () => {
       renderWithProvider(
         <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,

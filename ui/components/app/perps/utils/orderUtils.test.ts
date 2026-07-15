@@ -169,8 +169,9 @@ describe('orderUtils', () => {
       ).toBe(true);
     });
 
-    it('excludes full-position reduce-only and isPositionTpsl orders', () => {
+    it('includes full-position plain reduce-only limit closes', () => {
       const fullClose = makeOrder({
+        orderType: 'limit',
         reduceOnly: true,
         symbol: 'ETH',
         side: 'sell',
@@ -179,14 +180,32 @@ describe('orderUtils', () => {
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
       expect(shouldDisplayOrderInMarketDetailsOrders(fullClose, position)).toBe(
-        false,
+        true,
       );
+    });
 
+    it('excludes orders flagged as position TP/SL', () => {
       const positionTpsl = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
       });
       expect(shouldDisplayOrderInMarketDetailsOrders(positionTpsl)).toBe(false);
+    });
+
+    it('excludes full-position TP/SL identified by detailed order type', () => {
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const positionTpsl = makeOrder({
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        detailedOrderType: 'Take Profit Limit',
+      });
+
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(positionTpsl, position),
+      ).toBe(false);
     });
 
     it('excludes zero-size reduce-only trigger orders matching the position even without isPositionTpsl flag', () => {
@@ -543,6 +562,24 @@ describe('orderUtils', () => {
         orders: [partialClose],
         existingPosition: position,
       });
+      expect(result).toHaveLength(1);
+    });
+
+    it('shows full-position plain limit-close orders', () => {
+      const fullClose = makeOrder({
+        orderType: 'limit',
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const result = normalizeMarketDetailsOrders({
+        orders: [fullClose],
+        existingPosition: position,
+      });
+
       expect(result).toHaveLength(1);
     });
 

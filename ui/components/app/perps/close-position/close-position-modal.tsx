@@ -226,11 +226,13 @@ const getCloseSuccessToastConfig = ({
 const getCloseFailureToastConfig = ({
   error,
   isPartialClose,
+  orderType,
   t,
   formatFiat,
 }: {
   error: unknown;
   isPartialClose: boolean;
+  orderType: OrderType;
   t: CloseToastTranslation;
   formatFiat: FormatPerpsFiat;
 }): { errorMessage: string; toast: CloseToastConfig } => {
@@ -242,6 +244,18 @@ const getCloseFailureToastConfig = ({
         formatFiat(PERPS_MIN_MARKET_ORDER_USD),
       ])
     : handlePerpsError(error, t as (key: string) => string);
+
+  if (orderType === 'limit') {
+    return {
+      errorMessage,
+      toast: {
+        key: isPartialClose
+          ? PERPS_TOAST_KEYS.PARTIAL_LIMIT_CLOSE_FAILED
+          : PERPS_TOAST_KEYS.LIMIT_CLOSE_FAILED,
+        description: t('perpsToastPositionStillActive'),
+      },
+    };
+  }
 
   if (isPartialClose) {
     return {
@@ -610,6 +624,7 @@ export const ClosePositionModal = ({
           const { errorMessage, toast } = getCloseFailureToastConfig({
             error: new Error(message),
             isPartialClose,
+            orderType: effectiveOrderType,
             t,
             formatFiat,
           });
@@ -671,6 +686,7 @@ export const ClosePositionModal = ({
         const { errorMessage, toast } = getCloseFailureToastConfig({
           error: err,
           isPartialClose,
+          orderType: effectiveOrderType,
           t,
           formatFiat,
         });
