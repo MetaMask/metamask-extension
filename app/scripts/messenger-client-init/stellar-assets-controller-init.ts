@@ -21,7 +21,7 @@ function getIsStellarEnabled(
       ) &&
       isMultichainFeatureEnabled(
         // Individual feature flag for asset enrichment
-        remoteFeatureFlagState?.remoteFeatureFlags?.assetEnrichment,
+        remoteFeatureFlagState?.remoteFeatureFlags?.stellarAssetEnrichment,
       )
     );
   } catch {
