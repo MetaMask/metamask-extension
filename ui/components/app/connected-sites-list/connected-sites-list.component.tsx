@@ -1,7 +1,11 @@
 import React, { useCallback } from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
 import Button from '../../ui/button';
-import { AvatarFavicon, AvatarFaviconSize, IconSize } from '../../component-library';
+import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+  IconSize,
+} from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
 import { SnapIcon } from '../snaps/snap-icon';

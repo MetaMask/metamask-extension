@@ -1,27 +1,12 @@
-import React, { type ReactNode } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
 } from '../../../component-library/button';
-import { IconName } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-
-type PageContainerFooterProps = {
-  children?: ReactNode;
-  onCancel?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  cancelText?: string;
-  cancelButtonType?: string;
-  onSubmit?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  submitText?: string;
-  disabled?: boolean;
-  submitButtonType?: string;
-  hideCancel?: boolean;
-  footerClassName?: string;
-  footerButtonClassName?: string;
-  submitButtonIcon?: IconName;
-};
 
 export default function PageContainerFooter({
   children,
@@ -36,18 +21,14 @@ export default function PageContainerFooter({
   footerClassName,
   footerButtonClassName,
   submitButtonIcon,
-}: PageContainerFooterProps) {
+}) {
   const t = useI18nContext();
 
-  const submitVariant: ButtonVariant =
-    submitButtonType === 'confirm'
-      ? ButtonVariant.Primary
-      : (submitButtonType as ButtonVariant | undefined) ?? ButtonVariant.Primary;
+  const submitVariant =
+    submitButtonType === 'confirm' ? ButtonVariant.Primary : submitButtonType;
 
-  const cancelVariant: ButtonVariant =
-    cancelButtonType === 'default'
-      ? ButtonVariant.Secondary
-      : (cancelButtonType as ButtonVariant | undefined) ?? ButtonVariant.Secondary;
+  const cancelVariant =
+    cancelButtonType === 'default' ? ButtonVariant.Secondary : cancelButtonType;
 
   return (
     <div className={classnames('page-container__footer', footerClassName)}>
@@ -55,13 +36,13 @@ export default function PageContainerFooter({
         {!hideCancel && (
           <Button
             size={ButtonSize.Lg}
-            variant={cancelVariant}
+            variant={cancelVariant ?? ButtonVariant.Secondary}
             className={classnames(
               'page-container__footer-button',
               'page-container__footer-button__cancel',
               footerButtonClassName,
             )}
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => onCancel?.(e)}
+            onClick={(e) => onCancel(e)}
             data-testid="page-container-footer-cancel"
             block
           >
@@ -71,13 +52,13 @@ export default function PageContainerFooter({
 
         <Button
           size={ButtonSize.Lg}
-          variant={submitVariant}
+          variant={submitVariant ?? ButtonVariant.Primary}
           className={classnames(
             'page-container__footer-button',
             footerButtonClassName,
           )}
           disabled={disabled}
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => onSubmit?.(e)}
+          onClick={(e) => onSubmit(e)}
           data-testid="page-container-footer-next"
           startIconName={submitButtonIcon}
           block
@@ -92,3 +73,18 @@ export default function PageContainerFooter({
     </div>
   );
 }
+
+PageContainerFooter.propTypes = {
+  children: PropTypes.node,
+  onCancel: PropTypes.func,
+  cancelText: PropTypes.string,
+  cancelButtonType: PropTypes.string,
+  onSubmit: PropTypes.func,
+  submitText: PropTypes.string,
+  disabled: PropTypes.bool,
+  submitButtonType: PropTypes.string,
+  hideCancel: PropTypes.bool,
+  footerClassName: PropTypes.string,
+  footerButtonClassName: PropTypes.string,
+  submitButtonIcon: PropTypes.string,
+};

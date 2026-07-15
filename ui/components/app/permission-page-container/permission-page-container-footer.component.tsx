@@ -1,7 +1,7 @@
 import React from 'react';
+import { IconName } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTemplateAlertContext } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
-import { IconName } from '../../component-library';
 import { PageContainerFooter } from '../../ui/page-container';
 
 export const PermissionPageContainerFooter = ({

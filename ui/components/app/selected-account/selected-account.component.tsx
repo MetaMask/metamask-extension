@@ -46,6 +46,9 @@ function SelectedAccount({ selectedAccount }: SelectedAccountProps) {
 
   const handleCopy = useCallback(() => {
     setCopied(true);
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
     copyTimeoutRef.current = setTimeout(() => setCopied(false), SECOND * 3);
     copyToClipboard(checksummedAddress, COPY_OPTIONS);
   }, [checksummedAddress]);

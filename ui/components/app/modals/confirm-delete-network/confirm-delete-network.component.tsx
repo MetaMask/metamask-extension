@@ -110,20 +110,26 @@ export default function ConfirmDeleteNetwork({
         </Text>
         <ModalFooter
           className="px-0 pt-6"
-          secondaryButtonProps={{
-            children: t('cancel'),
-            onClick: hideModal,
-            size: ButtonSize.Lg,
-            variant: ButtonVariant.Secondary,
-          } as React.ComponentProps<typeof ModalFooter>['secondaryButtonProps']}
-          primaryButtonProps={{
-            children: t('delete'),
-            'data-testid': 'confirm-delete-network-modal-delete-button',
-            isDanger: true,
-            onClick: handleDelete,
-            size: ButtonSize.Lg,
-            variant: ButtonVariant.Primary,
-          } as React.ComponentProps<typeof ModalFooter>['primaryButtonProps']}
+          secondaryButtonProps={
+            {
+              children: t('cancel'),
+              onClick: hideModal,
+              size: ButtonSize.Lg,
+              variant: ButtonVariant.Secondary,
+            } as React.ComponentProps<
+              typeof ModalFooter
+            >['secondaryButtonProps']
+          }
+          primaryButtonProps={
+            {
+              children: t('delete'),
+              'data-testid': 'confirm-delete-network-modal-delete-button',
+              isDanger: true,
+              onClick: handleDelete,
+              size: ButtonSize.Lg,
+              variant: ButtonVariant.Primary,
+            } as React.ComponentProps<typeof ModalFooter>['primaryButtonProps']
+          }
         />
       </ModalContent>
     </Modal>
