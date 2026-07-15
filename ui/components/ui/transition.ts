@@ -22,15 +22,7 @@ const startTransition = (
     return;
   }
   document.documentElement.dataset.pageTransition = direction;
-  const transition = document.startViewTransition(() => {
-    let callbackResult: ReturnType<TransitionCallback>;
-
-    flushSync(() => {
-      callbackResult = callback();
-    });
-
-    return callbackResult;
-  });
+  const transition = document.startViewTransition(() => flushSync(callback));
   transition.finished.finally(() => {
     delete document.documentElement.dataset.pageTransition;
   });
