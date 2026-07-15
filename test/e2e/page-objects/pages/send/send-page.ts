@@ -221,6 +221,24 @@ class SendPage {
     return value as string;
   }
 
+  /**
+   * Waits until the amount input value matches the expected amount (compared
+   * numerically). Prefer this over reading the value once, which races the fill.
+   *
+   * @param expectedAmount - The expected amount.
+   */
+  async checkAmountInputValue(expectedAmount: string): Promise<void> {
+    console.log(`Waiting for amount input value to be ${expectedAmount}`);
+    await this.driver.waitUntil(
+      async () => {
+        const inputElement = await this.driver.findElement(this.amountInput);
+        const value = await inputElement.getAttribute('value');
+        return parseFloat(value) === parseFloat(expectedAmount);
+      },
+      { interval: 100, timeout: 5000 },
+    );
+  }
+
   async isContinueButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.continueButton, {
@@ -232,6 +250,20 @@ class SendPage {
     }
     console.log('Continue button enabled');
     return true;
+  }
+
+  async checkContinueButtonEnabled(): Promise<void> {
+    console.log('Waiting for continue button to be enabled');
+    await this.driver.waitForSelector(this.continueButton, {
+      state: 'enabled',
+    });
+  }
+
+  async checkContinueButtonDisabled(): Promise<void> {
+    console.log('Waiting for continue button to be disabled');
+    await this.driver.waitForSelector(this.continueButton, {
+      state: 'disabled',
+    });
   }
 
   async waitForSendAmountBalance(): Promise<void> {

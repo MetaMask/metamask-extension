@@ -4,7 +4,6 @@ import { ToastListener } from './toast-listener';
 
 const mockUseSelector = jest.fn();
 const mockPerpsDepositToast = jest.fn(() => null);
-const mockUsePerpsWithdrawTransactionToasts = jest.fn();
 const mockUseMusdConversionToastStatus = jest.fn(() => ({
   activeTransactionId: undefined,
 }));
@@ -38,11 +37,6 @@ jest.mock('../../../hooks/musd/useMerklClaimStatus', () => ({
   useMerklClaimStatus: () => mockUseMerklClaimStatus(),
 }));
 
-jest.mock('./usePerpsWithdrawTransactionToasts', () => ({
-  usePerpsWithdrawTransactionToasts: () =>
-    mockUsePerpsWithdrawTransactionToasts(),
-}));
-
 jest.mock('./transaction-event-toast-listener', () => ({
   TransactionEventToastListener: () => null,
 }));
@@ -67,7 +61,6 @@ describe('ToastListener', () => {
   it('mounts toast hooks in interactive UI', () => {
     renderToastListener({ isInteractive: true });
 
-    expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
     expect(mockUseMusdConversionToastStatus).toHaveBeenCalledTimes(1);
     expect(mockUseMusdConversionConfirmTrace).toHaveBeenCalledWith('');
     expect(mockUseMerklClaimStatus).toHaveBeenCalledTimes(1);
@@ -77,7 +70,6 @@ describe('ToastListener', () => {
     renderToastListener({ isInteractive: false });
 
     expect(mockPerpsDepositToast).not.toHaveBeenCalled();
-    expect(mockUsePerpsWithdrawTransactionToasts).not.toHaveBeenCalled();
     expect(mockUseMusdConversionToastStatus).not.toHaveBeenCalled();
     expect(mockUseMusdConversionConfirmTrace).not.toHaveBeenCalled();
     expect(mockUseMerklClaimStatus).not.toHaveBeenCalled();
