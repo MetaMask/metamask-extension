@@ -163,8 +163,9 @@ export function buildTronFixtures(
     zeroBalance = false,
   }: BuildTronFixturesOptions = {},
 ) {
-  let builder = new FixtureBuilderV2()
-    .withAssetsController(buildTronAssetsControllerFixture(zeroBalance));
+  let builder = new FixtureBuilderV2().withAssetsController(
+    buildTronAssetsControllerFixture(zeroBalance),
+  );
 
   if (showNativeTokenAsMainBalanceDisabled) {
     builder = builder.withShowNativeTokenAsMainBalanceDisabled();
