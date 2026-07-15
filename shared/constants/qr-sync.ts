@@ -25,14 +25,27 @@ export const QR_SYNC_TERMINAL_PHASES = [
   QR_SYNC_PHASES.FAILED,
 ] as const;
 
-export const QR_SYNC_TIMEOUT_MS = {
+const QR_SYNC_TIMEOUT_MS_PRODUCTION = {
   SYNC_OFFER_TIMEOUT: 5_000, // 5 seconds
   SYNC_COMPLETION_TIMEOUT: 5_000, // 5 seconds
   MWP_SESSION_TIMEOUT: 60_000, // 60 seconds
 } as const;
 
+const QR_SYNC_TIMEOUT_MS_E2E = {
+  SYNC_OFFER_TIMEOUT: 1_000, // 1 second
+  SYNC_COMPLETION_TIMEOUT: 1_000, // 1 second
+  MWP_SESSION_TIMEOUT: 10_000, // 10 seconds
+} as const;
+
+/**
+ * QR sync timeouts. Shorter values in test builds (`IN_TEST`) keep E2E and unit
+ * tests from waiting on production-length session windows.
+ */
+export const QR_SYNC_TIMEOUT_MS = process.env.IN_TEST
+  ? QR_SYNC_TIMEOUT_MS_E2E
+  : QR_SYNC_TIMEOUT_MS_PRODUCTION;
+
 export const QrSyncErrorCodes = {
-  CHANNEL_INIT_FAILED: 'CHANNEL_INIT_FAILED',
   CHANNEL_DISCONNECTED: 'CHANNEL_DISCONNECTED',
   SESSION_EXPIRED: 'SESSION_EXPIRED',
   OTP_INVALID: 'OTP_INVALID',

@@ -4,11 +4,11 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   QR_SYNC_PHASES,
   QrSyncErrorCodes,
 } from '../../../../shared/constants/qr-sync';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import SyncAccountsSettings from './sync-accounts-settings';
 
@@ -23,42 +23,51 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('./components', () => ({
-  QrCodeScan: () => <div data-testid="qr-code-scan" />,
-  EnterVerificationCode: () => <div data-testid="enter-verification-code" />,
-  EnterPassword: ({
-    onPasswordChange,
-  }: {
-    onPasswordChange: (password: string) => void;
-  }) => (
-    <button
-      data-testid="enter-password"
-      type="button"
-      onClick={() => onPasswordChange('test-password')}
-    >
-      password
-    </button>
-  ),
-  AddWallets: () => <div data-testid="add-wallets" />,
-  LoadingStep: () => <div data-testid="loading-step" />,
-  Success: () => <div data-testid="success" />,
-  SyncError: ({
-    onRetry,
-    onCancel,
-  }: {
-    onRetry: () => void;
-    onCancel: () => void;
-  }) => (
-    <div data-testid="sync-error">
-      <button type="button" data-testid="sync-error-retry" onClick={onRetry}>
-        retry
+jest.mock('./components', () => {
+  const actual = jest.requireActual('./components');
+
+  return {
+    ...actual,
+    QrCodeScan: () => <div data-testid="qr-code-scan" />,
+    EnterVerificationCode: () => <div data-testid="enter-verification-code" />,
+    EnterPassword: ({
+      onPasswordChange,
+    }: {
+      onPasswordChange: (password: string) => void;
+    }) => (
+      <button
+        data-testid="enter-password"
+        type="button"
+        onClick={() => onPasswordChange('test-password')}
+      >
+        password
       </button>
-      <button type="button" data-testid="sync-error-cancel" onClick={onCancel}>
-        cancel
-      </button>
-    </div>
-  ),
-}));
+    ),
+    AddWallets: () => <div data-testid="add-wallets" />,
+    LoadingStep: () => <div data-testid="loading-step" />,
+    Success: () => <div data-testid="success" />,
+    SyncError: ({
+      onRetry,
+      onCancel,
+    }: {
+      onRetry: () => void;
+      onCancel: () => void;
+    }) => (
+      <div data-testid="sync-error">
+        <button type="button" data-testid="sync-error-retry" onClick={onRetry}>
+          retry
+        </button>
+        <button
+          type="button"
+          data-testid="sync-error-cancel"
+          onClick={onCancel}
+        >
+          cancel
+        </button>
+      </div>
+    ),
+  };
+});
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
@@ -252,7 +261,7 @@ describe('SyncAccountsSettings', () => {
     expect(screen.queryByTestId('qr-code-scan')).not.toBeInTheDocument();
   });
 
-  it('resets the session when retry is clicked on the error step', async () => {
+  it('cancels the session when retry is clicked on the error step', async () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -267,13 +276,13 @@ describe('SyncAccountsSettings', () => {
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'messengerCall',
-        ['QrSyncController:resetState', []],
+        ['QrSyncController:cancelSync', []],
       );
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('resets and navigates away when cancel is clicked on the error step', async () => {
+  it('cancels and navigates away when cancel is clicked on the error step', async () => {
     const store = configureMockStore([thunk])({
       ...qrSyncState,
       metamask: {
@@ -288,7 +297,7 @@ describe('SyncAccountsSettings', () => {
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'messengerCall',
-        ['QrSyncController:resetState', []],
+        ['QrSyncController:cancelSync', []],
       );
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });

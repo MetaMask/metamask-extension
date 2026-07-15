@@ -89,7 +89,6 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
-import { traceAsControllerCallback } from '../../shared/lib/trace';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import { augmentAssetControllersState } from '../components/app/assets/enablement/arc';
@@ -908,7 +907,6 @@ export const selectBalanceForAllWallets = createSelector(
         accountTreeState,
         accountsById,
         enabledNetworkMap,
-        traceAsControllerCallback,
       );
     }
     return calculateBalanceForAllWallets(
@@ -979,7 +977,6 @@ export const selectBalanceChangeBySelectedAccountGroup = (
           enabledNetworkMap,
           groupId,
           period,
-          traceAsControllerCallback,
         );
       }
       return calculateBalanceChangeForAccountGroup(
