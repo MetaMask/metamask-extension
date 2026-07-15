@@ -112,6 +112,15 @@ export function getLegacyBackgroundApiServiceMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      'ShieldController:clearState',
+      'SeedlessOnboardingController:clearState',
+      'PasskeyController:clearState',
+      'SubscriptionController:clearState',
+      'ClaimsController:clearState',
+      'AddressBookController:clear',
+      'PreferencesController:resetState',
+      'OnboardingController:resetOnboarding',
+      'AppStateController:setIsWalletResetInProgress',
     ],
   });
 
