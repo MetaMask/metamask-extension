@@ -228,7 +228,6 @@ describe('ShieldSubscriptionProvider', () => {
 
       const TestConsumer = () => {
         const { evaluateCohortEligibility } = useShieldSubscriptionContext();
-        // eslint-disable-next-line react-compiler/react-compiler
         evaluateFnRef.current = evaluateCohortEligibility;
         return <div data-testid="consumer">Consumer</div>;
       };
@@ -285,7 +284,6 @@ describe('ShieldSubscriptionProvider', () => {
 
       const TestConsumer = () => {
         const { evaluateCohortEligibility } = useShieldSubscriptionContext();
-        // eslint-disable-next-line react-compiler/react-compiler
         evaluateFnRef.current = evaluateCohortEligibility;
         return <div data-testid="consumer">Consumer</div>;
       };

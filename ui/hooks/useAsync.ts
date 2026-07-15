@@ -117,7 +117,7 @@ export function useAsyncCallback<T>(
         setResult(createErrorResult(error as Error));
       }
     }
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/use-memo
   }, deps);
 
   return [execute, result];
