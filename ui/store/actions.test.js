@@ -3838,6 +3838,21 @@ describe('Actions', () => {
         ),
       ).toBe(true);
     });
+
+    it('returns undefined when the background messenger call fails', async () => {
+      const messengerCallStub = sinon
+        .stub()
+        .withArgs('AuthenticationController:getCustomerServiceToken', [])
+        .rejects(new Error('auth failed'));
+
+      background.getApi.returns({
+        messengerCall: messengerCallStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const result = await actions.getCustomerServiceToken();
+      expect(result).toBeUndefined();
+    });
   });
 
   describe('#createOnChainTriggers', () => {

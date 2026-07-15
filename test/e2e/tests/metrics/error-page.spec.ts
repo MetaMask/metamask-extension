@@ -6,6 +6,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ErrorPage from '../../page-objects/pages/error-page';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
 import { login } from '../../page-objects/flows/login.flow';
+import { mockIdentityServices } from '../identity/mocks';
 
 /**
  * Mocks the segment API for events tracked from the error page.
@@ -28,6 +29,18 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
+/**
+ * Mocks Segment and authentication services needed to fetch a customer-service token.
+ *
+ * @param mockServer - The mock server instance.
+ * @returns The mocked Segment endpoints
+ */
+async function mockSupportLinkConsentMetrics(mockServer: Mockttp) {
+  const segmentMocks = await mockSegment(mockServer);
+  await mockIdentityServices(mockServer);
+  return segmentMocks;
+}
+
 describe('Error Page', function () {
   it('sends "Support Link Click" event with customer_service_token when user consents', async function () {
     await withFixtures(
@@ -40,7 +53,7 @@ describe('Error Page', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock: mockSupportLinkConsentMetrics,
         ignoredConsoleErrors: [
           'Unable to find value of key "debug" for locale "en"',
         ],
@@ -70,7 +83,7 @@ describe('Error Page', function () {
     );
   });
 
-  it('sends "Support Link Click" event without metrics ID when user does not consent', async function () {
+  it('sends "Support Link Click" event without customer_service_token when user does not consent', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -108,11 +121,16 @@ describe('Error Page', function () {
           /utm_source=extension/u,
           'Non-personal attribution parameter missing from tracked URL',
         );
-        // Personal data like metrics ID should NOT be present
+        // Personal data should NOT be present when user does not consent
+        assert.doesNotMatch(
+          queryString,
+          /customer_service_token/u,
+          'Customer service token should not be in tracked URL when user does not consent',
+        );
         assert.doesNotMatch(
           queryString,
           /metamask_metametrics_id/u,
-          'Personal data should not be in tracked URL when user does not consent',
+          'Metrics ID should not be in tracked URL when user does not consent',
         );
       },
     );

@@ -75,9 +75,7 @@ const VisitSupportDataConsentModal = ({
       openWindow(supportLinkWithUserId);
     };
 
-    getCustomerServiceToken()
-      .then(openSupportLink)
-      .catch(() => openSupportLink());
+    getCustomerServiceToken().then(openSupportLink);
   }, [
     onClose,
     version,

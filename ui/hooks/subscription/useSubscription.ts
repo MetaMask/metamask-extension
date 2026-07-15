@@ -747,9 +747,7 @@ export const useHandleSubscriptionSupportAction = () => {
       openWindow(supportLinkWithUserId);
     };
 
-    getCustomerServiceToken()
-      .then(openSupportLink)
-      .catch(() => openSupportLink());
+    getCustomerServiceToken().then(openSupportLink);
   }, [version, shieldCustomerId]);
 
   return {
