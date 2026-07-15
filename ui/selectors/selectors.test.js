@@ -1372,7 +1372,7 @@ describe('Selectors', () => {
       expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
     });
 
-    it('caches token scan lookups with equivalent address arrays across different references', () => {
+    it('caches token scan lookups for equivalent address arrays with different references', () => {
       const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
       const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
 
