@@ -84,6 +84,7 @@ buildTypes:
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
+      - QR_SYNC_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -370,7 +371,7 @@ env:
   - NEW_HARDWARE_WALLET_ONBOARDING: false
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
   # (device pairing via QR code scan and verification code).
-  - ADD_DEVICE_SYNC_ENABLED: false
+  - QR_SYNC_ENABLED: false
 
   ###
   # Meta variables

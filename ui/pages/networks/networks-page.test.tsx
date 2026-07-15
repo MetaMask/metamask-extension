@@ -25,6 +25,13 @@ const mockSafeChains = [
     explorers: [{ url: 'https://cronoscan.com' }],
   },
   {
+    name: 'Sepolia',
+    chainId: 11155111,
+    nativeCurrency: { symbol: 'SepoliaETH' },
+    rpc: ['https://sepolia.infura.io/v3/123'],
+    explorers: [{ url: 'https://sepolia.etherscan.io' }],
+  },
+  {
     name: 'HTTP Only Network',
     chainId: 200,
     nativeCurrency: { symbol: 'HTTP' },
@@ -368,6 +375,54 @@ describe('NetworksPage', () => {
     );
     expect(screen.getByTestId('network-form-chain-id')).toHaveValue('100');
     expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
+  });
+
+  it('hides built-in test networks from Chainlist when test networks are hidden', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...testNetworkConfiguration,
+      },
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: false,
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'Sepolia',
+    );
+
+    expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('networks-page-chainlist-added-pill'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows built-in test networks in Chainlist when test networks are shown', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...testNetworkConfiguration,
+      },
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: true,
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'Sepolia',
+    );
+
+    expect(await screen.findByText('Sepolia')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('networks-page-chainlist-added-pill'),
+    ).toHaveTextContent(messages.added.message);
   });
 
   it('prefills only the top Chainlist RPC URL in the add network form', async () => {
