@@ -54,9 +54,7 @@ type DeviceReadMethodName = (typeof DEVICE_READ_METHODS)[number];
 type HardwareKeyringLike = {
   readonly hdPath?: string;
   readonly bridge?: unknown;
-} & Partial<
-  Record<DeviceReadMethodName, (...args: never[]) => unknown>
->;
+} & Partial<Record<DeviceReadMethodName, (...args: never[]) => unknown>>;
 
 type DeviceReadKeyring<Keyring extends HardwareKeyringLike> = Readonly<
   Pick<Keyring, Extract<keyof Keyring, DeviceReadMethodName>> & {
