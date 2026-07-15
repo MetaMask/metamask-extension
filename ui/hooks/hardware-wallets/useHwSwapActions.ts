@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import log from 'loglevel';
 
 import {
   ConnectionStatus,
@@ -94,15 +93,6 @@ export function useHwSwapActions({
       return;
     }
 
-    log.debug(
-      '[HW-Batch] handleRetry',
-      JSON.stringify({
-        state: signatureState.status,
-        connection: connectionState.status,
-        retryGeneration: retryGenerationRef.current,
-      }),
-    );
-
     isRetryInFlightRef.current = true;
     // Suppress reject/fail from the cancelled batch only — cleared before
     // resubmit so the new attempt can update the signature state machine.
@@ -121,7 +111,6 @@ export function useHwSwapActions({
       );
 
       if (!canRetry) {
-        log.debug('[HW-Batch] handleRetry: cannot retry, device not connected');
         return;
       }
 
@@ -135,11 +124,15 @@ export function useHwSwapActions({
         });
       } else {
         let savedStep: HardwareWalletSignatureStatus | undefined;
-        if ('rejectedSignature' in signatureState) {
+        if (signatureState.status === HardwareWalletSignatureStatus.Rejected) {
           savedStep = signatureState.rejectedSignature;
-        } else if ('failedSignature' in signatureState) {
+        } else if (
+          signatureState.status === HardwareWalletSignatureStatus.Failed
+        ) {
           savedStep = signatureState.failedSignature;
-        } else if ('disconnectedSignature' in signatureState) {
+        } else if (
+          signatureState.status === HardwareWalletSignatureStatus.Disconnected
+        ) {
           savedStep = signatureState.disconnectedSignature;
         }
 
@@ -163,10 +156,6 @@ export function useHwSwapActions({
           });
         }
       }
-      log.debug(
-        '[HW-Batch] handleRetry: calling retrySubmission',
-        JSON.stringify({ state: signatureState.status }),
-      );
       // Allow the new submission's reject/fail to reach the state machine via
       // `isRetryingRef`. Stale rejects from the aborted batch that settle after
       // this clear are ignored by the submission catch handlers when their
@@ -179,7 +168,6 @@ export function useHwSwapActions({
       } else {
         await retrySubmission();
       }
-      log.debug('[HW-Batch] handleRetry: retrySubmission completed');
     } finally {
       isRetryingRef.current = false;
       isRetryInFlightRef.current = false;

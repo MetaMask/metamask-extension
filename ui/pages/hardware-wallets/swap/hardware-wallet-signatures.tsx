@@ -69,10 +69,9 @@ export default function HardwareWalletSignatures() {
 
   return (
     <Box
-      className="hardware-wallet-signatures"
+      className="hardware-wallet-signatures flex-1 w-full min-h-full"
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
-      style={{ flex: 1, width: '100%', minHeight: '100%' }}
       data-testid="hardware-wallet-signatures"
     >
       <Header

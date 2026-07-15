@@ -9,7 +9,6 @@ import {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import log from 'loglevel';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
@@ -132,7 +131,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   const [currentApprovalRequestId, setCurrentApprovalRequestId] = useState(
     sendBundleState?.approvalRequestId,
   );
-  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
   const isStxEnabled = useSelector(getIsStxEnabled);
   // Wallet-safety: capture the pending approval (if any) for the id we expect
   // to sign. `null` here means the approval is no longer pending — the submit
@@ -182,17 +181,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     [sendBundleTxMeta?.batchTransactions],
   );
 
-  log.debug(
-    '[HW-Batch] HardwareWalletSignatures render',
-    JSON.stringify({
-      hasLockedQuote: Boolean(lockedQuote),
-      requestId: lockedQuote?.quote?.requestId ?? null,
-      needsTwoConfirmations,
-      hardwareWalletUsed,
-      hardwareWalletType: hardwareWalletType ?? null,
-    }),
-  );
-
   const [signatureState, dispatchSignatureEvent] = useReducer(
     hardwareWalletSignaturesReducer,
     needsTwoConfirmations,
@@ -226,15 +214,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     // WALLET SAFETY: refuse to submit unless the pending approval captured at
     // navigation time is still pending. Prevents signing a stale txMeta after
     // back/forward navigation, multi-tab races, or other stale-nav-state
-    // scenarios. Ported from mobile's `useHardwareWalletSubmit.submitSendFlow`
-    // (lines 124-141).
+    // scenarios. Ported from mobile:
+    // https://github.com/MetaMask/metamask-mobile/blob/a7384b14df1fe540767ccc08c96b23785c1af965/app/components/UI/HardwareWallet/Swaps/useHardwareWalletSubmit.ts#L123-L142
     if (!expectedSendBundleApproval) {
-      log.warn(
-        '[HW-SendBundle] refusing to submit — approval no longer pending',
-        {
-          expectedApprovalId: currentApprovalRequestId,
-        },
-      );
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionFailed,
       });
@@ -266,7 +248,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         return;
       }
 
-      log.warn('[HW-Batch] sendBundle transaction submission failed', error);
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionFailed,
       });
@@ -302,10 +283,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
         if (!isStaleAttempt) {
           if (isUserRejectedHardwareWalletError(error)) {
-            log.debug(
-              '[HW-Batch] submitBridgeTransaction rejected, current state:',
-              signatureState.status,
-            );
             dispatchSignatureEvent({
               type: HardwareWalletSignatureEvent.TransactionRejected,
             });
@@ -349,7 +326,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
     const { chainId } = sendBundleTxMeta;
     if (!chainId) {
-      log.warn('[HW-SendBundle] retry: no chainId on txMeta');
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionFailed,
       });
@@ -420,7 +396,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         return;
       }
 
-      log.warn('[HW-SendBundle] retry submission failed', error);
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionFailed,
       });
@@ -486,7 +461,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     });
 
   const { confirmationTxData } = useHwSwapConfirmationMonitoring({
-    hardwareWalletUsed,
+    hardwareWalletUsed: isHardwareWalletAccount,
     signatureState,
     dispatchSignatureEvent,
     retryGenerationCounterRef: retryGenerationRef,
@@ -511,7 +486,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   const { cancelCurrentBatch } = useHwSignTracker(
     fromAddress,
-    hardwareWalletUsed,
+    isHardwareWalletAccount,
     dispatchSignatureEvent,
     {
       enabled: true,
@@ -615,7 +590,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         needs_two_confirmations: needsTwoConfirmations,
         token_from: fromToken?.symbol ?? '',
         token_to: toToken?.symbol ?? '',
-        is_hardware_wallet: hardwareWalletUsed,
+        is_hardware_wallet: isHardwareWalletAccount,
         hardware_wallet_type: hardwareWalletType ?? '',
       },
       sensitiveProperties: {
@@ -627,7 +602,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   }, [
     fromToken?.symbol,
     hardwareWalletType,
-    hardwareWalletUsed,
+    isHardwareWalletAccount,
     lockedQuote,
     needsTwoConfirmations,
     toToken?.symbol,
