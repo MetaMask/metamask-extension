@@ -84,6 +84,7 @@ buildTypes:
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
+      - QR_SYNC_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
