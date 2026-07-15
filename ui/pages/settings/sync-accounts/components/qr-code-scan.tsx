@@ -90,7 +90,12 @@ const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
       <Text variant={TextVariant.BodyMd} color={TextColor.ErrorDefault}>
         {message}
       </Text>
-      <TextButton onClick={handleReset}>{t('generateNewQrCode')}</TextButton>
+      <TextButton
+        data-testid="qr-sync-generate-new-qr-code"
+        onClick={handleReset}
+      >
+        {t('generateNewQrCode')}
+      </TextButton>
     </Box>
   );
 

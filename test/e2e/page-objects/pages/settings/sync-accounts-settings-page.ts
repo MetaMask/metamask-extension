@@ -14,9 +14,8 @@ class SyncAccountsSettingsPage {
 
   private readonly driver: Driver;
 
-  private readonly generateNewQrCodeButton = {
-    text: 'Generate new QR code',
-  };
+  private readonly generateNewQrCodeButton =
+    '[data-testid="qr-sync-generate-new-qr-code"]';
 
   private readonly loading = '[data-testid="qr-sync-loading"]';
 
@@ -39,9 +38,8 @@ class SyncAccountsSettingsPage {
     text: 'This sync session expired. Start again to generate a new QR code.',
   };
 
-  private readonly startWithNewQrCodeButton = {
-    text: 'Start with a new QR code',
-  };
+  private readonly startWithNewQrCodeButton =
+    '[data-testid="qr-sync-start-with-new-qr-code"]';
 
   private readonly success = '[data-testid="qr-sync-success"]';
 

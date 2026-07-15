@@ -88,7 +88,7 @@ describe('QrCodeScan', () => {
       screen.getByText(messages.qrCodeExpired.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(messages.generateNewQrCode.message),
+      screen.getByTestId('qr-sync-generate-new-qr-code'),
     ).toBeInTheDocument();
   });
 
@@ -114,7 +114,7 @@ describe('QrCodeScan', () => {
       jest.advanceTimersByTime(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
     });
 
-    fireEvent.click(screen.getByText(messages.generateNewQrCode.message));
+    fireEvent.click(screen.getByTestId('qr-sync-generate-new-qr-code'));
 
     expect(onRestart).toHaveBeenCalledTimes(1);
     expect(
