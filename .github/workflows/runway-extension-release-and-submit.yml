@@ -5,7 +5,7 @@ name: Runway extension release and store submit
 # Phase 0: validate branch, version, optional release_sha, CI, Runway sender (release/*).
 # Phase 1: workflow_call → publish-release-from-release-head.yml (auto-skipped if release exists at SHA)
 # Phase 2: workflow_call → upload-extension-to-cws.yml (production + flask; CWS pre-flight idempotency)
-# Phase 3: workflow_call → upload-extension-to-amo.yml (production + flask; Lambda idempotent re-run)
+# Phase 3: workflow_call → upload-extension-to-amo.yml (flask only; prod AMO triggered independently — no delayed-publish support)
 #
 # Runway contract: version, release_sha, execute_store_phases only.
 # Recovery: re-run failed jobs on the same run, or re-dispatch (auto-skip handles completed phases).
@@ -41,11 +41,6 @@ on:
         default: false
       skip_cws_flask:
         description: 'Manual break-glass — skip Phase 2b (CWS workflow auto-skips when draft exists)'
-        required: false
-        type: boolean
-        default: false
-      skip_amo_production:
-        description: 'Manual break-glass — skip Phase 3a (Lambda auto-skips when version already submitted)'
         required: false
         type: boolean
         default: false
@@ -255,25 +250,6 @@ jobs:
       dry-run: false
     secrets: inherit
 
-  amo-production:
-    name: Phase 3a — AMO production upload
-    needs:
-      - validate
-      - publish-release
-    if: >-
-      ${{
-        always() &&
-        inputs.execute_store_phases &&
-        !inputs.skip_amo_production &&
-        needs.validate.result == 'success' &&
-        (needs.publish-release.result == 'success' || needs.publish-release.result == 'skipped')
-      }}
-    uses: ./.github/workflows/upload-extension-to-amo.yml
-    with:
-      version: ${{ needs.validate.outputs.version }}
-      target: production
-    secrets: inherit
-
   amo-flask:
     name: Phase 3b — AMO flask upload
     needs:
@@ -300,7 +276,6 @@ jobs:
       - publish-release
       - cws-production
       - cws-flask
-      - amo-production
       - amo-flask
     if: always()
     runs-on: ubuntu-latest
@@ -311,14 +286,12 @@ jobs:
           PUBLISH: ${{ needs.publish-release.result }}
           CWS_PROD: ${{ needs.cws-production.result }}
           CWS_FLASK: ${{ needs.cws-flask.result }}
-          AMO_PROD: ${{ needs.amo-production.result }}
           AMO_FLASK: ${{ needs.amo-flask.result }}
           EXECUTE_STORE: ${{ inputs.execute_store_phases }}
           SKIP_PUBLISH: ${{ inputs.skip_publish }}
           RELEASE_EXISTS: ${{ needs.validate.outputs.release_exists }}
           SKIP_CWS_PROD: ${{ inputs.skip_cws_production }}
           SKIP_CWS_FLASK: ${{ inputs.skip_cws_flask }}
-          SKIP_AMO_PROD: ${{ inputs.skip_amo_production }}
           SKIP_AMO_FLASK: ${{ inputs.skip_amo_flask }}
         run: |
           {
@@ -334,8 +307,7 @@ jobs:
             fi
             echo "| 2a CWS production | ${CWS_PROD} (skip=${SKIP_CWS_PROD}) |"
             echo "| 2b CWS flask | ${CWS_FLASK} (skip=${SKIP_CWS_FLASK}) |"
-            echo "| 3a AMO production | ${AMO_PROD} (skip=${SKIP_AMO_PROD}) |"
-            echo "| 3b AMO flask | ${AMO_FLASK} (skip=${SKIP_AMO_FLASK}) |"
+            echo "| 3 AMO flask | ${AMO_FLASK} (skip=${SKIP_AMO_FLASK}) |"
             echo ""
             echo "Phases 2 and 3 run in parallel after Phase 1 (or auto-skip)."
             echo ""

@@ -260,9 +260,7 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 /.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/scripts/                                     @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 
-# Store submission — INFRA-3662 (security M5). Specific paths override the directory rule above.
-# Entries apply when files are created; paths may not exist on main until dependent PRs merge.
-/.github/workflows/runway-extension-release-and-submit.yml @MetaMask/extension-security-team @MetaMask/release-team
+# Store submission
 /.github/workflows/upload-extension-to-cws.yml             @MetaMask/extension-security-team @MetaMask/release-team
 /.github/workflows/adjust-cws-rollout.yml                  @MetaMask/extension-security-team @MetaMask/release-team
 /.github/workflows/upload-extension-to-amo.yml             @MetaMask/extension-security-team @MetaMask/release-team
