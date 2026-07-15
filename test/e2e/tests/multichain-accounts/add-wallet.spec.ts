@@ -116,7 +116,7 @@ describe('Add wallet', function () {
   });
 
   it('Import wallet using json file', async function () {
-    // fix flakiness
+    // to run on ci will remove when the checking is done
     const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
     const { mockedAccountSyncResponse, userStorageMockttpController } =
       await arrange();
