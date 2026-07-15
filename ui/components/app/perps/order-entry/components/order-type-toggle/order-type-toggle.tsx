@@ -58,9 +58,7 @@ export const OrderTypeToggle = ({
           !isSelected && 'hover:opacity-80',
         )}
         labelProps={{
-          color: isSelected
-            ? TextColor.textDefault
-            : TextColor.textAlternative,
+          color: isSelected ? TextColor.textDefault : TextColor.textAlternative,
         }}
         padding={4}
         data-testid={`order-type-${type}`}

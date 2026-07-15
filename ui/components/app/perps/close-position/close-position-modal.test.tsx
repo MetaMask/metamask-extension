@@ -145,13 +145,15 @@ type MockedUsePerpsOrderFeesReturn = {
   isLoading: boolean;
   metamaskFeeRateDiscountPercentage: number | undefined;
 };
-const mockUsePerpsOrderFees =
-  jest.fn<MockedUsePerpsOrderFeesReturn, [Record<string, unknown>]>(() => ({
-    feeRate: 0.00145,
-    undiscountedFeeRate: 0.00145,
-    isLoading: false,
-    metamaskFeeRateDiscountPercentage: undefined,
-  }));
+const mockUsePerpsOrderFees = jest.fn<
+  MockedUsePerpsOrderFeesReturn,
+  [Record<string, unknown>]
+>(() => ({
+  feeRate: 0.00145,
+  undiscountedFeeRate: 0.00145,
+  isLoading: false,
+  metamaskFeeRateDiscountPercentage: undefined,
+}));
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
   usePerpsOrderFees: (options: Record<string, unknown>) =>
     mockUsePerpsOrderFees(options),

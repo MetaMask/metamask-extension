@@ -6,13 +6,11 @@ import {
 
 describe('close position utilities', () => {
   describe('parsePositivePrice', () => {
-    [undefined, null, '', '0', 0, -1, 'NaN', NaN, Infinity].forEach(
-      (value) => {
-        it(`rejects invalid price ${String(value)}`, () => {
+    [undefined, null, '', '0', 0, -1, 'NaN', NaN, Infinity].forEach((value) => {
+      it(`rejects invalid price ${String(value)}`, () => {
         expect(parsePositivePrice(value)).toBeNull();
-        });
-      },
-    );
+      });
+    });
 
     it('parses formatted positive prices', () => {
       expect(parsePositivePrice('$1,234.50')).toBe(1234.5);

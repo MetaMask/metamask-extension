@@ -444,8 +444,7 @@ export const ClosePositionModal = ({
 
   const margin = useMemo(() => {
     const marginUsed = Number.parseFloat(position.marginUsed) || 0;
-    const effectiveMargin =
-      marginUsed - liveUnrealizedPnl + effectiveTotalPnl;
+    const effectiveMargin = marginUsed - liveUnrealizedPnl + effectiveTotalPnl;
     return effectiveMargin * closeFraction;
   }, [
     position.marginUsed,

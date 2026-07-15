@@ -14,9 +14,7 @@ export function parsePositivePrice(
       ? Number.parseFloat(value.replaceAll(/[$,]/gu, ''))
       : value;
 
-  return typeof parsed === 'number' &&
-    Number.isFinite(parsed) &&
-    parsed > 0
+  return typeof parsed === 'number' && Number.isFinite(parsed) && parsed > 0
     ? parsed
     : null;
 }

@@ -108,11 +108,7 @@ describe('CancelOrderModal', () => {
         reduceOnly: true,
       };
       renderWithProvider(
-        <CancelOrderModal
-          isOpen
-          onClose={jest.fn()}
-          order={closeLongOrder}
-        />,
+        <CancelOrderModal isOpen onClose={jest.fn()} order={closeLongOrder} />,
         mockStore,
       );
 
@@ -126,11 +122,7 @@ describe('CancelOrderModal', () => {
         reduceOnly: true,
       };
       renderWithProvider(
-        <CancelOrderModal
-          isOpen
-          onClose={jest.fn()}
-          order={closeShortOrder}
-        />,
+        <CancelOrderModal isOpen onClose={jest.fn()} order={closeShortOrder} />,
         mockStore,
       );
 
