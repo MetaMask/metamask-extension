@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+// eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../../selectors/multichain';
