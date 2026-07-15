@@ -1636,8 +1636,7 @@ class Driver {
    * Wait for a browser alert to appear and verify its text. Automatically detects
    * whether a window switch is needed by comparing current window with target window.
    * If they match, uses normal alert waiting. If different, attempts window switching
-   * and checks for alert presence on the target window directly (more reliable than
-   * relying on UnexpectedAlertOpenError being thrown during the switch).
+   * but handles the case where Selenium fails to switch to a window with an active alert (throws UnexpectedAlertOpenError)
    *
    * @param {object} options - Required options for the function.
    * @param {string} options.text - The expected text of the alert popup.
@@ -1661,32 +1660,8 @@ class Driver {
       await this.driver.wait(async () => {
         try {
           await this.switchToWindowWithTitle(windowTitle);
-          // Window switch succeeded - now check if the alert is already present
-          // on the target window. Chrome doesn't always throw UnexpectedAlertOpenError
-          // during the switch, so we need to check explicitly.
-          try {
-            const alert = await this.driver.switchTo().alert();
-            const alertText = await alert.getText();
-            if (alertText !== text) {
-              throw new Error(
-                `Expected alert text to be "${text}" on window "${windowTitle}", but got "${alertText}".`,
-              );
-            }
-            return true;
-          } catch (alertCheckError) {
-            // No alert present yet on the target window - keep waiting
-            if (
-              alertCheckError.name === 'NoAlertOpenError' ||
-              (alertCheckError.message &&
-                (alertCheckError.message.includes('no such alert') ||
-                  alertCheckError.message.includes('no alert open') ||
-                  alertCheckError.message.includes('No alert open')))
-            ) {
-              return false;
-            }
-            // Re-throw unexpected errors (e.g. wrong alert text)
-            throw alertCheckError;
-          }
+          // If window switch succeeds, alert hasn't appeared yet - keep waiting
+          return false;
         } catch (error) {
           if (
             error.name === 'UnexpectedAlertOpenError' ||
@@ -1695,24 +1670,24 @@ class Driver {
             (error.message &&
               error.message.includes('Unexpected alert dialog detected'))
           ) {
-            // Alert is blocking the window switch - access it directly
-            try {
-              const alert = await this.driver.switchTo().alert();
-              const alertText = await alert.getText();
-              if (alertText !== text) {
-                throw new Error(
-                  `Expected alert text to be "${text}" on window "${windowTitle}", but got "${alertText}".`,
-                );
-              }
-              return true;
-            } catch (alertAccessError) {
-              if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+            if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+              // Firefox doesn't include alert text in error message
+              try {
+                const alert = await this.driver.switchTo().alert();
+                const alertText = await alert.getText();
+                if (alertText !== text) {
+                  throw new Error(
+                    `Expected alert text to be "${text}", but got "${alertText}".`,
+                  );
+                }
+                return true;
+              } catch (alertError) {
                 console.warn(
-                  `Could not access alert directly. Expected: "${text}". Error: ${alertAccessError.message}`,
+                  `Could not access alert directly. Expected: "${text}". Error: ${alertError.message}`,
                 );
                 return true;
               }
-              // For Chrome, fall back to extracting alert text from the original error message
+            } else {
               const alertTextMatch = error.message.match(
                 /Alert text\s*:\s*(.+?)(?:\s*\}|$)/u,
               );
