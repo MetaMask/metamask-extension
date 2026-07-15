@@ -750,11 +750,17 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
   content = rebuildRegistryContent(content, mergedRegistry);
   content = ensureRegistryEslintWrappers(content);
 
+  const original = fs.readFileSync(REGISTRY_FILE_PATH, 'utf-8');
   fs.writeFileSync(REGISTRY_FILE_PATH, content, 'utf-8');
-  execSync(`yarn oxfmt -c oxfmt.config.mts ${REGISTRY_FILE_PATH}`, {
-    cwd: path.resolve(__dirname, '../../..'),
-    stdio: 'pipe',
-  });
+  try {
+    execSync(`yarn oxfmt -c oxfmt.config.mts ${REGISTRY_FILE_PATH}`, {
+      cwd: path.resolve(__dirname, '../../..'),
+      stdio: 'pipe',
+    });
+  } catch (error) {
+    fs.writeFileSync(REGISTRY_FILE_PATH, original, 'utf-8');
+    throw error;
+  }
   console.log(chalk.green(`\n✓ Registry file updated: ${REGISTRY_FILE_PATH}`));
   console.log(chalk.yellow('Run `yarn feature-flags:sync` to verify.'));
 }
