@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -485,11 +485,13 @@ describe('EthOverview', () => {
       expect(buyButton).not.toBeDisabled();
 
       fireEvent.click(buyButton);
-      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
+      await waitFor(() =>
+        expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1),
+      );
     });
   });
 
-  it('sends an event when clicking the Buy button: %s', () => {
+  it('sends an event when clicking the Buy button: %s', async () => {
     mockTrackEvent.mockClear();
 
     const mockedStore = configureMockStore([thunk])(mockStore);
@@ -500,7 +502,8 @@ describe('EthOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton);
 
-    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    // handleBuyAndSellOnClick awaits the async goToBuy gate before tracking.
+    await waitFor(() => expect(mockTrackEvent).toHaveBeenCalledTimes(1));
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         name: MetaMetricsEventName.NavBuyButtonClicked,
