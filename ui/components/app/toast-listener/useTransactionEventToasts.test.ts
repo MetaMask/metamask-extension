@@ -344,6 +344,42 @@ describe('useTransactionEventToasts', () => {
         },
       );
     });
+
+    it('shows a pending toast for perpsWithdraw transactions on approved', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'withdraw-id1',
+          status: TransactionStatus.approved,
+          type: TransactionType.perpsWithdraw,
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith('tx-withdraw-id1', {
+        transactionId: 'withdraw-id1',
+      });
+    });
+
+    it('shows a pending toast for nested perpsWithdraw transactions on approved', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'nested-withdraw-id1',
+          status: TransactionStatus.approved,
+          type: TransactionType.simpleSend,
+          nestedTransactions: [{ type: TransactionType.perpsWithdraw }],
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-nested-withdraw-id1',
+        {
+          transactionId: 'nested-withdraw-id1',
+        },
+      );
+    });
   });
 
   describe('non-EVM via AccountsController', () => {
