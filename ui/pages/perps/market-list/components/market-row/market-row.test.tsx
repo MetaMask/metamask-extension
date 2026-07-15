@@ -108,6 +108,53 @@ describe('MarketRow', () => {
     });
   });
 
+  describe('ticker suffix next to the metric', () => {
+    it('shows the ticker next to the metric when a full name is displayed', () => {
+      renderWithProvider(<MarketRow {...defaultProps} />, mockStore);
+
+      expect(screen.getByTestId('market-row-ticker-BTC')).toHaveTextContent(
+        'BTC',
+      );
+      expect(screen.getByText(/\$1\.2B Vol/u)).toBeInTheDocument();
+    });
+
+    it('strips the provider prefix from the ticker suffix for HIP-3 markets', () => {
+      const market = createMockMarket({ symbol: 'xyz:TSLA', name: 'Tesla' });
+      renderWithProvider(<MarketRow market={market} />, mockStore);
+
+      expect(
+        screen.getByTestId('market-row-ticker-xyz-TSLA'),
+      ).toHaveTextContent('TSLA');
+    });
+
+    it('does not show a ticker suffix when the row already shows the ticker', () => {
+      const market = createMockMarket({ name: '' });
+      renderWithProvider(<MarketRow market={market} />, mockStore);
+
+      expect(
+        screen.queryByTestId('market-row-ticker-BTC'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show a duplicate ticker suffix when the name equals the raw symbol', () => {
+      const market = createMockMarket({ name: 'BTC', symbol: 'BTC' });
+      renderWithProvider(<MarketRow market={market} />, mockStore);
+
+      expect(
+        screen.queryByTestId('market-row-ticker-BTC'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show a duplicate ticker suffix for HIP-3 bare symbol names', () => {
+      const market = createMockMarket({ symbol: 'xyz:AAPL', name: 'AAPL' });
+      renderWithProvider(<MarketRow market={market} />, mockStore);
+
+      expect(
+        screen.queryByTestId('market-row-ticker-xyz-AAPL'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('display metrics', () => {
     it('displays volume metric by default', () => {
       renderWithProvider(<MarketRow {...defaultProps} />, mockStore);

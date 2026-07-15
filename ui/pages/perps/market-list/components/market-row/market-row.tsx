@@ -80,6 +80,16 @@ export const MarketRow = ({
     () => market.name || getDisplaySymbol(market.symbol),
     [market.name, market.symbol],
   );
+  const displayTicker = useMemo(
+    () => getDisplaySymbol(market.symbol),
+    [market.symbol],
+  );
+  // The title above already falls back to the ticker when there's no name,
+  // so the suffix is only needed when a full name is actually being shown.
+  // This also guards HIP-3 markets where the resolved name is the bare
+  // ticker (e.g. symbol "xyz:AAPL", name "AAPL"), which would otherwise
+  // duplicate the ticker.
+  const showTickerSuffix = displaySymbol !== displayTicker;
   const metricValue = useMemo(
     () => getMetricValue(market, displayMetric, formatNumber),
     [market, displayMetric, formatNumber],
@@ -140,9 +150,33 @@ export const MarketRow = ({
             </Text>
           </span>
         </Box>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {metricValue}
-        </Text>
+        <Box
+          className="min-w-0 max-w-full"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+        >
+          {showTickerSuffix && (
+            <>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+                data-testid={`market-row-ticker-${market.symbol.replace(/:/gu, '-')}`}
+              >
+                {displayTicker}
+              </Text>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                {'\u00B7'}
+              </Text>
+            </>
+          )}
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {metricValue}
+          </Text>
+        </Box>
       </Box>
       {/* Right side: Price and 24h change */}
       <Box
