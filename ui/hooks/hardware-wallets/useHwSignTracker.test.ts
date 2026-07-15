@@ -47,8 +47,11 @@ type TxMetaOverrides = Partial<{
   status: string;
   type: string;
   from: string;
+  data: string;
   batchId: string;
   id: string;
+  to: string;
+  value: string;
 }>;
 
 function createTxMeta(overrides: TxMetaOverrides = {}) {
@@ -57,7 +60,10 @@ function createTxMeta(overrides: TxMetaOverrides = {}) {
     status: overrides.status ?? 'signed',
     type: overrides.type ?? TransactionType.bridgeApproval,
     txParams: {
+      data: overrides.data,
       from: overrides.from ?? FROM_ADDRESS,
+      to: overrides.to,
+      value: overrides.value,
     },
     batchId: overrides.batchId,
   };
@@ -85,6 +91,11 @@ async function setupTracker(options: {
   fromAddress?: string;
   hardwareWalletUsed?: boolean;
   enabled?: boolean;
+  expectedTransactionParams?: Parameters<
+    typeof useHwSignTracker
+  >[3]['expectedTransactionParams'];
+  expectedTxIds?: string[];
+  includeSendBundleTransactions?: boolean;
   retryGenerationRef?: React.MutableRefObject<number>;
 }) {
   const callbacks = setupCallbacks();
@@ -97,6 +108,9 @@ async function setupTracker(options: {
       dispatchEvent,
       {
         enabled: options.enabled ?? true,
+        expectedTransactionParams: options.expectedTransactionParams,
+        expectedTxIds: options.expectedTxIds,
+        includeSendBundleTransactions: options.includeSendBundleTransactions,
         useBatchTracking: options.useBatchTracking,
       },
       options.retryGenerationRef,
@@ -109,8 +123,14 @@ async function setupTracker(options: {
 
   const fire = async (event: string, overrides: TxMetaOverrides = {}) => {
     const cb = callbacks.get(event);
+    // transactionFinished is published with the meta directly, whereas
+    // transactionStatusUpdated/transactionRejected wrap it in
+    // { transactionMeta }. Mirror the real payload shapes so the handler's
+    // shape-normalization is exercised (a bare-meta transactionFinished used to
+    // crash the handler before destructuring `status`).
+    const meta = createTxMeta(overrides);
     await act(async () => {
-      cb?.([{ transactionMeta: createTxMeta(overrides) }]);
+      cb?.(event === FINISHED ? [meta] : [{ transactionMeta: meta }]);
     });
   };
 
@@ -241,6 +261,162 @@ describe.each<string, boolean>([
     });
   });
 
+  it('dispatches sendBundle hardware wallet events for expected bundle member and main transaction', async () => {
+    const { dispatchEvent, fire } = await setupTracker({
+      expectedTransactionParams: [
+        {
+          to: '0xabc0000000000000000000000000000000000000',
+        },
+      ],
+      expectedTxIds: ['tx-main'],
+      includeSendBundleTransactions: true,
+      useBatchTracking,
+    });
+
+    // Real-world signing order: SEND tx (root) signs first, then the GAS
+    // tx (generated batch member) signs second. See useHwSignTracker.
+    await fire(STATUS_UPDATED, {
+      id: 'tx-main',
+      type: TransactionType.simpleSend,
+    });
+    await fire(STATUS_UPDATED, {
+      data: '0x123',
+      id: 'tx-generated-bundle-member',
+      to: '0xabc0000000000000000000000000000000000000',
+      type: TransactionType.contractInteraction,
+      value: '0x0',
+    });
+
+    expect(dispatchEvent).toHaveBeenNthCalledWith(1, {
+      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+    });
+    expect(dispatchEvent).toHaveBeenNthCalledWith(2, {
+      type: HardwareWalletSignatureEvent.TransactionSubmitted,
+    });
+  });
+
+  it('ignores matching send events outside the expected transaction IDs', async () => {
+    const { dispatchEvent, fire } = await setupTracker({
+      expectedTxIds: ['tx-expected'],
+      includeSendBundleTransactions: true,
+      useBatchTracking,
+    });
+
+    await fire(STATUS_UPDATED, {
+      id: 'tx-unrelated',
+      type: TransactionType.simpleSend,
+    });
+    await fire(STATUS_UPDATED, {
+      id: 'tx-expected',
+      type: TransactionType.simpleSend,
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledTimes(1);
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+    });
+  });
+
+  it('tracks generated sendBundle batch members by expected params', async () => {
+    const { dispatchEvent, fire } = await setupTracker({
+      expectedTransactionParams: [
+        {
+          to: '0xabc0000000000000000000000000000000000000',
+        },
+      ],
+      expectedTxIds: ['tx-main'],
+      includeSendBundleTransactions: true,
+      useBatchTracking,
+    });
+
+    // Real-world signing order: SEND tx (root) signs first, then the GAS
+    // tx (generated batch member) signs second.
+    await fire(STATUS_UPDATED, {
+      id: 'tx-main',
+      type: TransactionType.simpleSend,
+    });
+    await fire(STATUS_UPDATED, {
+      data: '0x123',
+      id: 'tx-generated-gas-payment',
+      to: '0xabc0000000000000000000000000000000000000',
+      type: TransactionType.contractInteraction,
+      value: '0x0',
+    });
+
+    expect(dispatchEvent).toHaveBeenNthCalledWith(1, {
+      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+    });
+    expect(dispatchEvent).toHaveBeenNthCalledWith(2, {
+      type: HardwareWalletSignatureEvent.TransactionSubmitted,
+    });
+  });
+
+  it('does not classify a contract-creation tx (no `to`) as the gas step when expected.to is set', async () => {
+    const { dispatchEvent, fire } = await setupTracker({
+      expectedTransactionParams: [
+        {
+          to: '0xabc0000000000000000000000000000000000000',
+          value: '0x0',
+        },
+      ],
+      expectedTxIds: ['tx-main'],
+      includeSendBundleTransactions: true,
+      useBatchTracking,
+    });
+
+    // Root SEND tx signs first → FirstSignatureSubmitted.
+    await fire(STATUS_UPDATED, {
+      id: 'tx-main',
+      type: TransactionType.simpleSend,
+    });
+
+    // An unrelated contract-creation tx has no `to` but happens to share the
+    // gas step's `value`. It must NOT be misclassified as the bundle gas step
+    // (TransactionSubmitted), or the real gas-tx signature would be dropped
+    // when the state machine advances to terminal.
+    await fire(STATUS_UPDATED, {
+      data: '0xdeploy',
+      id: 'tx-unrelated-contract-creation',
+      type: TransactionType.contractInteraction,
+      value: '0x0',
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledTimes(1);
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+    });
+  });
+
+  it('does not match transactions when an expected param entry is empty', async () => {
+    const { dispatchEvent, fire } = await setupTracker({
+      expectedTransactionParams: [{}],
+      expectedTxIds: ['tx-main'],
+      includeSendBundleTransactions: true,
+      useBatchTracking,
+    });
+
+    // The root SEND tx still advances via expectedTxIds, but the generated
+    // batch member must NOT be classified as TransactionSubmitted by an empty
+    // param entry (which would otherwise match every transaction and drop the
+    // gas-tx signature).
+    await fire(STATUS_UPDATED, {
+      id: 'tx-main',
+      type: TransactionType.simpleSend,
+    });
+    await fire(STATUS_UPDATED, {
+      data: '0x123',
+      id: 'tx-generated-gas-payment',
+      to: '0xabc0000000000000000000000000000000000000',
+      type: TransactionType.contractInteraction,
+      value: '0x0',
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledTimes(1);
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+    });
+  });
+
   it('ignores signed events from other addresses', async () => {
     const { dispatchEvent, fire } = await setupTracker({ useBatchTracking });
     await fire(STATUS_UPDATED, {
@@ -249,9 +425,18 @@ describe.each<string, boolean>([
     expect(dispatchEvent).not.toHaveBeenCalled();
   });
 
-  it('ignores signed events for non-batch transaction types', async () => {
+  it('ignores signed events for untracked transaction types', async () => {
     const { dispatchEvent, fire } = await setupTracker({ useBatchTracking });
-    await fire(STATUS_UPDATED, { type: 'simpleSend' });
+    await fire(STATUS_UPDATED, { type: TransactionType.contractInteraction });
+    expect(dispatchEvent).not.toHaveBeenCalled();
+  });
+
+  it('ignores sendBundle transaction types unless sendBundle tracking is active', async () => {
+    const { dispatchEvent, fire } = await setupTracker({ useBatchTracking });
+
+    await fire(STATUS_UPDATED, { type: TransactionType.gasPayment });
+    await fire(STATUS_UPDATED, { type: TransactionType.simpleSend });
+
     expect(dispatchEvent).not.toHaveBeenCalled();
   });
 
@@ -661,12 +846,19 @@ describe('useHwSignTracker (batch mode specific)', () => {
   });
 
   describe('batch identification', () => {
-    it('blocks TransactionFailed on status failed before batch is identified', async () => {
+    it('dispatches TransactionFailed on status failed before batch is identified when the tx was tracked', async () => {
       const { dispatchEvent, fire } = await setupTracker({
         useBatchTracking: true,
       });
+      // The tx is observed first (unapproved on creation), so a subsequent
+      // failure is the current flow failing and must surface instead of
+      // leaving the UI stuck awaiting.
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
       await fire(STATUS_UPDATED, { status: 'failed' });
-      expect(dispatchEvent).not.toHaveBeenCalled();
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
     });
 
     it('dispatches TransactionFailed on status failed after batch is identified', async () => {
@@ -681,12 +873,16 @@ describe('useHwSignTracker (batch mode specific)', () => {
       });
     });
 
-    it('blocks TransactionRejected on transactionRejected before batch is identified', async () => {
+    it('dispatches TransactionRejected on transactionRejected before batch is identified when the tx was tracked', async () => {
       const { dispatchEvent, fire } = await setupTracker({
         useBatchTracking: true,
       });
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
       await fire(REJECTED);
-      expect(dispatchEvent).not.toHaveBeenCalled();
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
     });
 
     it('dispatches TransactionRejected on transactionRejected after batch identified', async () => {
@@ -701,12 +897,16 @@ describe('useHwSignTracker (batch mode specific)', () => {
       });
     });
 
-    it('blocks TransactionRejected when transactionFinished with rejected before batch identified', async () => {
+    it('dispatches TransactionRejected when transactionFinished with rejected before batch identified (tracked tx)', async () => {
       const { dispatchEvent, fire } = await setupTracker({
         useBatchTracking: true,
       });
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
       await fire(FINISHED, { status: 'rejected' });
-      expect(dispatchEvent).not.toHaveBeenCalled();
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
     });
 
     it('dispatches TransactionRejected when transactionFinished with rejected after batch identified', async () => {
@@ -721,12 +921,16 @@ describe('useHwSignTracker (batch mode specific)', () => {
       });
     });
 
-    it('blocks TransactionFailed when transactionFinished with failed before batch identified', async () => {
+    it('dispatches TransactionFailed when transactionFinished with failed before batch identified (tracked tx)', async () => {
       const { dispatchEvent, fire } = await setupTracker({
         useBatchTracking: true,
       });
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
       await fire(FINISHED, { status: 'failed' });
-      expect(dispatchEvent).not.toHaveBeenCalled();
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
     });
 
     it('dispatches TransactionFailed when transactionFinished with failed after batch identified', async () => {
@@ -736,6 +940,28 @@ describe('useHwSignTracker (batch mode specific)', () => {
       await fire(STATUS_UPDATED, { batchId: 'batch-1' });
       dispatchEvent.mockClear();
       await fire(FINISHED, { status: 'failed', batchId: 'batch-1' });
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
+    });
+
+    // Regression: transactionFinished is published with the transaction meta
+    // directly (not wrapped in { transactionMeta }). The handler must unwrap
+    // both payload shapes; otherwise destructuring `status` from the bare meta
+    // throws and transactionFinished-based failure/rejection detection becomes
+    // a no-op (the error is swallowed per-callback, leaving the UI stuck).
+    it('does not throw and dispatches on a bare-meta transactionFinished payload', async () => {
+      const { dispatchEvent, fire, callbacks } = await setupTracker({
+        useBatchTracking: true,
+      });
+      // Track the tx first so the finished event is treated as the current
+      // flow's (an untracked tx's finished event is correctly ignored).
+      await fire(STATUS_UPDATED, { status: 'unapproved' });
+      dispatchEvent.mockClear();
+      const finishedCb = callbacks.get(FINISHED);
+      await act(async () => {
+        finishedCb?.([createTxMeta({ status: 'failed', batchId: 'batch-1' })]);
+      });
       expect(dispatchEvent).toHaveBeenCalledWith({
         type: HardwareWalletSignatureEvent.TransactionFailed,
       });

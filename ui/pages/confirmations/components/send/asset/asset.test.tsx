@@ -184,5 +184,58 @@ describe('Asset', () => {
         AssetFilterMethod.Search,
       );
     });
+
+    it('skips metrics updates when disableMetrics is true', () => {
+      const { getByTestId } = render(<Asset disableMetrics />);
+      const input = getByTestId('asset-filter-input');
+
+      fireEvent.change(input, { target: { value: 'test query' } });
+
+      expect(mockAddAssetFilterMethod).not.toHaveBeenCalled();
+      expect(mockSetAssetListSize).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('external tokens', () => {
+    it('uses injected tokens instead of useSendAssets', () => {
+      const injectedTokens = [
+        { name: 'Ramps ETH', symbol: 'ETH', chainId: 'eip155:1' },
+      ];
+
+      render(<Asset tokens={injectedTokens} nfts={[]} hideNfts />);
+
+      expect(mockUseSendAssetFilter).toHaveBeenCalledWith({
+        tokens: injectedTokens,
+        nfts: [],
+        selectedChainId: null,
+        searchQuery: '',
+      });
+    });
+
+    it('notifies parent when search query changes', () => {
+      const onSearchQueryChange = jest.fn();
+      const { getByTestId } = render(
+        <Asset onSearchQueryChange={onSearchQueryChange} />,
+      );
+
+      fireEvent.change(getByTestId('asset-filter-input'), {
+        target: { value: 'usdc' },
+      });
+
+      expect(onSearchQueryChange).toHaveBeenCalledWith('usdc');
+    });
+
+    it('notifies parent when network filter changes', () => {
+      const onSelectedChainIdChange = jest.fn();
+      const { getByTestId } = render(
+        <Asset onSelectedChainIdChange={onSelectedChainIdChange} />,
+      );
+
+      fireEvent.change(getByTestId('network-filter'), {
+        target: { value: '1' },
+      });
+
+      expect(onSelectedChainIdChange).toHaveBeenCalledWith('1');
+    });
   });
 });

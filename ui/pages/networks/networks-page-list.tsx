@@ -7,9 +7,8 @@ import {
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { ChainId } from '@metamask/controller-utils';
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
 import {
   AvatarNetwork,
   Box,
@@ -32,8 +31,8 @@ import { AdditionalNetworksInfo } from '../../components/multichain/network-mana
 import { useNetworkItemCallbacks } from '../../components/multichain/network-manager/hooks/useNetworkItemCallbacks';
 import { NetworkListItem } from '../../components/multichain/network-list-item';
 import ToggleButton from '../../components/ui/toggle-button';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { useIsNetworkGasSponsored } from '../../hooks/useIsNetworkGasSponsored';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
 import { getSelectedMultichainNetworkChainId } from '../../selectors/multichain/networks';
@@ -63,6 +62,7 @@ import {
 } from '../../../shared/lib/network.utils';
 import { useNetworkManagerState } from '../../components/multichain/network-manager/hooks/useNetworkManagerState';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
+import { NoSearchResult } from './no-search-result';
 
 const filterNetworks = <
   NetworkRecord extends {
@@ -161,17 +161,18 @@ const SectionDivider = () => <Box className="mx-4 border-t border-muted" />;
 
 type NetworksPageListProps = {
   searchQuery: string;
+  onAddCustomNetwork: () => void;
   footerContent?: React.ReactNode;
 };
 
 export const NetworksPageList = ({
   searchQuery,
+  onAddCustomNetwork,
   footerContent,
 }: NetworksPageListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const [, setSearchParams] = useSearchParams();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -241,6 +242,12 @@ export const NetworksPageList = ({
       ),
     [currentMultichainChainId, testNetworks],
   );
+  const showNoSearchResults =
+    searchQuery.trim().length > 0 &&
+    defaultNetworks.length === 0 &&
+    customNetworks.length === 0 &&
+    sortedTestNetworks.length === 0 &&
+    featuredNetworksNotYetEnabled.length === 0;
 
   const renderNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
@@ -288,15 +295,16 @@ export const NetworksPageList = ({
 
       const newValue = !value;
       dispatch(setShowTestNetworks(newValue));
-      trackEvent({
-        event: MetaMetricsEventName.TestNetworksDisplayed,
-        category: MetaMetricsEventCategory.Network,
-        properties: {
-          value: newValue,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            value: newValue,
+          })
+          .build(),
+      );
     },
-    [currentlyOnTestnet, dispatch, trackEvent],
+    [currentlyOnTestnet, dispatch, trackEvent, createEventBuilder],
   );
 
   return (
@@ -305,6 +313,8 @@ export const NetworksPageList = ({
       data-testid="networks-page-list"
     >
       <Box className="flex-1 overflow-y-auto">
+        {showNoSearchResults ? <NoSearchResult /> : null}
+
         {defaultNetworks.length > 0 ? (
           <Box
             padding={4}
@@ -387,7 +397,7 @@ export const NetworksPageList = ({
         <Button
           className="w-full"
           variant={ButtonVariant.Secondary}
-          onClick={() => setSearchParams({ view: 'add' })}
+          onClick={onAddCustomNetwork}
           data-testid="networks-page-add-custom-network-button"
         >
           {t('addACustomNetwork')}

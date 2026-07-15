@@ -157,6 +157,7 @@ export const TokenManagementCell = ({
           <span
             aria-busy={isLoading}
             className="relative inline-flex h-6 w-10 items-center justify-center"
+            data-testid={`${dataTestId}-toggle-control`}
           >
             <ToggleButton
               value={isOn}

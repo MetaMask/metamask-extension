@@ -1,7 +1,8 @@
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import type { SignatureStatus } from '../../../../shared/lib/deep-links/verify';
 import {
@@ -23,7 +24,7 @@ export type EventDetails = {
 };
 
 /**
- * Creates a trackable Event Payload representing deep link usage.
+ * Creates a trackable analytics event representing deep link usage.
  *
  * If the route has query params, and the query params have duplicate keys,
  * only the last value will be used in the properties.
@@ -33,7 +34,7 @@ export type EventDetails = {
  * @param route.signature - Whether the deep link has a signature, and if it is
  * valid.
  */
-export function createEvent({ signature, url }: EventDetails) {
+export function createEvent({ signature, url }: EventDetails): AnalyticsEvent {
   const properties: Properties = {
     route: url.pathname,
     signature,
@@ -56,10 +57,9 @@ export function createEvent({ signature, url }: EventDetails) {
     }
   }
 
-  return {
-    category: MetaMetricsEventCategory.DeepLink as const,
-    event: MetaMetricsEventName.DeepLinkUsed as const,
-    properties,
-    sensitiveProperties,
-  } satisfies MetaMetricsEventPayload;
+  return createEventBuilder(MetaMetricsEventName.DeepLinkUsed)
+    .addCategory(MetaMetricsEventCategory.DeepLink)
+    .addProperties(properties)
+    .addSensitiveProperties(sensitiveProperties)
+    .build();
 }

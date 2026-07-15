@@ -1,6 +1,8 @@
 import { noop } from 'lodash';
-import { getAnalyticsMessenger } from '../../controllers/analytics';
-import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
+import {
+  getAnalyticsControllerInitMessenger,
+  getAnalyticsControllerMessenger,
+} from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -20,10 +22,6 @@ import {
   getSnapRegistryControllerMessenger,
   getWebSocketServiceMessenger,
 } from './snaps';
-import {
-  getTransactionControllerMessenger,
-  getTransactionControllerInitMessenger,
-} from './transaction-controller-messenger';
 import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
@@ -141,6 +139,13 @@ import {
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
+import { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
+import { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
+import {
+  getRampsControllerInitMessenger,
+  getRampsControllerMessenger,
+} from './ramps-controller-messenger';
+import { getRampsServiceMessenger } from './ramps-service-messenger';
 import {
   getRewardsControllerInitMessenger,
   getRewardsControllerMessenger,
@@ -158,10 +163,6 @@ import {
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
-import {
-  getNetworkControllerInitMessenger,
-  getNetworkControllerMessenger,
-} from './network-controller-messenger';
 import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -170,7 +171,6 @@ import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
-import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 import {
   getDecryptMessageControllerInitMessenger,
@@ -214,7 +214,6 @@ export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
-export { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
@@ -256,11 +255,6 @@ export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-export type { NetworkControllerInitMessenger } from './network-controller-messenger';
-export {
-  getNetworkControllerMessenger,
-  getNetworkControllerInitMessenger,
-} from './network-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type { NameControllerInitMessenger } from './name-controller-messenger';
 export {
@@ -270,6 +264,14 @@ export {
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
+export { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
+export { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
+export {
+  getRampsControllerInitMessenger,
+  getRampsControllerMessenger,
+} from './ramps-controller-messenger';
+export type { RampsControllerInitMessenger } from './ramps-controller-messenger';
+export { getRampsServiceMessenger } from './ramps-service-messenger';
 export type {
   PermissionControllerMessenger,
   PermissionControllerInitMessenger,
@@ -344,10 +346,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,
   },
-  AddressBookController: {
-    getMessenger: getAddressBookControllerMessenger,
-    getInitMessenger: noop,
-  },
   AlertController: {
     getMessenger: getAlertControllerMessenger,
     getInitMessenger: noop,
@@ -366,7 +364,7 @@ export const MESSENGER_FACTORIES = {
   },
   AnalyticsController: {
     getMessenger: getAnalyticsControllerMessenger,
-    getInitMessenger: getAnalyticsMessenger,
+    getInitMessenger: getAnalyticsControllerInitMessenger,
   },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,
@@ -524,10 +522,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
   },
-  NetworkController: {
-    getMessenger: getNetworkControllerMessenger,
-    getInitMessenger: getNetworkControllerInitMessenger,
-  },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
     getInitMessenger: noop,
@@ -644,6 +638,22 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getPreferencesControllerMessenger,
     getInitMessenger: noop,
   },
+  QrSyncDataService: {
+    getMessenger: getQrSyncDataServiceMessenger,
+    getInitMessenger: noop,
+  },
+  QrSyncController: {
+    getMessenger: getQrSyncControllerMessenger,
+    getInitMessenger: noop,
+  },
+  RampsService: {
+    getMessenger: getRampsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RampsController: {
+    getMessenger: getRampsControllerMessenger,
+    getInitMessenger: getRampsControllerInitMessenger,
+  },
   TokenBalancesController: {
     getMessenger: getTokenBalancesControllerMessenger,
     getInitMessenger: getTokenBalancesControllerInitMessenger,
@@ -659,10 +669,6 @@ export const MESSENGER_FACTORIES = {
   TokensController: {
     getMessenger: getTokensControllerMessenger,
     getInitMessenger: getTokensControllerInitMessenger,
-  },
-  TransactionController: {
-    getMessenger: getTransactionControllerMessenger,
-    getInitMessenger: getTransactionControllerInitMessenger,
   },
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,

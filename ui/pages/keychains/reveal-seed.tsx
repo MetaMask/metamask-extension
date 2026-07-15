@@ -24,7 +24,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -65,7 +65,7 @@ function RevealSeedPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { keyringId } = useParams<Record<string, string | undefined>>();
   const locationState = useLocation().state as RevealSeedLocationState | null;
@@ -130,18 +130,19 @@ function RevealSeedPage() {
 
   useEffect(() => {
     if (scanResult?.recommendedAction === RecommendedAction.Block) {
-      trackEventRef.current({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_host_name: scanResult.hostname ?? 'unknown',
-        },
-      });
+      trackEventRef.current(
+        createEventBuilder(MetaMetricsEventName.SrpRevealMaliciousSiteDetected)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            dapp_host_name: scanResult.hostname ?? 'unknown',
+          })
+          .build(),
+      );
     }
-  }, [scanResult]);
+  }, [createEventBuilder, scanResult]);
 
   // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
@@ -152,31 +153,39 @@ function RevealSeedPage() {
     }
     copyToClipboard(seedWords);
     setShowSuccessToast(true);
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.KeyExportCopied,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Srp,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        copy_method: 'clipboard',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.SrpCopiedToClipboard,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Srp,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        copy_method: 'clipboard',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
-  }, [seedWords, phraseRevealed, trackEvent, hdEntropyIndex]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.KeyExportCopied)
+        .addCategory(MetaMetricsEventCategory.Keys)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          copy_method: 'clipboard',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SrpCopiedToClipboard)
+        .addCategory(MetaMetricsEventCategory.Keys)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          copy_method: 'clipboard',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
+  }, [
+    createEventBuilder,
+    hdEntropyIndex,
+    phraseRevealed,
+    seedWords,
+    trackEvent,
+  ]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -197,42 +206,53 @@ function RevealSeedPage() {
         ) as unknown as Promise<string>
       )
         .then((revealedSeedWords) => {
-          trackEvent({
-            category: MetaMetricsEventCategory.Keys,
-            event: MetaMetricsEventName.KeyExportRevealed,
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Srp,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              verification_method: MetaMetricsEventVerificationMethod.Password,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
+              .addCategory(MetaMetricsEventCategory.Keys)
+              .addProperties({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Srp,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                verification_method:
+                  MetaMetricsEventVerificationMethod.Password,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              })
+              .build(),
+          );
           setSeedWords(revealedSeedWords);
           setScreen(REVEAL_SEED_SCREEN);
         })
         .catch((e: Error) => {
-          trackEvent({
-            category: MetaMetricsEventCategory.Keys,
-            event: MetaMetricsEventName.KeyExportFailed,
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Srp,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              verification_method: MetaMetricsEventVerificationMethod.Password,
-              reason: e.message,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.KeyExportFailed)
+              .addCategory(MetaMetricsEventCategory.Keys)
+              .addProperties({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Srp,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                verification_method:
+                  MetaMetricsEventVerificationMethod.Password,
+                reason: e.message,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              })
+              .build(),
+          );
           setError(getErrorMessage(e));
         })
         .finally(() => {
           endTrace({ name: TraceName.RevealSeed });
         });
     },
-    [dispatch, password, keyringId, trackEvent, hdEntropyIndex],
+    [
+      createEventBuilder,
+      dispatch,
+      hdEntropyIndex,
+      keyringId,
+      password,
+      trackEvent,
+    ],
   );
 
   const togglePasswordVisibility = useCallback(
@@ -245,33 +265,35 @@ function RevealSeedPage() {
   );
 
   const openSupportArticle = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.SupportLinkClicked,
-      properties: {
-        url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
-        location: 'reveal_srp',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Keys)
+        .addProperties({
+          url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
+          location: 'reveal_srp',
+        })
+        .build(),
+    );
     globalThis.platform.openTab({
       url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
     });
-  }, [trackEvent]);
+  }, [createEventBuilder, trackEvent]);
 
   const handleBack = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.SrpRevealBackButtonClicked,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Srp,
-        screen,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SrpRevealBackButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Keys)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          screen,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     navigate(PREVIOUS_ROUTE);
-  }, [trackEvent, screen, hdEntropyIndex, navigate]);
+  }, [createEventBuilder, hdEntropyIndex, navigate, screen, trackEvent]);
 
   const handleQuizComplete = useCallback(() => {
     setScreen(initialCredentialScreen);
@@ -288,36 +310,38 @@ function RevealSeedPage() {
       }
 
       trace({ name: TraceName.RevealSeed });
-      trackEvent({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportRequested,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Passkey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        },
-      });
-
-      try {
-        const revealedSeedWords = await (dispatch(
-          getSeedPhraseWithPasskey(authenticationResponse, keyringId),
-        ) as unknown as Promise<string>);
-
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.KeyExportRevealed,
-          properties: {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportRequested)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             verification_method: MetaMetricsEventVerificationMethod.Passkey,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: hdEntropyIndex,
-          },
-        });
+          })
+          .build(),
+      );
+
+      try {
+        const revealedSeedWords = await (dispatch(
+          getSeedPhraseWithPasskey(authenticationResponse, keyringId),
+        ) as unknown as Promise<string>);
+
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Srp,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Passkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
+            .build(),
+        );
 
         setSeedWords(revealedSeedWords);
         setScreen(REVEAL_SEED_SCREEN);
@@ -325,19 +349,20 @@ function RevealSeedPage() {
       } catch (e) {
         const revealError = e as Error;
         const errorCode = getPasskeyErrorCode(revealError);
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.KeyExportFailed,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: MetaMetricsEventVerificationMethod.Passkey,
-            reason: errorCode,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.KeyExportFailed)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Srp,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Passkey,
+              reason: errorCode,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
+            .build(),
+        );
         captureException(
           createSentryError('Reveal SRP with passkey failed', revealError),
         );
@@ -348,7 +373,7 @@ function RevealSeedPage() {
         endTrace({ name: TraceName.RevealSeed });
       }
     },
-    [dispatch, keyringId, trackEvent, hdEntropyIndex],
+    [createEventBuilder, dispatch, hdEntropyIndex, keyringId, trackEvent],
   );
 
   const handleUsePassword = useCallback(() => {
@@ -375,95 +400,104 @@ function RevealSeedPage() {
 
   useEffect(() => {
     if (screen === REVEAL_SEED_SCREEN && !srpViewEventTracked) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpViewSrpText,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SrpViewSrpText)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+          })
+          .build(),
+      );
       setSrpViewEventTracked(true);
     }
-  }, [screen, srpViewEventTracked, trackEvent]);
+  }, [createEventBuilder, screen, srpViewEventTracked, trackEvent]);
 
   const handleRevealPhrase = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     setPhraseRevealed(true);
-  }, [trackEvent, hdEntropyIndex]);
+  }, [createEventBuilder, hdEntropyIndex, trackEvent]);
 
   const handleTabClick = useCallback(
     (tabKey: 'text-seed' | 'qr-srp') => {
       if (tabKey === 'text-seed') {
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.SrpViewSrpText,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.SrpViewSrpText)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Srp,
+            })
+            .build(),
+        );
       } else if (tabKey === 'qr-srp') {
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.SrpViewsSrpQR,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.SrpViewsSrpQR)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Srp,
+            })
+            .build(),
+        );
       }
     },
-    [trackEvent],
+    [createEventBuilder, trackEvent],
   );
 
   const handlePasswordContinueClick = useCallback(
     (event: React.MouseEvent) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportRequested,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        },
-      });
-      trackEvent({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealNextClicked,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportRequested)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Password,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SrpRevealNextClicked)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+          })
+          .build(),
+      );
       handleSubmit(event);
     },
-    [trackEvent, hdEntropyIndex, handleSubmit],
+    [createEventBuilder, handleSubmit, hdEntropyIndex, trackEvent],
   );
 
   const handleQuizGetStarted = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.SrpRevealStarted,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        key_type: MetaMetricsEventKeyType.Srp,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SrpRevealStarted)
+        .addCategory(MetaMetricsEventCategory.Keys)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     setScreen(QUIZ_QUESTIONS_SCREEN);
-  }, [trackEvent, hdEntropyIndex]);
+  }, [createEventBuilder, hdEntropyIndex, trackEvent]);
 
   const renderContent = () => {
     if (screen === QUIZ_INTRODUCTION_SCREEN) {

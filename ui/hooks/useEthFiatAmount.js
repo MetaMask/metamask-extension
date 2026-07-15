@@ -40,7 +40,9 @@ export function useEthFiatAmount(
     return undefined;
   }
 
-  const fiatAmount = new BigNumber(ethAmount.toString()).times(conversionRate);
+  const fiatAmount = new BigNumber(ethAmount.toString()).times(
+    String(conversionRate),
+  );
   if (
     ethAmount &&
     fiatAmount.lt(new BigNumber(0.01)) &&
