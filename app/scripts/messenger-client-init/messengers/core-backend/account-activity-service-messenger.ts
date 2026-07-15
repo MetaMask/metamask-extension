@@ -27,6 +27,7 @@ export function getAccountActivityServiceMessenger(
     messenger: serviceMessenger,
     actions: [
       'AccountsController:getSelectedAccount',
+      'AccountsController:listMultichainAccounts',
       'BackendWebSocketService:connect',
       'BackendWebSocketService:forceReconnection',
       'BackendWebSocketService:subscribe',

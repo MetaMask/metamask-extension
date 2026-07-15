@@ -6022,20 +6022,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.4.0, @metamask/core-backend@npm:^6.5.0":
-  version: 6.5.0
-  resolution: "@metamask/core-backend@npm:6.5.0"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@6.5.0-preview-42cce76ad":
+  version: 6.5.0-preview-42cce76ad
+  resolution: "@metamask-previews/core-backend@npm:6.5.0-preview-42cce76ad"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.4"
+    "@metamask/accounts-controller": "npm:^39.0.5"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-controller": "npm:^27.1.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/profile-sync-controller": "npm:^28.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/profile-sync-controller": "npm:^28.3.0"
     "@metamask/utils": "npm:^11.11.0"
     "@tanstack/query-core": "npm:^5.62.16"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/d728bd8db6f832b479811288f00b8f2fd78561d42046ee08ceee6068632e72bcf2fdd229f3a7077518a2766f9eacef14b3e224dc0bdcc27d3cd5d2f6d81eb55c
+  checksum: 10/2b11085c3d1df1302a1cfa451cdb169b1106ed59098dd5fe119833dcfd5555dfd391bd5614c12ecc6135390d67cab605190dc1fe2c7553ea588c46640b8ba4f9
   languageName: node
   linkType: hard
 
