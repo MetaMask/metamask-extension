@@ -247,6 +247,28 @@ const normalizeToHexChainId = (chainId: string): string => {
 const getTokenAddressKey = (chainId: string, address: string) =>
   `${normalizeToHexChainId(chainId)}:${address.toLowerCase()}`;
 
+const getManagedTokenListOrderKey = (token: ManagedAsset) => {
+  if ('address' in token && token.address && token.chainId) {
+    return getTokenAddressKey(String(token.chainId), token.address);
+  }
+
+  return String(token.assetId).toLowerCase();
+};
+
+const getSearchResultListOrderKey = (result: TokenSearchResult) => {
+  const payload = convertSearchResultToImportPayload(result);
+  if (payload?.hexChainId) {
+    return getTokenAddressKey(payload.hexChainId, payload.assetReference);
+  }
+
+  return result.assetId.toLowerCase();
+};
+
+const getTokenManagementListItemOrderKey = (item: TokenManagementListItem) =>
+  item.type === 'managed'
+    ? getManagedTokenListOrderKey(item.token)
+    : getSearchResultListOrderKey(item.result);
+
 const getIgnoredTokenAddressesByChain = (
   allIgnoredTokensByChain: Record<string, Record<string, string[]>>,
   selectedAddress?: string,
@@ -419,6 +441,7 @@ export const TokenManagementPage = () => {
   >(() => new Set<string>());
   const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
   const hasTrackedScreenOpenedRef = useRef(false);
+  const tokenListOrderRef = useRef<Map<string, number>>(new Map());
 
   const stageHide = useCallback((key: string, payload: StagedHidePayload) => {
     stagedHidesRef.current.set(key, payload);
@@ -1315,23 +1338,45 @@ export const TokenManagementPage = () => {
   ]);
 
   const tokenListItems = useMemo<TokenManagementListItem[]>(() => {
-    if (hasQuery) {
-      return searchResults.map((result) => ({
-        type: 'api-result',
-        result,
-      }));
-    }
+    const nextTokenListItems = (() => {
+      if (hasQuery) {
+        return searchResults.map((result) => ({
+          type: 'api-result' as const,
+          result,
+        }));
+      }
 
-    return [
-      ...visibleTokens.map((token) => ({
-        type: 'managed' as const,
-        token,
-      })),
-      ...browseApiResults.map((result) => ({
-        type: 'api-result' as const,
-        result,
-      })),
-    ];
+      return [
+        ...visibleTokens.map((token) => ({
+          type: 'managed' as const,
+          token,
+        })),
+        ...browseApiResults.map((result) => ({
+          type: 'api-result' as const,
+          result,
+        })),
+      ];
+    })();
+
+    nextTokenListItems.forEach((item) => {
+      const itemKey = getTokenManagementListItemOrderKey(item);
+      if (!tokenListOrderRef.current.has(itemKey)) {
+        tokenListOrderRef.current.set(itemKey, tokenListOrderRef.current.size);
+      }
+    });
+
+    return [...nextTokenListItems].sort((itemA, itemB) => {
+      const itemAOrder =
+        tokenListOrderRef.current.get(
+          getTokenManagementListItemOrderKey(itemA),
+        ) ?? Number.MAX_SAFE_INTEGER;
+      const itemBOrder =
+        tokenListOrderRef.current.get(
+          getTokenManagementListItemOrderKey(itemB),
+        ) ?? Number.MAX_SAFE_INTEGER;
+
+      return itemAOrder - itemBOrder;
+    });
   }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
   const tokenManagementViewState =
     tokenListItems.length === 0
@@ -1379,14 +1424,8 @@ export const TokenManagementPage = () => {
   );
 
   const getTokenListItemKey = useCallback(
-    (item: TokenManagementListItem, index: number) => {
-      if (item.type === 'managed') {
-        return `managed-${getTokenKey(item.token)}`;
-      }
-
-      return `${getSearchResultKey(item.result)}-${index}`;
-    },
-    [getSearchResultKey, getTokenKey],
+    (item: TokenManagementListItem) => getTokenManagementListItemOrderKey(item),
+    [],
   );
 
   const handleListScroll = useCallback(
