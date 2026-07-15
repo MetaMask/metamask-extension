@@ -1136,9 +1136,7 @@ export const TokenManagementPage = () => {
       event.preventDefault();
       commitStagedHides()
         .catch(() => undefined)
-        .finally(() =>
-          runCloseTransition(() => navigate(DEFAULT_ROUTE)),
-        );
+        .finally(() => runCloseTransition(() => navigate(DEFAULT_ROUTE)));
     },
     [commitStagedHides, navigate, runCloseTransition],
   );
