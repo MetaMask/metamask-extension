@@ -328,7 +328,7 @@ export function beforeBreadcrumb() {
  * extension reads (snap manifests / locale files, and content-hashed
  * preinstalled-snap `<hash>.json` bundles). All other requests are traced.
  *
- * Constraint (MetaMask-planning#7354): never filter a URL matching
+ * Never filter a URL matching
  * `BACKEND_TRACE_PROPAGATION_TARGETS` — the SDK propagates the request span's
  * id as the W3C `traceparent` parent, so dropping that span client-side
  * orphans the backend's subtree of the trace.

@@ -12,8 +12,8 @@ import {
  * trace-flags `00` — a `01` would make OTLP backends record subtrees whose
  * advertised parent span never exists — and a recorded request span propagates
  * its *own* span id, so backend spans nest under the `http.client` span rather
- * than beside it. Complements #44053 (flag-gating + target-scoping of header
- * attachment); these tests cover the header contents.
+ * than beside it. Flag-gating and target-scoping of header attachment are
+ * covered separately by integration tests; these cover the header contents.
  */
 
 const W3C_TRACEPARENT_UNSAMPLED = /^00-[0-9a-f]{32}-[0-9a-f]{16}-00$/u;
