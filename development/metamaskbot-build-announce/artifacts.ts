@@ -102,23 +102,25 @@ export function getArtifactLinks(
  * Renders build links as HTML content rows (e.g. "builds: chrome, firefox").
  *
  * @param buildLinks - BuildLinks from getBuildLinks.
- * @returns Array of HTML strings, one per build type.
+ * @returns Array of HTML strings, one per bundler/build type combination.
  */
 function formatBuildLinks(buildLinks: BuildLinks): string[] {
-  const prefix = 'Webpack builds';
-  return (
-    Object.entries(buildLinks.webpack)
-      // Experimental builds are only created nightly, not on PRs
-      // so we exclude them from the PR comment to avoid confusion.
-      .filter(([variant]) => variant !== 'experimental')
-      .map(([variant, builds]) => {
-        const label = variant === 'main' ? prefix : `${prefix} (${variant})`;
-        const links = Object.entries(builds).map(
-          ([platform, url]) => `<a href="${url}">${platform}</a>`,
-        );
-        return `${label}: ${links.join(', ')}`;
-      })
-  );
+  return Object.entries(buildLinks).flatMap(([bundler, types]) => {
+    const prefix = `${bundler[0].toUpperCase()}${bundler.slice(1)} builds`;
+    return (
+      Object.entries(types)
+        // Experimental builds are only created nightly, not on PRs
+        // so we exclude them from the PR comment to avoid confusion.
+        .filter(([variant]) => variant !== 'experimental')
+        .map(([variant, builds]) => {
+          const label = variant === 'main' ? prefix : `${prefix} (${variant})`;
+          const links = Object.entries(builds).map(
+            ([platform, url]) => `<a href="${url}">${platform}</a>`,
+          );
+          return `${label}: ${links.join(', ')}`;
+        })
+    );
+  });
 }
 
 /**
