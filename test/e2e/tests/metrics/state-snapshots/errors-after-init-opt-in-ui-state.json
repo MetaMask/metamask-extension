@@ -387,7 +387,6 @@
     "snaps": "object",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "socialBackupsMetadata": "object",
-    "srpSessionData": "object",
     "status": "string",
     "storageMetadata": "object",
     "storageWriteErrorType": null,

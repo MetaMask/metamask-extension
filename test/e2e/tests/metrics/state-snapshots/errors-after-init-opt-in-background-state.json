@@ -97,8 +97,7 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean",
-    "srpSessionData": "object"
+    "needsProfilePairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
