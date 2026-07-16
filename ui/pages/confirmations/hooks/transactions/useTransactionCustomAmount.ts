@@ -162,9 +162,9 @@ export function useTransactionCustomAmount({
       // before the debounced `isInputChanged` catches up.
       userEditedRef.current = true;
 
-      let newAmount = value.replace(/^0+/u, '') || '0';
+      let newAmount = value.replace(/,/gu, '.').replace(/^0+/u, '') || '0';
 
-      if (newAmount.startsWith('.') || newAmount.startsWith(',')) {
+      if (newAmount.startsWith('.')) {
         newAmount = `0${newAmount}`;
       }
 
@@ -327,7 +327,8 @@ function getAmountHumanFromFiat(
   tokenFiatRate: number,
   skipFiatRateConversion: boolean,
 ) {
-  const amountFiatValue = new BigNumber(amountFiat || '0');
+  const normalized = amountFiat.replace(/,/gu, '.');
+  const amountFiatValue = new BigNumber(normalized || '0');
 
   if (skipFiatRateConversion) {
     return amountFiatValue.toString(10);
