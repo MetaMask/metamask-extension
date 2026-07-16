@@ -57,7 +57,7 @@ describe('applySentryRemoteRates', () => {
     expect(getRemoteWrapperSampleRate()).toBe(1);
   });
 
-  it.each([
+  const INVALID_RATES: [label: string, value: unknown][] = [
     ['negative', -0.1],
     ['above one', 1.5],
     ['NaN', NaN],
@@ -65,19 +65,22 @@ describe('applySentryRemoteRates', () => {
     ['string', '0.5'],
     ['null', null],
     ['object', { rate: 0.5 }],
-  ])('ignores an invalid rate (%s) and keeps fallbacks', async (_, value) => {
-    mockPersistedState({ tracesSampleRate: value, wrapperSampleRate: value });
-    const client = mockClient();
+  ];
+  for (const [label, value] of INVALID_RATES) {
+    it(`ignores an invalid rate (${label}) and keeps fallbacks`, async () => {
+      mockPersistedState({ tracesSampleRate: value, wrapperSampleRate: value });
+      const client = mockClient();
 
-    const applied = await applySentryRemoteRates(client);
+      const applied = await applySentryRemoteRates(client);
 
-    expect(applied).toStrictEqual({
-      tracesSampleRate: undefined,
-      wrapperSampleRate: undefined,
+      expect(applied).toStrictEqual({
+        tracesSampleRate: undefined,
+        wrapperSampleRate: undefined,
+      });
+      expect(client.options.tracesSampleRate).toBe(0.0075);
+      expect(getRemoteWrapperSampleRate()).toBeUndefined();
     });
-    expect(client.options.tracesSampleRate).toBe(0.0075);
-    expect(getRemoteWrapperSampleRate()).toBeUndefined();
-  });
+  }
 
   it('applies a partial flag without touching the other rate', async () => {
     mockPersistedState({ wrapperSampleRate: 0.05 });
