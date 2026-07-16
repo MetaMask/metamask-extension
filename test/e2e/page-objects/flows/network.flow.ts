@@ -1,53 +1,23 @@
 import { Driver } from '../../webdriver/driver';
-import { getCleanAppState } from '../../helpers';
 import TokensTab from '../pages/home/tokens-tab';
 import NetworkManager from '../pages/network-manager';
 
-/**
- * Waits until a non-EVM Snap has initialized and created its account in state.
- *
- * Non-EVM accounts are created asynchronously at runtime (BIP44 stage-2
- * alignment). Switching to a non-EVM network before its account exists means
- * the network switch never triggers a Snap balance fetch, leaving the balance
- * stuck at 0. Waiting for the account here makes the subsequent switch
- * deterministically kick off the balance fetch.
- *
- * @param driver - The WebDriver instance.
- * @param accountTypePrefix - The CAIP account type prefix to look for (e.g. `tron:`, `bip122:`).
- * @param timeout - Max ms to wait for the account to appear.
- */
-const waitForNonEvmAccountReady = async (
-  driver: Driver,
-  accountTypePrefix: string,
-  timeout: number = 10_000,
-): Promise<void> => {
-  console.log(
-    `Waiting for Snap account of type "${accountTypePrefix}" to be created in state`,
-  );
-  await driver.waitUntil(
-    async () => {
-      const state = await getCleanAppState(driver);
-      const accounts =
-        state?.metamask?.internalAccounts?.accounts ??
-        ({} as Record<string, { type?: string }>);
-      return Object.values(accounts as Record<string, { type?: string }>).some(
-        (account) => account?.type?.toLowerCase().startsWith(accountTypePrefix),
-      );
-    },
-    { interval: 500, timeout },
-  );
-};
-
-// Non-EVM networks whose Snap account is created asynchronously at runtime. We
-// must wait for the account to exist before switching so the switch triggers the
-// Snap balance fetch (otherwise the balance stays 0).
-const NON_EVM_ACCOUNT_READY_WAITERS: Record<
-  string,
-  (driver: Driver) => Promise<void>
-> = {
-  Tron: (driver) => waitForNonEvmAccountReady(driver, 'tron:'),
-  Bitcoin: (driver) => waitForNonEvmAccountReady(driver, 'bip122:'),
-};
+// TODO: Replace this fixed delay with a deterministic wait once the root cause
+// is investigated and fixed. Non-EVM accounts (Tron, Bitcoin) are created
+// asynchronously at runtime via BIP44 stage-2 alignment, and the Snap only kicks
+// off its balance fetch when the network is switched while it is fully ready. If
+// we switch too early, that trigger is missed and nothing re-fetches the balance
+// afterwards, so it stays stuck at 0 and the balance assertion fails. Waiting
+// for the account to appear in state proved insufficient (the account exists
+// before the Snap is ready to serve balances), so we fall back to a fixed delay.
+//
+// Solana is intentionally excluded: these tests skip onboarding and boot from a
+// seeded vault fixture in which the Solana account is already present, so it
+// exists at unlock and there is no async-creation race. Tron and Bitcoin are not
+// in the seeded vault and are created at runtime, which is why only they need
+// this delay.
+const NON_EVM_SNAP_READY_DELAY_MS = 10_000;
+const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin'];
 
 export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
@@ -60,11 +30,8 @@ export const switchToNetworkFromNetworkSelect = async (
   const tokensTab = new TokensTab(driver);
   const networkManager = new NetworkManager(driver);
 
-  // For non-EVM networks, wait for the Snap account to exist before switching so
-  // the switch triggers the Snap balance fetch; otherwise the balance stays 0.
-  const waitForAccountReady = NON_EVM_ACCOUNT_READY_WAITERS[networkName];
-  if (waitForAccountReady) {
-    await waitForAccountReady(driver);
+  if (NON_EVM_NETWORKS_NEEDING_DELAY.includes(networkName)) {
+    await driver.delay(NON_EVM_SNAP_READY_DELAY_MS);
   }
 
   await tokensTab.openNetworksFilter();
