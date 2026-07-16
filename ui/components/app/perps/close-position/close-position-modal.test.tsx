@@ -1134,6 +1134,32 @@ describe('ClosePositionModal', () => {
       ).toBeDisabled();
     });
 
+    it('shows price unavailable when no valid limit reference price exists', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={NaN}
+          markPrice={NaN}
+          midPrice={NaN}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('3000');
+
+      expect(
+        screen.getByText(tEn('perpsClosePriceUnavailable')),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(tEn('perpsCloseLimitPriceOutsideOracleBand')),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
     it('forces Market behavior when the flag is disabled mid-session', async () => {
       const store = createCloseLimitEnabledStore();
       renderWithProvider(
@@ -1284,7 +1310,7 @@ describe('ClosePositionModal', () => {
       expect(receiveValue).toBeCloseTo(marginValue - feesValue, 2);
     });
 
-    it('uses maker limit fees and recalculates the fee notional', () => {
+    it('uses stable maker fee-rate inputs while price and amount change', () => {
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -1296,13 +1322,21 @@ describe('ClosePositionModal', () => {
         createCloseLimitEnabledStore(),
       );
       enterLimitPrice('3200');
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
 
       expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
         symbol: basePosition.symbol,
         orderType: 'limit',
-        amount: '8000',
         isMaker: true,
       });
+      expect(
+        mockUsePerpsOrderFees.mock.calls.every(
+          ([options]) => !Object.hasOwn(options, 'amount'),
+        ),
+      ).toBe(true);
     });
   });
 

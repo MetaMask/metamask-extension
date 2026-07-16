@@ -44,8 +44,7 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplaySymbol } from '../utils';
-import { formatOrderLabel } from '../utils/orderUtils';
+import { formatOrderType, getDisplaySymbol } from '../utils';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
@@ -113,7 +112,31 @@ export const CancelOrderModal = ({
     return null;
   }, [order.size, order.price]);
 
-  const modalTitle = useMemo(() => formatOrderLabel(order), [order]);
+  const modalTitle = useMemo(() => {
+    const isClosing = Boolean(order.reduceOnly || order.isTrigger);
+    const isLong = isClosing ? order.side === 'sell' : order.side === 'buy';
+    let directionKey: string;
+    if (isClosing) {
+      directionKey = isLong ? 'perpsCloseLong' : 'perpsCloseShort';
+    } else {
+      directionKey = isLong ? 'perpsLong' : 'perpsShort';
+    }
+    const directionLabel = t(directionKey);
+    const orderTypeLabel =
+      order.detailedOrderType || formatOrderType(order.orderType);
+
+    return `${orderTypeLabel} ${directionLabel.toLocaleLowerCase(
+      currentLocale ?? 'en-US',
+    )}`;
+  }, [
+    order.reduceOnly,
+    order.isTrigger,
+    order.side,
+    order.detailedOrderType,
+    order.orderType,
+    currentLocale,
+    t,
+  ]);
 
   const handleCancel = useCallback(async () => {
     if (!isEligible) {

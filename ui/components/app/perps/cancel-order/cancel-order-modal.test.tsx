@@ -82,26 +82,34 @@ describe('CancelOrderModal', () => {
       expect(screen.getByText(baseOrder.symbol)).toBeInTheDocument();
     });
 
-    it('builds modal title as "Limit long" for a buy limit order', () => {
+    it('uses the localized long label for a buy limit order', () => {
       renderWithProvider(
         <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
         mockStore,
       );
 
-      expect(screen.getByText('Limit long')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          `Limit ${messages.perpsLong.message.toLocaleLowerCase('en-US')}`,
+        ),
+      ).toBeInTheDocument();
     });
 
-    it('builds modal title as "Limit short" for a sell limit order', () => {
+    it('uses the localized short label for a sell limit order', () => {
       const sellOrder: Order = { ...baseOrder, side: 'sell' };
       renderWithProvider(
         <CancelOrderModal isOpen onClose={jest.fn()} order={sellOrder} />,
         mockStore,
       );
 
-      expect(screen.getByText('Limit short')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          `Limit ${messages.perpsShort.message.toLocaleLowerCase('en-US')}`,
+        ),
+      ).toBeInTheDocument();
     });
 
-    it('builds modal title as "Limit close long" for a reduce-only sell', () => {
+    it('uses the localized close-long label for a reduce-only sell', () => {
       const closeLongOrder: Order = {
         ...baseOrder,
         side: 'sell',
@@ -112,10 +120,14 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Limit close long')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          `Limit ${messages.perpsCloseLong.message.toLocaleLowerCase('en-US')}`,
+        ),
+      ).toBeInTheDocument();
     });
 
-    it('builds modal title as "Limit close short" for a reduce-only buy', () => {
+    it('uses the localized close-short label for a reduce-only buy', () => {
       const closeShortOrder: Order = {
         ...baseOrder,
         side: 'buy',
@@ -126,7 +138,11 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Limit close short')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          `Limit ${messages.perpsCloseShort.message.toLocaleLowerCase('en-US')}`,
+        ),
+      ).toBeInTheDocument();
     });
 
     it('displays the limit price row', () => {

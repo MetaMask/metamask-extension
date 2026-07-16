@@ -406,7 +406,6 @@ export const ClosePositionModal = ({
     usePerpsOrderFees({
       symbol: position.symbol,
       orderType: effectiveOrderType,
-      amount: closeNotionalUsd.toString(),
       isMaker: effectiveOrderType === 'limit',
     });
 
@@ -500,6 +499,9 @@ export const ClosePositionModal = ({
     }
     if (effectiveOrderType === 'limit' && parsedLimitPrice === null) {
       return t('perpsCloseLimitPriceRequired');
+    }
+    if (effectiveOrderType === 'limit' && referencePrice === null) {
+      return t('perpsClosePriceUnavailable');
     }
     if (isLimitPriceOutsideDeviation) {
       return t('perpsCloseLimitPriceOutsideOracleBand');
