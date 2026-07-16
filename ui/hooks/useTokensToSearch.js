@@ -4,10 +4,7 @@ import BigNumber from 'bignumber.js';
 import { uniqBy } from 'lodash';
 import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import {
-  getTokenExchangeRates,
-  getSwapsDefaultToken,
-} from '../selectors';
+import { getTokenExchangeRates, getSwapsDefaultToken } from '../selectors';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
