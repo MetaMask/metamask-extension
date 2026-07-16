@@ -160,6 +160,7 @@
     "eventQueue": "object",
     "events": "object",
     "eventsBeforeMetricsOptIn": "object",
+    "experimentEligibility": "object",
     "fcmToken": "string",
     "featureFlags": {},
     "fiatCurrency": "usd",

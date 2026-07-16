@@ -48,6 +48,7 @@
     "currentExtensionPopupId": "number",
     "dappSwapComparisonData": "object",
     "defaultHomeActiveTabName": null,
+    "experimentEligibility": "object",
     "fullScreenGasPollTokens": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
