@@ -23,6 +23,7 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 TRX',
@@ -48,6 +49,7 @@ describe('Check balance', function (this: Suite) {
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
 
         // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
@@ -73,6 +75,7 @@ describe('Check balance', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
 
         // TRX_BALANCE = 106072392 SUN = ~106.07 TRX

@@ -2,20 +2,12 @@ import { Driver } from '../../webdriver/driver';
 import TokensTab from '../pages/home/tokens-tab';
 import NetworkManager from '../pages/network-manager';
 
-// TODO: Replace this fixed delay with a deterministic wait once the root cause
-// is investigated and fixed. Non-EVM accounts (Tron, Bitcoin) are created
+// TODO: Replace this fixed delay with a deterministic wait. Non-EVM accounts (Tron, Bitcoin) are created
 // asynchronously at runtime via BIP44 stage-2 alignment, and the Snap only kicks
 // off its balance fetch when the network is switched while it is fully ready. If
 // we switch too early, that trigger is missed and nothing re-fetches the balance
-// afterwards, so it stays stuck at 0 and the balance assertion fails. Waiting
-// for the account to appear in state proved insufficient (the account exists
-// before the Snap is ready to serve balances), so we fall back to a fixed delay.
-//
-// Solana is intentionally excluded: these tests skip onboarding and boot from a
-// seeded vault fixture in which the Solana account is already present, so it
-// exists at unlock and there is no async-creation race. Tron and Bitcoin are not
-// in the seeded vault and are created at runtime, which is why only they need
-// this delay.
+// afterwards.
+// Solana is intentionally excluded as it's seeded in the fixtures vault
 const NON_EVM_SNAP_READY_DELAY_MS = 10_000;
 const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin'];
 

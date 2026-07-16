@@ -8,7 +8,7 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import { buildSolanaTestSpecificMock } from './common-solana';
 import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
-describe('Check balance TEST', function (this: Suite) {
+describe('Check balance', function (this: Suite) {
   this.timeout(300000);
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
     await withFixtures(
