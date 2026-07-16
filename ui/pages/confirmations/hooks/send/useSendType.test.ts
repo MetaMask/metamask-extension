@@ -39,6 +39,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: false,
       isNonEvmSendType: false,
       isSolanaSendType: false,
+      isStellarSendType: false,
       isTronSendType: false,
     });
   });
@@ -56,6 +57,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: false,
       isNonEvmSendType: false,
       isSolanaSendType: false,
+      isStellarSendType: false,
       isTronSendType: false,
     });
   });
@@ -73,6 +75,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: false,
       isNonEvmSendType: false,
       isSolanaSendType: false,
+      isStellarSendType: false,
       isTronSendType: false,
     });
   });
@@ -90,6 +93,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: true,
       isNonEvmSendType: true,
       isSolanaSendType: true,
+      isStellarSendType: false,
       isTronSendType: false,
     });
   });
@@ -107,6 +111,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: false,
       isNonEvmSendType: true,
       isSolanaSendType: true,
+      isStellarSendType: false,
       isTronSendType: false,
     });
   });
@@ -124,6 +129,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: true,
       isNonEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
       isTronSendType: false,
     });
   });

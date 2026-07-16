@@ -38,6 +38,7 @@ module.exports = {
     'json',
     'node',
   ],
+  modulePathIgnorePatterns: ['<rootDir>/.metamask/cache/java-tron-up/'],
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),

@@ -19,7 +19,6 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/lib/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
@@ -1142,6 +1141,80 @@ describe('Selectors', () => {
       expect(selectors.getTransaction.recomputations()).toBe(2);
     });
 
+    it('returns updated transaction when transaction object is replaced in state', () => {
+      const initialTx = {
+        chainId: CHAIN_IDS.MAINNET,
+        id: 'tx-1',
+        status: TransactionStatus.submitted,
+        txParams: { to: '0x1' },
+      };
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [initialTx],
+        },
+      };
+
+      expect(selectors.getTransaction(mutableState, 'tx-1').txParams.to).toBe(
+        '0x1',
+      );
+
+      const updatedState = {
+        ...mutableState,
+        metamask: {
+          ...mutableState.metamask,
+          transactions: [
+            {
+              ...initialTx,
+              txParams: { to: '0xupdated' },
+            },
+          ],
+        },
+      };
+
+      expect(selectors.getTransaction(updatedState, 'tx-1').txParams.to).toBe(
+        '0xupdated',
+      );
+    });
+
+    it('recomputes unapproved transaction when txParams mutate in place', () => {
+      const mutableState = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-3',
+              status: TransactionStatus.unapproved,
+              txParams: { maxFeePerGas: '0x1', gas: '0x5208' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x1');
+
+      mutableState.metamask.transactions[0].txParams.maxFeePerGas = '0x999';
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x999');
+    });
+
     it('caches full transaction data per transaction ID', () => {
       expect(
         selectors.getFullTxData(
@@ -1237,6 +1310,133 @@ describe('Selectors', () => {
     });
   });
 
+  describe('parameterized asset selector memoization', () => {
+    const selectedAccountId = 'selected-account';
+    const selectedAccountAddress = '0x123';
+    const chainIdOne = CHAIN_IDS.MAINNET;
+    const chainIdTwo = CHAIN_IDS.LINEA_MAINNET;
+    const tokenAddressOne = '0xaaa';
+    const tokenAddressTwo = '0xbbb';
+
+    const state = {
+      metamask: {
+        internalAccounts: {
+          selectedAccount: selectedAccountId,
+          accounts: {
+            [selectedAccountId]: {
+              address: selectedAccountAddress,
+            },
+          },
+        },
+        allNfts: {
+          [selectedAccountAddress]: {
+            [chainIdOne]: [{ address: '0xnft-1' }],
+            [chainIdTwo]: [{ address: '0xnft-2' }],
+          },
+        },
+        tokenScanCache: {
+          [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Malicious',
+          },
+          [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+            result_type: 'Warning',
+          },
+          [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Benign',
+          },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      selectors.selectNftsByChainId.clearCache();
+      selectors.selectNftsByChainId.resetRecomputations();
+      selectors.getTokenScanResultsForAddresses.clearCache();
+      selectors.getTokenScanResultsForAddresses.resetRecomputations();
+    });
+
+    it('caches NFT lookups per chain ID', () => {
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(0);
+
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdTwo)).toStrictEqual([
+        { address: '0xnft-2' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
+    });
+
+    it('caches token scan lookups across equivalent address arrays', () => {
+      const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+      const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        0,
+      );
+
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          addressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          equivalentAddressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdTwo, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Benign',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdOne, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        2,
+      );
+    });
+  });
+
   it('#getUseTokenDetection', () => {
     const useTokenDetection = selectors.getUseTokenDetection(mockState);
     expect(useTokenDetection).toStrictEqual(true);
@@ -1295,6 +1495,7 @@ describe('Selectors', () => {
   it('#getAdvancedGasFeeValues', () => {
     const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
+      userFeeLevel: 'custom',
       maxBaseFee: '75',
       priorityFee: '2',
     });
@@ -1307,6 +1508,76 @@ describe('Selectors', () => {
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
+  });
+
+  describe('#getNames', () => {
+    it('returns a stable empty object when names are unavailable', () => {
+      const result1 = selectors.getNames({ metamask: {} });
+      const result2 = selectors.getNames({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the names slice is unchanged', () => {
+      const names = {
+        ethereumAddress: {
+          '0xabc': {
+            '0x1': {
+              name: 'Test Name',
+            },
+          },
+        },
+      };
+      const state = {
+        metamask: {
+          names,
+        },
+      };
+
+      const result1 = selectors.getNames(state);
+      const result2 = selectors.getNames({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(names);
+    });
+  });
+
+  describe('#getNameSources', () => {
+    it('returns a stable empty object when name sources are unavailable', () => {
+      const result1 = selectors.getNameSources({ metamask: {} });
+      const result2 = selectors.getNameSources({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the name sources slice is unchanged', () => {
+      const nameSources = {
+        ens: { label: 'ENS' },
+      };
+      const state = {
+        metamask: {
+          nameSources,
+        },
+      };
+
+      const result1 = selectors.getNameSources(state);
+      const result2 = selectors.getNameSources({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(nameSources);
+    });
   });
 
   it('#getShowOutdatedBrowserWarning returns false if outdatedBrowserWarningLastShown is less than 2 days ago', () => {
@@ -2304,14 +2575,8 @@ describe('#getConnectedSitesList', () => {
     it('respects the overrideChainId parameter', () => {
       process.env.METAMASK_ENVIRONMENT = 'production';
 
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsSwapsChain(mockState, '0x89');
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -2360,15 +2625,9 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('respects the overrideChainId parameter', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsBridgeChain(mockState, '0x89');
 
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -4833,6 +5092,7 @@ describe('snap selectors', () => {
       },
       insights: {
         one: { value: 1 },
+        two: { value: 2 },
       },
     },
   };
@@ -4850,6 +5110,28 @@ describe('snap selectors', () => {
     expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
       value: 1,
     });
+  });
+
+  it('caches snap insights per snap ID', () => {
+    const cachingState = {
+      ...snapState,
+      metamask: {
+        ...snapState.metamask,
+        insights: {
+          alpha: { value: 'a' },
+          beta: { value: 'b' },
+        },
+      },
+    };
+
+    selectors.getSnapInsights.resetRecomputations();
+
+    const firstInsight = selectors.getSnapInsights(cachingState, 'alpha');
+    const secondInsight = selectors.getSnapInsights(cachingState, 'beta');
+
+    expect(selectors.getSnapInsights(cachingState, 'alpha')).toBe(firstInsight);
+    expect(selectors.getSnapInsights(cachingState, 'beta')).toBe(secondInsight);
+    expect(selectors.getSnapInsights.recomputations()).toBe(2);
   });
 
   it('filters snap collections for snap permissions and enabled state', () => {

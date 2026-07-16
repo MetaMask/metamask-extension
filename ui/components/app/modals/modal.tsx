@@ -24,7 +24,8 @@ import ConfirmResetAccount from './confirm-reset-account';
 import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
-import FadeModal from './fade-modal';
+import FadeModal, { type FadeModalRef } from './fade-modal';
+import RampsInfoModal from './ramps/ramps-info-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -62,11 +63,6 @@ type ModalConfig = {
   customOnHideOpts?: CustomOnHideOpts;
 };
 
-type FadeModalRef = {
-  show: () => void;
-  hide: () => void;
-};
-
 const MODALS: Record<string, ModalConfig> = {
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
@@ -101,6 +97,66 @@ const MODALS: Record<string, ModalConfig> = {
 
   CONVERT_TOKEN_TO_NFT: {
     contents: <ConvertTokenToNftModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_UNSUPPORTED: {
+    contents: (
+      <RampsInfoModal
+        testId="ramps-unsupported-modal"
+        titleKey="rampsUnsupportedTitle"
+        bodyKey="rampsUnsupportedDescription"
+      />
+    ),
+    testId: 'ramps-unsupported-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_ELIGIBILITY_FAILED: {
+    contents: (
+      <RampsInfoModal
+        testId="ramp-eligibility-failed-modal"
+        titleKey="rampsEligibilityFailedTitle"
+        bodyKey="rampsEligibilityFailedDescription"
+      />
+    ),
+    testId: 'ramp-eligibility-failed-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_SERVICE_DISRUPTION: {
+    contents: (
+      <RampsInfoModal
+        testId="ramps-service-disruption-modal"
+        titleKey="rampsServiceDisruptionTitle"
+        bodyKey="rampsServiceDisruptionDescription"
+      />
+    ),
+    testId: 'ramps-service-disruption-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -259,7 +315,7 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const modalRef = useRef<FadeModalRef>(null);
+  const modalRef = useRef<FadeModalRef | null>(null);
 
   useEffect(() => {
     if (active) {
@@ -284,7 +340,6 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
         }
         hideModal(modal.customOnHideOpts);
       }}
-      // @ts-expect-error FadeModal is a JS class component without TS type declarations
       ref={modalRef}
       modalStyle={modalStyle}
       contentStyle={contentStyle}

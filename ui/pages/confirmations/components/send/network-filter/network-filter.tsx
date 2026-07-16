@@ -42,12 +42,35 @@ type NetworkFilterProps = {
   nfts: Asset[];
   selectedChainId?: string | null;
   onChainIdChange?: (chainId: string | null) => void;
+  disableMetrics?: boolean;
 };
 
 type ChainNetworkDetails = {
   networkName?: string;
   networkImage?: string;
 };
+
+const noop = () => undefined;
+
+function getNetworkDetailsFromTokens(
+  chainId: string,
+  tokens: Asset[],
+): ChainNetworkDetails | undefined {
+  const tokenWithDetails = tokens.find(
+    (token) =>
+      String(token.chainId) === chainId &&
+      (token.networkName || token.networkImage),
+  );
+
+  if (!tokenWithDetails) {
+    return undefined;
+  }
+
+  return {
+    networkName: tokenWithDetails.networkName,
+    networkImage: tokenWithDetails.networkImage,
+  };
+}
 
 function getNetworkSelectionItem({
   chainId,
@@ -76,14 +99,33 @@ export const NetworkFilter = ({
   nfts,
   selectedChainId = null, // Default to "All networks"
   onChainIdChange,
+  disableMetrics = false,
 }: NetworkFilterProps) => {
   const t = useI18nContext();
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
-  const { addAssetFilterMethod, removeAssetFilterMethod } =
-    useAssetSelectionMetrics();
+  const {
+    addAssetFilterMethod: addAssetFilterMethodFromMetrics,
+    removeAssetFilterMethod: removeAssetFilterMethodFromMetrics,
+  } = useAssetSelectionMetrics();
+  const addAssetFilterMethod = disableMetrics
+    ? noop
+    : addAssetFilterMethodFromMetrics;
+  const removeAssetFilterMethod = disableMetrics
+    ? noop
+    : removeAssetFilterMethodFromMetrics;
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
+
+  const getChainNetworkDetails = useCallback(
+    (chainId: string): ChainNetworkDetails | undefined => {
+      return (
+        chainNetworkNAmeAndImageMap.get(chainId) ??
+        getNetworkDetailsFromTokens(chainId, tokens)
+      );
+    },
+    [chainNetworkNAmeAndImageMap, tokens],
+  );
 
   // Extract and sort unique chain IDs by total fiat balance from tokens only
   const uniqueChainIds = useMemo(() => {
@@ -123,12 +165,10 @@ export const NetworkFilter = ({
       return t('allNetworks');
     }
 
-    const networkName = chainNetworkNAmeAndImageMap.get(
-      selectedChainId as string,
-    )?.networkName;
+    const networkName = getChainNetworkDetails(selectedChainId)?.networkName;
 
     return networkName || `Chain ${selectedChainId}`;
-  }, [selectedChainId, chainNetworkNAmeAndImageMap, t]);
+  }, [getChainNetworkDetails, selectedChainId, t]);
 
   const isSingleNetworkSelected = selectedChainId !== null;
 
@@ -185,13 +225,13 @@ export const NetworkFilter = ({
           getNetworkSelectionItem({
             chainId,
             selectedChainId,
-            chainNetworkDetails: chainNetworkNAmeAndImageMap.get(chainId),
+            chainNetworkDetails: getChainNetworkDetails(chainId),
             handleNetworkSelection,
           }),
         ),
       })),
     [
-      chainNetworkNAmeAndImageMap,
+      getChainNetworkDetails,
       handleNetworkSelection,
       networkSections,
       selectedChainId,
@@ -283,18 +323,13 @@ export const NetworkFilter = ({
                 focus={false}
               />
               {uniqueChainIds.map((chainId) => {
-                const networkName = chainNetworkNAmeAndImageMap.get(
-                  chainId as string,
-                )?.networkName;
-                const networkImage = chainNetworkNAmeAndImageMap.get(
-                  chainId as string,
-                )?.networkImage;
+                const networkDetails = getChainNetworkDetails(chainId);
 
                 return (
                   <NetworkListItem
                     key={chainId}
-                    name={networkName || `Chain ${chainId}`}
-                    iconSrc={networkImage || ''}
+                    name={networkDetails?.networkName || `Chain ${chainId}`}
+                    iconSrc={networkDetails?.networkImage || ''}
                     selected={selectedChainId === chainId}
                     onClick={() => handleNetworkSelection(chainId)}
                     focus={false}

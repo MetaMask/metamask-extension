@@ -5,12 +5,10 @@ import React, {
   useMemo,
   useReducer,
   useState,
-  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
 import {
@@ -34,7 +32,7 @@ import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useHideToasts } from '../../../hooks/useHideToasts';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
@@ -234,12 +232,12 @@ export default function ConfirmationPage({
   useHideToasts();
 
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const pendingConfirmations = useSelector(getUnapprovedTemplatedConfirmations);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
-  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const approvalFlows = useSelector(getApprovalFlows);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
@@ -339,7 +337,7 @@ export default function ConfirmationPage({
           },
           // Passing `t` in the contexts object is a bit redundant but since it's a
           // context too, it makes sense (for completeness)
-          { t, trackEvent },
+          { t, trackEvent, createEventBuilder },
         )
       : {};
   }, [
@@ -350,6 +348,7 @@ export default function ConfirmationPage({
     matchedChain,
     currencySymbolWarning,
     trackEvent,
+    createEventBuilder,
     isSnapDialog,
     snapName,
     networkConfigurationsByChainId,
@@ -517,21 +516,22 @@ export default function ConfirmationPage({
       const isCustomNetwork =
         !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Network,
-        event: MetaMetricsEventName.NavNetworkSwitched,
-        properties: {
-          location: 'Switch Modal',
-          from_network:
-            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
-          to_network:
-            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
-          custom_network: isCustomNetwork,
-          referrer: {
-            url: window.location.origin,
-          },
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            location: 'Switch Modal',
+            from_network:
+              pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
+            to_network:
+              pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+            custom_network: isCustomNetwork,
+            referrer: {
+              url: window.location.origin,
+            },
+          })
+          .build(),
+      );
     }
 
     if (templateState[pendingConfirmation.id]?.useWarningModal) {

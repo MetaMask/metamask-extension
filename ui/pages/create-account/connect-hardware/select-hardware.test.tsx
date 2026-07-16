@@ -5,6 +5,21 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import SelectHardware from './select-hardware';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockNavigate = jest.fn();
 let mockLocationKey = 'default';
 jest.mock('react-router-dom', () => ({

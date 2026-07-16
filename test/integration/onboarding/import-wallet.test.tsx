@@ -104,7 +104,9 @@ describe('Import Wallet Events', () => {
       // Check for ExtensionPinned tracking event
       extensionPinnedEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackAnalyticsEvent',
+          (call) =>
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.name === MetaMetricsEventName.OnboardingCompleted,
         );
 
       expect(completeOnboardingCall?.[0]).toBe('completeOnboarding');

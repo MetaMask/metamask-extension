@@ -14,7 +14,7 @@ import {
   IPFS_FORBIDDEN_GATEWAY,
 } from '../../../../shared/constants/network';
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
-import { THIRD_PARTY_API_ITEMS } from '../search-config';
+import { PRIVACY_ITEMS } from '../search-config';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -87,7 +87,7 @@ export const IpfsGatewayItem = () => {
   return (
     <Box className={ipfsToggle ? 'mb-4' : undefined}>
       <SettingsToggleItem
-        title={t(THIRD_PARTY_API_ITEMS['ipfs-gateway'])}
+        title={t(PRIVACY_ITEMS['ipfs-gateway'])}
         description={t('ipfsGatewayDescriptionV2')}
         value={ipfsToggle}
         onToggle={handleToggle}

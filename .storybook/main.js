@@ -47,10 +47,13 @@ module.exports = {
     config.resolve.alias['../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
+    config.resolve.alias['../../hooks/useAnalytics$'] = require.resolve(
+      '../ui/__mocks__/useAnalytics.ts',
+    );
     config.resolve.alias['../../../hooks/useAnalytics$'] = require.resolve(
       '../ui/__mocks__/useAnalytics.ts',
     );
-    config.resolve.alias['../../hooks/useAnalytics$'] = require.resolve(
+    config.resolve.alias['../../../../hooks/useAnalytics$'] = require.resolve(
       '../ui/__mocks__/useAnalytics.ts',
     );
     config.resolve.fallback = {
