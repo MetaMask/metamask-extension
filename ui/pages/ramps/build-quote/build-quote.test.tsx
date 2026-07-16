@@ -402,6 +402,8 @@ describe('RampsBuildQuoteScreen', () => {
 
     fireEvent.click(screen.getByTestId('ramps-payment-method-pill'));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/ramps/payment-method');
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/payment-method', {
+      state: { amount: expect.any(Number) },
+    });
   });
 });

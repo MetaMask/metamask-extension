@@ -8360,8 +8360,19 @@
     "message": "Min $1",
     "description": "$1 is the minimum fiat buy amount"
   },
+  "rampsMaxPurchaseLimit": {
+    "message": "Maximum purchase is $1",
+    "description": "$1 is the formatted maximum fiat purchase amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Minimum purchase is $1",
+    "description": "$1 is the formatted minimum fiat purchase amount"
+  },
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Quote unavailable."
   },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"
