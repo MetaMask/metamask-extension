@@ -83,7 +83,10 @@ function getTitleConfig(item: ActivityListItem | undefined) {
       };
     }
     case 'swapIncomplete': {
-      return getDefinedArgs(item.data.sourceToken?.symbol);
+      return {
+        key,
+        args: getDefinedArgs(item.data.sourceToken?.symbol),
+      };
     }
     default:
       return { key, args: [''] };
