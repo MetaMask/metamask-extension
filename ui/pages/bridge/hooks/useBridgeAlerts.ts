@@ -1,11 +1,11 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import type { CaipChainId, Hex } from '@metamask/utils';
+import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
-  formatChainIdToHex,
-  getNativeAssetForChainId,
-} from '@metamask/bridge-controller';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+  getNativeAssetId,
+  isEvmChainId,
+} from '../../../../shared/lib/asset-utils';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
@@ -28,24 +28,6 @@ import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
-
-/**
- * Resolve a chain's native gas token as a CAIP-19 asset id, or `undefined` when
- * the chain is unknown to the bridge asset map (`getNativeAssetForChainId`
- * throws on those).
- *
- * @param chainId - The source chain the gas is paid on.
- */
-function getNativeGasAssetId(chainId?: Hex | CaipChainId) {
-  if (!chainId) {
-    return undefined;
-  }
-  try {
-    return getNativeAssetForChainId(chainId).assetId;
-  } catch {
-    return undefined;
-  }
-}
 
 /**
  * Normalize the source chain id for the flag-off Portfolio fallback.
@@ -256,7 +238,7 @@ export const useBridgeAlerts = () => {
           // Portfolio fallback.
           actionButtonOnClick: () =>
             goToBuy({
-              assetId: getNativeGasAssetId(fromChain?.chainId),
+              assetId: getNativeAssetId(fromChain?.chainId),
               chainId: getBuyFallbackChainId(fromChain?.chainId),
             }),
         },

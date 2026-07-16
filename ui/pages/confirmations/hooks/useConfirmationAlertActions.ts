@@ -1,32 +1,14 @@
 import { useCallback } from 'react';
-import type { Hex } from '@metamask/utils';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
+import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { useGasFeeModalContext } from '../context/gas-fee-modal';
 import { useConfirmContext } from '../context/confirm';
 import { GasModalType } from '../constants/gas';
-
-/**
- * Resolve the chain's native gas token as a CAIP-19 asset id, or `undefined`
- * for custom/unsupported networks (`getNativeAssetForChainId` throws on those).
- *
- * @param chainId - The confirmation's chain id.
- */
-function getNativeGasAssetId(chainId?: Hex) {
-  if (!chainId) {
-    return undefined;
-  }
-  try {
-    return getNativeAssetForChainId(chainId).assetId;
-  } catch {
-    return undefined;
-  }
-}
 
 const useConfirmationAlertActions = () => {
   const { goToBuy } = useRampsNavigation();
@@ -41,7 +23,7 @@ const useConfirmationAlertActions = () => {
           // Pre-select the native gas token so the buy flow lands on
           // build-quote for it; chainId also drives the flag-off Portfolio
           // fallback.
-          goToBuy({ assetId: getNativeGasAssetId(chainId), chainId });
+          goToBuy({ assetId: getNativeAssetId(chainId), chainId });
           break;
         }
 
