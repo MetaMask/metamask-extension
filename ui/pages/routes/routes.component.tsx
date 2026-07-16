@@ -340,7 +340,11 @@ export const routeConfig = [
       },
       {
         path: TOKEN_MANAGEMENT_ROUTE,
-        element: <TokenManagementFeatureRoute />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <TokenManagementFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: CUSTOM_TOKEN_IMPORT_ROUTE,
