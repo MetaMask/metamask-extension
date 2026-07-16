@@ -9,6 +9,7 @@ import {
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { BottomNavBar } from './bottom-nav-bar';
 
 const mockNavigate = jest.fn();
@@ -144,7 +145,9 @@ describe('BottomNavBar', () => {
       const { getByTestId } = renderBottomNavBar(baseState, ACTIVITY_ROUTE);
 
       fireEvent.click(getByTestId('bottom-nav-home'));
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        state: { entryPoint: ScreenViewedEntryPoint.BottomNavClick },
+      });
     });
 
     it('navigates to the last active tab when Home is clicked and a tab is stored', () => {
@@ -154,7 +157,9 @@ describe('BottomNavBar', () => {
       );
 
       fireEvent.click(getByTestId('bottom-nav-home'));
-      expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`);
+      expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`, {
+        state: { entryPoint: ScreenViewedEntryPoint.BottomNavClick },
+      });
     });
 
     it('navigates to the perps page when Perps is clicked', () => {
@@ -175,7 +180,9 @@ describe('BottomNavBar', () => {
       const { getByTestId } = renderBottomNavBar();
 
       fireEvent.click(getByTestId('bottom-nav-activity'));
-      expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE);
+      expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
+        state: { entryPoint: ScreenViewedEntryPoint.BottomNavClick },
+      });
     });
   });
 });
