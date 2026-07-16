@@ -6619,7 +6619,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^26.1.0, @metamask/gas-fee-controller@npm:^26.1.1, @metamask/gas-fee-controller@npm:^26.2.1, @metamask/gas-fee-controller@npm:^26.2.3, @metamask/gas-fee-controller@npm:^26.2.4":
+"@metamask/gas-fee-controller@npm:@metamask-previews/gas-fee-controller@26.2.4-preview-7ed2770ae":
+  version: 26.2.4-preview-7ed2770ae
+  resolution: "@metamask-previews/gas-fee-controller@npm:26.2.4-preview-7ed2770ae"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/polling-controller": "npm:^16.0.8"
+    "@metamask/utils": "npm:^11.11.0"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    bn.js: "npm:^5.2.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/b2a0d91b8b6578429d9a4af9aacd51a58d45e3783b00f47d5b2b5ca13e265e8804583845026c6f814301badf0f831d399c4c2a3380dcbe5e96410424dda5077a
+  languageName: node
+  linkType: hard
+
+"@metamask/gas-fee-controller@npm:^26.1.1, @metamask/gas-fee-controller@npm:^26.2.1, @metamask/gas-fee-controller@npm:^26.2.3, @metamask/gas-fee-controller@npm:^26.2.4":
   version: 26.2.4
   resolution: "@metamask/gas-fee-controller@npm:26.2.4"
   dependencies:
@@ -8481,9 +8503,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@metamask/wallet@npm:7.0.1"
+"@metamask/wallet@npm:@metamask-previews/wallet@7.0.1-preview-7ed2770ae":
+  version: 7.0.1-preview-7ed2770ae
+  resolution: "@metamask-previews/wallet@npm:7.0.1-preview-7ed2770ae"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.5"
     "@metamask/address-book-controller": "npm:^7.1.2"
@@ -8492,6 +8514,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/gas-fee-controller": "npm:^26.2.4"
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
@@ -8500,7 +8523,7 @@ __metadata:
     "@metamask/storage-service": "npm:^1.0.2"
     "@metamask/transaction-controller": "npm:^69.0.0"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/5c5726d2b811c0eec3148e84ae178bcba2878366e0feb6ae836246293126fa24c1b942d5a1abd9defa45346682c02ac05be96ba776d14ca51b7a5a55f7929378
+  checksum: 10/9fcf5946616e819ca277b9cf548ec006a69efd3013fb902c66f31e9f1ce292120910947c4603281e14349c161c4cb4f942eed29f7b30e5de92116fcca60753e7
   languageName: node
   linkType: hard
 
@@ -32819,7 +32842,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
-    "@metamask/gas-fee-controller": "npm:^26.1.0"
+    "@metamask/gas-fee-controller": "npm:@metamask-previews/gas-fee-controller@26.2.4-preview-7ed2770ae"
     "@metamask/gator-permissions-controller": "npm:^4.2.1"
     "@metamask/gator-permissions-snap": "npm:^2.3.0"
     "@metamask/geolocation-controller": "npm:^0.1.1"
@@ -32910,7 +32933,7 @@ __metadata:
     "@metamask/tron-wallet-snap": "npm:^1.31.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
-    "@metamask/wallet": "npm:^7.0.1"
+    "@metamask/wallet": "npm:@metamask-previews/wallet@7.0.1-preview-7ed2770ae"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"
