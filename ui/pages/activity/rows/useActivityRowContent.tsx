@@ -77,15 +77,27 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       case 'swap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol ?? '';
-        const destinationSymbol = destinationToken?.symbol ?? '';
+        const destinationSymbol = destinationToken?.symbol;
+        const hasDestination = Boolean(destinationSymbol);
+        const primaryToken = hasDestination ? destinationToken : sourceToken;
+        const titleKey = hasDestination
+          ? labelKeys.title.key
+          : `activity_swapIncomplete_${activity.status}_title`;
 
         return {
-          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
-          title: t(labelKeys.title.key, [sourceSymbol, destinationSymbol]),
+          avatarTokens: hasDestination
+            ? [sourceToken?.assetId, destinationToken?.assetId]
+            : [sourceToken?.assetId],
+          title: t(
+            titleKey,
+            hasDestination ? [sourceSymbol, destinationSymbol] : [sourceSymbol],
+          ),
           subtitle: t(labelKeys.description.key),
-          primaryAmount: formatTokenAmount(destinationToken),
-          primaryDirection: destinationToken?.direction,
-          secondaryAmount: formatTokenAmount(sourceToken),
+          primaryAmount: formatTokenAmount(primaryToken),
+          primaryDirection: primaryToken?.direction,
+          secondaryAmount: hasDestination
+            ? formatTokenAmount(sourceToken)
+            : formatAsFiat(sourceToken),
         };
       }
       // Token in title; source and destination in subtitle; token being wrapped in avatar
