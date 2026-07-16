@@ -196,8 +196,6 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
       body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
     }));
 
-  // TODO: Remove this mock once #43958 closes (global non-EVM discovery mocks)
-  // or an isolated side-branch CI run proves it redundant.
   // Esplora `GET /block-height/:height` returns the block hash at that height as
   // plain text. Left unmocked, the Bitcoin snap's discovery request falls to the
   // empty-200 catch-all, whose malformed body throws in the snap and restarts
