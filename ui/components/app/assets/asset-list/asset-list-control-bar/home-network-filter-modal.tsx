@@ -66,6 +66,7 @@ import {
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
 } from '../../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
@@ -335,18 +336,22 @@ const HomeNetworkFilterModalContent = ({
   );
   const isEvmOnlySelectedAccountGroup = useSelector(
     (state: MetaMaskReduxState) => {
-    const selectedAccountGroup = getSelectedAccountGroup(state);
-    const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
-      state,
-      selectedAccountGroup,
-    );
+      const multichainAccountsState =
+        state as unknown as MultichainAccountsState;
+      const selectedAccountGroup = getSelectedAccountGroup(
+        multichainAccountsState,
+      );
+      const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+        multichainAccountsState,
+        selectedAccountGroup,
+      );
 
-    return (
-      selectedAccountGroupAccounts.length > 0 &&
-      selectedAccountGroupAccounts.every((account) =>
-        isEvmAccountType(account.type),
-      )
-    );
+      return (
+        selectedAccountGroupAccounts.length > 0 &&
+        selectedAccountGroupAccounts.every((account) =>
+          isEvmAccountType(account.type),
+        )
+      );
     },
   );
   const { handleNetworkChange } = useNetworkChangeHandlers();
