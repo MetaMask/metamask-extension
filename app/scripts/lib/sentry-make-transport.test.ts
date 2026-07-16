@@ -5,6 +5,16 @@ import { makeTransport } from './sentry-make-transport';
 
 const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
 
+// The v10 session envelope is emitted through a promise chain during init
+// (`browserSessionIntegration` -> `captureSession` -> transport), so it is
+// observable after a microtask drain with no timers involved.
+async function flushMicrotasks(depth = 5): Promise<void> {
+  for (let i = 0; i < depth; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+  }
+}
+
 type TestTransport = ReturnType<typeof makeTransport>;
 type TestEnvelope = Parameters<TestTransport['send']>[0];
 type ParsedSentryEnvelope = ReturnType<typeof parseEnvelope>;
@@ -325,10 +335,12 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
-      // No session envelope is sent eagerly during init; capture an event to
-      // exercise the transport path under the opted-out state.
-      Sentry.captureMessage('opted-out transport test');
-
+      // Force the session path explicitly (v10 sends sessions on lifecycle
+      // triggers, not eagerly at init): even a forced session capture must
+      // produce zero outbound requests while opted out.
+      Sentry.startSession();
+      Sentry.captureSession();
+      await flushMicrotasks();
       await tick();
 
       expect(fetchSpy).not.toHaveBeenCalled();
@@ -368,10 +380,11 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
-      // No session envelope is sent eagerly during init; capture an event to
-      // verify the transport path when opted in.
-      Sentry.captureMessage('opted-in transport test');
-
+      // Force the session path explicitly (v10 sends sessions on lifecycle
+      // triggers, not eagerly at init) and assert it reaches the transport.
+      Sentry.startSession();
+      Sentry.captureSession();
+      await flushMicrotasks();
       await tick();
 
       expect(fetchSpy).toHaveBeenCalled();
@@ -395,7 +408,7 @@ describe('sentry-make-transport', () => {
       const hasEventItem = envelopes.some((parsedEnvelope) =>
         forEachEnvelopeItem(
           parsedEnvelope,
-          (_item: unknown, type: string) => type === 'event',
+          (_item: unknown, type: string) => type === 'session',
         ),
       );
       expect(hasEventItem).toBe(true);
