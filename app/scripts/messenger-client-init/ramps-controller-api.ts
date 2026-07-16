@@ -31,5 +31,3 @@ export function getRampsControllerApi(rampsController: RampsController) {
       rampsController.getOrderFromCallback.bind(rampsController),
   };
 }
-
-export type RampsControllerApi = ReturnType<typeof getRampsControllerApi>;

@@ -20,11 +20,9 @@ import {
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
+import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import {
-  ASSET_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../shared/lib/deep-links/routes/route';
+import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -197,30 +195,25 @@ export const useBridgeNavigation = () => {
         isNonEvm ? assetReference : tokenAddress,
       );
 
-      navigate(
-        isNative && !isNonEvm
-          ? `${ASSET_ROUTE}/${routeChainId}`
-          : `${ASSET_ROUTE}/${routeChainId}/${encodeURIComponent(tokenAddress)}`,
-        {
-          state: {
-            ...state,
-            bridgeState,
-            token: {
-              type: isNative ? AssetType.native : AssetType.token,
-              assetId: asset.assetId,
-              address: tokenAddress,
-              symbol: asset.symbol,
-              name: asset.name ?? asset.symbol,
-              chainId: routeChainId,
-              image: asset.iconUrl,
-              isNative,
-              decimals: asset.decimals,
-            },
+      navigate(buildAssetRoutePath(asset.assetId), {
+        state: {
+          ...state,
+          bridgeState,
+          token: {
+            type: isNative ? AssetType.native : AssetType.token,
+            assetId: asset.assetId,
+            address: tokenAddress,
+            symbol: asset.symbol,
+            name: asset.name ?? asset.symbol,
+            chainId: routeChainId,
+            image: asset.iconUrl,
+            isNative,
+            decimals: asset.decimals,
           },
         },
-      );
+      });
     },
-    [navigate, state],
+    [navigate, state, bridgeState],
   );
 
   /**
