@@ -144,6 +144,7 @@ function mapDispatchToProps(dispatch: MetaMaskReduxDispatch) {
         await dispatch(
           actions.ignoreTokens({
             tokensToIgnore: [address],
+            dontShowLoadingIndicator: false,
             networkClientId,
           }),
         );
