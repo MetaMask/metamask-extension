@@ -506,9 +506,6 @@
   "sign": {
     "message": "Allkirjasta"
   },
-  "signatureRequest": {
-    "message": "Allkirja taotlus"
-  },
   "signed": {
     "message": "Allkirjastatud"
   },
