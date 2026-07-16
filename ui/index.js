@@ -1,7 +1,7 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import React from 'react';
-import { render } from 'react-dom';
+import React, { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
@@ -68,6 +68,30 @@ export {
 } from './helpers/utils/display-critical-error';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+const reactRoots = new WeakMap();
+
+function renderUi(element, container) {
+  let root = reactRoots.get(container);
+  if (!root) {
+    root = createRoot(container);
+    reactRoots.set(container, root);
+  }
+  root.render(element);
+}
+
+function wrapWithStrictModeIfDevelopment(element) {
+  const isDevelopment =
+    process.env.NODE_ENV === 'development' ||
+    process.env.METAMASK_DEBUG ||
+    global.METAMASK_DEBUG;
+
+  if (isDevelopment) {
+    return <StrictMode>{element}</StrictMode>;
+  }
+
+  return element;
+}
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -249,7 +273,12 @@ async function startApp(metamaskState, opts) {
   // `submitRequestToBackground` with it.
   const uiMessenger = createUIMessenger();
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
+    renderUi(
+      wrapWithStrictModeIfDevelopment(
+        <Root store={store} uiMessenger={uiMessenger} />,
+      ),
+      opts.container,
+    ),
   );
 
   return store;

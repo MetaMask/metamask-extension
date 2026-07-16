@@ -197,6 +197,52 @@
   "activity_approveSpendingCap_success_title": {
     "message": "已批准授权额度"
   },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "激活信任线失败"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "正在激活信任线 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "信任线已激活 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "停用信任线失败"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "正在停用信任线 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "信任线已停用 $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_bridge_failed_description": {
     "message": "跨链桥操作失败"
   },
@@ -330,7 +376,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "已兑换 $1",
+    "message": "已兑换为 $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -1078,7 +1124,7 @@
     "message": "添加您信任的朋友和地址"
   },
   "addFromChainlist": {
-    "message": "从 Chainlist 添加"
+    "message": "从 ChainList 添加"
   },
   "addFunds": {
     "message": "充值"
@@ -1175,6 +1221,9 @@
   },
   "add_device_syncing_title": {
     "message": "正在导入账户"
+  },
+  "add_device_try_again": {
+    "message": "请重试"
   },
   "add_device_validating_desc": {
     "message": "正在与您的手机建立安全的加密连接。"
@@ -1578,8 +1627,20 @@
   "asset": {
     "message": "资产"
   },
+  "assetActivate": {
+    "message": "激活",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "在 $2 上激活 $1 即可开始。",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "我们无法获取任何历史数据"
+  },
+  "assetInactive": {
+    "message": "未激活",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "assetOptions": {
     "message": "资产选项"
@@ -2082,6 +2143,18 @@
   "bridgePriceImpactWarningTitle": {
     "message": "价格影响警告"
   },
+  "bridgeQrHardwareSignDisplayStepTitle": {
+    "message": "第 $1/$2 步：使用您的钱包扫描此二维码",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
+  },
+  "bridgeQrHardwareSignLastStepTitle": {
+    "message": "最后一步：扫描钱包上显示的二维码",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
+  "bridgeQrHardwareSignStepTitle": {
+    "message": "第 $1/$2 步：扫描钱包上显示的二维码",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
+  },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "没有可用的报价。请尝试较小的金额。"
   },
@@ -2431,6 +2504,14 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "此代币符号与输入的网络名称或链 ID 不匹配。许多热门代币使用类似的符号，骗子可能会使用这些符号来欺骗您，让您向他们发送更有价值的代币作为回报。在您继续之前请先验证所有信息。"
+  },
+  "chainlistLearnHowToStaySafe": {
+    "message": "了解如何保障安全。",
+    "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
+  },
+  "chainlistNetworkDataSourceBanner": {
+    "message": "网络数据由 ChainList 提供。添加前请务必核实。$1",
+    "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
   },
   "chainlistNetworkDetails": {
     "message": "符号：$1 · ID：$2",
@@ -2899,6 +2980,9 @@
   "contractInteraction": {
     "message": "合约交互"
   },
+  "convertAgain": {
+    "message": "再次转换"
+  },
   "convertTokenToNFTDescription": {
     "message": "我们检测到该资产是NFT。MetaMask现在完全原生支持NFT。您想将它从您的代币列表中删除并将它添加为NFT吗？"
   },
@@ -3155,6 +3239,12 @@
   "deepLinkQrPredictTitle": {
     "message": "在移动设备上打开预测市场"
   },
+  "deepLinkQrTrendingDescription": {
+    "message": "Explore 功能可在 MetaMask 移动端使用。请用您的移动设备扫描此二维码以开始使用。"
+  },
+  "deepLinkQrTrendingTitle": {
+    "message": "在移动端打开 Explore"
+  },
   "deepLink_Caution": {
     "message": "请谨慎行事"
   },
@@ -3251,6 +3341,9 @@
   },
   "deepLink_theTransactionShieldPage": {
     "message": "交易防护页面"
+  },
+  "deepLink_theTrendingPage": {
+    "message": "Explore 页面"
   },
   "default": {
     "message": "默认"
@@ -4185,6 +4278,62 @@
   "hardware": {
     "message": "硬件"
   },
+  "hardwareAllSetTitle": {
+    "message": "一切就绪",
+    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
+  },
+  "hardwareAlmostThereTitle": {
+    "message": "即将完成！请在您的设备上再次确认",
+    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "hardwareApproveAmount": {
+    "message": "批准 $1 $2",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareApprovedAmount": {
+    "message": "已批准 $1 $2",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareDeviceDisconnected": {
+    "message": "请重新连接您的设备，然后重试",
+    "description": "Title shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareReconnectDevice": {
+    "message": "重新连接设备以继续",
+    "description": "Description shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareRejected": {
+    "message": "已拒绝",
+    "description": "Label for a rejected hardware-wallet bridge signature."
+  },
+  "hardwareResendTransaction": {
+    "message": "重新发送交易",
+    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
+  },
+  "hardwareSendAmount": {
+    "message": "发送 $1 $2",
+    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSendingAmount": {
+    "message": "正在发送 $1 $2",
+    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSentAmount": {
+    "message": "已发送 $1 $2",
+    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSpender": {
+    "message": "支出方：$1",
+    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "hardwareToAddress": {
+    "message": "至：$1",
+    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareTransactionRejected": {
+    "message": "您已在设备上拒绝此交易",
+    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
+  },
   "hardwareWalletConnected": {
     "message": "已连接的硬件钱包"
   },
@@ -4192,7 +4341,7 @@
     "message": "继续"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "重新连接",
+    "message": "请重新连接后重试",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
@@ -4775,6 +4924,12 @@
   "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
     "message": "安装并打开以太坊应用程序"
   },
+  "ledgerConnectionStatusDeviceNotFoundStepPlugIn": {
+    "message": "请将您的 Ledger 插入电脑"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepRetry": {
+    "message": "请尝试重新连接"
+  },
   "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
     "message": "解锁您的 Ledger 设备"
   },
@@ -4786,6 +4941,9 @@
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Ledger 无响应"
+  },
+  "ledgerConnectionStatusGenericErrorDescription": {
+    "message": "请确认您的 Ledger 设备已使用所选账户的私钥助记词或私钥完成设置"
   },
   "ledgerConnectionStatusGenericErrorTitle": {
     "message": "出错了"
@@ -6985,6 +7143,18 @@
   "perpsFees": {
     "message": "费用"
   },
+  "perpsFeesTooltipHyperliquidFee": {
+    "message": "Hyperliquid 费用",
+    "description": "Label for the Hyperliquid protocol fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipMetamaskFee": {
+    "message": "MetaMask 费用",
+    "description": "Label for the MetaMask fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipProviderFee": {
+    "message": "服务商费用",
+    "description": "Fallback label for the protocol fee rate in the Perps order summary fees tooltip"
+  },
   "perpsFilterAll": {
     "message": "所有"
   },
@@ -7079,6 +7249,10 @@
   "perpsLiquidationPrice": {
     "message": "清算价格"
   },
+  "perpsLiquidationPriceTooltip": {
+    "message": "若价格达到该点位，您的仓位将被强制平仓并导致保证金全部损失。杠杆越高，这种情况发生的可能性越大。",
+    "description": "Tooltip content for the liquidation price row on the Perps order summary"
+  },
   "perpsLong": {
     "message": "做多"
   },
@@ -7087,6 +7261,10 @@
   },
   "perpsMarginRiskWarning": {
     "message": "移除保证金会导致更接近清算价格。请确保您留有足够的缓冲空间。"
+  },
+  "perpsMarginTooltip": {
+    "message": "保证金是您为开仓交易而投入的资金。它作为抵押品，且是您在该交易中可能损失的最大金额。",
+    "description": "Tooltip content for the margin row on the Perps order summary"
   },
   "perpsMarket": {
     "message": "市场型"
@@ -7999,6 +8177,14 @@
     "message": "二维码错误",
     "description": "Title shown when the UR type does not match what is expected during signing."
   },
+  "qrHardwareScanSignatureFinal": {
+    "message": "扫描最终二维码",
+    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrHardwareScanSignatureNext": {
+    "message": "扫描下一个二维码",
+    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
   "queued": {
     "message": "队列中"
   },
@@ -8007,6 +8193,9 @@
   },
   "quotedTotalCost": {
     "message": "总成本：$1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "无可用代币"
   },
   "rank": {
     "message": "排名"
@@ -8219,9 +8408,6 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "操作已成功完成。"
-  },
-  "retryTransaction": {
-    "message": "重试交易"
   },
   "reusedTokenNameWarning": {
     "message": "此处的代币使用了与您关注的另一种代币相同的符号，这可能会让人感到困惑或具有欺骗性。"
@@ -8437,8 +8623,99 @@
   "scamQuestionnaireContinue": {
     "message": "继续"
   },
+  "scamQuestionnaireHeaderTitle": {
+    "message": "安全检查"
+  },
+  "scamQuestionnaireQ1No": {
+    "message": "不，我在现实生活中认识此人"
+  },
+  "scamQuestionnaireQ1Subtitle": {
+    "message": "这包括约会应用、社交媒体和群聊——即使你们进行过视频通话。"
+  },
+  "scamQuestionnaireQ1Title": {
+    "message": "是否有仅在网上认识的人让您发送这个？"
+  },
+  "scamQuestionnaireQ1Yes": {
+    "message": "是的，一个我在网上认识的人让我发送这个"
+  },
+  "scamQuestionnaireQ2GoodsSubtitle": {
+    "message": "为我收到的东西向商家付款"
+  },
+  "scamQuestionnaireQ2GoodsTitle": {
+    "message": "购买商品或服务"
+  },
+  "scamQuestionnaireQ2GovernmentSubtitle": {
+    "message": "要求用加密货币支付的罚款、税款或官方费用"
+  },
+  "scamQuestionnaireQ2GovernmentTitle": {
+    "message": "向警方或政府机构付款"
+  },
+  "scamQuestionnaireQ2HelpingSubtitle": {
+    "message": "给急需用钱的伴侣、家人或朋友转账"
+  },
+  "scamQuestionnaireQ2HelpingTitle": {
+    "message": "帮助我在乎的人"
+  },
+  "scamQuestionnaireQ2InvestmentSubtitle": {
+    "message": "购买加密货币、代币或投资机会"
+  },
+  "scamQuestionnaireQ2InvestmentTitle": {
+    "message": "投资"
+  },
+  "scamQuestionnaireQ2JobSubtitle": {
+    "message": "入职费、设备费或任务费"
+  },
+  "scamQuestionnaireQ2JobTitle": {
+    "message": "工作机会或工作相关事宜"
+  },
+  "scamQuestionnaireQ2SelfTransferSubtitle": {
+    "message": "自行转账或转移到冷存储"
+  },
+  "scamQuestionnaireQ2SelfTransferTitle": {
+    "message": "在自己的钱包之间转移资金"
+  },
+  "scamQuestionnaireQ2Subtitle": {
+    "message": "选择最符合这笔付款描述的选项。"
+  },
+  "scamQuestionnaireQ2Title": {
+    "message": "这笔付款的用途是什么？"
+  },
+  "scamQuestionnaireQ3No": {
+    "message": "不，这完全是我自己操作的"
+  },
+  "scamQuestionnaireQ3Subtitle": {
+    "message": "这可能通过电话、视频聊天或共享屏幕进行。"
+  },
+  "scamQuestionnaireQ3Title": {
+    "message": "是否有人正在指导您完成这笔交易？"
+  },
+  "scamQuestionnaireQ3Yes": {
+    "message": "是的，现在有人正在一步步指导我操作"
+  },
+  "scamQuestionnaireSelectAnswer": {
+    "message": "请选择一个答案"
+  },
   "scamQuestionnaireWarningContactSupport": {
     "message": "联系支持团队"
+  },
+  "scamQuestionnaireWarningProceedAnyway": {
+    "message": "忽视风险，继续操作"
+  },
+  "scamQuestionnaireWarningProceedAnywayCountdown": {
+    "message": "$1 秒后仍然继续",
+    "description": "$1 is the number of seconds remaining before the user can continue"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleDetail": {
+    "message": "一旦发送，您的资金将无法追回。"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleEmphasis": {
+    "message": "加密货币交易不可逆。"
+  },
+  "scamQuestionnaireWarningReasonKnownScam": {
+    "message": "根据您的回答和收款方的历史记录，此交易可能是诈骗。"
+  },
+  "scamQuestionnaireWarningStopPayment": {
+    "message": "停止此付款"
   },
   "scamQuestionnaireWarningTitle": {
     "message": "你现在可能正在遭遇诈骗"
@@ -8636,6 +8913,10 @@
   },
   "sendBugReport": {
     "message": "向我们发送错误报告."
+  },
+  "sendBundleHwGasPayment": {
+    "message": "正在使用 $1 支付网络费用",
+    "description": "$1 is the symbol of the token being used to pay the network fee"
   },
   "sendSelectReceiveAsset": {
     "message": "选择要接收的资产"
@@ -9781,6 +10062,18 @@
   "speedUpTransactionTitle": {
     "message": "加快交易速度"
   },
+  "spendableBalance": {
+    "message": "可花费"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "已预留（锁定）"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "值"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "总余额"
+  },
   "spender": {
     "message": "支出者"
   },
@@ -10012,6 +10305,18 @@
   },
   "statusNotConnected": {
     "message": "未连接"
+  },
+  "stellarClassicTrustlineAddError": {
+    "message": "添加此信任线时出错。请重试。",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "移除此信任线时出错。请重试。",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
+    "message": "您的钱包中仍有 $1 $2。在 Stellar 上停用此资产前，必须将其全部发送或兑换。",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "stillConnectingTo": {
     "message": "仍在连接到 $1……",
@@ -10444,6 +10749,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
   },
+  "syncAccounts": {
+    "message": "与移动设备同步"
+  },
   "syncing": {
     "message": "同步中……"
   },
@@ -10640,6 +10948,9 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "燃料费总额"
+  },
+  "transactionIdCopied": {
+    "message": "交易 ID 已复制"
   },
   "transactionIdLabel": {
     "message": "交易 ID",
