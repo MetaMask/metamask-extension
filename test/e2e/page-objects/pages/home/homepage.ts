@@ -219,8 +219,13 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
+    // Solana is seeded in the default fixture and usually appears quickly.
     await this.driver.waitForSelector(this.solanaAccountIcon);
-    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+    // Bitcoin is created asynchronously via alignWallets() after unlock, so
+    // allow a longer CI-friendly timeout for that account icon.
+    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
+      timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+    });
   }
 
   async checkPageIsNotLoaded(): Promise<void> {

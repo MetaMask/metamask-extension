@@ -24,7 +24,7 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -63,7 +63,7 @@ describe('Navigate transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -98,7 +98,7 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -122,7 +122,7 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -146,7 +146,7 @@ describe('Navigate transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
