@@ -9202,30 +9202,43 @@ export default class MetamaskController extends EventEmitter {
     // still wait forever. Note that timing out abandons the in-flight
     // device call rather than cancelling it; a retry while the device call
     // is still pending may be rejected by the transport SDK.
+    const deviceReadOperation = this.keyringController.withKeyringV2Unsafe(
+      { type: v2KeyringType },
+      // The facade structurally prevents `deviceRead` callbacks from
+      // reaching mutating keyring methods on the lock-free path.
+      async ({ keyring }) =>
+        await callback(restrictKeyringForDeviceRead(keyring)),
+    );
+
     let timeoutHandle;
+    let timedOut = false;
     try {
       return await Promise.race([
-        this.keyringController.withKeyringV2Unsafe(
-          { type: v2KeyringType },
-          // The facade structurally prevents `deviceRead` callbacks from
-          // reaching mutating keyring methods on the lock-free path.
-          async ({ keyring }) =>
-            await callback(restrictKeyringForDeviceRead(keyring)),
-        ),
+        deviceReadOperation,
         new Promise((_resolve, reject) => {
-          timeoutHandle = setTimeout(
-            () =>
-              reject(
-                new Error(
-                  `Hardware wallet device read timed out for device: ${options.name}. Make sure the device is connected and unlocked, then try again.`,
-                ),
+          timeoutHandle = setTimeout(() => {
+            timedOut = true;
+            reject(
+              new Error(
+                `Hardware wallet device read timed out for device: ${options.name}. Make sure the device is connected and unlocked, then try again.`,
               ),
-            HARDWARE_DEVICE_READ_TIMEOUT,
-          );
+            );
+          }, HARDWARE_DEVICE_READ_TIMEOUT);
         }),
       ]);
     } finally {
       clearTimeout(timeoutHandle);
+      if (timedOut) {
+        // Only for observability: `Promise.race` already subscribes to the
+        // abandoned device read, so a late rejection can never surface as an
+        // unhandled rejection — but without this it would be dropped silently.
+        deviceReadOperation.catch((error) =>
+          log.debug(
+            `Abandoned hardware device read failed after timeout for device: ${options.name}`,
+            error,
+          ),
+        );
+      }
     }
   }
 
