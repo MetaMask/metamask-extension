@@ -8,36 +8,69 @@ import mockState from '../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getFungibleAssetForRoute } from '../../selectors/assets';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
-import { useRouteAssetToken } from './hooks/useRouteAssetToken';
+import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
+import { Token } from '../../components/app/assets/types';
 import Asset from './asset';
+import { useRouteAssetToken } from './hooks/useRouteAssetToken';
+import TokenAsset from './components/token-asset';
+import NativeAsset from './components/native-asset';
 
 const mockUseParams = jest.fn();
 const mockUseLocation = jest.fn();
-const mockUseRouteAssetToken = jest.fn();
 
 const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
 const DAI_ASSET_ID =
   'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' as CaipAssetType;
 const ENCODED_DAI_ASSET = encodeURIComponent(DAI_ASSET_ID);
 
+const STELLAR_CHAIN_ID = 'stellar:pubnet';
+const STELLAR_USDC_ASSET_ID =
+  'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
+const STELLAR_XLM_ASSET_ID = 'stellar:pubnet/slip44:148' as CaipAssetType;
+
 const NFT_CONTRACT = '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d';
 const NFT_TOKEN_ID = '42';
 
-const erc20Token = {
+const erc20Token: Token = {
   address: DAI_ADDRESS,
   symbol: 'DAI',
   name: 'Dai Stablecoin',
   chainId: '0x1',
   decimals: 18,
   isNative: false,
+  image: '',
 };
 
-const nativeToken = {
+const nativeToken: Token = {
   symbol: 'ETH',
   name: 'Ether',
   chainId: '0x1',
   decimals: 18,
   isNative: true,
+  image: '',
+  address: '0x0000000000000000000000000000000000000000',
+};
+
+const stellarNonNativeToken: Token = {
+  assetId: STELLAR_USDC_ASSET_ID,
+  symbol: 'USDC',
+  name: 'USD Coin',
+  chainId: STELLAR_CHAIN_ID,
+  decimals: 7,
+  isNative: false,
+  image: '',
+  address: STELLAR_USDC_ASSET_ID,
+};
+
+const stellarNativeToken: Token = {
+  assetId: STELLAR_XLM_ASSET_ID,
+  symbol: 'XLM',
+  name: 'Stellar Lumens',
+  chainId: STELLAR_CHAIN_ID,
+  decimals: 7,
+  isNative: true,
+  image: '',
+  address: STELLAR_XLM_ASSET_ID,
 };
 
 jest.mock('react-router-dom', () => ({
@@ -59,62 +92,54 @@ jest.mock('../../selectors/assets', () => ({
 
 jest.mock('./hooks/useRouteAssetToken', () => ({
   ...jest.requireActual('./hooks/useRouteAssetToken'),
-  useRouteAssetToken: (...args: unknown[]) => mockUseRouteAssetToken(...args),
+  useRouteAssetToken: jest.fn(),
 }));
+const mockUseRouteAssetToken = jest.mocked(useRouteAssetToken);
 
 jest.mock('./components/token-asset', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: ({
-    token,
-    chainId,
-  }: {
-    token: { symbol: string };
-    chainId: string;
-  }) => (
+  default: jest.fn(),
+}));
+jest
+  .mocked(TokenAsset)
+  .mockImplementation(({ token, chainId }) => (
     <div
       data-testid="token-asset"
       data-symbol={token.symbol}
       data-chain-id={chainId}
     />
-  ),
-}));
+  ));
 
 jest.mock('./components/native-asset', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: ({
-    token,
-    chainId,
-  }: {
-    token: { symbol: string };
-    chainId: string;
-  }) => (
+  default: jest.fn(),
+}));
+jest
+  .mocked(NativeAsset)
+  .mockImplementation(({ token, chainId }) => (
     <div
       data-testid="native-asset"
       data-symbol={token.symbol}
       data-chain-id={chainId}
     />
-  ),
-}));
+  ));
 
 jest.mock('../../components/app/assets/nfts/nft-details/nft-details', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: ({
-    nft,
-    nftChainId,
-  }: {
-    nft: { tokenId: string };
-    nftChainId: string;
-  }) => (
+  default: jest.fn(),
+}));
+jest
+  .mocked(NftDetails)
+  .mockImplementation(({ nft, nftChainId }) => (
     <div
       data-testid="nft-details"
       data-token-id={nft.tokenId}
       data-chain-id={nftChainId}
     />
-  ),
-}));
+  ));
 
 const renderAssetPage = () => {
   const store = configureMockStore([thunk])(mockState);
@@ -146,31 +171,83 @@ describe('Asset', () => {
   });
 
   describe('token routes', () => {
-    it('renders TokenAsset for non-native tokens with an address', () => {
-      renderAssetPage();
+    const TokenAssetTestCases = [
+      {
+        name: 'non-native EVM tokens',
+        token: erc20Token,
+        assertion: (elem: HTMLElement) => {
+          expect(elem).toHaveAttribute('data-symbol', 'DAI');
+          expect(elem).toHaveAttribute('data-chain-id', '0x1');
+        },
+      },
+      {
+        name: 'non-native multichain tokens without an address',
+        token: stellarNonNativeToken,
+        assertion: (elem: HTMLElement) => {
+          expect(elem).toHaveAttribute('data-symbol', 'USDC');
+          expect(elem).toHaveAttribute('data-chain-id', STELLAR_CHAIN_ID);
+        },
+      },
+    ];
 
-      const tokenAsset = screen.getByTestId('token-asset');
-      expect(tokenAsset).toBeInTheDocument();
-      expect(tokenAsset).toHaveAttribute('data-symbol', 'DAI');
-      expect(tokenAsset).toHaveAttribute('data-chain-id', '0x1');
-      expect(screen.queryByTestId('native-asset')).not.toBeInTheDocument();
-    });
-
-    it('renders NativeAsset for native tokens', () => {
-      mockUseRouteAssetToken.mockReturnValue({
+    const NativeAssetTestCases = [
+      {
+        name: 'native EVM tokens',
         token: nativeToken,
-        isLoading: false,
-        hasError: false,
-      });
+        assertion: (elem: HTMLElement) => {
+          expect(elem).toHaveAttribute('data-symbol', 'ETH');
+          expect(elem).toHaveAttribute('data-chain-id', '0x1');
+        },
+      },
+      {
+        name: 'native multichain tokens without an address',
+        token: stellarNativeToken,
+        assertion: (elem: HTMLElement) => {
+          expect(elem).toHaveAttribute('data-symbol', 'XLM');
+          expect(elem).toHaveAttribute('data-chain-id', STELLAR_CHAIN_ID);
+        },
+      },
+    ];
 
-      renderAssetPage();
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each(TokenAssetTestCases)(
+      'renders TokenAsset for $name',
+      ({ token, assertion }: (typeof TokenAssetTestCases)[number]) => {
+        mockUseRouteAssetToken.mockReturnValue({
+          token,
+          isLoading: false,
+          hasError: false,
+        });
+        renderAssetPage();
 
-      const nativeAsset = screen.getByTestId('native-asset');
-      expect(nativeAsset).toBeInTheDocument();
-      expect(nativeAsset).toHaveAttribute('data-symbol', 'ETH');
-      expect(nativeAsset).toHaveAttribute('data-chain-id', '0x1');
-      expect(screen.queryByTestId('token-asset')).not.toBeInTheDocument();
-    });
+        expect(screen.queryByTestId('token-asset')).toBeInTheDocument();
+        expect(screen.queryByTestId('native-asset')).not.toBeInTheDocument();
+
+        const tokenAsset = screen.getByTestId('token-asset');
+        expect(tokenAsset).toBeInTheDocument();
+        assertion(tokenAsset);
+      },
+    );
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each(NativeAssetTestCases)(
+      'renders NativeAsset for $name',
+      ({ token, assertion }: (typeof NativeAssetTestCases)[number]) => {
+        mockUseRouteAssetToken.mockReturnValue({
+          token,
+          isLoading: false,
+          hasError: false,
+        });
+        renderAssetPage();
+
+        expect(screen.queryByTestId('native-asset')).toBeInTheDocument();
+        expect(screen.queryByTestId('token-asset')).not.toBeInTheDocument();
+
+        const nativeAsset = screen.getByTestId('native-asset');
+        expect(nativeAsset).toBeInTheDocument();
+        assertion(nativeAsset);
+      },
+    );
   });
 
   describe('NFT routes', () => {
