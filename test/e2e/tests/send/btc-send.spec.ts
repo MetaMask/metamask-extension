@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -20,7 +21,6 @@ import {
   mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [

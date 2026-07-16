@@ -1,4 +1,4 @@
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -11,7 +11,6 @@ import {
   mockTronSwapApisWithoutFeeEstimation,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
