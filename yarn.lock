@@ -7234,7 +7234,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^5.4.1, @metamask/network-enablement-controller@npm:^5.6.0":
+"@metamask/network-enablement-controller@npm:^5.4.1, @metamask/network-enablement-controller@npm:^5.5.0, @metamask/network-enablement-controller@npm:^5.6.0":
   version: 5.6.0
   resolution: "@metamask/network-enablement-controller@npm:5.6.0"
   dependencies:
@@ -7249,24 +7249,6 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
   checksum: 10/c4fbedb43bc8331c24794c10a038809ec23b40a6042f589b3d72746a28846951c2e72c359ea6703b18840fc4fae6e5ffa7906979e58a1fb8f16f1fc735bd8514
-  languageName: node
-  linkType: hard
-
-"@metamask/network-enablement-controller@npm:^5.5.0":
-  version: 5.5.0
-  resolution: "@metamask/network-enablement-controller@npm:5.5.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/keyring-api": "npm:^23.5.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/multichain-network-controller": "npm:^3.2.1"
-    "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/slip44": "npm:^4.3.0"
-    "@metamask/transaction-controller": "npm:^69.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    reselect: "npm:^5.1.1"
-  checksum: 10/b293d3e2f9063698a4c4283a5155897e17d79b67803ce11c33687210bb7c91dbaba71d52ccbd2ecaea9f960810ef1374594ce55407f3e4db8d140a1ed586655e
   languageName: node
   linkType: hard
 
