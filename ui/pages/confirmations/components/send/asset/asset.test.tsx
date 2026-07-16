@@ -197,13 +197,30 @@ describe('Asset', () => {
   });
 
   describe('external tokens', () => {
-    it('uses injected tokens instead of useSendAssets', () => {
+    it('uses injected tokens and skips useSendAssets', () => {
       const injectedTokens = [
         { name: 'Ramps ETH', symbol: 'ETH', chainId: 'eip155:1' },
       ];
 
       render(<Asset tokens={injectedTokens} nfts={[]} hideNfts />);
 
+      expect(mockUseSendAssets).not.toHaveBeenCalled();
+      expect(mockUseSendAssetFilter).toHaveBeenCalledWith({
+        tokens: injectedTokens,
+        nfts: [],
+        selectedChainId: null,
+        searchQuery: '',
+      });
+    });
+
+    it('defaults catalog nfts to an empty list when omitted', () => {
+      const injectedTokens = [
+        { name: 'Ramps ETH', symbol: 'ETH', chainId: 'eip155:1' },
+      ];
+
+      render(<Asset tokens={injectedTokens} hideNfts />);
+
+      expect(mockUseSendAssets).not.toHaveBeenCalled();
       expect(mockUseSendAssetFilter).toHaveBeenCalledWith({
         tokens: injectedTokens,
         nfts: [],
