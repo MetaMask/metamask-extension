@@ -128,12 +128,19 @@ describe('useRampsOrderSyncing', () => {
     const { dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
       result.current;
 
-    return { mocks, dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing };
+    return {
+      mocks,
+      dispatchRampsOrderSyncing,
+      shouldDispatchRampsOrderSyncing,
+    };
   };
 
   it('should dispatch if conditions are met', async () => {
-    const { mocks, dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
-      arrangeAndAct();
+    const {
+      mocks,
+      dispatchRampsOrderSyncing,
+      shouldDispatchRampsOrderSyncing,
+    } = arrangeAndAct();
 
     dispatchRampsOrderSyncing();
 
@@ -144,8 +151,11 @@ describe('useRampsOrderSyncing', () => {
   });
 
   it('should not dispatch conditions are not met', async () => {
-    const { mocks, dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
-      arrangeAndAct({ isRampsSyncingEnabled: false });
+    const {
+      mocks,
+      dispatchRampsOrderSyncing,
+      shouldDispatchRampsOrderSyncing,
+    } = arrangeAndAct({ isRampsSyncingEnabled: false });
 
     dispatchRampsOrderSyncing();
 

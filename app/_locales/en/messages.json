@@ -1921,6 +1921,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "Contacts"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "Buy & sell orders"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Manage what you sync"
   },
