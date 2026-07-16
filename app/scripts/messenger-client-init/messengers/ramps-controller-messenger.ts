@@ -39,6 +39,9 @@ export function getRampsControllerMessenger(
     messenger: controllerMessenger,
     actions: [
       ...RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS,
+      // The controller reads the `moneyHeadlessAllProviders` feature flag
+      // itself for quote widening.
+      'RemoteFeatureFlagController:getState',
       'UserStorageController:getState',
       'UserStorageController:performGetStorage',
       'UserStorageController:performGetStorageAllFeatureEntries',
