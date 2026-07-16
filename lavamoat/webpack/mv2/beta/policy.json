@@ -1040,6 +1040,15 @@
         "@metamask/base-controller": true
       }
     },
+    "@metamask/client-utils": {
+      "packages": {
+        "@metamask/contract-metadata": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/transaction-controller": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/compliance-controller": {
       "globals": {
         "URL": true
