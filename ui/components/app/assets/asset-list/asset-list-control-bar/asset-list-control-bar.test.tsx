@@ -443,13 +443,13 @@ describe('NFTs options', () => {
     );
   });
 
-  it('does not show Non-EVM network rows in the home network filter for EVM-only account groups', async () => {
+  it('disables Non-EVM network rows in the home network filter for EVM-only account groups', async () => {
     const state = createMockState();
     selectLedgerAccount(state);
     state.metamask.useExternalServices = true;
     const store = configureMockStore([thunk])(state);
 
-    const { findByTestId, queryByTestId } = renderWithProvider(
+    const { findByTestId } = renderWithProvider(
       <AssetListControlBar />,
       store,
     );
@@ -457,8 +457,10 @@ describe('NFTs options', () => {
     fireEvent.click(await findByTestId('sort-by-networks'));
 
     expect(
-      queryByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`),
-    ).not.toBeInTheDocument();
+      (
+        await findByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`)
+      ).querySelector('.multichain-network-list-item--disabled'),
+    ).toBeInTheDocument();
   });
 
   it('shows Non-EVM network rows in the home network filter when the selected account group supports them', async () => {
