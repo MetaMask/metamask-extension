@@ -425,7 +425,7 @@
     "@metamask/providers": "^22.1.1",
     "@metamask/ramps-controller": "^15.0.0",
     "@metamask/rate-limit-controller": "^7.0.0",
-    "@metamask/react-data-query": "^0.2.0",
+    "@metamask/react-data-query": "^0.2.2",
     "@metamask/remote-feature-flag-controller": "^4.2.2",
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
