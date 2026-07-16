@@ -13,7 +13,7 @@ import {
   selectOptinAllowedForGeoLoading,
   selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import OnboardingMainStep from './OnboardingMainStep';
 
 import {
@@ -24,6 +24,7 @@ import {
 
 jest.mock('../../../../store/hooks', () => ({
   useAppDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -125,6 +126,7 @@ const mockedUseValidateReferralCode = jest.requireMock(
 ).useValidateReferralCode as jest.Mock;
 const mockedUseSelector = useSelector as jest.Mock;
 const mockedUseAppDispatch = useAppDispatch as jest.Mock;
+const mockedUseAppSelector = useAppSelector as jest.Mock;
 
 type SelectorState = {
   candidateSubscriptionId?: unknown;
@@ -197,7 +199,10 @@ function setup({
     if (selector === selectOptinAllowedForGeoLoading) {
       return fullState.optinAllowedForGeoLoading;
     }
-    // useAppSelector path: select by callback against fake state
+    return undefined;
+  });
+
+  mockedUseAppSelector.mockImplementation((selector: unknown) => {
     if (typeof selector === 'function') {
       return (selector as (s: unknown) => unknown)({
         metamask: {
