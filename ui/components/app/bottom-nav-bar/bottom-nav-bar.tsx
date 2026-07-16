@@ -109,7 +109,7 @@ export function BottomNavBar() {
       {isPerpsAvailable && (
         <NavTab
           isActive={isPerps}
-          icon={IconName.Candlestick}
+          icon={isPerps ? IconName.CandlestickFilled : IconName.Candlestick}
           label={t('perps')}
           onClick={handlePerpsClick}
           data-testid="bottom-nav-perps"

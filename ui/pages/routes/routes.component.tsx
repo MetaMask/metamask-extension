@@ -46,6 +46,9 @@ import {
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
+  RAMPS_BUILD_QUOTE_ROUTE,
+  RAMPS_TOKEN_SELECTION_ROUTE,
+  RAMPS_PAYMENT_METHOD_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -75,8 +78,10 @@ import {
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
+import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -100,6 +105,7 @@ import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
+import Home from '../home/home.tsx';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -121,6 +127,7 @@ import { MultichainAccountAddressListPage } from '../multichain-accounts/multich
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
+import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
@@ -154,6 +161,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const Settings = mmLazy(() => import('../settings/index.ts'));
+const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
@@ -197,6 +205,13 @@ const NftFullImage = mmLazy(
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
+const RampsTokenSelection = mmLazy(
+  () => import('../ramps/token-selection/index.ts'),
+);
+const RampsPaymentMethod = mmLazy(
+  () => import('../ramps/payment-method/index.ts'),
+);
 const PermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/permissions-page/permissions-page.js'),
@@ -213,7 +228,6 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.ts'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
@@ -330,7 +344,11 @@ export const routeConfig = [
       },
       {
         path: TOKEN_MANAGEMENT_ROUTE,
-        element: <TokenManagementFeatureRoute />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <TokenManagementFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: CUSTOM_TOKEN_IMPORT_ROUTE,
@@ -344,6 +362,14 @@ export const routeConfig = [
           </GlobalMenuRouteTransition>
         ),
       },
+      ...(getIsQrSyncEnabled()
+        ? [
+            {
+              path: SYNC_ACCOUNTS_ROUTE,
+              element: <SyncAccounts />,
+            },
+          ]
+        : []),
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
@@ -518,6 +544,18 @@ export const routeConfig = [
             element: <DeFiPage />,
           },
           {
+            path: RAMPS_BUILD_QUOTE_ROUTE,
+            element: <RampsBuildQuote />,
+          },
+          {
+            path: RAMPS_TOKEN_SELECTION_ROUTE,
+            element: <RampsTokenSelection />,
+          },
+          {
+            path: RAMPS_PAYMENT_METHOD_ROUTE,
+            element: <RampsPaymentMethod />,
+          },
+          {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
             element: <MusdConversionPage />,
           },
@@ -628,6 +666,12 @@ export default function Routes() {
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
     useMultichainAccountsIntroModal(isUnlocked, location);
+
+  // Close the side panel when a wallet reset is in progress and the wallet
+  // becomes unlocked on another MetaMask surface. The side panel keeps its own
+  // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
+  // onboarding and trigger the onboarding lock trap.
+  useCloseSidePanelOnWalletReset();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 

@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rampsController selectors matches snapshot for default state 1`] = `
+{
+  "selectCountries": {
+    "data": [],
+    "error": null,
+    "isLoading": false,
+    "selected": null,
+  },
+  "selectPaymentMethods": {
+    "data": [],
+    "error": null,
+    "isLoading": false,
+    "selected": null,
+  },
+  "selectProviderAutoSelected": false,
+  "selectProviders": {
+    "data": [],
+    "error": null,
+    "isLoading": false,
+    "selected": null,
+  },
+  "selectRampsControllerState": {
+    "countries": {
+      "data": [],
+      "error": null,
+      "isLoading": false,
+      "selected": null,
+    },
+    "orders": [],
+    "paymentMethods": {
+      "data": [],
+      "error": null,
+      "isLoading": false,
+      "selected": null,
+    },
+    "providerAutoSelected": false,
+    "providers": {
+      "data": [],
+      "error": null,
+      "isLoading": false,
+      "selected": null,
+    },
+    "tokens": {
+      "data": null,
+      "error": null,
+      "isLoading": false,
+      "selected": null,
+    },
+    "userRegion": null,
+  },
+  "selectRampsOrders": [],
+  "selectRampsOrdersForSelectedAccount": [],
+  "selectTokens": {
+    "data": null,
+    "error": null,
+    "isLoading": false,
+    "selected": null,
+  },
+  "selectUserRegion": null,
+}
+`;
+
+exports[`rampsController selectors matches snapshot for populated state 1`] = `
+{
+  "selectCountries": {
+    "data": [
+      {
+        "isoCode": "US",
+        "name": "United States",
+      },
+    ],
+    "error": null,
+    "isLoading": false,
+    "selected": null,
+  },
+  "selectPaymentMethods": {
+    "data": [
+      {
+        "id": "credit_debit_card",
+        "name": "Card",
+      },
+    ],
+    "error": null,
+    "isLoading": false,
+    "selected": {
+      "id": "credit_debit_card",
+      "name": "Card",
+    },
+  },
+  "selectProviderAutoSelected": true,
+  "selectProviders": {
+    "data": [
+      {
+        "id": "transak",
+        "name": "Transak",
+      },
+    ],
+    "error": null,
+    "isLoading": false,
+    "selected": {
+      "id": "transak",
+      "name": "Transak",
+    },
+  },
+  "selectRampsControllerState": {
+    "countries": {
+      "data": [
+        {
+          "isoCode": "US",
+          "name": "United States",
+        },
+      ],
+      "error": null,
+      "isLoading": false,
+      "selected": null,
+    },
+    "orders": [
+      {
+        "createdAt": 1,
+        "id": "1",
+        "providerOrderId": "order-1",
+        "status": "COMPLETED",
+        "walletAddress": "0xAbC123",
+      },
+      {
+        "createdAt": 2,
+        "id": "2",
+        "providerOrderId": "order-2",
+        "status": "COMPLETED",
+        "walletAddress": "0xother",
+      },
+    ],
+    "paymentMethods": {
+      "data": [
+        {
+          "id": "credit_debit_card",
+          "name": "Card",
+        },
+      ],
+      "error": null,
+      "isLoading": false,
+      "selected": {
+        "id": "credit_debit_card",
+        "name": "Card",
+      },
+    },
+    "providerAutoSelected": true,
+    "providers": {
+      "data": [
+        {
+          "id": "transak",
+          "name": "Transak",
+        },
+      ],
+      "error": null,
+      "isLoading": false,
+      "selected": {
+        "id": "transak",
+        "name": "Transak",
+      },
+    },
+    "tokens": {
+      "data": {
+        "allTokens": [],
+        "topTokens": [],
+      },
+      "error": null,
+      "isLoading": false,
+      "selected": null,
+    },
+    "userRegion": {
+      "country": {
+        "currency": "USD",
+        "isoCode": "US",
+        "name": "United States",
+      },
+      "regionCode": "us-ca",
+    },
+  },
+  "selectRampsOrders": [
+    {
+      "createdAt": 1,
+      "id": "1",
+      "providerOrderId": "order-1",
+      "status": "COMPLETED",
+      "walletAddress": "0xAbC123",
+    },
+    {
+      "createdAt": 2,
+      "id": "2",
+      "providerOrderId": "order-2",
+      "status": "COMPLETED",
+      "walletAddress": "0xother",
+    },
+  ],
+  "selectRampsOrdersForSelectedAccount": [
+    {
+      "createdAt": 1,
+      "id": "1",
+      "providerOrderId": "order-1",
+      "status": "COMPLETED",
+      "walletAddress": "0xAbC123",
+    },
+  ],
+  "selectTokens": {
+    "data": {
+      "allTokens": [],
+      "topTokens": [],
+    },
+    "error": null,
+    "isLoading": false,
+    "selected": null,
+  },
+  "selectUserRegion": {
+    "country": {
+      "currency": "USD",
+      "isoCode": "US",
+      "name": "United States",
+    },
+    "regionCode": "us-ca",
+  },
+}
+`;

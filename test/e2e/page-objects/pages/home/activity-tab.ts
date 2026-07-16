@@ -511,6 +511,24 @@ class ActivityTab extends HomePage {
     });
   }
 
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity with text is absent: ${txnText}`);
+    await this.driver.assertElementNotPresent({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
+  async checkTransactionAmountNotPresent(amount: string): Promise<void> {
+    console.log(`Check transaction amount is absent: ${amount}`);
+    await this.driver.assertElementNotPresent({
+      css: this.transactionAmountsInActivity,
+      text: amount,
+    });
+  }
+
   async checkNoFailedTransactions(): Promise<void> {
     try {
       await this.driver.findElement(this.failedTransactions, 1);

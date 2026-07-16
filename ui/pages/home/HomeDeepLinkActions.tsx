@@ -74,6 +74,19 @@ export const useHomeDeepLinkEffects = () => {
     [dispatch],
   );
 
+  const openTrendingQrCodeModal = useCallback(
+    (deeplinkUrl: string) => {
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrTrendingDescription',
+          titleKey: 'deepLinkQrTrendingTitle',
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const deepLinkHandlers: Record<
     HomeQueryParams,
     {
@@ -96,11 +109,17 @@ export const useHomeDeepLinkEffects = () => {
           isDeepLinkUrlForPath(param, '/predict'),
         action: openPredictQrCodeModal,
       },
+      [HomeQueryParams.TrendingDeeplinkUrl]: {
+        isValidParam: (param?: string) =>
+          isDeepLinkUrlForPath(param, '/trending'),
+        action: openTrendingQrCodeModal,
+      },
     }),
     [
       openBatchSellQrCodeModal,
       openNetworkSelectorModal,
       openPredictQrCodeModal,
+      openTrendingQrCodeModal,
     ],
   );
 
@@ -115,8 +134,8 @@ export const useHomeDeepLinkEffects = () => {
 
   const handleDeepLinkAction = useCallback(
     (action: (param: string) => void, param: string) => {
-      action(param);
       clearDeepLinkParams();
+      action(param);
     },
     [clearDeepLinkParams],
   );

@@ -160,18 +160,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : { secondaryAmount: formatAsFiat(sourceToken) }),
         };
       }
-      case 'swapIncomplete': {
-        const { sourceToken } = activity.data;
-
-        return {
-          avatarTokens: [sourceToken?.assetId],
-          title: t(labelKeys.title.key, [sourceToken?.symbol ?? '']),
-          subtitle: t(labelKeys.description.key),
-          primaryAmount: formatTokenAmount(sourceToken),
-          primaryDirection: sourceToken?.direction,
-          secondaryAmount: formatAsFiat(sourceToken),
-        };
-      }
       case 'buy':
       case 'claim':
       case 'deposit': {
@@ -204,6 +192,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
               ? formatCurrencyWithMinThreshold(signedFiatAmount, PERPS_CURRENCY)
               : undefined,
+          primaryDirection:
+            activity.type === 'perpsAddFunds' ? 'in' : undefined,
         };
       }
       case 'nftBuy':
