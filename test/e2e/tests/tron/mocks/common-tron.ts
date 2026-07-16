@@ -52,7 +52,7 @@ const TRON_INFURA_BASE_URL = 'https://tron-mainnet\\.infura\\.io/v3/[^/]+';
  * @returns A RegExp that matches the full URL with any project ID
  */
 function tronInfuraUrl(path: string): RegExp {
-  return new RegExp(`^${TRON_INFURA_BASE_URL}${path}$`, 'u');
+  return new RegExp(`^${TRON_INFURA_BASE_URL}${path}($|\\?)`, 'u');
 }
 
 // BIP44 Stage 2 feature flags - enables automatic multichain account creation
@@ -71,6 +71,44 @@ export const BIP44_STAGE_TWO = {
     minimumVersion: '13.6.0',
   },
 };
+
+export const TRON_SWAP_TOKEN_REGISTRY = {
+  TRX: {
+    address: '0x0000000000000000000000000000000000000000',
+    assetId: 'tron:728126428/slip44:195',
+    decimals: 6,
+    name: 'Tron',
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+  },
+  USDT: {
+    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    decimals: 6,
+    name: 'Tether',
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
+  },
+  USDD: {
+    address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    decimals: 18,
+    name: 'USDD',
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz.png',
+  },
+} as const satisfies Record<
+  string,
+  {
+    address: string;
+    assetId: string;
+    decimals: number;
+    name: string;
+    iconUrl: string;
+  }
+>;
+
+export type TronSwapSymbol = keyof typeof TRON_SWAP_TOKEN_REGISTRY;
 
 /**
  * Mocks the feature flags endpoint with BIP44 Stage 2 configuration
@@ -271,6 +309,115 @@ export async function mockTronGetTrc20Balance(
     }));
 }
 
+export type TronAccountSnapshot = {
+  trxSun: number;
+  trc20: Partial<Record<TronSwapSymbol, string>>;
+};
+
+/**
+ * Creates stateful account/balance mocks that flip from `before` to `after`
+ * once the wallet posts a broadcast transaction. Replaces mockTronGetAccount
+ * and mockBroadTransaction for swap tests that assert balance deltas.
+ *
+ * @param mockServer - The Mockttp server
+ * @param opts - before/after snapshots
+ * @param opts.before - Account state before the swap completes
+ * @param opts.after - Account state after the swap completes (optional)
+ */
+export async function createStatefulTronAccountMock(
+  mockServer: Mockttp,
+  {
+    before,
+    after,
+  }: { before: TronAccountSnapshot; after?: TronAccountSnapshot },
+): Promise<MockedEndpoint[]> {
+  let broadcasted = false;
+  const current = (): TronAccountSnapshot =>
+    broadcasted && after ? after : before;
+
+  // Build the TRC20 array from a snapshot, using canonical addresses
+  const buildTrc20Array = (snapshot: TronAccountSnapshot) => {
+    const entries: Record<string, string>[] = [];
+    for (const [symbol, rawAmount] of Object.entries(snapshot.trc20)) {
+      const address =
+        TRON_SWAP_TOKEN_REGISTRY[symbol as TronSwapSymbol]?.address;
+      if (address && address !== '0x0000000000000000000000000000000000000000') {
+        entries.push({ [address]: rawAmount as string });
+      }
+    }
+    return entries;
+  };
+
+  const buildAccountJson = (snapshot: TronAccountSnapshot) => ({
+    data: [
+      {
+        owner_permission: {
+          keys: [{ address: TRON_ACCOUNT_ADDRESS, weight: 1 }],
+          threshold: 1,
+          permission_name: 'owner',
+        },
+        account_resource: {
+          energy_window_optimized: true,
+          latest_consume_time_for_energy: 1764149628000,
+          energy_window_size: 28800000,
+        },
+        active_permission: [
+          {
+            operations:
+              '7fff1fc0033ec30f000000000000000000000000000000000000000000000000',
+            keys: [{ address: TRON_ACCOUNT_ADDRESS, weight: 1 }],
+            threshold: 1,
+            id: 2,
+            type: 'Active',
+            permission_name: 'active',
+          },
+        ],
+        address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
+        create_time: 1763374065000,
+        latest_opration_time: 1764149628000,
+        free_asset_net_usageV2: [{ value: 0, key: '1005074' }],
+        assetV2: [{ value: 33333333, key: '1005074' }],
+        frozenV2: [
+          {},
+          { amount: 20000000, type: 'ENERGY' },
+          { type: 'TRON_POWER' },
+        ],
+        balance: snapshot.trxSun,
+        trc20: buildTrc20Array(snapshot),
+        latest_consume_free_time: 1764149628000,
+        net_window_size: 28800000,
+        net_window_optimized: true,
+      },
+    ],
+    success: true,
+    meta: { at: Date.now(), page_size: 1 },
+  });
+
+  const broadcastEndpoint = await mockServer
+    .forPost(tronInfuraUrl('/wallet/broadcasttransaction'))
+    .thenCallback(() => {
+      broadcasted = true;
+      return {
+        statusCode: 200,
+        json: {
+          code: 'TRANSACTION_EXPIRATION_ERROR',
+          txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
+          message: TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
+        },
+      };
+    });
+
+  const accountEndpoint = await mockServer
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}`))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: buildAccountJson(current()),
+    }));
+
+  return [broadcastEndpoint, accountEndpoint];
+}
+
 export async function mockTronGetAccountResource(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
@@ -307,8 +454,268 @@ export async function mockTronGetAccountResource(
     }));
 }
 
+export const DEFAULT_TRON_TRC20_TRANSACTIONS = [
+  {
+    transaction_id:
+      '0f757bc78562fc03c305d84ce83ddde8dd3c71a76dd014cecc96656bd432c5d1',
+    token_info: {
+      symbol: 'HTX',
+      address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
+      decimals: 18,
+      name: 'HTX',
+    },
+    block_timestamp: 1764149631000,
+    from: TRON_ACCOUNT_ADDRESS,
+    to: 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq',
+    type: 'Transfer',
+    value: '50000000000000000000000',
+  },
+  {
+    transaction_id:
+      '47d6870d229f383e1bacc19967cb7be2c61d5ad4185b6848e91d2bc8c1616de1',
+    token_info: {
+      symbol: 'USDT',
+      address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      decimals: 6,
+      name: 'Tether USD',
+    },
+    block_timestamp: 1764062793000,
+    from: TRON_ACCOUNT_ADDRESS,
+    to: 'TBEPnZeEVRJWtJwqY4f3VWEtf9jKyQ4HAu',
+    type: 'Transfer',
+    value: '7000000',
+  },
+  {
+    transaction_id:
+      'c2f4a66600c3f46cfffdcb1886d72e48e5fe2d650c110ddeb6da7e6fda12ab12',
+    token_info: {
+      symbol: 'USDT',
+      address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      decimals: 6,
+      name: 'Tether USD',
+    },
+    block_timestamp: 1764062673000,
+    from: TRON_ACCOUNT_ADDRESS,
+    to: 'TJPmfFA9PwYf1Z9Ny7FzGHQD8uA2h88q74',
+    type: 'Transfer',
+    value: '10000000',
+  },
+  {
+    transaction_id:
+      'ac605640c5f44f36c766894d6f1d8dca0290cba857470c46a863e1f52abfc798',
+    token_info: {
+      symbol: 'USDT',
+      address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      decimals: 6,
+      name: 'Tether USD',
+    },
+    block_timestamp: 1764062673000,
+    from: TRON_ACCOUNT_ADDRESS,
+    to: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    type: 'Approval',
+    value: '10000000',
+  },
+  {
+    transaction_id:
+      'fa1721d1e32a19fae77a7bf7e2f6dd72cd514924eeb2c9f33134d6e4a612bd6f',
+    token_info: {
+      symbol: 'USDT',
+      address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      decimals: 6,
+      name: 'Tether USD',
+    },
+    block_timestamp: 1763725185000,
+    from: 'TPwezUWpEGmFBENNWJHwXHRG1D2NCEEt5s',
+    to: TRON_ACCOUNT_ADDRESS,
+    type: 'Transfer',
+    value: '19794019',
+  },
+  {
+    transaction_id:
+      '28070ab43f0180dc932f05977ffa96e6a6b767f496203961a8f1ccdc12ab5181',
+    token_info: {
+      symbol: 'HTX',
+      address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
+      decimals: 18,
+      name: 'HTX',
+    },
+    block_timestamp: 1763645868000,
+    from: 'TYWc7X6YHpp2YrFXwLRsofdiL78JRvDd6u',
+    to: TRON_ACCOUNT_ADDRESS,
+    type: 'Transfer',
+    value: '3206454956836360132407885',
+  },
+  {
+    transaction_id:
+      '33d8313c4d7f4999a900602063004352acf4a27e7d08d11bb050f36eaec398b5',
+    token_info: {
+      symbol: 'USDD',
+      address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+      decimals: 18,
+      name: 'Decentralized USD',
+    },
+    block_timestamp: 1763551554000,
+    from: 'TDEoc9JmeTbcnKuCqZrQuykb3k6CwvDW6P',
+    to: TRON_ACCOUNT_ADDRESS,
+    type: 'Transfer',
+    value: '289757448699320931',
+  },
+  {
+    transaction_id:
+      '87951966199dce62daf8071726b1a1a14546191fa3e0d4820021cea2af407912',
+    token_info: {
+      symbol: 'SEED',
+      address: 'TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
+      decimals: 6,
+      name: 'SEED',
+    },
+    block_timestamp: 1763479599000,
+    from: 'TC6GmVK2zs1Nu7kTWhsMveuzV2w7o2e9L9',
+    to: TRON_ACCOUNT_ADDRESS,
+    type: 'Transfer',
+    value: '89851311',
+  },
+  {
+    transaction_id:
+      'a0f85ddb6b9ebe00d45bf7c9f15a9ac296a333e5df49693d21275a6bd6d6ad0e',
+    token_info: {
+      symbol: 'USDT',
+      address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      decimals: 6,
+      name: 'Tether USD',
+    },
+    block_timestamp: 1763477460000,
+    from: TRON_ACCOUNT_ADDRESS,
+    to: 'TXwNmWNLDYoCokvZcehV85JKszyyJFRRPu',
+    type: 'Transfer',
+    value: '300000',
+  },
+  {
+    transaction_id:
+      '2225c7e900ba240aa82302bb8818118419f07e39c15998fd2dd81a2109d0069d',
+    token_info: {
+      symbol: 'USDT',
+      address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      decimals: 6,
+      name: 'Tether USD',
+    },
+    block_timestamp: 1763470344000,
+    from: 'TCFNp179Lg46D16zKoumd4Poa2WFFdtqYj',
+    to: TRON_ACCOUNT_ADDRESS,
+    type: 'Transfer',
+    value: '310576',
+  },
+];
+
+export const DEFAULT_TRON_TRANSACTIONS = [
+  {
+    ret: [{ contractRet: 'SUCCESS', fee: 2799500 }],
+    signature: [
+      '4e812512a764e2648c31b4321d6d66731da49fef9354e668ffb6249147579af4164ca1424dc520e8d21eb15795b9efc9f2ead599aacb7ee00d1b70d40e4ee0281c',
+    ],
+    txID: '0f757bc78562fc03c305d84ce83ddde8dd3c71a76dd014cecc96656bd432c5d1',
+    net_usage: 345,
+    net_fee: 0,
+    energy_usage: 190,
+    blockNumber: 77829312,
+    block_timestamp: 1764149631000,
+    energy_fee: 2799500,
+    energy_usage_total: 28185,
+    raw_data: {
+      contract: [
+        {
+          parameter: {
+            value: {
+              data: 'a9059cbb000000000000000000000000639f09ebb2021f11ab768b639859ea6f66a9ea50000000000000000000000000000000000000000000000a968163f0a57b400000',
+              owner_address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
+              contract_address: '41ca0303e8b9a738121777116dcea419fe524f271a',
+            },
+            type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
+          },
+          type: 'TriggerSmartContract',
+        },
+      ],
+      ref_block_bytes: '94a9',
+      ref_block_hash: '5946efc2f14403b9',
+      expiration: 1764149676000,
+      fee_limit: 150000000,
+      timestamp: 1764149619180,
+    },
+    internal_transactions: [],
+  },
+  {
+    ret: [{ contractRet: 'SUCCESS', fee: 0 }],
+    signature: [
+      '1d4063933a8ff7bd59b6aeb40cbdd9ee553b44482d5ae0ee8b21e6d16f62ab24797e30caf9adfd19d9f5603ea1e77211628553dff7b2eaba0581f07b0968346001',
+    ],
+    txID: '3249a2975b834aeca79f7d929e53a3d94dccb5144bbf60c877001536e751cdf3',
+    net_usage: 265,
+    net_fee: 0,
+    energy_usage: 0,
+    blockNumber: 77819893,
+    block_timestamp: 1764121368000,
+    energy_fee: 0,
+    energy_usage_total: 0,
+    raw_data: {
+      contract: [
+        {
+          parameter: {
+            value: {
+              amount: 1,
+              owner_address: '4158bf0e3296b05798df14af89749955daa753e946',
+              to_address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
+            },
+            type_url: 'type.googleapis.com/protocol.TransferContract',
+          },
+          type: 'TransferContract',
+        },
+      ],
+      ref_block_bytes: '6fe2',
+      ref_block_hash: '21899808c649f863',
+      expiration: 1764121425000,
+      timestamp: 1764121365678,
+    },
+    internal_transactions: [],
+  },
+  {
+    ret: [{ contractRet: 'SUCCESS', fee: 1100000 }],
+    signature: [
+      '48808a5003f1feafb6b4681b4983a50592f281a913b864356236addb191025b72ad84bf0e4857c54cb93b7ebe86606d95c47d6797b4a318cc13c6a0f907377fd1c',
+    ],
+    txID: 'e51e01e4a0d0f6b4720f489375c09e12c57e64d53ea82094b9cc2ef1d665d562',
+    net_usage: 0,
+    net_fee: 100000,
+    energy_usage: 0,
+    blockNumber: 77803364,
+    block_timestamp: 1764071763000,
+    energy_fee: 0,
+    energy_usage_total: 0,
+    raw_data: {
+      contract: [
+        {
+          parameter: {
+            value: {
+              amount: 2000000,
+              owner_address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
+              to_address: '4127c4628ebcce8ad34ea83df4b9790069923830db',
+            },
+            type_url: 'type.googleapis.com/protocol.TransferContract',
+          },
+          type: 'TransferContract',
+        },
+      ],
+      ref_block_bytes: '2f61',
+      ref_block_hash: '1b253007b84f888d',
+      expiration: 1764071814000,
+      timestamp: 1764071754000,
+    },
+    internal_transactions: [],
+  },
+];
+
 export async function mockTronGetTrc20Transactions(
   mockServer: Mockttp,
+  transactions: unknown[] = DEFAULT_TRON_TRC20_TRANSACTIONS,
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(
@@ -317,290 +724,25 @@ export async function mockTronGetTrc20Transactions(
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        data: [
-          {
-            transaction_id:
-              '0f757bc78562fc03c305d84ce83ddde8dd3c71a76dd014cecc96656bd432c5d1',
-            token_info: {
-              symbol: 'HTX',
-              address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
-              decimals: 18,
-              name: 'HTX',
-            },
-            block_timestamp: 1764149631000,
-            from: TRON_ACCOUNT_ADDRESS,
-            to: 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq',
-            type: 'Transfer',
-            value: '50000000000000000000000',
-          },
-          {
-            transaction_id:
-              '47d6870d229f383e1bacc19967cb7be2c61d5ad4185b6848e91d2bc8c1616de1',
-            token_info: {
-              symbol: 'USDT',
-              address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-              decimals: 6,
-              name: 'Tether USD',
-            },
-            block_timestamp: 1764062793000,
-            from: TRON_ACCOUNT_ADDRESS,
-            to: 'TBEPnZeEVRJWtJwqY4f3VWEtf9jKyQ4HAu',
-            type: 'Transfer',
-            value: '7000000',
-          },
-          {
-            transaction_id:
-              'c2f4a66600c3f46cfffdcb1886d72e48e5fe2d650c110ddeb6da7e6fda12ab12',
-            token_info: {
-              symbol: 'USDT',
-              address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-              decimals: 6,
-              name: 'Tether USD',
-            },
-            block_timestamp: 1764062673000,
-            from: TRON_ACCOUNT_ADDRESS,
-            to: 'TJPmfFA9PwYf1Z9Ny7FzGHQD8uA2h88q74',
-            type: 'Transfer',
-            value: '10000000',
-          },
-          {
-            transaction_id:
-              'ac605640c5f44f36c766894d6f1d8dca0290cba857470c46a863e1f52abfc798',
-            token_info: {
-              symbol: 'USDT',
-              address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-              decimals: 6,
-              name: 'Tether USD',
-            },
-            block_timestamp: 1764062673000,
-            from: TRON_ACCOUNT_ADDRESS,
-            to: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-            type: 'Approval',
-            value: '10000000',
-          },
-          {
-            transaction_id:
-              'fa1721d1e32a19fae77a7bf7e2f6dd72cd514924eeb2c9f33134d6e4a612bd6f',
-            token_info: {
-              symbol: 'USDT',
-              address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-              decimals: 6,
-              name: 'Tether USD',
-            },
-            block_timestamp: 1763725185000,
-            from: 'TPwezUWpEGmFBENNWJHwXHRG1D2NCEEt5s',
-            to: TRON_ACCOUNT_ADDRESS,
-            type: 'Transfer',
-            value: '19794019',
-          },
-          {
-            transaction_id:
-              '28070ab43f0180dc932f05977ffa96e6a6b767f496203961a8f1ccdc12ab5181',
-            token_info: {
-              symbol: 'HTX',
-              address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
-              decimals: 18,
-              name: 'HTX',
-            },
-            block_timestamp: 1763645868000,
-            from: 'TYWc7X6YHpp2YrFXwLRsofdiL78JRvDd6u',
-            to: TRON_ACCOUNT_ADDRESS,
-            type: 'Transfer',
-            value: '3206454956836360132407885',
-          },
-          {
-            transaction_id:
-              '33d8313c4d7f4999a900602063004352acf4a27e7d08d11bb050f36eaec398b5',
-            token_info: {
-              symbol: 'USDD',
-              address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-              decimals: 18,
-              name: 'Decentralized USD',
-            },
-            block_timestamp: 1763551554000,
-            from: 'TDEoc9JmeTbcnKuCqZrQuykb3k6CwvDW6P',
-            to: TRON_ACCOUNT_ADDRESS,
-            type: 'Transfer',
-            value: '289757448699320931',
-          },
-          {
-            transaction_id:
-              '87951966199dce62daf8071726b1a1a14546191fa3e0d4820021cea2af407912',
-            token_info: {
-              symbol: 'SEED',
-              address: 'TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
-              decimals: 6,
-              name: 'SEED',
-            },
-            block_timestamp: 1763479599000,
-            from: 'TC6GmVK2zs1Nu7kTWhsMveuzV2w7o2e9L9',
-            to: TRON_ACCOUNT_ADDRESS,
-            type: 'Transfer',
-            value: '89851311',
-          },
-          {
-            transaction_id:
-              'a0f85ddb6b9ebe00d45bf7c9f15a9ac296a333e5df49693d21275a6bd6d6ad0e',
-            token_info: {
-              symbol: 'USDT',
-              address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-              decimals: 6,
-              name: 'Tether USD',
-            },
-            block_timestamp: 1763477460000,
-            from: TRON_ACCOUNT_ADDRESS,
-            to: 'TXwNmWNLDYoCokvZcehV85JKszyyJFRRPu',
-            type: 'Transfer',
-            value: '300000',
-          },
-          {
-            transaction_id:
-              '2225c7e900ba240aa82302bb8818118419f07e39c15998fd2dd81a2109d0069d',
-            token_info: {
-              symbol: 'USDT',
-              address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-              decimals: 6,
-              name: 'Tether USD',
-            },
-            block_timestamp: 1763470344000,
-            from: 'TCFNp179Lg46D16zKoumd4Poa2WFFdtqYj',
-            to: TRON_ACCOUNT_ADDRESS,
-            type: 'Transfer',
-            value: '310576',
-          },
-        ],
+        data: transactions,
         success: true,
-        meta: {
-          at: 1767888340469,
-          page_size: 10,
-        },
+        meta: { at: Date.now(), page_size: transactions.length },
       },
     }));
 }
 
 export async function mockTronGetTransactions(
   mockServer: Mockttp,
+  transactions: unknown[] = DEFAULT_TRON_TRANSACTIONS,
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions`))
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        data: [
-          {
-            ret: [{ contractRet: 'SUCCESS', fee: 2799500 }],
-            signature: [
-              '4e812512a764e2648c31b4321d6d66731da49fef9354e668ffb6249147579af4164ca1424dc520e8d21eb15795b9efc9f2ead599aacb7ee00d1b70d40e4ee0281c',
-            ],
-            txID: '0f757bc78562fc03c305d84ce83ddde8dd3c71a76dd014cecc96656bd432c5d1',
-            net_usage: 345,
-            net_fee: 0,
-            energy_usage: 190,
-            blockNumber: 77829312,
-            block_timestamp: 1764149631000,
-            energy_fee: 2799500,
-            energy_usage_total: 28185,
-            raw_data: {
-              contract: [
-                {
-                  parameter: {
-                    value: {
-                      data: 'a9059cbb000000000000000000000000639f09ebb2021f11ab768b639859ea6f66a9ea50000000000000000000000000000000000000000000000a968163f0a57b400000',
-                      owner_address:
-                        '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
-                      contract_address:
-                        '41ca0303e8b9a738121777116dcea419fe524f271a',
-                    },
-                    type_url:
-                      'type.googleapis.com/protocol.TriggerSmartContract',
-                  },
-                  type: 'TriggerSmartContract',
-                },
-              ],
-              ref_block_bytes: '94a9',
-              ref_block_hash: '5946efc2f14403b9',
-              expiration: 1764149676000,
-              fee_limit: 150000000,
-              timestamp: 1764149619180,
-            },
-            internal_transactions: [],
-          },
-          {
-            ret: [{ contractRet: 'SUCCESS', fee: 0 }],
-            signature: [
-              '1d4063933a8ff7bd59b6aeb40cbdd9ee553b44482d5ae0ee8b21e6d16f62ab24797e30caf9adfd19d9f5603ea1e77211628553dff7b2eaba0581f07b0968346001',
-            ],
-            txID: '3249a2975b834aeca79f7d929e53a3d94dccb5144bbf60c877001536e751cdf3',
-            net_usage: 265,
-            net_fee: 0,
-            energy_usage: 0,
-            blockNumber: 77819893,
-            block_timestamp: 1764121368000,
-            energy_fee: 0,
-            energy_usage_total: 0,
-            raw_data: {
-              contract: [
-                {
-                  parameter: {
-                    value: {
-                      amount: 1,
-                      owner_address:
-                        '4158bf0e3296b05798df14af89749955daa753e946',
-                      to_address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
-                    },
-                    type_url: 'type.googleapis.com/protocol.TransferContract',
-                  },
-                  type: 'TransferContract',
-                },
-              ],
-              ref_block_bytes: '6fe2',
-              ref_block_hash: '21899808c649f863',
-              expiration: 1764121425000,
-              timestamp: 1764121365678,
-            },
-            internal_transactions: [],
-          },
-          {
-            ret: [{ contractRet: 'SUCCESS', fee: 1100000 }],
-            signature: [
-              '48808a5003f1feafb6b4681b4983a50592f281a913b864356236addb191025b72ad84bf0e4857c54cb93b7ebe86606d95c47d6797b4a318cc13c6a0f907377fd1c',
-            ],
-            txID: 'e51e01e4a0d0f6b4720f489375c09e12c57e64d53ea82094b9cc2ef1d665d562',
-            net_usage: 0,
-            net_fee: 100000,
-            energy_usage: 0,
-            blockNumber: 77803364,
-            block_timestamp: 1764071763000,
-            energy_fee: 0,
-            energy_usage_total: 0,
-            raw_data: {
-              contract: [
-                {
-                  parameter: {
-                    value: {
-                      amount: 2000000,
-                      owner_address:
-                        '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
-                      to_address: '4127c4628ebcce8ad34ea83df4b9790069923830db',
-                    },
-                    type_url: 'type.googleapis.com/protocol.TransferContract',
-                  },
-                  type: 'TransferContract',
-                },
-              ],
-              ref_block_bytes: '2f61',
-              ref_block_hash: '1b253007b84f888d',
-              expiration: 1764071814000,
-              timestamp: 1764071754000,
-            },
-            internal_transactions: [],
-          },
-        ],
+        data: transactions,
         success: true,
-        meta: {
-          at: 1767888340478,
-          page_size: 20,
-        },
+        meta: { at: Date.now(), page_size: transactions.length },
       },
     }));
 }

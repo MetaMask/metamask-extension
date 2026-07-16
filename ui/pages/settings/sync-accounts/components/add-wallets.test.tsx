@@ -67,7 +67,7 @@ describe('AddWallets', () => {
 
     expect(onAddWallets).toHaveBeenCalledWith({
       selectedAccountGroupIds: [mockGroupId],
-      syncedAccountCount: 1,
+      syncedAccountCount: 0,
       syncedWalletCount: 1,
     });
   });
