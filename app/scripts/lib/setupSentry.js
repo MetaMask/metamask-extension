@@ -21,6 +21,7 @@ import {
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
 import { getInstallType, initInstallType } from './install-type';
+import { createTracesSampler } from './sentry-traces-sampler';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -94,6 +95,7 @@ function safeCloneReport(report) {
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
+  const tracesSampleRate = getTracesSampleRate(sentryTarget);
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
@@ -146,7 +148,23 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: getTracesSampleRate(sentryTarget),
+    tracesSampleRate,
+    // Per-transaction sampler: caps high-volume custom transactions (seeded with
+    // the assets-controller spans that breached quota in 13.32.0 — see #43226)
+    // while every other transaction keeps the global `tracesSampleRate`.
+    // `tracesSampler` takes precedence over `tracesSampleRate` in Sentry.
+    //
+    // `release` is the BARE version (e.g. '13.32.0'), matching
+    // DEFAULT_DROPPED_RELEASES / SENTRY_DROP_RELEASES — NOT the full
+    // `metamask-extension@x.y.z` RELEASE string. When this build's own version
+    // is in the dropped set, every transaction is dropped. NOTE: this only
+    // affects this build's own release; a build's SDK cannot retroactively touch
+    // already-installed builds of a dropped release — for the installed base the
+    // mitigation is a forced-update drain (see #43226).
+    tracesSampler: createTracesSampler({
+      defaultSampleRate: tracesSampleRate,
+      release: process.env.METAMASK_VERSION,
+    }),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
     transport: makeTransport,
