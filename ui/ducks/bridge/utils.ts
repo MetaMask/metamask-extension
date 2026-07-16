@@ -38,8 +38,8 @@ export const assetIdsMatch = (
   left === right ||
   Boolean(
     left?.startsWith('eip155:') &&
-      right?.startsWith('eip155:') &&
-      left.toLowerCase() === right.toLowerCase(),
+    right?.startsWith('eip155:') &&
+    left.toLowerCase() === right.toLowerCase(),
   );
 
 /**
