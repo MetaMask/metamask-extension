@@ -16,12 +16,11 @@ export function useSmartSlippage(): void {
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
   const isUserOverride = useSelector(getIsSlippageUserOverride);
-  const { activeQuote, isLoading } = useSelector(getBridgeQuotes);
+  const { activeQuote } = useSelector(getBridgeQuotes);
   const quote = activeQuote?.quote;
 
   useEffect(() => {
     if (
-      isLoading ||
       isUserOverride ||
       slippage !== undefined ||
       quote?.slippage === undefined ||
@@ -35,7 +34,6 @@ export function useSmartSlippage(): void {
   }, [
     dispatch,
     fromToken?.assetId,
-    isLoading,
     isUserOverride,
     quote,
     slippage,

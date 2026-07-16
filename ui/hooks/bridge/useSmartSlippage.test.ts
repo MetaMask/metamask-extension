@@ -38,10 +38,10 @@ describe('useSmartSlippage', () => {
     mockValues.set(getToToken, toToken);
     mockValues.set(getSlippage, undefined);
     mockValues.set(getIsSlippageUserOverride, false);
-    mockValues.set(getBridgeQuotes, { activeQuote, isLoading: false });
+    mockValues.set(getBridgeQuotes, { activeQuote, isLoading: true });
   });
 
-  it('hydrates slippage from the current pair quote', () => {
+  it('hydrates from the first current-pair quote while streaming', () => {
     renderHook(() => useSmartSlippage());
 
     expect(setSlippage).toHaveBeenCalledWith(1.5);
