@@ -13,7 +13,6 @@ import type {
 } from '@metamask/assets-controllers';
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
-import { debounce } from 'lodash';
 import {
   Modal,
   ModalContent,
@@ -34,6 +33,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useDeferredValue } from '../../../../hooks/useDeferredValue';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
@@ -143,29 +143,17 @@ export function AssetPickerModal({
 }: AssetPickerModalProps) {
   const t = useI18nContext();
   const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
-  const debouncedSetSearchQuery = useMemo(
-    () =>
-      debounce((value: string) => {
-        setDebouncedSearchQuery(value);
-      }, 200),
-    [],
-  );
+  const deferredSearchQuery = useDeferredValue(searchQuery);
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Cleanup abort controller and debounce on unmount
+  // Cleanup abort controller on unmount
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
-      debouncedSetSearchQuery.cancel();
     };
-  }, [debouncedSetSearchQuery]);
-
-  useEffect(() => {
-    debouncedSetSearchQuery(searchQuery);
-  }, [searchQuery, debouncedSetSearchQuery]);
+  }, []);
 
   const handleAssetChange = useCallback(
     (newAsset: Parameters<typeof onAssetChange>[0]) => {
@@ -383,7 +371,7 @@ export function AssetPickerModal({
       address?: string | null,
       tokenChainId?: string,
     ) => {
-      const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
+      const trimmedSearchQuery = deferredSearchQuery.trim().toLowerCase();
       const isSymbolMatch = symbol?.toLowerCase().includes(trimmedSearchQuery);
       // only check for matching address if search term has 6 characters or more
       // users are expected to copy and paste addresses instead of typing them
@@ -454,7 +442,7 @@ export function AssetPickerModal({
     return filteredTokens;
   }, [
     currentChainId,
-    debouncedSearchQuery,
+    deferredSearchQuery,
     isMultiselectEnabled,
     selectedChainIds,
     selectedNetwork?.chainId,
