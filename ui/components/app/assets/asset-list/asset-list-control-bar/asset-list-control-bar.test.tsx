@@ -449,10 +449,7 @@ describe('NFTs options', () => {
     state.metamask.useExternalServices = true;
     const store = configureMockStore([thunk])(state);
 
-    const { findByTestId } = renderWithProvider(
-      <AssetListControlBar />,
-      store,
-    );
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
     fireEvent.click(await findByTestId('sort-by-networks'));
 

@@ -451,11 +451,7 @@ const HomeNetworkFilterModalContent = ({
       blacklistedChainIds,
       availableNetworks,
     ).sort((a, b) => a.name.localeCompare(b.name));
-  }, [
-    blacklistedChainIds,
-    evmNetworks,
-    useExternalServices,
-  ]);
+  }, [blacklistedChainIds, evmNetworks, useExternalServices]);
 
   const handleSelectAllDefaultNetworks = useCallback(() => {
     dispatch(setEnabledAllPopularNetworks());
