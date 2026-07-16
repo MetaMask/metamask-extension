@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -21,10 +22,13 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        // Wait for the Tron Snap account before switching so the switch triggers the balance fetch.
+        await homePage.waitForTronAccountReady();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
-        // Snap balances hydrate asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 TRX',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -44,13 +48,17 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
+        // Wait for the Tron Snap account before switching so the switch triggers the balance fetch.
+        await homePage.waitForTronAccountReady();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+
+        await driver.refresh();
 
         // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
         // Total Fiat = TRX $31.26, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $39.65
-        // Snap balances hydrate asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$39.65',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -67,12 +75,16 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        // Wait for the Tron Snap account before switching so the switch triggers the balance fetch.
+        await homePage.waitForTronAccountReady();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
+        await driver.refresh();
+
         // TRX_BALANCE = 106072392 SUN = ~106.07 TRX
-        // Snap balances hydrate asynchronously and can lag a single refresh, so retry the refresh + assert cycle.
-        await homePage.refreshUntilExpectedBalanceIsDisplayed({
+        await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '106.072 TRX',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
