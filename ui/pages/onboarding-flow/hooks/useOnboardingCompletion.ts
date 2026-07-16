@@ -129,7 +129,7 @@ export function useOnboardingCompletion() {
         navigate(DEFAULT_ROUTE);
       }
     },
-    [dispatch, navigate, trackAnalyticsEvent],
+    [dispatch, navigate, trackEvent],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
