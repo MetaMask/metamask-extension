@@ -10,8 +10,11 @@ import type { Args } from '../../cli';
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
 const rootDir = join(__dirname, '../../../../../');
 
-// Entries that need to be included in the unsafe layer to run without LavaMoat.
-const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
+// Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
+const nullUnsafeEntries: Set<string> = new Set([
+  'scripts/inpage.js',
+  'bootstrap',
+]);
 
 const getScuttleGlobalThisExceptions = (args: Args) => [
   // globals used by different mm deps outside of lm compartment
@@ -104,7 +107,7 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // Inline SES into protected self-contained scripts and the shared runtime.
+    // we apply lockdown to 'runtime.<hash>.js', 'scripts/contentscript.js', and 'service-worker.js'.
     inlineLockdown:
       /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
     debugRuntime: args.lavamoatDebug,
@@ -118,9 +121,20 @@ export const lavamoatPlugin = (args: Args) =>
       reporting: 'none',
     },
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
-      if (chunk.name && unsafeEntries.has(chunk.name)) {
-        // unsafeEntries are running outside of LavaMoat
+      if (chunk.name && nullUnsafeEntries.has(chunk.name)) {
+        // nullUnsafeEntries run fully outside of LavaMoat, no runtime added
         return { mode: 'null_unsafe' };
+      } else if (chunk.name === 'service-worker.ts') {
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              // Globals used by the service worker
+              exceptions: ['importScripts'],
+            },
+          },
+        };
       } else if (chunk.name === 'scripts/contentscript.js') {
         return {
           mode: 'safe',
@@ -143,18 +157,6 @@ export const lavamoatPlugin = (args: Args) =>
               ]
             : [],
         };
-      } else if (chunk.name === 'service-worker.ts') {
-        return {
-          mode: 'safe',
-          embeddedOptions: {
-            // Webpack loads dynamic service worker chunks from the host realm
-            // after LavaMoat initialization.
-            scuttleGlobalThis: {
-              enabled: true,
-              exceptions: ['importScripts'],
-            },
-          },
-        };
       }
       return { mode: 'safe' };
     },
@@ -166,13 +168,12 @@ export const lavamoatPlugin = (args: Args) =>
     },
   });
 
-// Unsafe layer that runs code without LavaMoat
+// Unsafe layer that runs code without LavaMoat.
 export const lavamoatUnsafeLayerRule = {
   issuerLayer: 'unsafe',
   use: LavamoatExcludeLoader,
 } satisfies RuleSetRule;
 
-// Unsafe layer plugin that applies the layer and assigns the unsafeEntries to it
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
     compiler.options.module.rules.push(lavamoatUnsafeLayerRule);
@@ -180,7 +181,7 @@ export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
       compilation.hooks.addEntry.tap('Layer', (entry, options) => {
         const { name } = options;
         if (name && 'request' in entry && typeof entry.request === 'string') {
-          if (unsafeEntries.has(name)) {
+          if (nullUnsafeEntries.has(name)) {
             const entryData = compilation.entries.get(name);
             if (entryData) {
               entryData.options.layer = lavamoatUnsafeLayerRule.issuerLayer;
