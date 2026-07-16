@@ -85,13 +85,11 @@ function renderExternalLinkButton(externalLinkUrl: string) {
 
 function renderExtensionLinkButton(extensionLinkRoute?: string) {
   render(
-    <MetaMetricsContext.Provider value={metametricsContext}>
-      <ExtensionLinkButton
-        notification={createFeatureAnnouncementNotificationWithExtensionLink(
-          extensionLinkRoute,
-        )}
-      />
-    </MetaMetricsContext.Provider>,
+    <ExtensionLinkButton
+      notification={createFeatureAnnouncementNotificationWithExtensionLink(
+        extensionLinkRoute,
+      )}
+    />,
   );
 }
 
