@@ -7445,10 +7445,10 @@ export async function getCustomerServiceToken(): Promise<string | undefined> {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   try {
-    const tokenPromise = submitRequestToBackground<string>(
-      'messengerCall',
-      ['AuthenticationController:getCustomerServiceToken', []],
-    ).catch((error) => {
+    const tokenPromise = submitRequestToBackground<string>('messengerCall', [
+      'AuthenticationController:getCustomerServiceToken',
+      [],
+    ]).catch((error) => {
       logErrorWithMessage(error);
       return undefined;
     });
