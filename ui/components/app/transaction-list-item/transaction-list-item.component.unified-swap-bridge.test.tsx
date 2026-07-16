@@ -59,7 +59,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap to Confirmed-0 ETH',
+      'Swap to Confirmed-0 ETH',
     );
   });
 
@@ -91,7 +91,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to USDCFailed-2 USDC-USD 0.00',
+      'Swap USDC to USDCFailed-2 USDC-USD 0.00',
     );
     expect(getByText(messages.failed.message)).toBeInTheDocument();
   });
@@ -182,7 +182,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
+      'Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
     );
   });
 
@@ -222,7 +222,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
+      'Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
     );
   });
 
@@ -249,7 +249,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPConfirmed-2 USDC-USD 0.00',
+      'Bridged to OPConfirmed-2 USDC-USD 0.00',
     );
 
     fireEvent.click(getByTestId('activity-list-item'));
@@ -287,7 +287,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPFailed-2 USDC-USD 0.00',
+      'Bridged to OPFailed-2 USDC-USD 0.00',
     );
     expect(getByText(messages.failed.message)).toBeInTheDocument();
 

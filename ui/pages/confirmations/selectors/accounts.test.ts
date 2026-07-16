@@ -25,6 +25,7 @@ describe('selectAccountGroupNameByInternalAccount', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    selectAccountGroupNameByInternalAccount.clearCache();
     (getAccountGroupsByAddress as unknown as jest.Mock).mockReturnValue(
       mockAccountGroups,
     );

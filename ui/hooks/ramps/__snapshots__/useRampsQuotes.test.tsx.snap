@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRampsQuotes matches snapshot when query is disabled 1`] = `
+{
+  "data": null,
+  "error": null,
+  "getBuyWidgetData": [Function],
+  "getQuotes": [Function],
+  "isSuccess": false,
+  "loading": false,
+  "status": "idle",
+}
+`;

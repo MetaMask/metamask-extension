@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../../../../../test/data/mock-state.json';
@@ -44,5 +45,23 @@ describe('<EditGasIconButton />', () => {
     const { container } = renderWithProvider(<EditGasIconButton />, mockStore);
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('stops click event propagation to prevent parent handlers from firing', () => {
+    const state = mockState;
+    const mockStore = configureMockStore(middleware)(state);
+    const { getByTestId } = renderWithProvider(
+      <EditGasIconButton />,
+      mockStore,
+    );
+
+    const button = getByTestId('edit-gas-fee-icon');
+    const clickEvent = new MouseEvent('click', { bubbles: true });
+    jest.spyOn(clickEvent, 'stopPropagation');
+
+    fireEvent(button, clickEvent);
+
+    expect(clickEvent.stopPropagation).toHaveBeenCalled();
+    expect(openGasFeeModalMock).toHaveBeenCalledTimes(1);
   });
 });

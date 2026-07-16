@@ -39,6 +39,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -50,7 +51,6 @@ import {
   getHDEntropyIndex,
 } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
@@ -111,7 +111,7 @@ export const MultichainAccountList = ({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
@@ -234,16 +234,17 @@ export const MultichainAccountList = ({
 
   const defaultHandleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.NavAccountSwitched,
-        properties: {
-          location: 'Main Menu',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavAccountSwitched)
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            location: 'Main Menu',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
       endTrace({
         name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
           defaultHomeActiveTabName
@@ -258,7 +259,14 @@ export const MultichainAccountList = ({
       dispatch(setSelectedMultichainAccount(accountGroupId));
       navigate(DEFAULT_ROUTE);
     },
-    [trackEvent, hdEntropyIndex, defaultHomeActiveTabName, dispatch, navigate],
+    [
+      trackEvent,
+      createEventBuilder,
+      hdEntropyIndex,
+      defaultHomeActiveTabName,
+      dispatch,
+      navigate,
+    ],
   );
 
   const handleAccountClickToUse = useCallback(

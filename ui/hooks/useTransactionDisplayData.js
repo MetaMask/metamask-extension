@@ -28,7 +28,7 @@ import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
-import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
+import { formatAmount } from '../../shared/lib/format-amount';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';

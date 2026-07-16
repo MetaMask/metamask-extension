@@ -172,7 +172,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
     <p
       class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
     >
-      Includes 0.875% MM fee. Approves token for bridge.
+      Includes 0.875% MetaMask fee. Approves token for bridge.
     </p>
     <div
       class=""
@@ -643,10 +643,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Rate
         </p>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           style="width: 32px;"
         >
-          0:00
+          0:30
         </p>
         <div
           class=""

@@ -1,4 +1,9 @@
-import { filterOutArcNativeAsset } from './arc';
+import { AssetsControllerState } from '@metamask/assets-controller';
+import {
+  ARC_ERC20_USDC_ASSET_ID,
+  augmentAssetControllersState,
+  filterOutArcNativeAsset,
+} from './arc';
 
 const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
 const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
@@ -117,4 +122,58 @@ describe('filterOutArcNativeAsset', () => {
       expect(filterOutArcNativeAsset(assets)).toStrictEqual(expected);
     },
   );
+});
+
+describe('augmentAssetControllersState', () => {
+  const buildState = (
+    assetsBalance: Record<string, Record<string, { amount: string }>>,
+  ) => ({ assetsBalance }) as unknown as AssetsControllerState;
+
+  it('removes the ERC20 USDC asset from every account', () => {
+    const state = buildState({
+      'account-1': {
+        [ARC_NATIVE_ASSET_ID]: { amount: '5' },
+        [ARC_ERC20_USDC_ASSET_ID]: { amount: '5' },
+      },
+      'account-2': {
+        [ARC_ERC20_USDC_ASSET_ID]: { amount: '0' },
+      },
+    });
+
+    expect(augmentAssetControllersState(state).assetsBalance).toStrictEqual({
+      'account-1': { [ARC_NATIVE_ASSET_ID]: { amount: '5' } },
+      'account-2': {},
+    });
+  });
+
+  it('leaves accounts without the ERC20 USDC asset untouched', () => {
+    const assetsBalance = {
+      'account-1': { [ARC_NATIVE_ASSET_ID]: { amount: '5' } },
+    };
+
+    expect(
+      augmentAssetControllersState(buildState(assetsBalance)).assetsBalance,
+    ).toStrictEqual(assetsBalance);
+  });
+
+  it('does not mutate the original state', () => {
+    const state = buildState({
+      'account-1': { [ARC_ERC20_USDC_ASSET_ID]: { amount: '5' } },
+    });
+
+    augmentAssetControllersState(state);
+
+    expect(state.assetsBalance['account-1']).toHaveProperty(
+      ARC_ERC20_USDC_ASSET_ID,
+    );
+  });
+
+  it('preserves other top-level state keys', () => {
+    const state = {
+      assetsBalance: {},
+      assetsMetadata: { foo: 'bar' },
+    } as unknown as AssetsControllerState;
+
+    expect(augmentAssetControllersState(state)).toStrictEqual(state);
+  });
 });
