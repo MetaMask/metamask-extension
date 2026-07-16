@@ -34,6 +34,7 @@ const initialStore = () => ({
     isBackupAndSyncEnabled: true,
     isAccountSyncingEnabled: false,
     isContactSyncingEnabled: false,
+    isRampsSyncingEnabled: false,
     completedMetaMetricsOnboarding: true,
     optedIn: false,
     isBackupAndSyncUpdateLoading: false,
@@ -186,11 +187,52 @@ describe('BackupAndSyncFeaturesToggles', () => {
     );
   });
 
+  it('enables ramps syncing', () => {
+    const store = initialStore();
+    store.metamask.isRampsSyncingEnabled = false;
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    const { getByTestId } = render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncFeaturesToggles />
+      </Redux.Provider>,
+    );
+    fireEvent.click(
+      getByTestId(backupAndSyncFeaturesTogglesTestIds.rampsSyncingToggleButton),
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
+      true,
+    );
+  });
+
+  it('disables ramps syncing', () => {
+    const store = initialStore();
+    store.metamask.isRampsSyncingEnabled = true;
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    const { getByTestId } = render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncFeaturesToggles />
+      </Redux.Provider>,
+    );
+    fireEvent.click(
+      getByTestId(backupAndSyncFeaturesTogglesTestIds.rampsSyncingToggleButton),
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
+      false,
+    );
+  });
+
   it('disables main backup and sync when all sub-features are manually turned off', async () => {
     const store = initialStore();
     store.metamask.isBackupAndSyncEnabled = true;
-    store.metamask.isAccountSyncingEnabled = false; // Already off
-    store.metamask.isContactSyncingEnabled = false; // Already off
+    store.metamask.isAccountSyncingEnabled = false;
+    store.metamask.isContactSyncingEnabled = false;
+    store.metamask.isRampsSyncingEnabled = false;
 
     const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
 
@@ -212,8 +254,9 @@ describe('BackupAndSyncFeaturesToggles', () => {
   it('does not disable main backup and sync when at least one sub-feature is enabled', async () => {
     const store = initialStore();
     store.metamask.isBackupAndSyncEnabled = true;
-    store.metamask.isAccountSyncingEnabled = true; // One is ON
-    store.metamask.isContactSyncingEnabled = false; // One is OFF
+    store.metamask.isAccountSyncingEnabled = true;
+    store.metamask.isContactSyncingEnabled = false;
+    store.metamask.isRampsSyncingEnabled = false;
 
     const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
 
@@ -227,6 +270,29 @@ describe('BackupAndSyncFeaturesToggles', () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Should not have disabled main toggle
+    expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.main,
+      false,
+    );
+  });
+
+  it('does not disable main backup and sync when only ramps syncing is enabled', async () => {
+    const store = initialStore();
+    store.metamask.isBackupAndSyncEnabled = true;
+    store.metamask.isAccountSyncingEnabled = false;
+    store.metamask.isContactSyncingEnabled = false;
+    store.metamask.isRampsSyncingEnabled = true;
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncFeaturesToggles />
+      </Redux.Provider>,
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.main,
       false,
