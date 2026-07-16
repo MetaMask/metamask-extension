@@ -47,4 +47,21 @@ describe('getBridgeDisplayStatus', () => {
       ).toBe('pending');
     });
   });
+
+  it('maps an in-flight destination to failed when the source item already failed', () => {
+    const inFlightStatuses = [
+      StatusTypes.PENDING,
+      StatusTypes.SUBMITTED,
+      StatusTypes.UNKNOWN,
+    ];
+
+    inFlightStatuses.forEach((bridgeStatus) => {
+      expect(
+        getBridgeDisplayStatus(
+          'failed' as Status,
+          buildHistoryItem(bridgeStatus),
+        ),
+      ).toBe('failed');
+    });
+  });
 });

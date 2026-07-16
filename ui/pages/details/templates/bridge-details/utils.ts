@@ -30,6 +30,9 @@ export function getBridgeDisplayStatus(
     case StatusTypes.FAILED:
       return 'failed';
     default:
-      return 'pending';
+      // The destination leg is still in flight, but if the source-chain
+      // transaction already failed the whole bridge has failed, so let that
+      // take precedence over showing a misleading pending state.
+      return fallbackStatus === 'failed' ? 'failed' : 'pending';
   }
 }
