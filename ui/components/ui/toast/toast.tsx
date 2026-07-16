@@ -33,8 +33,6 @@ export function Toaster() {
       position="bottom-center"
       containerClassName="toast-container"
       containerStyle={{
-        visibility:
-          'var(--toast-visibility, visible)' as CSSProperties['visibility'],
         bottom: 'var(--toaster-bottom-offset, 16px)',
       }}
       toastOptions={{
@@ -44,6 +42,8 @@ export function Toaster() {
           color: 'var(--color-text-default)',
           borderRadius: 12,
           padding: 12,
+          visibility:
+            'var(--toast-visibility, visible)' as CSSProperties['visibility'],
         },
       }}
     >
@@ -51,13 +51,15 @@ export function Toaster() {
         <ToastBar toast={item} position={item.position ?? 'bottom-center'}>
           {({ message }) => (
             <>
-              <StatusIcon
-                className="shrink-0"
-                state={
-                  statusMap[item.type as keyof typeof statusMap] ??
-                  statusMap.loading
-                }
-              />
+              {item.icon ?? (
+                <StatusIcon
+                  className="shrink-0"
+                  state={
+                    statusMap[item.type as keyof typeof statusMap] ??
+                    statusMap.loading
+                  }
+                />
+              )}
 
               {message}
 
