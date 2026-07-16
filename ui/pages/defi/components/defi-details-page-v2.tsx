@@ -5,20 +5,17 @@ import {
   Box,
   BoxFlexDirection,
   BoxJustifyContent,
-} from '@metamask/design-system-react';
-import { decodeDefiRouteParam } from '../../../../shared/lib/defi-route';
-import {
-  IconColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
   ButtonIcon,
   ButtonIconSize,
+  IconColor,
   IconName,
   SensitiveText,
   SensitiveTextLength,
   Text,
-} from '../../../components/component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { decodeDefiRouteParam } from '../../../../shared/lib/defi-route';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -76,8 +73,8 @@ export default function DeFiDetailsPageV2() {
       >
         <ButtonIcon
           data-testid="defi-details-page-back-button"
-          color={IconColor.iconDefault}
-          marginRight={1}
+          iconProps={{ color: IconColor.IconDefault }}
+          className="mr-1"
           size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
@@ -92,9 +89,8 @@ export default function DeFiDetailsPageV2() {
         paddingRight={4}
       >
         <Text
-          variant={TextVariant.headingLg}
-          paddingLeft={4}
-          paddingBottom={2}
+          variant={TextVariant.HeadingLg}
+          className="pl-4 pb-2"
           data-testid="defi-details-page-title"
         >
           {protocolDetails.protocolId}
@@ -109,9 +105,8 @@ export default function DeFiDetailsPageV2() {
       <Box paddingLeft={4} paddingBottom={4}>
         <SensitiveText
           data-testid="defi-details-page-market-value"
-          className="mm-box--color-text-alternative"
+          color={TextColor.TextAlternative}
           ellipsis
-          variant={TextVariant.inherit}
           isHidden={privacyMode}
           length={SensitiveTextLength.Medium}
         >

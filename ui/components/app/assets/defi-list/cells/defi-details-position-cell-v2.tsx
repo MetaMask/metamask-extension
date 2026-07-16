@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { Box, BoxFlexDirection, Tag } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
-import { Tag } from '../../../../component-library';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 import { useTokenDisplayInfo } from '../../hooks/useTokenDisplayInfo';
 import {
@@ -57,10 +56,9 @@ export default function DefiDetailsPositionCellV2({
         <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
           <AssetCellTitle title={position.name} />
           {position.positionType ? (
-            <Tag
-              label={position.positionType}
-              data-testid="defi-details-position-type-tag"
-            />
+            <Tag data-testid="defi-details-position-type-tag">
+              {position.positionType}
+            </Tag>
           ) : null}
         </Box>
       }

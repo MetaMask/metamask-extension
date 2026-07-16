@@ -1,11 +1,12 @@
 import React from 'react';
-import { Box } from '@metamask/design-system-react';
-import type { DeFiPositionDetailsSection } from '@metamask/assets-controllers';
 import {
+  Box,
+  FontWeight,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Text } from '../../../component-library';
+} from '@metamask/design-system-react';
+import type { DeFiPositionDetailsSection } from '@metamask/assets-controllers';
 import DefiDetailsPositionCellV2 from './cells/defi-details-position-cell-v2';
 
 type DefiDetailsListV2Props = {
@@ -18,16 +19,18 @@ const separatorStyle = {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function DefiDetailsListV2({ sections }: DefiDetailsListV2Props) {
+export default function DefiDetailsListV2({
+  sections,
+}: DefiDetailsListV2Props) {
   return (
     <>
       {sections.map((section, sectionIndex) => (
         <Box key={section.productName}>
           <Text
-            variant={TextVariant.bodyMdMedium}
-            paddingLeft={4}
-            paddingBottom={2}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            className="pl-4 pb-2"
+            color={TextColor.TextAlternative}
             data-testid={`defi-details-list-v2-${section.productName}-section`}
           >
             {section.productName}

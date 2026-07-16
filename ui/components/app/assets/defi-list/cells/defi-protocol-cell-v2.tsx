@@ -1,12 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {
+  AvatarGroup,
+  AvatarGroupVariant,
+  SensitiveText,
+} from '@metamask/design-system-react';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
-import { SensitiveText } from '../../../../component-library';
-import { AvatarType } from '../../../../multichain/avatar-group/avatar-group.types';
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
-import { AvatarGroup } from '../../../../multichain/avatar-group/avatar-group';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -78,9 +80,12 @@ export default function DeFiProtocolCellV2({
       }
       footerRightDisplay={
         <AvatarGroup
-          avatarType={AvatarType.TOKEN}
-          limit={4}
-          members={position.iconGroup}
+          variant={AvatarGroupVariant.Token}
+          max={4}
+          avatarPropsArr={position.iconGroup.map((icon) => ({
+            src: icon.avatarValue,
+            name: icon.symbol,
+          }))}
         />
       }
     />
