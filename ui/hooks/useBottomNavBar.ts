@@ -34,5 +34,5 @@ export function useBottomNavBar(): boolean {
     { trackExposure: eligibility === true && isApplicableRoute },
   );
 
-  return eligibility === true && isApplicableRoute && variant.withBottomNavBar;
+  return isApplicableRoute;
 }
