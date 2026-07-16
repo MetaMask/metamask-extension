@@ -171,7 +171,6 @@ UncontrolledValue.args = {
 export const UseSelectContext: StoryFn<typeof SelectWrapper> = (args) => {
   const CustomClose = () => {
     // Note that the SelectContext is being used inside a component, because the SelectContext needs to be called within the SelectWrapper component and not before
-    // eslint-disable-next-line react-compiler/react-compiler
     const { toggleUncontrolledOpen } = useSelectContext();
 
     return (

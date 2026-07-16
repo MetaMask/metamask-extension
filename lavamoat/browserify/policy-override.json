@@ -183,6 +183,12 @@
         "fetch": false,
         "localStorage": false
       }
+    },
+    "openai>zod": {
+      "globals": {
+        "__zod_globalRegistry": "write",
+        "__zod_globalConfig": "write"
+      }
     }
   }
 }

@@ -347,9 +347,8 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react', 'react-compiler'],
+      plugins: ['react'],
       rules: {
-        'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
         'react/jsx-boolean-value': 'error',
@@ -363,12 +362,27 @@ module.exports = {
         'react/no-deprecated': 'error',
         'react/default-props-match-prop-types': 'error',
         'react/jsx-no-duplicate-props': 'error',
+        'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': [
           'warn',
           {
             additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
           },
         ],
+        // v7 compiler rules from recommended — warn until MetaMask-planning#6402
+        // promotes them to error and clears the baseline.
+        'react-hooks/config': 'warn',
+        'react-hooks/error-boundaries': 'warn',
+        'react-hooks/gating': 'warn',
+        'react-hooks/globals': 'warn',
+        'react-hooks/immutability': 'warn',
+        'react-hooks/preserve-manual-memoization': 'warn',
+        'react-hooks/purity': 'warn',
+        'react-hooks/refs': 'warn',
+        'react-hooks/set-state-in-effect': 'warn',
+        'react-hooks/set-state-in-render': 'warn',
+        'react-hooks/static-components': 'warn',
+        'react-hooks/use-memo': 'warn',
       },
       settings: {
         react: {
@@ -396,9 +410,8 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react', 'react-compiler'],
+      plugins: ['react'],
       rules: {
-        'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'warn',
         'react/jsx-boolean-value': 'off',
@@ -418,6 +431,20 @@ module.exports = {
             additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
           },
         ],
+        // v7 compiler rules from recommended — warn until MetaMask-planning#6402
+        // promotes them to error and clears the baseline.
+        'react-hooks/config': 'warn',
+        'react-hooks/error-boundaries': 'warn',
+        'react-hooks/gating': 'warn',
+        'react-hooks/globals': 'warn',
+        'react-hooks/immutability': 'warn',
+        'react-hooks/preserve-manual-memoization': 'warn',
+        'react-hooks/purity': 'warn',
+        'react-hooks/refs': 'warn',
+        'react-hooks/set-state-in-effect': 'warn',
+        'react-hooks/set-state-in-render': 'warn',
+        'react-hooks/static-components': 'warn',
+        'react-hooks/use-memo': 'warn',
       },
       settings: {
         react: {

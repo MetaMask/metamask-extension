@@ -130,7 +130,7 @@ export const useRewardsWithQuote = ({
   const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
     useState<number | null>(null);
   const debouncedEstimatePoints = useCallback(
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/use-memo
     debounce(
       async (
         _estimationQuoteArg:

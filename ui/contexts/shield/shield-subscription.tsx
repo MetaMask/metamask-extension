@@ -162,7 +162,7 @@ export const ShieldSubscriptionProvider = ({
     // eslint-disable-next-line no-empty-function
   >(async () => {});
 
-  // eslint-disable-next-line react-compiler/react-compiler
+  // eslint-disable-next-line react-hooks/refs
   evaluateCohortEligibilityRef.current = async (
     entrypointCohort: string,
   ): Promise<void> => {
