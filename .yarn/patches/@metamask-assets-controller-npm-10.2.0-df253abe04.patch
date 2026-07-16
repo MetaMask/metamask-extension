@@ -1,0 +1,644 @@
+diff --git a/dist/data-sources/TokenDataSource.cjs b/dist/data-sources/TokenDataSource.cjs
+index e3db944242bcb8957a71a4064ab1e97e0984f381..b7825e81a88e9c8dedde24d14f0e466e5e979fdd 100644
+--- a/dist/data-sources/TokenDataSource.cjs
++++ b/dist/data-sources/TokenDataSource.cjs
+@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_getAssetType, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
++var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_getAssetType, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_getSuggestedOccurrenceFloors, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TokenDataSource = exports.CaipAssetNamespace = void 0;
+ const core_backend_1 = require("@metamask/core-backend");
+@@ -31,10 +31,11 @@ const TOKENS_API_BATCH_SIZE = 50;
+ /** Max tokens per PhishingController:bulkScanTokens request (see PhishingController). */
+ const BULK_SCAN_BATCH_SIZE = 100;
+ /**
+- * Minimum number of aggregator occurrences required for an EVM ERC-20 token to
+- * pass the spam filter. Non-EVM tokens are filtered via Blockaid bulk scan instead.
++ * Fallback minimum aggregator occurrences for EVM ERC-20 spam filtering when
++ * Token API `/v1/suggestedOccurrenceFloors` has no entry for the chain (or
++ * the floors request fails). Non-EVM tokens are filtered via Blockaid instead.
+  */
+-const MIN_TOKEN_OCCURRENCES = 3;
++const DEFAULT_OCCURRENCE_FLOOR = 3;
+ /** CAIP-19 `assetNamespace` segments used across filtering logic. */
+ var CaipAssetNamespace;
+ (function (CaipAssetNamespace) {
+@@ -81,6 +82,23 @@ function transformV3AssetResponseToMetadata(assetId, assetData, getAssetType) {
+     };
+     return metadata;
+ }
++/**
++ * Resolve the occurrence floor for an EVM asset from suggested floors keyed by
++ * decimal chain ID (e.g. `{ "1": 3, "143": 1 }`).
++ *
++ * @param assetId - CAIP-19 asset ID.
++ * @param floors - Map of decimal chain ID → suggested floor.
++ * @returns Floor to apply, or {@link DEFAULT_OCCURRENCE_FLOOR} when missing.
++ */
++function getOccurrenceFloorForAsset(assetId, floors) {
++    try {
++        const { chain } = (0, utils_1.parseCaipAssetType)(assetId);
++        return floors[chain.reference] ?? DEFAULT_OCCURRENCE_FLOOR;
++    }
++    catch {
++        return DEFAULT_OCCURRENCE_FLOOR;
++    }
++}
+ // ============================================================================
+ // TOKEN DATA SOURCE
+ // ============================================================================
+@@ -90,6 +108,8 @@ function transformV3AssetResponseToMetadata(assetId, assetData, getAssetType) {
+  * This middleware-based data source:
+  * - Checks detected assets for missing metadata/images
+  * - Fetches metadata from Tokens API v3 for assets needing enrichment
++ * - Filters EVM ERC-20 spam using per-chain floors from Token API
++ *   `/v1/suggestedOccurrenceFloors` (default floor 3)
+  * - Merges fetched metadata into the response
+  *
+  * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
+@@ -172,8 +192,12 @@ class TokenDataSource {
+             if (assetIdsNeedingMetadata.size === 0) {
+                 return next(ctx);
+             }
+-            // Filter asset IDs to only include supported networks
+-            const supportedNetworks = await __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_getSupportedNetworks).call(this);
++            // Filter asset IDs to only include supported networks; load per-chain
++            // occurrence floors in parallel (Token API suggested floors).
++            const [supportedNetworks, suggestedOccurrenceFloors] = await Promise.all([
++                __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_getSupportedNetworks).call(this),
++                __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_getSuggestedOccurrenceFloors).call(this),
++            ]);
+             const supportedAssetIds = __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_filterAssetsByNetwork).call(this, [...assetIdsNeedingMetadata], supportedNetworks);
+             if (supportedAssetIds.length === 0) {
+                 return next(ctx);
+@@ -216,14 +240,16 @@ class TokenDataSource {
+                         nonEvmTokenIds.push(assetId);
+                     }
+                 }
+-                // EVM: require minimum occurrence count to suppress low-signal tokens.
+-                // Tokens with no occurrence data (undefined) are treated the same as
+-                // zero occurrences and filtered out.
++                // EVM: require per-chain suggested occurrence floor (from Token API
++                // `/v1/suggestedOccurrenceFloors`, default {@link DEFAULT_OCCURRENCE_FLOOR})
++                // to suppress low-signal tokens. Tokens with no occurrence data
++                // (undefined) are treated the same as zero occurrences and filtered out.
+                 // Custom assets (user-imported) bypass the occurrence filter — users
+                 // can import whatever they want and we must keep their metadata even
+-                // if the API has fewer than `MIN_TOKEN_OCCURRENCES` aggregator hits.
++                // if the API has fewer aggregator hits than the floor.
+                 const allowedEvmIds = new Set(evmErc20Ids.filter((id) => customAssetIds.has(id.toLowerCase()) ||
+-                    (occurrencesByAssetId.get(id) ?? 0) >= MIN_TOKEN_OCCURRENCES ||
++                    (occurrencesByAssetId.get(id) ?? 0) >=
++                        getOccurrenceFloorForAsset(id, suggestedOccurrenceFloors) ||
+                     id.includes(`/erc20:${MUSD_ADDRESS_LOWERCASE}`)));
+                 // Non-EVM: Blockaid bulk scan.
+                 // Custom assets (user-imported) bypass Blockaid filtering.
+@@ -300,6 +326,23 @@ async function _TokenDataSource_getSupportedNetworks() {
+         log('Failed to fetch supported networks', { error });
+         return new Set();
+     }
++}, _TokenDataSource_getSuggestedOccurrenceFloors = 
++/**
++ * Fetches per-chain suggested occurrence floors from Token API
++ * (`GET /v1/suggestedOccurrenceFloors`). Caching is handled by
++ * ApiPlatformClient. Fails open to an empty map so callers fall back to
++ * {@link DEFAULT_OCCURRENCE_FLOOR}.
++ *
++ * @returns Map of decimal chain ID → suggested occurrence floor.
++ */
++async function _TokenDataSource_getSuggestedOccurrenceFloors() {
++    try {
++        return await (0, utils_2.fetchWithTimeout)(() => __classPrivateFieldGet(this, _TokenDataSource_apiClient, "f").token.fetchV1SuggestedOccurrenceFloors(), __classPrivateFieldGet(this, _TokenDataSource_fetchTimeoutMs, "f"));
++    }
++    catch (error) {
++        log('Failed to fetch suggested occurrence floors', { error });
++        return {};
++    }
+ }, _TokenDataSource_filterAssetsByNetwork = function _TokenDataSource_filterAssetsByNetwork(assetIds, supportedNetworks) {
+     return assetIds.filter((assetId) => {
+         try {
+diff --git a/dist/data-sources/TokenDataSource.d.cts b/dist/data-sources/TokenDataSource.d.cts
+index 3a3e29c225ace80f9c7cb708f9e35b335116cf26..08593086182001aa3c62591d0b454ed7ae1d487c 100644
+--- a/dist/data-sources/TokenDataSource.d.cts
++++ b/dist/data-sources/TokenDataSource.d.cts
+@@ -33,6 +33,8 @@ export type TokenDataSourceAllowedActions = PhishingControllerBulkScanTokensActi
+  * This middleware-based data source:
+  * - Checks detected assets for missing metadata/images
+  * - Fetches metadata from Tokens API v3 for assets needing enrichment
++ * - Filters EVM ERC-20 spam using per-chain floors from Token API
++ *   `/v1/suggestedOccurrenceFloors` (default floor 3)
+  * - Merges fetched metadata into the response
+  *
+  * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
+diff --git a/dist/data-sources/TokenDataSource.d.mts b/dist/data-sources/TokenDataSource.d.mts
+index f785d61b324fe44ce1251fbdc8c3737c814a2d21..71bbc034d92ccf4b8a6e95ebc1619e8b758e9bae 100644
+--- a/dist/data-sources/TokenDataSource.d.mts
++++ b/dist/data-sources/TokenDataSource.d.mts
+@@ -33,6 +33,8 @@ export type TokenDataSourceAllowedActions = PhishingControllerBulkScanTokensActi
+  * This middleware-based data source:
+  * - Checks detected assets for missing metadata/images
+  * - Fetches metadata from Tokens API v3 for assets needing enrichment
++ * - Filters EVM ERC-20 spam using per-chain floors from Token API
++ *   `/v1/suggestedOccurrenceFloors` (default floor 3)
+  * - Merges fetched metadata into the response
+  *
+  * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
+diff --git a/dist/data-sources/TokenDataSource.mjs b/dist/data-sources/TokenDataSource.mjs
+index 0f0e8529c6159c531c3bb92a678a9df1fdfd9a4c..dde9f1a9eed548313576e9a612e46e5a76c84d06 100644
+--- a/dist/data-sources/TokenDataSource.mjs
++++ b/dist/data-sources/TokenDataSource.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_getAssetType, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
++var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_getAssetType, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_getSuggestedOccurrenceFloors, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
+ import { ApiPlatformClient } from "@metamask/core-backend";
+ import { TokenScanResultType } from "@metamask/phishing-controller";
+ import { KnownCaipNamespace, parseCaipAssetType } from "@metamask/utils";
+@@ -28,10 +28,11 @@ const TOKENS_API_BATCH_SIZE = 50;
+ /** Max tokens per PhishingController:bulkScanTokens request (see PhishingController). */
+ const BULK_SCAN_BATCH_SIZE = 100;
+ /**
+- * Minimum number of aggregator occurrences required for an EVM ERC-20 token to
+- * pass the spam filter. Non-EVM tokens are filtered via Blockaid bulk scan instead.
++ * Fallback minimum aggregator occurrences for EVM ERC-20 spam filtering when
++ * Token API `/v1/suggestedOccurrenceFloors` has no entry for the chain (or
++ * the floors request fails). Non-EVM tokens are filtered via Blockaid instead.
+  */
+-const MIN_TOKEN_OCCURRENCES = 3;
++const DEFAULT_OCCURRENCE_FLOOR = 3;
+ /** CAIP-19 `assetNamespace` segments used across filtering logic. */
+ export var CaipAssetNamespace;
+ (function (CaipAssetNamespace) {
+@@ -78,6 +79,23 @@ function transformV3AssetResponseToMetadata(assetId, assetData, getAssetType) {
+     };
+     return metadata;
+ }
++/**
++ * Resolve the occurrence floor for an EVM asset from suggested floors keyed by
++ * decimal chain ID (e.g. `{ "1": 3, "143": 1 }`).
++ *
++ * @param assetId - CAIP-19 asset ID.
++ * @param floors - Map of decimal chain ID → suggested floor.
++ * @returns Floor to apply, or {@link DEFAULT_OCCURRENCE_FLOOR} when missing.
++ */
++function getOccurrenceFloorForAsset(assetId, floors) {
++    try {
++        const { chain } = parseCaipAssetType(assetId);
++        return floors[chain.reference] ?? DEFAULT_OCCURRENCE_FLOOR;
++    }
++    catch {
++        return DEFAULT_OCCURRENCE_FLOOR;
++    }
++}
+ // ============================================================================
+ // TOKEN DATA SOURCE
+ // ============================================================================
+@@ -87,6 +105,8 @@ function transformV3AssetResponseToMetadata(assetId, assetData, getAssetType) {
+  * This middleware-based data source:
+  * - Checks detected assets for missing metadata/images
+  * - Fetches metadata from Tokens API v3 for assets needing enrichment
++ * - Filters EVM ERC-20 spam using per-chain floors from Token API
++ *   `/v1/suggestedOccurrenceFloors` (default floor 3)
+  * - Merges fetched metadata into the response
+  *
+  * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
+@@ -169,8 +189,12 @@ export class TokenDataSource {
+             if (assetIdsNeedingMetadata.size === 0) {
+                 return next(ctx);
+             }
+-            // Filter asset IDs to only include supported networks
+-            const supportedNetworks = await __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_getSupportedNetworks).call(this);
++            // Filter asset IDs to only include supported networks; load per-chain
++            // occurrence floors in parallel (Token API suggested floors).
++            const [supportedNetworks, suggestedOccurrenceFloors] = await Promise.all([
++                __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_getSupportedNetworks).call(this),
++                __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_getSuggestedOccurrenceFloors).call(this),
++            ]);
+             const supportedAssetIds = __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_filterAssetsByNetwork).call(this, [...assetIdsNeedingMetadata], supportedNetworks);
+             if (supportedAssetIds.length === 0) {
+                 return next(ctx);
+@@ -213,14 +237,16 @@ export class TokenDataSource {
+                         nonEvmTokenIds.push(assetId);
+                     }
+                 }
+-                // EVM: require minimum occurrence count to suppress low-signal tokens.
+-                // Tokens with no occurrence data (undefined) are treated the same as
+-                // zero occurrences and filtered out.
++                // EVM: require per-chain suggested occurrence floor (from Token API
++                // `/v1/suggestedOccurrenceFloors`, default {@link DEFAULT_OCCURRENCE_FLOOR})
++                // to suppress low-signal tokens. Tokens with no occurrence data
++                // (undefined) are treated the same as zero occurrences and filtered out.
+                 // Custom assets (user-imported) bypass the occurrence filter — users
+                 // can import whatever they want and we must keep their metadata even
+-                // if the API has fewer than `MIN_TOKEN_OCCURRENCES` aggregator hits.
++                // if the API has fewer aggregator hits than the floor.
+                 const allowedEvmIds = new Set(evmErc20Ids.filter((id) => customAssetIds.has(id.toLowerCase()) ||
+-                    (occurrencesByAssetId.get(id) ?? 0) >= MIN_TOKEN_OCCURRENCES ||
++                    (occurrencesByAssetId.get(id) ?? 0) >=
++                        getOccurrenceFloorForAsset(id, suggestedOccurrenceFloors) ||
+                     id.includes(`/erc20:${MUSD_ADDRESS_LOWERCASE}`)));
+                 // Non-EVM: Blockaid bulk scan.
+                 // Custom assets (user-imported) bypass Blockaid filtering.
+@@ -296,6 +322,23 @@ async function _TokenDataSource_getSupportedNetworks() {
+         log('Failed to fetch supported networks', { error });
+         return new Set();
+     }
++}, _TokenDataSource_getSuggestedOccurrenceFloors = 
++/**
++ * Fetches per-chain suggested occurrence floors from Token API
++ * (`GET /v1/suggestedOccurrenceFloors`). Caching is handled by
++ * ApiPlatformClient. Fails open to an empty map so callers fall back to
++ * {@link DEFAULT_OCCURRENCE_FLOOR}.
++ *
++ * @returns Map of decimal chain ID → suggested occurrence floor.
++ */
++async function _TokenDataSource_getSuggestedOccurrenceFloors() {
++    try {
++        return await fetchWithTimeout(() => __classPrivateFieldGet(this, _TokenDataSource_apiClient, "f").token.fetchV1SuggestedOccurrenceFloors(), __classPrivateFieldGet(this, _TokenDataSource_fetchTimeoutMs, "f"));
++    }
++    catch (error) {
++        log('Failed to fetch suggested occurrence floors', { error });
++        return {};
++    }
+ }, _TokenDataSource_filterAssetsByNetwork = function _TokenDataSource_filterAssetsByNetwork(assetIds, supportedNetworks) {
+     return assetIds.filter((assetId) => {
+         try {
+diff --git a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.cjs b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.cjs
+index bdfbeddb3e56e815a0d6b04c710ac0d3e0ae7752..c40596fbb8b38e5a018c3518df8c76bbacdb1fea 100644
+--- a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.cjs
++++ b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.cjs
+@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _TokensApiClient_instances, _TokensApiClient_fetch, _TokensApiClient_queryClient, _TokensApiClient_supportedChainIds, _TokensApiClient_supportedChainIdsCachedAt, _TokensApiClient_supportedChainIdsRefreshPromise, _TokensApiClient_isSupportedChain, _TokensApiClient_refreshSupportedChainIds, _TokensApiClient_fetchTokenListUncached;
++var _TokensApiClient_instances, _TokensApiClient_fetch, _TokensApiClient_queryClient, _TokensApiClient_supportedChainIds, _TokensApiClient_supportedChainIdsCachedAt, _TokensApiClient_supportedChainIdsRefreshPromise, _TokensApiClient_suggestedOccurrenceFloors, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, _TokensApiClient_isSupportedChain, _TokensApiClient_refreshSupportedChainIds, _TokensApiClient_getOccurrenceFloor, _TokensApiClient_refreshSuggestedOccurrenceFloors, _TokensApiClient_fetchTokenListUncached;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TokensApiClient = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+@@ -27,6 +27,17 @@ const TOKEN_END_POINT_API = 'https://token.api.cx.metamask.io';
+  * that are not in the supported-networks list.
+  */
+ const SUPPORTED_NETWORKS_URL = `${TOKEN_END_POINT_API}/v2/supportedNetworks`;
++/**
++ * Per-chain suggested occurrence floors used as the `occurrenceFloor` query
++ * param when fetching token lists (and aligned with TokenDataSource spam
++ * filtering). Keys are decimal chain IDs.
++ */
++const SUGGESTED_OCCURRENCE_FLOORS_URL = `${TOKEN_END_POINT_API}/v1/suggestedOccurrenceFloors`;
++/**
++ * Fallback `occurrenceFloor` when `/v1/suggestedOccurrenceFloors` has no entry
++ * for the chain, or the floors request fails.
++ */
++const DEFAULT_OCCURRENCE_FLOOR = 3;
+ /**
+  * How long to keep the supported-networks response in the instance-level
+  * cache before refreshing it. One hour is sufficient — the list rarely
+@@ -35,27 +46,10 @@ const SUPPORTED_NETWORKS_URL = `${TOKEN_END_POINT_API}/v2/supportedNetworks`;
+  */
+ const SUPPORTED_NETWORKS_CACHE_TTL_MS = 60 * 60000;
+ /**
+- * Tempo Mainnet — not yet present in `@metamask/controller-utils`'s `ChainId`
+- * map at the time of writing, so it's spelled out as a literal here exactly as
+- * `TokenListController` does (see `token-service.ts:getTokensURL`).
+- */
+-const TEMPO_MAINNET_CHAIN_ID = '0x1079';
+-/**
+- * Per-chain occurrence floor, mirroring `TokenListController.getTokensURL`:
+- * Linea mainnet, MegaETH mainnet, and Tempo mainnet have thinner aggregator
+- * coverage so we lower the floor; everything else uses the default 3.
+- *
+- * @param hexChainId - Hex chain ID.
+- * @returns The occurrence floor to send to the Tokens API.
++ * How long to keep suggested occurrence floors cached. Same TTL as supported
++ * networks — floors change infrequently.
+  */
+-function getOccurrenceFloor(hexChainId) {
+-    if (hexChainId === controller_utils_1.ChainId['linea-mainnet'] ||
+-        hexChainId === controller_utils_1.ChainId['megaeth-mainnet'] ||
+-        hexChainId === TEMPO_MAINNET_CHAIN_ID) {
+-        return 1;
+-    }
+-    return 3;
+-}
++const SUGGESTED_OCCURRENCE_FLOORS_CACHE_TTL_MS = 60 * 60000;
+ /**
+  * TanStack-Query cache config for the cached `fetchTokenList` path.
+  *
+@@ -72,9 +66,10 @@ const TOKEN_LIST_GC_TIME_MS = 60 * 60000;
+  *
+  * Fetches the per-chain ERC-20 token list from the same endpoint that
+  * `TokenListController` uses (`token.api.cx.metamask.io/tokens/{chainId}`),
+- * with the same query parameters and the same per-chain occurrence floor /
+- * Linea aggregator filter. This keeps RPC token detection in lockstep with
+- * the wallet's primary token list.
++ * with the same query parameters. The `occurrenceFloor` query param comes from
++ * Token API `/v1/suggestedOccurrenceFloors` (fallback {@link DEFAULT_OCCURRENCE_FLOOR}),
++ * matching `TokenDataSource` spam filtering. Linea's post-response aggregator
++ * filter is still applied client-side.
+  *
+  * Before fetching a chain's token list, the client checks
+  * `/v2/supportedNetworks` and returns `[]` immediately for chains that are
+@@ -100,6 +95,12 @@ class TokensApiClient {
+          * calls arrive before the first one resolves.
+          */
+         _TokensApiClient_supportedChainIdsRefreshPromise.set(this, void 0);
++        /** Decimal chain ID → suggested occurrence floor from Token API. */
++        _TokensApiClient_suggestedOccurrenceFloors.set(this, void 0);
++        /** Timestamp of the last successful floors fetch. */
++        _TokensApiClient_suggestedOccurrenceFloorsCachedAt.set(this, 0);
++        /** In-flight floors request shared across concurrent callers. */
++        _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise.set(this, void 0);
+         __classPrivateFieldSet(this, _TokensApiClient_fetch, config?.fetch ?? globalThis.fetch.bind(globalThis), "f");
+         __classPrivateFieldSet(this, _TokensApiClient_queryClient, config?.queryClient, "f");
+     }
+@@ -140,7 +141,7 @@ class TokensApiClient {
+     }
+ }
+ exports.TokensApiClient = TokensApiClient;
+-_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
++_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloors = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsCachedAt = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
+ /**
+  * Check whether the given chain is present in the supported-networks list.
+  *
+@@ -189,10 +190,68 @@ async function _TokensApiClient_refreshSupportedChainIds(now) {
+         }
+     })(), "f");
+     return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f");
++}, _TokensApiClient_getOccurrenceFloor = 
++/**
++ * Resolve the `occurrenceFloor` query param for a chain from Token API
++ * `/v1/suggestedOccurrenceFloors`. Falls back to
++ * {@link DEFAULT_OCCURRENCE_FLOOR} when the chain is missing or the request
++ * fails.
++ *
++ * @param hexChainId - Hex chain ID.
++ * @returns Occurrence floor to send to `/tokens/{chainId}`.
++ */
++async function _TokensApiClient_getOccurrenceFloor(hexChainId) {
++    const now = Date.now();
++    if (__classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloors, "f") === undefined ||
++        now - __classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, "f") >=
++            SUGGESTED_OCCURRENCE_FLOORS_CACHE_TTL_MS) {
++        await __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_refreshSuggestedOccurrenceFloors).call(this, now);
++    }
++    const decimalChainId = String((0, controller_utils_1.convertHexToDecimal)(hexChainId));
++    return (__classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloors, "f")?.[decimalChainId] ??
++        DEFAULT_OCCURRENCE_FLOOR);
++}, _TokensApiClient_refreshSuggestedOccurrenceFloors = 
++/**
++ * Fetch `/v1/suggestedOccurrenceFloors` and update the instance cache.
++ * Concurrent callers share the in-flight Promise. Failures leave the cache
++ * empty so {@link #getOccurrenceFloor} falls back to the default.
++ *
++ * @param now - Current timestamp used to stamp the cache entry.
++ * @returns A promise that resolves once the cache has been refreshed.
++ */
++async function _TokensApiClient_refreshSuggestedOccurrenceFloors(now) {
++    if (__classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, "f") !== undefined) {
++        return __classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, "f");
++    }
++    __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, (async () => {
++        try {
++            const response = await __classPrivateFieldGet(this, _TokensApiClient_fetch, "f").call(this, SUGGESTED_OCCURRENCE_FLOORS_URL);
++            if (response.ok) {
++                const data = (await response.json());
++                __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloors, data && typeof data === 'object' && !Array.isArray(data)
++                    ? data
++                    : {}, "f");
++                __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, now, "f");
++            }
++            else {
++                __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloors, {}, "f");
++                __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, now, "f");
++            }
++        }
++        catch {
++            __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloors, {}, "f");
++            __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, now, "f");
++        }
++        finally {
++            __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, undefined, "f");
++        }
++    })(), "f");
++    return __classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, "f");
+ }, _TokensApiClient_fetchTokenListUncached = async function _TokensApiClient_fetchTokenListUncached(hexChainId) {
+     const decimalChainId = (0, controller_utils_1.convertHexToDecimal)(hexChainId);
+-    const occurrenceFloor = getOccurrenceFloor(hexChainId);
+-    // Mirrors `TokenListController.getTokensURL` exactly (token-service.ts).
++    const occurrenceFloor = await __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_getOccurrenceFloor).call(this, hexChainId);
++    // Same query shape as `TokenListController.getTokensURL` (token-service.ts),
++    // but `occurrenceFloor` comes from `/v1/suggestedOccurrenceFloors`.
+     // No `first=...` cap — the API returns the full per-chain list bounded
+     // server-side by `occurrenceFloor`.
+     const url = `${TOKEN_END_POINT_API}/tokens/${decimalChainId}` +
+diff --git a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.cts b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.cts
+index e71b6c58962b967b23811eeaf931da583b3ec7b5..412c7b19a3326b2048909f445c59034ac44cc47c 100644
+--- a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.cts
++++ b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.cts
+@@ -28,9 +28,10 @@ export type TokensApiClientConfig = {
+  *
+  * Fetches the per-chain ERC-20 token list from the same endpoint that
+  * `TokenListController` uses (`token.api.cx.metamask.io/tokens/{chainId}`),
+- * with the same query parameters and the same per-chain occurrence floor /
+- * Linea aggregator filter. This keeps RPC token detection in lockstep with
+- * the wallet's primary token list.
++ * with the same query parameters. The `occurrenceFloor` query param comes from
++ * Token API `/v1/suggestedOccurrenceFloors` (fallback {@link DEFAULT_OCCURRENCE_FLOOR}),
++ * matching `TokenDataSource` spam filtering. Linea's post-response aggregator
++ * filter is still applied client-side.
+  *
+  * Before fetching a chain's token list, the client checks
+  * `/v2/supportedNetworks` and returns `[]` immediately for chains that are
+diff --git a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.mts b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.mts
+index e4cb81af6d496931bdb73ff956ad50ae12ef51a2..667cf952073c121e169a5fb26759dc2112548cb6 100644
+--- a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.mts
++++ b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.mts
+@@ -28,9 +28,10 @@ export type TokensApiClientConfig = {
+  *
+  * Fetches the per-chain ERC-20 token list from the same endpoint that
+  * `TokenListController` uses (`token.api.cx.metamask.io/tokens/{chainId}`),
+- * with the same query parameters and the same per-chain occurrence floor /
+- * Linea aggregator filter. This keeps RPC token detection in lockstep with
+- * the wallet's primary token list.
++ * with the same query parameters. The `occurrenceFloor` query param comes from
++ * Token API `/v1/suggestedOccurrenceFloors` (fallback {@link DEFAULT_OCCURRENCE_FLOOR}),
++ * matching `TokenDataSource` spam filtering. Linea's post-response aggregator
++ * filter is still applied client-side.
+  *
+  * Before fetching a chain's token list, the client checks
+  * `/v2/supportedNetworks` and returns `[]` immediately for chains that are
+diff --git a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.mjs b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.mjs
+index 9378ce05a607e280b393428fdb88a96d41dda5fb..76fad5da7d5b8540be578df2fec80c673d4ef713 100644
+--- a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.mjs
++++ b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _TokensApiClient_instances, _TokensApiClient_fetch, _TokensApiClient_queryClient, _TokensApiClient_supportedChainIds, _TokensApiClient_supportedChainIdsCachedAt, _TokensApiClient_supportedChainIdsRefreshPromise, _TokensApiClient_isSupportedChain, _TokensApiClient_refreshSupportedChainIds, _TokensApiClient_fetchTokenListUncached;
++var _TokensApiClient_instances, _TokensApiClient_fetch, _TokensApiClient_queryClient, _TokensApiClient_supportedChainIds, _TokensApiClient_supportedChainIdsCachedAt, _TokensApiClient_supportedChainIdsRefreshPromise, _TokensApiClient_suggestedOccurrenceFloors, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, _TokensApiClient_isSupportedChain, _TokensApiClient_refreshSupportedChainIds, _TokensApiClient_getOccurrenceFloor, _TokensApiClient_refreshSuggestedOccurrenceFloors, _TokensApiClient_fetchTokenListUncached;
+ import { ChainId as ControllerChainId, convertHexToDecimal } from "@metamask/controller-utils";
+ /**
+  * Same host + path that `TokenListController` (assets-controllers) uses
+@@ -24,6 +24,17 @@ const TOKEN_END_POINT_API = 'https://token.api.cx.metamask.io';
+  * that are not in the supported-networks list.
+  */
+ const SUPPORTED_NETWORKS_URL = `${TOKEN_END_POINT_API}/v2/supportedNetworks`;
++/**
++ * Per-chain suggested occurrence floors used as the `occurrenceFloor` query
++ * param when fetching token lists (and aligned with TokenDataSource spam
++ * filtering). Keys are decimal chain IDs.
++ */
++const SUGGESTED_OCCURRENCE_FLOORS_URL = `${TOKEN_END_POINT_API}/v1/suggestedOccurrenceFloors`;
++/**
++ * Fallback `occurrenceFloor` when `/v1/suggestedOccurrenceFloors` has no entry
++ * for the chain, or the floors request fails.
++ */
++const DEFAULT_OCCURRENCE_FLOOR = 3;
+ /**
+  * How long to keep the supported-networks response in the instance-level
+  * cache before refreshing it. One hour is sufficient — the list rarely
+@@ -32,27 +43,10 @@ const SUPPORTED_NETWORKS_URL = `${TOKEN_END_POINT_API}/v2/supportedNetworks`;
+  */
+ const SUPPORTED_NETWORKS_CACHE_TTL_MS = 60 * 60000;
+ /**
+- * Tempo Mainnet — not yet present in `@metamask/controller-utils`'s `ChainId`
+- * map at the time of writing, so it's spelled out as a literal here exactly as
+- * `TokenListController` does (see `token-service.ts:getTokensURL`).
+- */
+-const TEMPO_MAINNET_CHAIN_ID = '0x1079';
+-/**
+- * Per-chain occurrence floor, mirroring `TokenListController.getTokensURL`:
+- * Linea mainnet, MegaETH mainnet, and Tempo mainnet have thinner aggregator
+- * coverage so we lower the floor; everything else uses the default 3.
+- *
+- * @param hexChainId - Hex chain ID.
+- * @returns The occurrence floor to send to the Tokens API.
++ * How long to keep suggested occurrence floors cached. Same TTL as supported
++ * networks — floors change infrequently.
+  */
+-function getOccurrenceFloor(hexChainId) {
+-    if (hexChainId === ControllerChainId['linea-mainnet'] ||
+-        hexChainId === ControllerChainId['megaeth-mainnet'] ||
+-        hexChainId === TEMPO_MAINNET_CHAIN_ID) {
+-        return 1;
+-    }
+-    return 3;
+-}
++const SUGGESTED_OCCURRENCE_FLOORS_CACHE_TTL_MS = 60 * 60000;
+ /**
+  * TanStack-Query cache config for the cached `fetchTokenList` path.
+  *
+@@ -69,9 +63,10 @@ const TOKEN_LIST_GC_TIME_MS = 60 * 60000;
+  *
+  * Fetches the per-chain ERC-20 token list from the same endpoint that
+  * `TokenListController` uses (`token.api.cx.metamask.io/tokens/{chainId}`),
+- * with the same query parameters and the same per-chain occurrence floor /
+- * Linea aggregator filter. This keeps RPC token detection in lockstep with
+- * the wallet's primary token list.
++ * with the same query parameters. The `occurrenceFloor` query param comes from
++ * Token API `/v1/suggestedOccurrenceFloors` (fallback {@link DEFAULT_OCCURRENCE_FLOOR}),
++ * matching `TokenDataSource` spam filtering. Linea's post-response aggregator
++ * filter is still applied client-side.
+  *
+  * Before fetching a chain's token list, the client checks
+  * `/v2/supportedNetworks` and returns `[]` immediately for chains that are
+@@ -97,6 +92,12 @@ export class TokensApiClient {
+          * calls arrive before the first one resolves.
+          */
+         _TokensApiClient_supportedChainIdsRefreshPromise.set(this, void 0);
++        /** Decimal chain ID → suggested occurrence floor from Token API. */
++        _TokensApiClient_suggestedOccurrenceFloors.set(this, void 0);
++        /** Timestamp of the last successful floors fetch. */
++        _TokensApiClient_suggestedOccurrenceFloorsCachedAt.set(this, 0);
++        /** In-flight floors request shared across concurrent callers. */
++        _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise.set(this, void 0);
+         __classPrivateFieldSet(this, _TokensApiClient_fetch, config?.fetch ?? globalThis.fetch.bind(globalThis), "f");
+         __classPrivateFieldSet(this, _TokensApiClient_queryClient, config?.queryClient, "f");
+     }
+@@ -136,7 +137,7 @@ export class TokensApiClient {
+         });
+     }
+ }
+-_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
++_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloors = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsCachedAt = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
+ /**
+  * Check whether the given chain is present in the supported-networks list.
+  *
+@@ -185,10 +186,68 @@ async function _TokensApiClient_refreshSupportedChainIds(now) {
+         }
+     })(), "f");
+     return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f");
++}, _TokensApiClient_getOccurrenceFloor = 
++/**
++ * Resolve the `occurrenceFloor` query param for a chain from Token API
++ * `/v1/suggestedOccurrenceFloors`. Falls back to
++ * {@link DEFAULT_OCCURRENCE_FLOOR} when the chain is missing or the request
++ * fails.
++ *
++ * @param hexChainId - Hex chain ID.
++ * @returns Occurrence floor to send to `/tokens/{chainId}`.
++ */
++async function _TokensApiClient_getOccurrenceFloor(hexChainId) {
++    const now = Date.now();
++    if (__classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloors, "f") === undefined ||
++        now - __classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, "f") >=
++            SUGGESTED_OCCURRENCE_FLOORS_CACHE_TTL_MS) {
++        await __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_refreshSuggestedOccurrenceFloors).call(this, now);
++    }
++    const decimalChainId = String(convertHexToDecimal(hexChainId));
++    return (__classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloors, "f")?.[decimalChainId] ??
++        DEFAULT_OCCURRENCE_FLOOR);
++}, _TokensApiClient_refreshSuggestedOccurrenceFloors = 
++/**
++ * Fetch `/v1/suggestedOccurrenceFloors` and update the instance cache.
++ * Concurrent callers share the in-flight Promise. Failures leave the cache
++ * empty so {@link #getOccurrenceFloor} falls back to the default.
++ *
++ * @param now - Current timestamp used to stamp the cache entry.
++ * @returns A promise that resolves once the cache has been refreshed.
++ */
++async function _TokensApiClient_refreshSuggestedOccurrenceFloors(now) {
++    if (__classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, "f") !== undefined) {
++        return __classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, "f");
++    }
++    __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, (async () => {
++        try {
++            const response = await __classPrivateFieldGet(this, _TokensApiClient_fetch, "f").call(this, SUGGESTED_OCCURRENCE_FLOORS_URL);
++            if (response.ok) {
++                const data = (await response.json());
++                __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloors, data && typeof data === 'object' && !Array.isArray(data)
++                    ? data
++                    : {}, "f");
++                __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, now, "f");
++            }
++            else {
++                __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloors, {}, "f");
++                __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, now, "f");
++            }
++        }
++        catch {
++            __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloors, {}, "f");
++            __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsCachedAt, now, "f");
++        }
++        finally {
++            __classPrivateFieldSet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, undefined, "f");
++        }
++    })(), "f");
++    return __classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise, "f");
+ }, _TokensApiClient_fetchTokenListUncached = async function _TokensApiClient_fetchTokenListUncached(hexChainId) {
+     const decimalChainId = convertHexToDecimal(hexChainId);
+-    const occurrenceFloor = getOccurrenceFloor(hexChainId);
+-    // Mirrors `TokenListController.getTokensURL` exactly (token-service.ts).
++    const occurrenceFloor = await __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_getOccurrenceFloor).call(this, hexChainId);
++    // Same query shape as `TokenListController.getTokensURL` (token-service.ts),
++    // but `occurrenceFloor` comes from `/v1/suggestedOccurrenceFloors`.
+     // No `first=...` cap — the API returns the full per-chain list bounded
+     // server-side by `occurrenceFloor`.
+     const url = `${TOKEN_END_POINT_API}/tokens/${decimalChainId}` +
