@@ -1,4 +1,8 @@
 import {
+  applySentryRemoteRates,
+  resetSentryRemoteRates,
+} from '../../../shared/lib/sentry-remote-rates';
+import {
   DEFAULT_DROPPED_RELEASES,
   DEFAULT_TRANSACTION_SAMPLE_RATES,
   createTracesSampler,
@@ -376,5 +380,152 @@ describe('createTracesSampler', () => {
         ).toBe(0);
       }
     });
+  });
+});
+
+describe('sample-rate ceiling (release-level throttle)', () => {
+  const defaultSampleRate = 0.0075;
+  const sampleRateOverrides = {
+    'Dropped Transaction': 0,
+    'Sub-Sampled Transaction': 0.01,
+    'Boosted Transaction': 0.5,
+  };
+  const ceilingOptions = {
+    defaultSampleRate,
+    sampleRateOverrides,
+    sampleRateCeiling: 0.005,
+  };
+
+  it('caps a higher per-name override at the ceiling', () => {
+    expect(
+      getTransactionSampleRate({ name: 'Boosted Transaction' }, ceilingOptions),
+    ).toBe(0.005);
+  });
+
+  it('leaves a per-name override below the ceiling untouched', () => {
+    expect(
+      getTransactionSampleRate({ name: 'Dropped Transaction' }, ceilingOptions),
+    ).toBe(0);
+  });
+
+  it('caps a positive parent decision (forceTransaction path) at the ceiling', () => {
+    expect(
+      getTransactionSampleRate(
+        { name: 'Unlisted Transaction', parentSampled: true },
+        ceilingOptions,
+      ),
+    ).toBe(0.005);
+  });
+
+  it('does not resurrect a negative parent decision', () => {
+    expect(
+      getTransactionSampleRate(
+        { name: 'Unlisted Transaction', parentSampled: false },
+        ceilingOptions,
+      ),
+    ).toBe(0);
+  });
+
+  it('caps the default rate at the ceiling', () => {
+    expect(
+      getTransactionSampleRate({ name: 'Unlisted Transaction' }, ceilingOptions),
+    ).toBe(0.005);
+  });
+
+  it('is a no-op when the ceiling is above every configured rate', () => {
+    expect(
+      getTransactionSampleRate(
+        { name: 'Boosted Transaction' },
+        { ...ceilingOptions, sampleRateCeiling: 1 },
+      ),
+    ).toBe(0.5);
+  });
+
+  it('keeps a dropped release at zero regardless of the ceiling', () => {
+    expect(
+      getTransactionSampleRate(
+        { name: 'Boosted Transaction', parentSampled: true },
+        {
+          ...ceilingOptions,
+          release: '13.32.0',
+          droppedReleases: new Set(['13.32.0']),
+        },
+      ),
+    ).toBe(0);
+  });
+});
+
+describe('createTracesSampler with the remote tracesSampleRate flag', () => {
+  const defaultSampleRate = 0.0075;
+
+  async function applyRemoteTracesSampleRate(rate: number) {
+    globalThis.stateHooks = {
+      getPersistedState: async () => ({
+        data: {
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: { sentry: { tracesSampleRate: rate } },
+          },
+        },
+      }),
+      getSentryState: () => ({ browser: '', version: '' }),
+    };
+    await applySentryRemoteRates();
+  }
+
+  afterEach(() => {
+    resetSentryRemoteRates();
+    // @ts-expect-error test cleanup of the global hook
+    delete globalThis.stateHooks;
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+  });
+
+  it('uses the remote rate as the default for unlisted transactions', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteTracesSampleRate(0.001);
+
+    expect(sampler({ name: 'Unlisted Transaction' })).toBe(0.001);
+  });
+
+  it('takes effect on a sampler built before the flag resolved (post-init apply)', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
+    await applyRemoteTracesSampleRate(0.001);
+    expect(sampler({ name: 'Unlisted Transaction' })).toBe(0.001);
+  });
+
+  it('caps a build-time per-name override at the remote ceiling', async () => {
+    process.env.SENTRY_SAMPLE_RATE_OVERRIDES = JSON.stringify({
+      'Boosted Transaction': 0.5,
+    });
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteTracesSampleRate(0.001);
+
+    expect(sampler({ name: 'Boosted Transaction' })).toBe(0.001);
+  });
+
+  it('caps a positive parent decision at the remote ceiling', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteTracesSampleRate(0.001);
+
+    expect(sampler({ name: 'Unlisted Transaction', parentSampled: true })).toBe(
+      0.001,
+    );
+  });
+
+  it('leaves a zero-pinned transaction at zero under the ceiling', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteTracesSampleRate(0.001);
+
+    expect(sampler({ name: 'AssetsDataSourceTiming' })).toBe(0);
+  });
+
+  it('falls back to build-time behavior when no remote rate is set', () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
+    expect(sampler({ name: 'Unlisted Transaction', parentSampled: true })).toBe(
+      1,
+    );
   });
 });

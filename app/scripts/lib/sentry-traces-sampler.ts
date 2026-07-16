@@ -1,3 +1,5 @@
+import { getRemoteTracesSampleRate } from '../../../shared/lib/sentry-remote-rates';
+
 /**
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
  * high-volume custom transaction can be capped without lowering visibility
@@ -61,6 +63,12 @@ type SampleRateOptions = {
    * build's {@link release} is a member, the sampler returns `0` for everything.
    */
   droppedReleases?: ReadonlySet<string>;
+  /**
+   * Hard ceiling applied across ALL transactions — caps per-name overrides and
+   * parent-sampled (`forceTransaction`) decisions, not just the default — so a
+   * remote throttle guarantees the shed. Absent means no ceiling.
+   */
+  sampleRateCeiling?: number;
 };
 
 /**
@@ -77,6 +85,7 @@ type SampleRateOptions = {
  * @param options.sampleRateOverrides - Per-name sample-rate overrides.
  * @param options.release - This build's own release (bare version).
  * @param options.droppedReleases - Releases dropped wholesale.
+ * @param options.sampleRateCeiling - Hard ceiling capping every non-zero path.
  * @returns A sample rate in the range [0, 1].
  */
 export function getTransactionSampleRate(
@@ -86,8 +95,10 @@ export function getTransactionSampleRate(
     sampleRateOverrides,
     release,
     droppedReleases,
+    sampleRateCeiling,
   }: SampleRateOptions,
 ): number {
+  const ceiling = sampleRateCeiling ?? 1;
   // Whole-release kill: if this build's own release is dropped, sample nothing.
   // Checked first so it wins over name overrides, parentSampled, and default.
   if (release !== undefined && droppedReleases?.has(release)) {
@@ -105,14 +116,14 @@ export function getTransactionSampleRate(
     name !== undefined &&
     Object.prototype.hasOwnProperty.call(sampleRateOverrides, name)
   ) {
-    return sampleRateOverrides[name];
+    return Math.min(sampleRateOverrides[name], ceiling);
   }
 
   if (typeof parentSampled === 'boolean') {
-    return parentSampled ? 1 : 0;
+    return parentSampled ? Math.min(1, ceiling) : 0;
   }
 
-  return defaultSampleRate;
+  return Math.min(defaultSampleRate, ceiling);
 }
 
 /**
@@ -169,7 +180,11 @@ export function parseDroppedReleasesEnv(raw: string | undefined): string[] {
  * Build the `tracesSampler` callback passed to `Sentry.init`. Resolves the
  * per-name overrides and dropped-release set once, merging the built-in defaults
  * with the build-time `SENTRY_SAMPLE_RATE_OVERRIDES` / `SENTRY_DROP_RELEASES` env
- * vars — build-time only; changing a rate needs a new build, not a runtime toggle.
+ * vars. The global rate is additionally overridable at runtime by the remote
+ * `sentry.tracesSampleRate` feature flag (see sentry-remote-rates.ts), which
+ * acts as a hard ceiling across all transactions — the release-level emergency
+ * throttle (target the flag at the over-quota release; healthy releases keep
+ * their build-time rates).
  *
  * @param options - Sampler options.
  * @param options.defaultSampleRate - Global fallback rate (the `tracesSampleRate`).
@@ -194,11 +209,19 @@ export function createTracesSampler({
     ...parseDroppedReleasesEnv(process.env.SENTRY_DROP_RELEASES),
   ]);
 
-  return (samplingContext) =>
-    getTransactionSampleRate(samplingContext, {
-      defaultSampleRate,
+  return (samplingContext) => {
+    // Read per call so a remote value applied after `Sentry.init` takes effect
+    // without rebuilding the sampler; the read is a cached module field, not a
+    // storage lookup. The remote rate is both the default AND a hard ceiling:
+    // the release-level emergency throttle must cap per-name overrides and
+    // parent-sampled decisions too, or the shed is not guaranteed.
+    const remoteRate = getRemoteTracesSampleRate();
+    return getTransactionSampleRate(samplingContext, {
+      defaultSampleRate: remoteRate ?? defaultSampleRate,
       sampleRateOverrides,
       release,
       droppedReleases,
+      sampleRateCeiling: remoteRate,
     });
+  };
 }
