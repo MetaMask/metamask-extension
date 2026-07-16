@@ -90,15 +90,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     };
 
     window.addEventListener('popstate', onPopState);
-    return () => {
-      window.removeEventListener('popstate', onPopState);
-      // Modal uses pushState outside React Router. If this list unmounts while
-      // details are still the current hash (e.g. leaving the Activity tab),
-      // pop that entry so browser back cannot land on a stale /tx/ URL.
-      if (window.location.hash.includes(`${TX_DETAILS_ROUTE}/`)) {
-        window.history.back();
-      }
-    };
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   const handleClick = (item: ActivityListItem) => {
