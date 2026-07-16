@@ -29,11 +29,6 @@ import {
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import { useHwSignTracker } from '../../../../hooks/hardware-wallets/useHwSignTracker';
-import {
-  addTransaction,
-  findNetworkClientIdByChainId,
-  updateAndApproveTx,
-} from '../../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
 import {
   type ApprovalsMetaMaskState,
@@ -43,7 +38,6 @@ import type { SignatureStepListProps } from '../components/signature-step-list.t
 import type { SignatureFooterProps } from '../components/signature-footer.types';
 import {
   getTransactionField,
-  cleanupPendingApproval,
   getHardwareWalletSignatureViewModel,
   isAwaitingSignature,
 } from '../hardware-wallet-signatures.utils';
@@ -54,6 +48,7 @@ import {
   hardwareWalletSignaturesReducer,
 } from '../hardware-wallet-signatures-state-machine';
 import type { UseHardwareWalletSignaturesReturn } from './useHardwareWalletSignatures.types';
+import { useSendBundleSubmission } from './useSendBundleSubmission';
 
 const SIGNATURE_STUCK_TIMEOUT_MS = 15_000;
 
@@ -216,54 +211,18 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     [],
   );
 
-  const submitSendBundleTransaction = useCallback(async () => {
-    if (!sendBundleTxMeta) {
-      return;
-    }
-
-    // WALLET SAFETY: refuse to submit unless the pending approval captured at
-    // navigation time is still pending. Prevents signing a stale txMeta after
-    // back/forward navigation, multi-tab races, or other stale-nav-state
-    // scenarios. Ported from mobile:
-    // https://github.com/MetaMask/metamask-mobile/blob/a7384b14df1fe540767ccc08c96b23785c1af965/app/components/UI/HardwareWallet/Swaps/useHardwareWalletSubmit.ts#L123-L142
-    if (!expectedSendBundleApproval) {
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
-      return;
-    }
-
-    const submissionGeneration = retryGenerationRef.current;
-
-    try {
-      await dispatch(updateAndApproveTx(sendBundleTxMeta, true, ''));
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionSubmitted,
-      });
-    } catch (error) {
-      if (isStaleAttempt(submissionGeneration)) {
-        return;
-      }
-
-      if (isUserRejectedHardwareWalletError(error)) {
-        dispatchSignatureEvent({
-          type: HardwareWalletSignatureEvent.TransactionRejected,
-        });
-        return;
-      }
-
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
-    }
-  }, [
-    currentApprovalRequestId,
-    dispatch,
-    dispatchSignatureEvent,
-    expectedSendBundleApproval,
-    isStaleAttempt,
-    sendBundleTxMeta,
-  ]);
+  const { submitSendBundleTransaction, retrySendBundleSubmission } =
+    useSendBundleSubmission({
+      sendBundleTxMeta,
+      setSendBundleTxMeta,
+      currentApprovalRequestId,
+      setCurrentApprovalRequestId,
+      expectedSendBundleApproval,
+      retryGenerationRef,
+      dispatchSignatureEvent,
+      isStaleAttempt,
+      dispatch,
+    });
 
   const { submitBridgeTransaction: submitBridgeTransactionBase } =
     useSubmitBridgeTransaction();
@@ -298,105 +257,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     },
     [dispatchSignatureEvent, isStaleAttempt, submitBridgeTransactionBase],
   );
-
-  /**
-   * Recreates the sendBundle transaction batch after a rejection or failure.
-   *
-   * A tx in a terminal state (signed / rejected / failed) cannot be
-   * re-approved — `updateAndApproveTx` would silently no-op. Instead this
-   * function rejects the old pending approval, creates a FRESH transaction
-   * via `addTransaction` with the original `txParams`, copies
-   * `batchTransactions` (the gas-payment tx params) and aggregate gas fields
-   * onto the new txMeta (same logic as `handleSmartTransaction`), updates the
-   * reactive `sendBundleTxMeta` / `currentApprovalRequestId` state so the
-   * tracker and safety check track the new tx, then calls
-   * `updateAndApproveTx` to trigger device signing.
-   *
-   * The tracker's `expectedTxIdSet` automatically picks up the new tx ID on
-   * the next render (state update flushes before the `await` resolves), so
-   * events from the new batch are correctly matched.
-   */
-  const retrySendBundleSubmission = useCallback(async () => {
-    if (!sendBundleTxMeta) {
-      return;
-    }
-
-    const { chainId } = sendBundleTxMeta;
-    if (!chainId) {
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
-      return;
-    }
-
-    // 1. Reject the old approval (cleanup) — may already be resolved.
-    if (currentApprovalRequestId) {
-      cleanupPendingApproval(dispatch, currentApprovalRequestId);
-    }
-
-    // 2. Find the network client for this chain.
-    const networkClientId = await findNetworkClientIdByChainId(chainId);
-
-    // 3. Create a NEW transaction with the original send params.
-    const newTxMeta = await addTransaction(sendBundleTxMeta.txParams, {
-      type: sendBundleTxMeta.type,
-      networkClientId,
-      requireApproval: true,
-    });
-
-    // 4. Copy batchTransactions + aggregate gas (same as handleSmartTransaction).
-    const newTxMetaWithBatch: TransactionMeta = {
-      ...newTxMeta,
-      batchTransactions: sendBundleTxMeta.batchTransactions,
-      txParams: {
-        ...newTxMeta.txParams,
-        gas: sendBundleTxMeta.txParams.gas,
-        maxFeePerGas: sendBundleTxMeta.txParams.maxFeePerGas,
-        maxPriorityFeePerGas: sendBundleTxMeta.txParams.maxPriorityFeePerGas,
-      },
-    };
-
-    // 5. Update reactive state — tracker + safety check use the new tx on
-    // the next render (flushed before the `await` below resolves).
-    setSendBundleTxMeta(newTxMetaWithBatch);
-    setCurrentApprovalRequestId(newTxMeta.id);
-
-    // 6. Approve → triggers device signing. Same success/error dispatch
-    // pattern as `submitSendBundleTransaction`: the `TransactionSubmitted`
-    // dispatch is the safety net that transitions the state machine to
-    // `Submitted` (which marks all steps complete and triggers navigation
-    // to the activity list). Without it, the state gets stuck at
-    // `AwaitingFinalSignature` if the tracker misses the gas-tx event.
-    const submissionGeneration = retryGenerationRef.current;
-
-    try {
-      await dispatch(updateAndApproveTx(newTxMetaWithBatch, true, ''));
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionSubmitted,
-      });
-    } catch (error) {
-      if (isStaleAttempt(submissionGeneration)) {
-        return;
-      }
-
-      if (isUserRejectedHardwareWalletError(error)) {
-        dispatchSignatureEvent({
-          type: HardwareWalletSignatureEvent.TransactionRejected,
-        });
-        return;
-      }
-
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
-    }
-  }, [
-    currentApprovalRequestId,
-    dispatch,
-    dispatchSignatureEvent,
-    isStaleAttempt,
-    sendBundleTxMeta,
-  ]);
 
   const getPrimaryTxField = (field: 'from' | 'to'): string | undefined =>
     sendBundleTxMeta?.txParams[field] ??
