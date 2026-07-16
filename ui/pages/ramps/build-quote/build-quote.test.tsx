@@ -398,4 +398,16 @@ describe('RampsBuildQuoteScreen', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('navigates to payment method selection when the pill is clicked', () => {
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    fireEvent.click(screen.getByTestId('ramps-payment-method-pill'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/payment-method');
+  });
 });

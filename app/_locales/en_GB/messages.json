@@ -8308,8 +8308,14 @@
   "rampsEligibilityFailedTitle": {
     "message": "We couldn’t verify your region"
   },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Error loading payment methods"
+  },
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "No payment methods are available."
   },
   "rampsNoTokensAvailable": {
     "message": "No tokens available"
@@ -8317,6 +8323,42 @@
   "rampsOnNetwork": {
     "message": "on $1",
     "description": "$1 is the network name"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "business day"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "business days"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "hour"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "hours"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Instant"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Less than"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "min"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "mins"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Max $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Min $1",
+    "description": "$1 is the minimum fiat buy amount"
   },
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."

@@ -2549,18 +2549,9 @@ export default class MetamaskController extends EventEmitter {
         'NetworkEnablementController:stateChange',
         restorePreviousEnabledNetworkMap,
       );
-      this.networkEnablementController.update((state) => {
-        Object.entries(state.enabledNetworkMap).forEach(
-          ([namespace, currentNetworks]) => {
-            Object.keys(currentNetworks).forEach((chainId) => {
-              const previousValue =
-                previousEnabledNetworkMap[namespace]?.[chainId];
-              state.enabledNetworkMap[namespace][chainId] =
-                previousValue ?? false;
-            });
-          },
-        );
-      });
+      this.networkEnablementController.restoreEnabledNetworkMap(
+        previousEnabledNetworkMap,
+      );
     };
 
     this.controllerMessenger.subscribe(
