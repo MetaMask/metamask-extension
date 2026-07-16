@@ -93,7 +93,7 @@ import {
 } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import { isNativeAsset, type Asset } from '../types/asset';
+import { isNativeAsset, isTokenAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import {
@@ -152,6 +152,8 @@ const AssetPage = ({
   }, []);
 
   const { chainId, type, symbol, name, image } = asset;
+  const tokenAddress = isTokenAsset(asset) ? asset.address : undefined;
+  const aggregators = isTokenAsset(asset) ? asset.aggregators : undefined;
 
   const selectIsSwapsChain = useMemo(
     () => (state: Parameters<typeof getIsSwapsChain>[0]) =>
@@ -208,21 +210,21 @@ const AssetPage = ({
 
   let address =
     (() => {
-      if (type === AssetType.token) {
-        return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
+      if (tokenAddress) {
+        return isEvm ? toChecksumHexAddress(tokenAddress) : tokenAddress;
       }
       return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
     })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
   const contractAddress = useMemo(() => {
-    if (shouldShowContractAddress) {
+    if (shouldShowContractAddress && tokenAddress) {
       return isEvm
-        ? toChecksumHexAddress(asset.address)
+        ? toChecksumHexAddress(tokenAddress)
         : parseCaipAssetType(address as CaipAssetType).assetReference;
     }
     return '';
-  }, [shouldShowContractAddress, isEvm, asset.address, address]);
+  }, [shouldShowContractAddress, isEvm, tokenAddress, address]);
 
   const { currentPrice } = useCurrentPrice(asset);
 
@@ -298,8 +300,7 @@ const AssetPage = ({
       tokenFiatAmount: showFiat ? tokenFiatAmount : null,
       string: balance ? balance.toString() : '',
       decimals: asset.decimals,
-      aggregators:
-        type === AssetType.token && asset.aggregators ? asset.aggregators : [],
+      aggregators: aggregators ?? [],
       isNative: type === AssetType.native,
       balance,
       secondary: balance ? Number(balance) : 0,
@@ -319,7 +320,7 @@ const AssetPage = ({
       tokenFiatAmount,
       balance,
       asset.decimals,
-      asset.aggregators,
+      aggregators,
       type,
       bip44Asset,
       rwaData,
@@ -598,7 +599,7 @@ const AssetPage = ({
                             {asset.decimals}
                           </Text>,
                         )}
-                      {asset.aggregators && asset.aggregators.length > 0 && (
+                      {aggregators && aggregators.length > 0 && (
                         <Box>
                           <Text
                             variant={TextVariant.BodyMd}
@@ -611,7 +612,7 @@ const AssetPage = ({
                             variant={TextVariant.BodyMd}
                             fontWeight={FontWeight.Medium}
                           >
-                            {asset.aggregators
+                            {aggregators
                               .map((agg) =>
                                 agg.replace(/^metamask$/iu, 'MetaMask'),
                               )

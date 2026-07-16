@@ -311,10 +311,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [focusSearch, setFocusSearch] = useState(false);
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   const searchNetworks = useCallback(
-    <T,>(networks: T[], query: string) =>
+    <Item,>(networks: Item[], query: string) =>
       query === ''
         ? networks
         : new Fuse(networks, {
