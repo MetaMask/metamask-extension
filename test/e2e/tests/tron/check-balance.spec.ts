@@ -22,8 +22,6 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // Wait for the Tron Snap account before switching so the switch triggers the balance fetch.
-        await homePage.waitForTronAccountReady();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
@@ -48,8 +46,6 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // Wait for the Tron Snap account before switching so the switch triggers the balance fetch.
-        await homePage.waitForTronAccountReady();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         await driver.refresh();
@@ -75,8 +71,6 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // Wait for the Tron Snap account before switching so the switch triggers the balance fetch.
-        await homePage.waitForTronAccountReady();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         await driver.refresh();

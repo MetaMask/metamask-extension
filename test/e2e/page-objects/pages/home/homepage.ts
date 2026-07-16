@@ -455,83 +455,11 @@ class HomePage {
       const currentBalance = parseFloat(await balance.getText());
       const errorMessage = `Expected balance ${expectedBalance} ${resolvedSymbol}, got balance ${currentBalance} ${resolvedSymbol}`;
       console.log(errorMessage, e);
-      await this.logBalanceDiagnostics(expectedBalance, resolvedSymbol);
       throw e;
     }
     console.log(
       `Expected balance ${expectedBalance} ${resolvedSymbol} is displayed on homepage`,
     );
-  }
-
-  /**
-   * Logs account and balance state on assertion failure to distinguish a
-   * missing non-EVM account (e.g. Tron account never created) from a transient
-   * hydration lag (account exists but balance/rates arrive late). Diagnostic
-   * only; never throws.
-   *
-   * @param expectedBalance - The balance that was expected.
-   * @param symbol - The balance symbol.
-   */
-  private async logBalanceDiagnostics(
-    expectedBalance: string,
-    symbol: string,
-  ): Promise<void> {
-    let state: Record<string, unknown> | undefined;
-    try {
-      state = (await getCleanAppState(this.driver))?.metamask as
-        | Record<string, unknown>
-        | undefined;
-    } catch {
-      // State hooks unavailable.
-    }
-
-    const accountsMap =
-      ((state?.internalAccounts as Record<string, unknown>)?.accounts as Record<
-        string,
-        { id?: string; type?: string; address?: string; scopes?: string[] }
-      >) ?? {};
-    const accounts = Object.values(accountsMap).map((account) => ({
-      id: account.id,
-      type: account.type,
-      address: account.address,
-      scopes: account.scopes,
-    }));
-    const tronAccounts = accounts.filter(
-      (account) =>
-        account.type?.toLowerCase().includes('tron') ||
-        account.scopes?.some((scope) => scope?.toLowerCase().includes('tron')),
-    );
-
-    console.log(
-      `Balance diagnostics for expected ${expectedBalance} ${symbol}:`,
-      JSON.stringify({
-        hasTronAccount: tronAccounts.length > 0,
-        tronAccounts,
-        accountCount: accounts.length,
-        accounts,
-        assetsBalance: state?.assetsBalance,
-        assetsInfoKeys: Object.keys(
-          (state?.assetsInfo as Record<string, unknown>) ?? {},
-        ),
-        conversionRates: state?.conversionRates,
-      }),
-    );
-  }
-
-  /**
-   * Waits until the Tron Snap has initialized and created its account in state.
-   *
-   * The Tron account is created asynchronously at runtime (BIP44 stage-2
-   * alignment). Switching to the Tron network before the account exists means
-   * the network switch never triggers a Snap balance fetch, leaving the balance
-   * stuck at 0. Waiting for the account here makes the subsequent switch
-   * deterministically kick off the balance fetch.
-   *
-   * @param timeout - Max ms to wait for the Tron account to appear.
-   */
-  async waitForTronAccountReady(): Promise<void> {
-    console.log('Waiting for Tron Snap account to be created in state');
-    await this.driver.delay(10000);
   }
 
   /**
