@@ -135,7 +135,7 @@ const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
-    usedInUi: true,
+    usedInUi: false,
   },
 };
 
