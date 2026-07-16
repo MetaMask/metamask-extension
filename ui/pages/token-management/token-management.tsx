@@ -115,6 +115,7 @@ import {
   ARC_USDC_TOKEN_ADDRESS,
   CHAIN_IDS,
 } from '../../../shared/constants/network';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -390,6 +391,7 @@ export const TokenManagementPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -1160,9 +1162,9 @@ export const TokenManagementPage = () => {
       event.preventDefault();
       commitStagedHides()
         .catch(() => undefined)
-        .finally(() => navigate(DEFAULT_ROUTE));
+        .finally(() => runCloseTransition(() => navigate(DEFAULT_ROUTE)));
     },
-    [commitStagedHides, navigate],
+    [commitStagedHides, navigate, runCloseTransition],
   );
 
   const getTokenImage = useCallback((token: ManagedAsset) => {

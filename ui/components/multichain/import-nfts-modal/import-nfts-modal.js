@@ -1,14 +1,15 @@
 import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../../../store/hooks';
 import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import {
   AlignItems,
@@ -63,7 +64,6 @@ import { NetworkListItem } from '../network-list-item';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { toast, ToastContent } from '../../ui/toast/toast';
-import { useAppDispatch } from '../../../store/hooks';
 
 const ACTION_MODES = {
   // Displays the import nft modal
@@ -90,7 +90,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const existingNfts = useNftsCollections();
   const [nftAddress, setNftAddress] = useState(initialTokenAddress ?? '');
   const [tokenId, setTokenId] = useState(initialTokenId ?? '');
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [actionMode, setActionMode] = useState(ACTION_MODES.IMPORT_NFT);
 
@@ -175,18 +175,19 @@ export const ImportNftsModal = ({ onClose }) => {
       ),
     ]).catch(() => ({}));
 
-    trackEvent({
-      event: MetaMetricsEventName.TokenAdded,
-      category: 'Wallet',
-      sensitiveProperties: {
-        token_contract_address: nftAddress,
-        token_symbol: tokenDetails?.symbol,
-        tokenId: tokenId.toString(),
-        asset_type: AssetType.NFT,
-        token_standard: tokenDetails?.standard,
-        source_connection_method: MetaMetricsTokenEventSource.Custom,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenAdded)
+        .addCategory('Wallet')
+        .addSensitiveProperties({
+          token_contract_address: nftAddress,
+          token_symbol: tokenDetails?.symbol,
+          tokenId: tokenId.toString(),
+          asset_type: AssetType.NFT,
+          token_standard: tokenDetails?.standard,
+          source_connection_method: MetaMetricsTokenEventSource.Custom,
+        })
+        .build(),
+    );
 
     onClose();
   };

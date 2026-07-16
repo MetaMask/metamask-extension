@@ -495,6 +495,14 @@ export const getMetaMaskCachedBalances = createSelector(
  * @returns {Function} A parameterized selector.
  */
 const createChainIdSelector = createParameterizedShallowEqualSelector(10);
+// Cache recent per-chain NFT lookups for views that switch among a small set of
+// networks during a render cycle. Ten entries accommodate the current
+// multichain asset-view network fanout without expanding the LRU unnecessarily.
+const NFT_SELECTOR_CACHE_SIZE = 10;
+// Cache recent chainId + address-list combinations for token trust signal lookups
+// across asset pages and confirmation flows. Thirty entries supports several
+// address-list variants across a handful of active networks in a single view.
+const TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE = 30;
 
 /**
  * Get MetaMask accounts, including account name and balance.
@@ -1305,7 +1313,9 @@ export const selectConversionRateByChainId = createSelector(
   },
 );
 
-export const selectNftsByChainId = createSelector(
+export const selectNftsByChainId = createParameterizedSelector(
+  NFT_SELECTOR_CACHE_SIZE,
+)(
   getSelectedInternalAccount,
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
@@ -3045,28 +3055,31 @@ export function getTokenScanCache(state) {
  * @returns {Record<string, TokenScanCacheResult>}
  *
  */
-export const getTokenScanResultsForAddresses = createParameterizedSelector(30)(
-  getTokenScanCache,
-  (_state, chainId) => chainId,
-  (_state, _chainId, tokenAddresses) => tokenAddresses,
-  (tokenScanCache, chainId, tokenAddresses) => {
-    if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
-      return {};
-    }
-
-    const results = {};
-    tokenAddresses.forEach((tokenAddress) => {
-      if (tokenAddress) {
-        const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
-        if (tokenScanCache?.[cacheKey]) {
-          results[cacheKey] = tokenScanCache[cacheKey];
-        }
+export const getTokenScanResultsForAddresses =
+  createParameterizedShallowEqualSelector(
+    TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE,
+  )(
+    getTokenScanCache,
+    (_state, chainId) => chainId,
+    (_state, _chainId, tokenAddresses) => tokenAddresses,
+    (tokenScanCache, chainId, tokenAddresses) => {
+      if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
+        return {};
       }
-    });
 
-    return results;
-  },
-);
+      const results = {};
+      tokenAddresses.forEach((tokenAddress) => {
+        if (tokenAddress) {
+          const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
+          if (tokenScanCache?.[cacheKey]) {
+            results[cacheKey] = tokenScanCache[cacheKey];
+          }
+        }
+      });
+
+      return results;
+    },
+  );
 
 /**
  * Get the state of the `addSnapAccountEnabled` flag.

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -18,9 +18,10 @@ import {
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 import { shortenString } from '../../../helpers/utils/util';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -32,7 +33,6 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import Preloader from '../../ui/icon/preloader';
 import { Tab, Tabs } from '../../ui/tabs';
-import { useAppDispatch } from '../../../store/hooks';
 import { AccountDetailsSection } from './account-details-section';
 
 export const AccountDetailsDisplay = ({
@@ -43,7 +43,7 @@ export const AccountDetailsDisplay = ({
   onExportClick,
 }) => {
   const dispatch = useAppDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()
     : address;
@@ -66,15 +66,16 @@ export const AccountDetailsDisplay = ({
         defaultValue={accountName}
         onSubmit={(label) => {
           dispatch(setAccountLabel(address, label));
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.AccountRenamed,
-            properties: {
-              location: 'Account Details Modal',
-              chain_id: chainId,
-              account_hardware_type: deviceName,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.AccountRenamed)
+              .addCategory(MetaMetricsEventCategory.Accounts)
+              .addProperties({
+                location: 'Account Details Modal',
+                chain_id: chainId,
+                account_hardware_type: deviceName,
+              })
+              .build(),
+          );
         }}
         accounts={accounts}
       />

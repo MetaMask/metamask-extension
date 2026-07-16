@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getErrorMessage } from '../../../../shared/lib/error';
@@ -10,7 +10,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { Box, ButtonLink, Label, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   BlockSize,
   FontWeight,
@@ -21,18 +21,18 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getIsSocialLoginFlow } from '../../../selectors';
 
 // Subviews
-import { useAppDispatch } from '../../../store/hooks';
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
 
 export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useAppDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
@@ -92,16 +92,17 @@ export const ImportAccount = ({ onActionComplete }) => {
       ? MetaMetricsEventName.AccountAdded
       : MetaMetricsEventName.AccountAddFailed;
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Accounts,
-      event,
-      properties: {
-        account_type: MetaMetricsEventAccountType.Imported,
-        account_import_type: accountImportType,
-        hd_entropy_index: hdEntropyIndex,
-        is_suggested_name: true,
-      },
-    });
+    trackEvent(
+      createEventBuilder(event)
+        .addCategory(MetaMetricsEventCategory.Accounts)
+        .addProperties({
+          account_type: MetaMetricsEventAccountType.Imported,
+          account_import_type: accountImportType,
+          hd_entropy_index: hdEntropyIndex,
+          is_suggested_name: true,
+        })
+        .build(),
+    );
   }
 
   function getLoadingMessage(strategy) {

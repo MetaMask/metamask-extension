@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
@@ -19,7 +19,7 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   Display,
   JustifyContent,
@@ -32,6 +32,7 @@ import {
   getMetaMaskKeyrings,
 } from '../../../selectors';
 import { clearAccountDetails } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   Modal,
@@ -47,7 +48,6 @@ import { findKeyringId } from '../../../../shared/lib/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
 import { AttemptExportState } from '../../../../shared/constants/accounts';
-import { useAppDispatch } from '../../../store/hooks';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
@@ -60,7 +60,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) =>
@@ -198,18 +198,19 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       <HoldToRevealModal
         isOpen={showHoldToReveal}
         onClose={() => {
-          trackEvent({
-            category: MetaMetricsEventCategory.Keys,
-            event: MetaMetricsEventName.KeyExportCanceled,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Pkey,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.KeyExportCanceled)
+              .addCategory(MetaMetricsEventCategory.Keys)
+              .addProperties({
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Pkey,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              })
+              .build(),
+          );
           setPrivateKey('');
           setShowHoldToReveal(false);
         }}
