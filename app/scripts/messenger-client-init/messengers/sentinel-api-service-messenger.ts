@@ -1,4 +1,8 @@
-import { Messenger, MessengerActions, MessengerEvents } from '@metamask/messenger';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import type { SentinelApiServiceMessenger } from '@metamask/sentinel-api-service';
 import type { RootMessenger } from '../../lib/messenger';
 
