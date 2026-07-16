@@ -13,6 +13,10 @@ import {
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
+import {
+  mapKeyringTransaction,
+  mapLocalTransaction,
+} from '@metamask/client-utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
 import {
@@ -29,15 +33,12 @@ import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/ne
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
-import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selectors';
-import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
-import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
 import { getInternalAccountsObject } from './accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
-import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
+import { enrichLocalActivity } from './activity/enrich-local-activity';
 import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
@@ -219,26 +220,18 @@ export const selectNonEvmTransactionsForActivity = createSelector(
   },
 );
 
-const selectBridgeHistoryItem = createSelector(
-  [(state: MetaMaskReduxState) => state],
-  (state) => (txHash?: string) =>
-    txHash ? selectBridgeHistoryItemForTxHash(state, txHash) : undefined,
-);
-
 export const selectNonEvmActivityItems = createSelector(
   [
     selectNonEvmTransactionsForActivity,
     getAssetsMetadata,
     getInternalAccountsObject,
-    selectBridgeHistoryItem,
   ],
-  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
+  (transactions, assetsMetadata, internalAccountsById) =>
     transactions.map((transaction) =>
       mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
         subjectAddress: internalAccountsById?.[transaction.account]?.address,
-        bridgeHistory: getBridgeHistory(transaction.id),
       }),
     ),
 );
@@ -521,28 +514,26 @@ export const selectLocalActivityItems = createSelector(
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
         const fees = getLocalTransactionFees(transactionGroup);
 
-        return enrichLocalMusdClaimActivity(
-          mapLocalTransaction({
-            ...transactionGroup,
-            ...getSwapTokens(bridgeHistoryItem),
-            ...(activityStatus ? { activityStatus } : {}),
-            fees,
-            nativeAssetSymbol,
-            contractTokenMetadata,
-          }),
-          transactionGroup,
-        );
-      }
-
-      return enrichLocalMusdClaimActivity(
-        mapLocalTransaction({
+        const prepared = {
           ...transactionGroup,
+          ...getSwapTokens(bridgeHistoryItem),
+          ...(activityStatus ? { activityStatus } : {}),
+          fees,
           nativeAssetSymbol,
           contractTokenMetadata,
-          ...(sourceToken ? { sourceToken } : {}),
-        }),
-        transactionGroup,
-      );
+        };
+
+        return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
+      }
+
+      const prepared = {
+        ...transactionGroup,
+        nativeAssetSymbol,
+        contractTokenMetadata,
+        ...(sourceToken ? { sourceToken } : {}),
+      };
+
+      return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
     });
   },
 );

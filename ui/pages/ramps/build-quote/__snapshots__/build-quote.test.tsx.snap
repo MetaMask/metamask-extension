@@ -584,20 +584,51 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Loading...
+          Buying via Transak
         </p>
         <button
+          aria-busy="true"
           aria-disabled="true"
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 opacity-50 text-primary-inverse bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default cursor-not-allowed w-full"
           data-testid="ramps-build-quote-continue"
           disabled=""
           role="button"
           tabindex="-1"
         >
           <span
-            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            aria-hidden="true"
+            class="absolute inline-flex items-center gap-x-1"
           >
-            Continue
+            <svg
+              class="inline-block w-5 h-5 animate-spin text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 22q-2.05 0-3.875-.787c-1.825-.788-2.28-1.242-3.187-2.15s-1.625-1.971-2.15-3.188S2 13.367 2 12q0-2.075.788-3.887c.788-1.812 1.241-2.267 2.15-3.175s1.97-1.625 3.187-2.15S10.633 2 12 2q.424 0 .713.288c.289.288.287.429.287.712s-.096.52-.287.713S12.283 4 12 4Q8.675 4 6.338 6.338C4 8.676 4 9.783 4 12q0 3.325 2.338 5.663C8.676 20 9.783 20 12 20q3.325 0 5.663-2.337C20 15.326 20 14.217 20 12q0-.424.288-.712C20.576 11 20.717 11 21 11s.52.096.713.288.287.429.287.712q0 2.05-.787 3.875c-.788 1.825-1.242 2.28-2.15 3.188s-1.967 1.625-3.175 2.15S13.383 22 12 22"
+              />
+            </svg>
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            />
+          </span>
+          <span
+            aria-hidden="true"
+            class="invisible inline-flex items-center"
+          >
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Continue
+            </span>
+          </span>
+          <span
+            aria-atomic="true"
+            aria-live="polite"
+            class="sr-only"
+          >
+            Loading
           </span>
         </button>
       </div>

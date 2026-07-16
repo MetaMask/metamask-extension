@@ -26,6 +26,7 @@ export default function RampsBuildQuoteView({
   showPaymentMethodSpinner,
   displayedQuoteError,
   providerStatusLabel,
+  isQuoteLoading,
   canContinue,
   handleBack,
   handleAmountChange,
@@ -112,6 +113,7 @@ export default function RampsBuildQuoteView({
             className="w-full"
             onClick={handleContinue}
             isDisabled={!canContinue}
+            isLoading={isQuoteLoading}
             data-testid="ramps-build-quote-continue"
           >
             {t('continue')}
