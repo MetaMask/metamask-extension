@@ -209,6 +209,49 @@ describe('ClosePositionModal', () => {
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
+  describe('header', () => {
+    it('renders the market identity, price, and 24-hour change', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          displayPrice="$2,901.25"
+          displayChange="-0.91%"
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-close-position-asset-symbol'),
+      ).toHaveTextContent('ETH');
+      expect(
+        screen.getByTestId('perps-close-position-price'),
+      ).toHaveTextContent('$2,901.25');
+      expect(
+        screen.getByTestId('perps-close-position-change'),
+      ).toHaveTextContent('-0.91%');
+    });
+
+    it('closes the modal when the back control is clicked', () => {
+      const onClose = jest.fn();
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={onClose}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-back-button'));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('perpsClosePosition call', () => {
     it('preserves the full market close request shape', async () => {
       renderWithProvider(
@@ -917,8 +960,8 @@ describe('ClosePositionModal', () => {
         screen.queryByText(tEn('perpsCloseLimitPriceRequired')),
       ).not.toBeInTheDocument();
       expect(
-        screen.getByTestId('limit-price-liquidation-warning'),
-      ).toBeInTheDocument();
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
       expect(
         screen.getByTestId('perps-close-position-modal-submit'),
       ).toBeEnabled();

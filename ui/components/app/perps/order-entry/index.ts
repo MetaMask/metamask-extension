@@ -31,3 +31,7 @@ export {
   OrderTypeToggle,
   type OrderTypeToggleProps,
 } from './components/order-type-toggle';
+export {
+  OrderEntryHeader,
+  type OrderEntryHeaderProps,
+} from './components/order-entry-header';

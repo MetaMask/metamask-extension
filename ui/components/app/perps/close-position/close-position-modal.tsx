@@ -28,7 +28,6 @@ import {
 import {
   Modal,
   ModalContent,
-  ModalHeader,
   ModalOverlay,
   ModalContentSize,
   ModalBody,
@@ -59,6 +58,7 @@ import { PerpsFeesDisplay } from '../perps-fees-display';
 import {
   CloseAmountSection,
   LimitPriceInput,
+  OrderEntryHeader,
   OrderTypeToggle,
 } from '../order-entry';
 import {
@@ -284,6 +284,8 @@ export type ClosePositionModalProps = {
   markPrice?: number | string;
   midPrice?: number;
   sizeDecimals?: number;
+  displayPrice?: string;
+  displayChange?: string;
 };
 
 export const ClosePositionModal = ({
@@ -294,6 +296,8 @@ export const ClosePositionModal = ({
   markPrice,
   midPrice,
   sizeDecimals,
+  displayPrice,
+  displayChange,
 }: ClosePositionModalProps) => {
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
@@ -352,6 +356,7 @@ export const ClosePositionModal = ({
   }, [isCloseLimitOrderEnabled]);
 
   const displayName = getDisplaySymbol(position.symbol);
+  const headerDisplayPrice = displayPrice ?? formatFiat(currentPrice);
   const isPartialClose = closePercent < 100;
   const closeFraction = closePercent / 100;
   const positionDirection = getPositionDirection(position.size);
@@ -768,21 +773,13 @@ export const ClosePositionModal = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <ModalHeader onClose={onClose}>
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-            >
-              <Icon name={IconName.CircleX} size={IconSize.Xl} />
-              <Text
-                variant={TextVariant.HeadingSm}
-                textAlign={TextAlign.Center}
-              >
-                {t('perpsClosePosition')}
-              </Text>
-            </Box>
-          </ModalHeader>
+          <OrderEntryHeader
+            displayName={displayName}
+            displayPrice={headerDisplayPrice}
+            displayChange={displayChange}
+            onBack={onClose}
+            testIdPrefix="perps-close-position"
+          />
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
               {isCloseLimitOrderEnabled ? (
@@ -799,9 +796,6 @@ export const ClosePositionModal = ({
                   currentPrice={currentPrice}
                   midPrice={midPrice}
                   direction={closeDirection}
-                  liquidationPrice={parsePositivePrice(
-                    position.liquidationPrice,
-                  )}
                   autoFocus
                 />
               ) : null}

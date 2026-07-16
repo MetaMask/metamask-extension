@@ -2111,6 +2111,8 @@ const PerpsMarketDetailPage = () => {
           currentPrice={currentPrice}
           markPrice={livePrice?.markPrice}
           sizeDecimals={marketInfo?.szDecimals}
+          displayPrice={displayPrice}
+          displayChange={displayChange}
         />
       )}
 
