@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarGroup,
+  AvatarGroupSize,
   AvatarGroupVariant,
   SensitiveText,
 } from '@metamask/design-system-react';
@@ -81,6 +82,7 @@ export default function DeFiProtocolCellV2({
       footerRightDisplay={
         <AvatarGroup
           variant={AvatarGroupVariant.Token}
+          size={AvatarGroupSize.Xs}
           max={4}
           avatarPropsArr={position.iconGroup.map((icon) => ({
             src: icon.avatarValue,
