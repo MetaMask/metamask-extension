@@ -1,8 +1,8 @@
+import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import * as reactRedux from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getTxAlerts } from '../../../ducks/bridge/selectors';
-import { BridgeAssetSecurityDataType } from '../utils/tokens';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import type { TxAlert } from '../../../../shared/types/security-alerts-api';
 import { useSecurityAlerts } from './useSecurityAlerts';

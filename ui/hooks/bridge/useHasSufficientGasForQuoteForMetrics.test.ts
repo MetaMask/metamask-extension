@@ -1,4 +1,5 @@
 import {
+  BridgeAssetV2,
   ChainId,
   selectMinimumBalanceForRentExemptionInSOL,
   type QuoteMetadata,

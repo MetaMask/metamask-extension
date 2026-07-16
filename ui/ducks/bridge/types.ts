@@ -2,16 +2,17 @@ import type { CaipChainId } from '@metamask/utils';
 import {
   type QuoteMetadata,
   type QuoteResponseV1,
+  type QuoteResponse,
   SortOrder,
   RequestStatus,
+  BridgeAssetV2,
+  MinimalAsset,
+  type DeepPartial,
+  type QuoteMetadata,
 } from '@metamask/bridge-controller';
 import { type KeyringAccountType } from '@metamask/keyring-api';
 import { type TokenListToken } from '@metamask/assets-controllers';
 import { type TxAlert } from '../../../shared/types/security-alerts-api';
-import type {
-  MinimalAsset,
-  BridgeAssetV2,
-} from '../../pages/bridge/utils/tokens';
 
 type BridgeTokenBalanceData = {
   balance: string;

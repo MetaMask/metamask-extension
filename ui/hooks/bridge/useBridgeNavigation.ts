@@ -19,6 +19,7 @@ import {
   isNativeAddress,
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
+  MinimalAsset,
 } from '@metamask/bridge-controller';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
@@ -30,7 +31,6 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { getBridgeState } from '../../ducks/bridge/selectors';
-import type { MinimalAsset } from '../../pages/bridge/utils/tokens';
 import type { BridgeState, BridgeToken } from '../../ducks/bridge/types';
 import {
   resetBridgeController,

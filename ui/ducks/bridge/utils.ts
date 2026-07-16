@@ -13,6 +13,7 @@ import {
   formatChainIdToHex,
   formatAddressToCaipReference,
   ChainId,
+  BridgeAssetSecurityDataType,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { Numeric } from '../../../shared/lib/Numeric';
@@ -22,7 +23,6 @@ import {
   BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
 } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
-import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
