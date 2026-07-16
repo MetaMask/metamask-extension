@@ -1,11 +1,6 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
-import type { CaipChainId, Hex } from '@metamask/utils';
-import { formatChainIdToHex } from '@metamask/bridge-controller';
-import {
-  getNativeAssetId,
-  isEvmChainId,
-} from '../../../../shared/lib/asset-utils';
+import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
@@ -28,20 +23,6 @@ import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
-
-/**
- * Normalize the source chain id for the flag-off Portfolio fallback.
- * `getBuyURI` runs `hexToNumber` on EVM chain ids, so it needs hex — bridge
- * state stores them as CAIP (`eip155:1`). Non-EVM caip ids pass through.
- *
- * @param chainId - The bridge source chain id.
- */
-function getBuyFallbackChainId(chainId?: Hex | CaipChainId) {
-  if (!chainId) {
-    return undefined;
-  }
-  return isEvmChainId(chainId) ? formatChainIdToHex(chainId) : chainId;
-}
 
 /**
  * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
@@ -239,7 +220,7 @@ export const useBridgeAlerts = () => {
           actionButtonOnClick: () =>
             goToBuy({
               assetId: getNativeAssetId(fromChain?.chainId),
-              chainId: getBuyFallbackChainId(fromChain?.chainId),
+              chainId: fromChain?.chainId,
             }),
         },
       });
