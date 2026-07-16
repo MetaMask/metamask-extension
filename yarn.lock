@@ -7220,9 +7220,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:@metamask-previews/network-controller@34.0.0-preview-a2621f612":
-  version: 34.0.0-preview-a2621f612
-  resolution: "@metamask-previews/network-controller@npm:34.0.0-preview-a2621f612"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@34.0.0-preview-275c14221":
+  version: 34.0.0-preview-275c14221
+  resolution: "@metamask-previews/network-controller@npm:34.0.0-preview-275c14221"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/connectivity-controller": "npm:^0.3.0"
@@ -7244,7 +7244,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/0c4962bf8c096ca95e1671e08a73759c6d9f40cf8db1c2913ef44e930a428cfabd33386dfc091b9a6c429129d9d73fa83dc8b903c53ab6b93505ba3510e77a13
+  checksum: 10/3bba4c0c7f6f4249ae96e16f30d34f5570f083e28a8c6562dc035edc71282b0bc0ab32670788bf9670f84a5a21972bd33a5dc25b7199004e23dd02af75c71c5a
   languageName: node
   linkType: hard
 
