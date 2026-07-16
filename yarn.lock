@@ -5919,6 +5919,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/client-utils@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/client-utils@npm:1.1.0"
+  dependencies:
+    "@metamask/contract-metadata": "npm:^2.4.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/core-backend": "npm:^6.5.0"
+    "@metamask/keyring-api": "npm:^23.5.0"
+    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+  checksum: 10/097d571035d9f83fd8c13eb7dbcbc7c6b9b295f5ab8035aa94eba7319b9695ab8bf2fc248d374aa3a460be546cdcea99278d6a24ffff6c179d01d6961e13e817
+  languageName: node
+  linkType: hard
+
 "@metamask/compliance-controller@npm:^2.1.0":
   version: 2.1.0
   resolution: "@metamask/compliance-controller@npm:2.1.0"
@@ -33121,6 +33135,7 @@ __metadata:
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
+    "@metamask/client-utils": "npm:^1.1.0"
     "@metamask/compliance-controller": "npm:^2.1.0"
     "@metamask/config-registry-controller": "npm:^0.4.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
