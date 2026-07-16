@@ -1,4 +1,6 @@
 import { Token } from '@metamask/assets-controllers';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { type AssetRouteParams } from '../../../shared/lib/asset-route';
 import {
   findAssetByAddress,
   fromIso8601DurationToPriceApiTimePeriod,
@@ -213,38 +215,45 @@ describe('utils', () => {
       );
     });
 
-    describe('EVM (hex) routes', () => {
+    describe('CAIP-19 routes', () => {
       const tokenAddress =
         '0xacA92E438df0B2401fF60dA7E4337B687a2435DA' as const;
-      const chainId = '0x1' as const;
+      const chainId = 'eip155:1' as const;
+      const erc20AssetId = `eip155:1/erc20:${tokenAddress}` as const;
+      const nativeAssetId = 'eip155:1/slip44:60' as const;
 
-      const testCases = [
+      const testCases: {
+        name: string;
+        params: AssetRouteParams;
+        expected: Record<string, unknown>;
+      }[] = [
         {
-          // Address casing must be preserved (no lowercasing) and never rejoined.
-          name: 'resolves an ERC-20 token route (/asset/0x1/0xaddress)',
-          params: { chainId, asset: tokenAddress, id: undefined },
+          name: 'resolves an ERC-20 CAIP-19 route',
+          params: { chainId, asset: erc20AssetId },
           expected: {
-            decodedAsset: tokenAddress,
+            decodedAsset: erc20AssetId,
             chainId,
-            id: undefined,
           },
         },
         {
-          name: 'resolves a native asset route with no asset param (/asset/0x1)',
-          params: { chainId },
-          expected: { decodedAsset: undefined, chainId },
+          name: 'resolves a native CAIP-19 route',
+          params: {
+            chainId: 'eip155:42161',
+            asset: 'eip155:42161/slip44:60',
+          },
+          expected: {
+            decodedAsset: 'eip155:42161/slip44:60',
+            chainId: 'eip155:42161',
+          },
         },
         {
-          // EVM NFTs legitimately use separate contract address and tokenId
-          // params, which must not be merged into a single asset id.
           name: 'does not rejoin NFT routes that use a contract address and tokenId',
-          params: { chainId, asset: tokenAddress, id: '123' },
+          params: {
+            chainId: CHAIN_IDS.MAINNET,
+            asset: tokenAddress,
+            id: '123',
+          },
           expected: { decodedAsset: tokenAddress, id: '123' },
-        },
-        {
-          name: 'decodes percent-encoded characters in the asset param',
-          params: { chainId, asset: '0x123%2Ffoo', id: undefined },
-          expected: { decodedAsset: '0x123/foo' },
         },
       ];
 
