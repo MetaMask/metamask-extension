@@ -13,8 +13,11 @@ import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import type { InitializeWalletRequest } from './types';
+import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
+import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -35,10 +38,13 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     showApprovalRequest,
     state,
+    platform,
   } = request;
 
   const transactionControllerInitMessenger =
     getTransactionControllerInitMessenger(messenger);
+  const seedlessOnboardingControllerInitMessenger =
+    getSeedlessOnboardingControllerInitMessenger(messenger);
 
   const wallet = new Wallet({
     instanceOptions: {
@@ -53,6 +59,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
         messenger,
       }),
       networkController: getNetworkControllerInstanceOptions(infuraProjectId),
+      passkeyController: getPasskeyControllerInstanceOptions(platform),
+      seedlessOnboardingController:
+        getSeedlessOnboardingControllerInstanceOptions({
+          initMessenger: seedlessOnboardingControllerInitMessenger,
+        }),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),

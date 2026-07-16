@@ -382,10 +382,7 @@ import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
-import {
-  OAuthServiceInit,
-  SeedlessOnboardingControllerInit,
-} from './messenger-client-init/seedless-onboarding';
+import { OAuthServiceInit } from './messenger-client-init/seedless-onboarding';
 import {
   getSendBundleSupportedChains,
   setSentinelApiAuth,
@@ -437,7 +434,6 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
-import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
 import {
   QrSyncControllerInit,
   QrSyncDataServiceInit,
@@ -563,6 +559,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: controllerMessenger,
       showApprovalRequest: this.opts.showUserConfirmation,
       state: initState,
+      platform: this.extension,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -648,7 +645,6 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
-      PasskeyController: PasskeyControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -719,7 +715,6 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
-      SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       SubscriptionController: SubscriptionControllerInit,
       SubscriptionService: SubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
@@ -868,8 +863,9 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
     this.subscriptionService = messengerClientsByName.SubscriptionService;
-    this.seedlessOnboardingController =
-      messengerClientsByName.SeedlessOnboardingController;
+    this.seedlessOnboardingController = this.wallet.getInstance(
+      'SeedlessOnboardingController',
+    );
     this.subscriptionController = messengerClientsByName.SubscriptionController;
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.networkEnablementController =
@@ -889,7 +885,7 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.ProfileMetricsController;
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
-    this.passkeyController = messengerClientsByName.PasskeyController;
+    this.passkeyController = this.wallet.getInstance('PasskeyController');
     this.configRegistryController =
       messengerClientsByName.ConfigRegistryController;
     this.backup = new Backup({
@@ -1433,6 +1429,7 @@ export default class MetamaskController extends EventEmitter {
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
+      PasskeyController: this.passkeyController,
       SeedlessOnboardingController: this.seedlessOnboardingController,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,

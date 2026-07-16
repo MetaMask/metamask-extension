@@ -7367,6 +7367,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/passkey-controller@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/passkey-controller@npm:2.1.0"
+  dependencies:
+    "@levischuck/tiny-cbor": "npm:^0.3.3"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/curves": "npm:^1.9.2"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/6b7c41c224333d67887f3cc96973d7bd6419d19b8b35d101f00f5a58321ed67ee8dacf44b0cf91e4a52e861d1c3702fe53944151ee3ae6df85614c07173ccc1a
+  languageName: node
+  linkType: hard
+
 "@metamask/permission-controller@npm:^13.0.0, @metamask/permission-controller@npm:^13.1.1":
   version: 13.1.1
   resolution: "@metamask/permission-controller@npm:13.1.1"
@@ -8536,9 +8551,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@metamask/wallet@npm:7.0.1"
+"@metamask/wallet@npm:@metamask-previews/wallet@7.0.1-preview-b867f452d":
+  version: 7.0.1-preview-b867f452d
+  resolution: "@metamask-previews/wallet@npm:7.0.1-preview-b867f452d"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.5"
     "@metamask/address-book-controller": "npm:^7.1.2"
@@ -8550,12 +8565,14 @@ __metadata:
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/passkey-controller": "npm:^2.1.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/scure-bip39": "npm:^2.1.1"
+    "@metamask/seedless-onboarding-controller": "npm:^10.0.3"
     "@metamask/storage-service": "npm:^1.0.2"
     "@metamask/transaction-controller": "npm:^69.0.0"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/5c5726d2b811c0eec3148e84ae178bcba2878366e0feb6ae836246293126fa24c1b942d5a1abd9defa45346682c02ac05be96ba776d14ca51b7a5a55f7929378
+  checksum: 10/be98511d588071812c4bd9d533519463f937603339e2b52950a8673ebce4d1b0e849221798d218a2fb8ed68a71055ddbe55b126d0eb72bdceb4761e0e2ea5767
   languageName: node
   linkType: hard
 
@@ -33243,7 +33260,7 @@ __metadata:
     "@metamask/tron-wallet-snap": "npm:^1.31.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
-    "@metamask/wallet": "npm:^7.0.1"
+    "@metamask/wallet": "npm:@metamask-previews/wallet@7.0.1-preview-b867f452d"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"

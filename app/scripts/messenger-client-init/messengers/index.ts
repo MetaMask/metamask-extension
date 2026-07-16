@@ -74,11 +74,7 @@ import {
   getMultichainAccountServiceInitMessenger,
   getSnapAccountServiceMessenger,
 } from './accounts';
-import {
-  getOAuthServiceMessenger,
-  getSeedlessOnboardingControllerMessenger,
-  getSeedlessOnboardingControllerInitMessenger,
-} from './seedless-onboarding';
+import { getOAuthServiceMessenger } from './seedless-onboarding';
 import {
   getSmartTransactionsControllerInitMessenger,
   getSmartTransactionsControllerMessenger,
@@ -138,7 +134,6 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 import {
   getQrSyncControllerMessenger,
   getQrSyncDataServiceMessenger,
@@ -264,7 +259,6 @@ export {
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export {
   getQrSyncControllerMessenger,
@@ -542,10 +536,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getOnboardingControllerMessenger,
     getInitMessenger: noop,
   },
-  PasskeyController: {
-    getMessenger: getPasskeyControllerMessenger,
-    getInitMessenger: noop,
-  },
   PermissionController: {
     getMessenger: getPermissionControllerMessenger,
     getInitMessenger: getPermissionControllerInitMessenger,
@@ -569,10 +559,6 @@ export const MESSENGER_FACTORIES = {
   RatesController: {
     getMessenger: getRatesControllerMessenger,
     getInitMessenger: noop,
-  },
-  SeedlessOnboardingController: {
-    getMessenger: getSeedlessOnboardingControllerMessenger,
-    getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
   },
   SelectedNetworkController: {
     getMessenger: getSelectedNetworkControllerMessenger,
