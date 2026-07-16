@@ -136,19 +136,9 @@ export default class ExtensionPlatform {
       status === TransactionStatus.failed ||
       status === TransactionStatus.rejected
     ) {
-      // eslint-disable-next-line no-console
-      console.log(
-        '[showTransactionNotification] failed/rejected txMeta.error',
-        txMeta.error,
-      );
-
       // TransactionController persists EIP-1193 `userRejectedRequest` (4001) for HW
       // cancellations; only branch on that code here.
       if (txMeta.error?.message?.includes('EthAppNftNotSupported')) {
-        // eslint-disable-next-line no-console
-        console.log(
-          '[showTransactionNotification] EthAppNftNotSupported matched, using ledger-specific copy',
-        );
         await this._showFailedTransaction(
           txMeta,
           t('ledgerEthAppNftNotSupportedNotification'),
@@ -157,24 +147,13 @@ export default class ExtensionPlatform {
         String(txMeta.error?.code) ===
         String(errorCodes.provider.userRejectedRequest)
       ) {
-        // eslint-disable-next-line no-console
-        console.log(
-          '[showTransactionNotification] error.code is userRejectedRequest (4001) – using HW user-rejection copy',
-        );
         await this._showFailedTransaction(
           txMeta,
           t('notificationTransactionFailedUserRejectedMessage'),
         );
       } else {
-        // eslint-disable-next-line no-console
-        console.log(
-          '[showTransactionNotification] generic failure path, forwarding message/stack',
-          txMeta.error,
-        );
-        await this._showFailedTransaction(
-          txMeta,
-          txMeta.error?.message || txMeta.error?.stack,
-        );
+        // Never pass error.stack into notifications — it can expose raw stack traces.
+        await this._showFailedTransaction(txMeta, txMeta.error?.message);
       }
     }
   }
@@ -249,30 +228,13 @@ export default class ExtensionPlatform {
   }
 
   async _showFailedTransaction(txMeta, errorMessage) {
-    // Temporary verbose logging for HW QA – remove before merge.
-    // eslint-disable-next-line no-console
-    console.log('[showFailedTransaction] txMeta', txMeta);
-    // eslint-disable-next-line no-console
-    console.log('[showFailedTransaction] raw errorMessage arg', errorMessage);
-    // eslint-disable-next-line no-console
-    console.log(
-      '[showFailedTransaction] txMeta.error',
-      txMeta.error,
-      'txMeta.error.message',
-      txMeta.error?.message,
-      'txMeta.error.stack',
-      txMeta.error?.stack,
-    );
-
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
+    // Prefer an explicit/user-facing message; never fall back to error.stack.
     const resolvedErrorMessage =
-      errorMessage || txMeta.error?.message || txMeta.error?.stack;
-    // eslint-disable-next-line no-console
-    console.log(
-      '[showFailedTransaction] resolvedErrorMessage used in notification',
-      resolvedErrorMessage,
-    );
+      errorMessage ||
+      txMeta.error?.message ||
+      'Transaction encountered an error.';
     const message = Number.isNaN(nonce)
       ? t(
           'notificationTransactionWithoutNonceFailedMessage',
