@@ -50,10 +50,11 @@ jest.mock('../../../hooks/musd', () => ({
 }));
 
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
+let mockIsRampsEnabled = false;
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => ({ goToBuy: mockGoToBuy }),
+  default: () => ({ goToBuy: mockGoToBuy, isRampsEnabled: mockIsRampsEnabled }),
 }));
 
 // Mock useTheme
@@ -82,12 +83,11 @@ jest.mock('react-router-dom', () => ({
   ],
 }));
 
-const createMockStore = (remoteFeatureFlags = {}) => {
+const createMockStore = () => {
   return configureStore({
     metamask: {
       remoteFeatureFlags: {
         earnMusdConversionFlowEnabled: true,
-        ...remoteFeatureFlags,
       },
       selectedNetworkClientId: 'mainnet',
       networkConfigurationsByChainId: {
@@ -125,6 +125,7 @@ describe('MusdEducationScreen', () => {
       canBuyMusdInRegion: true,
       isLoading: false,
     });
+    mockIsRampsEnabled = false;
   });
 
   it('renders the headline with the bonus percentage', () => {
@@ -328,7 +329,8 @@ describe('MusdEducationScreen', () => {
         canBuyMusdInRegion: true,
         isLoading: false,
       });
-      const store = createMockStore({ rampsEnabled: true });
+      mockIsRampsEnabled = true;
+      const store = createMockStore();
       renderWithProvider(<MusdEducationScreen />, store);
 
       const button = screen.getByTestId('musd-education-continue-button');

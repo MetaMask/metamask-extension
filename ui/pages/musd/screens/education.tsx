@@ -7,7 +7,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import {
   Box,
@@ -51,7 +51,6 @@ import {
   useCanBuyMusd,
 } from '../../../hooks/musd';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { getIsRampsEnabled } from '../../../selectors/ramps-feature-flags';
 import {
   getMusdAssetIdForChain,
   MUSD_CONVERSION_APY,
@@ -111,8 +110,7 @@ const MusdEducationScreen = () => {
   const { tokens: conversionTokens, defaultPaymentToken } =
     useMusdConversionTokens();
   const { canBuyMusdInRegion } = useCanBuyMusd();
-  const { goToBuy } = useRampsNavigation();
-  const isRampsEnabled = useSelector(getIsRampsEnabled);
+  const { goToBuy, isRampsEnabled } = useRampsNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
   const hasEligibleConversionTokens = conversionTokens.length > 0;
