@@ -39,15 +39,22 @@ export async function createOffscreen() {
     return;
   }
 
-  let offscreenDocumentLoadedListener;
-  const loadPromise = new Promise((resolve) => {
+  let offscreenDocumentLoadedListener:
+    | ((msg: {
+        target: string;
+        isBooted: boolean;
+        webdriverPresent: boolean;
+      }) => void)
+    | undefined;
+  const loadPromise = new Promise<void>((resolve) => {
     offscreenDocumentLoadedListener = (msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extensionMain &&
         msg.isBooted
       ) {
         chrome.runtime.onMessage.removeListener(
-          offscreenDocumentLoadedListener,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          offscreenDocumentLoadedListener!,
         );
         resolve();
 
@@ -84,7 +91,7 @@ export async function createOffscreen() {
     if (offscreenDocumentLoadedListener) {
       chrome.runtime.onMessage.removeListener(offscreenDocumentLoadedListener);
     }
-    // Report unrecongized errors without halting wallet initialization
+    // Report unrecognized errors without halting wallet initialization
     // Failures to create the offscreen document does not compromise wallet data integrity or
     // core functionality, it's just needed for specific features.
     captureException(error);
@@ -108,10 +115,12 @@ export async function createOffscreen() {
  * connectivity status is detected using window event listeners in the background page.
  * The function will return early if `chrome.offscreen` is not available.
  *
- * @param {Function} onConnectivityChange - Callback to invoke with the connectivity status.
+ * @param onConnectivityChange - Callback to invoke with the connectivity status.
  * The callback receives a boolean indicating whether the device is online.
  */
-export function addOffscreenConnectivityListener(onConnectivityChange) {
+export function addOffscreenConnectivityListener(
+  onConnectivityChange: (isOnline: boolean) => void,
+) {
   const { chrome } = globalThis;
   if (!chrome.offscreen) {
     return;
