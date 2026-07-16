@@ -3,10 +3,6 @@ import { render } from '@testing-library/react';
 import { SignatureStepStatus } from '../types';
 import SignatureStatusIcon from '.';
 
-jest.mock('../../../../components/ui/pulse-loader', () => () => (
-  <div data-testid="pulse-loader" />
-));
-
 describe('SignatureStatusIcon', () => {
   it('renders check icon when status is Complete', () => {
     const { container } = render(
@@ -52,15 +48,15 @@ describe('SignatureStatusIcon', () => {
     expect(container.querySelector('svg')).not.toBeNull();
   });
 
-  it('renders pulse loader when status is Active', () => {
-    const { getByTestId } = render(
+  it('renders spinning loading icon when status is Active', () => {
+    const { container } = render(
       <SignatureStatusIcon
         status={SignatureStepStatus.Active}
         stepNumber={1}
       />,
     );
 
-    expect(getByTestId('pulse-loader')).toBeDefined();
+    expect(container.querySelector('svg.animate-spin')).not.toBeNull();
   });
 
   it('renders step number when status is Pending', () => {

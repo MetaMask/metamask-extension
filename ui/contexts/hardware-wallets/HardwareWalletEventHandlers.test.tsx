@@ -27,6 +27,7 @@ describe('useDeviceEventHandlers', () => {
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
     ensureDeviceReadyPromiseRef: { current: Map<string, Promise<boolean>> };
+    isSigningInProgressRef: { current: boolean };
   };
   let mockSetters: {
     setConnectionState: jest.Mock;
@@ -51,6 +52,7 @@ describe('useDeviceEventHandlers', () => {
       walletTypeRef: { current: null },
       previousWalletTypeRef: { current: null },
       ensureDeviceReadyPromiseRef: { current: new Map() },
+      isSigningInProgressRef: { current: false },
     };
 
     mockSetters = {

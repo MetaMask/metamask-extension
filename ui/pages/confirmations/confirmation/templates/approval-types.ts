@@ -4,7 +4,6 @@ import {
   ASTERDEX_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../../shared/constants/app';
 import type { IsEquivalent } from '../../../../../shared/types/type-level-utils';
 import type { Expect } from '../../../../../shared/types/type-test-utils';
@@ -20,7 +19,6 @@ export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES = [
   ApprovalType.SwitchEthereumChain,
   ApprovalType.ResultSuccess,
   ApprovalType.ResultError,
-  SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
   ApprovalType.SnapDialogAlert,
   ApprovalType.SnapDialogConfirmation,
   ApprovalType.SnapDialogPrompt,

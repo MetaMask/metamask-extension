@@ -11,7 +11,7 @@ import type { TransactionViewModel } from '../../../../shared/lib/multichain/typ
 import { MINUTE } from '../../../../shared/constants/time';
 import { TextColor } from '../../../helpers/constants/design-system';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import { formatAmount } from '../../../../shared/lib/format-amount';
 
 export type ChainInfo =
   | EvmNetworkConfiguration

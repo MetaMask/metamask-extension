@@ -104,6 +104,40 @@ export const getIsPerpsSlippageConfigEnabled = createSelector(
     isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsSlippageConfig2),
 );
 
+/**
+ * Whether perps surfaces should render full asset names (e.g. "Bitcoin")
+ * instead of just the ticker (e.g. "BTC").
+ *
+ * Gated behind the `perpsShowFullAssetNames` remote rollout flag (default OFF)
+ * so full names can be shipped dark and rolled out independently. Follows the
+ * same `{ enabled, minimumVersion }` rollout shape as `perpsEnabledVersion`
+ * (boolean still supported for backward compatibility). When disabled, consumers
+ * fall back to the ticker via `getDisplaySymbol(symbol)`.
+ */
+export const getIsPerpsShowFullAssetNamesEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsShowFullAssetNames),
+);
+
+/**
+ * Whether the Terminal API backend is enabled for perps market data.
+ *
+ * When true, REST calls for market metadata (`getMarkets`,
+ * `getMarketDataWithPrices`) route through the MetaMask Terminal API to
+ * enrich listings with display names, keywords, tags, and categories.
+ * When false, data is fetched directly from the provider (HyperLiquid).
+ *
+ * Remote flag `perpsTerminalBackendEnabled` — same version-gated shape.
+ */
+export const getIsPerpsTerminalBackendEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(
+      remoteFeatureFlags.perpsTerminalBackendEnabled,
+    ),
+);
+
 // Re-export the VIP program flag so perps consumers can import from this
 // domain module without reaching into the rewards duck directly.
 export { selectVipProgramEnabled as getIsVipProgramEnabled } from '../../ducks/rewards/selectors';

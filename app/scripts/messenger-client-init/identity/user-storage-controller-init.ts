@@ -8,6 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   TraceName,
   trace,
@@ -18,6 +19,7 @@ import {
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
 import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
+import { trackEvent } from '../../controllers/analytics';
 
 const CONTACT_SYNC_ROOT_TRACE_NAMES = new Set<string>([
   TraceName.ContactSyncFull,
@@ -53,7 +55,7 @@ export const UserStorageControllerInit: MessengerClientInitFunction<
 > = (request) => {
   // The environment must be the same used by AuthenticationController.
   const env = loadAuthenticationConfig();
-  const { controllerMessenger, initMessenger, persistedState } = request;
+  const { controllerMessenger, persistedState } = request;
   const messengerClient = new UserStorageController({
     messenger: controllerMessenger,
     state: persistedState.UserStorageController as UserStorageControllerState,
@@ -63,34 +65,36 @@ export const UserStorageControllerInit: MessengerClientInitFunction<
       env,
       contactSyncing: {
         onContactUpdated: (profileId) => {
-          initMessenger.call('MetaMetricsController:trackEvent', {
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.ProfileActivityUpdated,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              feature_name: 'Backup And Sync',
-              action: 'Contacts Sync Contact Updated',
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+              .addCategory(MetaMetricsEventCategory.BackupAndSync)
+              .addProperties({
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                profile_id: profileId,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                feature_name: 'Backup And Sync',
+                action: 'Contacts Sync Contact Updated',
+              })
+              .build(),
+          );
         },
         onContactDeleted: (profileId) => {
-          initMessenger.call('MetaMetricsController:trackEvent', {
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.ProfileActivityUpdated,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              feature_name: 'Backup And Sync',
-              action: 'Contacts Sync Contact Deleted',
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+              .addCategory(MetaMetricsEventCategory.BackupAndSync)
+              .addProperties({
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                profile_id: profileId,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                feature_name: 'Backup And Sync',
+                action: 'Contacts Sync Contact Deleted',
+              })
+              .build(),
+          );
         },
         onContactSyncErroneousSituation: (
           profileId,
@@ -101,22 +105,23 @@ export const UserStorageControllerInit: MessengerClientInitFunction<
             new Error(`Contact sync - ${situationMessage}`),
             sentryContext,
           );
-          initMessenger.call('MetaMetricsController:trackEvent', {
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.ProfileActivityUpdated,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              feature_name: 'Backup And Sync',
-              action: 'Contacts Sync Erroneous Situation',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              additional_description: situationMessage,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+              .addCategory(MetaMetricsEventCategory.BackupAndSync)
+              .addProperties({
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                profile_id: profileId,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                feature_name: 'Backup And Sync',
+                action: 'Contacts Sync Erroneous Situation',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                additional_description: situationMessage,
+              })
+              .build(),
+          );
         },
       },
     },

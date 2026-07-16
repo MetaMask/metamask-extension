@@ -1,11 +1,13 @@
-import { GitHub } from '@actions/github/lib/utils';
+import type { GitHub } from '@actions/github/lib/utils';
 
-import { Label, createOrRetrieveLabel } from './label.mts';
+import { type Label, createOrRetrieveLabel } from './label.mts';
 
-export enum LabelableType {
-  Issue,
-  PullRequest,
-}
+export const LabelableType = {
+  Issue: 0,
+  PullRequest: 1,
+} as const;
+
+export type LabelableType = (typeof LabelableType)[keyof typeof LabelableType];
 
 // A labelable object can be a pull request or an issue
 export interface Labelable {

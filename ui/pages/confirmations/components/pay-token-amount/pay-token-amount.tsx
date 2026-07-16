@@ -15,7 +15,7 @@ import {
   useTransactionPayIsMaxAmount,
 } from '../../hooks/pay/useTransactionPayData';
 import { useConfirmContext } from '../../context/confirm';
-import { formatAmount } from '../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../shared/lib/format-amount';
 import { getTokenAddress } from '../../utils/transaction-pay';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';

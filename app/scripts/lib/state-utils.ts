@@ -5,6 +5,7 @@ import { Snap } from '@metamask/snaps-utils';
 import { Patch } from 'immer';
 import { cloneDeep } from 'lodash';
 import { Json } from '@metamask/utils';
+import { QR_SYNC_STATE_LOG_KEYS } from '../controllers/qr-sync/metadata';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,6 +87,23 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   sanitizeSnapData(newState);
   sanitizeAuthenticationControllerState(newState);
   sanitizeSeedlessOnboardingControllerState(newState);
+
+  return newState;
+}
+
+/**
+ * Removes controller state that must not appear in downloaded state logs.
+ * This is separate from {@link sanitizeUIState}, which only scrubs sensitive
+ * values while keeping the rest of the UI state intact.
+ *
+ * @param state - The state to sanitize.
+ */
+export function sanitizeStateLogs(state: FlattenedUIState): FlattenedUIState {
+  const newState = { ...state };
+
+  for (const key of QR_SYNC_STATE_LOG_KEYS) {
+    delete newState[key];
+  }
 
   return newState;
 }

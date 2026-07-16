@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import type { CaipChainId } from '@metamask/utils';
 import {
   formatChainIdToHex,
@@ -11,8 +11,8 @@ import {
   ButtonSecondary,
 } from '../../../components/component-library';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 const getBlockExplorerName = (
   chainId: CaipChainId | undefined,
@@ -52,7 +52,7 @@ export default function BridgeExplorerLinks({
   srcBlockExplorerUrl,
   destBlockExplorerUrl,
 }: ExplorerLinksProps) {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
 
   // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render
@@ -76,6 +76,7 @@ export default function BridgeExplorerLinks({
                 srcBlockExplorerUrl,
                 METRICS_LOCATION,
                 trackEvent,
+                createEventBuilder,
               );
             }
           }}
@@ -92,6 +93,7 @@ export default function BridgeExplorerLinks({
                 destBlockExplorerUrl,
                 METRICS_LOCATION,
                 trackEvent,
+                createEventBuilder,
               );
             }
           }}

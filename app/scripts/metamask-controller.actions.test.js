@@ -10,7 +10,6 @@ import {
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
-import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
@@ -58,27 +57,6 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         // Never-resolving promise: prevents any Snap provider from proceeding
         // past `ensureReady`, so no Snap accounts get created during init.
         () => new Promise(() => undefined),
-      );
-      controllerMessenger.registerActionHandler(
-        'SnapAccountService:getLegacySnapKeyring',
-        async () => {
-          const result = await controllerMessenger.call(
-            'KeyringController:withController',
-            async (controller) => {
-              const found = controller.keyrings.find(
-                ({ keyring }) => keyring.type === 'Snap Keyring',
-              );
-              let snapKeyring = found?.keyring;
-              if (!snapKeyring) {
-                const { keyring } =
-                  await controller.addNewKeyring('Snap Keyring');
-                snapKeyring = keyring;
-              }
-              return { snapKeyring };
-            },
-          );
-          return result.snapKeyring;
-        },
       );
       return {
         memStateKey: null,
@@ -276,12 +254,13 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
       const result2 = metamaskController.keyringController.state;
 
-      expect(result1.keyrings).toHaveLength(2);
+      // v2 Snap keyrings are created lazily per-snap, so a fresh restore
+      // produces only the primary HD keyring.
+      expect(result1.keyrings).toHaveLength(1);
       expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]); // 0: Primary HD keyring
-      expect(result1.keyrings[1].metadata.id).toBe(mockULIDs[1]); // 1: Snap keyring
 
       // On restore, a new keyring metadata is generated.
-      const ulidNewIndex = 2;
+      const ulidNewIndex = 1;
       expect(result2).toStrictEqual({
         ...result1,
         keyrings: [
@@ -289,14 +268,7 @@ describe('MetaMaskController', function () {
             ...result1.keyrings[0],
             metadata: {
               ...result1.keyrings[0].metadata,
-              id: mockULIDs[ulidNewIndex + 0], // 0: New primary HD keyring
-            },
-          },
-          {
-            ...result1.keyrings[1],
-            metadata: {
-              ...result1.keyrings[1].metadata,
-              id: mockULIDs[ulidNewIndex + 1], // 1: New Snap keyring
+              id: mockULIDs[ulidNewIndex], // 0: New primary HD keyring
             },
           },
         ],
@@ -312,6 +284,33 @@ describe('MetaMaskController', function () {
       const result2 = metamaskController.keyringController.state;
       expect(result1).not.toStrictEqual(undefined);
       expect(result1).toStrictEqual(result2);
+    });
+  });
+
+  describe('#createNewVaultAndGetSeedPhrase', function () {
+    it('creates a vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      const encodedSeedPhrase =
+        await metamaskController.createNewVaultAndGetSeedPhrase(password);
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
+    });
+  });
+
+  describe('#unlockAndGetSeedPhrase', function () {
+    it('unlocks the vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      await metamaskController.createNewVaultAndKeychain(password);
+      await metamaskController.keyringController.setLocked();
+
+      const encodedSeedPhrase =
+        await metamaskController.unlockAndGetSeedPhrase(password);
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
     });
   });
 
@@ -516,84 +515,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#removePermissionsFor', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        revokePermissions: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        revokePermissions: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#rejectPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        rejectPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        rejectPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#acceptPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
-    });
-  });
-
   describe('#resolvePendingApproval', function () {
     it('should not propagate ApprovalRequestNotFoundError', async function () {
       const error = new ApprovalRequestNotFoundError('123');
@@ -732,40 +653,6 @@ describe('MetaMaskController', function () {
         { txMeta, actionId },
         { waitForResult: true, walletType: HardwareKeyringNames.ledger },
       );
-    });
-  });
-
-  describe('#rejectPendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', function () {
-      const error = new ApprovalRequestNotFoundError('123');
-      metamaskController.approvalController = {
-        rejectRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.approvalController = {
-        rejectRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).toThrow(error);
     });
   });
 
@@ -1463,36 +1350,6 @@ describe('MetaMaskController', function () {
           'priv-key-0xAddressOne',
           'priv-key-0xAddressTwo',
         ]);
-      });
-    });
-
-    describe('#changePassword', function () {
-      it('does not remove passkey after keyring password change', async function () {
-        const releaseLock = jest.fn();
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(
-            metamaskController.onboardingController,
-            'getIsSocialLoginFlow',
-          )
-          .mockReturnValue(false);
-        const changePasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
-
-        await metamaskController.changePassword('new-password', 'old-password');
-
-        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
-        expect(removePasskeySpy).not.toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalledTimes(1);
       });
     });
 

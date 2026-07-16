@@ -109,6 +109,21 @@ export const getAssetImageUrl = (
   }
 };
 
+/**
+ * Returns the image url for a CAIP-formatted asset
+ *
+ * @param assetId - The CAIP-formatted asset id
+ * @returns The image url for the asset
+ */
+export const getCaipAssetImageUrl = (assetId?: CaipAssetType) => {
+  if (!assetId) {
+    return undefined;
+  }
+
+  const chainId = assetId.split('/')[0] as CaipChainId;
+  return getAssetImageUrl(assetId, chainId);
+};
+
 export type AssetMetadata = {
   assetId: CaipAssetType;
   symbol: string;
@@ -288,3 +303,17 @@ export const isTronSpecialAsset = (
     `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
   );
 };
+
+/**
+ * Returns the chain ID from a CAIP asset ID
+ *
+ * @param assetId - The CAIP asset ID to get the chain ID from.
+ * @returns The chain ID from the CAIP asset ID.
+ */
+export function getChainIdFromAssetId(
+  assetId: CaipAssetType,
+): CaipChainId | undefined {
+  return CaipAssetTypeStruct.is(assetId)
+    ? parseCaipAssetType(assetId).chainId
+    : undefined;
+}

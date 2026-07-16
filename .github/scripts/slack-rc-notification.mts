@@ -4,35 +4,35 @@
  * Posts a Block Kit message when a release-candidate Main workflow completes, aligned with
  * metamask-mobile/scripts/slack-rc-notification.mjs (bot token + chat.postMessage).
  *
- * Build URLs use `getBuildLinks` from development/metamaskbot-build-announce/artifacts.ts
- * (main Chrome/Firefox for Webpack + deprecated Browserify fallback).
+ * Build URLs include main Chrome/Firefox Webpack artifacts plus the deprecated Browserify fallback.
  *
  * Local / manual testing
  * ----------------------
  * Dry-run (no Slack API):
- *   DRY_RUN=1 SEMVER=13.26.0 GITHUB_RUN_ID=12345678 \
+ *   DRY_RUN=1 SEMVER=13.26.0 BUILD_RUN_ID=12345678 \
  *   HOST_URL='https://<cloudfront>/metamask-extension/12345678' \
- *   ./node_modules/.bin/tsx ./.github/scripts/slack-rc-notification.ts
+ *   node ./.github/scripts/slack-rc-notification.mts
  *
  * Post to a specific channel (first non-empty wins):
  *   SLACK_RC_CHANNEL, SLACK_CHANNEL, or TEST_CHANNEL (Mobile parity)
  *   Example:
- *   SEMVER=… GITHUB_RUN_ID=… SLACK_BOT_TOKEN='xoxb-…' SLACK_CHANNEL='#my-test' HOST_URL=… \
- *   ./node_modules/.bin/tsx ./.github/scripts/slack-rc-notification.ts
+ *   SEMVER=… BUILD_RUN_ID=… SLACK_BOT_TOKEN='xoxb-…' SLACK_CHANNEL='#my-test' HOST_URL=… \
+ *   node ./.github/scripts/slack-rc-notification.mts
  *
- * Requires `yarn install` at repo root for `@metamask/auto-changelog`.
+ * Requires `@metamask/auto-changelog`.
  *
  * @see metamask-mobile/scripts/slack-rc-notification.mjs
  */
 
 import { readFileSync } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { parseChangelog } from '@metamask/auto-changelog';
-import packageJson from '../../package.json';
-import artifactsModule from '../../development/metamaskbot-build-announce/artifacts';
-
-const { getBuildLinks } = artifactsModule;
+import packageJson from '../../package.json' with { type: 'json' };
+import {
+  getBuildLinks,
+  type BuildLinks,
+} from '../../development/metamaskbot-build-announce/build-links.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, '..', '..');
@@ -47,8 +47,8 @@ type SlackPayload = {
 };
 
 type MainBrowserLinks = {
-  browserify: { chrome: string; firefox: string };
-  webpack: { chrome: string; firefox: string };
+  browserify: BuildLinks['browserify']['main'];
+  webpack: BuildLinks['webpack']['main'];
 };
 
 function escapeSlackMrkdwn(text: string | undefined | null): string {
@@ -83,13 +83,13 @@ function getExtensionMainBuildLinks(
   hostUrl: string,
   packageVersion: string,
 ): MainBrowserLinks {
-  const full = getBuildLinks({
+  const buildLinks = getBuildLinks({
     hostUrl: hostUrl.replace(/\/$/, ''),
     version: packageVersion,
   });
   return {
-    browserify: full.browserify.main,
-    webpack: full.webpack.main,
+    browserify: buildLinks.browserify.main,
+    webpack: buildLinks.webpack.main,
   };
 }
 
@@ -227,6 +227,7 @@ function buildSlackMessage(options: {
   changelogText: string;
   hasChangelog: boolean;
   actionsRunUrl: string | undefined;
+  prNumber?: string;
 }): SlackPayload {
   const {
     semver,
@@ -236,6 +237,7 @@ function buildSlackMessage(options: {
     changelogText,
     hasChangelog,
     actionsRunUrl,
+    prNumber,
   } = options;
 
   const buildIdLabel = `run ${runId}`;
@@ -336,9 +338,22 @@ function buildSlackMessage(options: {
     });
   }
 
+  if (prNumber) {
+    blocks.push(
+      { type: 'divider' },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*:cherries: What's in this RC:* <${REPO_URL}/pull/${prNumber}#user-content-whats-in-this-rc-${runId}|View details>`,
+        },
+      },
+    );
+  }
+
   const footerBits = [
-    actionsRunUrl ? `<${actionsRunUrl}|GitHub Actions run>` : null,
-    `<${REPO_URL}/blob/release/${semver}/CHANGELOG.md|CHANGELOG.md on release/${semver}>`,
+    actionsRunUrl ? `<${actionsRunUrl}|View Build Pipeline>` : null,
+    `<${REPO_URL}/blob/release/${semver}/CHANGELOG.md|View full release notes>`,
   ].filter(Boolean);
 
   blocks.push(
@@ -416,18 +431,19 @@ function getChannelOverride(): string | undefined {
   return raw || undefined;
 }
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
   const dryRun = process.env.DRY_RUN === '1' || process.env.DRY_RUN === 'true';
 
   const semver = process.env.SEMVER;
-  const runId = process.env.GITHUB_RUN_ID;
+  const runId = process.env.BUILD_RUN_ID;
+  const prNumber = process.env.PR_NUMBER || '';
 
   if (!semver) {
     console.warn('⚠️ SEMVER is required');
     return;
   }
   if (!runId) {
-    console.warn('⚠️ GITHUB_RUN_ID is required');
+    console.warn('⚠️ BUILD_RUN_ID is required');
     return;
   }
 
@@ -452,7 +468,7 @@ async function main(): Promise<void> {
   const trimmedHostUrl = process.env.HOST_URL?.trim() ?? '';
   const channelOverride = getChannelOverride();
 
-  const packageVersion = packageJson.version ?? semver;
+  const packageVersion = packageJson.version;
 
   const hostUrlOk = trimmedHostUrl !== '' && isValidUrl(trimmedHostUrl);
 
@@ -517,6 +533,7 @@ async function main(): Promise<void> {
     changelogText,
     hasChangelog,
     actionsRunUrl,
+    prNumber,
   });
 
   if (dryRun) {
@@ -539,6 +556,13 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
+function handleUnexpectedError(error: unknown): void {
   console.error('⚠️ Unexpected error (non-critical):', error);
-});
+}
+
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  main().catch(handleUnexpectedError);
+}
