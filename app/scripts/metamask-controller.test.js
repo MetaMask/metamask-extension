@@ -93,7 +93,9 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
-import MetaMaskController from './metamask-controller';
+import MetaMaskController, {
+  HARDWARE_DEVICE_READ_TIMEOUT_MS,
+} from './metamask-controller';
 import { trackEvent } from './controllers/analytics';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -2305,15 +2307,14 @@ describe('MetaMaskController', () => {
             .spyOn(TrezorKeyring.prototype, 'getFirstPage')
             .mockReturnValue(new Promise(() => undefined));
 
-          // Intercept the 5-minute device-read backstop timer so the test can
-          // fire it deterministically without faking every timer in the app.
-          const DEVICE_READ_TIMEOUT_MS = 5 * 60 * 1000;
+          // Intercept the device-read backstop timer so the test can fire it
+          // deterministically without faking every timer in the app.
           const originalSetTimeout = global.setTimeout;
           let fireDeviceReadTimeout;
           const setTimeoutSpy = jest
             .spyOn(global, 'setTimeout')
             .mockImplementation((handler, timeout, ...args) => {
-              if (timeout === DEVICE_READ_TIMEOUT_MS) {
+              if (timeout === HARDWARE_DEVICE_READ_TIMEOUT_MS) {
                 fireDeviceReadTimeout = handler;
                 return 0;
               }

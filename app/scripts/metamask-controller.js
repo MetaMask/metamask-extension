@@ -507,7 +507,7 @@ const PERPS_DISCONNECT_GRACE_MS = 60 * 1000;
  * to fail abandoned requests with an actionable error instead of leaving the
  * UI waiting forever. See {@link MetamaskController.#withKeyringForDevice}.
  */
-const HARDWARE_DEVICE_READ_TIMEOUT = 5 * MINUTE;
+export const HARDWARE_DEVICE_READ_TIMEOUT_MS = 5 * MINUTE;
 
 function isKeyringV2NotSupportedError(error) {
   return error?.message?.includes(
@@ -9223,7 +9223,7 @@ export default class MetamaskController extends EventEmitter {
                 `Hardware wallet device read timed out for device: ${options.name}. Make sure the device is connected and unlocked, then try again.`,
               ),
             );
-          }, HARDWARE_DEVICE_READ_TIMEOUT);
+          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
         }),
       ]);
     } finally {
