@@ -245,9 +245,6 @@ const bridgeSlice = createSlice({
     setSlippage: (state, action) => {
       state.slippage = action.payload;
     },
-    /**
-     * Marks slippage as an explicit user choice (numeric or Auto).
-     */
     setSlippageUserOverride: (
       state,
       { payload }: { payload: number | undefined },
