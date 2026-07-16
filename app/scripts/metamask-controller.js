@@ -7606,11 +7606,13 @@ export default class MetamaskController extends EventEmitter {
             // snap_startTrace must return a JSON-serializable TraceContext:
             // spreading the raw Sentry Span leaks internal `undefined` fields
             // (e.g. v10's `_endTime`) that fail the snap response's JSON
-            // validation. Return the spanContext() W3C ids instead.
+            // validation. Return the `SerializedTraceContext` shape
+            // (`_traceId`/`_spanId`) so the result round-trips into a later
+            // `startTrace` call's `parentContext` and nests correctly.
             const span = trace(options);
             const spanContext = span?.spanContext?.();
             return spanContext
-              ? { traceId: spanContext.traceId, spanId: spanContext.spanId }
+              ? { _traceId: spanContext.traceId, _spanId: spanContext.spanId }
               : {};
           },
           endTrace,
