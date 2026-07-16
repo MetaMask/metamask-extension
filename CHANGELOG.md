@@ -9,8 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.41.0]
 
+### Uncategorized
+
+- Deleted token cache (#44522)
+- chore: Revert "chore(6926): migrate ReactDOM.render to createRoot (#43872)" (#43872)
+- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6500 (#44110)
+- perf(6916): refactor core UX selectors to remove deep-equality subscriptions (#44235)
+- Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6411 (#44109)
+- chore: setup codeownership of `metamask-controller` (#44131)
+
 ### Added
 
+- Added transitions (#44481)
+- Toggle update for manage tokens (#44434)
 - Added transitions to manage tokens page (#44484)
 - Added the ability to save gas fee preferences per account and network (#43317)
 - Added support for `Blob` global in Snaps (#44396)
@@ -34,6 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Restore enabled networks via controller (#44371)
+- Ux changes (#44268)
 - Fixed extra mascot showing in unlock page while on strict mode (#44533)
 - Fixed a bug where home subtab content was emitting duplicate events (#44528)
 - Fixed a bug that required two clicks to select a token when buying crypto (#44497)
