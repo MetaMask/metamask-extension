@@ -38,17 +38,6 @@ module.exports = [
     group: 'Reselect: Output stability warnings',
   },
 
-  {
-    match:
-      /Selector .* returned a different result when called with the same parameters/u,
-    group: 'React-Redux: Selector stability warnings',
-  },
-
-  {
-    match: /Selector .* returned the root state when called/u,
-    group: 'React-Redux: Root state selector warnings',
-  },
-
   // ===========================================================================
   // METAMASK-SPECIFIC WARNINGS
   // ===========================================================================

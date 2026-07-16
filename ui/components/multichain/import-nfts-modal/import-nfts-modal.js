@@ -2,7 +2,6 @@ import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useAppDispatch } from '../../../store/hooks';
 import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventName,
@@ -38,6 +37,7 @@ import {
   ignoreTokens,
   updateNftDropDownState,
 } from '../../../store/actions';
+import { useAppDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import {
   Box,

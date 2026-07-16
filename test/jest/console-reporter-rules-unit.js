@@ -132,18 +132,6 @@ module.exports = [
     group: 'Reselect: Output stability warnings',
   },
 
-  // react-redux v8 useSelector dev checks (when Provider stabilityCheck is enabled)
-  {
-    match:
-      /Selector .* returned a different result when called with the same parameters/u,
-    group: 'React-Redux: Selector stability warnings',
-  },
-
-  {
-    match: /Selector .* returned the root state when called/u,
-    group: 'React-Redux: Root state selector warnings',
-  },
-
   // ===========================================================================
   // REACT ACT WARNINGS (Testing Library)
   // ===========================================================================
