@@ -224,9 +224,9 @@ function TestButton({
       await onClick();
     } catch (error) {
       hasError = true;
-      if (!expectError) {
-        throw error;
-      }
+      // Always rethrow so "Generate * Error" buttons still produce an unhandled
+      // rejection for Sentry. expectError only controls the success checkmark.
+      throw error;
     } finally {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
