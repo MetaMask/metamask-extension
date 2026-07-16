@@ -607,6 +607,11 @@ const config = {
       // Optimize duplication and caching by splitting chunks by shared
       // modules and cache group.
       cacheGroups: {
+        // Keep split chunks under the explicit predicates below. Webpack's
+        // implicit defaults can create service-worker chunks that are
+        // referenced by importScripts but not emitted under LavaMoat.
+        default: false,
+        defaultVendors: false,
         js: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
           test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
