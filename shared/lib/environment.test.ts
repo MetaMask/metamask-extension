@@ -2,6 +2,7 @@ import { ENVIRONMENT } from '../constants/build';
 import {
   getIsPerpsIncludedInBuild,
   getIsPasskeyFeatureEnabled,
+  getIsPasskeyDevTestEnabled,
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
@@ -213,5 +214,32 @@ describe('getIsPasskeyFeatureEnabled', () => {
   it('returns false when PASSKEY_ENABLED is undefined', () => {
     delete process.env.PASSKEY_ENABLED;
     expect(getIsPasskeyFeatureEnabled()).toBe(false);
+  });
+});
+
+describe('getIsPasskeyDevTestEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.PASSKEY_DEV_TEST_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.PASSKEY_DEV_TEST_ENABLED = originalValue;
+  });
+
+  it('returns true when PASSKEY_DEV_TEST_ENABLED is "true"', () => {
+    process.env.PASSKEY_DEV_TEST_ENABLED = 'true';
+    expect(getIsPasskeyDevTestEnabled()).toBe(true);
+  });
+
+  it('returns false when PASSKEY_DEV_TEST_ENABLED is "false"', () => {
+    process.env.PASSKEY_DEV_TEST_ENABLED = 'false';
+    expect(getIsPasskeyDevTestEnabled()).toBe(false);
+  });
+
+  it('returns false when PASSKEY_DEV_TEST_ENABLED is undefined', () => {
+    delete process.env.PASSKEY_DEV_TEST_ENABLED;
+    expect(getIsPasskeyDevTestEnabled()).toBe(false);
   });
 });

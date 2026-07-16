@@ -104,3 +104,10 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
 export const getIsPasskeyFeatureEnabled = (): boolean => {
   return process.env.PASSKEY_ENABLED?.toString() === 'true';
 };
+
+/**
+ * Dev-only gate for cross-surface passkey experiments (extension ↔ mobile).
+ */
+export const getIsPasskeyDevTestEnabled = (): boolean => {
+  return process.env.PASSKEY_DEV_TEST_ENABLED?.toString() === 'true';
+};

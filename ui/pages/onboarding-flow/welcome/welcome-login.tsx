@@ -15,6 +15,7 @@ import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import LoginOptions from './login-options';
+import PasskeyDevButtons from './passkey-dev-buttons';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -158,6 +159,7 @@ export default function WelcomeLogin({
                 ? t('onboardingImportWallet')
                 : t('onboardingSrpImport')}
             </Button>
+            <PasskeyDevButtons />
           </Box>
         )}
       </Box>
