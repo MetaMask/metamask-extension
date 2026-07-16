@@ -2,8 +2,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockTronSwapApis,
@@ -26,10 +26,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -65,10 +62,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -99,10 +93,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

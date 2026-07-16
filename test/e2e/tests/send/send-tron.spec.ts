@@ -1,11 +1,11 @@
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
   mockTronApis,
@@ -26,10 +26,7 @@ describe('Send Tron', function () {
 
         // Switch to Tron via the UI. Enabling it through fixtures causes a redirect
         // back to the default network because the snap is not yet initialized
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
