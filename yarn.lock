@@ -5867,17 +5867,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^1.6.2":
-  version: 1.6.2
-  resolution: "@metamask/chain-agnostic-permission@npm:1.6.2"
+"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@1.6.2-preview-43e6d6596":
+  version: 1.6.2-preview-43e6d6596
+  resolution: "@metamask-previews/chain-agnostic-permission@npm:1.6.2-preview-43e6d6596"
   dependencies:
     "@metamask/api-specs": "npm:^0.15.0"
-    "@metamask/controller-utils": "npm:^12.2.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/ff3c2ab116a612010b4bb7b5406f80fa77392c09d3c07be1fb88787bef599b7c11b5267c8378b9c8ee2de7ae04d08a7050f56f9f54df3a00fbac358d683d21df
+  checksum: 10/2327cf52e4619e5042b494840d8610810f5869272fd87bf234023e76332474aea604a632945a0f245d05d0de23d1d46762f1b7a8f59a071cb2cd97c9ab1cb817
   languageName: node
   linkType: hard
 
@@ -7131,16 +7131,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:^3.1.4":
-  version: 3.1.4
-  resolution: "@metamask/multichain-api-middleware@npm:3.1.4"
+"@metamask/multichain-api-middleware@npm:@metamask-previews/multichain-api-middleware@3.1.5-preview-43e6d6596":
+  version: 3.1.5-preview-43e6d6596
+  resolution: "@metamask-previews/multichain-api-middleware@npm:3.1.5-preview-43e6d6596"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.1"
+    "@metamask/accounts-controller": "npm:^39.0.3"
     "@metamask/api-specs": "npm:^0.15.0"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
-    "@metamask/controller-utils": "npm:^12.2.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/json-rpc-engine": "npm:^10.5.0"
-    "@metamask/network-controller": "npm:^32.0.0"
+    "@metamask/network-controller": "npm:^33.0.0"
     "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-controllers": "npm:^19.0.0"
@@ -7148,7 +7148,7 @@ __metadata:
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/c69888c66ac6b48cdecedbcbd52dc0208c905d2a8f3d0e0fcb92db7daefd3ffa8308006a33f29a97899186096dffc11f872f5cf9d48e39179f4781ef1e104851
+  checksum: 10/298b9755ce52df6a7cbc41bd83c5e3ddd61e976b50f804ec2b2eb1f26df70141831e1e3e73a86aa2102d3f2b4a481fcf0fd23a22931fb890c4fc3356e9279551
   languageName: node
   linkType: hard
 
@@ -33112,7 +33112,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:^1.6.2"
+    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@1.6.2-preview-43e6d6596"
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
@@ -33179,7 +33179,7 @@ __metadata:
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
     "@metamask/multichain-account-service": "npm:^11.0.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
-    "@metamask/multichain-api-middleware": "npm:^3.1.4"
+    "@metamask/multichain-api-middleware": "npm:@metamask-previews/multichain-api-middleware@3.1.5-preview-43e6d6596"
     "@metamask/multichain-network-controller": "npm:^3.1.0"
     "@metamask/multichain-transactions-controller": "npm:^7.1.0"
     "@metamask/name-controller": "npm:^9.1.0"

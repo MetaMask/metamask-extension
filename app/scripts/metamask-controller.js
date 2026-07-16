@@ -111,6 +111,7 @@ import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getSessionScopes,
+  getSessionProperties,
   setPermittedEthChainIds,
   getPermittedAccountsForScopes,
   getAllScopesFromCaip25CaveatValue,
@@ -1087,6 +1088,39 @@ export default class MetamaskController extends EventEmitter {
       return this.getPermittedAccounts(innerOrigin);
     };
 
+    const getCapabilitiesHooks = {
+      getDismissSmartAccountSuggestionEnabled: () =>
+        this.preferencesController.state.preferences
+          .dismissSmartAccountSuggestionEnabled,
+      getIsSmartTransaction: (chainId) =>
+        getIsSmartTransaction(this._getMetaMaskState(), chainId),
+      getSmartTransactionsPreferenceEnabled: () =>
+        getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
+      getSmartTransactionsEnabled: (chainId) =>
+        getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
+      isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+        this.txController,
+      ),
+      isRelaySupported,
+      getSendBundleSupportedChains,
+      isAuxiliaryFundsSupported: (chainId) =>
+        ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+    };
+
+    // Resolves the EIP-5792 wallet capabilities for a given EVM account
+    // address across all configured networks. Used as the `getCapabilities`
+    // hook for the Multichain API session handlers (`wallet_getSession`,
+    // `wallet_createSession`) and the `wallet_sessionChanged` notification so
+    // that capabilities can be surfaced in
+    // `sessionProperties.eip155Capabilities`.
+    this.getCapabilitiesForSession = ({ address }) =>
+      getCapabilities(
+        getCapabilitiesHooks,
+        this.controllerMessenger,
+        address,
+        undefined,
+      );
+
     this.eip5792Middleware = createScaffoldMiddleware({
       wallet_getCapabilities: createAsyncMiddleware(async (req, res) =>
         walletGetCapabilities(req, res, {
@@ -1096,25 +1130,7 @@ export default class MetamaskController extends EventEmitter {
           },
           getCapabilities: getCapabilities.bind(
             null,
-            {
-              getDismissSmartAccountSuggestionEnabled: () =>
-                this.preferencesController.state.preferences
-                  .dismissSmartAccountSuggestionEnabled,
-              getIsSmartTransaction: (chainId) =>
-                getIsSmartTransaction(this._getMetaMaskState(), chainId),
-              getSmartTransactionsPreferenceEnabled: () =>
-                getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
-              getSmartTransactionsEnabled: (chainId) =>
-                getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
-              isAtomicBatchSupported:
-                this.txController.isAtomicBatchSupported.bind(
-                  this.txController,
-                ),
-              isRelaySupported,
-              getSendBundleSupportedChains,
-              isAuxiliaryFundsSupported: (chainId) =>
-                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
-            },
+            getCapabilitiesHooks,
             this.controllerMessenger,
           ),
         }),
@@ -7792,6 +7808,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
+        getCapabilities: this.getCapabilitiesForSession,
       }),
     );
 
@@ -8687,12 +8704,17 @@ export default class MetamaskController extends EventEmitter {
         this.sortAccountIdsByLastSelected.bind(this),
     });
 
+    const sessionProperties = await getSessionProperties(newAuthorization, {
+      getCapabilities: this.getCapabilitiesForSession,
+    });
+
     this.notifyConnections(
       origin,
       {
         method: MultichainApiNotifications.sessionChanged,
         params: {
           sessionScopes,
+          sessionProperties,
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
