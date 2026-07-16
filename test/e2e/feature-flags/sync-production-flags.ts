@@ -607,6 +607,9 @@ export function rebuildRegistryContent(
   });
 
   const registryStart = content.indexOf(REGISTRY_START);
+  if (registryStart === -1) {
+    throw new Error('Could not locate FEATURE_FLAG_REGISTRY block');
+  }
   const openBrace = content.indexOf('{', registryStart);
   const registryEnd = findRegistryBodyEnd(content, openBrace);
   if (openBrace === -1 || registryEnd === -1) {
