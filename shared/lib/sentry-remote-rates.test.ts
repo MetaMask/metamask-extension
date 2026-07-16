@@ -59,7 +59,7 @@ describe('applySentryRemoteRates', () => {
     expect(getRemoteWrapperSampleRate()).toBe(1);
   });
 
-  it.each([
+  const INVALID_RATES: [label: string, value: unknown][] = [
     ['negative', -0.1],
     ['above one', 1.5],
     ['NaN', NaN],
@@ -67,20 +67,23 @@ describe('applySentryRemoteRates', () => {
     ['string', '0.5'],
     ['null', null],
     ['object', { rate: 0.5 }],
-  ])('ignores an invalid rate (%s) and keeps fallbacks', async (_, value) => {
-    mockPersistedState({ tracesSampleRate: value, wrapperSampleRate: value });
-    const client = mockClient();
+  ];
+  for (const [label, value] of INVALID_RATES) {
+    it(`ignores an invalid rate (${label}) and keeps fallbacks`, async () => {
+      mockPersistedState({ tracesSampleRate: value, wrapperSampleRate: value });
+      const client = mockClient();
 
-    const applied = await applySentryRemoteRates(client);
+      const applied = await applySentryRemoteRates(client);
 
-    expect(applied).toStrictEqual({
-      tracesSampleRate: undefined,
-      wrapperSampleRate: undefined,
-      transactionSampleRates: undefined,
+      expect(applied).toStrictEqual({
+        tracesSampleRate: undefined,
+        wrapperSampleRate: undefined,
+        transactionSampleRates: undefined,
+      });
+      expect(client.options.tracesSampleRate).toBe(0.0075);
+      expect(getRemoteWrapperSampleRate()).toBeUndefined();
     });
-    expect(client.options.tracesSampleRate).toBe(0.0075);
-    expect(getRemoteWrapperSampleRate()).toBeUndefined();
-  });
+  }
 
   it('applies a partial flag without touching the other rate', async () => {
     mockPersistedState({ wrapperSampleRate: 0.05 });
@@ -172,20 +175,23 @@ describe('applySentryRemoteRates', () => {
       });
     });
 
-    it.each([
+    const INVALID_RATE_MAPS: [label: string, value: unknown][] = [
       ['array', [0.5]],
       ['string', 'AssetsDataSourceTiming=0'],
       ['number', 0.5],
       ['null', null],
       ['all-invalid map', { 'Only Entry': -1 }],
       ['empty map', {}],
-    ])('yields undefined for a %s value', async (_, value) => {
-      mockPersistedState({ transactionSampleRates: value });
+    ];
+    for (const [label, value] of INVALID_RATE_MAPS) {
+      it(`yields undefined for a ${label} value`, async () => {
+        mockPersistedState({ transactionSampleRates: value });
 
-      await applySentryRemoteRates();
+        await applySentryRemoteRates();
 
-      expect(getRemoteTransactionSampleRates()).toBeUndefined();
-    });
+        expect(getRemoteTransactionSampleRates()).toBeUndefined();
+      });
+    }
   });
 
   describe('shouldSampleWrappers integration', () => {
