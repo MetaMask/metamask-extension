@@ -20,12 +20,15 @@ const mockArgs = {
 const mockChunk = ({
   name,
   chunkLoading,
+  files = [],
 }: {
   name?: string;
   chunkLoading?: string;
+  files?: string[];
 }): Chunk =>
   ({
     name,
+    files: new Set(files),
     getEntryOptions: () =>
       chunkLoading === undefined ? undefined : { chunkLoading },
   }) as unknown as Chunk;
@@ -37,7 +40,7 @@ describe('LavamoatPlugin', () => {
     const plugin = lavamoatPlugin(mockArgs) as unknown as {
       options: {
         runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => unknown;
-        inlineLockdown: RegExp;
+        inlineLockdown: { test: (filename: string) => boolean };
       };
     };
     const runtimeConfig =
@@ -49,6 +52,7 @@ describe('LavamoatPlugin', () => {
         mockChunk({
           name: 'renamed-worker.ts',
           chunkLoading: 'import-scripts',
+          files: ['renamed-worker.js'],
         }),
       ) as {
         mode: string;
@@ -75,12 +79,17 @@ describe('LavamoatPlugin', () => {
         exceptions.includes('addEventListener'),
         'Sentry must be able to register service worker event listeners',
       );
-      assert.ok(inlineLockdown.test('service-worker.js'));
+      assert.ok(inlineLockdown.test('renamed-worker.js'));
     });
 
     it('inlines SES into content script and shared runtime output files', () => {
-      assert.ok(inlineLockdown.test('scripts/contentscript.js'));
-      assert.ok(inlineLockdown.test('runtime.0123456789abcdefghab.js'));
+      for (const [name, filename] of [
+        ['scripts/contentscript.js', 'scripts/contentscript.js'],
+        ['runtime', 'runtime.0123456789abcdefghij.js'],
+      ]) {
+        runtimeConfig(mockChunk({ name, files: [filename] }));
+        assert.ok(inlineLockdown.test(filename));
+      }
       assert.ok(!inlineLockdown.test('unrelated.js'));
     });
 
