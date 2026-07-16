@@ -4,43 +4,40 @@ import {
   type QuoteMetadata,
 } from '@metamask/bridge-controller';
 
+export const OP_0_005_ETH_TO_ARB_METADATA = {
+  sentAmount: {
+    amount: '0.005',
+    valueInCurrency: '1000',
+    usd: '1000',
+  },
+  gasFee: {
+    effective: { amount: '12', valueInCurrency: '12', usd: '12' },
+    total: { amount: '12', valueInCurrency: '12', usd: '12' },
+    max: { amount: '12', valueInCurrency: '12', usd: '12' },
+  },
+  totalNetworkFee: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  toTokenAmount: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  adjustedReturn: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  swapRate: '12',
+  cost: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+};
 export const DummyQuotesNoApproval = {
   OP_0_005_ETH_TO_ARB: [
     {
-      sentAmount: {
-        amount: '0.005',
-        valueInCurrency: '1000',
-        usd: '1000',
-      },
-      gasFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalMaxNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      toTokenAmount: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      adjustedReturn: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      swapRate: '12',
-      cost: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
       quote: {
         requestId: 'be448070-7849-4d14-bb35-8dcdaf7a4d69',
         srcChainId: 10,
@@ -453,43 +450,143 @@ export const DummyQuotesNoApproval = {
   ] as unknown as (QuoteResponse & QuoteMetadata)[],
 };
 
+export const ETH_11_USDC_TO_ARB_METADATA = {
+  sentAmount: {
+    amount: '1.0903750',
+    valueInCurrency: '1000',
+    usd: '1000',
+  },
+  gasFee: {
+    effective: { amount: '12', valueInCurrency: '12', usd: '12' },
+    max: { amount: '12', valueInCurrency: '12', usd: '12' },
+    total: { amount: '12', valueInCurrency: '12', usd: '12' },
+  },
+  totalNetworkFee: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  toTokenAmount: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  adjustedReturn: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  swapRate: '12',
+  cost: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+};
+const ARB_11_USDC_TO_ETH_METADATA = {
+  sentAmount: {
+    amount: '1.0903750',
+    valueInCurrency: '1000',
+    usd: '1000',
+  },
+  gasFee: {
+    total: { amount: '12', valueInCurrency: '12', usd: '12' },
+  },
+  totalNetworkFee: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  totalMaxNetworkFee: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  toTokenAmount: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  adjustedReturn: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  swapRate: '12',
+  cost: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+};
+const ARB_11_USDC_TO_OP_METADATA = {
+  sentAmount: {
+    amount: '1.0903750',
+    valueInCurrency: '1000',
+    usd: '1000',
+  },
+  gasFee: {
+    total: { amount: '12', valueInCurrency: '12', usd: '12' },
+  },
+  totalNetworkFee: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  totalMaxNetworkFee: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  toTokenAmount: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  adjustedReturn: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  swapRate: '12',
+  cost: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+};
+const OP_11_USDC_TO_ARB_METADATA = {
+  sentAmount: {
+    amount: '1.1000000',
+    valueInCurrency: '1000',
+    usd: '1000',
+  },
+  gasFee: {
+    total: { amount: '12', valueInCurrency: '12', usd: '12' },
+  },
+  totalNetworkFee: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  totalMaxNetworkFee: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  toTokenAmount: {
+    amount: '12',
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  adjustedReturn: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+  swapRate: '12',
+  cost: {
+    valueInCurrency: '12',
+    usd: '12',
+  },
+};
+
 export const DummyQuotesWithApproval = {
   ETH_11_USDC_TO_ARB: [
     {
-      sentAmount: {
-        amount: '1.0903750',
-        valueInCurrency: '1000',
-        usd: '1000',
-      },
-      gasFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalMaxNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      toTokenAmount: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      adjustedReturn: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      swapRate: '12',
-      cost: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
       quote: {
         requestId: '0cd5caf6-9844-465b-89ad-9c89b639f432',
         srcChainId: 1,
@@ -934,40 +1031,6 @@ export const DummyQuotesWithApproval = {
   ] as unknown as (QuoteResponse & QuoteMetadata)[],
   ARB_11_USDC_TO_ETH: [
     {
-      sentAmount: {
-        amount: '1.0903750',
-        valueInCurrency: '1000',
-        usd: '1000',
-      },
-      gasFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalMaxNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      toTokenAmount: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      adjustedReturn: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      swapRate: '12',
-      cost: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
       quote: {
         requestId: 'edbef62a-d3e6-4b33-aad5-9cdb81f85f53',
         srcChainId: 42161,
@@ -1073,40 +1136,6 @@ export const DummyQuotesWithApproval = {
   ] as unknown as (QuoteResponse & QuoteMetadata)[],
   ARB_11_USDC_TO_OP: [
     {
-      sentAmount: {
-        amount: '1.0903750',
-        valueInCurrency: '1000',
-        usd: '1000',
-      },
-      gasFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalMaxNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      toTokenAmount: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      adjustedReturn: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      swapRate: '12',
-      cost: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
       quote: {
         requestId: 'dc63e7e6-dc9b-4aa8-80bb-714192ecd801',
         srcChainId: 42161,
@@ -2782,40 +2811,6 @@ export const DummyQuotesWithApproval = {
   ] as unknown as (QuoteResponse & QuoteMetadata)[],
   OP_11_USDC_TO_ARB: [
     {
-      sentAmount: {
-        amount: '1.1000000',
-        valueInCurrency: '1000',
-        usd: '1000',
-      },
-      gasFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      totalMaxNetworkFee: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      toTokenAmount: {
-        amount: '12',
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      adjustedReturn: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
-      swapRate: '12',
-      cost: {
-        valueInCurrency: '12',
-        usd: '12',
-      },
       quote: {
         requestId: '01fa78fd-ed49-42b3-ab0e-94c7108feea9',
         srcChainId: 10,

@@ -11,6 +11,8 @@ import {
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
+  ETH_11_USDC_TO_ARB_METADATA,
+  OP_0_005_ETH_TO_ARB_METADATA,
 } from '../../../test/data/bridge/dummy-quotes';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -24,6 +26,7 @@ import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -213,11 +216,16 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        ...ETH_11_USDC_TO_ARB_METADATA,
+      };
+
       await act(async () => {
-        await result.current.submitBridgeTransaction(
-          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-        );
+        await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
+
+      expect(quoteWithMetadata.toTokenAmount?.usd).toBe('12');
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
@@ -238,17 +246,21 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('executes EVM bridge transaction with no approval', async () => {
+    it.only('executes EVM bridge transaction with no approval', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
 
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata = {
+        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
+        ...OP_0_005_ETH_TO_ARB_METADATA,
+      };
       await act(async () => {
-        await result.current.submitBridgeTransaction(
-          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
-        );
+        await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
+
+      expect(quoteWithMetadata.toTokenAmount?.usd).toBe('12');
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
       expect(result.current.isSubmitting).toBe(false);
