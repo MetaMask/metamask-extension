@@ -20,7 +20,7 @@ import {
   mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
-import { buildBtcSwapFixtures } from '../btc/unified-btc-assets';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
@@ -43,16 +43,10 @@ describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
 
-  const btcSendFixtureOptions = {
-    fixtures: buildBtcSwapFixtures(),
-    localNodeOptions: [{ type: 'none' as const }],
-    dappOptions: { numberOfTestDapps: 1 },
-  };
-
   it('fields validation', async function () {
     await withFixtures(
       {
-        ...btcSendFixtureOptions,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSendMocks,
       },
@@ -84,7 +78,7 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        ...btcSendFixtureOptions,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSendMocks,
       },
@@ -119,7 +113,7 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        ...btcSendFixtureOptions,
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSendMocks,
       },

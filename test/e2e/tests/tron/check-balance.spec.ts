@@ -7,14 +7,13 @@ import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockTronApis } from './mocks/common-tron';
-import { buildTronFixtures } from './unified-tron-assets';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
-describe('Check balance TESST', function (this: Suite) {
+describe('Check balance', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(undefined, { zeroBalance: true }),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) =>
           mockTronApis(mockServer, true),
@@ -37,10 +36,9 @@ describe('Check balance TESST', function (this: Suite) {
   it('For a non 0 balance account - USD balance', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(undefined, {
-          showNativeTokenAsMainBalanceDisabled: true,
-        }),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
       },
@@ -67,8 +65,7 @@ describe('Check balance TESST', function (this: Suite) {
   it('For a non 0 balance account - TRX balance', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
       },

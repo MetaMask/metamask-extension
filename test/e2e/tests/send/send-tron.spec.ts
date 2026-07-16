@@ -11,14 +11,13 @@ import {
   mockTronApis,
   TRON_RECIPIENT_ADDRESS,
 } from '../tron/mocks/common-tron';
-import { buildTronFixtures } from '../tron/unified-tron-assets';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
 describe('Send Tron', function () {
   it('it should be possible to send TRX', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
       },

@@ -11,14 +11,13 @@ import {
   mockTronSwapApisWithoutFeeEstimation,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
-import { buildTronFixtures } from './unified-tron-assets';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApis,
         ignoredConsoleErrors: [
@@ -60,8 +59,7 @@ describe('Swap on Tron', function () {
   it('Swap disabled when Tron network fees cannot be estimated', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApisWithoutFeeEstimation,
       },
@@ -95,8 +93,7 @@ describe('Swap on Tron', function () {
   it('No quotes available for the pair', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApisNoQuotes,
       },
