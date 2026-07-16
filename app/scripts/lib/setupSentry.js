@@ -145,8 +145,6 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    // Sentry only runs in extension-owned realms, not in content scripts.
-    skipBrowserExtensionCheck: true,
     tracesSampleRate: getTracesSampleRate(sentryTarget),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
