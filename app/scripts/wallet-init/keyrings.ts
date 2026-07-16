@@ -121,15 +121,15 @@ export function getKeyringBuilders(
 ) {
   const overrides = process.env.IN_TEST
     ? {
-        // Use `require` (not `import`) so this test-only code is dead-code-eliminated from production builds.
+        // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         trezorBridge: require('../../../test/stub/keyring-bridge')
           .FakeTrezorBridge,
-        // Use `require` (not `import`) so this test-only code is dead-code-eliminated from production builds.
+        // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         ledgerBridge: require('../../../test/stub/keyring-bridge')
           .FakeLedgerBridge,
-        // Use `require` (not `import`) so this test-only code is dead-code-eliminated from production builds.
+        // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         qrBridge: require('../../../test/stub/keyring-bridge').FakeQrBridge,
       }

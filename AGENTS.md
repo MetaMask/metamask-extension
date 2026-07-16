@@ -858,20 +858,38 @@ yarn lavamoat:auto
 **Manual:**
 
 ```bash
-# Regenerate the webpack LavaMoat policies
-yarn lavamoat:auto
+# Compile the webpack build tooling
+yarn webpack:tsc
+
+# Regenerate the webpack build tooling policy
+yarn webpack:lavamoat:policy:build
+
+# Regenerate the Firefox MV2 application policies
+yarn webpack:lavamoat:policy:mv2
+
+# Regenerate the Chrome MV3 application policies
+yarn webpack:lavamoat:policy:mv3
 
 # If policies still fail after regeneration:
-rm -rf node_modules/ && yarn && yarn lavamoat:auto
+rm -rf node_modules/ && yarn
+# Then compile the webpack build tooling and rerun the affected policy command above.
 ```
 
 ### Debugging Policy Issues
 
-If a build fails on a policy violation, regenerate the policies and review the diff:
+If a build fails on a policy violation, compile the webpack build tooling, regenerate only the affected policy, and review the diff:
 
 ```bash
-# Regenerate the webpack LavaMoat policies
-yarn lavamoat:auto
+yarn webpack:tsc
+
+# For a webpack build tooling policy violation
+yarn webpack:lavamoat:policy:build
+
+# For a Firefox MV2 application policy violation
+yarn webpack:lavamoat:policy:mv2
+
+# For a Chrome MV3 application policy violation
+yarn webpack:lavamoat:policy:mv3
 ```
 
 **Common Issues:**
