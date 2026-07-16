@@ -24,7 +24,7 @@ import ConfirmResetAccount from './confirm-reset-account';
 import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
-import FadeModal from './fade-modal';
+import FadeModal, { type FadeModalRef } from './fade-modal';
 import RampsInfoModal from './ramps/ramps-info-modal';
 
 const modalContainerBaseStyle = {
@@ -61,11 +61,6 @@ type ModalConfig = {
   disableBackdropClick?: boolean;
   onHide?: () => void;
   customOnHideOpts?: CustomOnHideOpts;
-};
-
-type FadeModalRef = {
-  show: () => void;
-  hide: () => void;
 };
 
 const MODALS: Record<string, ModalConfig> = {
@@ -320,7 +315,7 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const modalRef = useRef<FadeModalRef>(null);
+  const modalRef = useRef<FadeModalRef | null>(null);
 
   useEffect(() => {
     if (active) {
@@ -345,7 +340,6 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
         }
         hideModal(modal.customOnHideOpts);
       }}
-      // @ts-expect-error FadeModal is a JS class component without TS type declarations
       ref={modalRef}
       modalStyle={modalStyle}
       contentStyle={contentStyle}

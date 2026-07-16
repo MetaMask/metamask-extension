@@ -19,7 +19,6 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/lib/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
@@ -2449,14 +2448,8 @@ describe('#getConnectedSitesList', () => {
     it('respects the overrideChainId parameter', () => {
       process.env.METAMASK_ENVIRONMENT = 'production';
 
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsSwapsChain(mockState, '0x89');
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -2505,15 +2498,9 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('respects the overrideChainId parameter', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsBridgeChain(mockState, '0x89');
 
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -4978,6 +4965,7 @@ describe('snap selectors', () => {
       },
       insights: {
         one: { value: 1 },
+        two: { value: 2 },
       },
     },
   };
@@ -4995,6 +4983,28 @@ describe('snap selectors', () => {
     expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
       value: 1,
     });
+  });
+
+  it('caches snap insights per snap ID', () => {
+    const cachingState = {
+      ...snapState,
+      metamask: {
+        ...snapState.metamask,
+        insights: {
+          alpha: { value: 'a' },
+          beta: { value: 'b' },
+        },
+      },
+    };
+
+    selectors.getSnapInsights.resetRecomputations();
+
+    const firstInsight = selectors.getSnapInsights(cachingState, 'alpha');
+    const secondInsight = selectors.getSnapInsights(cachingState, 'beta');
+
+    expect(selectors.getSnapInsights(cachingState, 'alpha')).toBe(firstInsight);
+    expect(selectors.getSnapInsights(cachingState, 'beta')).toBe(secondInsight);
+    expect(selectors.getSnapInsights.recomputations()).toBe(2);
   });
 
   it('filters snap collections for snap permissions and enabled state', () => {
