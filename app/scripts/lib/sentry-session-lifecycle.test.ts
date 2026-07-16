@@ -5,11 +5,9 @@ import { makeTransport } from './sentry-make-transport';
 
 type FetchCallArgs = [RequestInfo | URL, RequestInit | undefined];
 
-// Lives in its own file deliberately: `browserSessionIntegration.setupOnce`
-// runs once per process, so the init-time session belongs to the first
-// `Sentry.init` in the worker. A dedicated file makes this test the first
-// (and only) init, letting it observe the organic init-trigger session that
-// shared test files cannot.
+// Keep this file isolated: `browserSessionIntegration.setupOnce` runs once
+// per process, so the organic init-trigger session is observable only when
+// this suite owns the first `Sentry.init` in the worker.
 async function flushMicrotasks(depth = 5): Promise<void> {
   for (let i = 0; i < depth; i += 1) {
     // eslint-disable-next-line no-await-in-loop

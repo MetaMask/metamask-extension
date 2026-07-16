@@ -17,11 +17,9 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// TODO: Remove this widened wait once #43958 globalizes the Solana discovery
-// mocks. The Solana snap calls 15 discovery RPC methods but
-// `setupDefaultNonEvmDiscoveryMocks` only mocks `getSignaturesForAddress`; the
-// rest fall through to the empty-200 catch-all and drive a retry storm that
-// delays the Solana icon past the default 10s wait.
+// TODO: Remove this widened wait once #43958 completes the Solana discovery
+// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
+// past the default 10s wait.
 const NON_EVM_ICON_TIMEOUT = 20_000;
 
 class HomePage {

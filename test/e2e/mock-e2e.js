@@ -196,18 +196,14 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
       body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
     }));
 
-  // Network-identity check, distinct from the tip/blocks mocks above (already
-  // on main via #43817): the Bitcoin snap fetches `/block-height/0` and
-  // verifies the genesis hash before deriving accounts. Left unmocked, the
-  // request falls to the empty-200 catch-all, whose malformed body throws in
-  // the snap and restarts discovery in a retry storm that delays the non-EVM
-  // account icons past the default wait — a trial removal on #42867
-  // deterministically broke `unlock-wallet`. The mock-completion PR #43961
-  // (closes #43958) is Solana-scoped and does not cover this endpoint, so this
-  // handler must be kept even after it lands. The hash must match the
-  // requested height: height 0 is the genesis block, and returning the
-  // chain-tip hash there fails the snap's chain check and crashes account
-  // creation. Real genesis hash for 0, tip otherwise.
+  // The Bitcoin snap fetches `/block-height/0` and verifies the genesis hash
+  // before deriving accounts — a network-identity check not covered by the
+  // discovery mocks above (#43817) nor by the Solana-scoped completion work
+  // (#43961/#43958), so this handler stays. Unmocked, the request falls to the
+  // empty-200 catch-all, whose malformed body retry-storms discovery and
+  // delays the non-EVM account icons past the default wait. Height 0 must
+  // return the real genesis hash: the snap's chain check rejects a tip hash
+  // there and crashes account creation.
   await server
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/(?<height>\d+)$/u,
@@ -540,12 +536,10 @@ async function setupMocking(
     });
 
   // `SENTRY_DSN_PERFORMANCE`
-  // Intercept with a canned 200 rather than passing through to real
-  // `sentry.io`. Tracing emits hundreds of performance envelopes per test
-  // (~800 in a heavy multichain run); the real-network round-trips starve
-  // startup and flake the non-EVM account render, and consume the
-  // `metamask-performance` quota from CI. The log is kept for request
-  // accounting.
+  // Intercept with a canned 200 rather than passing through: tracing emits
+  // hundreds of performance envelopes per test, and the real-network
+  // round-trips starve startup, flake the non-EVM account render, and consume
+  // the `metamask-performance` quota from CI.
   await server
     .forPost('https://sentry.io/api/4510302346608640/envelope/')
     .thenCallback((req) => {
