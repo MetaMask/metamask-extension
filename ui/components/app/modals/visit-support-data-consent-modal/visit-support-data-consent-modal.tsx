@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { openWindow } from '../../../../helpers/utils/window';
@@ -48,11 +48,10 @@ const VisitSupportDataConsentModal = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
   const { customerId: shieldCustomerId } = useUserSubscriptions();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleClickContactSupportButton = useCallback(() => {
-    onClose();
-
-    const openSupportLink = (customerServiceToken?: string) => {
+  const openSupportLink = useCallback(
+    (customerServiceToken?: string) => {
       const params: SupportLinkUserData = {
         version,
         customerServiceToken,
@@ -73,19 +72,36 @@ const VisitSupportDataConsentModal = ({
           .build(),
       );
       openWindow(supportLinkWithUserId);
-    };
+    },
+    [
+      version,
+      shieldCustomerId,
+      trackEvent,
+      createEventBuilder,
+      segmentContext.page?.title,
+    ],
+  );
 
-    getCustomerServiceToken().then(openSupportLink);
-  }, [
-    onClose,
-    version,
-    shieldCustomerId,
-    trackEvent,
-    createEventBuilder,
-    segmentContext.page?.title,
-  ]);
+  const handleClickContactSupportButton = useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const customerServiceToken = await getCustomerServiceToken();
+      onClose();
+      openSupportLink(customerServiceToken);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isLoading, onClose, openSupportLink]);
 
   const handleClickNoShare = useCallback(() => {
+    if (isLoading) {
+      return;
+    }
+
     onClose();
 
     trackEvent(
@@ -98,7 +114,13 @@ const VisitSupportDataConsentModal = ({
         .build(),
     );
     openWindow(SUPPORT_LINK as string);
-  }, [onClose, trackEvent, createEventBuilder, segmentContext.page?.title]);
+  }, [
+    isLoading,
+    onClose,
+    trackEvent,
+    createEventBuilder,
+    segmentContext.page?.title,
+  ]);
 
   return (
     <Modal
@@ -126,6 +148,7 @@ const VisitSupportDataConsentModal = ({
               size={ButtonSecondarySize.Lg}
               width={BlockSize.Half}
               onClick={handleClickNoShare}
+              disabled={isLoading}
               data-testid="visit-support-data-consent-modal-reject-button"
             >
               {t('visitSupportDataConsentModalReject')}
@@ -134,6 +157,8 @@ const VisitSupportDataConsentModal = ({
               size={ButtonPrimarySize.Lg}
               width={BlockSize.Half}
               onClick={handleClickContactSupportButton}
+              loading={isLoading}
+              disabled={isLoading}
               data-testid="visit-support-data-consent-modal-accept-button"
             >
               {t('visitSupportDataConsentModalAccept')}

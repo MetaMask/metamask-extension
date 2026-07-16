@@ -7427,20 +7427,47 @@ export async function getBearerToken(): Promise<string | undefined> {
 }
 
 /**
+ * Max time to wait for a customer-service token before opening support without
+ * it. Prevents a hung background auth call from blocking the support link.
+ */
+const CUSTOMER_SERVICE_TOKEN_TIMEOUT_MS = 5000;
+
+/**
  * Fetches the user's customer-service token from the authentication API.
  *
- * @returns The customer-service token, or undefined if authentication fails.
+ * Times out after {@link CUSTOMER_SERVICE_TOKEN_TIMEOUT_MS} so a hung
+ * background call cannot block opening support.
+ *
+ * @returns The customer-service token, or undefined if authentication fails
+ * or times out.
  */
 export async function getCustomerServiceToken(): Promise<string | undefined> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
   try {
-    const customerServiceToken = await submitRequestToBackground<string>(
+    const tokenPromise = submitRequestToBackground<string>(
       'messengerCall',
       ['AuthenticationController:getCustomerServiceToken', []],
-    );
+    ).catch((error) => {
+      logErrorWithMessage(error);
+      return undefined;
+    });
+
+    const customerServiceToken = await Promise.race([
+      tokenPromise,
+      new Promise<undefined>((resolve) => {
+        timeoutId = setTimeout(
+          () => resolve(undefined),
+          CUSTOMER_SERVICE_TOKEN_TIMEOUT_MS,
+        );
+      }),
+    ]);
+
     return customerServiceToken;
-  } catch (error) {
-    logErrorWithMessage(error);
-    return undefined;
+  } finally {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
   }
 }
 

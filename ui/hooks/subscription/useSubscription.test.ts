@@ -318,8 +318,8 @@ describe('useHandleSubscriptionSupportAction', () => {
       state,
     );
 
-    act(() => {
-      result.current.handleClickContactSupport();
+    await act(async () => {
+      await result.current.handleClickContactSupport();
     });
 
     const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
@@ -328,10 +328,8 @@ describe('useHandleSubscriptionSupportAction', () => {
       shieldCustomerId: 'test-shield-customer-id',
     });
 
-    await waitFor(() => {
-      expect(mockGetCustomerServiceToken).toHaveBeenCalled();
-      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
-    });
+    expect(mockGetCustomerServiceToken).toHaveBeenCalled();
+    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
 
   it('opens support link without token when token is unavailable', async () => {
@@ -342,8 +340,8 @@ describe('useHandleSubscriptionSupportAction', () => {
       state,
     );
 
-    act(() => {
-      result.current.handleClickContactSupport();
+    await act(async () => {
+      await result.current.handleClickContactSupport();
     });
 
     const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
@@ -351,10 +349,8 @@ describe('useHandleSubscriptionSupportAction', () => {
       shieldCustomerId: 'test-shield-customer-id',
     });
 
-    await waitFor(() => {
-      expect(mockGetCustomerServiceToken).toHaveBeenCalled();
-      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
-    });
+    expect(mockGetCustomerServiceToken).toHaveBeenCalled();
+    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
 });
 

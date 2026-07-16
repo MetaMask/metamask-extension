@@ -3853,6 +3853,30 @@ describe('Actions', () => {
       const result = await actions.getCustomerServiceToken();
       expect(result).toBeUndefined();
     });
+
+    it('returns undefined when the background messenger call times out', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const messengerCallStub = sinon
+          .stub()
+          .withArgs('AuthenticationController:getCustomerServiceToken', [])
+          .returns(new Promise(() => undefined));
+
+        background.getApi.returns({
+          messengerCall: messengerCallStub,
+        });
+        setBackgroundConnection(background.getApi());
+
+        const resultPromise = actions.getCustomerServiceToken();
+        await jest.advanceTimersByTimeAsync(5000);
+        const result = await resultPromise;
+
+        expect(result).toBeUndefined();
+      } finally {
+        jest.useRealTimers();
+      }
+    });
   });
 
   describe('#createOnChainTriggers', () => {

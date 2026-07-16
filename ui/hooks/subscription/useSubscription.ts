@@ -733,21 +733,18 @@ export const useHandleSubscriptionSupportAction = () => {
   const version = process.env.METAMASK_VERSION as string;
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
-  const handleClickContactSupport = useCallback(() => {
-    const openSupportLink = (customerServiceToken?: string) => {
-      const supportLinkWithUserId = buildSupportLinkWithUserData(
-        SUPPORT_LINK as string,
-        {
-          version,
-          customerServiceToken,
-          shieldCustomerId,
-        },
-      );
+  const handleClickContactSupport = useCallback(async () => {
+    const customerServiceToken = await getCustomerServiceToken();
+    const supportLinkWithUserId = buildSupportLinkWithUserData(
+      SUPPORT_LINK as string,
+      {
+        version,
+        customerServiceToken,
+        shieldCustomerId,
+      },
+    );
 
-      openWindow(supportLinkWithUserId);
-    };
-
-    getCustomerServiceToken().then(openSupportLink);
+    openWindow(supportLinkWithUserId);
   }, [version, shieldCustomerId]);
 
   return {

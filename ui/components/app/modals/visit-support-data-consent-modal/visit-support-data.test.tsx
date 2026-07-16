@@ -107,6 +107,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     await waitFor(() => {
       expect(getCustomerServiceTokenMock).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
       expect(mockTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           name: MetaMetricsEventName.SupportLinkClicked,
@@ -118,6 +119,40 @@ describe('VisitSupportDataConsentModal', () => {
         }),
       );
       expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+    });
+  });
+
+  it('keeps the modal open and shows loading until the token request settles', async () => {
+    let resolveToken: (token: string | undefined) => void = () => undefined;
+    getCustomerServiceTokenMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveToken = resolve;
+        }),
+    );
+
+    const { getByTestId } = renderModal();
+    const acceptButton = getByTestId(
+      'visit-support-data-consent-modal-accept-button',
+    );
+    const rejectButton = getByTestId(
+      'visit-support-data-consent-modal-reject-button',
+    );
+
+    fireEvent.click(acceptButton);
+
+    await waitFor(() => {
+      expect(acceptButton).toBeDisabled();
+      expect(rejectButton).toBeDisabled();
+      expect(mockOnClose).not.toHaveBeenCalled();
+      expect(openWindow).not.toHaveBeenCalled();
+    });
+
+    resolveToken(mockCustomerServiceToken);
+
+    await waitFor(() => {
+      expect(mockOnClose).toHaveBeenCalled();
+      expect(openWindow).toHaveBeenCalled();
     });
   });
 
