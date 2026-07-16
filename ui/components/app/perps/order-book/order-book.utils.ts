@@ -99,8 +99,8 @@ const MAX_PRICE_DECIMALS = PERPS_MAX_PRICE_DECIMALS;
 const USD_COMPACT_MILLIONS_THRESHOLD = 1_000_000;
 const USD_COMPACT_THOUSANDS_THRESHOLD = 10_000;
 
-/** Basis points per percent, used for the spread readout. */
-const BPS_PER_PERCENT = 100;
+/** Decimal places kept when rendering the spread as a percentage. */
+const SPREAD_PERCENT_DECIMALS = 3;
 
 /** Shown when a value has not loaded / cannot be parsed. */
 const ORDER_BOOK_FALLBACK_DISPLAY = PERPS_FALLBACK_DATA_DISPLAY;
@@ -120,8 +120,8 @@ export const ORDER_BOOK_MAX_WIDTH_PCT = 60;
 export const ORDER_BOOK_MIN_WIDTH_PX = 208;
 /** Minimum usable width for the order-entry form beside the book. */
 export const ORDER_BOOK_FORM_MIN_WIDTH_PX = 224;
-/** Width of the draggable divider (Tailwind `w-1` = 4px). */
-export const ORDER_BOOK_DIVIDER_WIDTH_PX = 4;
+/** Width of the draggable divider (Tailwind `w-0.5` = 2px). */
+export const ORDER_BOOK_DIVIDER_WIDTH_PX = 2;
 
 /**
  * Calculate dynamic price-grouping options based on the asset's mid price.
@@ -386,19 +386,19 @@ export function formatColumnValue(
 }
 
 /**
- * Format the bid/ask spread in basis points (one decimal, trailing zero
- * stripped). Centralized here so the readout precision is defined in one place.
+ * Format the bid/ask spread as a percentage string (e.g. "0.003%"), matching
+ * the compact spread row in the design. Small spreads are kept to a few decimal
+ * places with trailing zeros stripped.
  *
  * @param spreadPercentage - Spread as a percentage (e.g. 0.0027 for 0.0027%).
- * @returns Formatted bps value (without unit), or the fallback display.
+ * @returns Formatted percentage string (with `%`), or the fallback display.
  */
-export function formatSpreadBps(spreadPercentage: number): string {
+export function formatSpreadPercent(spreadPercentage: number): string {
   if (!Number.isFinite(spreadPercentage)) {
     return ORDER_BOOK_FALLBACK_DISPLAY;
   }
-  const bps = spreadPercentage * BPS_PER_PERCENT;
-  const rounded = Math.round(bps * 10) / 10;
-  return rounded.toString();
+  const rounded = Number(spreadPercentage.toFixed(SPREAD_PERCENT_DECIMALS));
+  return `${rounded}%`;
 }
 
 /**

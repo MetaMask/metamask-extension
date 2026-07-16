@@ -8,16 +8,14 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
-  IconSize,
 } from '@metamask/design-system-react';
 import type { OrderBookLevel } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
-  PERPS_FALLBACK_PRICE_DISPLAY,
-  PERPS_FALLBACK_DATA_DISPLAY,
 } from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
@@ -26,8 +24,7 @@ import {
   calculateAggregationParams,
   calculateGroupingOptions,
   formatColumnValue,
-  formatGroupingLabel,
-  formatSpreadBps,
+  formatSpreadPercent,
   getDepthRatio,
   getDepthWidth,
   groupOrderBook,
@@ -41,7 +38,7 @@ import type {
   PerpsOrderBookProps,
 } from './order-book.types';
 
-const DEPTH_BAR_OPACITY = 0.16;
+const DEPTH_BAR_OPACITY = 0.15;
 
 type OrderBookRowProps = {
   level: OrderBookLevel;
@@ -78,17 +75,20 @@ const OrderBookRow = ({
     }
   };
 
+  const sideColor = isBid ? TextColor.SuccessDefault : TextColor.ErrorDefault;
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
-      paddingLeft={3}
-      paddingRight={3}
+      gap={2}
+      paddingLeft={2}
+      paddingRight={4}
       className={
         isInteractive
-          ? 'relative py-1 cursor-pointer hover:bg-muted'
-          : 'relative py-1'
+          ? 'relative h-8 cursor-pointer hover:bg-muted'
+          : 'relative h-8'
       }
       data-testid={testId}
       {...(isInteractive && {
@@ -111,16 +111,18 @@ const OrderBookRow = ({
         }}
       />
       <Text
-        variant={TextVariant.BodySm}
-        color={isBid ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+        variant={TextVariant.BodyXs}
+        fontWeight={FontWeight.Medium}
+        color={sideColor}
         className="relative z-10"
         data-testid={`${testId}-price`}
       >
         {formatPerpsFiat(level.price, { ranges: PRICE_RANGES_UNIVERSAL })}
       </Text>
       <Text
-        variant={TextVariant.BodySm}
-        color={TextColor.TextDefault}
+        variant={TextVariant.BodyXs}
+        fontWeight={FontWeight.Medium}
+        color={sideColor}
         className="relative z-10"
         data-testid={`${testId}-value`}
       >
@@ -134,10 +136,10 @@ const OrderBookRow = ({
  * PerpsOrderBook - Live bid/ask order book with depth bars.
  *
  * Reads from the shared order-book stream channel (the surrounding order entry
- * page owns the stream lifecycle) and renders asks (top), the current mid price
- * and spread (middle) and bids (bottom) in a single vertical ladder. A trigger
- * in the header opens a modal for choosing the denomination, value metric and
- * price grouping.
+ * page owns the stream lifecycle) and renders asks (top), a compact spread row
+ * (middle) and bids (bottom) in a single vertical ladder, with a buy/sell depth
+ * ratio beneath. A header control opens a modal for choosing the denomination,
+ * value metric and price grouping.
  *
  * @param options0 - Component props.
  * @param options0.symbol - Market symbol.
@@ -269,7 +271,7 @@ export const PerpsOrderBook = ({
     }
     return `${formatPerpsFiat(spread, {
       ranges: PRICE_RANGES_UNIVERSAL,
-    })} (${formatSpreadBps(spreadPercent)} bps)`;
+    })} (${formatSpreadPercent(spreadPercent)})`;
   }, [rawOrderBook]);
 
   const handleApplyConfig = useCallback(
@@ -285,11 +287,6 @@ export const PerpsOrderBook = ({
     [],
   );
 
-  const groupingTriggerLabel =
-    currentGrouping === null
-      ? PERPS_FALLBACK_DATA_DISPLAY
-      : formatGroupingLabel(currentGrouping);
-
   const hasLadder = Boolean(
     grouped && (grouped.bids.length > 0 || grouped.asks.length > 0),
   );
@@ -300,48 +297,48 @@ export const PerpsOrderBook = ({
       className="h-full w-full overflow-hidden bg-default"
       data-testid={dataTestId}
     >
-      {/* Header: grouping trigger */}
+      {/* Header: settings control */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        paddingLeft={3}
-        paddingRight={3}
-        paddingTop={3}
+        justifyContent={BoxJustifyContent.End}
+        paddingLeft={2}
+        paddingRight={4}
+        paddingTop={2}
         paddingBottom={2}
       >
-        <button
-          type="button"
+        <ButtonIcon
+          iconName={IconName.Setting}
+          ariaLabel={t('perpsOrderBookConfigTitle')}
+          size={ButtonIconSize.Md}
+          onClick={() => setIsConfigOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={isConfigOpen}
           aria-controls={configModalId}
-          aria-label={t('perpsOrderBookConfigTitle')}
-          onClick={() => setIsConfigOpen(true)}
-          className="flex flex-row items-center gap-1 cursor-pointer rounded-md border border-muted px-2 py-0.5 hover:bg-muted"
           data-testid={`${dataTestId}-grouping-trigger`}
-        >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-          >
-            {groupingTriggerLabel}
-          </Text>
-          <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
-        </button>
+        />
       </Box>
 
       {/* Column headers */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
-        paddingLeft={3}
-        paddingRight={3}
+        paddingLeft={2}
+        paddingRight={4}
         paddingBottom={1}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        <Text
+          variant={TextVariant.BodyXs}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
+        >
           {t('perpsOrderBookPrice')}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        <Text
+          variant={TextVariant.BodyXs}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
+        >
           {`${metricLabel} (${unitLabel})`}
         </Text>
       </Box>
@@ -403,29 +400,24 @@ export const PerpsOrderBook = ({
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Between}
-            paddingLeft={3}
-            paddingRight={3}
-            paddingTop={2}
-            paddingBottom={2}
-            className="shrink-0"
+            gap={2}
+            paddingLeft={2}
+            paddingRight={4}
+            className="h-8 shrink-0"
             data-testid={`${dataTestId}-spread`}
           >
             <Text
-              variant={TextVariant.HeadingMd}
-              fontWeight={FontWeight.Bold}
-              color={TextColor.TextDefault}
-              data-testid={`${dataTestId}-mid-price`}
+              variant={TextVariant.BodyXs}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextAlternative}
             >
-              {midPriceValue === null
-                ? PERPS_FALLBACK_PRICE_DISPLAY
-                : formatPerpsFiat(midPriceValue, {
-                    ranges: PRICE_RANGES_UNIVERSAL,
-                  })}
+              {t('perpsOrderBookSpread')}
             </Text>
             {spreadDisplay && (
               <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
+                variant={TextVariant.BodyXs}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
               >
                 {spreadDisplay}
               </Text>
@@ -466,11 +458,14 @@ export const PerpsOrderBook = ({
       {/* Buy/Sell depth ratio */}
       {depthRatio && (
         <Box
-          paddingLeft={3}
-          paddingRight={3}
+          flexDirection={BoxFlexDirection.Column}
+          gap={1}
+          paddingLeft={2}
+          paddingRight={4}
           paddingTop={2}
           paddingBottom={3}
           className="shrink-0"
+          data-testid={`${dataTestId}-ratio`}
         >
           <Box
             role="img"
@@ -480,59 +475,43 @@ export const PerpsOrderBook = ({
             ])}
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
-            className="h-6 w-full overflow-hidden rounded-full"
-            data-testid={`${dataTestId}-ratio`}
+            gap={1}
+            className="w-full"
           >
             <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={1}
-              paddingLeft={2}
-              paddingRight={2}
-              className="h-full"
+              className="h-1 rounded-full"
               style={{
                 width: `${depthRatio.buyPercent}%`,
-                backgroundColor: 'var(--color-success-muted)',
+                backgroundColor: 'var(--color-success-default)',
               }}
-            >
-              <Text
-                variant={TextVariant.BodyXs}
-                fontWeight={FontWeight.Bold}
-                color={TextColor.SuccessDefault}
-              >
-                B
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.SuccessDefault}
-              >
-                {`${depthRatio.buyPercent}%`}
-              </Text>
-            </Box>
+            />
             <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              justifyContent={BoxJustifyContent.End}
-              gap={1}
-              paddingLeft={2}
-              paddingRight={2}
-              className="h-full"
+              className="h-1 rounded-full"
               style={{
                 width: `${depthRatio.sellPercent}%`,
-                backgroundColor: 'var(--color-error-muted)',
+                backgroundColor: 'var(--color-error-default)',
               }}
+            />
+          </Box>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            className="w-full"
+          >
+            <Text
+              variant={TextVariant.BodyXs}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.SuccessDefault}
             >
-              <Text variant={TextVariant.BodyXs} color={TextColor.ErrorDefault}>
-                {`${depthRatio.sellPercent}%`}
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                fontWeight={FontWeight.Bold}
-                color={TextColor.ErrorDefault}
-              >
-                S
-              </Text>
-            </Box>
+              {t('perpsOrderBookBuy', [String(depthRatio.buyPercent)])}
+            </Text>
+            <Text
+              variant={TextVariant.BodyXs}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.ErrorDefault}
+            >
+              {t('perpsOrderBookSell', [String(depthRatio.sellPercent)])}
+            </Text>
           </Box>
         </Box>
       )}

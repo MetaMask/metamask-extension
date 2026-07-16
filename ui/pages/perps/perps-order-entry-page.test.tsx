@@ -634,7 +634,8 @@ describe('PerpsOrderEntryPage', () => {
       // Regression: dragging the divider far left on a narrow popup previously
       // let the order book reach 60%, which (with the form's 224px pixel floor)
       // pushed the panel past the viewport. The width is now capped so the form
-      // keeps its floor: (400 - 224 form - 4 divider) / 400 = 43%.
+      // keeps its floor: (400 - 224 form - 2 divider) / 400 = 43.5% (rounds to
+      // 44 for the aria value).
       const rectSpy = jest
         .spyOn(Element.prototype, 'getBoundingClientRect')
         .mockReturnValue({
@@ -659,7 +660,7 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.mouseDown(divider);
         // Drag all the way to the left edge (would be 100% without the cap).
         fireEvent.mouseMove(window, { clientX: 0 });
-        expect(divider).toHaveAttribute('aria-valuenow', '43');
+        expect(divider).toHaveAttribute('aria-valuenow', '44');
       } finally {
         rectSpy.mockRestore();
       }

@@ -10,7 +10,7 @@ import {
   computeOrderBookWidthPct,
   formatColumnValue,
   formatGroupingLabel,
-  formatSpreadBps,
+  formatSpreadPercent,
   getDepthRatio,
   getDepthWidth,
   groupOrderBook,
@@ -286,14 +286,19 @@ describe('order-book.utils', () => {
     });
   });
 
-  describe('formatSpreadBps', () => {
-    it('converts a spread percentage to one-decimal basis points', () => {
-      expect(formatSpreadBps(0.0027)).toBe('0.3');
-      expect(formatSpreadBps(0.05)).toBe('5');
+  describe('formatSpreadPercent', () => {
+    it('formats a spread percentage to three decimals with a percent sign', () => {
+      expect(formatSpreadPercent(0.0027)).toBe('0.003%');
+      expect(formatSpreadPercent(0.05)).toBe('0.05%');
+      expect(formatSpreadPercent(1)).toBe('1%');
+    });
+
+    it('strips trailing zeros', () => {
+      expect(formatSpreadPercent(0.1)).toBe('0.1%');
     });
 
     it('returns the fallback display for non-finite input', () => {
-      expect(formatSpreadBps(Number.NaN)).toBe('--');
+      expect(formatSpreadPercent(Number.NaN)).toBe('--');
     });
   });
 
@@ -325,10 +330,10 @@ describe('order-book.utils', () => {
     });
 
     it('caps the width so the form keeps its pixel floor on a narrow body', () => {
-      // Body 400px: order book may take at most (400 - 224 form - 4 divider) =
-      // 172px => 43%. A request for the 60% max is capped to 43% so the panel
-      // does not overflow off-screen.
-      expect(clampOrderBookWidthPct(60, 400)).toBeCloseTo(43, 5);
+      // Body 400px: order book may take at most (400 - 224 form - 2 divider) =
+      // 174px => 43.5%. A request for the 60% max is capped to 43.5% so the
+      // panel does not overflow off-screen.
+      expect(clampOrderBookWidthPct(60, 400)).toBeCloseTo(43.5, 5);
     });
 
     it('does not cap below the percentage floor on a very narrow body', () => {
@@ -358,8 +363,8 @@ describe('order-book.utils', () => {
 
     it('caps the width to the form pixel floor when dragged far on a narrow body', () => {
       // Body 400px wide (right edge at 400). Dragging the pointer to x=0 would
-      // request 100%, but the form's pixel floor caps it at 43%.
-      expect(computeOrderBookWidthPct(400, 400, 0)).toBeCloseTo(43, 5);
+      // request 100%, but the form's pixel floor caps it at 43.5%.
+      expect(computeOrderBookWidthPct(400, 400, 0)).toBeCloseTo(43.5, 5);
     });
   });
 });

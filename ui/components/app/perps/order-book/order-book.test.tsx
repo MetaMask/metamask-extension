@@ -150,12 +150,15 @@ describe('PerpsOrderBook', () => {
       ).toHaveTextContent('$2,967');
     });
 
-    it('renders the mid price and spread in basis points', () => {
+    it('renders the compact spread row with a percentage', () => {
       renderOrderBook({ marketPrice: 73776 });
 
       const spread = screen.getByTestId('perps-order-book-spread');
-      expect(spread).toHaveTextContent('73,776');
-      expect(spread).toHaveTextContent('0.3 bps');
+      expect(spread).toHaveTextContent(messages.perpsOrderBookSpread.message);
+      // spread 2, spreadPercentage 0.0027 → "$2.00 (0.003%)".
+      expect(spread).toHaveTextContent('0.003%');
+      // The prominent mid price is no longer shown in the spread row.
+      expect(spread).not.toHaveTextContent('73,776');
     });
 
     it('renders the buy/sell depth ratio summing to 100%', () => {
@@ -224,7 +227,7 @@ describe('PerpsOrderBook', () => {
       ).toBeInTheDocument();
     });
 
-    it('applies a new price grouping to the trigger label', () => {
+    it('keeps the applied grouping selected when the modal is reopened', () => {
       renderOrderBook();
 
       fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
@@ -235,9 +238,10 @@ describe('PerpsOrderBook', () => {
         screen.getByTestId('perps-order-book-config-modal-apply'),
       );
 
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
       expect(
-        screen.getByTestId('perps-order-book-grouping-trigger'),
-      ).toHaveTextContent('1');
+        screen.getByTestId('perps-order-book-config-modal-grouping-1'),
+      ).toHaveAttribute('aria-checked', 'true');
     });
   });
 

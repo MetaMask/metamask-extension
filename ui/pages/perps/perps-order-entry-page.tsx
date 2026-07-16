@@ -1860,16 +1860,14 @@ const PerpsOrderEntryPage = () => {
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Center}
             className={twMerge(
-              'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg',
-              isOrderBookOpen && 'bg-muted',
+              'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg border border-transparent',
+              isOrderBookOpen && 'bg-muted border-primary-default',
             )}
           >
             <Icon
               name={IconName.Book}
               size={IconSize.Lg}
-              className={
-                isOrderBookOpen ? 'text-primary-default' : 'text-alternative'
-              }
+              className={isOrderBookOpen ? 'text-default' : 'text-alternative'}
             />
           </Box>
         ) : (
@@ -2025,7 +2023,7 @@ const PerpsOrderEntryPage = () => {
             tabIndex={0}
             onMouseDown={handleOrderBookResizeStart}
             onKeyDown={handleOrderBookResizeKeyDown}
-            className="w-1 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
+            className="w-0.5 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
             data-testid="perps-order-book-resize-handle"
           />
         )}
@@ -2037,9 +2035,12 @@ const PerpsOrderEntryPage = () => {
             flexDirection={BoxFlexDirection.Column}
             style={{
               width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%',
-              // Only floor the width while open so the collapse animation can
-              // still shrink the panel to zero.
-              minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : undefined,
+              // Floor the width while open, and use a transitionable 0 (not
+              // `undefined`/`auto`) while closed: CSS cannot interpolate
+              // `auto -> 208px`, so an `undefined` closed value made the panel
+              // snap to full width on open instead of animating. Animating
+              // min-width 0 <-> 208px keeps open and close symmetric.
+              minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : 0,
             }}
             className={twMerge(
               'shrink-0 h-full overflow-hidden',

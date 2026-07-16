@@ -7425,6 +7425,10 @@
   "perpsOrderBookApply": {
     "message": "Apply"
   },
+  "perpsOrderBookBuy": {
+    "message": "Buy: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
   "perpsOrderBookConfigTitle": {
     "message": "Listed by & Group by"
   },
@@ -7450,8 +7454,15 @@
   "perpsOrderBookResize": {
     "message": "Resize order book"
   },
+  "perpsOrderBookSell": {
+    "message": "Sell: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
+  },
   "perpsOrderBookSize": {
     "message": "Size"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
   },
   "perpsOrderBookTotal": {
     "message": "Total"
