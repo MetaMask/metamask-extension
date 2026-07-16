@@ -49,7 +49,7 @@ export async function createProductionMwpStack(
  * Creates the in-extension MWP mock stack for QrSync E2E tests.
  */
 export async function createE2eMwpStack(): Promise<DappClient> {
-  // Use `require` to make it easier to exclude this test code from the Browserify build.
+  // Use `require` (not `import`) so this test-only code is dead-code-eliminated from production builds.
   /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
   const {
     E2eMwpMockClient,
