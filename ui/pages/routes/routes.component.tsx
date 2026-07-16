@@ -80,7 +80,7 @@ import {
   SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
-import { getIsAddDeviceSyncEnabled } from '../../../shared/lib/environment';
+import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -358,7 +358,7 @@ export const routeConfig = [
           </GlobalMenuRouteTransition>
         ),
       },
-      ...(getIsAddDeviceSyncEnabled()
+      ...(getIsQrSyncEnabled()
         ? [
             {
               path: SYNC_ACCOUNTS_ROUTE,
