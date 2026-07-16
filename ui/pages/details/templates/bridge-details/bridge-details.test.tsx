@@ -140,7 +140,19 @@ jest.mock('../../../../components/app/transaction/transaction-id', () => ({
 const mockUseBridgeHistoryItem = useBridgeHistoryItem as unknown as jest.Mock;
 const mockUseHistoryTokens = useHistoryTokens as unknown as jest.Mock;
 
-type BridgeItem = Extract<ActivityListItem, { type: 'bridge' }>;
+type BridgeItem = Extract<
+  ActivityListItem,
+  {
+    type:
+      | 'swap'
+      | 'bridge'
+      | 'convert'
+      | 'lendingDeposit'
+      | 'lendingWithdrawal'
+      | 'wrap'
+      | 'unwrap';
+  }
+>;
 
 const SOURCE_TX_HASH = '0xsourcehash';
 const DEST_TX_HASH = '0xdesthash';
