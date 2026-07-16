@@ -28,11 +28,11 @@ function shouldUseDefaultLinkNavigation(
 ): boolean {
   return Boolean(
     event.defaultPrevented ||
-      event.button !== 0 ||
-      event.metaKey ||
-      event.altKey ||
-      event.ctrlKey ||
-      event.shiftKey,
+    event.button !== 0 ||
+    event.metaKey ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.shiftKey,
   );
 }
 
@@ -43,8 +43,7 @@ function getClientRouteFromExtensionLinkRoute(
     return '/';
   }
 
-  const [, hashRoute] =
-    /^home\.html#(\/.*)$/u.exec(extensionLinkRoute) ?? [];
+  const [, hashRoute] = /^home\.html#(\/.*)$/u.exec(extensionLinkRoute) ?? [];
 
   return hashRoute && isInternalRouteHref(hashRoute) ? hashRoute : undefined;
 }
