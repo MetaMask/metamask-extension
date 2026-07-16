@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
-import { getDisplayName } from '../../../components/app/perps/utils';
+import { getDisplaySymbol } from '../../../components/app/perps/utils';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
@@ -76,7 +76,7 @@ export function usePerpsAssetNames(): UsePerpsAssetNamesReturn {
       if (!symbol) {
         return symbol;
       }
-      return nameBySymbol.get(symbol.toUpperCase()) || getDisplayName(symbol);
+      return nameBySymbol.get(symbol.toUpperCase()) || getDisplaySymbol(symbol);
     },
     [nameBySymbol],
   );
