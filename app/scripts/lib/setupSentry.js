@@ -42,6 +42,12 @@ const SENTRY_DISTRIBUTED_TRACING_ENABLED =
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
 const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
 
+// PROBE ONLY (#44581, do not merge): SDK initializes with the full options
+// object (globals and hooks stay intact for the test infra) but event
+// processing, instrumentation, and transport are disabled via `enabled: false`.
+// Arm C of the stall bisect: tracing-off (arm A) still stalled.
+const PROBE_SDK_DISABLED = true;
+
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
   COINGECKO: 'coingecko.com',
@@ -95,6 +101,7 @@ function getClientOptions() {
   const sentryTarget = getSentryTarget();
 
   return {
+    enabled: !PROBE_SDK_DISABLED,
     beforeBreadcrumb: beforeBreadcrumb(),
     // Clone before rewriteReport so we never mutate the event object that dedupeIntegration
     // still holds as previousEvent — rewriteReportUrls changes stack frame filenames in place,

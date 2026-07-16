@@ -319,7 +319,52 @@ describe('Import custom token on a custom network', function () {
         await addRpcUrlModal.fillAddRpcUrlInput(PULSECHAIN_RPC_URL);
         await addRpcUrlModal.fillAddRpcNameInput(PULSECHAIN_NETWORK_NAME);
         await addRpcUrlModal.saveAddRpcUrl();
-        await addEditNetworkModal.saveEditedNetwork();
+        try {
+          await addEditNetworkModal.saveEditedNetwork();
+        } catch (error) {
+          // SW-PROBE (diagnostic, probe branch only): distinguish a dead
+          // service worker from a slow background call at the stall point.
+          const contexts = await driver.executeScript(
+            'return chrome.runtime.getContexts({})',
+          );
+          console.log('SW-PROBE contexts:', JSON.stringify(contexts));
+          const ping = await driver.executeScript(
+            `return new Promise((resolve) => {
+               try {
+                 chrome.runtime.sendMessage({ name: 'sw-probe-ping' }, () =>
+                   resolve(
+                     chrome.runtime.lastError
+                       ? 'dead: ' + chrome.runtime.lastError.message
+                       : 'alive',
+                   ),
+                 );
+               } catch (err) {
+                 resolve('threw: ' + String(err));
+               }
+             })`,
+          );
+          console.log('SW-PROBE ping:', ping);
+          await driver.delay(30000);
+          const persisted = await driver.executeScript(
+            `return chrome.storage.local.get('data').then((s) =>
+               JSON.stringify(
+                 Object.keys(
+                   s.data?.NetworkController?.networkConfigurationsByChainId ??
+                     {},
+                 ),
+               ),
+             )`,
+          );
+          console.log('SW-PROBE network keys after 30s:', persisted);
+          const contexts2 = await driver.executeScript(
+            'return chrome.runtime.getContexts({})',
+          );
+          console.log(
+            'SW-PROBE contexts after 30s:',
+            JSON.stringify(contexts2),
+          );
+          throw error;
+        }
 
         await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
           PULSECHAIN_NETWORK_NAME,
