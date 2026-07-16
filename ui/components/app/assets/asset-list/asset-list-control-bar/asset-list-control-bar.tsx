@@ -85,6 +85,7 @@ import {
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
+import { isHardwareKeyring } from '../../../../../helpers/utils/hardware';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -119,6 +120,9 @@ const AssetListControlBar = ({
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
+  const isHardwareWalletAccount = isHardwareKeyring(
+    selectedInternalAccount?.metadata?.keyring?.type,
+  );
 
   const { collections } = useNftsCollections();
 
@@ -216,10 +220,19 @@ const AssetListControlBar = ({
   ]);
 
   useEffect(() => {
-    if (!accountSupportsEnabledNetworks && totalEnabledNetworkCount > 0) {
+    if (
+      isHardwareWalletAccount &&
+      !accountSupportsEnabledNetworks &&
+      totalEnabledNetworkCount > 0
+    ) {
       dispatch(setEnabledAllPopularNetworks());
     }
-  }, [accountSupportsEnabledNetworks, totalEnabledNetworkCount, dispatch]);
+  }, [
+    accountSupportsEnabledNetworks,
+    dispatch,
+    isHardwareWalletAccount,
+    totalEnabledNetworkCount,
+  ]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =

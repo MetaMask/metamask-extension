@@ -58,25 +58,49 @@ const backgroundConnectionMock = new Proxy(
   },
 );
 
-const createMockState = () => ({
-  ...mockState,
-  metamask: {
-    ...mockState.metamask,
-    selectedNetworkClientId: 'selectedNetworkClientId',
-    networkConfigurationsByChainId: {
-      '0x1': {
-        chainId: '0x1',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            networkClientId: 'selectedNetworkClientId',
-          },
-        ],
+const LEDGER_ACCOUNT_ID = '15e69915-2a1a-4019-93b3-916e11fd432f';
+const LEDGER_ACCOUNT_GROUP_ID =
+  'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+const createMockState = () => {
+  const state = structuredClone(mockState);
+
+  return {
+    ...state,
+    metamask: {
+      ...state.metamask,
+      internalAccounts: {
+        ...state.metamask.internalAccounts,
+        accounts: {
+          ...state.metamask.internalAccounts.accounts,
+        },
       },
-    } as unknown as Record<string, NetworkConfiguration>,
-    useNftDetection: true,
-  },
-});
+      accountTree: structuredClone(state.metamask.accountTree),
+      multichainNetworkConfigurationsByChainId: {
+        ...state.metamask.multichainNetworkConfigurationsByChainId,
+      },
+      selectedNetworkClientId: 'selectedNetworkClientId',
+      networkConfigurationsByChainId: {
+        '0x1': {
+          chainId: '0x1',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'selectedNetworkClientId',
+            },
+          ],
+        },
+      } as unknown as Record<string, NetworkConfiguration>,
+      useNftDetection: true,
+    },
+  };
+};
+
+const selectLedgerAccount = (state: ReturnType<typeof createMockState>) => {
+  state.metamask.internalAccounts.selectedAccount = LEDGER_ACCOUNT_ID;
+  state.metamask.selectedAccountGroup = LEDGER_ACCOUNT_GROUP_ID;
+};
 
 describe('NFTs options', () => {
   afterEach(() => {
@@ -333,6 +357,66 @@ describe('NFTs options', () => {
     await waitFor(() =>
       expect(onNetworkSelect).toHaveBeenCalledWith(['eip155:1']),
     );
+  });
+
+  it('falls back to all popular networks when a hardware wallet has an unsupported network filter', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const enableAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    selectLedgerAccount(state);
+    state.metamask.enabledNetworkMap = {
+      solana: {
+        [SOLANA_CHAIN_ID]: true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(<AssetListControlBar />, store);
+
+    await waitFor(() =>
+      expect(enableAllPopularNetworksSpy).toHaveBeenCalled(),
+    );
+  });
+
+  it('does not broaden an unsupported network filter for a non-hardware account', async () => {
+    const enableAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    state.metamask.enabledNetworkMap = {
+      solana: {
+        [SOLANA_CHAIN_ID]: true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(<AssetListControlBar />, store);
+
+    await waitFor(() =>
+      expect(enableAllPopularNetworksSpy).not.toHaveBeenCalled(),
+    );
+  });
+
+  it('does not show Non-EVM network rows in the home network filter for hardware wallets', async () => {
+    const state = createMockState();
+    selectLedgerAccount(state);
+    state.metamask.useExternalServices = true;
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, queryByTestId } = renderWithProvider(
+      <AssetListControlBar />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    expect(
+      queryByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`),
+    ).not.toBeInTheDocument();
   });
 
   it('opens the network filter modal and can navigate to manage networks', async () => {

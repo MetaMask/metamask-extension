@@ -60,11 +60,13 @@ import {
   getShowTestNetworks,
   getUseExternalServices,
 } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
+import { isHardwareKeyring } from '../../../../../helpers/utils/hardware';
 
 type HomeNetworkFilterModalProps = {
   isOpen: boolean;
@@ -328,6 +330,7 @@ const HomeNetworkFilterModalContent = ({
   const evmAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
   );
+  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
   const { handleNetworkChange } = useNetworkChangeHandlers();
   const {
     nonTestNetworks: allDefaultNetworkMap,
@@ -342,6 +345,9 @@ const HomeNetworkFilterModalContent = ({
   );
 
   const isAllDefaultSelected = enabledNetworks.length > 1;
+  const isHardwareWalletAccount = isHardwareKeyring(
+    selectedInternalAccount?.metadata?.keyring?.type,
+  );
 
   const isNetworkSelected = useCallback(
     (network: MultichainNetworkConfiguration) =>
@@ -357,16 +363,17 @@ const HomeNetworkFilterModalContent = ({
           return false;
         }
 
-        if (!useExternalServices && !network.isEvm) {
-          return false;
+        if (!network.isEvm) {
+          return useExternalServices && !isHardwareWalletAccount;
         }
 
-        return network.isEvm ? Boolean(evmAccountGroup) : true;
+        return Boolean(evmAccountGroup);
       },
     );
   }, [
     allDefaultNetworkMap,
     evmAccountGroup,
+    isHardwareWalletAccount,
     isNetworkInDefaultNetworkTab,
     orderedNetworksList,
     useExternalServices,
@@ -374,15 +381,27 @@ const HomeNetworkFilterModalContent = ({
 
   const customNetworks = useMemo(() => {
     return sortNetworks(customNetworkMap, orderedNetworksList).filter(
-      (network) => useExternalServices || network.isEvm,
+      (network) =>
+        network.isEvm || (useExternalServices && !isHardwareWalletAccount),
     );
-  }, [customNetworkMap, orderedNetworksList, useExternalServices]);
+  }, [
+    customNetworkMap,
+    isHardwareWalletAccount,
+    orderedNetworksList,
+    useExternalServices,
+  ]);
 
   const testNetworks = useMemo(() => {
     return sortNetworks(testNetworkMap, orderedNetworksList).filter(
-      (network) => useExternalServices || network.isEvm,
+      (network) =>
+        network.isEvm || (useExternalServices && !isHardwareWalletAccount),
     );
-  }, [orderedNetworksList, testNetworkMap, useExternalServices]);
+  }, [
+    isHardwareWalletAccount,
+    orderedNetworksList,
+    testNetworkMap,
+    useExternalServices,
+  ]);
 
   // When there are no custom networks and no visible test networks, the default
   // list is the only list, so selecting default networks is equivalent to
@@ -396,14 +415,20 @@ const HomeNetworkFilterModalContent = ({
       ({ chainId }) => !evmNetworks[chainId],
     ).filter(
       ({ chainId }) =>
-        useExternalServices || isEvmChainId(chainId as CaipChainId),
+        isEvmChainId(chainId as CaipChainId) ||
+        (useExternalServices && !isHardwareWalletAccount),
     );
 
     return getFilteredFeaturedNetworks(
       blacklistedChainIds,
       availableNetworks,
     ).sort((a, b) => a.name.localeCompare(b.name));
-  }, [blacklistedChainIds, evmNetworks, useExternalServices]);
+  }, [
+    blacklistedChainIds,
+    evmNetworks,
+    isHardwareWalletAccount,
+    useExternalServices,
+  ]);
 
   const handleSelectAllDefaultNetworks = useCallback(() => {
     dispatch(setEnabledAllPopularNetworks());
