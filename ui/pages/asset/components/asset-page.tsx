@@ -360,6 +360,7 @@ const AssetPage = ({
               isBridgeChain,
               chainId,
               disableSendForNonEvm: true,
+              buyAssetId: caipAssetId,
             }}
           />
         ) : null}

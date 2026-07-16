@@ -10,7 +10,10 @@ import type {
   Transaction,
 } from '@metamask/keyring-api';
 import { useMessenger } from '../../../hooks/useMessenger';
-import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
@@ -43,7 +46,6 @@ const excludedTransactionTypes: TransactionType[] = [
   TransactionType.musdRelayDeposit,
   TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
-  TransactionType.perpsWithdraw,
   TransactionType.perpsRelayDeposit,
   TransactionType.shieldSubscriptionApprove,
 ];
@@ -75,10 +77,12 @@ function isPendingToastStatus(
     return true;
   }
 
-  if (
-    transactionMeta.type &&
-    earlyPendingToastTypes.has(transactionMeta.type)
-  ) {
+  const isEarlyPending =
+    (transactionMeta.type &&
+      earlyPendingToastTypes.has(transactionMeta.type)) ||
+    isPerpsWithdrawTransaction(transactionMeta);
+
+  if (isEarlyPending) {
     return (
       status === TransactionStatus.approved ||
       status === TransactionStatus.signed
