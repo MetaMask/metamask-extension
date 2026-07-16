@@ -296,12 +296,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         throw error;
       }
     },
-    [
-      dispatchSignatureEvent,
-      isStaleAttempt,
-      signatureState.status,
-      submitBridgeTransactionBase,
-    ],
+    [dispatchSignatureEvent, isStaleAttempt, submitBridgeTransactionBase],
   );
 
   /**
@@ -364,7 +359,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     // 5. Update reactive state — tracker + safety check use the new tx on
     // the next render (flushed before the `await` below resolves).
     setSendBundleTxMeta(newTxMetaWithBatch);
-    setCurrentApprovalRequestId(String(newTxMeta.id));
+    setCurrentApprovalRequestId(newTxMeta.id);
 
     // 6. Approve → triggers device signing. Same success/error dispatch
     // pattern as `submitSendBundleTransaction`: the `TransactionSubmitted`
