@@ -142,6 +142,11 @@ const BITCOIN_DISCOVERY_BLOCKS = [
 const BITCOIN_DISCOVERY_CHAIN_TIP_HASH =
   '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
 
+// The canonical Bitcoin mainnet genesis block hash (height 0). The snap fetches
+// `/block-height/0` and verifies it against this known value during discovery.
+const BITCOIN_MAINNET_GENESIS_HASH =
+  '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
+
 const BITCOIN_DISCOVERY_FEE_ESTIMATES = {
   1: 1,
   2: 1,
@@ -190,6 +195,29 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
       statusCode: 200,
       body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
     }));
+
+  // Esplora `GET /block-height/:height` returns the block hash at that height as
+  // plain text. Left unmocked, the Bitcoin snap's discovery request falls to the
+  // empty-200 catch-all, whose malformed body throws in the snap and restarts
+  // discovery in a retry storm that delays the non-EVM account icons past the
+  // default wait. The hash must match the requested height: height 0 is the
+  // genesis block, and returning the chain-tip hash there fails the snap's chain
+  // check and crashes account creation. Real genesis hash for 0, tip otherwise.
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/(?<height>\d+)$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const height = request.url.match(/block-height\/(?<h>\d+)/u)?.groups?.h;
+      return {
+        statusCode: 200,
+        body:
+          height === '0'
+            ? BITCOIN_MAINNET_GENESIS_HASH
+            : BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
+      };
+    });
 
   await server
     .forGet(
