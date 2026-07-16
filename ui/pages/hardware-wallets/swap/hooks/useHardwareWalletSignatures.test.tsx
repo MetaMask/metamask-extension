@@ -32,6 +32,7 @@ import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridge
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
 import { cleanupPendingApproval } from '../hardware-wallet-signatures.utils';
+import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import { useHardwareWalletSignatures } from './useHardwareWalletSignatures';
 
 jest.mock('../../../../hooks/bridge/useSubmitBridgeTransaction');
@@ -280,9 +281,7 @@ async function renderUseHardwareWalletSignaturesAndFlush(
   const rendered = renderUseHardwareWalletSignatures(options);
   await act(async () => {
     // Flush effect scheduling + the updateAndApproveTx promise chain.
-    await Promise.resolve();
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
   });
   return rendered;
 }
