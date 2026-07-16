@@ -109,6 +109,59 @@ describe('CancelOrderModal', () => {
       ).toBeInTheDocument();
     });
 
+    it('uses the opening direction for a non-reduce-only entry trigger', () => {
+      const entryTriggerOrder: Order = {
+        ...baseOrder,
+        side: 'sell',
+        isTrigger: true,
+        reduceOnly: false,
+        detailedOrderType: 'Stop Market',
+      };
+      renderWithProvider(
+        <CancelOrderModal
+          isOpen
+          onClose={jest.fn()}
+          order={entryTriggerOrder}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(
+          `Stop Market ${messages.perpsShort.message.toLocaleLowerCase(
+            'en-US',
+          )}`,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('uses the closing direction for a position TP/SL trigger', () => {
+      const positionTriggerOrder: Order = {
+        ...baseOrder,
+        side: 'sell',
+        isTrigger: true,
+        reduceOnly: false,
+        isPositionTpsl: true,
+        detailedOrderType: 'Stop Market',
+      };
+      renderWithProvider(
+        <CancelOrderModal
+          isOpen
+          onClose={jest.fn()}
+          order={positionTriggerOrder}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(
+          `Stop Market ${messages.perpsCloseLong.message.toLocaleLowerCase(
+            'en-US',
+          )}`,
+        ),
+      ).toBeInTheDocument();
+    });
+
     it('uses the localized close-long label for a reduce-only sell', () => {
       const closeLongOrder: Order = {
         ...baseOrder,

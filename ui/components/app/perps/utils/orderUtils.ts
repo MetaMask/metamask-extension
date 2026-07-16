@@ -455,8 +455,20 @@ export const normalizeMarketDetailsOrders = ({
 };
 
 /**
+ * Determines whether an order closes an existing position.
+ *
+ * Trigger status controls when an order activates and does not imply closing
+ * intent. Reduce-only and position-bound TP/SL orders are closing orders.
+ *
+ * @param order - The order to classify.
+ * @returns Whether the order closes a position.
+ */
+export const isClosingOrder = (
+  order: Pick<Order, 'reduceOnly' | 'isPositionTpsl'>,
+): boolean => Boolean(order.reduceOnly || order.isPositionTpsl);
+
+/**
  * Formats an order label following the pattern: [Type] [close?] [direction]
- * Matches the mobile canonical formatter in app/components/UI/Perps/utils/orderUtils.ts.
  *
  * Examples:
  * - "Market long" / "Limit short"
@@ -464,7 +476,7 @@ export const normalizeMarketDetailsOrders = ({
  * - "Stop market close long" / "Take profit limit close short"
  *
  * Rules:
- * - isClosing = reduceOnly || isTrigger
+ * - isClosing = reduceOnly || isPositionTpsl
  * - direction for closing: sell → long, buy → short
  * - direction for opening: buy → long, sell → short
  * - typeString = detailedOrderType if present, otherwise "Limit" or "Market"
@@ -474,8 +486,8 @@ export const normalizeMarketDetailsOrders = ({
  * @returns Formatted label string in sentence case
  */
 export const formatOrderLabel = (order: Order): string => {
-  const { side, detailedOrderType, orderType, reduceOnly, isTrigger } = order;
-  const isClosing = Boolean(reduceOnly || isTrigger);
+  const { side, detailedOrderType, orderType } = order;
+  const isClosing = isClosingOrder(order);
 
   let direction: string;
   if (isClosing) {

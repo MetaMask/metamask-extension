@@ -698,11 +698,24 @@ describe('orderUtils', () => {
       expect(formatOrderLabel(order)).toBe('Stop market close short');
     });
 
-    it('treats isTrigger alone as closing (no reduceOnly)', () => {
+    it('treats a non-reduce-only trigger as an opening order', () => {
       const order = makeOrder({
         side: 'sell',
         orderType: 'market',
         isTrigger: true,
+        reduceOnly: false,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop market short');
+    });
+
+    it('treats a position TP/SL order as closing', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: false,
+        isPositionTpsl: true,
         detailedOrderType: 'Stop Market',
       });
       expect(formatOrderLabel(order)).toBe('Stop market close long');

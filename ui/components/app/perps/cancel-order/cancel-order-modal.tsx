@@ -45,6 +45,7 @@ import {
 } from '../../../../hooks/perps';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatOrderType, getDisplaySymbol } from '../utils';
+import { isClosingOrder } from '../utils/orderUtils';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
@@ -113,7 +114,10 @@ export const CancelOrderModal = ({
   }, [order.size, order.price]);
 
   const modalTitle = useMemo(() => {
-    const isClosing = Boolean(order.reduceOnly || order.isTrigger);
+    const isClosing = isClosingOrder({
+      reduceOnly: order.reduceOnly,
+      isPositionTpsl: order.isPositionTpsl,
+    });
     const isLong = isClosing ? order.side === 'sell' : order.side === 'buy';
     let directionKey: string;
     if (isClosing) {
@@ -130,7 +134,7 @@ export const CancelOrderModal = ({
     )}`;
   }, [
     order.reduceOnly,
-    order.isTrigger,
+    order.isPositionTpsl,
     order.side,
     order.detailedOrderType,
     order.orderType,
