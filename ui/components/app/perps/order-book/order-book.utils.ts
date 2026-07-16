@@ -117,7 +117,7 @@ export const ORDER_BOOK_MAX_WIDTH_PCT = 60;
  * scrolls horizontally if the popup cannot fit both floors.
  */
 /** Minimum readable width for the order-book panel (fits both columns). */
-export const ORDER_BOOK_MIN_WIDTH_PX = 160;
+export const ORDER_BOOK_MIN_WIDTH_PX = 140;
 /** Minimum usable width for the order-entry form beside the book. */
 export const ORDER_BOOK_FORM_MIN_WIDTH_PX = 224;
 /** Width of the draggable divider (Tailwind `w-0.5` = 2px). */
