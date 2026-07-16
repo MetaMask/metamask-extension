@@ -44467,8 +44467,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ******************************
 
 websocket-driver
-0.7.4 <https://github.com/faye/websocket-driver-node>
-Copyright 2010-2020 James Coglan
+0.7.5 <https://github.com/faye/websocket-driver-node>
+Copyright 2010-2026 James Coglan
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
