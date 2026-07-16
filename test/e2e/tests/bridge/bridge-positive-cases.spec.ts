@@ -11,6 +11,7 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import BottomNavBar from '../../page-objects/pages/bottom-nav-bar';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
+import type { AppStateControllerState } from '../../../../app/scripts/controllers/app-state-controller';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
   checkQuoteRequestsAreNotMadeAfterTimestamp,
@@ -31,6 +32,8 @@ function getBridgeFixturesWithBottomNavTreatment(
   options: Parameters<typeof getBridgeFixtures>[0],
 ) {
   const base = getBridgeFixtures(options);
+  const appStateController = base.fixtures.data
+    .AppStateController as unknown as AppStateControllerState;
   return {
     ...base,
     fixtures: {
@@ -38,10 +41,9 @@ function getBridgeFixturesWithBottomNavTreatment(
       data: {
         ...base.fixtures.data,
         AppStateController: {
-          ...base.fixtures.data.AppStateController,
+          ...appStateController,
           experimentEligibility: {
-            ...(base.fixtures.data.AppStateController?.experimentEligibility ??
-              {}),
+            ...appStateController.experimentEligibility,
             [BOTTOM_NAV_AB_TEST_KEY]: true,
           },
         },

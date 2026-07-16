@@ -75,6 +75,7 @@ import {
   enrichEventProperties,
   enrichWithABTestAnalytics,
 } from './analytics/platform-adapter';
+import type { AppStateControllerGetStateAction } from './app-state-controller';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
@@ -3093,7 +3094,11 @@ describe('MetaMetricsController', function () {
   });
 });
 
-type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  AllowedActions | AppStateControllerGetStateAction,
+  AllowedEvents
+>;
 
 type MetaMetricsControllerTestState = Partial<MetaMetricsControllerState>;
 
